@@ -591,6 +591,12 @@ class Isogeo:
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
 
+
+
+        # Fixing a qgis.core bug that shows a warning banner "connexion time out" whenever a request is sent (even successfully) See : http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
+        iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
+
+
         # Initiating variables TODO : in the __init__
         self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
         self.page_index = 1
