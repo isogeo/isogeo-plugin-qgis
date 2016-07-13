@@ -20,14 +20,30 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
-from PyQt4.QtGui import QAction, QIcon
+# Ajouté par moi à partir de QByteArray
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QByteArray, QUrl
+#Ajouté oar moi à partir de QMessageBox
+from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, QCheckBox, QStandardItemModel, QStandardItem
+
 # Initialize Qt resources from file resources.py
 import resources
 
 # Import the code for the DockWidget
 from isogeo_dockwidget import IsogeoDockWidget
+# Import du code de la pop up d'authentification
+from authentification import authentification
+
 import os.path
+
+#Ajoutés par moi
+from qgis.utils import iface
+from qgis.core import QgsNetworkAccessManager
+from PyQt4.QtNetwork import QNetworkRequest
+import ConfigParser
+import json
+import base64
+import urllib
+import time
 
 
 class Isogeo:
@@ -72,6 +88,8 @@ class Isogeo:
 
         self.pluginIsActive = False
         self.dockwidget = None
+
+        self.authentification_window = authentification()
 
 
     # noinspection PyMethodMayBeStatic
@@ -207,6 +225,50 @@ class Isogeo:
         del self.toolbar
 
     #--------------------------------------------------------------------------
+    
+    # This retrieves the path to the folder where the plugin is (it usually is 'C:/user/.qgis2/python/plugin')
+    def get_plugin_path(self):
+            basepath = os.path.dirname(os.path.realpath(__file__))
+            return basepath
+
+    # Check if the file already exists and if not, create it. 
+    def test_config_file_existence(self):
+        self.config = ConfigParser.ConfigParser()
+        self.config_path = self.get_plugin_path() + "/config.ini"
+        if os.path.isfile(self.config_path):
+            pass
+        else:
+            print "You've messed up something bruh !"
+            config_file = open(self.config_path,'w')
+            config.write(config_file)
+            # TO DO : CREER UN TEMPLATE
+            config_file.close()
+    
+    # This is the first major function the plugin calls when executed. It retrieves the id and secret from the config file. If they are set to their default value, it asks for them. if not it ties to send a request.
+    def user_authentification(self):
+        self.config.read(self.config_path)
+        config_dict = {s:dict(self.config.items(s)) for s in self.config.sections()}
+        self.user_id = config_dict['Isogeo_ids']['application_id']
+        self.user_secret = config_dict['Isogeo_ids']['application_secret']
+        if self.user_id != 'application_id':
+            # Demande les identifiants dans une pop-up et écrit les.
+            self.dockwidget.dump.setText(u"Identifiants enregistrés")
+        else:
+            self.authentification_window.show()
+
+    # When the authentification window is closed, stores the values in the file, then call the authentification function to test them.
+    def write_ids_and_test(self):
+        self.user_id = self.authentification_window.user_id_input.text()
+        self.user_secret = self.authentification_window.user_secret_input.text()
+        config_file = open(self.config_path,'w')
+        self.config.set('Isogeo_ids', 'application_id', self.user_id)
+        self.config.set('Isogeo_ids', 'application_secret', self.user_secret)
+        self.config.write(config_file)
+        config_file.close()
+
+        self.user_authentification()
+
+    #--------------------------------------------------------------------------
 
     def run(self):
         """Run method that loads and starts the plugin"""
@@ -230,4 +292,11 @@ class Isogeo:
             # TODO: fix to allow choice of dock location
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
+
+        # Save the user ids when the authentification window is accepted.
+        self.authentification_window.accepted.connect(self.write_ids_and_test)
+
+        # Firs actions at the opening of the plugin
+        self.test_config_file_existence()
+        self.user_authentification()
 
