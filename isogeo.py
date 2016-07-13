@@ -287,14 +287,284 @@ class Isogeo:
         content = str(bytarray)
         parsed_content = json.loads(content)
         if 'access_token' in parsed_content:
+            # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content['access_token']
-            self.dockwidget.dump.setText(self.token)
+            self.send_request_to_Isogeo_API(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
             QMessageBox.information(iface.mainWindow(),'Erreur', parsed_content['error'])
             self.authentification_window.show()
         else:
             self.dockwidget.text_input.setText("Erreur inconnue.")
+
+    def send_request_to_Isogeo_API(self, token, limit = 15):
+        myurl = QUrl(self.currentUrl)
+        request = QNetworkRequest(myurl)
+        request.setRawHeader("Authorization", token)
+        manager = QgsNetworkAccessManager.instance()
+        self.API_reply = manager.get(request)
+        self.API_reply.finished.connect(self.handle_API_reply)
+
+    def handle_API_reply(self):
+        bytarray = self.API_reply.readAll()
+        content = str(bytarray)
+        if content =="":
+            self.ask_for_token(self.user_id, self.user_secret)
+        else:
+            parsed_content = json.loads(content)
+            if "message" in parsed_content:
+                self.ask_for_token(self.user_id, self.user_secret)
+                self.send_request_to_Isogeo_API(self.token)
+            else:
+                self.update_fields(parsed_content)
+
+    def update_fields(self, result):
+        tags = self.get_tags(result)
+        # Getting the index of selected items in each combobox
+        params = self.save_params()
+        # Show how many results there are
+        self.results_count = result['total']
+        self.dockwidget.nbresultat.setText(str(self.results_count) + u" résultats")
+        # Setting the number of rows in the result table
+        if self.results_count >= 15:
+            self.dockwidget.resultats.setRowCount(15)
+        else:
+            self.dockwidget.resultats.setRowCount(self.results_count)
+        self.nb_page = str(self.calcul_nb_page(self.results_count))
+        self.dockwidget.paging.setText("page " + str(self.page_index) + " sur " + self.nb_page)
+        #clearing the previous fields
+        self.dockwidget.resultats.clear()
+        self.dockwidget.inspire.clear()
+        self.dockwidget.owner.clear()
+        self.dockwidget.format.clear()
+        self.dockwidget.sys_coord.clear()
+        #Initiating the "nothing selected" item in each combobox
+        self.dockwidget.inspire.addItem(" - ")
+        self.dockwidget.owner.addItem(" - ")
+        self.dockwidget.format.addItem(" - ")
+        self.dockwidget.sys_coord.addItem(" - ")
+        # Creating combobox items, with their displayed text, and their value
+        for key in tags['owner']:
+            self.dockwidget.owner.addItem(tags['owner'][key], key)
+        for key in tags['themeinspire']:
+            self.dockwidget.inspire.addItem(tags['themeinspire'][key], key)
+        for key in tags['formats']:
+            self.dockwidget.format.addItem(tags['formats'][key], key)
+        for key in tags['srs']:
+            self.dockwidget.sys_coord.addItem(tags['srs'][key], key)
+
+        # Putting all the comboboxes selected index to their previous location. Necessary as all comboboxes items have been removed and put back in place. We do not want each combobox to go back to their default selected item
+        self.dockwidget.owner.setCurrentIndex(self.dockwidget.owner.findData(params['owner'])) 
+        self.dockwidget.inspire.setCurrentIndex(self.dockwidget.inspire.findData(params['inspire']))
+        self.dockwidget.format.setCurrentIndex(self.dockwidget.format.findData(params['format'])) # Set the combobox current index to (get the index of the item which data is (saved data))
+        self.dockwidget.sys_coord.setCurrentIndex(self.dockwidget.sys_coord.findData(params['srs']))
+
+        """ Filling the keywords special combobox (whose items are checkable) """            
+        model = QStandardItemModel(5, 1)# 5 rows, 1 col
+        firstItem = QStandardItem(u"---- Mots clés ----")
+        firstItem.setSelectable(False)
+        model.setItem(0, 0, firstItem)
+        i = 1
+        for key in tags['keywords']:
+            item = QStandardItem(tags['keywords'][key])
+            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setData(key,32)
+            # As all items have been destroyed and generated again, we have to set the checkstate (checked/unchecked) according to what the user had chosen
+            if item.data(32) in params['keys']:
+                item.setData(Qt.Checked, Qt.CheckStateRole)
+            else:
+                item.setData(Qt.Unchecked, Qt.CheckStateRole)                
+            model.setItem(i, 0, item)
+            i+=1
+        model.itemChanged.connect(self.search)
+        self.dockwidget.keywords.setModel(model)
+       
+        # Trying to make th checkboxes and radio buttons unckeckable if needed
+        # View
+        if 'action:view' in tags['actions']:
+            self.dockwidget.checkBox.setCheckable(True)
+            self.dockwidget.checkBox.setStyleSheet("color: black")
+        else:
+            self.dockwidget.checkBox.setCheckable(False)
+            self.dockwidget.checkBox.setStyleSheet("color: grey")
+        # Download
+        if 'action:download' in tags['actions']:
+            self.dockwidget.checkBox_2.setCheckable(True)
+            self.dockwidget.checkBox_2.setStyleSheet("color: black")
+        else:
+            self.dockwidget.checkBox_2.setCheckable(False)
+            self.dockwidget.checkBox_2.setStyleSheet("color: grey")
+        # Other action
+        if 'action:other' in tags['actions']:
+            self.dockwidget.checkBox_3.setCheckable(True)
+            self.dockwidget.checkBox_3.setStyleSheet("color: black")
+        else:
+            self.dockwidget.checkBox_3.setCheckable(False)
+            self.dockwidget.checkBox_3.setStyleSheet("color: grey")
+
+        self.show_results(result)
+
+    def show_results(self, result):
+        count = 0
+        for i in result['results']:
+            self.dockwidget.resultats.setItem(count,0, QTableWidgetItem(i['title']))
+            self.dockwidget.dump.setText(i['title'])
+            try:
+                self.dockwidget.resultats.setItem(count,1, QTableWidgetItem(i['abstract']))
+            except:
+                self.dockwidget.resultats.setItem(count,1, QTableWidgetItem(u"Pas de résumé"))
+            self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(i['_modified']))
+            count +=1
+
+    def get_tags(self, answer):
+        # Initiating the dicts
+        tags = answer['tags']
+        resources_types = {}
+        owners = {}
+        keywords = {}
+        theminspire = {}
+        formats = {}
+        srs = {}
+        actions = {}
+        # loops that sort each tag in the corresponding dict, keeping the same "key : value" structure.
+        for tag in tags.keys():
+            # owners
+            if tag.startswith('owner'):
+                owners[tag] = tags[tag]
+            # custom keywords
+            elif tag.startswith('keyword:isogeo'):
+                keywords[tag] = tags[tag]
+            # INSPIRE themes
+            elif tag.startswith('keyword:inspire-theme'):
+                theminspire[tag] = tags[tag]
+            # formats
+            elif tag.startswith('format'):
+                formats[tag] = tags[tag]
+            # coordinate systems
+            elif tag.startswith('coordinate-system'):
+                srs[tag] = tags[tag]
+            # available actions (the last 2 are a bit specific as the value field is empty and have to be filled manually)
+            elif tag.startswith('action'):
+                if tag.startswith('action:view'):
+                   actions[tag] = u'Visualisable'
+                elif tag.startswith('action:download'):
+                    actions[tag] = u'Téléchargeable'
+                elif tag.startswith('action:other'):
+                    actions[tag] = u'Autre action'
+                #Test : to be removed eventually
+                else:
+                    actions[tag] = u'fonction get_tag à revoir'
+                    self.dockwidget.text_input.setText(tag)
+            # resources type
+            elif tag.startswith('type'):
+                if tag.startswith('type:vector'):
+                    resources_types[tag] = u'Données vecteur'
+                elif tag.startswith('type:raster'):
+                    resources_types[tag] = u'Données raster'
+                elif tag.startswith('type:resource'):
+                    resources_types[tag] = u'Ressource'
+                elif tag.startswith('type:service'):
+                    resources_types[tag] = u'Service géographique'
+                #Test : to be removed eventually
+                else:
+                    resources_types[tag] = u'fonction get_tag à revoir'
+                    self.dockwidget.text_input.setText(tag)
+
+        # Creating the final object the function will return : a dictionary of dictionaries
+        new_tags = {}
+        new_tags['type'] = resources_types
+        new_tags['owner'] = owners
+        new_tags['keywords'] = keywords
+        new_tags['themeinspire'] = theminspire
+        new_tags['formats'] = formats
+        new_tags['srs'] = srs
+        new_tags['actions'] = actions
+
+        return new_tags
+
+    def save_params(self):
+        owner_param = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex()) # get the data of the item which index is (get the combobox current index)
+        inspire_param = self.dockwidget.inspire.itemData(self.dockwidget.inspire.currentIndex())
+        format_param = self.dockwidget.format.itemData(self.dockwidget.format.currentIndex())
+        srs_param = self.dockwidget.sys_coord.itemData(self.dockwidget.sys_coord.currentIndex())
+        # Saving the keywords that are selected : if a keyword state is selected, he is added to the list
+        key_params = []
+        for i in xrange(self.dockwidget.keywords.count()):
+            if self.dockwidget.keywords.itemData(i, 10) == 2:
+                key_params.append(self.dockwidget.keywords.itemData(i, 32))
+        params = {}
+        params['owner'] = owner_param
+        params['inspire'] = inspire_param
+        params['format'] = format_param
+        params['srs'] = srs_param
+        params['keys'] = key_params
+        return params
+
+    def search(self):
+        self.page_index = 1
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
+        # Getting the parameters chosen by the user from the combobox
+        if self.dockwidget.owner.currentIndex() != 0:
+            owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
+        else:
+            owner = False
+        if self.dockwidget.inspire.currentIndex() != 0:
+            inspire = self.dockwidget.inspire.itemData(self.dockwidget.inspire.currentIndex())
+        else:
+            inspire = False
+        if self.dockwidget.format.currentIndex() != 0:
+            formats = self.dockwidget.format.itemData(self.dockwidget.format.currentIndex())
+        else:
+            formats = False
+        if self.dockwidget.sys_coord.currentIndex() != 0:
+            sys_coord = self.dockwidget.sys_coord.itemData(self.dockwidget.sys_coord.currentIndex())
+        else:
+            sys_coord = False
+        # Getting the text entered in the text field
+        filters = ""
+        if self.dockwidget.text_input.text():
+            filters += self.dockwidget.text_input.text() + " "
+       
+       # Adding the content of the comboboxes to the request
+        if owner:
+            filters += owner + " "
+        if inspire:
+            filters += inspire + " "
+        if formats:
+            filters += formats + " "
+        if sys_coord:
+            filters += sys_coord + " "
+        # Actions in checkboxes
+        if self.dockwidget.checkBox.isChecked():
+            filters += "action:view "
+        if self.dockwidget.checkBox_2.isChecked():
+            filters += "action:download "
+        if self.dockwidget.checkBox_3.isChecked():
+            filters += "action:other "
+        # Adding the keywords that are checked (whose data[10] == 2)
+        for i in xrange(self.dockwidget.keywords.count()):
+            if self.dockwidget.keywords.itemData(i, 10) == 2:
+                filters += self.dockwidget.keywords.itemData(i, 32) + " "
+        # If the geographical filter is activated, build a spatial filter
+
+
+        filters = filters[:-1]
+        filters = "q=" + filters
+        #self.dockwidget.text_input.setText(encoded_filters)        
+        if filters != "q=":
+            self.currentUrl += filters + "&_limit=15"
+        self.dockwidget.dump.setText(self.currentUrl)
+        self.send_request_to_Isogeo_API(self.token)
+
+    def calcul_nb_page(self, nb_fiches):
+        if nb_fiches <= 15:
+            nb_page = 1
+        else:
+            if (nb_fiches % 15) == 0:
+                nb_page = (nb_fiches / 15)
+            else: 
+                nb_page = (nb_fiches / 15) + 1
+        return nb_page
 
     #--------------------------------------------------------------------------
 
@@ -321,10 +591,26 @@ class Isogeo:
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
 
+        # Initiating variables TODO : in the __init__
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
+        self.page_index = 1
+        
         # Save the user ids when the authentification window is accepted.
         self.authentification_window.accepted.connect(self.write_ids_and_test)
 
-        # Firs actions at the opening of the plugin
+        # Connecting the comboboxes to the search function
+        self.dockwidget.owner.activated.connect(self.search)
+        self.dockwidget.inspire.activated.connect(self.search)
+        self.dockwidget.format.activated.connect(self.search)
+        self.dockwidget.sys_coord.activated.connect(self.search)
+        self.dockwidget.text_input.editingFinished.connect(self.search)
+        # Connecting the checkboxes to the search function
+        self.dockwidget.checkBox.stateChanged.connect(self.search)
+        self.dockwidget.checkBox_2.stateChanged.connect(self.search)
+        self.dockwidget.checkBox_3.stateChanged.connect(self.search)
+
+
+        # Firt actions at the opening of the plugin
         self.test_config_file_existence()
         self.user_authentification()
 
