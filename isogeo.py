@@ -252,7 +252,7 @@ class Isogeo:
         self.user_secret = config_dict['Isogeo_ids']['application_secret']
         if self.user_id != 'application_id':
             # Demande les identifiants dans une pop-up et écrit les.
-            self.dockwidget.dump.setText(u"Identifiants enregistrés")
+            self.ask_for_token(self.user_id, self.user_secret)
         else:
             self.authentification_window.show()
 
@@ -267,6 +267,34 @@ class Isogeo:
         config_file.close()
 
         self.user_authentification()
+
+    # This send a POST request to Isogeo API with the user id and secret in its header. The API should return an access token
+    def ask_for_token(self, c_id, c_secret):
+        headervalue = "Basic " + base64.b64encode(c_id + ":" + c_secret)
+        data = urllib.urlencode({"grant_type":"client_credentials"})
+        dataByte = QByteArray()
+        dataByte.append(data)
+        manager = QgsNetworkAccessManager.instance()
+        url = QUrl('https://id.api.isogeo.com/oauth/token')
+        request = QNetworkRequest(url)
+        request.setRawHeader("Authorization", headervalue)
+        self.token_reply = manager.post( request, dataByte )
+        self.token_reply.finished.connect(self.handle_token)
+
+    # This handles the API answer. If it has sent an access token, it calls the initialization function. If not, it raises an error, and ask for new IDs
+    def handle_token(self):
+        bytarray = self.token_reply.readAll()
+        content = str(bytarray)
+        parsed_content = json.loads(content)
+        if 'access_token' in parsed_content:
+            self.token = "Bearer " + parsed_content['access_token']
+            self.dockwidget.dump.setText(self.token)
+        # TO DO : Distinguer plusieurs cas d'erreur
+        elif 'error' in parsed_content:
+            QMessageBox.information(iface.mainWindow(),'Erreur', parsed_content['error'])
+            self.authentification_window.show()
+        else:
+            self.dockwidget.text_input.setText("Erreur inconnue.")
 
     #--------------------------------------------------------------------------
 
