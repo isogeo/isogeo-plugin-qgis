@@ -13,12 +13,10 @@ Equivalent of [plugins for ArcGIS](http://www.isogeo.com/applications/).
 ### Technical 
 
 It's based on Isogeo API:
-
 * REST-ful
 * oAuth2 protocol used to authenticate shares
 
 It's fully integrated with QGIS ecosystem:
-
 * PyQGIS 2
 * PyQt 4.8.x
 
@@ -36,16 +34,13 @@ It's fully integrated with QGIS ecosystem:
 
 ## Screen captures ##
 
-Without any search:
-![Search widget](img/ui_tabs_main_search_empty.png)
-
-With some filters:
-![Prompt dialog to enter your application](img/ui_tabs_main_search_filtered.png)
+| Without any search | With some filters |
+|:------------------:|:-----------------:|
+| ![Search widget with no filters](img/ui_tabs_main_search_empty.png) | ![Search widget with some filters](img/ui_tabs_main_search_filtered.png) |
 
 ## Getting started ##
 
 In a nutshell:
-
 1. QGIS 'Plugins' menu -> 'Manage and Install Plugins...'
 2. Search for 'isogeo' and select it
 3. 'Install Plugin'
@@ -64,6 +59,7 @@ This internship was supervised by [Julien Moura](@Guts), Isogeo: http://www.isog
 
 This plugin is made thanks to some clients:
 
-![Syndicat Mixte d'Aménagement de la Vallée de la Durance](img/sponsor_logo_SMAVD.png)
+![Syndicat Mixte d'Aménagement de la Vallée de la Durance](img/sponsor_logo_SMAVD.jpg)
+
 ![Communauté d'Agglomération de Lorient](img/sponsor_logo_ca_lorient.png)
 
