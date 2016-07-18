@@ -9,12 +9,12 @@
 [general]
 name=Isogeo
 qgisMinimumVersion=2.0
-description=This is the Isogeo plugin
-version=0.1
-author=Isogeo
-email=theo.sinatti@isogeo.fr
+description=Isogeo search engine within QGIS
+version=0.1a2
+author=Isogeo, Théo Sinatti, GeoJulien
+email=projets+qgis@isogeo.fr
 
-about=This plugin helps finding geodata : it allows you to search inside your Isogeo catalogs.
+about=This plugin helps finding geodata, searching within Isogeo catalogs. To use it,  an Isogeo account is required, you can ask a free one using this form http://www.isogeo.com/en/create-your-account or sending a mail to projets+qgis@isogeo.fr.
 
 tracker=https://github.com/isogeo/isogeo-plugin-qgis/issues
 repository=https://github.com/isogeo/isogeo-plugin-qgis
@@ -26,7 +26,7 @@ repository=https://github.com/isogeo/isogeo-plugin-qgis
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=
+tags=REST API,catalog,search,explore,webservices,metadata,open data 
 
 homepage=https://github.com/isogeo/isogeo-plugin-qgis
 category=Web
