@@ -52,8 +52,7 @@ See the documentation:
 
 ## Authors ##
 
-[Théo SINATTI](@TheoSinatti).
-This internship was supervised by [Julien Moura](@Guts), Isogeo: http://www.isogeo.com
+Internship of [Théo SINATTI](https://github.com/TheoSinatti) supervised by [Julien Moura](https://github.com/Guts), at Isogeo: http://www.isogeo.com.
 
 ## Sponsors ##
 
