@@ -404,6 +404,16 @@ class Isogeo:
 
         self.show_results(result)
 
+        # Re enable all user input fields now the research function is finished. 
+        self.dockwidget.owner.setEnabled(True)
+        self.dockwidget.inspire.setEnabled(True)
+        self.dockwidget.format.setEnabled(True)
+        self.dockwidget.sys_coord.setEnabled(True)
+        self.dockwidget.text_input.setReadOnly(False)
+        self.dockwidget.checkBox.setCheckable(True)
+        self.dockwidget.checkBox_2.setCheckable(True)
+        self.dockwidget.checkBox_3.setCheckable(True)
+
     def show_results(self, result):
         count = 0
         for i in result['results']:
@@ -501,6 +511,16 @@ class Isogeo:
         return params
 
     def search(self):
+        # Disabling all user inputs during the research function is running
+        self.dockwidget.owner.setEnabled(False)
+        self.dockwidget.inspire.setEnabled(False)
+        self.dockwidget.format.setEnabled(False)
+        self.dockwidget.sys_coord.setEnabled(False)
+        self.dockwidget.text_input.setReadOnly(True)
+        self.dockwidget.checkBox.setCheckable(False)
+        self.dockwidget.checkBox_2.setCheckable(False)
+        self.dockwidget.checkBox_3.setCheckable(False)
+        # Setting some variables
         self.page_index = 1
         self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
         # Getting the parameters chosen by the user from the combobox
@@ -608,6 +628,7 @@ class Isogeo:
         self.dockwidget.inspire.activated.connect(self.search)
         self.dockwidget.format.activated.connect(self.search)
         self.dockwidget.sys_coord.activated.connect(self.search)
+        # Connecting the text input to the search function
         self.dockwidget.text_input.editingFinished.connect(self.search)
         # Connecting the checkboxes to the search function
         self.dockwidget.checkBox.stateChanged.connect(self.search)
