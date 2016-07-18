@@ -18,7 +18,7 @@
 
 6. Enter access id and secret sent by mail:
 
-    ![Prompt dialog to enter your application](img/ui_auth_prompt.png)
+    ![Prompt dialog to enter your application](../img/ui_auth_prompt.png)
 
 Everything is ready!
 Enjoy your geo search :)
