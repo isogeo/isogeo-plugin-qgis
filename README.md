@@ -3,6 +3,8 @@
 QGIS plugin for [Isogeo](http://www.isogeo.com/), a SaaS software to give an easier access to geodata.
 Equivalent of [plugins for ArcGIS](http://www.isogeo.com/applications/).
 
+You can see and vote for [this plugin on the official QGIS extensions website](http://plugins.qgis.org/plugins/isogeo_search_engine/).
+
 ## Purpose ##
 
 * allow Isogeo users to search for datas in their metadata catalogs and add it to a QGIS project ;
@@ -41,9 +43,10 @@ It's fully integrated with QGIS ecosystem:
 ## Getting started ##
 
 In a nutshell:
-1. QGIS 'Plugins' menu -> 'Manage and Install Plugins...'
-2. Search for 'isogeo' and select it
-3. 'Install Plugin'
+
+1. QGIS *Plugins* menu -> *Manage and Install Plugins...*;
+2. In settings, check the box allowing experimental extensions;
+3. Search for *isogeo*, select it and install it.
 
 See the documentation:
 
