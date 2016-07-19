@@ -289,7 +289,7 @@ class Isogeo:
         if 'access_token' in parsed_content:
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content['access_token']
-            self.send_request_to_Isogeo_API(self.token)
+            self.search()
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
             QMessageBox.information(iface.mainWindow(),'Erreur', parsed_content['error'])
@@ -321,7 +321,7 @@ class Isogeo:
     def update_fields(self, result):
         tags = self.get_tags(result)
         # Getting the index of selected items in each combobox
-        params = self.save_params()
+        
         # Show how many results there are
         self.results_count = result['total']
         self.dockwidget.nbresultat.setText(str(self.results_count) + u" résultats")
@@ -354,30 +354,30 @@ class Isogeo:
             self.dockwidget.sys_coord.addItem(tags['srs'][key], key)
 
         # Putting all the comboboxes selected index to their previous location. Necessary as all comboboxes items have been removed and put back in place. We do not want each combobox to go back to their default selected item
-        self.dockwidget.owner.setCurrentIndex(self.dockwidget.owner.findData(params['owner'])) 
-        self.dockwidget.inspire.setCurrentIndex(self.dockwidget.inspire.findData(params['inspire']))
-        self.dockwidget.format.setCurrentIndex(self.dockwidget.format.findData(params['format'])) # Set the combobox current index to (get the index of the item which data is (saved data))
-        self.dockwidget.sys_coord.setCurrentIndex(self.dockwidget.sys_coord.findData(params['srs']))
+        self.dockwidget.owner.setCurrentIndex(self.dockwidget.owner.findData(self.params['owner'])) 
+        self.dockwidget.inspire.setCurrentIndex(self.dockwidget.inspire.findData(self.params['inspire']))
+        self.dockwidget.format.setCurrentIndex(self.dockwidget.format.findData(self.params['format'])) # Set the combobox current index to (get the index of the item which data is (saved data))
+        self.dockwidget.sys_coord.setCurrentIndex(self.dockwidget.sys_coord.findData(self.params['srs']))
 
         """ Filling the keywords special combobox (whose items are checkable) """            
-        model = QStandardItemModel(5, 1)# 5 rows, 1 col
+        self.model = QStandardItemModel(5, 1)# 5 rows, 1 col
         firstItem = QStandardItem(u"---- Mots clés ----")
         firstItem.setSelectable(False)
-        model.setItem(0, 0, firstItem)
+        self.model.setItem(0, 0, firstItem)
         i = 1
         for key in tags['keywords']:
             item = QStandardItem(tags['keywords'][key])
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setData(key,32)
             # As all items have been destroyed and generated again, we have to set the checkstate (checked/unchecked) according to what the user had chosen
-            if item.data(32) in params['keys']:
+            if item.data(32) in self.params['keys']:
                 item.setData(Qt.Checked, Qt.CheckStateRole)
             else:
                 item.setData(Qt.Unchecked, Qt.CheckStateRole)                
-            model.setItem(i, 0, item)
+            self.model.setItem(i, 0, item)
             i+=1
-        model.itemChanged.connect(self.search)
-        self.dockwidget.keywords.setModel(model)
+        self.model.itemChanged.connect(self.search)
+        self.dockwidget.keywords.setModel(self.model)
        
         # Trying to make th checkboxes and radio buttons unckeckable if needed
         # View
@@ -410,9 +410,11 @@ class Isogeo:
         self.dockwidget.format.setEnabled(True)
         self.dockwidget.sys_coord.setEnabled(True)
         self.dockwidget.text_input.setReadOnly(False)
-        self.dockwidget.checkBox.setCheckable(True)
-        self.dockwidget.checkBox_2.setCheckable(True)
-        self.dockwidget.checkBox_3.setCheckable(True)
+        self.dockwidget.checkBox.setEnabled(True)
+        self.dockwidget.checkBox_2.setEnabled(True)
+        self.dockwidget.checkBox_3.setEnabled(True)
+        """for i in xrange(self.dockwidget.keywords.count()):
+            self.model.item(i).setEnabled(True)"""
 
     def show_results(self, result):
         count = 0
@@ -512,14 +514,18 @@ class Isogeo:
 
     def search(self):
         # Disabling all user inputs during the research function is running
+        self.params = self.save_params()
         self.dockwidget.owner.setEnabled(False)
         self.dockwidget.inspire.setEnabled(False)
         self.dockwidget.format.setEnabled(False)
         self.dockwidget.sys_coord.setEnabled(False)
         self.dockwidget.text_input.setReadOnly(True)
-        self.dockwidget.checkBox.setCheckable(False)
-        self.dockwidget.checkBox_2.setCheckable(False)
-        self.dockwidget.checkBox_3.setCheckable(False)
+        self.dockwidget.checkBox.setEnabled(False)
+        self.dockwidget.checkBox_2.setEnabled(False)
+        self.dockwidget.checkBox_3.setEnabled(False)
+
+        """for i in xrange(self.dockwidget.keywords.count()):
+            self.model.item(i).setEnabled(False)"""
         # Setting some variables
         self.page_index = 1
         self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
@@ -565,6 +571,8 @@ class Isogeo:
         for i in xrange(self.dockwidget.keywords.count()):
             if self.dockwidget.keywords.itemData(i, 10) == 2:
                 filters += self.dockwidget.keywords.itemData(i, 32) + " "
+
+        self.dockwidget.keywords.clear()
         # If the geographical filter is activated, build a spatial filter
 
 
