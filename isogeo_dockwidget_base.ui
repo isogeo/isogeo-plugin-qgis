@@ -31,58 +31,32 @@
         <string>Recherche</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
-        <item row="5" column="0" colspan="6">
-         <widget class="QTableWidget" name="resultats">
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="sortingEnabled">
-           <bool>true</bool>
-          </property>
-          <column>
-           <property name="text">
-            <string>Titre</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Résumé</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Date de modif</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Ajouter</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-        <item row="3" column="0" colspan="2">
-         <widget class="QLabel" name="label">
-          <property name="font">
-           <font>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
+        <item row="0" column="0" colspan="3">
+         <widget class="QLineEdit" name="text_input">
+          <property name="inputMask">
+           <string/>
           </property>
           <property name="text">
-           <string>Recherches enregistrées</string>
+           <string/>
           </property>
          </widget>
         </item>
-        <item row="6" column="4">
-         <widget class="QPushButton" name="previous">
-          <property name="text">
-           <string>&lt;</string>
-          </property>
+        <item row="0" column="3" colspan="2">
+         <widget class="QWidget" name="widget" native="true">
+          <widget class="QComboBox" name="keywords">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>151</width>
+             <height>20</height>
+            </rect>
+           </property>
+          </widget>
          </widget>
         </item>
-        <item row="1" column="0" colspan="6">
-         <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
+        <item row="1" column="0" colspan="5">
+         <widget class="QgsCollapsibleGroupBox" name="filters_box">
           <property name="font">
            <font>
             <weight>75</weight>
@@ -281,7 +255,7 @@
           </layout>
          </widget>
         </item>
-        <item row="2" column="0" colspan="6">
+        <item row="2" column="0" colspan="5">
          <widget class="QgsCollapsibleGroupBox" name="mGroupBox_2">
           <property name="font">
            <font>
@@ -344,6 +318,72 @@
           </layout>
          </widget>
         </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Recherches enregistrées</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2" colspan="3">
+         <widget class="QLabel" name="label_9">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Enregistrer la recherche actuelle</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="2">
+         <widget class="QComboBox" name="favorite_combo"/>
+        </item>
+        <item row="4" column="4">
+         <widget class="QPushButton" name="save_favorite">
+          <property name="text">
+           <string>*</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0" colspan="5">
+         <widget class="QTableWidget" name="resultats">
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+          <column>
+           <property name="text">
+            <string>Titre</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Résumé</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Date de modif</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Ajouter</string>
+           </property>
+          </column>
+         </widget>
+        </item>
         <item row="6" column="0">
          <widget class="QLabel" name="nbresultat">
           <property name="font">
@@ -357,50 +397,7 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="5">
-         <widget class="QPushButton" name="next">
-          <property name="text">
-           <string>&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0" colspan="3">
-         <widget class="QComboBox" name="favorite_combo"/>
-        </item>
-        <item row="0" column="4" colspan="2">
-         <widget class="QComboBox" name="keywords"/>
-        </item>
-        <item row="0" column="0" colspan="4">
-         <widget class="QLineEdit" name="text_input">
-          <property name="inputMask">
-           <string/>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="5">
-         <widget class="QPushButton" name="save_favorite">
-          <property name="text">
-           <string>*</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="3" colspan="3">
-         <widget class="QLabel" name="label_9">
-          <property name="font">
-           <font>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Enregistrer la recherche actuelle</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="2" colspan="2">
+        <item row="6" column="1" colspan="2">
          <widget class="QLabel" name="paging">
           <property name="font">
            <font>
@@ -410,6 +407,20 @@
           </property>
           <property name="text">
            <string>Page 1 sur 15</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="3">
+         <widget class="QPushButton" name="previous">
+          <property name="text">
+           <string>&lt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="4">
+         <widget class="QPushButton" name="next">
+          <property name="text">
+           <string>&gt;</string>
           </property>
          </widget>
         </item>

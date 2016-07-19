@@ -44,6 +44,8 @@ import json
 import base64
 import urllib
 import time
+import logging
+from logging.handlers import RotatingFileHandler
 
 
 class Isogeo:
@@ -244,7 +246,7 @@ class Isogeo:
             # TO DO : CREER UN TEMPLATE
             config_file.close()
     
-    # This is the first major function the plugin calls when executed. It retrieves the id and secret from the config file. If they are set to their default value, it asks for them. if not it ties to send a request.
+       # This is the first major function the plugin calls when executed. It retrieves the id and secret from the config file. If they are set to their default value, it asks for them. if not it ties to send a request.
     def user_authentification(self):
         self.config.read(self.config_path)
         config_dict = {s:dict(self.config.items(s)) for s in self.config.sections()}
@@ -270,6 +272,7 @@ class Isogeo:
 
     # This send a POST request to Isogeo API with the user id and secret in its header. The API should return an access token
     def ask_for_token(self, c_id, c_secret):
+        self.logger.info('ask4token')
         headervalue = "Basic " + base64.b64encode(c_id + ":" + c_secret)
         data = urllib.urlencode({"grant_type":"client_credentials"})
         dataByte = QByteArray()
@@ -283,6 +286,7 @@ class Isogeo:
 
     # This handles the API answer. If it has sent an access token, it calls the initialization function. If not, it raises an error, and ask for new IDs
     def handle_token(self):
+        self.logger.info('handle_token')
         bytarray = self.token_reply.readAll()
         content = str(bytarray)
         parsed_content = json.loads(content)
@@ -298,6 +302,7 @@ class Isogeo:
             self.dockwidget.text_input.setText("Erreur inconnue.")
 
     def send_request_to_Isogeo_API(self, token, limit = 15):
+        self.logger.info('Dans la fonction sens request')
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
         request.setRawHeader("Authorization", token)
@@ -306,6 +311,7 @@ class Isogeo:
         self.API_reply.finished.connect(self.handle_API_reply)
 
     def handle_API_reply(self):
+        self.logger.info('Dans le handle reply')
         bytarray = self.API_reply.readAll()
         content = str(bytarray)
         if content =="":
@@ -319,6 +325,7 @@ class Isogeo:
                 self.update_fields(parsed_content)
 
     def update_fields(self, result):
+        self.logger.info('Dans le update fields')
         tags = self.get_tags(result)
         # Getting the index of selected items in each combobox
         self.params = self.save_params()
@@ -403,9 +410,10 @@ class Isogeo:
             self.dockwidget.checkBox_3.setStyleSheet("color: grey")
 
         self.show_results(result)
-
         # Re enable all user input fields now the research function is finished. 
-        self.dockwidget.setEnabled(True)
+        self.dockwidget.text_input.setReadOnly(False)
+        self.dockwidget.filters_box.setEnabled(True)
+        self.dockwidget.widget.setEnabled(True)
 
     def show_results(self, result):
         count = 0
@@ -504,8 +512,11 @@ class Isogeo:
         return params
 
     def search(self):
+        self.logger.info('Dans la fonction search')
         # Disabling all user inputs during the research function is running
-        self.dockwidget.setEnabled(False)
+        self.dockwidget.text_input.setReadOnly(True)
+        self.dockwidget.filters_box.setEnabled(False)
+        self.dockwidget.widget.setEnabled(False)
 
         # Setting some variables
         self.page_index = 1
@@ -555,7 +566,6 @@ class Isogeo:
 
         # If the geographical filter is activated, build a spatial filter
 
-
         filters = filters[:-1]
         filters = "q=" + filters
         #self.dockwidget.text_input.setText(encoded_filters)        
@@ -563,6 +573,7 @@ class Isogeo:
             self.currentUrl += filters + "&_limit=15"
         self.dockwidget.dump.setText(self.currentUrl)
         self.send_request_to_Isogeo_API(self.token)
+
 
     def calcul_nb_page(self, nb_fiches):
         if nb_fiches <= 15:
@@ -573,7 +584,6 @@ class Isogeo:
             else: 
                 nb_page = (nb_fiches / 15) + 1
         return nb_page
-
 
     #--------------------------------------------------------------------------
 
@@ -601,16 +611,31 @@ class Isogeo:
             self.dockwidget.show()
 
 
+        """ --- LOG LOG LOG --- """
+
+
+        self.logger = logging.getLogger()
+        self.logger.setLevel(logging.DEBUG)
+        self.formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+        self.file_handler = RotatingFileHandler(self.get_plugin_path() + "/activity.log", 'a', 1000000, 1)
+        self.file_handler.setLevel(logging.DEBUG)
+        self.file_handler.setFormatter(self.formatter)
+        self.logger.addHandler(self.file_handler)
+        self.steam_handler = logging.StreamHandler()
+        self.steam_handler.setLevel(logging.DEBUG)
+        self.logger.addHandler(self.steam_handler)
+
+
 
         # Fixing a qgis.core bug that shows a warning banner "connexion time out" whenever a request is sent (even successfully) See : http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
         iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
+        # Initiating values (TO DO : Move to init section)
         self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
         self.page_index = 1
-        self.authentification_window.accepted.connect(self.write_ids_and_test)
-        self.test_config_file_existence()
-        self.user_authentification()
-        #self.send_request_to_Isogeo_API(self.token, 'https://v1.api.isogeo.com/resources/search?', limit = 0)
 
+        """ --- CONNECTING FUNCTIONS --- """
+        # Write in the config file when the user accept the authentification window
+        self.authentification_window.accepted.connect(self.write_ids_and_test)
         # Connecting the comboboxes to the search function
         self.dockwidget.owner.activated.connect(self.search)
         self.dockwidget.inspire.activated.connect(self.search)
@@ -622,3 +647,10 @@ class Isogeo:
         self.dockwidget.checkBox.stateChanged.connect(self.search)
         self.dockwidget.checkBox_2.stateChanged.connect(self.search)
         self.dockwidget.checkBox_3.stateChanged.connect(self.search)
+
+        """ --- Actions when the plugin is launched --- """
+        self.test_config_file_existence()
+        self.user_authentification()
+        self.test_proxy_configuration()
+
+
