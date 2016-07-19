@@ -321,7 +321,7 @@ class Isogeo:
     def update_fields(self, result):
         tags = self.get_tags(result)
         # Getting the index of selected items in each combobox
-        
+        self.params = self.save_params()
         # Show how many results there are
         self.results_count = result['total']
         self.dockwidget.nbresultat.setText(str(self.results_count) + u" résultats")
@@ -405,16 +405,7 @@ class Isogeo:
         self.show_results(result)
 
         # Re enable all user input fields now the research function is finished. 
-        self.dockwidget.owner.setEnabled(True)
-        self.dockwidget.inspire.setEnabled(True)
-        self.dockwidget.format.setEnabled(True)
-        self.dockwidget.sys_coord.setEnabled(True)
-        self.dockwidget.text_input.setReadOnly(False)
-        self.dockwidget.checkBox.setEnabled(True)
-        self.dockwidget.checkBox_2.setEnabled(True)
-        self.dockwidget.checkBox_3.setEnabled(True)
-        """for i in xrange(self.dockwidget.keywords.count()):
-            self.model.item(i).setEnabled(True)"""
+        self.dockwidget.setEnabled(True)
 
     def show_results(self, result):
         count = 0
@@ -514,18 +505,8 @@ class Isogeo:
 
     def search(self):
         # Disabling all user inputs during the research function is running
-        self.params = self.save_params()
-        self.dockwidget.owner.setEnabled(False)
-        self.dockwidget.inspire.setEnabled(False)
-        self.dockwidget.format.setEnabled(False)
-        self.dockwidget.sys_coord.setEnabled(False)
-        self.dockwidget.text_input.setReadOnly(True)
-        self.dockwidget.checkBox.setEnabled(False)
-        self.dockwidget.checkBox_2.setEnabled(False)
-        self.dockwidget.checkBox_3.setEnabled(False)
+        self.dockwidget.setEnabled(False)
 
-        """for i in xrange(self.dockwidget.keywords.count()):
-            self.model.item(i).setEnabled(False)"""
         # Setting some variables
         self.page_index = 1
         self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
@@ -572,7 +553,6 @@ class Isogeo:
             if self.dockwidget.keywords.itemData(i, 10) == 2:
                 filters += self.dockwidget.keywords.itemData(i, 32) + " "
 
-        self.dockwidget.keywords.clear()
         # If the geographical filter is activated, build a spatial filter
 
 

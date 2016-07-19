@@ -10,7 +10,7 @@
 name=Isogeo
 qgisMinimumVersion=2.0
 description=Isogeo search engine within QGIS
-version=0.1a2
+version=0.1.0-beta
 author=Isogeo, Théo Sinatti, GeoJulien
 email=projets+qgis@isogeo.fr
 
