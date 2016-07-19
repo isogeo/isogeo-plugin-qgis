@@ -245,7 +245,20 @@ class Isogeo:
             config.write(config_file)
             # TO DO : CREER UN TEMPLATE
             config_file.close()
-    
+
+    # Check if a proxy configuration is set up for the computer, and for QGIS. If none or both is set up, pass. But if there is a proxy config for the computer but not in QGIS, pops an alert message. 
+    def test_proxy_configuration(self):
+        system_proxy_config = urllib.getproxies()
+        if system_proxy_config == {}:
+            pass
+        else:
+            s = QSettings()
+            qgis_proxy = s.value("proxy/proxyEnabled", "")
+            if qgis_proxy == True:
+                pass
+            else:
+                QMessageBox.information(iface.mainWindow(),'Alerte', u"Problème de proxy : \nVotre ordinateur utilise un proxy, mais vous n'avez pas saisi ses paramètres dans QGIS.\nMerci de renseigner les paramètres proxy dans le menu 'Préférences/Option/Réseau'.")
+
        # This is the first major function the plugin calls when executed. It retrieves the id and secret from the config file. If they are set to their default value, it asks for them. if not it ties to send a request.
     def user_authentification(self):
         self.config.read(self.config_path)
