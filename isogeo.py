@@ -46,6 +46,7 @@ import urllib
 import time
 import logging
 from logging.handlers import RotatingFileHandler
+import datetime
 
 
 class Isogeo:
@@ -228,7 +229,7 @@ class Isogeo:
 
     #--------------------------------------------------------------------------
     
-    # This retrieves the path to the folder where the plugin is (it usually is 'C:/user/.qgis2/python/plugin')
+    # Minor function. This retrieves the path to the folder where the plugin is (it usually is 'C:/user/.qgis2/python/plugin')
     def get_plugin_path(self):
             basepath = os.path.dirname(os.path.realpath(__file__))
             return basepath
@@ -259,7 +260,7 @@ class Isogeo:
             else:
                 QMessageBox.information(iface.mainWindow(),'Alerte', u"Problème de proxy : \nVotre ordinateur utilise un proxy, mais vous n'avez pas saisi ses paramètres dans QGIS.\nMerci de renseigner les paramètres proxy dans le menu 'Préférences/Option/Réseau'.")
 
-       # This is the first major function the plugin calls when executed. It retrieves the id and secret from the config file. If they are set to their default value, it asks for them. if not it ties to send a request.
+    # This is the first major function the plugin calls when executed. It retrieves the id and secret from the config file. If they are set to their default value, it asks for them. if not it ties to send a request.
     def user_authentification(self):
         self.config.read(self.config_path)
         config_dict = {s:dict(self.config.items(s)) for s in self.config.sections()}
@@ -314,6 +315,7 @@ class Isogeo:
         else:
             self.dockwidget.text_input.setText("Erreur inconnue.")
 
+    # This takes the current url variable and send a request to this url, using the token variable.
     def send_request_to_Isogeo_API(self, token, limit = 15):
         self.logger.info('Dans la fonction sens request')
         myurl = QUrl(self.currentUrl)
@@ -323,6 +325,7 @@ class Isogeo:
         self.API_reply = manager.get(request)
         self.API_reply.finished.connect(self.handle_API_reply)
 
+    # This is called when the answer from the API is finished. If it's content, it calls update_fields(). If it isn't, it means the token has expired, and it calls ask_for_token()
     def handle_API_reply(self):
         self.logger.info('Dans le handle reply')
         bytarray = self.API_reply.readAll()
@@ -337,6 +340,7 @@ class Isogeo:
             else:
                 self.update_fields(parsed_content)
 
+    # This takes an API answer and update the fields accordingly. It also calls show_results in the end. This may change, so results would be shown only when a specific button is pressed.
     def update_fields(self, result):
         self.logger.info('Dans le update fields')
         tags = self.get_tags(result)
@@ -428,6 +432,7 @@ class Isogeo:
         self.dockwidget.filters_box.setEnabled(True)
         self.dockwidget.widget.setEnabled(True)
 
+    # This function put the metadata sheets contained in the answer in the table.
     def show_results(self, result):
         count = 0
         for i in result['results']:
@@ -437,9 +442,10 @@ class Isogeo:
                 self.dockwidget.resultats.setItem(count,1, QTableWidgetItem(i['abstract']))
             except:
                 self.dockwidget.resultats.setItem(count,1, QTableWidgetItem(u"Pas de résumé"))
-            self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(i['_modified']))
+            self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(self.handle_date(i['_modified'])))
             count +=1
 
+    # This parse the tags contained in API_answer[tags] and class them so they are more easy to handle in other function such as update_fields()
     def get_tags(self, answer):
         # Initiating the dicts
         tags = answer['tags']
@@ -506,6 +512,7 @@ class Isogeo:
 
         return new_tags
 
+    # This save the current state/index of each user input so they keep this state/index after being updated (cleared and filled again)
     def save_params(self):
         owner_param = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex()) # get the data of the item which index is (get the combobox current index)
         inspire_param = self.dockwidget.inspire.itemData(self.dockwidget.inspire.currentIndex())
@@ -524,6 +531,7 @@ class Isogeo:
         params['keys'] = key_params
         return params
 
+    # This function builds the request, taking account of the user inputs. It then calls send_request_to_isogeo_API()
     def search(self):
         self.logger.info('Dans la fonction search')
         # Disabling all user inputs during the research function is running
@@ -587,7 +595,7 @@ class Isogeo:
         self.dockwidget.dump.setText(self.currentUrl)
         self.send_request_to_Isogeo_API(self.token)
 
-
+    # Minor function, calculate the number of pages given a number of results.
     def calcul_nb_page(self, nb_fiches):
         if nb_fiches <= 15:
             nb_page = 1
@@ -598,8 +606,17 @@ class Isogeo:
                 nb_page = (nb_fiches / 15) + 1
         return nb_page
 
+    # Minor function, handle what the API gives as a date, and create a datetime object with it.
+    def handle_date(self, API_date):
+        date = API_date.split("T")[0]
+        year = int(date.split('-')[0])
+        month = int(date.split('-')[1])
+        day = int(date.split('-')[2])
+        new_date = datetime.date(year,month,day)
+        return new_date.strftime("%d/%m/%y")
     #--------------------------------------------------------------------------
 
+    # This function is launched when the plugin is activated. 
     def run(self):
         """Run method that loads and starts the plugin"""
 
