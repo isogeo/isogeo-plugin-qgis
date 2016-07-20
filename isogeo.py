@@ -292,7 +292,7 @@ class Isogeo:
         dataByte = QByteArray()
         dataByte.append(data)
         manager = QgsNetworkAccessManager.instance()
-        url = QUrl('https://id.api.qa.isogeo.com/oauth/token')
+        url = QUrl('https://id.api.isogeo.com/oauth/token')
         request = QNetworkRequest(url)
         request.setRawHeader("Authorization", headervalue)
         self.token_reply = manager.post( request, dataByte )
@@ -541,7 +541,7 @@ class Isogeo:
 
         # Setting some variables
         self.page_index = 1
-        self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
         # Getting the parameters chosen by the user from the combobox
         if self.dockwidget.owner.currentIndex() != 0:
             owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
@@ -660,7 +660,7 @@ class Isogeo:
         # Fixing a qgis.core bug that shows a warning banner "connexion time out" whenever a request is sent (even successfully) See : http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
         iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
         # Initiating values (TO DO : Move to init section)
-        self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
         self.page_index = 1
 
         """ --- CONNECTING FUNCTIONS --- """
