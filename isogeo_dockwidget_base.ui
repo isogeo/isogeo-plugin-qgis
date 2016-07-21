@@ -999,7 +999,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="resources"/>
  </resources>
  <connections/>
 </ui>

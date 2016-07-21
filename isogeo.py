@@ -431,6 +431,8 @@ class Isogeo:
         self.dockwidget.text_input.setReadOnly(False)
         self.dockwidget.filters_box.setEnabled(True)
         self.dockwidget.widget.setEnabled(True)
+        self.dockwidget.next.setEnabled(True)
+        self.dockwidget.previous.setEnabled(True)
 
     # This function put the metadata sheets contained in the answer in the table.
     def show_results(self, result):
@@ -531,13 +533,14 @@ class Isogeo:
         params['keys'] = key_params
         return params
 
-    # This function builds the request, taking account of the user inputs. It then calls send_request_to_isogeo_API()
     def search(self):
         self.logger.info('Dans la fonction search')
         # Disabling all user inputs during the research function is running
         self.dockwidget.text_input.setReadOnly(True)
         self.dockwidget.filters_box.setEnabled(False)
         self.dockwidget.widget.setEnabled(False)
+        self.dockwidget.next.setEnabled(False)
+        self.dockwidget.previous.setEnabled(False)
 
         # Setting some variables
         self.page_index = 1
@@ -590,13 +593,162 @@ class Isogeo:
             filters += "&box=" + self.get_canvas_coordinates() + " "
 
 
-        filters = filters[:-1]
-        filters = "q=" + filters
+        filters = "q=" + filters[:-1]
         #self.dockwidget.text_input.setText(encoded_filters)        
         if filters != "q=":
-            self.currentUrl += filters + "&_limit=15"
+            self.currentUrl += filters
+        self.currentUrl += "&_limit=15"
         self.dockwidget.dump.setText(self.currentUrl)
         self.send_request_to_Isogeo_API(self.token)
+    
+    # Close to the search() function but triggered on the change page button.
+    def next_page(self):
+        # Testing if the user is asking for a unexisting page (ex : page 15 out of 14)
+        if self.page_index >= self.calcul_nb_page(self.results_count):
+            return False
+        else:
+            self.dockwidget.text_input.setReadOnly(True)
+            self.dockwidget.filters_box.setEnabled(False)
+            self.dockwidget.widget.setEnabled(False)
+            self.dockwidget.next.setEnabled(False)
+            self.dockwidget.previous.setEnabled(False)
+            # Building up the request
+            self.page_index += 1
+            self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
+            # Getting the parameters chosen by the user from the combobox
+            if self.dockwidget.owner.currentIndex() != 0:
+                owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
+            else:
+                owner = False
+            if self.dockwidget.inspire.currentIndex() != 0:
+                inspire = self.dockwidget.inspire.itemData(self.dockwidget.inspire.currentIndex())
+            else:
+                inspire = False
+            if self.dockwidget.format.currentIndex() != 0:
+                formats = self.dockwidget.format.itemData(self.dockwidget.format.currentIndex())
+            else:
+                formats = False
+            if self.dockwidget.sys_coord.currentIndex() != 0:
+                sys_coord = self.dockwidget.sys_coord.itemData(self.dockwidget.sys_coord.currentIndex())
+            else:
+                sys_coord = False
+            # Getting the text entered in the text field
+            filters = ""
+            if self.dockwidget.text_input.text():
+                filters += self.dockwidget.text_input.text() + " "
+           
+           # Adding the content of the comboboxes to the request
+            if owner:
+                filters += owner + " "
+            if inspire:
+                filters += inspire + " "
+            if formats:
+                filters += formats + " "
+            if sys_coord:
+                filters += sys_coord + " "
+            # Actions in checkboxes
+            if self.dockwidget.checkBox.isChecked():
+                filters += "action:view "
+            if self.dockwidget.checkBox_2.isChecked():
+                filters += "action:download "
+            if self.dockwidget.checkBox_3.isChecked():
+                filters += "action:other "
+            # Adding the keywords that are checked (whose data[10] == 2)
+            for i in xrange(self.dockwidget.keywords.count()):
+                if self.dockwidget.keywords.itemData(i, 10) == 2:
+                    filters += self.dockwidget.keywords.itemData(i, 32) + " "
+
+            # If the geographical filter is activated, build a spatial filter
+            if self.dockwidget.checkBox_4.isChecked():
+                filters += "&box=" + self.get_canvas_coordinates() + " "
+
+            filters = "q=" + filters[:-1]
+            #self.dockwidget.text_input.setText(encoded_filters)        
+            if filters != "q=":
+                self.currentUrl += filters
+                self.currentUrl += "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
+            else:
+                self.currentUrl += "_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
+            self.dockwidget.dump.setText(self.currentUrl)
+            self.send_request_to_Isogeo_API(self.token)
+
+    # Close to the search() function but triggered on the change page button.
+    def previous_page(self):
+        # testing if the user is asking for something impossible : page 0
+        if self.page_index < 2:
+            return False
+        else:
+            self.dockwidget.text_input.setReadOnly(True)
+            self.dockwidget.filters_box.setEnabled(False)
+            self.dockwidget.widget.setEnabled(False)
+            self.dockwidget.next.setEnabled(False)
+            self.dockwidget.previous.setEnabled(False)
+            # Building up the request
+            self.page_index -= 1
+            self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
+            # Getting the parameters chosen by the user from the combobox
+            if self.dockwidget.owner.currentIndex() != 0:
+                owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
+            else:
+                owner = False
+            if self.dockwidget.inspire.currentIndex() != 0:
+                inspire = self.dockwidget.inspire.itemData(self.dockwidget.inspire.currentIndex())
+            else:
+                inspire = False
+            if self.dockwidget.format.currentIndex() != 0:
+                formats = self.dockwidget.format.itemData(self.dockwidget.format.currentIndex())
+            else:
+                formats = False
+            if self.dockwidget.sys_coord.currentIndex() != 0:
+                sys_coord = self.dockwidget.sys_coord.itemData(self.dockwidget.sys_coord.currentIndex())
+            else:
+                sys_coord = False
+            # Getting the text entered in the text field
+            filters = ""
+            if self.dockwidget.text_input.text():
+                filters += self.dockwidget.text_input.text() + " "
+           
+           # Adding the content of the comboboxes to the request
+            if owner:
+                filters += owner + " "
+            if inspire:
+                filters += inspire + " "
+            if formats:
+                filters += formats + " "
+            if sys_coord:
+                filters += sys_coord + " "
+            # Actions in checkboxes
+            if self.dockwidget.checkBox.isChecked():
+                filters += "action:view "
+            if self.dockwidget.checkBox_2.isChecked():
+                filters += "action:download "
+            if self.dockwidget.checkBox_3.isChecked():
+                filters += "action:other "
+            # Adding the keywords that are checked (whose data[10] == 2)
+            for i in xrange(self.dockwidget.keywords.count()):
+                if self.dockwidget.keywords.itemData(i, 10) == 2:
+                    filters += self.dockwidget.keywords.itemData(i, 32) + " "
+
+            # If the geographical filter is activated, build a spatial filter
+            if self.dockwidget.checkBox_4.isChecked():
+                filters += "&box=" + self.get_canvas_coordinates() + " "
+
+            
+            filters = "q=" + filters[:-1]      
+            
+            if filters != "q=":
+                if self.page_index == 1:
+                    self.currentUrl += filters + "&_limit=15"
+                else:
+                    self.currentUrl += filters + "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
+            else:
+                if self.page_index == 1:
+                    self.currentUrl += "_limit=15"
+                else:
+                    self.currentUrl += "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
+
+            self.dockwidget.dump.setText(self.currentUrl)
+            self.send_request_to_Isogeo_API(self.token)
 
     # Minor function, calculate the number of pages given a number of results.
     def calcul_nb_page(self, nb_fiches):
@@ -696,6 +848,9 @@ class Isogeo:
         self.dockwidget.checkBox.stateChanged.connect(self.search)
         self.dockwidget.checkBox_2.stateChanged.connect(self.search)
         self.dockwidget.checkBox_3.stateChanged.connect(self.search)
+        # Connecting the previous and next page buttons to their functions
+        self.dockwidget.next.pressed.connect(self.next_page)
+        self.dockwidget.previous.pressed.connect(self.previous_page)
 
         """ --- Actions when the plugin is launched --- """
         self.test_config_file_existence()
