@@ -586,6 +586,9 @@ class Isogeo:
                 filters += self.dockwidget.keywords.itemData(i, 32) + " "
 
         # If the geographical filter is activated, build a spatial filter
+        if self.dockwidget.checkBox_4.isChecked():
+            filters += "&box=" + self.get_canvas_coordinates() + " "
+
 
         filters = filters[:-1]
         filters = "q=" + filters
@@ -614,6 +617,22 @@ class Isogeo:
         day = int(date.split('-')[2])
         new_date = datetime.date(year,month,day)
         return new_date.strftime("%d/%m/%y")
+    
+    # Get the canvas coordinates in the right format and SRS (WGS84)
+    def get_canvas_coordinates(self):
+        e = iface.mapCanvas().extent()
+        currentEPSG = iface.mapCanvas().mapRenderer().destinationCrs().authid().split(':')[1]
+        if currentEPSG == '4326':
+            coord = "{0},{1},{2},{3}".format(e.xMinimum(),e.yMinimum(),e.xMaximum(),e.yMaximum())
+            return coord
+        else:
+            currentSRS = QgsCoordinateReferenceSystem(currentEPSG, QgsCoordinateReferenceSystem.EpsgCrsId)
+            wgs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+            xform = QgsCoordinateTransform(currentSRS, wgs)
+            minimum = xform.transform(QgsPoint(e.xMinimum(), e.yMinimum()))
+            maximum = xform.transform(QgsPoint(e.xMaximum(), e.yMaximum()))
+            coord = "{0},{1},{2},{3}".format(minimum[0], minimum[1], maximum[0], maximum[1])
+            return coord
     #--------------------------------------------------------------------------
 
     # This function is launched when the plugin is activated. 
