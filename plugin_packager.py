@@ -65,6 +65,7 @@ final_zip.write(r"resources.qrc", plg_dir + r"\resources.qrc")
 # Python code
 final_zip.write(r"__init__.py", plg_dir + r"\__init__.py")
 final_zip.write(r"authentification.py", plg_dir + r"\authentification.py")
+final_zip.write(r"isogeo.py", plg_dir + r"\isogeo.py")
 final_zip.write(r"isogeo_dockwidget.py", plg_dir + r"\isogeo_dockwidget.py")
 final_zip.write(r"ui_authentification.py", plg_dir + r"\ui_authentification.py")
 final_zip.write(r"ui_isogeo.py", plg_dir + r"\ui_isogeo.py")
