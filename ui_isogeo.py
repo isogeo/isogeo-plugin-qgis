@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Wed Jul 20 17:36:50 2016
+# Created: Fri Jul 22 16:00:04 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -490,9 +490,9 @@ class Ui_IsogeoDockWidgetBase(object):
         item = self.resultats.horizontalHeaderItem(0)
         item.setText(_translate("IsogeoDockWidgetBase", "Titre", None))
         item = self.resultats.horizontalHeaderItem(1)
-        item.setText(_translate("IsogeoDockWidgetBase", "Résumé", None))
+        item.setText(_translate("IsogeoDockWidgetBase", "Dernière modification", None))
         item = self.resultats.horizontalHeaderItem(2)
-        item.setText(_translate("IsogeoDockWidgetBase", "Date de modif", None))
+        item.setText(_translate("IsogeoDockWidgetBase", "Type de géométrie", None))
         item = self.resultats.horizontalHeaderItem(3)
         item.setText(_translate("IsogeoDockWidgetBase", "Ajouter", None))
         self.nbresultat.setText(_translate("IsogeoDockWidgetBase", "205 résultats", None))
@@ -539,5 +539,5 @@ class Ui_IsogeoDockWidgetBase(object):
         self.next_2.setText(_translate("IsogeoDockWidgetBase", ">", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("IsogeoDockWidgetBase", "Listes", None))
 
-from qgscollapsiblegroupbox import QgsCollapsibleGroupBox
+from qgis.gui import QgsCollapsibleGroupBox
 import resources_rc

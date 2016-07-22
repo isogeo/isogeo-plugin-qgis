@@ -292,7 +292,7 @@ class Isogeo:
         dataByte = QByteArray()
         dataByte.append(data)
         manager = QgsNetworkAccessManager.instance()
-        url = QUrl('https://id.api.isogeo.com/oauth/token')
+        url = QUrl('https://id.api.qa.isogeo.com/oauth/token')
         request = QNetworkRequest(url)
         request.setRawHeader("Authorization", headervalue)
         self.token_reply = manager.post( request, dataByte )
@@ -321,6 +321,7 @@ class Isogeo:
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
         request.setRawHeader("Authorization", token)
+        self.dockwidget.dump.setText("ti" + str(request.url().toEncoded()))
         manager = QgsNetworkAccessManager.instance()
         self.API_reply = manager.get(request)
         self.API_reply.finished.connect(self.handle_API_reply)
@@ -357,7 +358,7 @@ class Isogeo:
         self.nb_page = str(self.calcul_nb_page(self.results_count))
         self.dockwidget.paging.setText("page " + str(self.page_index) + " sur " + self.nb_page)
         #clearing the previous fields
-        self.dockwidget.resultats.clear()
+        self.dockwidget.resultats.clearContents()
         self.dockwidget.inspire.clear()
         self.dockwidget.owner.clear()
         self.dockwidget.format.clear()
@@ -439,12 +440,11 @@ class Isogeo:
         count = 0
         for i in result['results']:
             self.dockwidget.resultats.setItem(count,0, QTableWidgetItem(i['title']))
-            self.dockwidget.dump.setText(i['title'])
             try:
-                self.dockwidget.resultats.setItem(count,1, QTableWidgetItem(i['abstract']))
+                self.dockwidget.resultats.item(count,0).setToolTip(i['abstract'])
             except:
-                self.dockwidget.resultats.setItem(count,1, QTableWidgetItem(u"Pas de résumé"))
-            self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(self.handle_date(i['_modified'])))
+                self.dockwidget.resultats.item(count,0).setToolTip(u"Pas de résumé")
+            self.dockwidget.resultats.setItem(count,1, QTableWidgetItem(self.handle_date(i['_modified'])))
             count +=1
 
     # This parse the tags contained in API_answer[tags] and class them so they are more easy to handle in other function such as update_fields()
@@ -544,7 +544,7 @@ class Isogeo:
 
         # Setting some variables
         self.page_index = 1
-        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
+        self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
         # Getting the parameters chosen by the user from the combobox
         if self.dockwidget.owner.currentIndex() != 0:
             owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
@@ -590,6 +590,7 @@ class Isogeo:
 
         # If the geographical filter is activated, build a spatial filter
         if self.dockwidget.checkBox_4.isChecked():
+            filters = filters[:-1]
             filters += "&box=" + self.get_canvas_coordinates() + " "
 
 
@@ -614,7 +615,7 @@ class Isogeo:
             self.dockwidget.previous.setEnabled(False)
             # Building up the request
             self.page_index += 1
-            self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
+            self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
             # Getting the parameters chosen by the user from the combobox
             if self.dockwidget.owner.currentIndex() != 0:
                 owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
@@ -660,6 +661,7 @@ class Isogeo:
 
             # If the geographical filter is activated, build a spatial filter
             if self.dockwidget.checkBox_4.isChecked():
+                filters = filters[:-1]
                 filters += "&box=" + self.get_canvas_coordinates() + " "
 
             filters = "q=" + filters[:-1]
@@ -685,7 +687,7 @@ class Isogeo:
             self.dockwidget.previous.setEnabled(False)
             # Building up the request
             self.page_index -= 1
-            self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
+            self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
             # Getting the parameters chosen by the user from the combobox
             if self.dockwidget.owner.currentIndex() != 0:
                 owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
@@ -731,6 +733,7 @@ class Isogeo:
 
             # If the geographical filter is activated, build a spatial filter
             if self.dockwidget.checkBox_4.isChecked():
+                filters = filters[:-1]
                 filters += "&box=" + self.get_canvas_coordinates() + " "
 
             
@@ -831,7 +834,7 @@ class Isogeo:
         # Fixing a qgis.core bug that shows a warning banner "connexion time out" whenever a request is sent (even successfully) See : http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
         iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
         # Initiating values (TO DO : Move to init section)
-        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
+        self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
         self.page_index = 1
 
         """ --- CONNECTING FUNCTIONS --- """
@@ -848,6 +851,7 @@ class Isogeo:
         self.dockwidget.checkBox.stateChanged.connect(self.search)
         self.dockwidget.checkBox_2.stateChanged.connect(self.search)
         self.dockwidget.checkBox_3.stateChanged.connect(self.search)
+        self.dockwidget.checkBox_4.stateChanged.connect(self.search)
         # Connecting the previous and next page buttons to their functions
         self.dockwidget.next.pressed.connect(self.next_page)
         self.dockwidget.previous.pressed.connect(self.previous_page)

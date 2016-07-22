@@ -353,12 +353,12 @@
           </column>
           <column>
            <property name="text">
-            <string>Résumé</string>
+            <string>Dernière modification</string>
            </property>
           </column>
           <column>
            <property name="text">
-            <string>Date de modif</string>
+            <string>Type de géométrie</string>
            </property>
           </column>
           <column>
@@ -999,7 +999,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources"/>
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>
