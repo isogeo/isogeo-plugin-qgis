@@ -94,6 +94,8 @@ class Isogeo:
 
         self.authentification_window = authentification()
 
+        self.loopCount = 0
+
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -292,7 +294,7 @@ class Isogeo:
         dataByte = QByteArray()
         dataByte.append(data)
         manager = QgsNetworkAccessManager.instance()
-        url = QUrl('https://id.api.qa.isogeo.com/oauth/token')
+        url = QUrl('https://id.api.isogeo.com/oauth/token')
         request = QNetworkRequest(url)
         request.setRawHeader("Authorization", headervalue)
         self.token_reply = manager.post( request, dataByte )
@@ -321,7 +323,6 @@ class Isogeo:
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
         request.setRawHeader("Authorization", token)
-        self.dockwidget.dump.setText("ti" + str(request.url().toEncoded()))
         manager = QgsNetworkAccessManager.instance()
         self.API_reply = manager.get(request)
         self.API_reply.finished.connect(self.handle_API_reply)
@@ -331,15 +332,23 @@ class Isogeo:
         self.logger.info('Dans le handle reply')
         bytarray = self.API_reply.readAll()
         content = str(bytarray)
-        if content =="":
-            self.ask_for_token(self.user_id, self.user_secret)
-        else:
+        if self.API_reply.error() == 0:
+            self.loopCount = 0
             parsed_content = json.loads(content)
-            if "message" in parsed_content:
+            self.update_fields(parsed_content)
+        elif self.API_reply.error() == 204:
+            self.loopCount = 0
+            self.ask_for_token(self.user_id, self.user_secret)
+        elif content == "":
+            if self.loopCount < 3:
+                self.loopCount +=1
+                self.API_reply = 0
+                self.token_reply = 0
                 self.ask_for_token(self.user_id, self.user_secret)
-                self.send_request_to_Isogeo_API(self.token)
             else:
-                self.update_fields(parsed_content)
+                QMessageBox.information(iface.mainWindow(),'Erreur :', "Le script est rentré dans une boucle infinie\npour une raison inconnue.\nMerci de rapporter ce problème\nsur le bug tracker")
+        else:
+            QMessageBox.information(iface.mainWindow(),'Erreur :', "Vous rencontrez une erreur non encore gérée.\nCode : " + str(self.API_reply.error()) + "\nMerci de le reporter sur le bug tracker.")
 
     # This takes an API answer and update the fields accordingly. It also calls show_results in the end. This may change, so results would be shown only when a specific button is pressed.
     def update_fields(self, result):
@@ -544,7 +553,7 @@ class Isogeo:
 
         # Setting some variables
         self.page_index = 1
-        self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
         # Getting the parameters chosen by the user from the combobox
         if self.dockwidget.owner.currentIndex() != 0:
             owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
@@ -615,7 +624,7 @@ class Isogeo:
             self.dockwidget.previous.setEnabled(False)
             # Building up the request
             self.page_index += 1
-            self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
+            self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
             # Getting the parameters chosen by the user from the combobox
             if self.dockwidget.owner.currentIndex() != 0:
                 owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
@@ -687,7 +696,7 @@ class Isogeo:
             self.dockwidget.previous.setEnabled(False)
             # Building up the request
             self.page_index -= 1
-            self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
+            self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
             # Getting the parameters chosen by the user from the combobox
             if self.dockwidget.owner.currentIndex() != 0:
                 owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
@@ -814,9 +823,7 @@ class Isogeo:
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
 
-
         """ --- LOG LOG LOG --- """
-
 
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
@@ -829,12 +836,10 @@ class Isogeo:
         self.steam_handler.setLevel(logging.DEBUG)
         self.logger.addHandler(self.steam_handler)
 
-
-
         # Fixing a qgis.core bug that shows a warning banner "connexion time out" whenever a request is sent (even successfully) See : http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
         iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
         # Initiating values (TO DO : Move to init section)
-        self.currentUrl = 'https://v1.api.qa.isogeo.com/resources/search?'
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
         self.page_index = 1
 
         """ --- CONNECTING FUNCTIONS --- """
