@@ -446,14 +446,35 @@ class Isogeo:
 
     # This function put the metadata sheets contained in the answer in the table.
     def show_results(self, result):
+        polygonList = ["CurvePolygon","MultiPolygon","MultiSurface","Polygon","PolyhedralSurface"]
+        pointList = ["Point", "MultiPoint"]
+        lineList = ["CircularString", "CompoundCurve", "Curve", "LineString", "MultiCurve", "MultiLineString"]
+        multiList = ["Geometry", "GeometryCollection"]
         count = 0
         for i in result['results']:
             self.dockwidget.resultats.setItem(count,0, QTableWidgetItem(i['title']))
             try:
                 self.dockwidget.resultats.item(count,0).setToolTip(i['abstract'])
             except:
-                self.dockwidget.resultats.item(count,0).setToolTip(u"Pas de résumé")
+                pass
             self.dockwidget.resultats.setItem(count,1, QTableWidgetItem(self.handle_date(i['_modified'])))
+            try:
+                geometry = i['geometry']
+                if geometry in pointList:
+                    self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u'Ponctuel'))
+                elif geometry in polygonList:
+                    self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u'Surfacique'))
+                elif geometry in lineList:
+                    self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u'Linéaire'))
+                elif geometry in multiList:
+                    self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u'Géométrie composée'))
+                elif geometry == "TIN":
+                    self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u'TIN'))
+                else:
+                    self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u'Géométrie inconnue'))
+            except:
+                self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u"Pas de géométrie"))
+
             count +=1
 
     # This parse the tags contained in API_answer[tags] and class them so they are more easy to handle in other function such as update_fields()
