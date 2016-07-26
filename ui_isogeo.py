@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Tue Jul 26 14:54:27 2016
+# Created: Tue Jul 26 17:07:16 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_IsogeoDockWidgetBase(object):
     def setupUi(self, IsogeoDockWidgetBase):
         IsogeoDockWidgetBase.setObjectName(_fromUtf8("IsogeoDockWidgetBase"))
-        IsogeoDockWidgetBase.resize(460, 881)
+        IsogeoDockWidgetBase.resize(452, 869)
         self.dockWidgetContents = QtGui.QWidget()
         self.dockWidgetContents.setObjectName(_fromUtf8("dockWidgetContents"))
         self.gridLayout = QtGui.QGridLayout(self.dockWidgetContents)
@@ -549,5 +549,4 @@ class Ui_IsogeoDockWidgetBase(object):
         self.next_2.setText(_translate("IsogeoDockWidgetBase", ">", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("IsogeoDockWidgetBase", "Listes", None))
 
-from qgis.gui import QgsCollapsibleGroupBox
-import resources_rc
+from qgscollapsiblegroupbox import QgsCollapsibleGroupBox

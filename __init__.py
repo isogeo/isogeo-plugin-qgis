@@ -3,11 +3,11 @@
 /***************************************************************************
  Isogeo
                                  A QGIS plugin
- This is the Isogeo plugin
+ Isogeo search engine within QGIS
                              -------------------
-        begin                : 2016-07-13
-        copyright            : (C) 2016 by Isogeo
-        email                : theo.sinatti@isogeo.fr
+        begin                : 2016-07-22
+        copyright            : (C) 2016 by Isogeo, Theo Sinatti, GeoJulien
+        email                : projets+qgis@isogeo.fr
         git sha              : $Format:%H$
  ***************************************************************************/
 

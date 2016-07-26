@@ -3,12 +3,12 @@
 /***************************************************************************
  Isogeo
                                  A QGIS plugin
- This is the Isogeo plugin
+ Isogeo search engine within QGIS
                               -------------------
-        begin                : 2016-07-13
+        begin                : 2016-07-22
         git sha              : $Format:%H$
-        copyright            : (C) 2016 by Isogeo
-        email                : theo.sinatti@isogeo.fr
+        copyright            : (C) 2016 by Isogeo, Theo Sinatti, GeoJulien
+        email                : projets+qgis@isogeo.fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -37,7 +37,7 @@ import os.path
 
 #Ajoutés par moi
 from qgis.utils import iface
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import QgsNetworkAccessManager, QgsPoint, QgsCoordinateReferenceSystem, QgsCoordinateTransform
 from PyQt4.QtNetwork import QNetworkRequest
 import ConfigParser
 import json
@@ -48,7 +48,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 import datetime
 import webbrowser
-
 
 class Isogeo:
     """QGIS Plugin Implementation."""
@@ -98,7 +97,6 @@ class Isogeo:
         self.loopCount = 0
 
         self.hardReset = True
-
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -196,7 +194,7 @@ class Isogeo:
         icon_path = ':/plugins/Isogeo/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Search geodata'),
+            text=self.tr(u'Search within Isogeo catalogs'),
             callback=self.run,
             parent=self.iface.mainWindow())
 

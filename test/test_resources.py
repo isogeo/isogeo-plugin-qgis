@@ -8,9 +8,9 @@
 
 """
 
-__author__ = 'theo.sinatti@isogeo.fr'
-__date__ = '2016-07-13'
-__copyright__ = 'Copyright 2016, Isogeo'
+__author__ = 'projets+qgis@isogeo.fr'
+__date__ = '2016-07-22'
+__copyright__ = 'Copyright 2016, Isogeo, Theo Sinatti, GeoJulien'
 
 import unittest
 
