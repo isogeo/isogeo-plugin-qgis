@@ -21,7 +21,7 @@
  ***************************************************************************/
 """
 # Ajouté par moi à partir de QByteArray
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QByteArray, QUrl
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QByteArray, QUrl, QDate
 #Ajouté oar moi à partir de QMessageBox
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, QCheckBox, QStandardItemModel, QStandardItem
 
@@ -47,6 +47,7 @@ import time
 import logging
 from logging.handlers import RotatingFileHandler
 import datetime
+import webbrowser
 
 
 class Isogeo:
@@ -95,6 +96,8 @@ class Isogeo:
         self.authentification_window = authentification()
 
         self.loopCount = 0
+
+        self.hardReset = False
 
 
     # noinspection PyMethodMayBeStatic
@@ -346,7 +349,7 @@ class Isogeo:
                 self.token_reply = 0
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
-                QMessageBox.information(iface.mainWindow(),'Erreur :', "Le script est rentré dans une boucle infinie\npour une raison inconnue.\nMerci de rapporter ce problème\nsur le bug tracker")
+                QMessageBox.information(iface.mainWindow(),'Erreur :', "Le script est rentré dans une boucle sans fin.\nVérifiez que vous avez partagé bien partagé \nun ou plusieurs catalogues avec le plugin.\nSi c'est bien le cas, merci de rapporter\nce problème sur le bug tracker")
         else:
             QMessageBox.information(iface.mainWindow(),'Erreur :', "Vous rencontrez une erreur non encore gérée.\nCode : " + str(self.API_reply.error()) + "\nMerci de le reporter sur le bug tracker.")
 
@@ -388,30 +391,48 @@ class Isogeo:
             self.dockwidget.sys_coord.addItem(tags['srs'][key], key)
 
         # Putting all the comboboxes selected index to their previous location. Necessary as all comboboxes items have been removed and put back in place. We do not want each combobox to go back to their default selected item
-        self.dockwidget.owner.setCurrentIndex(self.dockwidget.owner.findData(self.params['owner'])) 
-        self.dockwidget.inspire.setCurrentIndex(self.dockwidget.inspire.findData(self.params['inspire']))
-        self.dockwidget.format.setCurrentIndex(self.dockwidget.format.findData(self.params['format'])) # Set the combobox current index to (get the index of the item which data is (saved data))
-        self.dockwidget.sys_coord.setCurrentIndex(self.dockwidget.sys_coord.findData(self.params['srs']))
+        if self.hardReset == False:
+            self.dockwidget.owner.setCurrentIndex(self.dockwidget.owner.findData(self.params['owner'])) 
+            self.dockwidget.inspire.setCurrentIndex(self.dockwidget.inspire.findData(self.params['inspire']))
+            self.dockwidget.format.setCurrentIndex(self.dockwidget.format.findData(self.params['format'])) # Set the combobox current index to (get the index of the item which data is (saved data))
+            self.dockwidget.sys_coord.setCurrentIndex(self.dockwidget.sys_coord.findData(self.params['srs']))
 
-        """ Filling the keywords special combobox (whose items are checkable) """            
-        self.model = QStandardItemModel(5, 1)# 5 rows, 1 col
-        firstItem = QStandardItem(u"---- Mots clés ----")
-        firstItem.setSelectable(False)
-        self.model.setItem(0, 0, firstItem)
-        i = 1
-        for key in tags['keywords']:
-            item = QStandardItem(tags['keywords'][key])
-            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-            item.setData(key,32)
-            # As all items have been destroyed and generated again, we have to set the checkstate (checked/unchecked) according to what the user had chosen
-            if item.data(32) in self.params['keys']:
-                item.setData(Qt.Checked, Qt.CheckStateRole)
-            else:
+            """ Filling the keywords special combobox (whose items are checkable) """            
+            self.model = QStandardItemModel(5, 1)# 5 rows, 1 col
+            firstItem = QStandardItem(u"---- Mots clés ----")
+            firstItem.setSelectable(False)
+            self.model.setItem(0, 0, firstItem)
+            i = 1
+            for key in tags['keywords']:
+                item = QStandardItem(tags['keywords'][key])
+                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                item.setData(key,32)
+                # As all items have been destroyed and generated again, we have to set the checkstate (checked/unchecked) according to what the user had chosen
+                if item.data(32) in self.params['keys']:
+                    item.setData(Qt.Checked, Qt.CheckStateRole)
+                else:
+                    item.setData(Qt.Unchecked, Qt.CheckStateRole)                
+                self.model.setItem(i, 0, item)
+                i+=1
+            self.model.itemChanged.connect(self.search)
+            self.dockwidget.keywords.setModel(self.model)
+        else:
+            self.model = QStandardItemModel(5, 1)# 5 rows, 1 col
+            firstItem = QStandardItem(u"---- Mots clés ----")
+            firstItem.setSelectable(False)
+            self.model.setItem(0, 0, firstItem)
+            i = 1
+            for key in tags['keywords']:
+                item = QStandardItem(tags['keywords'][key])
+                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                item.setData(key,32)
+                # As all items have been destroyed and generated again, we have to set the checkstate (checked/unchecked) according to what the user had chosen
                 item.setData(Qt.Unchecked, Qt.CheckStateRole)                
-            self.model.setItem(i, 0, item)
-            i+=1
-        self.model.itemChanged.connect(self.search)
-        self.dockwidget.keywords.setModel(self.model)
+                self.model.setItem(i, 0, item)
+                i+=1
+            self.model.itemChanged.connect(self.search)
+            self.dockwidget.keywords.setModel(self.model)
+
        
         # Trying to make th checkboxes and radio buttons unckeckable if needed
         # View
@@ -440,9 +461,11 @@ class Isogeo:
         # Re enable all user input fields now the research function is finished. 
         self.dockwidget.text_input.setReadOnly(False)
         self.dockwidget.filters_box.setEnabled(True)
-        self.dockwidget.widget.setEnabled(True)
+        self.dockwidget.keywords.setEnabled(True)
         self.dockwidget.next.setEnabled(True)
         self.dockwidget.previous.setEnabled(True)
+        # hard reset
+        self.hardReset = False
 
     # This function put the metadata sheets contained in the answer in the table.
     def show_results(self, result):
@@ -568,7 +591,7 @@ class Isogeo:
         # Disabling all user inputs during the research function is running
         self.dockwidget.text_input.setReadOnly(True)
         self.dockwidget.filters_box.setEnabled(False)
-        self.dockwidget.widget.setEnabled(False)
+        self.dockwidget.keywords.setEnabled(False)
         self.dockwidget.next.setEnabled(False)
         self.dockwidget.previous.setEnabled(False)
 
@@ -801,7 +824,9 @@ class Isogeo:
         month = int(date.split('-')[1])
         day = int(date.split('-')[2])
         new_date = datetime.date(year,month,day)
-        return new_date.strftime("%d/%m/%y")
+        return new_date.strftime("%d / %m / %Y")
+        return new_date
+
     
     # Get the canvas coordinates in the right format and SRS (WGS84)
     def get_canvas_coordinates(self):
@@ -818,6 +843,26 @@ class Isogeo:
             maximum = xform.transform(QgsPoint(e.xMaximum(), e.yMaximum()))
             coord = "{0},{1},{2},{3}".format(minimum[0], minimum[1], maximum[0], maximum[1])
             return coord
+
+    # Minor one line function. Opens the bugtracker on the default browser (supposedly cross platform)
+    def open_bugtracker(self):
+        webbrowser.open('https://github.com/isogeo/isogeo-plugin-qgis/issues', new=0, autoraise = True)
+
+    def reinitialize_research(self):
+        self.hardReset = True
+        self.dockwidget.checkBox.setCheckState(Qt.Unchecked)
+        self.dockwidget.checkBox_2.setCheckState(Qt.Unchecked)
+        self.dockwidget.checkBox_3.setCheckState(Qt.Unchecked)
+        self.dockwidget.checkBox_4.setCheckState(Qt.Unchecked)
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
+        self.dockwidget.text_input.setReadOnly(True)
+        self.dockwidget.filters_box.setEnabled(False)
+        self.dockwidget.keywords.setEnabled(False)
+        self.dockwidget.next.setEnabled(False)
+        self.dockwidget.previous.setEnabled(False)
+        self.send_request_to_Isogeo_API(self.token)
+
+
     #--------------------------------------------------------------------------
 
     # This function is launched when the plugin is activated. 
@@ -881,6 +926,10 @@ class Isogeo:
         # Connecting the previous and next page buttons to their functions
         self.dockwidget.next.pressed.connect(self.next_page)
         self.dockwidget.previous.pressed.connect(self.previous_page)
+        # Connecting the bug tracker button to its function
+        self.dockwidget.report.pressed.connect(self.open_bugtracker)
+        # Connecting the "reinitialize research button" to a research without filters
+        self.dockwidget.initialize.pressed.connect(self.reinitialize_research)
 
         """ --- Actions when the plugin is launched --- """
         self.test_config_file_existence()
