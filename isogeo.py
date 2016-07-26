@@ -473,6 +473,7 @@ class Isogeo:
         self.dockwidget.widget.setEnabled(True)
         self.dockwidget.next.setEnabled(True)
         self.dockwidget.previous.setEnabled(True)
+        self.dockwidget.initialize.setEnabled(True)
         # hard reset
         self.hardReset = False
 
@@ -606,6 +607,7 @@ class Isogeo:
         self.dockwidget.widget.setEnabled(False)
         self.dockwidget.next.setEnabled(False)
         self.dockwidget.previous.setEnabled(False)
+        self.dockwidget.initialize.setEnabled(False)
 
         # Setting some variables
         self.page_index = 1
@@ -664,7 +666,7 @@ class Isogeo:
         if filters != "q=":
             self.currentUrl += filters
         self.currentUrl += "&_limit=15"
-        self.dockwidget.dump.setText(self.currentUrl)
+        #self.dockwidget.dump.setText(self.currentUrl)
         self.send_request_to_Isogeo_API(self.token)
     
     # Close to the search() function but triggered on the change page button.
@@ -679,6 +681,7 @@ class Isogeo:
             self.dockwidget.widget.setEnabled(False)
             self.dockwidget.next.setEnabled(False)
             self.dockwidget.previous.setEnabled(False)
+            self.dockwidget.initialize.setEnabled(False)
             # Building up the request
             self.page_index += 1
             self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
@@ -737,7 +740,7 @@ class Isogeo:
                 self.currentUrl += "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
             else:
                 self.currentUrl += "_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
-            self.dockwidget.dump.setText(self.currentUrl)
+            #self.dockwidget.dump.setText(self.currentUrl)
             self.send_request_to_Isogeo_API(self.token)
 
     # Close to the search() function but triggered on the change page button.
@@ -752,6 +755,7 @@ class Isogeo:
             self.dockwidget.widget.setEnabled(False)
             self.dockwidget.next.setEnabled(False)
             self.dockwidget.previous.setEnabled(False)
+            self.dockwidget.initialize.setEnabled(False)
             # Building up the request
             self.page_index -= 1
             self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
@@ -817,7 +821,7 @@ class Isogeo:
                 else:
                     self.currentUrl += "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
 
-            self.dockwidget.dump.setText(self.currentUrl)
+            #self.dockwidget.dump.setText(self.currentUrl)
             self.send_request_to_Isogeo_API(self.token)
 
     # Minor function, calculate the number of pages given a number of results.
@@ -867,13 +871,14 @@ class Isogeo:
         self.dockwidget.checkBox_2.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_3.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_4.setCheckState(Qt.Unchecked)
-        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
-        self.dockwidget.text_input.setReadOnly(True)
-        self.dockwidget.filters_box.setEnabled(False)
-        self.dockwidget.keywords.setEnabled(False)
-        self.dockwidget.next.setEnabled(False)
-        self.dockwidget.previous.setEnabled(False)
-        self.send_request_to_Isogeo_API(self.token)
+        self.dockwidget.text_input.clear()
+        self.dockwidget.keywords.clear()
+        self.dockwidget.operation.clear()
+        self.dockwidget.owner.clear()
+        self.dockwidget.inspire.clear()
+        self.dockwidget.format.clear()
+        self.dockwidget.sys_coord.clear()
+        self.search()
 
 
     #--------------------------------------------------------------------------
@@ -933,10 +938,10 @@ class Isogeo:
         # Connecting the text input to the search function
         self.dockwidget.text_input.editingFinished.connect(self.search)
         # Connecting the checkboxes to the search function
-        self.dockwidget.checkBox.stateChanged.connect(self.search)
-        self.dockwidget.checkBox_2.stateChanged.connect(self.search)
-        self.dockwidget.checkBox_3.stateChanged.connect(self.search)
-        self.dockwidget.checkBox_4.stateChanged.connect(self.search)
+        self.dockwidget.checkBox.clicked.connect(self.search)
+        self.dockwidget.checkBox_2.clicked.connect(self.search)
+        self.dockwidget.checkBox_3.clicked.connect(self.search)
+        self.dockwidget.checkBox_4.clicked.connect(self.search)
         # Connecting the previous and next page buttons to their functions
         self.dockwidget.next.pressed.connect(self.next_page)
         self.dockwidget.previous.pressed.connect(self.previous_page)
