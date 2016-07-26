@@ -846,8 +846,8 @@ class Isogeo:
     # Get the canvas coordinates in the right format and SRS (WGS84)
     def get_canvas_coordinates(self):
         e = iface.mapCanvas().extent()
-        currentEPSG = iface.mapCanvas().mapRenderer().destinationCrs().authid().split(':')[1]
-        if currentEPSG == '4326':
+        currentEPSG = int(iface.mapCanvas().mapRenderer().destinationCrs().authid().split(':')[1])
+        if currentEPSG == 4326:
             coord = "{0},{1},{2},{3}".format(e.xMinimum(),e.yMinimum(),e.xMaximum(),e.yMaximum())
             return coord
         else:
