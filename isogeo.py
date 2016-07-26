@@ -97,7 +97,7 @@ class Isogeo:
 
         self.loopCount = 0
 
-        self.hardReset = False
+        self.hardReset = True
 
 
     # noinspection PyMethodMayBeStatic
@@ -375,11 +375,19 @@ class Isogeo:
         self.dockwidget.owner.clear()
         self.dockwidget.format.clear()
         self.dockwidget.sys_coord.clear()
+        self.dockwidget.operation.clear()
         #Initiating the "nothing selected" item in each combobox
         self.dockwidget.inspire.addItem(" - ")
         self.dockwidget.owner.addItem(" - ")
         self.dockwidget.format.addItem(" - ")
         self.dockwidget.sys_coord.addItem(" - ")
+        dictOperation = {"Intersectent" : "intersects", "Sont contenues" : "within", "Contiennent" : "contains"}
+        for operationKey in dictOperation.keys():
+            self.dockwidget.operation.addItem(operationKey, dictOperation[operationKey])
+        if self.hardReset == True:
+            self.dockwidget.operation.setCurrentIndex(self.dockwidget.operation.findData("intersects"))
+        else:
+            self.dockwidget.operation.setCurrentIndex(self.dockwidget.operation.findData(self.params['operation']))
         # Creating combobox items, with their displayed text, and their value
         for key in tags['owner']:
             self.dockwidget.owner.addItem(tags['owner'][key], key)
@@ -461,6 +469,7 @@ class Isogeo:
         # Re enable all user input fields now the research function is finished. 
         self.dockwidget.text_input.setReadOnly(False)
         self.dockwidget.filters_box.setEnabled(True)
+        self.dockwidget.geofilter_box.setEnabled(True)
         self.dockwidget.keywords.setEnabled(True)
         self.dockwidget.next.setEnabled(True)
         self.dockwidget.previous.setEnabled(True)
@@ -573,6 +582,7 @@ class Isogeo:
         inspire_param = self.dockwidget.inspire.itemData(self.dockwidget.inspire.currentIndex())
         format_param = self.dockwidget.format.itemData(self.dockwidget.format.currentIndex())
         srs_param = self.dockwidget.sys_coord.itemData(self.dockwidget.sys_coord.currentIndex())
+        operation_param = self.dockwidget.operation.itemData(self.dockwidget.operation.currentIndex())
         # Saving the keywords that are selected : if a keyword state is selected, he is added to the list
         key_params = []
         for i in xrange(self.dockwidget.keywords.count()):
@@ -584,6 +594,7 @@ class Isogeo:
         params['format'] = format_param
         params['srs'] = srs_param
         params['keys'] = key_params
+        params['operation'] = operation_param
         return params
 
     def search(self):
@@ -591,6 +602,7 @@ class Isogeo:
         # Disabling all user inputs during the research function is running
         self.dockwidget.text_input.setReadOnly(True)
         self.dockwidget.filters_box.setEnabled(False)
+        self.dockwidget.geofilter_box.setEnabled(False)
         self.dockwidget.keywords.setEnabled(False)
         self.dockwidget.next.setEnabled(False)
         self.dockwidget.previous.setEnabled(False)
@@ -644,7 +656,7 @@ class Isogeo:
         # If the geographical filter is activated, build a spatial filter
         if self.dockwidget.checkBox_4.isChecked():
             filters = filters[:-1]
-            filters += "&box=" + self.get_canvas_coordinates() + " "
+            filters += "&box=" + self.get_canvas_coordinates() + "&rel=" + self.dockwidget.operation.itemData(self.dockwidget.operation.currentIndex()) + " "
 
 
         filters = "q=" + filters[:-1]
@@ -826,8 +838,7 @@ class Isogeo:
         new_date = datetime.date(year,month,day)
         return new_date.strftime("%d / %m / %Y")
         return new_date
-
-    
+   
     # Get the canvas coordinates in the right format and SRS (WGS84)
     def get_canvas_coordinates(self):
         e = iface.mapCanvas().extent()
@@ -916,6 +927,7 @@ class Isogeo:
         self.dockwidget.inspire.activated.connect(self.search)
         self.dockwidget.format.activated.connect(self.search)
         self.dockwidget.sys_coord.activated.connect(self.search)
+        self.dockwidget.operation.activated.connect(self.search)
         # Connecting the text input to the search function
         self.dockwidget.text_input.editingFinished.connect(self.search)
         # Connecting the checkboxes to the search function
