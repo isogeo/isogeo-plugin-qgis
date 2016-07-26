@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Tue Jul 26 17:07:16 2016
+# Created: Tue Jul 26 17:37:57 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_IsogeoDockWidgetBase(object):
     def setupUi(self, IsogeoDockWidgetBase):
         IsogeoDockWidgetBase.setObjectName(_fromUtf8("IsogeoDockWidgetBase"))
-        IsogeoDockWidgetBase.resize(452, 869)
+        IsogeoDockWidgetBase.resize(460, 881)
         self.dockWidgetContents = QtGui.QWidget()
         self.dockWidgetContents.setObjectName(_fromUtf8("dockWidgetContents"))
         self.gridLayout = QtGui.QGridLayout(self.dockWidgetContents)
@@ -256,6 +256,9 @@ class Ui_IsogeoDockWidgetBase(object):
         self.label_10.setFont(font)
         self.label_10.setObjectName(_fromUtf8("label_10"))
         self.gridLayout_6.addWidget(self.label_10, 0, 0, 1, 1)
+        self.changeUser = QtGui.QPushButton(self.tab_2)
+        self.changeUser.setObjectName(_fromUtf8("changeUser"))
+        self.gridLayout_6.addWidget(self.changeUser, 0, 1, 1, 1)
         self.groupBox = QtGui.QGroupBox(self.tab_2)
         self.groupBox.setObjectName(_fromUtf8("groupBox"))
         self.lineEdit_2 = QtGui.QLineEdit(self.groupBox)
@@ -278,7 +281,7 @@ class Ui_IsogeoDockWidgetBase(object):
         font.setWeight(50)
         self.label_12.setFont(font)
         self.label_12.setObjectName(_fromUtf8("label_12"))
-        self.gridLayout_6.addWidget(self.groupBox, 1, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.groupBox, 1, 0, 1, 2)
         self.groupBox_2 = QtGui.QGroupBox(self.tab_2)
         self.groupBox_2.setMinimumSize(QtCore.QSize(0, 201))
         self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
@@ -331,7 +334,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.comboBox_2 = QtGui.QComboBox(self.groupBox_2)
         self.comboBox_2.setGeometry(QtCore.QRect(10, 160, 181, 22))
         self.comboBox_2.setObjectName(_fromUtf8("comboBox_2"))
-        self.gridLayout_6.addWidget(self.groupBox_2, 2, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.groupBox_2, 2, 0, 1, 2)
         self.groupBox_3 = QtGui.QGroupBox(self.tab_2)
         self.groupBox_3.setObjectName(_fromUtf8("groupBox_3"))
         self.comboBox_3 = QtGui.QComboBox(self.groupBox_3)
@@ -358,7 +361,7 @@ class Ui_IsogeoDockWidgetBase(object):
         font.setWeight(50)
         self.pushButton_2.setFont(font)
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
-        self.gridLayout_6.addWidget(self.groupBox_3, 3, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.groupBox_3, 3, 0, 1, 2)
         self.groupBox_4 = QtGui.QGroupBox(self.tab_2)
         self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
         self.comboBox_4 = QtGui.QComboBox(self.groupBox_4)
@@ -385,7 +388,7 @@ class Ui_IsogeoDockWidgetBase(object):
         font.setWeight(50)
         self.pushButton_4.setFont(font)
         self.pushButton_4.setObjectName(_fromUtf8("pushButton_4"))
-        self.gridLayout_6.addWidget(self.groupBox_4, 4, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.groupBox_4, 4, 0, 1, 2)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName(_fromUtf8("tab_3"))
@@ -511,6 +514,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.paging.setText(_translate("IsogeoDockWidgetBase", "Page 1 sur 15", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("IsogeoDockWidgetBase", "Recherche", None))
         self.label_10.setText(_translate("IsogeoDockWidgetBase", "Paramétrage du plugin", None))
+        self.changeUser.setText(_translate("IsogeoDockWidgetBase", "Changer d\'utilisateur", None))
         self.groupBox.setTitle(_translate("IsogeoDockWidgetBase", "Compte administrateur Isogeo", None))
         self.label_11.setText(_translate("IsogeoDockWidgetBase", "id administrateur", None))
         self.label_12.setText(_translate("IsogeoDockWidgetBase", "Mot de passe", None))
@@ -549,4 +553,5 @@ class Ui_IsogeoDockWidgetBase(object):
         self.next_2.setText(_translate("IsogeoDockWidgetBase", ">", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("IsogeoDockWidgetBase", "Listes", None))
 
-from qgscollapsiblegroupbox import QgsCollapsibleGroupBox
+from qgis.gui import QgsCollapsibleGroupBox
+import resources_rc

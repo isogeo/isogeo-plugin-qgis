@@ -947,18 +947,24 @@ class Isogeo:
         self.dockwidget.report.pressed.connect(self.open_bugtracker)
         # Connecting the "reinitialize research button" to a research without filters
         self.dockwidget.initialize.pressed.connect(self.reinitialize_research)
+        # Change user
+        self.dockwidget.changeUser.pressed.connect(self.authentification_window.show)
 
         """ --- Actions when the plugin is launched --- """
         self.test_config_file_existence()
         self.user_authentification()
         self.test_proxy_configuration()
 
-        self.dockwidget.tab_2.setEnabled(False)
+        self.dockwidget.groupBox.setEnabled(False)
+        self.dockwidget.groupBox_2.setEnabled(False)
+        self.dockwidget.groupBox_3.setEnabled(False)
+        self.dockwidget.groupBox_4.setEnabled(False)
         self.dockwidget.tab_3.setEnabled(False)
         self.dockwidget.favorite_combo.setEnabled(False)
         self.dockwidget.save_favorite.setEnabled(False)
         self.dockwidget.label.setStyleSheet("color: grey")
         self.dockwidget.label_9.setStyleSheet("color: grey")
+
 
 
 
