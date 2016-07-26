@@ -470,7 +470,7 @@ class Isogeo:
         self.dockwidget.text_input.setReadOnly(False)
         self.dockwidget.filters_box.setEnabled(True)
         self.dockwidget.geofilter_box.setEnabled(True)
-        self.dockwidget.keywords.setEnabled(True)
+        self.dockwidget.widget.setEnabled(True)
         self.dockwidget.next.setEnabled(True)
         self.dockwidget.previous.setEnabled(True)
         # hard reset
@@ -603,7 +603,7 @@ class Isogeo:
         self.dockwidget.text_input.setReadOnly(True)
         self.dockwidget.filters_box.setEnabled(False)
         self.dockwidget.geofilter_box.setEnabled(False)
-        self.dockwidget.keywords.setEnabled(False)
+        self.dockwidget.widget.setEnabled(False)
         self.dockwidget.next.setEnabled(False)
         self.dockwidget.previous.setEnabled(False)
 
@@ -675,6 +675,7 @@ class Isogeo:
         else:
             self.dockwidget.text_input.setReadOnly(True)
             self.dockwidget.filters_box.setEnabled(False)
+            self.dockwidget.geofilter_box.setEnabled(False)
             self.dockwidget.widget.setEnabled(False)
             self.dockwidget.next.setEnabled(False)
             self.dockwidget.previous.setEnabled(False)
@@ -747,6 +748,7 @@ class Isogeo:
         else:
             self.dockwidget.text_input.setReadOnly(True)
             self.dockwidget.filters_box.setEnabled(False)
+            self.dockwidget.geofilter_box.setEnabled(False)
             self.dockwidget.widget.setEnabled(False)
             self.dockwidget.next.setEnabled(False)
             self.dockwidget.previous.setEnabled(False)
@@ -947,5 +949,13 @@ class Isogeo:
         self.test_config_file_existence()
         self.user_authentification()
         self.test_proxy_configuration()
+
+        self.dockwidget.tab_2.setEnabled(False)
+        self.dockwidget.tab_3.setEnabled(False)
+        self.dockwidget.favorite_combo.setEnabled(False)
+        self.dockwidget.save_favorite.setEnabled(False)
+        self.dockwidget.label.setStyleSheet("color: grey")
+        self.dockwidget.label_9.setStyleSheet("color: grey")
+
 
 
