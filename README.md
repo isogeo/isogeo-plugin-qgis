@@ -27,7 +27,7 @@ It's fully integrated with QGIS ecosystem:
 - [X] Text search among Isogeo shares
 - [X] Dynamic filter on keywords, INSPIRE themes, catalog owners, source coordinate system and available links
 - [ ] Geographic filter from a layer bounding box
-- [ ] Geographic filter from the map canvas bounding box
+- [X] Geographic filter from the map canvas bounding box
 - [ ] Order results by relevance, alphabetic, last updated date (data or metadata), creation date (data or metadata)
 - [ ] Add the related data directly to the map canvas
 - [ ] Display full metadata information in a separated window
