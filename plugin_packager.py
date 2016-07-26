@@ -69,7 +69,6 @@ final_zip.write(r"isogeo.py", plg_dir + r"\isogeo.py")
 final_zip.write(r"isogeo_dockwidget.py", plg_dir + r"\isogeo_dockwidget.py")
 final_zip.write(r"ui_authentification.py", plg_dir + r"\ui_authentification.py")
 final_zip.write(r"ui_isogeo.py", plg_dir + r"\ui_isogeo.py")
-final_zip.write(r"Isogeo\ui_authentification.py", plg_dir + r"\Isogeo\ui_authentification.py")
 
 # Translations
 # final_zip.write("i18n\af.ts")
