@@ -23,7 +23,7 @@
 # Ajouté par moi à partir de QByteArray
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QByteArray, QUrl, QDate
 #Ajouté oar moi à partir de QMessageBox
-from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, QCheckBox, QStandardItemModel, QStandardItem
+from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, QCheckBox, QStandardItemModel, QStandardItem, QPushButton
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -37,7 +37,7 @@ import os.path
 
 #Ajoutés par moi
 from qgis.utils import iface
-from qgis.core import QgsNetworkAccessManager, QgsPoint, QgsCoordinateReferenceSystem, QgsCoordinateTransform
+from qgis.core import QgsNetworkAccessManager, QgsPoint, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer
 from PyQt4.QtNetwork import QNetworkRequest
 import ConfigParser
 import json
@@ -48,6 +48,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import datetime
 import webbrowser
+from functools import partial
 
 class Isogeo:
     """QGIS Plugin Implementation."""
@@ -258,7 +259,7 @@ class Isogeo:
         else:
             s = QSettings()
             qgis_proxy = s.value("proxy/proxyEnabled", "")
-            if qgis_proxy == True:
+            if str(qgis_proxy) == 'true':
                 pass
             else:
                 QMessageBox.information(iface.mainWindow(),'Alerte', u"Problème de proxy : \nVotre ordinateur utilise un proxy, mais vous n'avez pas saisi ses paramètres dans QGIS.\nMerci de renseigner les paramètres proxy dans le menu 'Préférences/Option/Réseau'.")
@@ -289,7 +290,7 @@ class Isogeo:
 
     # This send a POST request to Isogeo API with the user id and secret in its header. The API should return an access token
     def ask_for_token(self, c_id, c_secret):
-        self.logger.info('ask4token')
+        #self.logger.info('ask4token')
         headervalue = "Basic " + base64.b64encode(c_id + ":" + c_secret)
         data = urllib.urlencode({"grant_type":"client_credentials"})
         dataByte = QByteArray()
@@ -303,7 +304,7 @@ class Isogeo:
 
     # This handles the API answer. If it has sent an access token, it calls the initialization function. If not, it raises an error, and ask for new IDs
     def handle_token(self):
-        self.logger.info('handle_token')
+        #self.logger.info('handle_token')
         bytarray = self.token_reply.readAll()
         content = str(bytarray)
         parsed_content = json.loads(content)
@@ -320,7 +321,7 @@ class Isogeo:
 
     # This takes the current url variable and send a request to this url, using the token variable.
     def send_request_to_Isogeo_API(self, token, limit = 15):
-        self.logger.info('Dans la fonction sens request')
+        #self.logger.info('Dans la fonction sens request')
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
         request.setRawHeader("Authorization", token)
@@ -330,7 +331,7 @@ class Isogeo:
 
     # This is called when the answer from the API is finished. If it's content, it calls update_fields(). If it isn't, it means the token has expired, and it calls ask_for_token()
     def handle_API_reply(self):
-        self.logger.info('Dans le handle reply')
+        #self.logger.info('Dans le handle reply')
         bytarray = self.API_reply.readAll()
         content = str(bytarray)
         if self.API_reply.error() == 0:
@@ -353,7 +354,7 @@ class Isogeo:
 
     # This takes an API answer and update the fields accordingly. It also calls show_results in the end. This may change, so results would be shown only when a specific button is pressed.
     def update_fields(self, result):
-        self.logger.info('Dans le update fields')
+        #self.logger.info('Dans le update fields')
         tags = self.get_tags(result)
         # Getting the index of selected items in each combobox
         self.params = self.save_params()
@@ -505,7 +506,31 @@ class Isogeo:
                     self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u'Géométrie inconnue'))
             except:
                 self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u"Pas de géométrie"))
-
+            if 'format' in i.keys():
+                if (i['format'] == 'shp' or i['format'] == 'tab' or i['format'] == 'filegdb') and 'path' in i:
+                    path = self.format_path(i['path'])
+                    name = os.path.basename(path).split(".")[0]
+                    layer = QgsVectorLayer(path, name ,'ogr')
+                    if layer.isValid():
+                        button = QPushButton("Ajouter")
+                        button.pressed.connect(partial(self.add_layer, AnyLayer = layer))
+                        self.dockwidget.resultats.setCellWidget(count,3, button)
+                    else:
+                        pass
+                elif i['format'] == 'geotiff' and 'path' in i:
+                    path = self.format_path(i['path'])
+                    name = os.path.basename(path).split(".")[0]
+                    layer = QgsRasterLayer(path, name)
+                    if layer.isValid():
+                        button = QPushButton("Ajouter")
+                        button.pressed.connect(partial(self.add_layer, AnyLayer = layer))
+                        self.dockwidget.resultats.setCellWidget(count,3, button)
+                    else:
+                        pass
+                else:
+                    pass
+            else:
+                pass
             count +=1
 
     # This parse the tags contained in API_answer[tags] and class them so they are more easy to handle in other function such as update_fields()
@@ -597,7 +622,7 @@ class Isogeo:
         return params
 
     def search(self):
-        self.logger.info('Dans la fonction search')
+        #self.logger.info('Dans la fonction search')
         # Disabling all user inputs during the research function is running
         self.dockwidget.text_input.setReadOnly(True)
         self.dockwidget.filters_box.setEnabled(False)
@@ -892,6 +917,18 @@ class Isogeo:
         self.dockwidget.sys_coord.clear()
         self.search()
 
+    def format_path(self, string):
+            new_string = ""
+            for character in string:
+                if character == '\\':
+                    new_string += "/"
+                else:
+                    new_string += character
+            return new_string
+
+    def add_layer(self, AnyLayer):
+            QgsMapLayerRegistry.instance().addMapLayer(AnyLayer)
+
 
     #--------------------------------------------------------------------------
 
@@ -921,7 +958,7 @@ class Isogeo:
 
         """ --- LOG LOG LOG --- """
 
-        self.logger = logging.getLogger()
+        """self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
         self.formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
         self.file_handler = RotatingFileHandler(self.get_plugin_path() + "/activity.log", 'a', 1000000, 1)
@@ -930,7 +967,7 @@ class Isogeo:
         self.logger.addHandler(self.file_handler)
         self.steam_handler = logging.StreamHandler()
         self.steam_handler.setLevel(logging.DEBUG)
-        self.logger.addHandler(self.steam_handler)
+        self.logger.addHandler(self.steam_handler)"""
 
         # Fixing a qgis.core bug that shows a warning banner "connexion time out" whenever a request is sent (even successfully) See : http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
         iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
