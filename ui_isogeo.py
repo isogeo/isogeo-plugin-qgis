@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Tue Jul 26 17:37:57 2016
+# Created: Wed Jul 27 10:46:32 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -554,4 +554,3 @@ class Ui_IsogeoDockWidgetBase(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("IsogeoDockWidgetBase", "Listes", None))
 
 from qgis.gui import QgsCollapsibleGroupBox
-import resources_rc

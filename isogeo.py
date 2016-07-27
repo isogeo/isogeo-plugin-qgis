@@ -850,7 +850,7 @@ class Isogeo:
         if currentEPSG == 4326:
             coord = "{0},{1},{2},{3}".format(e.xMinimum(),e.yMinimum(),e.xMaximum(),e.yMaximum())
             return coord
-        else:
+        elif type(currentEPSG) is int:
             currentSRS = QgsCoordinateReferenceSystem(currentEPSG, QgsCoordinateReferenceSystem.EpsgCrsId)
             wgs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             xform = QgsCoordinateTransform(currentSRS, wgs)
@@ -858,6 +858,8 @@ class Isogeo:
             maximum = xform.transform(QgsPoint(e.xMaximum(), e.yMaximum()))
             coord = "{0},{1},{2},{3}".format(minimum[0], minimum[1], maximum[0], maximum[1])
             return coord
+        else:
+            return False
 
     # Minor one line function. Opens the bugtracker on the default browser (supposedly cross platform)
     def open_bugtracker(self):
