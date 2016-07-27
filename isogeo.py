@@ -655,8 +655,12 @@ class Isogeo:
 
         # If the geographical filter is activated, build a spatial filter
         if self.dockwidget.checkBox_4.isChecked():
-            filters = filters[:-1]
-            filters += "&box=" + self.get_canvas_coordinates() + "&rel=" + self.dockwidget.operation.itemData(self.dockwidget.operation.currentIndex()) + " "
+            if self.get_canvas_coordinates():
+                filters = filters[:-1]
+                filters += "&box=" + self.get_canvas_coordinates() + "&rel=" + self.dockwidget.operation.itemData(self.dockwidget.operation.currentIndex()) + " "
+            else:
+                QMessageBox.information(iface.mainWindow(),'Erreur :', "Le système de coordonnée de votre canevas ne semble\npas défini avec un code EPSG.\nIl ne peut donc pas être interprété par QGIS.\nMerci de rapporter ce problème sur le bug tracker.")
+
 
 
         filters = "q=" + filters[:-1]
@@ -728,8 +732,12 @@ class Isogeo:
 
             # If the geographical filter is activated, build a spatial filter
             if self.dockwidget.checkBox_4.isChecked():
-                filters = filters[:-1]
-                filters += "&box=" + self.get_canvas_coordinates() + " "
+                if self.get_canvas_coordinates():
+                    filters = filters[:-1]
+                    filters += "&box=" + self.get_canvas_coordinates() + "&rel=" + self.dockwidget.operation.itemData(self.dockwidget.operation.currentIndex()) + " "
+                else:
+                    QMessageBox.information(iface.mainWindow(),'Erreur :', "Le système de coordonnée de votre canevas ne semble\npas défini avec un code EPSG.\nIl ne peut donc pas être interprété par QGIS.\nMerci de rapporter ce problème sur le bug tracker.")
+
 
             filters = "q=" + filters[:-1]
             #self.dockwidget.text_input.setText(encoded_filters)        
@@ -802,8 +810,12 @@ class Isogeo:
 
             # If the geographical filter is activated, build a spatial filter
             if self.dockwidget.checkBox_4.isChecked():
-                filters = filters[:-1]
-                filters += "&box=" + self.get_canvas_coordinates() + " "
+                if self.get_canvas_coordinates():
+                    filters = filters[:-1]
+                    filters += "&box=" + self.get_canvas_coordinates() + "&rel=" + self.dockwidget.operation.itemData(self.dockwidget.operation.currentIndex()) + " "
+                else:
+                    QMessageBox.information(iface.mainWindow(),'Erreur :', "Le système de coordonnée de votre canevas ne semble\npas défini avec un code EPSG.\nIl ne peut donc pas être interprété par QGIS.\nMerci de rapporter ce problème sur le bug tracker.")
+
 
             
             filters = "q=" + filters[:-1]      
