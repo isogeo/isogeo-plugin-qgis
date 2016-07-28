@@ -37,7 +37,7 @@ import os.path
 
 #Ajoutés par moi
 from qgis.utils import iface
-from qgis.core import QgsNetworkAccessManager, QgsPoint, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer
+from qgis.core import QgsNetworkAccessManager, QgsPoint, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI
 from PyQt4.QtNetwork import QNetworkRequest
 import ConfigParser
 import json
@@ -49,6 +49,7 @@ from logging.handlers import RotatingFileHandler
 import datetime
 import webbrowser
 from functools import partial
+import db_manager.db_plugins.postgis.connector as con
 
 class Isogeo:
     """QGIS Plugin Implementation."""
@@ -245,7 +246,7 @@ class Isogeo:
         if os.path.isfile(self.config_path):
             pass
         else:
-            print "You've messed up something bruh !"
+            QMessageBox.information(iface.mainWindow(),'Alerte', u"Vous avez détruit ou renommé le fichier config.ini.\nCe n'était pas une très bonne idée.\nCa va pour cette fois, mais que ça ne se reproduise plus.")
             config_file = open(self.config_path,'w')
             config.write(config_file)
             # TO DO : CREER UN TEMPLATE
@@ -482,6 +483,19 @@ class Isogeo:
         pointList = ["Point", "MultiPoint"]
         lineList = ["CircularString", "CompoundCurve", "Curve", "LineString", "MultiCurve", "MultiLineString"]
         multiList = ["Geometry", "GeometryCollection"]
+        
+        #Récupère tous les noms de bases de données dont la connexion est enregistrée dans QGIS
+        qs = QSettings()
+        finalDict = {}
+        for k in sorted(qs.allKeys()):
+            if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
+                if len(k.split("/")) == 4:
+                    connexionName = k.split("/")[2]
+                    print connexionName
+                    if qs.value('PostgreSQL/connections/' + connexionName + '/savePassword') == 'true' and qs.value('PostgreSQL/connections/' + connexionName + '/saveUsername') == 'true':
+                        dictionary = {'name' : qs.value('PostgreSQL/connections/' + connexionName + '/database') , 'host' : qs.value('PostgreSQL/connections/' + connexionName + '/host'), 'port' : qs.value('PostgreSQL/connections/' + connexionName + '/port'), 'username' : qs.value('PostgreSQL/connections/' + connexionName + '/username'), 'password' : qs.value('PostgreSQL/connections/' + connexionName + '/password') }
+                        finalDict[qs.value('PostgreSQL/connections/' + connexionName + '/database')] = dictionary
+
         count = 0
         for i in result['results']:
             self.dockwidget.resultats.setItem(count,0, QTableWidgetItem(i['title']))
@@ -524,6 +538,18 @@ class Isogeo:
                     if layer.isValid():
                         button = QPushButton("Ajouter")
                         button.pressed.connect(partial(self.add_layer, AnyLayer = layer))
+                        self.dockwidget.resultats.setCellWidget(count,3, button)
+                    else:
+                        pass
+                elif i['format'] == 'postgis':
+                    #Récupère le nom de la base de données
+                    baseName = i['path']
+                    schema = i['name'].split(".")[0]
+                    table = i['name'].split(".")[1]
+                    
+                    if baseName in finalDict.keys():
+                        button = QPushButton("Ajouter")
+                        button.pressed.connect(partial(self.addPostGisLayer, host = finalDict[baseName]['host'], port = finalDict[baseName]['port'], basename = baseName, user = finalDict[baseName]['username'], password = finalDict[baseName]['password'], schema = schema, table = table))
                         self.dockwidget.resultats.setCellWidget(count,3, button)
                     else:
                         pass
@@ -927,7 +953,29 @@ class Isogeo:
             return new_string
 
     def add_layer(self, AnyLayer):
-            QgsMapLayerRegistry.instance().addMapLayer(AnyLayer)
+        QgsMapLayerRegistry.instance().addMapLayer(AnyLayer)
+
+    def addPostGisLayer(self, host, port, basename, user, password, schema, table):
+        uri = QgsDataSourceURI()
+        # set host name, port, database name, username and password
+        uri.setConnection(host, port, basename, user, password)
+        c = con.PostGisDBConnector(uri)
+        dico =  c.getTables()
+        for i in dico:
+            if i[0 == 1] and i[1] == table:
+                geometryColumn = i[8]
+        # set database schema, table name, geometry column and optionally
+        # subset (WHERE clause)
+        uri.setDataSource(schema, table, geometryColumn)
+
+        vlayer = QgsVectorLayer(uri.uri(), table, "postgres")
+        if vlayer.isValid():
+            QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+        else:
+            QMessageBox.information(iface.mainWindow(),'Erreur', u"La couche PostGis n'est pas valide.\nCa craint.")
+
+
+
 
 
     #--------------------------------------------------------------------------
