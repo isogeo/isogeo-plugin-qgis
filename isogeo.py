@@ -50,6 +50,7 @@ import datetime
 import webbrowser
 from functools import partial
 import db_manager.db_plugins.postgis.connector as con
+import codecs
 
 class Isogeo:
     """QGIS Plugin Implementation."""
@@ -103,6 +104,8 @@ class Isogeo:
         self.firstRequest = True
 
         self.firstScanIteration = True
+
+        self.PostGisDict = {}
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -243,7 +246,7 @@ class Isogeo:
             basepath = os.path.dirname(os.path.realpath(__file__))
             return basepath
 
-    # Check if the file already exists and if not, create it. 
+    # Check if the file already exists and if not, create it. Quite useless now, should be reworked. Maybe to check all config files.
     def test_config_file_existence(self):
         self.config = ConfigParser.ConfigParser()
         self.config_path = self.get_plugin_path() + "/config_files/user_id.ini"
@@ -258,14 +261,18 @@ class Isogeo:
 
     # Check if a proxy configuration is set up for the computer, and for QGIS. If none or both is set up, pass. But if there is a proxy config for the computer but not in QGIS, pops an alert message. 
     def test_proxy_configuration(self):
+        # Get OS level proxy configuration
         system_proxy_config = urllib.getproxies()
+        # If no proxy is set up, pass
         if system_proxy_config == {}:
             pass
+        # If a proxy is set up, check if one is set up at QGIS level
         else:
             s = QSettings()
             qgis_proxy = s.value("proxy/proxyEnabled", "")
             if str(qgis_proxy) == 'true':
                 pass
+            # If not, raise a warning to the user
             else:
                 QMessageBox.information(iface.mainWindow(),'Alerte', u"Problème de proxy : \nVotre ordinateur utilise un proxy, mais vous n'avez pas saisi ses paramètres dans QGIS.\nMerci de renseigner les paramètres proxy dans le menu 'Préférences/Option/Réseau'.")
 
@@ -284,11 +291,12 @@ class Isogeo:
         else:
             pass"""
 
-
+    # Huge function. Scan all data shared with the plugin and check if they can be added to the map canvas (i.e. if they constitute a valid QGIS layer). Store the _id of the data the user can access, so the plugin
+    # only research through this data. Next to the _id, it stores the informations needed to be able to add the layer (path / databse name, password, ...) 
     def scan_data_availability(self, result):
         # First itération, will initiate variables and launch the first request to the API. 
         if self.firstScanIteration == True:
-            # Clear the 'available data' section
+            # Set the scan status in the config file to Not scanned, so the scan will loop. The scan will have to call send_request_to_API and handle_reply functions. The scan status permits handle_reply to redirect towards the scan.
             config = ConfigParser.ConfigParser()
             config_path = self.get_plugin_path() + "/config_files/scan_status.ini"
             config_file = open(config_path,'w')
@@ -296,6 +304,8 @@ class Isogeo:
             config.set('Scan_status', 'catalog_scanned', 'Not_scanned')   
             config.write(config_file)
             config_file.close()
+            # Initiate the dict variable. It will store the results for the duration of the scan, before it is written as a json object into a text file.
+            self.tempDict = {}
             # Get the number of results, calculate the number of iterations
             results_count = result['total']
             if results_count <= 100:
@@ -305,24 +315,23 @@ class Isogeo:
                     self.nb_iteration = (results_count / 100)
                 else: 
                     self.nb_iteration = (results_count / 100) + 1
+            # Set up the url to launch the first request, that will allow to scan the first 100 data.
             self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_include=links&_limit=100'
             self.firstScanIteration = False
             self.offset = 100
             self.send_request_to_Isogeo_API(self.token)
+        
         # When not first iteration, will now scan the data to see if it can be added. Then launch another request.
         else:
+            # Supported file format lists
             vectorFormatList = ['shp', 'dxf', 'dgn', 'filegdb', 'tab']
             rasterFormatList = ['esriasciigrid', 'geotiff', 'intergraphgdb', 'jpeg', 'png', 'xyz']
-            config = ConfigParser.ConfigParser()
-            config_path = self.get_plugin_path() + "/config_files/data_id.ini"
-            config_file = open(config_path,'a')
-            sectionName = 'available_data_{0}'.format(self.offset)
-            config.add_section(sectionName)
 
+            """ NOT SURE THIS ACTUALLY DOES ANYTHING """
             tags = self.get_tags(result)
             # Getting the informations about database connections in the QSettings. Storing them in a dict.
             qs = QSettings()
-            finalDict = {}
+            self.PostGisDict = {}
             for k in sorted(qs.allKeys()):
                 if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
                     if len(k.split("/")) == 4:
@@ -330,45 +339,45 @@ class Isogeo:
                         print connexionName
                         if qs.value('PostgreSQL/connections/' + connexionName + '/savePassword') == 'true' and qs.value('PostgreSQL/connections/' + connexionName + '/saveUsername') == 'true':
                             dictionary = {'name' : qs.value('PostgreSQL/connections/' + connexionName + '/database') , 'host' : qs.value('PostgreSQL/connections/' + connexionName + '/host'), 'port' : qs.value('PostgreSQL/connections/' + connexionName + '/port'), 'username' : qs.value('PostgreSQL/connections/' + connexionName + '/username'), 'password' : qs.value('PostgreSQL/connections/' + connexionName + '/password') }
-                            finalDict[qs.value('PostgreSQL/connections/' + connexionName + '/database')] = dictionary
+                            self.PostGisDict[qs.value('PostgreSQL/connections/' + connexionName + '/database')] = dictionary
 
-
-            # That's the loop. Looping on result, testing their add-ability. If they can be added, store their _id. 
+            # This is the core of the function. A loop on the 100 data sheets the function has been given as argument. It tests weither the data can be added by the user. 
+            # If they can be added, it stores their _id and the information needed later to add them to the map canvas. If not, it doesn't store anything.
             for i in result['results']:
                 if 'format' in i.keys():
-                # if vector
+                # if the format is a supported vector format
                     if i['format'] in vectorFormatList and 'path' in i:
                         path = self.format_path(i['path'])
                         name = os.path.basename(path).split(".")[0]
                         layer = QgsVectorLayer(path, name ,'ogr')
+                        # If the layer constructed from the path is valid (i.e. if the user can add the data), store its _id and path in the temporary dictionnary
                         if layer.isValid():
-                            config.set(sectionName, i['_id'], "vector")
+                            self.tempDict[i['_id']] = path
                         else:
                             pass
-                    # if raster
+                    # if the format is a supported raster format
                     elif i['format'] in rasterFormatList and 'path' in i:
                         path = self.format_path(i['path'])
                         name = os.path.basename(path).split(".")[0]
                         layer = QgsRasterLayer(path, name)
+                        # If the layer constructed from the path is valid (i.e. if the user can add the data), store its _id and path in the temporary dictionnary
                         if layer.isValid():
-                            config.set(sectionName, i['_id'], "raster")
+                            self.tempDict[i['_id']] = path
                         else:
                             pass
-                    # if postgis
+                    # if the data is stored in a PostGis database
                     elif i['format'] == 'postgis':
                         baseName = i['path']
                         schema = i['name'].split(".")[0]
                         table = i['name'].split(".")[1]
-                        
-                        if baseName in finalDict.keys():
-                            config.set(sectionName, i['_id'], "postgis")
+                        # If the information needed to add the data can be found in the QSettings(), then store it in the temporary dictionnary
+                        if baseName in self.PostGisDict.keys():
+                            self.tempDict[i['_id']] = self.PostGisDict[baseName]
                     else:
                         pass
                 else:
                     pass
             
-            config.write(config_file)
-            config_file.close()
             self.nb_iteration -= 1
 
             if self.nb_iteration ==0:
@@ -380,24 +389,27 @@ class Isogeo:
                 config.set('Scan_status', 'catalog_scanned', 'Scanned')   
                 config.write(config_file)
                 config_file.close()
-                # Gettin' the data id's
-                config = ConfigParser.ConfigParser()
-                config_path = self.get_plugin_path() + "/config_files/data_id.ini"
-                config.read(config_path)
-                id_dict = {s:dict(config.items(s)) for s in config.sections()}
+                
+
+                with open(self.get_plugin_path() + "/config_files/data_id.txt", 'w') as outfile:
+                    json.dump(self.tempDict, outfile)
+
+
+                # Getting the data_id.txt file content as a dict, so we can add the _ids to the request
                 self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_include=links&_limit=15&_id='
-                for key in id_dict.keys():
-                    for dataId in id_dict[key].keys():
-                        self.currentUrl += dataId + ","
+                
+                with open(self.get_plugin_path() + "/config_files/data_id.txt") as data_file:
+                    data = json.load(data_file)
+                
+                for data_id in data.keys():
+                    self.currentUrl += data_id + ","
                 self.currentUrl = self.currentUrl[:-1]
-                QMessageBox.information(iface.mainWindow(),'Message', self.currentUrl)
+                #QMessageBox.information(iface.mainWindow(),'Message', self.currentUrl)
                 self.send_request_to_Isogeo_API(self.token)
             else:
                 self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_include=links&_limit=100&_offset={0}'.format(self.offset)
                 self.offset += 100
                 self.send_request_to_Isogeo_API(self.token)
-
-
 
     # This is the first major function the plugin calls when executed. It retrieves the id and secret from the config file. If they are set to their default value, it asks for them. if not it ties to send a request.
     def user_authentification(self):
@@ -443,16 +455,55 @@ class Isogeo:
         bytarray = self.token_reply.readAll()
         content = str(bytarray)
         parsed_content = json.loads(content)
-        if 'access_token' in parsed_content:
-            # TO DO : Appeler la fonction d'initialisation
-            self.token = "Bearer " + parsed_content['access_token']
-            self.search()
-        # TO DO : Distinguer plusieurs cas d'erreur
-        elif 'error' in parsed_content:
-            QMessageBox.information(iface.mainWindow(),'Erreur', parsed_content['error'])
-            self.authentification_window.show()
+        if self.firstRequest == True:
+            config = ConfigParser.ConfigParser()
+            config_path = self.get_plugin_path() + "/config_files/scan_status.ini"
+            config.read(config_path)
+            scan_status = config.get("Scan_status", 'catalog_scanned')
+            if scan_status == 'Scanned':
+                if 'access_token' in parsed_content:
+                    self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_include=links&_limit=15&_id='        
+                    with open(self.get_plugin_path() + "/config_files/data_id.txt") as data_file:    
+                        data = json.load(data_file)         
+                    for data_id in data.keys():
+                        self.currentUrl += data_id + ","
+                    self.currentUrl = self.currentUrl[:-1]
+                    # TO DO : Appeler la fonction d'initialisation
+                    self.token = "Bearer " + parsed_content['access_token']    
+                    
+                    self.page_index = 1
+                    self.send_request_to_Isogeo_API(self.token)
+                # TO DO : Distinguer plusieurs cas d'erreur
+                elif 'error' in parsed_content:
+                    QMessageBox.information(iface.mainWindow(),'Erreur', parsed_content['error'])
+                    self.authentification_window.show()
+                else:
+                    self.dockwidget.text_input.setText("Erreur inconnue.")
+            else:
+                if 'access_token' in parsed_content:
+                    # TO DO : Appeler la fonction d'initialisation
+                    self.token = "Bearer " + parsed_content['access_token']             
+                    self.page_index = 1
+                    self.send_request_to_Isogeo_API(self.token)
+                # TO DO : Distinguer plusieurs cas d'erreur
+                elif 'error' in parsed_content:
+                    QMessageBox.information(iface.mainWindow(),'Erreur', parsed_content['error'])
+                    self.authentification_window.show()
+                else:
+                    self.dockwidget.text_input.setText("Erreur inconnue.")
         else:
-            self.dockwidget.text_input.setText("Erreur inconnue.")
+            if 'access_token' in parsed_content:
+                # TO DO : Appeler la fonction d'initialisation
+                self.token = "Bearer " + parsed_content['access_token']    
+                
+                self.page_index = 1
+                self.send_request_to_Isogeo_API(self.token)
+            # TO DO : Distinguer plusieurs cas d'erreur
+            elif 'error' in parsed_content:
+                QMessageBox.information(iface.mainWindow(),'Erreur', parsed_content['error'])
+                self.authentification_window.show()
+            else:
+                self.dockwidget.text_input.setText("Erreur inconnue.")
 
     # This takes the current url variable and send a request to this url, using the token variable.
     def send_request_to_Isogeo_API(self, token, limit = 15):
@@ -645,6 +696,7 @@ class Isogeo:
 
     # This function put the metadata sheets contained in the answer in the table.
     def show_results(self, result):
+        
         polygonList = ["CurvePolygon","MultiPolygon","MultiSurface","Polygon","PolyhedralSurface"]
         pointList = ["Point", "MultiPoint"]
         lineList = ["CircularString", "CompoundCurve", "Curve", "LineString", "MultiCurve", "MultiLineString"]
@@ -652,17 +704,17 @@ class Isogeo:
         vectorFormatList = ['shp', 'dxf', 'dgn', 'filegdb', 'tab']
         rasterFormatList = ['esriasciigrid', 'geotiff', 'intergraphgdb', 'jpeg', 'png', 'xyz']
         
-        #Récupère tous les infos des bases de données dont la connexion est enregistrée dans QGIS
-        qs = QSettings()
-        finalDict = {}
-        for k in sorted(qs.allKeys()):
-            if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
-                if len(k.split("/")) == 4:
-                    connexionName = k.split("/")[2]
-                    print connexionName
-                    if qs.value('PostgreSQL/connections/' + connexionName + '/savePassword') == 'true' and qs.value('PostgreSQL/connections/' + connexionName + '/saveUsername') == 'true':
-                        dictionary = {'name' : qs.value('PostgreSQL/connections/' + connexionName + '/database') , 'host' : qs.value('PostgreSQL/connections/' + connexionName + '/host'), 'port' : qs.value('PostgreSQL/connections/' + connexionName + '/port'), 'username' : qs.value('PostgreSQL/connections/' + connexionName + '/username'), 'password' : qs.value('PostgreSQL/connections/' + connexionName + '/password') }
-                        finalDict[qs.value('PostgreSQL/connections/' + connexionName + '/database')] = dictionary
+        
+        if self.PostGisDict == {}:
+            qs = QSettings()
+            for k in sorted(qs.allKeys()):
+                if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
+                    if len(k.split("/")) == 4:
+                        connexionName = k.split("/")[2]
+                        print connexionName
+                        if qs.value('PostgreSQL/connections/' + connexionName + '/savePassword') == 'true' and qs.value('PostgreSQL/connections/' + connexionName + '/saveUsername') == 'true':
+                            dictionary = {'name' : qs.value('PostgreSQL/connections/' + connexionName + '/database') , 'host' : qs.value('PostgreSQL/connections/' + connexionName + '/host'), 'port' : qs.value('PostgreSQL/connections/' + connexionName + '/port'), 'username' : qs.value('PostgreSQL/connections/' + connexionName + '/username'), 'password' : qs.value('PostgreSQL/connections/' + connexionName + '/password') }
+                            self.PostGisDict[qs.value('PostgreSQL/connections/' + connexionName + '/database')] = dictionary
 
         #Boucle pour chaque ligne
         count = 0
@@ -693,44 +745,28 @@ class Isogeo:
             except:
                 self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u"Pas de géométrie"))
             # On essaie d'ajouter la donnée si jamais c'est possible
-            if 'format' in i.keys():
+
                 # Dans le cas où c'est un vecteur
-                if i['format'] in vectorFormatList and 'path' in i:
-                    path = self.format_path(i['path'])
-                    name = os.path.basename(path).split(".")[0]
-                    layer = QgsVectorLayer(path, name ,'ogr')
-                    if layer.isValid():
-                        button = QPushButton("Ajouter")
-                        button.pressed.connect(partial(self.add_layer, AnyLayer = layer))
-                        self.dockwidget.resultats.setCellWidget(count,3, button)
-                    else:
-                        pass
-                # Dans le cas où c'est un raster
-                elif i['format'] in rasterFormatList and 'path' in i:
-                    path = self.format_path(i['path'])
-                    name = os.path.basename(path).split(".")[0]
-                    layer = QgsRasterLayer(path, name)
-                    if layer.isValid():
-                        button = QPushButton("Ajouter")
-                        button.pressed.connect(partial(self.add_layer, AnyLayer = layer))
-                        self.dockwidget.resultats.setCellWidget(count,3, button)
-                    else:
-                        pass
-                # Dans le cas où c'est du postgis
-                elif i['format'] == 'postgis':
-                    baseName = i['path']
-                    schema = i['name'].split(".")[0]
-                    table = i['name'].split(".")[1]
-                    
-                    if baseName in finalDict.keys():
-                        button = QPushButton("Ajouter")
-                        button.pressed.connect(partial(self.addPostGisLayer, host = finalDict[baseName]['host'], port = finalDict[baseName]['port'], basename = baseName, user = finalDict[baseName]['username'], password = finalDict[baseName]['password'], schema = schema, table = table))
-                        self.dockwidget.resultats.setCellWidget(count,3, button)
-                    else:
-                        pass
-                else:
-                    pass
+            if i['format'] in vectorFormatList:
+                button = QPushButton("Ajouter")
+                button.pressed.connect(partial(self.add_vector_layer, layer_id = i['_id']))
+                self.dockwidget.resultats.setCellWidget(count,3, button)
+            # Dans le cas où c'est un raster
+            elif i['format'] in rasterFormatList:
+                
+                button = QPushButton("Ajouter")
+                button.pressed.connect(partial(self.add_raster_layer, layer_id = i['_id']))
+                self.dockwidget.resultats.setCellWidget(count,3, button)
+            # Dans le cas où c'est du postgis
+            elif i['format'] == 'postgis':
+                baseName = i['path']
+                schema = i['name'].split(".")[0]
+                table = i['name'].split(".")[1]
+                button = QPushButton("Ajouter")
+                button.pressed.connect(partial(self.addPostGisLayer, layer_id = i['_id'], baseName = baseName, schema = schema, table = table))
+                self.dockwidget.resultats.setCellWidget(count,3, button)
             else:
+                QMessageBox.information(iface.mainWindow(),'Message', u"Chelou. Une donnée qui a passé le scan ne semble appartenir à aucune catégorie de donnée ajoutable.")
                 pass
             count +=1
 
@@ -835,15 +871,17 @@ class Isogeo:
 
         # Setting some variables
         self.page_index = 1
-        config = ConfigParser.ConfigParser()
-        config_path = self.get_plugin_path() + "/config_files/data_id.ini"
-        config.read(config_path)
-        id_dict = {s:dict(config.items(s)) for s in config.sections()}
-        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_include=links&_id='
-        for key in id_dict.keys():
-            for dataId in id_dict[key].keys():
-                self.currentUrl += dataId + ","
+
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_id='        
+        
+        with open(self.get_plugin_path() + "/config_files/data_id.txt") as data_file:    
+            data = json.load(data_file)        
+        
+        for data_id in data.keys():
+            self.currentUrl += data_id + ","
+        
         self.currentUrl = self.currentUrl[:-1]
+
         # Getting the parameters chosen by the user from the combobox
         if self.dockwidget.owner.currentIndex() != 0:
             owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
@@ -897,9 +935,9 @@ class Isogeo:
 
 
 
-        filters = "q=" + filters[:-1]
+        filters = "&q=" + filters[:-1]
         #self.dockwidget.text_input.setText(encoded_filters)        
-        if filters != "q=":
+        if filters != "&q=":
             self.currentUrl += filters
         self.currentUrl += "&_limit=15&_include=links"
         #self.dockwidget.dump.setText(self.currentUrl)
@@ -920,15 +958,17 @@ class Isogeo:
             self.dockwidget.initialize.setEnabled(False)
             # Building up the request
             self.page_index += 1
-            config = ConfigParser.ConfigParser()
-            config_path = self.get_plugin_path() + "/config_files/data_id.ini"
-            config.read(config_path)
-            id_dict = {s:dict(config.items(s)) for s in config.sections()}
-            self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_include=links&_id='
-            for key in id_dict.keys():
-                for dataId in id_dict[key].keys():
-                    self.currentUrl += dataId + ","
+            
+            self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_id='        
+        
+            with open(self.get_plugin_path() + "/config_files/data_id.txt") as data_file:    
+                data = json.load(data_file)        
+            
+            for data_id in data.keys():
+                self.currentUrl += data_id + ","
+            
             self.currentUrl = self.currentUrl[:-1]
+
             # Getting the parameters chosen by the user from the combobox
             if self.dockwidget.owner.currentIndex() != 0:
                 owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
@@ -981,14 +1021,15 @@ class Isogeo:
                     QMessageBox.information(iface.mainWindow(),'Erreur :', "Le système de coordonnée de votre canevas ne semble\npas défini avec un code EPSG.\nIl ne peut donc pas être interprété par QGIS.\nMerci de rapporter ce problème sur le bug tracker.")
 
 
-            filters = "q=" + filters[:-1]
+            filters = "&q=" + filters[:-1]
             #self.dockwidget.text_input.setText(encoded_filters)        
-            if filters != "q=":
+            if filters != "&q=":
                 self.currentUrl += filters
                 self.currentUrl += "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15&_include=links"
             else:
-                self.currentUrl += "_offset=" + str((15*(self.page_index-1))) + "&_limit=15&_include=links"
+                self.currentUrl += "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15&_include=links"
             #self.dockwidget.dump.setText(self.currentUrl)
+            self.logger.info(self.currentUrl)
             self.send_request_to_Isogeo_API(self.token)
 
     # Close to the search() function but triggered on the change page button.
@@ -1006,15 +1047,16 @@ class Isogeo:
             self.dockwidget.initialize.setEnabled(False)
             # Building up the request
             self.page_index -= 1
-            config = ConfigParser.ConfigParser()
-            config_path = self.get_plugin_path() + "/config_files/data_id.ini"
-            config.read(config_path)
-            id_dict = {s:dict(config.items(s)) for s in config.sections()}
-            self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_include=links&_id='
-            for key in id_dict.keys():
-                for dataId in id_dict[key].keys():
-                    self.currentUrl += dataId + ","
+            self.currentUrl = 'https://v1.api.isogeo.com/resources/search?&_id='        
+        
+            with open(self.get_plugin_path() + "/config_files/data_id.txt") as data_file:    
+                data = json.load(data_file)        
+            
+            for data_id in data.keys():
+                self.currentUrl += data_id + ","
+            
             self.currentUrl = self.currentUrl[:-1]
+            
             # Getting the parameters chosen by the user from the combobox
             if self.dockwidget.owner.currentIndex() != 0:
                 owner = self.dockwidget.owner.itemData(self.dockwidget.owner.currentIndex())
@@ -1068,9 +1110,9 @@ class Isogeo:
 
 
             
-            filters = "q=" + filters[:-1]      
+            filters = "&q=" + filters[:-1]      
             
-            if filters != "q=":
+            if filters != "&q=":
                 if self.page_index == 1:
                     self.currentUrl += filters + "&_limit=15&_include=links"
                 else:
@@ -1151,22 +1193,51 @@ class Isogeo:
                     new_string += character
             return new_string
 
-    def add_layer(self, AnyLayer):
-        QgsMapLayerRegistry.instance().addMapLayer(AnyLayer)
+    def add_vector_layer(self, layer_id):
+        with open(self.get_plugin_path() + "/config_files/data_id.txt") as data_file:    
+            data = json.load(data_file)
+        path = data[layer_id]
+        name = os.path.basename(path).split(".")[0]
+        layer = QgsVectorLayer(path, name ,'ogr')
+        if layer.isValid():
+            QgsMapLayerRegistry.instance().addMapLayer(layer)
+        else:
+            QMessageBox.information(iface.mainWindow(),'Message', u"Erreur, la couche vecteur n'est pas valide.")
 
-    def addPostGisLayer(self, host, port, basename, user, password, schema, table):
-        uri = QgsDataSourceURI()
+    
+    def add_raster_layer(self, layer_id):
+        with open(self.get_plugin_path() + "/config_files/data_id.txt") as data_file:    
+            data = json.load(data_file)
+        path = data[layer_id]
+        name = os.path.basename(path).split(".")[0]
+        layer = QgsRasterLayer(path, name)
+        if layer.isValid():
+            QgsMapLayerRegistry.instance().addMapLayer(layer)
+        else:
+            QMessageBox.information(iface.mainWindow(),'Message', u"Erreur, la couche raster n'est pas valide.")
+
+    def addPostGisLayer(self, layer_id, baseName, schema, table):
+
+        with open(self.get_plugin_path() + "/config_files/data_id.txt") as data_file:    
+            data = json.load(data_file)
+        
+        connectDict = data[layer_id]
+        host = connectDict['host']
+        port = connectDict['port']
+        user = connectDict['username']
+        password = connectDict['password']
         # set host name, port, database name, username and password
-        uri.setConnection(host, port, basename, user, password)
+        uri = QgsDataSourceURI()
+        uri.setConnection(host, port, baseName, user, password)
+        # The following few lines get the name of the geometry column
         c = con.PostGisDBConnector(uri)
         dico =  c.getTables()
         for i in dico:
             if i[0 == 1] and i[1] == table:
                 geometryColumn = i[8]
-        # set database schema, table name, geometry column and optionally
-        # subset (WHERE clause)
+        # set database schema, table name, geometry column
         uri.setDataSource(schema, table, geometryColumn)
-
+        # Builing and adding the layer
         vlayer = QgsVectorLayer(uri.uri(), table, "postgres")
         if vlayer.isValid():
             QgsMapLayerRegistry.instance().addMapLayer(vlayer)
@@ -1205,7 +1276,7 @@ class Isogeo:
 
         """ --- LOG LOG LOG --- """
 
-        """self.logger = logging.getLogger()
+        self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
         self.formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
         self.file_handler = RotatingFileHandler(self.get_plugin_path() + "/activity.log", 'a', 1000000, 1)
@@ -1214,20 +1285,12 @@ class Isogeo:
         self.logger.addHandler(self.file_handler)
         self.steam_handler = logging.StreamHandler()
         self.steam_handler.setLevel(logging.DEBUG)
-        self.logger.addHandler(self.steam_handler)"""
+        self.logger.addHandler(self.steam_handler)
 
         # Fixing a qgis.core bug that shows a warning banner "connexion time out" whenever a request is sent (even successfully) See : http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
         iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
         # Initiating values (TO DO : Move to init section)
-        config = ConfigParser.ConfigParser()
-        config_path = self.get_plugin_path() + "/config_files/data_id.ini"
-        config.read(config_path)
-        id_dict = {s:dict(config.items(s)) for s in config.sections()}
-        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_include=links&_limit=15&_id='
-        for key in id_dict.keys():
-            for dataId in id_dict[key].keys():
-                self.currentUrl += dataId + ","
-        self.currentUrl = self.currentUrl[:-1]
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
         
         self.page_index = 1
 
