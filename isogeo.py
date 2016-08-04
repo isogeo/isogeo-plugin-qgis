@@ -22,7 +22,7 @@
 # Ajouté par moi à partir de QByteArray
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QByteArray, QUrl, QDate
 #Ajouté oar moi à partir de QMessageBox
-from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, QCheckBox, QStandardItemModel, QStandardItem, QPushButton
+from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, QCheckBox, QStandardItemModel, QStandardItem, QPushButton, QComboBox
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -99,6 +99,8 @@ class Isogeo:
         self.hardReset = True
 
         self.showResult = True
+
+        self.PostGISdict = {}
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -468,18 +470,21 @@ class Isogeo:
         pointList = ["Point", "MultiPoint"]
         lineList = ["CircularString", "CompoundCurve", "Curve", "LineString", "MultiCurve", "MultiLineString"]
         multiList = ["Geometry", "GeometryCollection"]
+
+        vectorFormatList = ['shp', 'dxf', 'dgn', 'filegdb', 'tab']
+        rasterFormatList = ['esriasciigrid', 'geotiff', 'intergraphgdb', 'jpeg', 'png', 'xyz']
         
         #Récupère tous les noms de bases de données dont la connexion est enregistrée dans QGIS
         qs = QSettings()
-        finalDict = {}
-        for k in sorted(qs.allKeys()):
-            if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
-                if len(k.split("/")) == 4:
-                    connexionName = k.split("/")[2]
-                    print connexionName
-                    if qs.value('PostgreSQL/connections/' + connexionName + '/savePassword') == 'true' and qs.value('PostgreSQL/connections/' + connexionName + '/saveUsername') == 'true':
-                        dictionary = {'name' : qs.value('PostgreSQL/connections/' + connexionName + '/database') , 'host' : qs.value('PostgreSQL/connections/' + connexionName + '/host'), 'port' : qs.value('PostgreSQL/connections/' + connexionName + '/port'), 'username' : qs.value('PostgreSQL/connections/' + connexionName + '/username'), 'password' : qs.value('PostgreSQL/connections/' + connexionName + '/password') }
-                        finalDict[qs.value('PostgreSQL/connections/' + connexionName + '/database')] = dictionary
+        if self.PostGISdict == {}:
+            for k in sorted(qs.allKeys()):
+                if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
+                    if len(k.split("/")) == 4:
+                        connexionName = k.split("/")[2]
+                        print connexionName
+                        if qs.value('PostgreSQL/connections/' + connexionName + '/savePassword') == 'true' and qs.value('PostgreSQL/connections/' + connexionName + '/saveUsername') == 'true':
+                            dictionary = {'name' : qs.value('PostgreSQL/connections/' + connexionName + '/database') , 'host' : qs.value('PostgreSQL/connections/' + connexionName + '/host'), 'port' : qs.value('PostgreSQL/connections/' + connexionName + '/port'), 'username' : qs.value('PostgreSQL/connections/' + connexionName + '/username'), 'password' : qs.value('PostgreSQL/connections/' + connexionName + '/password') }
+                            self.PostGISdict[qs.value('PostgreSQL/connections/' + connexionName + '/database')] = dictionary
 
         count = 0
         for i in result['results']:
@@ -505,44 +510,243 @@ class Isogeo:
                     self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u'Géométrie inconnue'))
             except:
                 self.dockwidget.resultats.setItem(count,2, QTableWidgetItem(u"Pas de géométrie"))
+            
+            combo = QComboBox()
+            linkDict = {}
+            
             if 'format' in i.keys():
-                if (i['format'] == 'shp' or i['format'] == 'tab' or i['format'] == 'filegdb') and 'path' in i:
+                if i['format'] in vectorFormatList and 'path' in i:
                     path = self.format_path(i['path'])
-                    name = os.path.basename(path).split(".")[0]
-                    layer = QgsVectorLayer(path, name ,'ogr')
-                    if layer.isValid():
-                        button = QPushButton("Ajouter")
-                        button.pressed.connect(partial(self.add_layer, AnyLayer = layer))
-                        self.dockwidget.resultats.setCellWidget(count,3, button)
-                    else:
+                    try:
+                        testPath = open(path)
+                        params = ["vector", path]
+                        linkDict[u"Donnée fichier"] = params
+                        #combo.addItem(u"Donnée fichier", params)
+                        
+                    except IOError:
                         pass
-                elif i['format'] == 'geotiff' and 'path' in i:
+
+                elif i['format'] in rasterFormatList and 'path' in i:
                     path = self.format_path(i['path'])
-                    name = os.path.basename(path).split(".")[0]
-                    layer = QgsRasterLayer(path, name)
-                    if layer.isValid():
-                        button = QPushButton("Ajouter")
-                        button.pressed.connect(partial(self.add_layer, AnyLayer = layer))
-                        self.dockwidget.resultats.setCellWidget(count,3, button)
-                    else:
+                    try:
+                        testPath = open(path)
+                        params = ["raster", path]
+                        linkDict[u"Donnée fichier"] = params
+                        #combo.addItem(u"Donnée fichier", params)
+                    except IOError:
                         pass
+ 
                 elif i['format'] == 'postgis':
                     #Récupère le nom de la base de données
                     baseName = i['path']
-                    schema = i['name'].split(".")[0]
-                    table = i['name'].split(".")[1]
                     
-                    if baseName in finalDict.keys():
+                    if baseName in self.PostGISdict.keys():
+                        params = {}
+                        params['baseName'] = baseName
+                        params['schema'] = i['name'].split(".")[0]
+                        params['table'] = i['name'].split(".")[1]
+                        linkDict[u"Table PostGIS"] = params
+                        #combo.addItem(u"Table PostGIS", params)
+                        """
                         button = QPushButton("Ajouter")
-                        button.pressed.connect(partial(self.addPostGisLayer, host = finalDict[baseName]['host'], port = finalDict[baseName]['port'], basename = baseName, user = finalDict[baseName]['username'], password = finalDict[baseName]['password'], schema = schema, table = table))
-                        self.dockwidget.resultats.setCellWidget(count,3, button)
-                    else:
-                        pass
-                else:
-                    pass
-            else:
-                pass
+                        button.pressed.connect(partial(self.addPostGisLayer, host = self.PostGISdict[baseName]['host'], port = self.PostGISdict[baseName]['port'], basename = baseName, user = self.PostGISdict[baseName]['username'], password = self.PostGISdict[baseName]['password'], schema = schema, table = table))
+                        self.dockwidget.resultats.setCellWidget(count,3, button)"""
+ 
+            for link in i['links']:
+                if link['kind'] == 'wms':
+                    name_url = self.build_wms_url(link['url'])
+                    if name_url != 0:
+                        linkDict[u"WMS : " + name_url[1]] = name_url
+                        #combo.addItem(u"WMS : " + name_url[1], name_url)
+                elif link['kind'] == 'wfs':
+                    name_url = self.build_wfs_url(link['url'])
+                    if name_url != 0:
+                        linkDict[u"WMS : " + name_url[1]] = name_url
+                        #combo.addItem(u"WFS" + name_url[1], name_url)
+            
+            with open('C:/Users/theo.sinatti/Documents/TESTOULA/{0}.txt'.format(count), 'w') as outfile:
+                json.dump(linkDict, outfile)
+           
+            for key in linkDict.keys():
+                combo.addItem(key, linkDict[key])
+
+            combo.activated.connect(partial(self.add_layer, layerIndex = count))
+            self.dockwidget.resultats.setCellWidget(count,3, combo)
+       
             count +=1
+    
+    # This adds a layer
+    def add_layer(self, layerIndex):
+        layerInfo = self.dockwidget.resultats.cellWidget(layerIndex,3).itemData(self.dockwidget.resultats.cellWidget(layerIndex,3).currentIndex())
+        if type(layerInfo) == list:
+            if layerInfo[0] == "vector":
+                path = layerInfo[1]
+                name = os.path.basename(path).split(".")[0]
+                layer = QgsVectorLayer(path, name ,'ogr')
+                if layer.isValid():
+                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                else:
+                    QMessageBox.information(iface.mainWindow(),'Erreur', "La couche n'est pas valide")
+            
+            elif layerInfo[0] == "raster":
+                path = layerInfo[1]
+                name = os.path.basename(path).split(".")[0]
+                layer = QgsRasterLayer(path, name)
+                if layer.isValid():
+                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                else:
+                    QMessageBox.information(iface.mainWindow(),'Erreur', "La couche n'est pas valide")
+
+            elif layerInfo[0] == 'WMS':
+                url = layerInfo[2]
+                name = layerInfo[1]
+                layer = QgsRasterLayer(url, name, 'wms')
+                if not layer.isValid():
+                    QMessageBox.information(iface.mainWindow(),'Erreur', u"Le service renseigné n'est pas valide")
+                else:
+                    QMessageBox.information(iface.mainWindow(),'Erreur', url)
+                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+
+            elif layerInfo[0] == 'WFS':
+                url = layerInfo[2]
+                name = layerInfo[1]
+                layer = QgsVectorLayer(url, name, 'WFS')
+                if not layer.isValid():
+                    QMessageBox.information(iface.mainWindow(),'Erreur', u"Le service renseigné n'est pas valide")
+                else:
+                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+        
+        elif type(layerInfo) == dict:
+            # Give aliases to the data passed as arguement
+            baseName = layerInfo['baseName']
+            schema = layerInfo['schema']
+            table = layerInfo['table']
+            # Retrieve the database information stored in the PostGISdict
+            uri = QgsDataSourceURI()
+            host = self.PostGISdict[baseName]['host']
+            port = self.PostGISdict[baseName]['port']
+            user = self.PostGISdict[baseName]['username']
+            password = self.PostGISdict[baseName]['password']
+            # set host name, port, database name, username and password
+            uri.setConnection(host, port, baseName, user, password)
+            # Get the geometry column name from the database connexion & table name.
+            c = con.PostGisDBConnector(uri)
+            dico =  c.getTables()
+            for i in dico:
+                if i[0 == 1] and i[1] == table:
+                    geometryColumn = i[8]
+            # set database schema, table name, geometry column
+            uri.setDataSource(schema, table, geometryColumn)
+            # Adding the layer to the map canvas
+            layer = QgsVectorLayer(uri.uri(), table, "postgres")
+            if layer.isValid():
+                QgsMapLayerRegistry.instance().addMapLayer(layer)
+            else:
+                QMessageBox.information(iface.mainWindow(),'Erreur', u"La couche PostGis n'est pas valide.\nCa craint.")
+   
+    # Tests weither all the needed information is provided in the url, and then build the url in the syntax understood by QGIS, which is never the syntax given by the user
+    def build_wms_url(self, raw_url):
+        baseUrl = raw_url.split("?")[0] + "?"
+        list_parameters = raw_url.split("?")[1].split('&')
+        valid = False
+        styleDefined = False
+        CRSdefined = False
+        formatDefined = False
+        for i in list_parameters:
+            ilow = i.lower()
+            if "layers=" in ilow:
+                valid = True
+                name = i.split('=')[1]
+                layers = i
+            elif "layer=" in ilow:
+                valid = True
+                name = i.split('=')[1]
+                layers = "layers=" + name
+            elif "styles=" in ilow:
+                styleDefined = True
+                style = i
+            elif  "crs=" in ilow:
+                CRSdefined = True
+                CRS = i
+            elif "format=" in ilow:
+                formatDefined = True
+                imgformat = i
+
+        if valid == True:
+            if baseUrl.lower().startswith('url='):
+                finalUrl = baseUrl + "&" + layers
+            else:
+                finalUrl = "url=" + baseUrl + "&" + layers
+            
+            if styleDefined == True:
+                finalUrl += '&' + style
+            else:
+               finalUrl += '&styles='
+            
+            if formatDefined == True:
+                finalUrl += '&' + imgformat
+            else:
+                finalUrl += '&format=image/jpeg'
+
+            if CRSdefined == True:
+                finalUrl += '&' + CRS
+            output = ["WMS", name, finalUrl]
+            return output
+
+        else:
+            return 0
+
+    # Add a WMS layer, given a url
+    def add_wms_layer(self, url, name, firstUrl):
+        rlayer = QgsRasterLayer(url, name, 'wms')
+        if not rlayer.isValid():
+            QMessageBox.information(iface.mainWindow(),'Erreur', firstUrl + " -> " + url)
+        else:
+            #self.dockwidget.text_input.setText(firstUrl + " -> " + url)
+            QgsMapLayerRegistry.instance().addMapLayer(rlayer)
+
+    # Tests weither all the needed information is provided in the url, and then build the url in the syntax understood by QGIS, which is never the syntax given by the user
+    def build_wfs_url(self, raw_url):
+        baseUrl = raw_url.split("?")[0] + "?"
+        list_parameters = raw_url.split("?")[1].split('&')
+        valid = False
+        SRSdefined = False
+        for i in list_parameters:
+            ilow = i.lower()
+            if "typename=" in ilow:
+                valid = True
+                name = i.split('=')[1]
+                typename = i
+            elif "layers=" in ilow or "layer=" in ilow:
+                valid = True
+                name = i.split('=')[1]
+                typename = "typename=" + name
+            elif  "srsname=" in ilow:
+                SRSdefined = True
+                SRS = i
+
+        if valid == True:
+            finalUrl = baseUrl + typename
+
+            if SRSdefined == True:
+                finalUrl += '&' + SRS
+
+            finalUrl += '&service=WFS&version=1.0.0&request=GetFeature'
+
+            output = ["WFS", name, finalUrl]
+            return output
+
+        else:
+            return 0
+
+    # Add a WFS alyer, given a url
+    def add_wfs_layer(self, url, name, firstUrl):
+        layer = QgsVectorLayer(url, name, 'WFS')
+        if not layer.isValid():
+            QMessageBox.information(iface.mainWindow(),'Erreur', firstUrl + " -> " + url)
+        else:
+            #self.dockwidget.text_input.setText(firstUrl + " -> " + url)
+            QgsMapLayerRegistry.instance().addMapLayer(layer)
 
     # This parse the tags contained in API_answer[tags] and class them so they are more easy to handle in other function such as update_fields()
     def get_tags(self, answer):
@@ -698,7 +902,7 @@ class Isogeo:
         if filters != "q=":
             self.currentUrl += filters
         if self.showResult == True:
-            self.currentUrl += "&_limit=15"
+            self.currentUrl += "&_limit=15&_include=links"
         else:
             self.currentUrl += "&_limit=0"
         #self.dockwidget.dump.setText(self.currentUrl)
@@ -771,9 +975,9 @@ class Isogeo:
             #self.dockwidget.text_input.setText(encoded_filters)        
             if filters != "q=":
                 self.currentUrl += filters
-                self.currentUrl += "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
+                self.currentUrl += "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15&_include=links"
             else:
-                self.currentUrl += "_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
+                self.currentUrl += "_offset=" + str((15*(self.page_index-1))) + "&_limit=15&_include=links"
             #self.dockwidget.dump.setText(self.currentUrl)
             self.send_request_to_Isogeo_API(self.token)
 
@@ -845,14 +1049,14 @@ class Isogeo:
             
             if filters != "q=":
                 if self.page_index == 1:
-                    self.currentUrl += filters + "&_limit=15"
+                    self.currentUrl += filters + "&_limit=15&_include=links"
                 else:
-                    self.currentUrl += filters + "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
+                    self.currentUrl += filters + "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15&_include=links"
             else:
                 if self.page_index == 1:
-                    self.currentUrl += "_limit=15"
+                    self.currentUrl += "_limit=15&_include=links"
                 else:
-                    self.currentUrl += "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15"
+                    self.currentUrl += "&_offset=" + str((15*(self.page_index-1))) + "&_limit=15&_include=links"
 
             #self.dockwidget.dump.setText(self.currentUrl)
             self.send_request_to_Isogeo_API(self.token)
@@ -900,6 +1104,7 @@ class Isogeo:
     def open_bugtracker(self):
         webbrowser.open('https://github.com/isogeo/isogeo-plugin-qgis/issues', new=0, autoraise = True)
 
+    # Clear all widget and send a request to the API (which ends up updating the fields : send_request() calls handle_reply(), which calls update_fields())
     def reinitialize_research(self):
         self.hardReset = True
         self.dockwidget.checkBox.setCheckState(Qt.Unchecked)
@@ -915,6 +1120,7 @@ class Isogeo:
         self.dockwidget.sys_coord.clear()
         self.search()
 
+    # Given a windows formated path, it transforms it in a path understood by QGIS (\ are replaced by /)
     def format_path(self, string):
             new_string = ""
             for character in string:
@@ -924,9 +1130,8 @@ class Isogeo:
                     new_string += character
             return new_string
 
-    def add_layer(self, AnyLayer):
-        QgsMapLayerRegistry.instance().addMapLayer(AnyLayer)
 
+    """# This adds a PostGis layer, given all the needed information about the base and the table.
     def addPostGisLayer(self, host, port, basename, user, password, schema, table):
         uri = QgsDataSourceURI()
         # set host name, port, database name, username and password
@@ -944,12 +1149,15 @@ class Isogeo:
         if vlayer.isValid():
             QgsMapLayerRegistry.instance().addMapLayer(vlayer)
         else:
-            QMessageBox.information(iface.mainWindow(),'Erreur', u"La couche PostGis n'est pas valide.\nCa craint.")
+            QMessageBox.information(iface.mainWindow(),'Erreur', u"La couche PostGis n'est pas valide.\nCa craint.")"""
 
+
+    # Launch a search request that will end up in showing the results.
     def search_with_content(self):
         self.showResult = True
         self.search()
 
+    # Deactivate the widgets while a funcion is running so the user doesn't clic everywhere ending up in multiple requests being sent at the same time, making the plugin crash.
     def switch_widgets_on_and_off(self, mode):
         if mode == 'on':
             self.dockwidget.text_input.setReadOnly(False)

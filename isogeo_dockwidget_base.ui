@@ -34,7 +34,7 @@
         <item row="0" column="0" colspan="2">
          <widget class="QPushButton" name="report">
           <property name="text">
-           <string>Reporter un problème</string>
+           <string>Rapporter un problème</string>
           </property>
          </widget>
         </item>

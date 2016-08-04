@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Tue Aug 02 17:20:53 2016
+# Created: Thu Aug 04 17:12:32 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -485,7 +485,7 @@ class Ui_IsogeoDockWidgetBase(object):
 
     def retranslateUi(self, IsogeoDockWidgetBase):
         IsogeoDockWidgetBase.setWindowTitle(_translate("IsogeoDockWidgetBase", "Isogeo", None))
-        self.report.setText(_translate("IsogeoDockWidgetBase", "Reporter un problème", None))
+        self.report.setText(_translate("IsogeoDockWidgetBase", "Rapporter un problème", None))
         self.filters_box.setTitle(_translate("IsogeoDockWidgetBase", "Recherche avancée", None))
         self.label_3.setText(_translate("IsogeoDockWidgetBase", "Propriétaire", None))
         self.label_2.setText(_translate("IsogeoDockWidgetBase", "Format", None))
