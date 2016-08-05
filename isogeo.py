@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
 /***************************************************************************
  Isogeo
@@ -19,30 +20,36 @@
  *                                                                         *
  ***************************************************************************/
 """
+
 # Ajouté par moi à partir de QByteArray
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QByteArray, QUrl, QDate
-#Ajouté oar moi à partir de QMessageBox
-from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, QCheckBox, QStandardItemModel, QStandardItem, QPushButton, QComboBox
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
+    Qt, QByteArray, QUrl
+# Ajouté oar moi à partir de QMessageBox
+from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
+    QStandardItemModel, QStandardItem, QComboBox
 
 # Initialize Qt resources from file resources.py
 import resources
 
 # Import the code for the DockWidget
 from isogeo_dockwidget import IsogeoDockWidget
-# Import du code de la pop up d'authentification
+
+# Import du code des autres fenêtres
 from authentification import authentification
+from ask_research_name import ask_research_name
 
 import os.path
 
-#Ajoutés par moi
+# Ajoutés par moi
 from qgis.utils import iface
-from qgis.core import QgsNetworkAccessManager, QgsPoint, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI
+from qgis.core import QgsNetworkAccessManager, QgsPoint, \
+    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, \
+    QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI
 from PyQt4.QtNetwork import QNetworkRequest
 import ConfigParser
 import json
 import base64
 import urllib
-import time
 import logging
 from logging.handlers import RotatingFileHandler
 import datetime
@@ -50,11 +57,13 @@ import webbrowser
 from functools import partial
 import db_manager.db_plugins.postgis.connector as con
 
+
 class Isogeo:
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
         """Constructor.
+
         :param iface: An interface instance that will be passed to this class
             which provides the hook by which you can manipulate the QGIS
             application at run time.
@@ -87,12 +96,14 @@ class Isogeo:
         self.toolbar = self.iface.addToolBar(u'Isogeo')
         self.toolbar.setObjectName(u'Isogeo')
 
-        #print "** INITIALIZING Isogeo"
+        # print "** INITIALIZING Isogeo"
 
         self.pluginIsActive = False
         self.dockwidget = None
 
         self.authentification_window = authentification()
+
+        self.ask_name_popup = ask_research_name()
 
         self.loopCount = 0
 
@@ -102,9 +113,11 @@ class Isogeo:
 
         self.PostGISdict = {}
 
+
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
+
         We implement this ourselves since we do not inherit QObject.
         :param message: String for translation.
         :type message: str, QString
@@ -324,7 +337,7 @@ class Isogeo:
         #self.logger.info('Dans le handle reply')
         bytarray = self.API_reply.readAll()
         content = str(bytarray)
-        if self.API_reply.error() == 0:
+        if self.API_reply.error() == 0 and content != "":
             self.loopCount = 0
             parsed_content = json.loads(content)
             self.update_fields(parsed_content)
@@ -338,9 +351,9 @@ class Isogeo:
                 self.token_reply = 0
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
-                QMessageBox.information(iface.mainWindow(),'Erreur :', "Le script est rentré dans une boucle sans fin.\nVérifiez que vous avez partagé bien partagé \nun ou plusieurs catalogues avec le plugin.\nSi c'est bien le cas, merci de rapporter\nce problème sur le bug tracker")
+                QMessageBox.information(iface.mainWindow(),'Erreur :', u"Le script est rentré dans une boucle sans fin.\nVérifiez que vous avez partagé bien partagé \nun ou plusieurs catalogues avec le plugin.\nSi c'est bien le cas, merci de rapporter\nce problème sur le bug tracker")
         else:
-            QMessageBox.information(iface.mainWindow(),'Erreur :', "Vous rencontrez une erreur non encore gérée.\nCode : " + str(self.API_reply.error()) + "\nMerci de le reporter sur le bug tracker.")
+            QMessageBox.information(iface.mainWindow(),'Erreur :', u"Vous rencontrez une erreur non encore gérée.\nCode : " + str(self.API_reply.error()) + "\nMerci de le reporter sur le bug tracker.")
 
     # This takes an API answer and update the fields accordingly. It also calls show_results in the end. This may change, so results would be shown only when a specific button is pressed.
     def update_fields(self, result):
@@ -450,6 +463,7 @@ class Isogeo:
         else:
             self.dockwidget.checkBox_3.setCheckable(False)
             self.dockwidget.checkBox_3.setStyleSheet("color: grey")
+        
         # Show result, if we want them to be shown (button 'show result', 'next page' or 'previous page' pressed)
         if self.showResult == True:
             self.show_results(result)
@@ -561,7 +575,7 @@ class Isogeo:
                 elif link['kind'] == 'wfs':
                     name_url = self.build_wfs_url(link['url'])
                     if name_url != 0:
-                        linkDict[u"WMS : " + name_url[1]] = name_url
+                        linkDict[u"WFS : " + name_url[1]] = name_url
                         #combo.addItem(u"WFS" + name_url[1], name_url)
             
             with open('C:/Users/theo.sinatti/Documents/TESTOULA/{0}.txt'.format(count), 'w') as outfile:
@@ -604,7 +618,6 @@ class Isogeo:
                 if not layer.isValid():
                     QMessageBox.information(iface.mainWindow(),'Erreur', u"Le service renseigné n'est pas valide")
                 else:
-                    QMessageBox.information(iface.mainWindow(),'Erreur', url)
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
 
             elif layerInfo[0] == 'WFS':
@@ -696,15 +709,15 @@ class Isogeo:
         else:
             return 0
 
-    # Add a WMS layer, given a url
+    """# Add a WMS layer, given a url
     def add_wms_layer(self, url, name, firstUrl):
         rlayer = QgsRasterLayer(url, name, 'wms')
         if not rlayer.isValid():
             QMessageBox.information(iface.mainWindow(),'Erreur', firstUrl + " -> " + url)
         else:
             #self.dockwidget.text_input.setText(firstUrl + " -> " + url)
-            QgsMapLayerRegistry.instance().addMapLayer(rlayer)
-
+            QgsMapLayerRegistry.instance().addMapLayer(rlayer)"""
+    
     # Tests weither all the needed information is provided in the url, and then build the url in the syntax understood by QGIS, which is never the syntax given by the user
     def build_wfs_url(self, raw_url):
         baseUrl = raw_url.split("?")[0] + "?"
@@ -740,13 +753,13 @@ class Isogeo:
             return 0
 
     # Add a WFS alyer, given a url
-    def add_wfs_layer(self, url, name, firstUrl):
+    """def add_wfs_layer(self, url, name, firstUrl):
         layer = QgsVectorLayer(url, name, 'WFS')
         if not layer.isValid():
             QMessageBox.information(iface.mainWindow(),'Erreur', firstUrl + " -> " + url)
         else:
             #self.dockwidget.text_input.setText(firstUrl + " -> " + url)
-            QgsMapLayerRegistry.instance().addMapLayer(layer)
+            QgsMapLayerRegistry.instance().addMapLayer(layer)"""
 
     # This parse the tags contained in API_answer[tags] and class them so they are more easy to handle in other function such as update_fields()
     def get_tags(self, answer):
@@ -827,6 +840,21 @@ class Isogeo:
         for i in xrange(self.dockwidget.keywords.count()):
             if self.dockwidget.keywords.itemData(i, 10) == 2:
                 key_params.append(self.dockwidget.keywords.itemData(i, 32))
+
+        # Saving the checked checkboxes (useful for the list saving)
+        if self.dockwidget.checkBox.isChecked():
+            view_param = True
+        else:
+            view_param = False
+        if self.dockwidget.checkBox_2.isChecked():
+            download_param = True
+        else:
+            download_param = False
+        if self.dockwidget.checkBox_3.isChecked():
+            other_param = True
+        else:
+            other_param = False
+        
         params = {}
         params['owner'] = owner_param
         params['inspire'] = inspire_param
@@ -834,8 +862,12 @@ class Isogeo:
         params['srs'] = srs_param
         params['keys'] = key_params
         params['operation'] = operation_param
+        params['view'] = view_param
+        params['download'] = download_param
+        params['other'] = other_param
         return params
 
+    # This builds the url, retrieving the parameters from the widgets. When the final url is built, it calles send_request_to_isogeo_API
     def search(self):
         #self.logger.info('Dans la fonction search')
         # Disabling all user inputs during the research function is running
@@ -1120,6 +1152,7 @@ class Isogeo:
         self.dockwidget.sys_coord.clear()
         self.search()
 
+
     # Given a windows formated path, it transforms it in a path understood by QGIS (\ are replaced by /)
     def format_path(self, string):
             new_string = ""
@@ -1129,28 +1162,6 @@ class Isogeo:
                 else:
                     new_string += character
             return new_string
-
-
-    """# This adds a PostGis layer, given all the needed information about the base and the table.
-    def addPostGisLayer(self, host, port, basename, user, password, schema, table):
-        uri = QgsDataSourceURI()
-        # set host name, port, database name, username and password
-        uri.setConnection(host, port, basename, user, password)
-        c = con.PostGisDBConnector(uri)
-        dico =  c.getTables()
-        for i in dico:
-            if i[0 == 1] and i[1] == table:
-                geometryColumn = i[8]
-        # set database schema, table name, geometry column and optionally
-        # subset (WHERE clause)
-        uri.setDataSource(schema, table, geometryColumn)
-
-        vlayer = QgsVectorLayer(uri.uri(), table, "postgres")
-        if vlayer.isValid():
-            QgsMapLayerRegistry.instance().addMapLayer(vlayer)
-        else:
-            QMessageBox.information(iface.mainWindow(),'Erreur', u"La couche PostGis n'est pas valide.\nCa craint.")"""
-
 
     # Launch a search request that will end up in showing the results.
     def search_with_content(self):
@@ -1167,6 +1178,8 @@ class Isogeo:
             self.dockwidget.next.setEnabled(True)
             self.dockwidget.previous.setEnabled(True)
             self.dockwidget.initialize.setEnabled(True)
+            self.dockwidget.show_button.setEnabled(True)
+            
         else:
             self.dockwidget.text_input.setReadOnly(True)
             self.dockwidget.filters_box.setEnabled(False)
@@ -1175,6 +1188,7 @@ class Isogeo:
             self.dockwidget.next.setEnabled(False)
             self.dockwidget.previous.setEnabled(False)
             self.dockwidget.initialize.setEnabled(False)
+            self.dockwidget.show_button.setEnabled(False)
 
 
 
@@ -1251,17 +1265,16 @@ class Isogeo:
         # show results
         self.dockwidget.show_button.pressed.connect(self.search_with_content)
 
+
         """ --- Actions when the plugin is launched --- """
         self.test_config_file_existence()
         self.user_authentification()
         self.test_proxy_configuration()
 
+        self.dockwidget.favorite_combo.setEnabled(False)
+        self.dockwidget.save_favorite.setEnabled(False)
         self.dockwidget.groupBox.setEnabled(False)
         self.dockwidget.groupBox_2.setEnabled(False)
         self.dockwidget.groupBox_3.setEnabled(False)
         self.dockwidget.groupBox_4.setEnabled(False)
         self.dockwidget.tab_3.setEnabled(False)
-        self.dockwidget.favorite_combo.setEnabled(False)
-        self.dockwidget.save_favorite.setEnabled(False)
-        self.dockwidget.label.setStyleSheet("color: grey")
-        self.dockwidget.label_9.setStyleSheet("color: grey")
