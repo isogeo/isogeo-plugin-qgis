@@ -227,31 +227,32 @@ class Isogeo:
     # --------------------------------------------------------------------------
 
     def get_plugin_path(self):
-        """
-        Minor function. This retrieves the path to the folder where the
-        plugin is
-        """
+        """Retrieve the path to the folder where the plugin is."""
         basepath = os.path.dirname(os.path.realpath(__file__))
         return basepath
 
-    # Check if the file already exists and if not, create it.
     def test_config_file_existence(self):
+        """Check if the file already exists and if not, create it."""
         self.config = ConfigParser.ConfigParser()
         self.config_path = self.get_plugin_path() + "/config.ini"
         if os.path.isfile(self.config_path):
             pass
         else:
             QMessageBox.information(iface.mainWindow(
-            ), 'Alerte', u"Vous avez détruit ou renommé le fichier config.ini.\nCe n'était pas une très bonne idée.\nCa va pour cette fois, mais que ça ne se reproduise plus.")
+            ), 'Alerte', u"Vous avez détruit ou renommé le fichier config.ini."
+                u"\nCe n'était pas une très bonne idée.")
             config_file = open(self.config_path, 'w')
             self.config.write(config_file)
             # TO DO : CREER UN TEMPLATE
             config_file.close()
 
-    # Check if a proxy configuration is set up for the computer, and for QGIS.
-    # If none or both is set up, pass. But if there is a proxy config for the
-    # computer but not in QGIS, pops an alert message.
     def test_proxy_configuration(self):
+        """Check the proxy configuration.
+
+        if a proxy configuration is set up for the computer, and for QGIS.
+        If none or both is set up, pass. But if there is a proxy config for the
+        computer but not in QGIS, pops an alert message.
+        """
         system_proxy_config = urllib.getproxies()
         if system_proxy_config == {}:
             pass
@@ -262,12 +263,19 @@ class Isogeo:
                 pass
             else:
                 QMessageBox.information(iface.mainWindow(
-                ), 'Alerte', u"Problème de proxy : \nVotre ordinateur utilise un proxy, mais vous n'avez pas saisi ses paramètres dans QGIS.\nMerci de renseigner les paramètres proxy dans le menu 'Préférences/Option/Réseau'.")
+                ), 'Alerte', u"Problème de proxy : \nVotre ordinateur utilise "
+                    u"un proxy, mais vous n'avez pas saisi ses paramètres dans"
+                    u" QGIS.\nMerci de renseigner les paramètres proxy dans le"
+                    u" menu 'Préférences/Option/Réseau'.")
 
-    # This is the first major function the plugin calls when executed. It
-    # retrieves the id and secret from the config file. If they are set to
-    # their default value, it asks for them. if not it ties to send a request.
     def user_authentification(self):
+        """Test the validity of the user id and secret.
+
+        This is the first major function the plugin calls when executed. It
+        retrieves the id and secret from the config file. If they are set to
+        their default value, it asks for them.
+        If not, it tries to send a request.
+        """
         self.config.read(self.config_path)
         config_dict = {s: dict(self.config.items(s))
                        for s in self.config.sections()}
@@ -279,11 +287,16 @@ class Isogeo:
         else:
             self.authentification_window.show()
 
-    # When the authentification window is closed, stores the values in the
-    # file, then call the authentification function to test them.
     def write_ids_and_test(self):
+        """Store the id &secret and launch the test function.
+
+        Called when the authentification window is closed,
+        it stores the values in the file, then call the
+        user_authentification function to test them.
+        """
         self.user_id = self.authentification_window.user_id_input.text()
-        self.user_secret = self.authentification_window.user_secret_input.text()
+        self.user_secret = self.authentification_window.\
+            user_secret_input.text()
         config_file = open(self.config_path, 'w')
         self.config.set('Isogeo_ids', 'application_id', self.user_id)
         self.config.set('Isogeo_ids', 'application_secret', self.user_secret)
@@ -292,26 +305,30 @@ class Isogeo:
 
         self.user_authentification()
 
-    # This send a POST request to Isogeo API with the user id and secret in
-    # its header. The API should return an access token
     def ask_for_token(self, c_id, c_secret):
-        # self.logger.info('ask4token')
+        """Ask a token from Isogeo API authentification page.
+
+        This send a POST request to Isogeo API with the user id and secret in
+        its header. The API should return an access token
+        """
         headervalue = "Basic " + base64.b64encode(c_id + ":" + c_secret)
         data = urllib.urlencode({"grant_type": "client_credentials"})
-        dataByte = QByteArray()
-        dataByte.append(data)
+        databyte = QByteArray()
+        databyte.append(data)
         manager = QgsNetworkAccessManager.instance()
         url = QUrl('https://id.api.isogeo.com/oauth/token')
         request = QNetworkRequest(url)
         request.setRawHeader("Authorization", headervalue)
-        self.token_reply = manager.post(request, dataByte)
+        self.token_reply = manager.post(request, databyte)
         self.token_reply.finished.connect(self.handle_token)
 
-    # This handles the API answer. If it has sent an access token, it calls
-    # the initialization function. If not, it raises an error, and ask for new
-    # IDs
     def handle_token(self):
-        # self.logger.info('handle_token')
+        """Handle the API answer when asked for a token.
+
+        This handles the API answer. If it has sent an access token, it calls
+        the initialization function. If not, it raises an error, and ask
+        for new IDs
+        """
         bytarray = self.token_reply.readAll()
         content = str(bytarray)
         parsed_content = json.loads(content)
@@ -327,10 +344,12 @@ class Isogeo:
         else:
             self.dockwidget.text_input.setText("Erreur inconnue.")
 
-    # This takes the current url variable and send a request to this url,
-    # using the token variable.
     def send_request_to_Isogeo_API(self, token, limit=15):
-        #self.logger.info('Dans la fonction sens request')
+        """Send a content url to the Isogeo API.
+
+        This takes the currentUrl variable and send a request to this url,
+        using the token variable.
+        """
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
         request.setRawHeader("Authorization", token)
@@ -338,11 +357,13 @@ class Isogeo:
         self.API_reply = manager.get(request)
         self.API_reply.finished.connect(self.handle_API_reply)
 
-    # This is called when the answer from the API is finished. If it's
-    # content, it calls update_fields(). If it isn't, it means the token has
-    # expired, and it calls ask_for_token()
     def handle_API_reply(self):
-        #self.logger.info('Dans le handle reply')
+        """Handle the different possible Isogeo API answer.
+
+        This is called when the answer from the API is finished. If it's
+        content, it calls update_fields(). If it isn't, it means the token has
+        expired, and it calls ask_for_token()
+        """
         bytarray = self.API_reply.readAll()
         content = str(bytarray)
         if self.API_reply.error() == 0 and content != "":
@@ -360,16 +381,24 @@ class Isogeo:
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
                 QMessageBox.information(iface.mainWindow(
-                ), 'Erreur :', u"Le script est rentré dans une boucle sans fin.\nVérifiez que vous avez partagé bien partagé \nun ou plusieurs catalogues avec le plugin.\nSi c'est bien le cas, merci de rapporter\nce problème sur le bug tracker")
+                ), 'Erreur :', u"Le script tourne en rond."
+                    u"\nVérifiez que vous avez partagé bien partagé \nun ou "
+                    u"plusieurs catalogues avec le plugin.\nSi c'est bien le "
+                    u"cas, merci de rapporter\nce problème sur le bug tracker")
         else:
-            QMessageBox.information(iface.mainWindow(), 'Erreur :', u"Vous rencontrez une erreur non encore gérée.\nCode : " + str(
-                self.API_reply.error()) + "\nMerci de le reporter sur le bug tracker.")
+            QMessageBox.information(iface.mainWindow(), 'Erreur :',
+                                    u"Vous rencontrez une erreur non encore "
+                                    u"gérée.\nCode : " + str(
+                self.API_reply.error()) + "\nMerci de le reporter sur le bug "
+                u"tracker.")
 
-    # This takes an API answer and update the fields accordingly. It also
-    # calls show_results in the end. This may change, so results would be
-    # shown only when a specific button is pressed.
     def update_fields(self, result):
-        #self.logger.info('Dans le update fields')
+        """Update the fields content.
+
+        This takes an API answer and update the fields accordingly. It also
+        calls show_results in the end. This may change, so results would be
+        shown only when a specific button is pressed.
+        """
         tags = self.get_tags(result)
         # Getting the index of selected items in each combobox
         self.params = self.save_params()
@@ -626,9 +655,6 @@ class Isogeo:
                     if name_url != 0:
                         linkDict[u"WFS : " + name_url[1]] = name_url
                         #combo.addItem(u"WFS" + name_url[1], name_url)
-
-            with open('C:/Users/theo.sinatti/Documents/TESTOULA/{0}.txt'.format(count), 'w') as outfile:
-                json.dump(linkDict, outfile)
 
             for key in linkDict.keys():
                 combo.addItem(key, linkDict[key])
@@ -1301,7 +1327,7 @@ class Isogeo:
             self.dockwidget.initialize.setEnabled(False)
             self.dockwidget.show_button.setEnabled(False)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
 
     # This function is launched when the plugin is activated.
     def run(self):
