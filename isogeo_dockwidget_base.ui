@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>492</width>
+    <width>500</width>
     <height>866</height>
    </rect>
   </property>
@@ -38,7 +38,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="5">
+        <item row="0" column="6">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -54,7 +54,78 @@
           </property>
          </spacer>
         </item>
-        <item row="2" column="0" colspan="6">
+        <item row="1" column="0" colspan="3">
+         <widget class="QLineEdit" name="text_input">
+          <property name="inputMask">
+           <string/>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3" colspan="5">
+         <widget class="QWidget" name="widget" native="true">
+          <widget class="QComboBox" name="keywords">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>0</y>
+             <width>211</width>
+             <height>20</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="8">
+         <widget class="QgsCollapsibleGroupBox" name="geofilter_box">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="title">
+           <string>Filtre géographique</string>
+          </property>
+          <property name="collapsed">
+           <bool>true</bool>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="1" column="1">
+            <widget class="QComboBox" name="operation"/>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="label_7">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Opération</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="checkBox_4">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Activer le filtre</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="8">
          <widget class="QgsCollapsibleGroupBox" name="filters_box">
           <property name="font">
            <font>
@@ -290,60 +361,6 @@
           </layout>
          </widget>
         </item>
-        <item row="3" column="0" colspan="6">
-         <widget class="QgsCollapsibleGroupBox" name="geofilter_box">
-          <property name="font">
-           <font>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="title">
-           <string>Filtre géographique</string>
-          </property>
-          <property name="collapsed">
-           <bool>true</bool>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <item row="1" column="1">
-            <widget class="QComboBox" name="operation"/>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_7">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Opération</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QCheckBox" name="checkBox_4">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Activer le filtre</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="4" column="0" colspan="2">
-         <widget class="QPushButton" name="initialize">
-          <property name="text">
-           <string>Réinitialiser</string>
-          </property>
-         </widget>
-        </item>
         <item row="4" column="3" colspan="3">
          <widget class="QPushButton" name="show_button">
           <property name="text">
@@ -351,7 +368,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="0" colspan="6">
+        <item row="5" column="0" colspan="8">
          <widget class="QTableWidget" name="resultats">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -447,42 +464,51 @@
           </property>
          </spacer>
         </item>
-        <item row="6" column="5">
-         <widget class="QLabel" name="nbresultat">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
+        <item row="6" column="5" colspan="2">
+         <widget class="QPushButton" name="initialize">
           <property name="text">
-           <string>Nombre résultats</string>
+           <string>Réinitialiser</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="3" colspan="3">
-         <widget class="QWidget" name="widget" native="true">
-          <widget class="QComboBox" name="keywords">
+        <item row="6" column="7">
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>28</width>
+            <height>17</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="4" column="1" colspan="2">
+         <widget class="QGroupBox" name="groupBox_6">
+          <widget class="QLabel" name="nbresultat">
            <property name="geometry">
             <rect>
-             <x>10</x>
-             <y>0</y>
-             <width>171</width>
-             <height>20</height>
+             <x>40</x>
+             <y>2</y>
+             <width>101</width>
+             <height>19</height>
             </rect>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Nombre résultats</string>
+           </property>
           </widget>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="3">
-         <widget class="QLineEdit" name="text_input">
-          <property name="inputMask">
-           <string/>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
          </widget>
         </item>
        </layout>

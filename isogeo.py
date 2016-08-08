@@ -259,11 +259,11 @@ class Isogeo:
         else:
             s = QSettings()
             qgis_proxy = s.value("proxy/proxyEnabled", "")
-            if str(qgis_proxy) == 'true':
+            if str(qgis_proxy) == "true":
                 pass
             else:
                 QMessageBox.information(iface.mainWindow(
-                ), 'Alerte', u"Problème de proxy : \nVotre ordinateur utilise "
+                ), "Alerte", u"Problème de proxy : \nVotre ordinateur utilise "
                     u"un proxy, mais vous n'avez pas saisi ses paramètres dans"
                     u" QGIS.\nMerci de renseigner les paramètres proxy dans le"
                     u" menu 'Préférences/Option/Réseau'.")
@@ -339,7 +339,7 @@ class Isogeo:
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
             QMessageBox.information(
-                iface.mainWindow(), 'Erreur', parsed_content['error'])
+                iface.mainWindow(), "Erreur", parsed_content['error'])
             self.authentification_window.show()
         else:
             self.dockwidget.text_input.setText("Erreur inconnue.")
@@ -381,12 +381,12 @@ class Isogeo:
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
                 QMessageBox.information(iface.mainWindow(
-                ), 'Erreur :', u"Le script tourne en rond."
+                ), "Erreur :", u"Le script tourne en rond."
                     u"\nVérifiez que vous avez partagé bien partagé \nun ou "
                     u"plusieurs catalogues avec le plugin.\nSi c'est bien le "
                     u"cas, merci de rapporter\nce problème sur le bug tracker")
         else:
-            QMessageBox.information(iface.mainWindow(), 'Erreur :',
+            QMessageBox.information(iface.mainWindow(), "Erreur :",
                                     u"Vous rencontrez une erreur non encore "
                                     u"gérée.\nCode : " + str(
                 self.API_reply.error()) + "\nMerci de le reporter sur le bug "
@@ -413,6 +413,8 @@ class Isogeo:
             "page " + str(self.page_index) + " sur " + self.nb_page)
         # clearing the previous fields
         self.dockwidget.resultats.clearContents()
+        self.dockwidget.resultats.setRowCount(0)
+
         self.dockwidget.inspire.clear()
         self.dockwidget.owner.clear()
         self.dockwidget.format.clear()
@@ -423,12 +425,13 @@ class Isogeo:
         self.dockwidget.owner.addItem(" - ")
         self.dockwidget.format.addItem(" - ")
         self.dockwidget.sys_coord.addItem(" - ")
-        dictOperation = {"Intersectent": "intersects",
-                         "Sont contenues": "within", "Contiennent": "contains"}
-        for operationKey in dictOperation.keys():
+        dict_operation = {"Intersectent": "intersects",
+                          "Sont contenues": "within",
+                          "Contiennent": "contains"}
+        for operationKey in dict_operation.keys():
             self.dockwidget.operation.addItem(
-                operationKey, dictOperation[operationKey])
-        if self.hardReset == True:
+                operationKey, dict_operation[operationKey])
+        if self.hardReset is True:
             self.dockwidget.operation.setCurrentIndex(
                 self.dockwidget.operation.findData("intersects"))
         else:
@@ -448,7 +451,7 @@ class Isogeo:
         # location. Necessary as all comboboxes items have been removed and
         # put back in place. We do not want each combobox to go back to their
         # default selected item
-        if self.hardReset == False:
+        if self.hardReset is False:
             self.dockwidget.owner.setCurrentIndex(
                 self.dockwidget.owner.findData(self.params['owner']))
             self.dockwidget.inspire.setCurrentIndex(
@@ -460,11 +463,11 @@ class Isogeo:
             self.dockwidget.sys_coord.setCurrentIndex(
                 self.dockwidget.sys_coord.findData(self.params['srs']))
 
-            """ Filling the keywords special combobox (whose items are checkable) """
+            # Filling the keywords special combobox (whose items are checkable)
             self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-            firstItem = QStandardItem(u"---- Mots clés ----")
-            firstItem.setSelectable(False)
-            self.model.setItem(0, 0, firstItem)
+            first_item = QStandardItem(u"---- Mots clés ----")
+            first_item.setSelectable(False)
+            self.model.setItem(0, 0, first_item)
             i = 1
             for key in tags['keywords']:
                 item = QStandardItem(tags['keywords'][key])
@@ -483,9 +486,9 @@ class Isogeo:
             self.dockwidget.keywords.setModel(self.model)
         else:
             self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-            firstItem = QStandardItem(u"---- Mots clés ----")
-            firstItem.setSelectable(False)
-            self.model.setItem(0, 0, firstItem)
+            first_item = QStandardItem(u"---- Mots clés ----")
+            first_item.setSelectable(False)
+            self.model.setItem(0, 0, first_item)
             i = 1
             for key in tags['keywords']:
                 item = QStandardItem(tags['keywords'][key])
@@ -534,39 +537,65 @@ class Isogeo:
         self.hardReset = False
         self.showResult = False
 
-    # This function put the metadata sheets contained in the answer in the
-    # table.
     def show_results(self, result):
+        """Display the results in a table ."""
         if self.results_count >= 15:
             self.dockwidget.resultats.setRowCount(15)
         else:
             self.dockwidget.resultats.setRowCount(self.results_count)
 
-        polygonList = ["CurvePolygon", "MultiPolygon",
-                       "MultiSurface", "Polygon", "PolyhedralSurface"]
-        pointList = ["Point", "MultiPoint"]
-        lineList = ["CircularString", "CompoundCurve", "Curve",
-                    "LineString", "MultiCurve", "MultiLineString"]
-        multiList = ["Geometry", "GeometryCollection"]
+        polygon_list = ["CurvePolygon", "MultiPolygon",
+                        "MultiSurface", "Polygon", "PolyhedralSurface"]
+        point_list = ["Point", "MultiPoint"]
+        line_list = ["CircularString", "CompoundCurve", "Curve",
+                     "LineString", "MultiCurve", "MultiLineString"]
+        multi_list = ["Geometry", "GeometryCollection"]
 
-        vectorFormatList = ['shp', 'dxf', 'dgn', 'filegdb', 'tab']
-        rasterFormatList = ['esriasciigrid', 'geotiff',
-                            'intergraphgdb', 'jpeg', 'png', 'xyz']
+        vectorformat_list = ['shp', 'dxf', 'dgn', 'filegdb', 'tab']
+        rasterformat_list = ['esriasciigrid', 'geotiff',
+                             'intergraphgdb', 'jpeg', 'png', 'xyz']
 
         # Récupère tous les noms de bases de données dont la connexion est
         # enregistrée dans QGIS
         qs = QSettings()
         if self.PostGISdict == {}:
             for k in sorted(qs.allKeys()):
-                if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
+                if k.startswith("PostgreSQL/connections/")\
+                        and k.endswith("/database"):
                     if len(k.split("/")) == 4:
-                        connexionName = k.split("/")[2]
-                        print connexionName
-                        if qs.value('PostgreSQL/connections/' + connexionName + '/savePassword') == 'true' and qs.value('PostgreSQL/connections/' + connexionName + '/saveUsername') == 'true':
-                            dictionary = {'name': qs.value('PostgreSQL/connections/' + connexionName + '/database'), 'host': qs.value('PostgreSQL/connections/' + connexionName + '/host'), 'port': qs.value(
-                                'PostgreSQL/connections/' + connexionName + '/port'), 'username': qs.value('PostgreSQL/connections/' + connexionName + '/username'), 'password': qs.value('PostgreSQL/connections/' + connexionName + '/password')}
+                        connection_name = k.split("/")[2]
+                        password_saved = qs.value('PostgreSQL/connections/' +
+                                                  connection_name +
+                                                  '/savePassword')
+                        user_saved = qs.value('PostgreSQL/connections/' +
+                                              connection_name +
+                                              '/saveUsername')
+                        if password_saved == 'true' and user_saved == 'true':
+                            dictionary = {'name':
+                                          qs.value('PostgreSQL/connections/' +
+                                                   connection_name +
+                                                   '/database'),
+                                          'host':
+                                          qs.value('PostgreSQL/connections/' +
+                                                   connection_name +
+                                                   '/host'),
+                                          'port':
+                                          qs.value('PostgreSQL/connections/' +
+                                                   connection_name +
+                                                   '/port'),
+                                          'username':
+                                          qs.value('PostgreSQL/connections/' +
+                                                   connection_name +
+                                                   '/username'),
+                                          'password':
+                                          qs.value('PostgreSQL/connections/' +
+                                                   connection_name +
+                                                   '/password')}
                             self.PostGISdict[
-                                qs.value('PostgreSQL/connections/' + connexionName + '/database')] = dictionary
+                                qs.value('PostgreSQL/connections/' +
+                                         connection_name +
+                                         '/database')
+                            ] = dictionary
 
         count = 0
         for i in result['results']:
@@ -581,16 +610,16 @@ class Isogeo:
                 count, 1, QTableWidgetItem(self.handle_date(i['_modified'])))
             try:
                 geometry = i['geometry']
-                if geometry in pointList:
+                if geometry in point_list:
                     self.dockwidget.resultats.setItem(
                         count, 2, QTableWidgetItem(u'Ponctuel'))
-                elif geometry in polygonList:
+                elif geometry in polygon_list:
                     self.dockwidget.resultats.setItem(
                         count, 2, QTableWidgetItem(u'Surfacique'))
-                elif geometry in lineList:
+                elif geometry in line_list:
                     self.dockwidget.resultats.setItem(
                         count, 2, QTableWidgetItem(u'Linéaire'))
-                elif geometry in multiList:
+                elif geometry in multi_list:
                     self.dockwidget.resultats.setItem(
                         count, 2, QTableWidgetItem(u'Géométrie composée'))
                 elif geometry == "TIN":
@@ -604,151 +633,157 @@ class Isogeo:
                     count, 2, QTableWidgetItem(u"Pas de géométrie"))
 
             combo = QComboBox()
-            linkDict = {}
+            link_dict = {}
 
             if 'format' in i.keys():
-                if i['format'] in vectorFormatList and 'path' in i:
+                if i['format'] in vectorformat_list and 'path' in i:
                     path = self.format_path(i['path'])
                     try:
-                        testPath = open(path)
+                        test_path = open(path)
                         params = ["vector", path]
-                        linkDict[u"Donnée fichier"] = params
-                        #combo.addItem(u"Donnée fichier", params)
+                        link_dict[u"Donnée fichier"] = params
 
                     except IOError:
                         pass
 
-                elif i['format'] in rasterFormatList and 'path' in i:
+                elif i['format'] in rasterformat_list and 'path' in i:
                     path = self.format_path(i['path'])
                     try:
-                        testPath = open(path)
+                        test_path = open(path)
                         params = ["raster", path]
-                        linkDict[u"Donnée fichier"] = params
-                        #combo.addItem(u"Donnée fichier", params)
+                        link_dict[u"Donnée fichier"] = params
                     except IOError:
                         pass
 
                 elif i['format'] == 'postgis':
                     # Récupère le nom de la base de données
-                    baseName = i['path']
+                    base_name = i['path']
 
-                    if baseName in self.PostGISdict.keys():
+                    if base_name in self.PostGISdict.keys():
                         params = {}
-                        params['baseName'] = baseName
+                        params['base_name'] = base_name
                         params['schema'] = i['name'].split(".")[0]
                         params['table'] = i['name'].split(".")[1]
-                        linkDict[u"Table PostGIS"] = params
-                        #combo.addItem(u"Table PostGIS", params)
-                        """
-                        button = QPushButton("Ajouter")
-                        button.pressed.connect(partial(self.addPostGisLayer, host = self.PostGISdict[baseName]['host'], port = self.PostGISdict[baseName]['port'], basename = baseName, user = self.PostGISdict[baseName]['username'], password = self.PostGISdict[baseName]['password'], schema = schema, table = table))
-                        self.dockwidget.resultats.setCellWidget(count,3, button)"""
+                        link_dict[u"Table PostGIS"] = params
 
             for link in i['links']:
                 if link['kind'] == 'wms':
                     name_url = self.build_wms_url(link['url'])
                     if name_url != 0:
-                        linkDict[u"WMS : " + name_url[1]] = name_url
-                        #combo.addItem(u"WMS : " + name_url[1], name_url)
+                        link_dict[u"WMS : " + name_url[1]] = name_url
                 elif link['kind'] == 'wfs':
                     name_url = self.build_wfs_url(link['url'])
                     if name_url != 0:
-                        linkDict[u"WFS : " + name_url[1]] = name_url
-                        #combo.addItem(u"WFS" + name_url[1], name_url)
+                        link_dict[u"WFS : " + name_url[1]] = name_url
 
-            for key in linkDict.keys():
-                combo.addItem(key, linkDict[key])
+            for key in link_dict.keys():
+                combo.addItem(key, link_dict[key])
 
-            combo.activated.connect(partial(self.add_layer, layerIndex=count))
+            combo.activated.connect(partial(self.add_layer, layer_index=count))
             self.dockwidget.resultats.setCellWidget(count, 3, combo)
 
             count += 1
 
-    # This adds a layer
-    def add_layer(self, layerIndex):
-        layerInfo = self.dockwidget.resultats.cellWidget(layerIndex, 3).itemData(
-            self.dockwidget.resultats.cellWidget(layerIndex, 3).currentIndex())
-        if type(layerInfo) == list:
-            if layerInfo[0] == "vector":
-                path = layerInfo[1]
-                name = os.path.basename(path).split(".")[0]
+    def add_layer(self, layer_index):
+        """Add a layer to QGIS map canvas.
+
+        This take as an argument the index of the layer. From this index,
+        search the information needed to add it in the temporary dictionnary
+        constructed in the show_results function. It then adds it.
+        """
+        combobox = self.dockwidget.resultats.cellWidget(layer_index, 3)
+        layer_info = combobox.itemData(combobox.currentIndex())
+        if type(layer_info) == list:
+            if layer_info[0] == "vector":
+                path = layer_info[1]
+                name = os.path.base_name(path).split(".")[0]
                 layer = QgsVectorLayer(path, name, 'ogr')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
                 else:
                     QMessageBox.information(
-                        iface.mainWindow(), 'Erreur', "La couche n'est pas valide")
+                        iface.mainWindow(), "Erreur",
+                                            "La couche n'est pas valide")
 
-            elif layerInfo[0] == "raster":
-                path = layerInfo[1]
-                name = os.path.basename(path).split(".")[0]
+            elif layer_info[0] == "raster":
+                path = layer_info[1]
+                name = os.path.base_name(path).split(".")[0]
                 layer = QgsRasterLayer(path, name)
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
                 else:
                     QMessageBox.information(
-                        iface.mainWindow(), 'Erreur', "La couche n'est pas valide")
+                        iface.mainWindow(), "Erreur",
+                                            "La couche n'est pas valide")
 
-            elif layerInfo[0] == 'WMS':
-                url = layerInfo[2]
-                name = layerInfo[1]
+            elif layer_info[0] == 'WMS':
+                url = layer_info[2]
+                name = layer_info[1]
                 layer = QgsRasterLayer(url, name, 'wms')
                 if not layer.isValid():
                     QMessageBox.information(
-                        iface.mainWindow(), 'Erreur', u"Le service renseigné n'est pas valide")
+                        iface.mainWindow(), "Erreur",
+                                            u"Le service renseigné"
+                                            u" n'est pas valide")
                 else:
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
 
-            elif layerInfo[0] == 'WFS':
-                url = layerInfo[2]
-                name = layerInfo[1]
+            elif layer_info[0] == 'WFS':
+                url = layer_info[2]
+                name = layer_info[1]
                 layer = QgsVectorLayer(url, name, 'WFS')
                 if not layer.isValid():
                     QMessageBox.information(
-                        iface.mainWindow(), 'Erreur', u"Le service renseigné n'est pas valide")
+                        iface.mainWindow(), "Erreur",
+                                            u"Le service renseigné"
+                                            u" n'est pas valide")
                 else:
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
 
-        elif type(layerInfo) == dict:
+        elif type(layer_info) == dict:
             # Give aliases to the data passed as arguement
-            baseName = layerInfo['baseName']
-            schema = layerInfo['schema']
-            table = layerInfo['table']
+            base_name = layer_info['base_name']
+            schema = layer_info['schema']
+            table = layer_info['table']
             # Retrieve the database information stored in the PostGISdict
             uri = QgsDataSourceURI()
-            host = self.PostGISdict[baseName]['host']
-            port = self.PostGISdict[baseName]['port']
-            user = self.PostGISdict[baseName]['username']
-            password = self.PostGISdict[baseName]['password']
+            host = self.PostGISdict[base_name]['host']
+            port = self.PostGISdict[base_name]['port']
+            user = self.PostGISdict[base_name]['username']
+            password = self.PostGISdict[base_name]['password']
             # set host name, port, database name, username and password
-            uri.setConnection(host, port, baseName, user, password)
+            uri.setConnection(host, port, base_name, user, password)
             # Get the geometry column name from the database connexion & table
             # name.
             c = con.PostGisDBConnector(uri)
             dico = c.getTables()
             for i in dico:
                 if i[0 == 1] and i[1] == table:
-                    geometryColumn = i[8]
+                    geometry_column = i[8]
             # set database schema, table name, geometry column
-            uri.setDataSource(schema, table, geometryColumn)
+            uri.setDataSource(schema, table, geometry_column)
             # Adding the layer to the map canvas
             layer = QgsVectorLayer(uri.uri(), table, "postgres")
             if layer.isValid():
                 QgsMapLayerRegistry.instance().addMapLayer(layer)
             else:
-                QMessageBox.information(iface.mainWindow(
-                ), 'Erreur', u"La couche PostGis n'est pas valide.\nCa craint.")
+                QMessageBox.information(iface.mainWindow(),
+                                        "Erreur",
+                                        u"La couche PostGis n'est pas valide."
+                                        )
 
-    # Tests weither all the needed information is provided in the url, and
-    # then build the url in the syntax understood by QGIS, which is never the
-    # syntax given by the user
     def build_wms_url(self, raw_url):
-        baseUrl = raw_url.split("?")[0] + "?"
+        """Reformat the input WMS url so it fits QGIS criterias.
+
+        Tests weither all the needed information is provided in the url, and
+        then build the url in the syntax understood by QGIS.
+        """
+        input_url = raw_url.split("?")[0] + "?"
         list_parameters = raw_url.split("?")[1].split('&')
         valid = False
-        styleDefined = False
-        CRSdefined = False
-        formatDefined = False
+        style_defined = False
+        srs_defined = False
+        format_defined = False
         for i in list_parameters:
             ilow = i.lower()
             if "layers=" in ilow:
@@ -760,56 +795,49 @@ class Isogeo:
                 name = i.split('=')[1]
                 layers = "layers=" + name
             elif "styles=" in ilow:
-                styleDefined = True
+                style_defined = True
                 style = i
             elif "crs=" in ilow:
-                CRSdefined = True
-                CRS = i
+                srs_defined = True
+                srs = i
             elif "format=" in ilow:
-                formatDefined = True
+                format_defined = True
                 imgformat = i
 
-        if valid == True:
-            if baseUrl.lower().startswith('url='):
-                finalUrl = baseUrl + "&" + layers
+        if valid is True:
+            if input_url.lower().startswith('url='):
+                output_url = input_url + "&" + layers
             else:
-                finalUrl = "url=" + baseUrl + "&" + layers
+                output_url = "url=" + input_url + "&" + layers
 
-            if styleDefined == True:
-                finalUrl += '&' + style
+            if style_defined is True:
+                output_url += '&' + style
             else:
-                finalUrl += '&styles='
+                output_url += '&styles='
 
-            if formatDefined == True:
-                finalUrl += '&' + imgformat
+            if format_defined is True:
+                output_url += '&' + imgformat
             else:
-                finalUrl += '&format=image/jpeg'
+                output_url += '&format=image/jpeg'
 
-            if CRSdefined == True:
-                finalUrl += '&' + CRS
-            output = ["WMS", name, finalUrl]
+            if srs_defined is True:
+                output_url += '&' + srs
+            output = ["WMS", name, output_url]
             return output
 
         else:
             return 0
 
-    """# Add a WMS layer, given a url
-    def add_wms_layer(self, url, name, firstUrl):
-        rlayer = QgsRasterLayer(url, name, 'wms')
-        if not rlayer.isValid():
-            QMessageBox.information(iface.mainWindow(),'Erreur', firstUrl + " -> " + url)
-        else:
-            #self.dockwidget.text_input.setText(firstUrl + " -> " + url)
-            QgsMapLayerRegistry.instance().addMapLayer(rlayer)"""
-
-    # Tests weither all the needed information is provided in the url, and
-    # then build the url in the syntax understood by QGIS, which is never the
-    # syntax given by the user
     def build_wfs_url(self, raw_url):
-        baseUrl = raw_url.split("?")[0] + "?"
+        """Reformat the input WFS url so it fits QGIS criterias.
+
+        Tests weither all the needed information is provided in the url, and
+        then build the url in the syntax understood by QGIS.
+        """
+        input_url = raw_url.split("?")[0] + "?"
         list_parameters = raw_url.split("?")[1].split('&')
         valid = False
-        SRSdefined = False
+        srs_defined = False
         for i in list_parameters:
             ilow = i.lower()
             if "typename=" in ilow:
@@ -821,35 +849,29 @@ class Isogeo:
                 name = i.split('=')[1]
                 typename = "typename=" + name
             elif "srsname=" in ilow:
-                SRSdefined = True
-                SRS = i
+                srs_defined = True
+                srs = i
 
-        if valid == True:
-            finalUrl = baseUrl + typename
+        if valid is True:
+            output_url = input_url + typename
 
-            if SRSdefined == True:
-                finalUrl += '&' + SRS
+            if srs_defined is True:
+                output_url += '&' + srs
 
-            finalUrl += '&service=WFS&version=1.0.0&request=GetFeature'
+            output_url += '&service=WFS&version=1.0.0&request=GetFeature'
 
-            output = ["WFS", name, finalUrl]
+            output = ["WFS", name, output_url]
             return output
 
         else:
             return 0
 
-    # Add a WFS alyer, given a url
-    """def add_wfs_layer(self, url, name, firstUrl):
-        layer = QgsVectorLayer(url, name, 'WFS')
-        if not layer.isValid():
-            QMessageBox.information(iface.mainWindow(),'Erreur', firstUrl + " -> " + url)
-        else:
-            #self.dockwidget.text_input.setText(firstUrl + " -> " + url)
-            QgsMapLayerRegistry.instance().addMapLayer(layer)"""
-
-    # This parse the tags contained in API_answer[tags] and class them so they
-    # are more easy to handle in other function such as update_fields()
     def get_tags(self, answer):
+        """Return a tag dictionnary from the API answer.
+
+        This parse the tags contained in API_answer[tags] and class them so
+        they are more easy to handle in other function such as update_fields()
+        """
         # Initiating the dicts
         tags = answer['tags']
         resources_types = {}
@@ -918,9 +940,13 @@ class Isogeo:
 
         return new_tags
 
-    # This save the current state/index of each user input so they keep this
-    # state/index after being updated (cleared and filled again)
     def save_params(self):
+        """Save the widgets state/index.
+
+        This save the current state/index of each user input so we can put them
+        back to their previous state/index after they have been updated
+        (cleared and filled again).
+        """
         # get the data of the item which index is (get the combobox current
         # index)
         owner_param = self.dockwidget.owner.itemData(
@@ -966,10 +992,12 @@ class Isogeo:
         params['other'] = other_param
         return params
 
-    # This builds the url, retrieving the parameters from the widgets. When
-    # the final url is built, it calles send_request_to_isogeo_API
     def search(self):
-        #self.logger.info('Dans la fonction search')
+        """Build the request url to be sent to Isogeo API.
+
+        This builds the url, retrieving the parameters from the widgets. When
+        the final url is built, it calls send_request_to_isogeo_API
+        """
         # Disabling all user inputs during the research function is running
         self.switch_widgets_on_and_off('off')
 
@@ -1002,7 +1030,7 @@ class Isogeo:
         if self.dockwidget.text_input.text():
             filters += self.dockwidget.text_input.text() + " "
 
-       # Adding the content of the comboboxes to the request
+        # Adding the content of the comboboxes to the request
         if owner:
             filters += owner + " "
         if inspire:
@@ -1027,26 +1055,35 @@ class Isogeo:
         if self.dockwidget.checkBox_4.isChecked():
             if self.get_canvas_coordinates():
                 filters = filters[:-1]
-                filters += "&box=" + self.get_canvas_coordinates() + "&rel=" + \
-                    self.dockwidget.operation.itemData(
-                        self.dockwidget.operation.currentIndex()) + " "
+                filters += "&box=" + self.get_canvas_coordinates() + "&rel=" +\
+                    self.dockwidget.operation.itemData(self.dockwidget.
+                                                       operation.currentIndex()
+                                                       ) + " "
             else:
                 QMessageBox.information(iface.mainWindow(
-                ), 'Erreur :', "Le système de coordonnée de votre canevas ne semble\npas défini avec un code EPSG.\nIl ne peut donc pas être interprété par QGIS.\nMerci de rapporter ce problème sur le bug tracker.")
+                ), "Erreur :",
+                    u"Le système de coordonnée de votre canevas ne "
+                    u"semble\npas défini avec un code EPSG.\nIl ne peut donc "
+                    u"pas être interprété par QGIS.\nMerci de rapporter ce "
+                    u"problème sur le bug tracker.")
 
         filters = "q=" + filters[:-1]
         # self.dockwidget.text_input.setText(encoded_filters)
         if filters != "q=":
             self.currentUrl += filters
-        if self.showResult == True:
+        if self.showResult is True:
             self.currentUrl += "&_limit=15&_include=links"
         else:
             self.currentUrl += "&_limit=0"
         # self.dockwidget.dump.setText(self.currentUrl)
         self.send_request_to_Isogeo_API(self.token)
 
-    # Close to the search() function but triggered on the change page button.
     def next_page(self):
+        """Add the _offset parameter to the current url to display next page.
+
+        Close to the search() function (lot of code in common) but
+        triggered on the click on the change page button.
+        """
         # Testing if the user is asking for a unexisting page (ex : page 15 out
         # of 14)
         if self.page_index >= self.calcul_nb_page(self.results_count):
@@ -1083,7 +1120,7 @@ class Isogeo:
             if self.dockwidget.text_input.text():
                 filters += self.dockwidget.text_input.text() + " "
 
-           # Adding the content of the comboboxes to the request
+            # Adding the content of the comboboxes to the request
             if owner:
                 filters += owner + " "
             if inspire:
@@ -1108,12 +1145,17 @@ class Isogeo:
             if self.dockwidget.checkBox_4.isChecked():
                 if self.get_canvas_coordinates():
                     filters = filters[:-1]
-                    filters += "&box=" + self.get_canvas_coordinates() + "&rel=" + \
+                    filters += "&box=" + self.get_canvas_coordinates() +\
+                        "&rel=" + \
                         self.dockwidget.operation.itemData(
                             self.dockwidget.operation.currentIndex()) + " "
                 else:
                     QMessageBox.information(iface.mainWindow(
-                    ), 'Erreur :', "Le système de coordonnée de votre canevas ne semble\npas défini avec un code EPSG.\nIl ne peut donc pas être interprété par QGIS.\nMerci de rapporter ce problème sur le bug tracker.")
+                    ), "Erreur :",
+                       u"Le système de coordonnée de votre canevas "
+                       u"ne semble\npas défini avec un code EPSG.\nIl ne peut "
+                       u"donc pas être interprété par QGIS.\nMerci de "
+                       u"rapporter ce problème sur le bug tracker.")
 
             filters = "q=" + filters[:-1]
             # self.dockwidget.text_input.setText(encoded_filters)
@@ -1129,8 +1171,12 @@ class Isogeo:
             # self.dockwidget.dump.setText(self.currentUrl)
             self.send_request_to_Isogeo_API(self.token)
 
-    # Close to the search() function but triggered on the change page button.
     def previous_page(self):
+        """Add the _offset parameter to the url to display previous page.
+
+        Close to the search() function (lot of code in common) but
+        triggered on the click on the change page button.
+        """
         # testing if the user is asking for something impossible : page 0
         if self.page_index < 2:
             return False
@@ -1166,7 +1212,7 @@ class Isogeo:
             if self.dockwidget.text_input.text():
                 filters += self.dockwidget.text_input.text() + " "
 
-           # Adding the content of the comboboxes to the request
+            # Adding the content of the comboboxes to the request
             if owner:
                 filters += owner + " "
             if inspire:
@@ -1191,13 +1237,17 @@ class Isogeo:
             if self.dockwidget.checkBox_4.isChecked():
                 if self.get_canvas_coordinates():
                     filters = filters[:-1]
-                    filters += "&box=" + self.get_canvas_coordinates() + "&rel=" + \
+                    filters += "&box=" + self.get_canvas_coordinates() + \
+                        "&rel=" + \
                         self.dockwidget.operation.itemData(
                             self.dockwidget.operation.currentIndex()) + " "
                 else:
                     QMessageBox.information(iface.mainWindow(
-                    ), 'Erreur :', "Le système de coordonnée de votre canevas ne semble\npas défini avec un code EPSG.\nIl ne peut donc pas être interprété par QGIS.\nMerci de rapporter ce problème sur le bug tracker.")
-
+                    ), "Erreur :",
+                       u"Le système de coordonnée de votre canevas "
+                       u"ne semble\npas défini avec un code EPSG.\nIl ne peut "
+                       u"donc pas être interprété par QGIS.\nMerci de "
+                       u"rapporter ce problème sur le bug tracker.")
             filters = "q=" + filters[:-1]
 
             if filters != "q=":
@@ -1218,8 +1268,8 @@ class Isogeo:
             # self.dockwidget.dump.setText(self.currentUrl)
             self.send_request_to_Isogeo_API(self.token)
 
-    # Minor function, calculate the number of pages given a number of results.
     def calcul_nb_page(self, nb_fiches):
+        """Calculate the number of pages given a number of results."""
         if nb_fiches <= 15:
             nb_page = 1
         else:
@@ -1229,10 +1279,9 @@ class Isogeo:
                 nb_page = (nb_fiches / 15) + 1
         return nb_page
 
-    # Minor function, handle what the API gives as a date, and create a
-    # datetime object with it.
-    def handle_date(self, API_date):
-        date = API_date.split("T")[0]
+    def handle_date(self, input_date):
+        """Create a date object with the string given as a date by the API."""
+        date = input_date.split("T")[0]
         year = int(date.split('-')[0])
         month = int(date.split('-')[1])
         day = int(date.split('-')[2])
@@ -1240,21 +1289,21 @@ class Isogeo:
         return new_date.strftime("%d / %m / %Y")
         return new_date
 
-    # Get the canvas coordinates in the right format and SRS (WGS84)
     def get_canvas_coordinates(self):
+        """Get the canvas coordinates in the right format and SRS (WGS84)."""
         e = iface.mapCanvas().extent()
-        currentEPSG = int(iface.mapCanvas().mapRenderer(
-        ).destinationCrs().authid().split(':')[1])
-        if currentEPSG == 4326:
+        current_epsg = int(iface.mapCanvas().mapRenderer(
+        ).destinationsrs().authid().split(':')[1])
+        if current_epsg == 4326:
             coord = "{0},{1},{2},{3}".format(
                 e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum())
             return coord
-        elif type(currentEPSG) is int:
-            currentSRS = QgsCoordinateReferenceSystem(
-                currentEPSG, QgsCoordinateReferenceSystem.EpsgCrsId)
+        elif type(current_epsg) is int:
+            current_srs = QgsCoordinateReferenceSystem(
+                current_epsg, QgsCoordinateReferenceSystem.EpsgsrsId)
             wgs = QgsCoordinateReferenceSystem(
-                4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-            xform = QgsCoordinateTransform(currentSRS, wgs)
+                4326, QgsCoordinateReferenceSystem.EpsgsrsId)
+            xform = QgsCoordinateTransform(current_srs, wgs)
             minimum = xform.transform(QgsPoint(e.xMinimum(), e.yMinimum()))
             maximum = xform.transform(QgsPoint(e.xMaximum(), e.yMaximum()))
             coord = "{0},{1},{2},{3}".format(
@@ -1263,16 +1312,20 @@ class Isogeo:
         else:
             return False
 
-    # Minor one line function. Opens the bugtracker on the default browser
-    # (supposedly cross platform)
     def open_bugtracker(self):
+        """Open the bugtracker on the user's default browser."""
         webbrowser.open(
-            'https://github.com/isogeo/isogeo-plugin-qgis/issues', new=0, autoraise=True)
+            'https://github.com/isogeo/isogeo-plugin-qgis/issues',
+            new=0,
+            autoraise=True)
 
-    # Clear all widget and send a request to the API (which ends up updating
-    # the fields : send_request() calls handle_reply(), which calls
-    # update_fields())
     def reinitialize_research(self):
+        """Clear all widget, putting them all back to their default value.
+
+        Clear all widget and send a request to the API (which ends up updating
+        the fields : send_request() calls handle_reply(), which calls
+        update_fields())
+        """
         self.hardReset = True
         self.dockwidget.checkBox.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_2.setCheckState(Qt.Unchecked)
@@ -1287,9 +1340,8 @@ class Isogeo:
         self.dockwidget.sys_coord.clear()
         self.search()
 
-    # Given a windows formated path, it transforms it in a path understood by
-    # QGIS (\ are replaced by /)
     def format_path(self, string):
+        """Reformat windows path for them to be understood by QGIS."""
         new_string = ""
         for character in string:
             if character == '\\':
@@ -1298,15 +1350,18 @@ class Isogeo:
                 new_string += character
         return new_string
 
-    # Launch a search request that will end up in showing the results.
     def search_with_content(self):
+        """Launch a search request that will end up in showing the results."""
         self.showResult = True
         self.search()
 
-    # Deactivate the widgets while a funcion is running so the user doesn't
-    # clic everywhere ending up in multiple requests being sent at the same
-    # time, making the plugin crash.
     def switch_widgets_on_and_off(self, mode):
+        """Disable all the UI widgets when a request is being sent.
+
+        Deactivate the widgets while a funcion is running so the user doesn't
+        clic everywhere ending up in multiple requests being sent at the same
+        time, making the plugin crash.
+        """
         if mode == 'on':
             self.dockwidget.text_input.setReadOnly(False)
             self.dockwidget.filters_box.setEnabled(True)
@@ -1331,8 +1386,7 @@ class Isogeo:
 
     # This function is launched when the plugin is activated.
     def run(self):
-        """Run method that loads and starts the plugin"""
-
+        """Run method that loads and starts the plugin."""
         if not self.pluginIsActive:
             self.pluginIsActive = True
 
@@ -1341,7 +1395,7 @@ class Isogeo:
             # dockwidget may not exist if:
             #    first run of plugin
             #    removed on close (see self.onClosePlugin method)
-            if self.dockwidget == None:
+            if self.dockwidget is None:
                 # Create the dockwidget (after translation) and keep reference
                 self.dockwidget = IsogeoDockWidget()
 
@@ -1352,19 +1406,6 @@ class Isogeo:
             # TODO: fix to allow choice of dock location
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
-
-        """ --- LOG LOG LOG --- """
-
-        """self.logger = logging.getLogger()
-        self.logger.setLevel(logging.DEBUG)
-        self.formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
-        self.file_handler = RotatingFileHandler(self.get_plugin_path() + "/activity.log", 'a', 1000000, 1)
-        self.file_handler.setLevel(logging.DEBUG)
-        self.file_handler.setFormatter(self.formatter)
-        self.logger.addHandler(self.file_handler)
-        self.steam_handler = logging.StreamHandler()
-        self.steam_handler.setLevel(logging.DEBUG)
-        self.logger.addHandler(self.steam_handler)"""
 
         # Fixing a qgis.core bug that shows a warning banner "connexion time
         # out" whenever a request is sent (even successfully) See :
