@@ -49,8 +49,8 @@ import ConfigParser
 import json
 import base64
 import urllib
-import logging
-from logging.handlers import RotatingFileHandler
+# import logging
+# from logging.handlers import RotatingFileHandler
 import datetime
 import webbrowser
 from functools import partial
@@ -198,7 +198,7 @@ class Isogeo:
     # --------------------------------------------------------------------------
 
     def onClosePlugin(self):
-        """Cleanup necessary items here when plugin dockwidget is closed"""
+        """Cleanup necessary items here when plugin dockwidget is closed."""
         # print "** CLOSING Isogeo"
 
         # disconnects
@@ -1297,16 +1297,16 @@ class Isogeo:
         """Get the canvas coordinates in the right format and SRS (WGS84)."""
         e = iface.mapCanvas().extent()
         current_epsg = int(iface.mapCanvas().mapRenderer(
-        ).destinationsrs().authid().split(':')[1])
+        ).destinationCrs().authid().split(':')[1])
         if current_epsg == 4326:
             coord = "{0},{1},{2},{3}".format(
                 e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum())
             return coord
         elif type(current_epsg) is int:
             current_srs = QgsCoordinateReferenceSystem(
-                current_epsg, QgsCoordinateReferenceSystem.EpsgsrsId)
+                current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId)
             wgs = QgsCoordinateReferenceSystem(
-                4326, QgsCoordinateReferenceSystem.EpsgsrsId)
+                4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             xform = QgsCoordinateTransform(current_srs, wgs)
             minimum = xform.transform(QgsPoint(e.xMinimum(), e.yMinimum()))
             maximum = xform.transform(QgsPoint(e.xMaximum(), e.yMaximum()))
