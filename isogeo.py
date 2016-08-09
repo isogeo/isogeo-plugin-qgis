@@ -526,9 +526,13 @@ class Isogeo:
             self.dockwidget.checkBox_3.setCheckable(False)
             self.dockwidget.checkBox_3.setStyleSheet("color: grey")
 
+        self.dockwidget.show_button.setStyleSheet(
+            "QPushButton "
+            "{background-color: rgb(255, 144, 0); color: white}")
         # Show result, if we want them to be shown (button 'show result', 'next
         # page' or 'previous page' pressed)
-        if self.showResult == True:
+        if self.showResult is True:
+            self.dockwidget.show_button.setStyleSheet("")
             self.show_results(result)
         # Re enable all user input fields now the research function is
         # finished.
@@ -1450,7 +1454,6 @@ class Isogeo:
         self.test_config_file_existence()
         self.user_authentification()
         self.test_proxy_configuration()
-
         self.dockwidget.favorite_combo.setEnabled(False)
         self.dockwidget.save_favorite.setEnabled(False)
         self.dockwidget.groupBox.setEnabled(False)
