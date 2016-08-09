@@ -532,6 +532,8 @@ class Isogeo:
         # Show result, if we want them to be shown (button 'show result', 'next
         # page' or 'previous page' pressed)
         if self.showResult is True:
+            self.dockwidget.next.setEnabled(True)
+            self.dockwidget.previous.setEnabled(True)
             self.dockwidget.show_button.setStyleSheet("")
             self.show_results(result)
         # Re enable all user input fields now the research function is
@@ -700,7 +702,7 @@ class Isogeo:
         if type(layer_info) == list:
             if layer_info[0] == "vector":
                 path = layer_info[1]
-                name = os.path.base_name(path).split(".")[0]
+                name = os.path.basename(path).split(".")[0]
                 layer = QgsVectorLayer(path, name, 'ogr')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
@@ -711,7 +713,7 @@ class Isogeo:
 
             elif layer_info[0] == "raster":
                 path = layer_info[1]
-                name = os.path.base_name(path).split(".")[0]
+                name = os.path.basename(path).split(".")[0]
                 layer = QgsRasterLayer(path, name)
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
@@ -1371,9 +1373,8 @@ class Isogeo:
             self.dockwidget.filters_box.setEnabled(True)
             self.dockwidget.geofilter_box.setEnabled(True)
             self.dockwidget.widget.setEnabled(True)
-            self.dockwidget.next.setEnabled(True)
-            self.dockwidget.previous.setEnabled(True)
             self.dockwidget.initialize.setEnabled(True)
+            self.dockwidget.show_button.setEnabled(True)
             self.dockwidget.show_button.setEnabled(True)
 
         else:
@@ -1384,6 +1385,7 @@ class Isogeo:
             self.dockwidget.next.setEnabled(False)
             self.dockwidget.previous.setEnabled(False)
             self.dockwidget.initialize.setEnabled(False)
+            self.dockwidget.show_button.setEnabled(False)
             self.dockwidget.show_button.setEnabled(False)
 
     # --------------------------------------------------------------------------
