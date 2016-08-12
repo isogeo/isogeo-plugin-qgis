@@ -99,3 +99,4 @@ help/
 .idea
 .coverage
 .noseids
+*.log

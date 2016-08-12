@@ -9,7 +9,7 @@
         begin                : 2016-07-22
         git sha              : $Format:%H$
         copyright            : (C) 2016 by Isogeo, Theo Sinatti, GeoJulien
-        email                : projets+qgis@isogeo.fr
+        email                : projects+qgis@isogeo.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -40,25 +40,52 @@ from authentification import authentification
 import os.path
 
 # Ajoutés par moi
-from qgis.utils import iface
+from qgis.utils import iface, QGis
 from qgis.core import QgsNetworkAccessManager, QgsPoint, \
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, \
-    QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI
+    QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI, QgsMessageLog
 from PyQt4.QtNetwork import QNetworkRequest
 import ConfigParser
 import json
 import base64
 import urllib
-# import logging
-# from logging.handlers import RotatingFileHandler
+import logging
+from logging.handlers import RotatingFileHandler
+import platform  # about operating systems
 import datetime
 import webbrowser
 from functools import partial
 import db_manager.db_plugins.postgis.connector as con
 
+# ############################################################################
+# ########## Globals ###############
+# ##################################
+
+# LOG FILE ##
+logger = logging.getLogger()
+logging.captureWarnings(True)
+logger.setLevel(logging.INFO)  # all errors will be get
+# logger.setLevel(logging.DEBUG)  # switch on it only for dev works  
+log_form = logging.Formatter("%(asctime)s || %(levelname)s "
+                             "|| %(module)s || %(message)s")
+logfile = RotatingFileHandler(os.path.join(
+                                os.path.dirname(os.path.realpath(__file__)),
+                                "log_isogeo_plugin.log"),
+                                "a", 5000000, 1)
+logfile.setLevel(logging.DEBUG)
+logfile.setFormatter(log_form)
+logger.addHandler(logfile)
+
+# ############################################################################
+# ########## Classes ###############
+# ##################################
 
 class Isogeo:
     """QGIS Plugin Implementation."""
+
+    logging.info('\n\n\t============== Isogeo Search Engine for QGIS =============')
+    logging.info('OS: {0}'.format(platform.platform()))
+    logging.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
 
     def __init__(self, iface):
         """Constructor.
@@ -80,7 +107,8 @@ class Isogeo:
             self.plugin_dir,
             'i18n',
             'Isogeo_{}.qm'.format(locale))
-
+        logging.info('Language applied: {0}'.format(locale))
+        
         if os.path.exists(locale_path):
             self.translator = QTranslator()
             self.translator.load(locale_path)
@@ -321,6 +349,8 @@ class Isogeo:
         request.setRawHeader("Authorization", headervalue)
         self.token_reply = manager.post(request, databyte)
         self.token_reply.finished.connect(self.handle_token)
+
+        QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
 
     def handle_token(self):
         """Handle the API answer when asked for a token.
