@@ -1,5 +1,11 @@
 <RCC>
-    <qresource prefix="/plugins/Isogeo" >
-        <file>icon.png</file>
-    </qresource>
+  <qresource>
+    <file>ui/resources/geo.svg</file>
+    <file>ui/resources/about.png</file>
+    <file>ui/resources/keys.svg</file>
+    <file>ui/resources/isogeo_trans_64x64.png</file>
+    <file>ui/resources/settings.svg</file>
+    <file>ui/resources/user.svg</file>
+    <file>icon.png</file>
+  </qresource>
 </RCC>
