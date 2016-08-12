@@ -78,9 +78,9 @@ class Isogeo:
         # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'Isogeo_{}.qm'.format(locale))
+                                   self.plugin_dir,
+                                   'i18n',
+                                   'isogeo_search_engine_{}.qm'.format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
