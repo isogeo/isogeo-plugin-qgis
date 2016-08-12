@@ -35,7 +35,8 @@ import resources
 from isogeo_dockwidget import IsogeoDockWidget
 
 # Import du code des autres fenêtres
-from authentification import authentification
+# from authentification import authentification
+from ui.dlg_authentication import IsogeoAuthentication
 
 import os.path
 
@@ -100,7 +101,7 @@ class Isogeo:
         self.pluginIsActive = False
         self.dockwidget = None
 
-        self.authentification_window = authentification()
+        self.auth_prompt_form = IsogeoAuthentication()
 
         self.loopCount = 0
 
@@ -285,18 +286,18 @@ class Isogeo:
             # Demande les identifiants dans une pop-up et écrit les.
             self.ask_for_token(self.user_id, self.user_secret)
         else:
-            self.authentification_window.show()
+            self.auth_prompt_form.show()
 
     def write_ids_and_test(self):
-        """Store the id &secret and launch the test function.
+        """Store the id & secret and launch the test function.
 
         Called when the authentification window is closed,
         it stores the values in the file, then call the
         user_authentification function to test them.
         """
-        self.user_id = self.authentification_window.user_id_input.text()
-        self.user_secret = self.authentification_window.\
-            user_secret_input.text()
+        self.user_id = self.auth_prompt_form.ent_app_id.text()
+        self.user_secret = self.auth_prompt_form.\
+            ent_app_secret.text()
         config_file = open(self.config_path, 'w')
         self.config.set('Isogeo_ids', 'application_id', self.user_id)
         self.config.set('Isogeo_ids', 'application_secret', self.user_secret)
@@ -340,7 +341,7 @@ class Isogeo:
         elif 'error' in parsed_content:
             QMessageBox.information(
                 iface.mainWindow(), "Erreur", parsed_content['error'])
-            self.authentification_window.show()
+            self.auth_prompt_form.show()
         else:
             self.dockwidget.text_input.setText("Erreur inconnue.")
 
@@ -1424,7 +1425,7 @@ class Isogeo:
         """ --- CONNECTING FUNCTIONS --- """
         # Write in the config file when the user accept the authentification
         # window
-        self.authentification_window.accepted.connect(self.write_ids_and_test)
+        self.auth_prompt_form.accepted.connect(self.write_ids_and_test)
         # Connecting the comboboxes to the search function
         self.dockwidget.owner.activated.connect(self.search)
         self.dockwidget.inspire.activated.connect(self.search)
@@ -1448,7 +1449,7 @@ class Isogeo:
         self.dockwidget.initialize.pressed.connect(self.reinitialize_research)
         # Change user
         self.dockwidget.changeUser.pressed.connect(
-            self.authentification_window.show)
+            self.auth_prompt_form.show)
         # show results
         self.dockwidget.show_button.pressed.connect(self.search_with_content)
 
