@@ -29,7 +29,7 @@ It's fully integrated with QGIS ecosystem:
 - [ ] Geographic filter from a layer bounding box
 - [X] Geographic filter from the map canvas bounding box
 - [ ] Order results by relevance, alphabetic, last updated date (data or metadata), creation date (data or metadata)
-- [-] Add the related data directly to the map canvas
+- [X] Add the related data directly to the map canvas
 - [ ] Display full metadata information in a separated window
 - [ ] Save search bookmarks
 - [ ] Customize and manage data lists
