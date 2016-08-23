@@ -90,7 +90,7 @@
            <string>Filtre géographique</string>
           </property>
           <property name="collapsed">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="1" column="1">
@@ -137,7 +137,7 @@
            <string>Recherche avancée</string>
           </property>
           <property name="collapsed">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="scrollOnExpand">
            <bool>true</bool>
@@ -335,37 +335,21 @@
              </property>
             </widget>
            </item>
-           <item row="6" column="3">
-            <widget class="QLabel" name="label_9">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Enregistrer</string>
-             </property>
-            </widget>
-           </item>
            <item row="7" column="0" colspan="2">
             <widget class="QComboBox" name="favorite_combo"/>
            </item>
            <item row="7" column="3">
             <widget class="QPushButton" name="save_favorite">
              <property name="text">
-              <string>*</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/plugins/Isogeo/resources/save.png</normaloff>:/plugins/Isogeo/resources/save.png</iconset>
              </property>
             </widget>
            </item>
           </layout>
-         </widget>
-        </item>
-        <item row="4" column="3" colspan="3">
-         <widget class="QPushButton" name="show_button">
-          <property name="text">
-           <string>Afficher les résultats</string>
-          </property>
          </widget>
         </item>
         <item row="5" column="0" colspan="8">
@@ -414,63 +398,6 @@
           </property>
          </spacer>
         </item>
-        <item row="6" column="1">
-         <widget class="QPushButton" name="previous">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>&lt;</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="2">
-         <widget class="QLabel" name="paging">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Page x sur x</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="3">
-         <widget class="QPushButton" name="next">
-          <property name="text">
-           <string>&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="4">
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>28</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="6" column="5" colspan="2">
-         <widget class="QPushButton" name="initialize">
-          <property name="text">
-           <string>Réinitialiser</string>
-          </property>
-         </widget>
-        </item>
         <item row="6" column="7">
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
@@ -487,28 +414,76 @@
           </property>
          </spacer>
         </item>
-        <item row="4" column="1" colspan="2">
-         <widget class="QGroupBox" name="groupBox_6">
-          <widget class="QLabel" name="nbresultat">
-           <property name="geometry">
-            <rect>
-             <x>40</x>
-             <y>2</y>
-             <width>101</width>
-             <height>19</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Nombre résultats</string>
-           </property>
-          </widget>
+        <item row="4" column="1" colspan="4">
+         <widget class="QPushButton" name="show_button">
+          <property name="text">
+           <string>Afficher les résultats</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resources.qrc">
+            <normaloff>:/plugins/Isogeo/resources/search.png</normaloff>:/plugins/Isogeo/resources/search.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="6">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>28</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="6" column="4">
+         <widget class="QPushButton" name="next">
+          <property name="text">
+           <string>&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="3">
+         <widget class="QLabel" name="paging">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Page x sur x</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="2">
+         <widget class="QPushButton" name="previous">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>&lt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="5" colspan="3">
+         <widget class="QPushButton" name="initialize">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="resources.qrc">
+            <normaloff>:/plugins/Isogeo/resources/refresh.png</normaloff>:/plugins/Isogeo/resources/refresh.png</iconset>
+          </property>
          </widget>
         </item>
        </layout>

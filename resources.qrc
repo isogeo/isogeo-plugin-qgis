@@ -1,5 +1,8 @@
 <RCC>
-    <qresource prefix="/plugins/Isogeo" >
-        <file>icon.png</file>
-    </qresource>
+  <qresource prefix="/plugins/Isogeo">
+    <file>resources/search.png</file>
+    <file>resources/save.png</file>
+    <file>resources/refresh.png</file>
+    <file>icon.png</file>
+  </qresource>
 </RCC>

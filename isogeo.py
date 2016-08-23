@@ -32,10 +32,11 @@ from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
 import resources
 
 # Import the code for the DockWidget
-from ui.isogeo_dockwidget import IsogeoDockWidget
+from isogeo_dockwidget import IsogeoDockWidget
 
 # Import du code des autres fenêtres
-from ui.dlg_authentication import IsogeoAuthentication
+from dlg_authentication import IsogeoAuthentication
+from ask_research_name import ask_research_name
 
 import os.path
 
@@ -43,7 +44,8 @@ import os.path
 from qgis.utils import iface, QGis
 from qgis.core import QgsNetworkAccessManager, QgsPoint, \
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, \
-    QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI, QgsMessageLog
+    QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI, QgsMessageLog, \
+    QgsRectangle
 from PyQt4.QtNetwork import QNetworkRequest
 import ConfigParser
 import json
@@ -129,6 +131,10 @@ class Isogeo:
         self.dockwidget = None
 
         self.auth_prompt_form = IsogeoAuthentication()
+
+        self.ask_name_popup = ask_research_name()
+
+        self.savedResearch = False
 
         self.loopCount = 0
 
@@ -434,7 +440,7 @@ class Isogeo:
         self.params = self.save_params()
         # Show how many results there are
         self.results_count = result['total']
-        self.dockwidget.nbresultat.setText(
+        self.dockwidget.show_button.setText(
             str(self.results_count) + u" résultats")
         # Setting the number of rows in the result table
 
@@ -450,6 +456,16 @@ class Isogeo:
         self.dockwidget.format.clear()
         self.dockwidget.sys_coord.clear()
         self.dockwidget.operation.clear()
+
+        path = self.get_plugin_path() + '/saved_researches.json'
+        with open(path) as data_file:
+            saved_researches = json.load(data_file)
+        research_list = saved_researches.keys()
+        self.dockwidget.favorite_combo.clear()
+        self.dockwidget.favorite_combo.addItem(" - ")
+        for i in research_list:
+            self.dockwidget.favorite_combo.addItem(i, i)
+
         # Initiating the "nothing selected" item in each combobox
         self.dockwidget.inspire.addItem(" - ")
         self.dockwidget.owner.addItem(" - ")
@@ -492,28 +508,62 @@ class Isogeo:
                 self.dockwidget.format.findData(self.params['format']))
             self.dockwidget.sys_coord.setCurrentIndex(
                 self.dockwidget.sys_coord.findData(self.params['srs']))
+            self.dockwidget.favorite_combo.setCurrentIndex(
+                self.dockwidget.favorite_combo.findData(
+                    self.params['favorite']))
 
             # Filling the keywords special combobox (whose items are checkable)
-            self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-            first_item = QStandardItem(u"---- Mots clés ----")
-            first_item.setSelectable(False)
-            self.model.setItem(0, 0, first_item)
-            i = 1
-            for key in tags['keywords']:
-                item = QStandardItem(tags['keywords'][key])
-                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                item.setData(key, 32)
-                # As all items have been destroyed and generated again, we
-                # have to set the checkstate (checked/unchecked) according to
-                # what the user had chosen
-                if item.data(32) in self.params['keys']:
-                    item.setData(Qt.Checked, Qt.CheckStateRole)
-                else:
-                    item.setData(Qt.Unchecked, Qt.CheckStateRole)
-                self.model.setItem(i, 0, item)
-                i += 1
-            self.model.itemChanged.connect(self.search)
-            self.dockwidget.keywords.setModel(self.model)
+            if self.savedResearch is False:
+                self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
+                first_item = QStandardItem(u"---- Mots clés ----")
+                first_item.setSelectable(False)
+                self.model.setItem(0, 0, first_item)
+                i = 1
+                for key in tags['keywords']:
+                    item = QStandardItem(tags['keywords'][key])
+                    item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                    item.setData(key, 32)
+                    # As all items have been destroyed and generated again, we
+                    # have to set the checkstate (checked/unchecked) according
+                    # to what the user had chosen
+                    if item.data(32) in self.params['keys']:
+                        item.setData(Qt.Checked, Qt.CheckStateRole)
+                    else:
+                        item.setData(Qt.Unchecked, Qt.CheckStateRole)
+                    self.model.setItem(i, 0, item)
+                    i += 1
+                self.model.itemChanged.connect(self.search)
+                self.dockwidget.keywords.setModel(self.model)
+            else:
+                path = self.get_plugin_path() + '/saved_researches.json'
+                with open(path) as data_file:
+                    saved_researches = json.load(data_file)
+                research_params = saved_researches[self.savedResearch]
+                keywords_list = []
+                for a in research_params.keys():
+                    if a.startswith("keyword"):
+                        keywords_list.append(research_params[a])
+                self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
+                first_item = QStandardItem(u"---- Mots clés ----")
+                first_item.setSelectable(False)
+                self.model.setItem(0, 0, first_item)
+                i = 1
+                for key in tags['keywords']:
+                    item = QStandardItem(tags['keywords'][key])
+                    item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                    item.setData(key, 32)
+                    # As all items have been destroyed and generated again, we
+                    # have to set the checkstate (checked/unchecked) according
+                    # to what the user had chosen.
+                    if key in keywords_list:
+                        item.setData(Qt.Checked, Qt.CheckStateRole)
+                    else:
+                        item.setData(Qt.Unchecked, Qt.CheckStateRole)
+
+                    self.model.setItem(i, 0, item)
+                    i += 1
+                self.model.itemChanged.connect(self.search)
+                self.dockwidget.keywords.setModel(self.model)
         else:
             self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
             first_item = QStandardItem(u"---- Mots clés ----")
@@ -572,6 +622,36 @@ class Isogeo:
         # hard reset
         self.hardReset = False
         self.showResult = False
+        # Putting the comboboxs to the right indexes in the case of a saved
+        # research.
+        if self.savedResearch is not False:
+            path = self.get_plugin_path() + '/saved_researches.json'
+            with open(path) as data_file:
+                saved_researches = json.load(data_file)
+            research_params = saved_researches[self.savedResearch]
+            self.dockwidget.owner.setCurrentIndex(
+                self.dockwidget.owner.findData(research_params['owner']))
+            self.dockwidget.inspire.setCurrentIndex(
+                self.dockwidget.inspire.findData(research_params['inspire']))
+            self.dockwidget.format.setCurrentIndex(
+                self.dockwidget.format.findData(research_params['format']))
+            self.dockwidget.sys_coord.setCurrentIndex(
+                self.dockwidget.sys_coord.findData(research_params['srs']))
+            self.dockwidget.operation.setCurrentIndex(
+                self.dockwidget.operation.findData(
+                    research_params['operation']))
+            self.dockwidget.favorite_combo.setCurrentIndex(
+                self.dockwidget.favorite_combo.findData(self.savedResearch))
+            if research_params['view']:
+                self.dockwidget.checkBox.setCheckState(Qt.Checked)
+            if research_params['download']:
+                self.dockwidget.checkBox_2.setCheckState(Qt.Checked)
+            if research_params['other']:
+                self.dockwidget.checkBox_3.setCheckState(Qt.Checked)
+            if research_params['geofilter']:
+                self.dockwidget.checkBox_4.setCheckState(Qt.Checked)
+
+            self.savedResearch = False
 
     def show_results(self, result):
         """Display the results in a table ."""
@@ -591,8 +671,8 @@ class Isogeo:
         rasterformat_list = ['esriasciigrid', 'geotiff',
                              'intergraphgdb', 'jpeg', 'png', 'xyz']
 
-        # Récupère tous les noms de bases de données dont la connexion est
-        # enregistrée dans QGIS
+        # Get the name (and other informations) of all databases whose 
+        # connection is set up in QGIS
         qs = QSettings()
         if self.PostGISdict == {}:
             for k in sorted(qs.allKeys()):
@@ -632,7 +712,9 @@ class Isogeo:
                                          connection_name +
                                          '/database')
                             ] = dictionary
-
+        # Looping on the table line. For each of them, showing the title, the
+        # abstract, the geometry type, and a button that allow to add the data
+        # to the canvas.
         count = 0
         for i in result['results']:
             self.dockwidget.resultats.setItem(
@@ -995,6 +1077,8 @@ class Isogeo:
             self.dockwidget.sys_coord.currentIndex())
         operation_param = self.dockwidget.operation.itemData(
             self.dockwidget.operation.currentIndex())
+        favorite_param = self.dockwidget.favorite_combo.itemData(
+            self.dockwidget.favorite_combo.currentIndex())
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
@@ -1015,17 +1099,30 @@ class Isogeo:
             other_param = True
         else:
             other_param = False
+        if self.dockwidget.checkBox_4.isChecked():
+            geofilter_param = True
+        else:
+            geofilter_param = False
 
         params = {}
         params['owner'] = owner_param
         params['inspire'] = inspire_param
         params['format'] = format_param
         params['srs'] = srs_param
+        params['favorite'] = favorite_param
         params['keys'] = key_params
         params['operation'] = operation_param
         params['view'] = view_param
         params['download'] = download_param
         params['other'] = other_param
+        params['geofilter'] = geofilter_param
+        if geofilter_param:
+            e = iface.mapCanvas().extent()
+            extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
+            params['extent'] = extent
+            epsg = int(iface.mapCanvas().mapRenderer(
+            ).destinationCrs().authid().split(':')[1])
+            params['epsg'] = epsg
         return params
 
     def search(self):
@@ -1304,6 +1401,72 @@ class Isogeo:
             # self.dockwidget.dump.setText(self.currentUrl)
             self.send_request_to_Isogeo_API(self.token)
 
+    def write_research_params(self, research_name):
+        """Write a new element in the json file when a research is saved."""
+        # Open the saved_research file as a dict. Each key is a research name,
+        # each value is a dict containing the parameters for this research name
+        path = self.get_plugin_path() + '/saved_researches.json'
+        with open(path) as data_file:
+            saved_researches = json.load(data_file)
+        # If the name already exists, ask for a new one. (TO DO)
+        if research_name in saved_researches.keys():
+            pass
+        else:
+            # Write the current parameters in a dict, and store it in the saved
+            # research dict
+            params = self.save_params()
+            params['url'] = self.currentUrl
+            for i in xrange(len(params['keys'])):
+                params['keyword_{0}'.format(i)] = params['keys'][i]
+            params.pop('keys', None)
+            saved_researches[research_name] = params
+            with open(path, 'w') as outfile:
+                json.dump(saved_researches, outfile)
+
+    def set_widget_status(self):
+        """Set a few variable and send the request to Isogeo API."""
+        self.switch_widgets_on_and_off('off')
+        selected_research = self.dockwidget.favorite_combo.currentText()
+        path = self.get_plugin_path() + '/saved_researches.json'
+        with open(path) as data_file:
+            saved_researches = json.load(data_file)
+        research_params = saved_researches[selected_research]
+        self.currentUrl = research_params['url']
+        self.savedResearch = selected_research
+        if research_params['geofilter']:
+            epsg = int(iface.mapCanvas().mapRenderer(
+            ).destinationCrs().authid().split(':')[1])
+            if epsg == research_params['epsg']:
+                canvas = iface.mapCanvas()
+                e = research_params['extent']
+                rect = QgsRectangle(e[0], e[1], e[2], e[3])
+                canvas.setExtent(rect)
+                canvas.refresh()
+            else:
+                canvas = iface.mapCanvas()
+                canvas.mapRenderer().setProjectionsEnabled(True)
+                canvas.mapRenderer().setDestinationCrs(
+                    QgsCoordinateReferenceSystem(
+                        research_params['epsg'],
+                        QgsCoordinateReferenceSystem.EpsgCrsId))
+                e = research_params['extent']
+                rect = QgsRectangle(e[0], e[1], e[2], e[3])
+                canvas.setExtent(rect)
+                canvas.refresh()
+        self.send_request_to_Isogeo_API(self.token)
+
+    def save_research(self):
+        """Call the write_research() function and refresh the combobox."""
+        research_name = self.ask_name_popup.name.text()
+        self.write_research_params(research_name)
+        path = self.get_plugin_path() + '/saved_researches.json'
+        with open(path) as data_file:
+            saved_researches = json.load(data_file)
+        research_list = saved_researches.keys()
+        self.dockwidget.favorite_combo.clear()
+        for i in research_list:
+            self.dockwidget.favorite_combo.addItem(i, i)
+
     def calcul_nb_page(self, nb_fiches):
         """Calculate the number of pages given a number of results."""
         if nb_fiches <= 15:
@@ -1418,6 +1581,10 @@ class Isogeo:
             self.dockwidget.show_button.setEnabled(False)
             self.dockwidget.show_button.setEnabled(False)
 
+    def show_popup(self):
+        """Open the pop up window that asks a name to save the research."""
+        self.ask_name_popup.show()
+
     # --------------------------------------------------------------------------
 
     # This function is launched when the plugin is activated.
@@ -1481,13 +1648,20 @@ class Isogeo:
             self.auth_prompt_form.show)
         # show results
         self.dockwidget.show_button.pressed.connect(self.search_with_content)
-
+        
+        # Button 'save favorite' connected to the opening of the pop up that asks for a name
+        self.dockwidget.save_favorite.pressed.connect(self.show_popup)
+        # Connect the accepted signal of the popup to the function that write the research name and parameter to the file, and update the combobox
+        self.ask_name_popup.accepted.connect(self.save_research)
+        # Connect the activation of the "saved research" combobox with the set_widget_status function
+        self.dockwidget.favorite_combo.activated.connect(self.set_widget_status)
+        
         """ --- Actions when the plugin is launched --- """
         self.test_config_file_existence()
         self.user_authentification()
         self.test_proxy_configuration()
-        self.dockwidget.favorite_combo.setEnabled(False)
-        self.dockwidget.save_favorite.setEnabled(False)
+        #self.dockwidget.favorite_combo.setEnabled(False)
+        #self.dockwidget.save_favorite.setEnabled(False)
         self.dockwidget.groupBox.setEnabled(False)
         self.dockwidget.groupBox_2.setEnabled(False)
         self.dockwidget.groupBox_3.setEnabled(False)
