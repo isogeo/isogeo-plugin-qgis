@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Tue Aug 23 09:33:46 2016
+# Created: Thu Aug 25 10:27:12 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -512,9 +512,9 @@ class Ui_IsogeoDockWidgetBase(object):
         item = self.resultats.horizontalHeaderItem(0)
         item.setText(_translate("IsogeoDockWidgetBase", "Titre", None))
         item = self.resultats.horizontalHeaderItem(1)
-        item.setText(_translate("IsogeoDockWidgetBase", "Dernière modification", None))
+        item.setText(_translate("IsogeoDockWidgetBase", "Modifié", None))
         item = self.resultats.horizontalHeaderItem(2)
-        item.setText(_translate("IsogeoDockWidgetBase", "Type de géométrie", None))
+        item.setText(_translate("IsogeoDockWidgetBase", "Géométrie", None))
         item = self.resultats.horizontalHeaderItem(3)
         item.setText(_translate("IsogeoDockWidgetBase", "Ajouter", None))
         self.show_button.setText(_translate("IsogeoDockWidgetBase", "Afficher les résultats", None))

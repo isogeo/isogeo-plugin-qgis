@@ -1,7 +1,11 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/calendar.svg</file>
+    <file>resources/font.svg</file>
+    <file>resources/leaf.svg</file>
+    <file>resources/staff.svg</file>
+    <file>resources/tags.svg</file>
     <file>resources/search.png</file>
-    <file>resources/save.png</file>
     <file>resources/refresh.png</file>
     <file>icon.png</file>
   </qresource>

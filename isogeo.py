@@ -26,7 +26,7 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
     Qt, QByteArray, QUrl
 # Ajouté oar moi à partir de QMessageBox
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
-    QStandardItemModel, QStandardItem, QComboBox
+    QStandardItemModel, QStandardItem, QComboBox, QPushButton
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -37,6 +37,7 @@ from isogeo_dockwidget import IsogeoDockWidget
 # Import du code des autres fenêtres
 from dlg_authentication import IsogeoAuthentication
 from ask_research_name import ask_research_name
+from isogeo_dlg_mdDetails import IsogeoMdDetails
 
 import os.path
 
@@ -134,6 +135,8 @@ class Isogeo:
 
         self.ask_name_popup = ask_research_name()
 
+        self.IsogeoMdDetails = IsogeoMdDetails()
+
         self.savedResearch = False
 
         self.loopCount = 0
@@ -141,6 +144,8 @@ class Isogeo:
         self.hardReset = True
 
         self.showResult = True
+
+        self.showDetails = False
 
         self.PostGISdict = {}
 
@@ -403,9 +408,16 @@ class Isogeo:
         bytarray = self.API_reply.readAll()
         content = str(bytarray)
         if self.API_reply.error() == 0 and content != "":
-            self.loopCount = 0
-            parsed_content = json.loads(content)
-            self.update_fields(parsed_content)
+            if self.showDetails is False:
+                self.loopCount = 0
+                parsed_content = json.loads(content)
+                self.update_fields(parsed_content)
+            else:
+                self.showDetails = False
+                self.loopCount = 0
+                parsed_content = json.loads(content)
+                self.show_complete_md(parsed_content)
+
         elif self.API_reply.error() == 204:
             self.loopCount = 0
             self.ask_for_token(self.user_id, self.user_secret)
@@ -609,19 +621,7 @@ class Isogeo:
         self.dockwidget.show_button.setStyleSheet(
             "QPushButton "
             "{background-color: rgb(255, 144, 0); color: white}")
-        # Show result, if we want them to be shown (button 'show result', 'next
-        # page' or 'previous page' pressed)
-        if self.showResult is True:
-            self.dockwidget.next.setEnabled(True)
-            self.dockwidget.previous.setEnabled(True)
-            self.dockwidget.show_button.setStyleSheet("")
-            self.show_results(result)
-        # Re enable all user input fields now the research function is
-        # finished.
-        self.switch_widgets_on_and_off('on')
-        # hard reset
-        self.hardReset = False
-        self.showResult = False
+
         # Putting the comboboxs to the right indexes in the case of a saved
         # research.
         if self.savedResearch is not False:
@@ -629,6 +629,7 @@ class Isogeo:
             with open(path) as data_file:
                 saved_researches = json.load(data_file)
             research_params = saved_researches[self.savedResearch]
+            self.dockwidget.text_input.setText(research_params['text'])
             self.dockwidget.owner.setCurrentIndex(
                 self.dockwidget.owner.findData(research_params['owner']))
             self.dockwidget.inspire.setCurrentIndex(
@@ -650,8 +651,21 @@ class Isogeo:
                 self.dockwidget.checkBox_3.setCheckState(Qt.Checked)
             if research_params['geofilter']:
                 self.dockwidget.checkBox_4.setCheckState(Qt.Checked)
-
             self.savedResearch = False
+
+        # Show result, if we want them to be shown (button 'show result', 'next
+        # page' or 'previous page' pressed)
+        if self.showResult is True:
+            self.dockwidget.next.setEnabled(True)
+            self.dockwidget.previous.setEnabled(True)
+            self.dockwidget.show_button.setStyleSheet("")
+            self.show_results(result)
+        # Re enable all user input fields now the research function is
+        # finished.
+        self.switch_widgets_on_and_off('on')
+        # hard reset
+        self.hardReset = False
+        self.showResult = False
 
     def show_results(self, result):
         """Display the results in a table ."""
@@ -671,7 +685,7 @@ class Isogeo:
         rasterformat_list = ['esriasciigrid', 'geotiff',
                              'intergraphgdb', 'jpeg', 'png', 'xyz']
 
-        # Get the name (and other informations) of all databases whose 
+        # Get the name (and other informations) of all databases whose
         # connection is set up in QGIS
         qs = QSettings()
         if self.PostGISdict == {}:
@@ -717,13 +731,34 @@ class Isogeo:
         # to the canvas.
         count = 0
         for i in result['results']:
-            self.dockwidget.resultats.setItem(
-                count, 0, QTableWidgetItem(i['title']))
+            words = i['title'].split(' ')
+            line_length = 0
+            lines = []
+            string = ""
+            for word in words:
+                line_length += len(word)
+                if line_length < 22:
+                    string += word + " "
+                else:
+                    line_length = len(word)
+                    lines.append(string[:-1])
+                    string = word + " "
+            if string[:-1] not in lines:
+                lines.append(string[:-1])
+            final_text = ""
+            for line in lines:
+                final_text += line + "\n"
+            final_text = final_text[:-1]
+            button = QPushButton(final_text)
+            button.pressed.connect(partial(
+                self.send_details_request, md_id=i['_id']))
             try:
-                self.dockwidget.resultats.item(
-                    count, 0).setToolTip(i['abstract'])
+                button.setToolTip(i['abstract'])
             except:
                 pass
+            self.dockwidget.resultats.setCellWidget(
+                count, 0, button)
+
             self.dockwidget.resultats.setItem(
                 count, 1, QTableWidgetItem(self.handle_date(i['_modified'])))
             try:
@@ -801,6 +836,12 @@ class Isogeo:
             self.dockwidget.resultats.setCellWidget(count, 3, combo)
 
             count += 1
+        self.dockwidget.resultats.horizontalHeader().setResizeMode(1)
+        self.dockwidget.resultats.horizontalHeader().setResizeMode(1, 0)
+        self.dockwidget.resultats.horizontalHeader().setResizeMode(2, 0)
+        self.dockwidget.resultats.horizontalHeader().resizeSection(1, 80)
+        self.dockwidget.resultats.horizontalHeader().resizeSection(2, 80)
+        self.dockwidget.resultats.verticalHeader().setResizeMode(3)
 
     def add_layer(self, layer_index):
         """Add a layer to QGIS map canvas.
@@ -1079,6 +1120,8 @@ class Isogeo:
             self.dockwidget.operation.currentIndex())
         favorite_param = self.dockwidget.favorite_combo.itemData(
             self.dockwidget.favorite_combo.currentIndex())
+        # Getting the text in the research line
+        text = self.dockwidget.text_input.text()
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
@@ -1116,6 +1159,7 @@ class Isogeo:
         params['download'] = download_param
         params['other'] = other_param
         params['geofilter'] = geofilter_param
+        params['text'] = text
         if geofilter_param:
             e = iface.mapCanvas().extent()
             extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
@@ -1485,7 +1529,7 @@ class Isogeo:
         month = int(date.split('-')[1])
         day = int(date.split('-')[2])
         new_date = datetime.date(year, month, day)
-        return new_date.strftime("%d / %m / %Y")
+        return new_date.strftime("%d/%m/%Y")
         return new_date
 
     def get_canvas_coordinates(self):
@@ -1584,6 +1628,215 @@ class Isogeo:
     def show_popup(self):
         """Open the pop up window that asks a name to save the research."""
         self.ask_name_popup.show()
+
+    def send_details_request(self, md_id):
+        """Send a request for aditionnal info about one data."""
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/' + str(md_id) + '?_include=contacts,limitations,conditions,events,feature-attributes'
+        self.showDetails = True
+        self.send_request_to_Isogeo_API(self.token)
+
+    def show_complete_md(self, content):
+        """Open the pop up window that shows the metadata sheet details."""
+        tags = self.get_tags(content)
+        # Set the data title
+        title = content.get('title')
+        if title is not None:
+            self.IsogeoMdDetails.lbl_title.setText(title)
+        else:
+            self.IsogeoMdDetails.lbl_title.setText("NR")
+        # Set the data creation date
+        creation_date = content.get('_created')
+        if creation_date is not None:
+            self.IsogeoMdDetails.val_data_crea.setText(
+                self.handle_date(creation_date))
+        else:
+            self.IsogeoMdDetails.val_data_crea.setText('NR')
+
+        # Set the data last modification date
+        modif_date = content.get('_modified')
+        if modif_date is not None:
+            self.IsogeoMdDetails.val_data_updt.setText(self.handle_date(
+                content['_modified']))
+        else:
+            self.IsogeoMdDetails.val_data_updt.setText('NR')
+        # Set the data owner
+        if tags['owner'] != {}:
+            self.IsogeoMdDetails.val_owner.setText(tags['owner'].values()[0])
+        else:
+            self.IsogeoMdDetails.val_owner.setText('NR')
+        # Set the data coordinate system
+        if tags['srs'] != {}:
+            self.IsogeoMdDetails.val_srs.setText(tags['srs'].values()[0])
+        else:
+            self.IsogeoMdDetails.val_srs.setText('NR')
+        # Set the data format
+        if tags['formats'] != {}:
+            self.IsogeoMdDetails.val_format.setText(
+                tags['formats'].values()[0])
+        else:
+            self.IsogeoMdDetails.val_format.setText('NR')
+        # Set the associated keywords list
+        if tags['keywords'] != {}:
+            keystring = ""
+            for key in tags['keywords'].values():
+                keystring += key + ", "
+            keystring = keystring[:-2]
+            self.IsogeoMdDetails.val_keywords.setText(keystring)
+        else:
+            self.IsogeoMdDetails.val_keywords.setText('None')
+        # Set the associated INSPIRE themes list
+        if tags['themeinspire'] != {}:
+            inspirestring = ""
+            for inspire in tags['themeinspire'].values():
+                inspirestring += inspire + ", "
+            inspirestring = inspirestring[:-2]
+            self.IsogeoMdDetails.val_inspire_themes.setText(inspirestring)
+        else:
+            self.IsogeoMdDetails.val_inspire_themes.setText('None')
+        # Set the data abstract
+        abstract = content.get('abstract')
+        if abstract is not None:
+            self.IsogeoMdDetails.val_abstract.setText(content['abstract'])
+        else:
+            self.IsogeoMdDetails.val_abstract.setText('NR')
+        # Set the collection method text
+        coll_method = content.get('collectionMethod')
+        if coll_method is not None:
+            self.IsogeoMdDetails.val_method.setText(
+                content['collectionMethod'])
+        else:
+            self.IsogeoMdDetails.val_method.setText('NR')
+        coll_context = content.get('collectionContext')
+        if coll_context is not None:
+            self.IsogeoMdDetails.val_context.setText(
+                content['collectionContext'])
+        else:
+            self.IsogeoMdDetails.val_context.setText('NR')
+        # Set the data contacts (data creator, data manager, ...)
+        ctc = content.get('contacts')
+        if ctc is not None and ctc != []:
+            ctc_text = ""
+            for i in ctc:
+                role = i.get('role')
+                if role is not None:
+                    ctc_text += "Role :\n" + role + "\n\n"
+                else:
+                    ctc_text += "Role :\nNR\n\n"
+                contact = i.get('contact')
+                if contact is not None:
+                    ctc_text += "Contact :\n"
+                    name = contact.get('name')
+                    if name is not None:
+                        ctc_text += name
+                        org = contact.get('organization')
+                        if org is not None:
+                            ctc_text += " - " + org + "\n"
+                        else:
+                            ctc_text += "\n"
+                    mail = contact.get('email')
+                    if mail is not None:
+                        ctc_text += mail + "\n"
+                    phone = contact.get('phone')
+                    if phone is not None:
+                        ctc_text += phone + "\n"
+                    adress = contact.get('addressLine1')
+                    if adress is not None:
+                        adress2 = contact.get('addressLine2')
+                        if adress2 is not None:
+                            ctc_text += adress + " - " + adress2 + "\n"
+                        else:
+                            ctc_text += adress + "\n"
+                    zipc = contact.get('zipCode')
+                    if zipc is not None:
+                        ctc_text += zipc + "\n"
+                    city = contact.get('city')
+                    if city is not None:
+                        ctc_text += city + "\n"
+                    country = contact.get('countryCode')
+                    if country is not None:
+                        ctc_text += country + "\n"
+                ctc_text += " ________________ \n\n"
+            ctc_text = ctc_text[:-20]
+            self.IsogeoMdDetails.val_contact.setText(ctc_text)
+        else:
+            self.IsogeoMdDetails.val_contact.setText("None")
+        # Set the data events list (creation, multiple modifications, ...)
+        self.IsogeoMdDetails.list_events.clear()
+        if content['events'] != []:
+            for i in content['events']:
+                event = self.handle_date(i['date']) + " : " + i['kind']
+                if i['kind'] == 'update' and 'description' in i \
+                        and i['description'] != '':
+                    event += " (" + i['description'] + ")"
+                self.IsogeoMdDetails.list_events.addItem(event)
+        # Set the data usage conditions
+        cond = content.get('conditions')
+        if cond is not None and cond != []:
+            cond_text = ""
+            for i in cond:
+                lc = i.get('license')
+                if lc is not None:
+                    name = lc.get('name')
+                    if name is not None:
+                        cond_text += name + "\n"
+                    link = lc.get('link')
+                    if link is not None:
+                        cond_text += link + "\n"
+                desc = i.get('description')
+                if desc is not None and desc != []:
+                    cond_text += desc + "\n"
+                cond_text += " ________________ \n\n"
+            cond_text = cond_text[:-20]
+            self.IsogeoMdDetails.val_conditions.setText(cond_text)
+        else:
+            self.IsogeoMdDetails.val_conditions.setText("None")
+        # Set the data usage limitations
+        lim = content.get('limitations')
+        if lim is not None and lim != []:
+            lim_text = ""
+            for i in lim:
+                lim_type = i.get('type')
+                if lim_type == 'legal':
+                    restriction = i.get('restriction')
+                    if restriction is not None:
+                        lim_text += restriction + "\n"
+                desc = i.get('description')
+                if desc is not None and desc != []:
+                    lim_text += desc + "\n"
+                dr = i.get('directive')
+                if dr is not None:
+                    lim_text += "Directive :\n"
+                    name = dr.get('name')
+                    if name is not None:
+                        lim_text += name + "\n"
+                    dr_desc = dr.get('desc')
+                    if dr_desc is not None:
+                        lim_text += dr_desc + "\n"
+                lim_text += " ________________ \n\n"
+            lim_text = lim_text[:-20]
+            self.IsogeoMdDetails.val_limitations.setText(lim_text)
+        else:
+            self.IsogeoMdDetails.val_conditions.setText("None")
+        # Set the data attributes description
+        if 'feature-attributes' in content:
+            nb = len(content['feature-attributes'])
+            self.IsogeoMdDetails.tbl_attributes.setRowCount(nb)
+            count = 0
+            for i in content['feature-attributes']:
+                self.IsogeoMdDetails.tbl_attributes.setItem(
+                    count, 0, QTableWidgetItem(i['name']))
+                self.IsogeoMdDetails.tbl_attributes.setItem(
+                    count, 1, QTableWidgetItem(i['dataType']))
+                if 'description' in i:
+                    self.IsogeoMdDetails.tbl_attributes.setItem(
+                        count, 2, QTableWidgetItem(i['description']))
+                count += 1
+            self.IsogeoMdDetails.tbl_attributes.horizontalHeader(
+            ).setStretchLastSection(True)
+            self.IsogeoMdDetails.tbl_attributes.verticalHeader(
+            ).setResizeMode(3)
+        # Finally open the damn window
+        self.IsogeoMdDetails.show()
 
     # --------------------------------------------------------------------------
 
