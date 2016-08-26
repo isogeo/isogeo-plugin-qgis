@@ -59,6 +59,7 @@ import datetime
 import webbrowser
 from functools import partial
 import db_manager.db_plugins.postgis.connector as con
+import operator
 
 # ############################################################################
 # ########## Globals ###############
@@ -501,14 +502,18 @@ class Isogeo:
             self.dockwidget.operation.setCurrentIndex(
                 self.dockwidget.operation.findData(self.params['operation']))
         # Creating combobox items, with their displayed text, and their value
-        for key in tags['owner']:
-            self.dockwidget.owner.addItem(tags['owner'][key], key)
-        for key in tags['themeinspire']:
-            self.dockwidget.inspire.addItem(tags['themeinspire'][key], key)
-        for key in tags['formats']:
-            self.dockwidget.format.addItem(tags['formats'][key], key)
-        for key in tags['srs']:
-            self.dockwidget.sys_coord.addItem(tags['srs'][key], key)
+        ordered = sorted(tags['owner'].items(), key=operator.itemgetter(1))
+        for i in ordered:
+            self.dockwidget.owner.addItem(i[1], i[0])
+        ordered = sorted(tags['themeinspire'].items(), key=operator.itemgetter(1))
+        for i in ordered:
+            self.dockwidget.inspire.addItem(i[1], i[0])
+        ordered = sorted(tags['formats'].items(), key=operator.itemgetter(1))
+        for i in ordered:
+            self.dockwidget.format.addItem(i[1], i[0])
+        ordered = sorted(tags['srs'].items(), key=operator.itemgetter(1))
+        for i in ordered:
+            self.dockwidget.sys_coord.addItem(i[1], i[0])
 
         # Putting all the comboboxes selected index to their previous
         # location. Necessary as all comboboxes items have been removed and
@@ -532,23 +537,25 @@ class Isogeo:
             # Filling the keywords special combobox (whose items are checkable)
             if self.savedResearch is False:
                 self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-                first_item = QStandardItem(u"---- Mots clés ----")
-                first_item.setSelectable(False)
-                self.model.setItem(0, 0, first_item)
                 i = 1
-                for key in tags['keywords']:
-                    item = QStandardItem(tags['keywords'][key])
+                ordered = sorted(tags['keywords'].items(), key=operator.itemgetter(1))
+                for a in ordered:
+                    item = QStandardItem(a[1])
                     item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                    item.setData(key, 32)
+                    item.setData(a[0], 32)
                     # As all items have been destroyed and generated again, we
                     # have to set the checkstate (checked/unchecked) according
                     # to what the user had chosen
                     if item.data(32) in self.params['keys']:
                         item.setData(Qt.Checked, Qt.CheckStateRole)
+                        self.model.insertRow(0, item)
                     else:
                         item.setData(Qt.Unchecked, Qt.CheckStateRole)
-                    self.model.setItem(i, 0, item)
+                        self.model.setItem(i, 0, item)
                     i += 1
+                first_item = QStandardItem(u"---- Mots clés ----")
+                first_item.setSelectable(False)
+                self.model.insertRow(0, first_item)
                 self.model.itemChanged.connect(self.search)
                 self.dockwidget.keywords.setModel(self.model)
             else:
@@ -561,42 +568,44 @@ class Isogeo:
                     if a.startswith("keyword"):
                         keywords_list.append(research_params[a])
                 self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-                first_item = QStandardItem(u"---- Mots clés ----")
-                first_item.setSelectable(False)
-                self.model.setItem(0, 0, first_item)
                 i = 1
-                for key in tags['keywords']:
-                    item = QStandardItem(tags['keywords'][key])
+                ordered = sorted(tags['keywords'].items(), key=operator.itemgetter(1))
+                for a in ordered:
+                    item = QStandardItem(a[1])
                     item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                    item.setData(key, 32)
+                    item.setData(a[0], 32)
                     # As all items have been destroyed and generated again, we
                     # have to set the checkstate (checked/unchecked) according
                     # to what the user had chosen.
-                    if key in keywords_list:
+                    if a[0] in keywords_list:
                         item.setData(Qt.Checked, Qt.CheckStateRole)
+                        self.model.insertRow(0, item)
                     else:
                         item.setData(Qt.Unchecked, Qt.CheckStateRole)
-
-                    self.model.setItem(i, 0, item)
+                        self.model.setItem(i, 0, item)
                     i += 1
+                first_item = QStandardItem(u"---- Mots clés ----")
+                first_item.setSelectable(False)
+                self.model.insertRow(0, first_item)
                 self.model.itemChanged.connect(self.search)
                 self.dockwidget.keywords.setModel(self.model)
         else:
             self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-            first_item = QStandardItem(u"---- Mots clés ----")
-            first_item.setSelectable(False)
-            self.model.setItem(0, 0, first_item)
             i = 1
-            for key in tags['keywords']:
-                item = QStandardItem(tags['keywords'][key])
+            ordered = sorted(tags['keywords'].items(), key=operator.itemgetter(1))
+            for a in ordered:
+                item = QStandardItem(a[1])
                 item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                item.setData(key, 32)
+                item.setData(a[0], 32)
                 # As all items have been destroyed and generated again, we have
                 # to set the checkstate (checked/unchecked) according to what
                 # the user had chosen
                 item.setData(Qt.Unchecked, Qt.CheckStateRole)
                 self.model.setItem(i, 0, item)
                 i += 1
+            first_item = QStandardItem(u"---- Mots clés ----")
+            first_item.setSelectable(False)
+            self.model.insertRow(0, first_item)
             self.model.itemChanged.connect(self.search)
             self.dockwidget.keywords.setModel(self.model)
 
