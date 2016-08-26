@@ -305,7 +305,50 @@ class Isogeo:
             s = QSettings()
             qgis_proxy = s.value("proxy/proxyEnabled", "")
             if str(qgis_proxy) == "true":
-                pass
+                http = system_proxy_config.get('http')
+                if http is None:
+                    pass
+                else:
+                    elements = http.split(':')
+                    if len(elements) == 2:
+                        host = elements[0]
+                        port = elements[1]
+                        qgis_host = s.value("proxy/proxyHost", "")
+                        qgis_port = s.value("proxy/proxyPort", "")
+                        if qgis_host == host:
+                            if qgis_port == port:
+                                pass
+                            else:
+                                QMessageBox.information(iface.mainWindow(
+                                ), "Alerte", u"Problème de proxy : \nLes "
+                                   u"configurations proxy de QGIS et de votre "
+                                   u"ordinateur\nne semblent pas "
+                                   u"correspondre.")
+                        else:
+                            QMessageBox.information(iface.mainWindow(
+                            ), "Alerte", u"Problème de proxy : \nLes "
+                               u"configurations proxy de QGIS et de votre "
+                               u"ordinateur\nne semblent pas correspondre.")
+                    elif len(elements) == 3 and elements[0] == 'http':
+                        host_short = elements[1][2:]
+                        host_long = elements[0] + ':' + elements[1]
+                        port = elements[2]
+                        qgis_host = s.value("proxy/proxyHost", "")
+                        qgis_port = s.value("proxy/proxyPort", "")
+                        if qgis_host == host_short or qgis_host == host_long:
+                            if qgis_port == port:
+                                pass
+                            else:
+                                QMessageBox.information(iface.mainWindow(
+                                ), "Alerte", u"Problème de proxy : \nLes "
+                                   u"configurations proxy de QGIS et de votre "
+                                   u"ordinateur\nne semblent pas "
+                                   u"correspondre.")
+                        else:
+                            QMessageBox.information(iface.mainWindow(
+                            ), "Alerte", u"Problème de proxy : \nLes "
+                               u"configurations proxy de QGIS et de votre "
+                               u"ordinateur\nne semblent pas correspondre.")
             else:
                 QMessageBox.information(iface.mainWindow(
                 ), "Alerte", u"Problème de proxy : \nVotre ordinateur utilise "
