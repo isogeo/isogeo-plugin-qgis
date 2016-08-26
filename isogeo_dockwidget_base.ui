@@ -344,8 +344,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset>
-               <normaloff>:/plugins/Isogeo/resources/save.png</normaloff>:/plugins/Isogeo/resources/save.png</iconset>
+              <iconset resource="resources.qrc">
+               <normaloff>:/plugins/Isogeo/resources/disc.png</normaloff>:/plugins/Isogeo/resources/disc.png</iconset>
              </property>
             </widget>
            </item>
@@ -372,7 +372,7 @@
           </column>
           <column>
            <property name="text">
-            <string>Géométrie</string>
+            <string>Type</string>
            </property>
           </column>
           <column>
@@ -420,7 +420,7 @@
            <string>Afficher les résultats</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="resources.qrc">
             <normaloff>:/plugins/Isogeo/resources/search.png</normaloff>:/plugins/Isogeo/resources/search.png</iconset>
           </property>
          </widget>
@@ -481,7 +481,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="resources.qrc">
             <normaloff>:/plugins/Isogeo/resources/refresh.png</normaloff>:/plugins/Isogeo/resources/refresh.png</iconset>
           </property>
          </widget>

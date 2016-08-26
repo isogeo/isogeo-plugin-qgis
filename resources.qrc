@@ -1,5 +1,15 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/multi.png</file>
+    <file>resources/none.png</file>
+    <file>resources/raster.png</file>
+    <file>resources/line.png</file>
+    <file>resources/point.png</file>
+    <file>resources/polygon.png</file>
+    <file>resources/next.png</file>
+    <file>resources/previous.png</file>
+    <file>resources/srs.png</file>
+    <file>resources/disc.png</file>
     <file>resources/calendar.svg</file>
     <file>resources/font.svg</file>
     <file>resources/leaf.svg</file>

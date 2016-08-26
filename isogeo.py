@@ -26,7 +26,7 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
     Qt, QByteArray, QUrl
 # Ajouté oar moi à partir de QMessageBox
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
-    QStandardItemModel, QStandardItem, QComboBox, QPushButton
+    QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, QPixmap
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -68,7 +68,7 @@ import db_manager.db_plugins.postgis.connector as con
 logger = logging.getLogger()
 logging.captureWarnings(True)
 logger.setLevel(logging.INFO)  # all errors will be get
-# logger.setLevel(logging.DEBUG)  # switch on it only for dev works  
+# logger.setLevel(logging.DEBUG)  # switch on it only for dev works
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s || %(message)s")
 logfile = RotatingFileHandler(os.path.join(
@@ -129,6 +129,7 @@ class Isogeo:
         # print "** INITIALIZING Isogeo"
 
         self.pluginIsActive = False
+
         self.dockwidget = None
 
         self.auth_prompt_form = IsogeoAuthentication()
@@ -148,6 +149,10 @@ class Isogeo:
         self.showDetails = False
 
         self.PostGISdict = {}
+
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_limit=15&_include=links'
+
+        self.page_index = 1
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -376,7 +381,7 @@ class Isogeo:
         if 'access_token' in parsed_content:
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content['access_token']
-            self.search()
+            self.send_request_to_Isogeo_API(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
             QMessageBox.information(
@@ -758,23 +763,30 @@ class Isogeo:
                 pass
             self.dockwidget.resultats.setCellWidget(
                 count, 0, button)
-
             self.dockwidget.resultats.setItem(
                 count, 1, QTableWidgetItem(self.handle_date(i['_modified'])))
             try:
                 geometry = i['geometry']
                 if geometry in point_list:
-                    self.dockwidget.resultats.setItem(
-                        count, 2, QTableWidgetItem(u'Ponctuel'))
+                    label = QLabel()
+                    pix = QPixmap(':/plugins/Isogeo/resources/point.png')
+                    label.setPixmap(pix)
+                    self.dockwidget.resultats.setCellWidget(count, 2, label)
                 elif geometry in polygon_list:
-                    self.dockwidget.resultats.setItem(
-                        count, 2, QTableWidgetItem(u'Surfacique'))
+                    label = QLabel()
+                    pix = QPixmap(':/plugins/Isogeo/resources/polygon.png')
+                    label.setPixmap(pix)
+                    self.dockwidget.resultats.setCellWidget(count, 2, label)
                 elif geometry in line_list:
-                    self.dockwidget.resultats.setItem(
-                        count, 2, QTableWidgetItem(u'Linéaire'))
+                    label = QLabel()
+                    pix = QPixmap(':/plugins/Isogeo/resources/line.png')
+                    label.setPixmap(pix)
+                    self.dockwidget.resultats.setCellWidget(count, 2, label)
                 elif geometry in multi_list:
-                    self.dockwidget.resultats.setItem(
-                        count, 2, QTableWidgetItem(u'Géométrie composée'))
+                    label = QLabel()
+                    pix = QPixmap(':/plugins/Isogeo/resources/multi.png')
+                    label.setPixmap(pix)
+                    self.dockwidget.resultats.setCellWidget(count, 2, label)
                 elif geometry == "TIN":
                     self.dockwidget.resultats.setItem(
                         count, 2, QTableWidgetItem(u'TIN'))
@@ -782,8 +794,16 @@ class Isogeo:
                     self.dockwidget.resultats.setItem(
                         count, 2, QTableWidgetItem(u'Géométrie inconnue'))
             except:
-                self.dockwidget.resultats.setItem(
-                    count, 2, QTableWidgetItem(u"Pas de géométrie"))
+                if "type:raster-dataset" in i['tags']:
+                    label = QLabel()
+                    pix = QPixmap(':/plugins/Isogeo/resources/raster.png')
+                    label.setPixmap(pix)
+                    self.dockwidget.resultats.setCellWidget(count, 2, label)
+                else:
+                    label = QLabel()
+                    pix = QPixmap(':/plugins/Isogeo/resources/none.png')
+                    label.setPixmap(pix)
+                    self.dockwidget.resultats.setCellWidget(count, 2, label)
 
             combo = QComboBox()
             link_dict = {}
@@ -840,7 +860,7 @@ class Isogeo:
         self.dockwidget.resultats.horizontalHeader().setResizeMode(1, 0)
         self.dockwidget.resultats.horizontalHeader().setResizeMode(2, 0)
         self.dockwidget.resultats.horizontalHeader().resizeSection(1, 80)
-        self.dockwidget.resultats.horizontalHeader().resizeSection(2, 80)
+        self.dockwidget.resultats.horizontalHeader().resizeSection(2, 50)
         self.dockwidget.resultats.verticalHeader().setResizeMode(3)
 
     def add_layer(self, layer_index):
@@ -1651,14 +1671,27 @@ class Isogeo:
                 self.handle_date(creation_date))
         else:
             self.IsogeoMdDetails.val_data_crea.setText('NR')
-
         # Set the data last modification date
         modif_date = content.get('_modified')
         if modif_date is not None:
             self.IsogeoMdDetails.val_data_updt.setText(self.handle_date(
-                content['_modified']))
+                modif_date))
         else:
             self.IsogeoMdDetails.val_data_updt.setText('NR')
+        # Set the date from which the data is valid
+        valid_from = content.get('validFrom')
+        if valid_from is not None:
+            self.IsogeoMdDetails.val_valid_start.setText(self.handle_date(
+                valid_from))
+        else:
+            self.IsogeoMdDetails.val_valid_start.setText('NR')
+        # Set the date from which the data stops being valid
+        valid_to = content.get('validTo')
+        if valid_to is not None:
+            self.IsogeoMdDetails.val_valid_end.setText(self.handle_date(
+                valid_to))
+        else:
+            self.IsogeoMdDetails.val_valid_end.setText('NR')
         # Set the data owner
         if tags['owner'] != {}:
             self.IsogeoMdDetails.val_owner.setText(tags['owner'].values()[0])
@@ -1816,7 +1849,7 @@ class Isogeo:
             lim_text = lim_text[:-20]
             self.IsogeoMdDetails.val_limitations.setText(lim_text)
         else:
-            self.IsogeoMdDetails.val_conditions.setText("None")
+            self.IsogeoMdDetails.val_limitations.setText("None")
         # Set the data attributes description
         if 'feature-attributes' in content:
             nb = len(content['feature-attributes'])
@@ -1868,8 +1901,6 @@ class Isogeo:
         # http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
         iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
         # Initiating values (TO DO : Move to init section)
-        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
-        self.page_index = 1
 
         """ --- CONNECTING FUNCTIONS --- """
         # Write in the config file when the user accept the authentification
@@ -1901,20 +1932,24 @@ class Isogeo:
             self.auth_prompt_form.show)
         # show results
         self.dockwidget.show_button.pressed.connect(self.search_with_content)
-        
-        # Button 'save favorite' connected to the opening of the pop up that asks for a name
+
+        # Button 'save favorite' connected to the opening of the pop up that
+        # asks for a name
         self.dockwidget.save_favorite.pressed.connect(self.show_popup)
-        # Connect the accepted signal of the popup to the function that write the research name and parameter to the file, and update the combobox
+        # Connect the accepted signal of the popup to the function that write
+        # the research name and parameter to the file, and update the combobox
         self.ask_name_popup.accepted.connect(self.save_research)
-        # Connect the activation of the "saved research" combobox with the set_widget_status function
-        self.dockwidget.favorite_combo.activated.connect(self.set_widget_status)
-        
+        # Connect the activation of the "saved research" combobox with the
+        # set_widget_status function
+        self.dockwidget.favorite_combo.activated.connect(
+            self.set_widget_status)
+
         """ --- Actions when the plugin is launched --- """
         self.test_config_file_existence()
         self.user_authentification()
         self.test_proxy_configuration()
-        #self.dockwidget.favorite_combo.setEnabled(False)
-        #self.dockwidget.save_favorite.setEnabled(False)
+        # self.dockwidget.favorite_combo.setEnabled(False)
+        # self.dockwidget.save_favorite.setEnabled(False)
         self.dockwidget.groupBox.setEnabled(False)
         self.dockwidget.groupBox_2.setEnabled(False)
         self.dockwidget.groupBox_3.setEnabled(False)

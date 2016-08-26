@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Thu Aug 25 10:27:12 2016
+# Created: Fri Aug 26 14:39:56 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -196,7 +196,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.save_favorite = QtGui.QPushButton(self.filters_box)
         self.save_favorite.setText(_fromUtf8(""))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/save.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/disc.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.save_favorite.setIcon(icon)
         self.save_favorite.setObjectName(_fromUtf8("save_favorite"))
         self.gridLayout_2.addWidget(self.save_favorite, 7, 3, 1, 1)
@@ -514,7 +514,7 @@ class Ui_IsogeoDockWidgetBase(object):
         item = self.resultats.horizontalHeaderItem(1)
         item.setText(_translate("IsogeoDockWidgetBase", "Modifié", None))
         item = self.resultats.horizontalHeaderItem(2)
-        item.setText(_translate("IsogeoDockWidgetBase", "Géométrie", None))
+        item.setText(_translate("IsogeoDockWidgetBase", "Type", None))
         item = self.resultats.horizontalHeaderItem(3)
         item.setText(_translate("IsogeoDockWidgetBase", "Ajouter", None))
         self.show_button.setText(_translate("IsogeoDockWidgetBase", "Afficher les résultats", None))
