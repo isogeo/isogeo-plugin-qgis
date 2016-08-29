@@ -655,6 +655,34 @@ class Isogeo:
         else:
             self.dockwidget.checkBox_3.setCheckable(False)
             self.dockwidget.checkBox_3.setStyleSheet("color: grey")
+        # Vector
+        if 'type:vector-dataset' in tags['type']:
+            self.dockwidget.vector.setCheckable(True)
+            self.dockwidget.vector.setStyleSheet("color: black")
+        else:
+            self.dockwidget.vector.setCheckable(False)
+            self.dockwidget.vector.setStyleSheet("color: grey")
+        # Raster
+        if 'type:raster-dataset' in tags['type']:
+            self.dockwidget.raster.setCheckable(True)
+            self.dockwidget.raster.setStyleSheet("color: black")
+        else:
+            self.dockwidget.raster.setCheckable(False)
+            self.dockwidget.raster.setStyleSheet("color: grey")
+        # Resource
+        if 'type:resource' in tags['type']:
+            self.dockwidget.resource.setCheckable(True)
+            self.dockwidget.resource.setStyleSheet("color: black")
+        else:
+            self.dockwidget.resource.setCheckable(False)
+            self.dockwidget.resource.setStyleSheet("color: grey")
+        # Service
+        if 'type:service' in tags['type']:
+            self.dockwidget.service.setCheckable(True)
+            self.dockwidget.service.setStyleSheet("color: black")
+        else:
+            self.dockwidget.service.setCheckable(False)
+            self.dockwidget.service.setStyleSheet("color: grey")
 
         self.dockwidget.show_button.setStyleSheet(
             "QPushButton "
@@ -689,6 +717,15 @@ class Isogeo:
                 self.dockwidget.checkBox_3.setCheckState(Qt.Checked)
             if research_params['geofilter']:
                 self.dockwidget.checkBox_4.setCheckState(Qt.Checked)
+            if research_params['datatype'] is not False:
+                if research_params['datatype'] == "vector":
+                    self.dockwidget.vector.setChecked(True)
+                elif research_params['datatype'] == "raster":
+                    self.dockwidget.raster.setChecked(True)
+                elif research_params['datatype'] == "resource":
+                    self.dockwidget.resource.setChecked(True)
+                elif research_params['datatype'] == "service":
+                    self.dockwidget.service.setChecked(True)
             self.savedResearch = False
 
         # Show result, if we want them to be shown (button 'show result', 'next
@@ -1137,7 +1174,7 @@ class Isogeo:
                 # Test : to be removed eventually
                 else:
                     resources_types[tag] = u'fonction get_tag à revoir'
-                    self.dockwidget.text_input.setText(tag)
+                    # self.dockwidget.text_input.setText(tag)
 
         # Creating the final object the function will return : a dictionary of
         # dictionaries
@@ -1182,7 +1219,7 @@ class Isogeo:
             if self.dockwidget.keywords.itemData(i, 10) == 2:
                 key_params.append(self.dockwidget.keywords.itemData(i, 32))
 
-        # Saving the checked checkboxes (useful for the list saving)
+        # Saving the checked checkboxes (useful for the research saving)
         if self.dockwidget.checkBox.isChecked():
             view_param = True
         else:
@@ -1200,6 +1237,18 @@ class Isogeo:
         else:
             geofilter_param = False
 
+        # Saving the checked radio button (useful for the research saving)
+        if self.dockwidget.raster.isChecked():
+            datatype = "raster"
+        elif self.dockwidget.resource.isChecked():
+            datatype = "resource"
+        elif self.dockwidget.vector.isChecked():
+            datatype = "vector"
+        elif self.dockwidget.service.isChecked():
+            datatype = "service"
+        else:
+            datatype = False
+
         params = {}
         params['owner'] = owner_param
         params['inspire'] = inspire_param
@@ -1213,6 +1262,7 @@ class Isogeo:
         params['other'] = other_param
         params['geofilter'] = geofilter_param
         params['text'] = text
+        params['datatype'] = datatype
         if geofilter_param:
             e = iface.mapCanvas().extent()
             extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
@@ -1276,6 +1326,15 @@ class Isogeo:
             filters += "action:download "
         if self.dockwidget.checkBox_3.isChecked():
             filters += "action:other "
+        # Data type in radio buttons
+        if self.dockwidget.raster.isChecked():
+            filters += "type:raster-dataset "
+        elif self.dockwidget.vector.isChecked():
+            filters += "type:vector-dataset "
+        elif self.dockwidget.resource.isChecked():
+            filters += "type:resource "
+        elif self.dockwidget.service.isChecked():
+            filters += "type:service "
         # Adding the keywords that are checked (whose data[10] == 2)
         for i in xrange(self.dockwidget.keywords.count()):
             if self.dockwidget.keywords.itemData(i, 10) == 2:
@@ -1366,6 +1425,15 @@ class Isogeo:
                 filters += "action:download "
             if self.dockwidget.checkBox_3.isChecked():
                 filters += "action:other "
+            # Data type in radio buttons
+            if self.dockwidget.raster.isChecked():
+                filters += "type:raster-dataset "
+            elif self.dockwidget.vector.isChecked():
+                filters += "type:vector-dataset "
+            elif self.dockwidget.resource.isChecked():
+                filters += "type:resource "
+            elif self.dockwidget.service.isChecked():
+                filters += "type:service "
             # Adding the keywords that are checked (whose data[10] == 2)
             for i in xrange(self.dockwidget.keywords.count()):
                 if self.dockwidget.keywords.itemData(i, 10) == 2:
@@ -1458,6 +1526,15 @@ class Isogeo:
                 filters += "action:download "
             if self.dockwidget.checkBox_3.isChecked():
                 filters += "action:other "
+            # Data type in radio buttons
+            if self.dockwidget.raster.isChecked():
+                filters += "type:raster-dataset "
+            elif self.dockwidget.vector.isChecked():
+                filters += "type:vector-dataset "
+            elif self.dockwidget.resource.isChecked():
+                filters += "type:resource "
+            elif self.dockwidget.service.isChecked():
+                filters += "type:service "
             # Adding the keywords that are checked (whose data[10] == 2)
             for i in xrange(self.dockwidget.keywords.count()):
                 if self.dockwidget.keywords.itemData(i, 10) == 2:
@@ -1627,6 +1704,11 @@ class Isogeo:
         self.dockwidget.checkBox_2.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_3.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_4.setCheckState(Qt.Unchecked)
+        self.dockwidget.raster.setChecked(False)
+        self.dockwidget.resource.setChecked(False)
+        self.dockwidget.vector.setChecked(False)
+        self.dockwidget.service.setChecked(False)
+        self.dockwidget.alltypes.setChecked(True)
         self.dockwidget.text_input.clear()
         self.dockwidget.keywords.clear()
         self.dockwidget.operation.clear()
@@ -1952,6 +2034,12 @@ class Isogeo:
         self.dockwidget.checkBox_2.clicked.connect(self.search)
         self.dockwidget.checkBox_3.clicked.connect(self.search)
         self.dockwidget.checkBox_4.clicked.connect(self.search)
+        # Connecting the radio buttons
+        self.dockwidget.raster.clicked.connect(self.search)
+        self.dockwidget.resource.clicked.connect(self.search)
+        self.dockwidget.vector.clicked.connect(self.search)
+        self.dockwidget.service.clicked.connect(self.search)
+        self.dockwidget.alltypes.clicked.connect(self.search)
         # Connecting the previous and next page buttons to their functions
         self.dockwidget.next.pressed.connect(self.next_page)
         self.dockwidget.previous.pressed.connect(self.previous_page)
