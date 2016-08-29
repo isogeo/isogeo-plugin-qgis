@@ -276,21 +276,6 @@ class Isogeo:
         basepath = os.path.dirname(os.path.realpath(__file__))
         return basepath
 
-    def test_config_file_existence(self):
-        """Check if the file already exists and if not, create it."""
-        self.config = ConfigParser.ConfigParser()
-        self.config_path = self.get_plugin_path() + "/config.ini"
-        if os.path.isfile(self.config_path):
-            pass
-        else:
-            QMessageBox.information(iface.mainWindow(
-            ), 'Alerte', u"Vous avez détruit ou renommé le fichier config.ini."
-                u"\nCe n'était pas une très bonne idée.")
-            config_file = open(self.config_path, 'w')
-            self.config.write(config_file)
-            # TO DO : CREER UN TEMPLATE
-            config_file.close()
-
     def test_proxy_configuration(self):
         """Check the proxy configuration.
 
@@ -364,32 +349,27 @@ class Isogeo:
         their default value, it asks for them.
         If not, it tries to send a request.
         """
-        self.config.read(self.config_path)
-        config_dict = {s: dict(self.config.items(s))
-                       for s in self.config.sections()}
-        self.user_id = config_dict['Isogeo_ids']['application_id']
-        self.user_secret = config_dict['Isogeo_ids']['application_secret']
-        if self.user_id != 'application_id':
-            # Demande les identifiants dans une pop-up et écrit les.
+        s = QSettings()
+        self.user_id = s.value("isogeo-plugin/user-auth/id", 0)
+        self.user_secret = s.value("isogeo-plugin/user-auth/secret", 0)
+        if self.user_id != 0 and self.user_secret != 0:
             self.ask_for_token(self.user_id, self.user_secret)
         else:
             self.auth_prompt_form.show()
 
     def write_ids_and_test(self):
-        """Store the id &secret and launch the test function.
+        """Store the id & secret and launch the test function.
 
         Called when the authentification window is closed,
         it stores the values in the file, then call the
         user_authentification function to test them.
         """
-        self.user_id = self.auth_prompt_form.ent_app_id.text()
-        self.user_secret = self.auth_prompt_form.\
+        user_id = self.auth_prompt_form.ent_app_id.text()
+        user_secret = self.auth_prompt_form.\
             ent_app_secret.text()
-        config_file = open(self.config_path, 'w')
-        self.config.set('Isogeo_ids', 'application_id', self.user_id)
-        self.config.set('Isogeo_ids', 'application_secret', self.user_secret)
-        self.config.write(config_file)
-        config_file.close()
+        s = QSettings()
+        s.setValue("isogeo-plugin/user-auth/id", user_id)
+        s.setValue("isogeo-plugin/user-auth/secret", user_secret)
 
         self.user_authentification()
 
@@ -430,9 +410,10 @@ class Isogeo:
         elif 'error' in parsed_content:
             QMessageBox.information(
                 iface.mainWindow(), "Erreur", parsed_content['error'])
-            self.authentification_window.show()
+            self.auth_prompt_form.show()
         else:
-            self.dockwidget.text_input.setText("Erreur inconnue.")
+            QMessageBox.information(
+                iface.mainWindow(), "Erreur", "Erreur inconnue.")
 
     def send_request_to_Isogeo_API(self, token, limit=15):
         """Send a content url to the Isogeo API.
@@ -1997,7 +1978,7 @@ class Isogeo:
             self.set_widget_status)
 
         """ --- Actions when the plugin is launched --- """
-        self.test_config_file_existence()
+        # self.test_config_file_existence()
         self.user_authentification()
         self.test_proxy_configuration()
         # self.dockwidget.favorite_combo.setEnabled(False)
