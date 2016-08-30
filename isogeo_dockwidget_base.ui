@@ -422,6 +422,11 @@
             </widget>
            </item>
           </layout>
+          <zorder>label_24</zorder>
+          <zorder>vector</zorder>
+          <zorder>service</zorder>
+          <zorder>alltypes</zorder>
+          <zorder>resource</zorder>
           <zorder>label_2</zorder>
           <zorder>label_3</zorder>
           <zorder>format</zorder>
@@ -437,9 +442,6 @@
           <zorder>label</zorder>
           <zorder>favorite_combo</zorder>
           <zorder>save_favorite</zorder>
-          <zorder>layoutWidget</zorder>
-          <zorder>layoutWidget_2</zorder>
-          <zorder>layoutWidget_3</zorder>
           <zorder>raster</zorder>
          </widget>
         </item>
@@ -677,90 +679,11 @@
           <property name="title">
            <string>Paramètres de recherche par défaut</string>
           </property>
-          <widget class="QCheckBox" name="checkBox_5">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>60</y>
-             <width>111</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Données disponibles</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="checkBox_6">
-           <property name="geometry">
-            <rect>
-             <x>130</x>
-             <y>60</y>
-             <width>141</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Données géographiques</string>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="checkBox_7">
-           <property name="geometry">
-            <rect>
-             <x>270</x>
-             <y>60</y>
-             <width>101</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Toutes les fiches</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_13">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>30</y>
-             <width>101</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Rechercher dans : </string>
-           </property>
-          </widget>
           <widget class="QLabel" name="label_14">
            <property name="geometry">
             <rect>
-             <x>10</x>
-             <y>90</y>
+             <x>20</x>
+             <y>30</y>
              <width>141</width>
              <height>16</height>
             </rect>
@@ -772,14 +695,14 @@
             </font>
            </property>
            <property name="text">
-            <string>Groupe de travail par défaut</string>
+            <string>Propriétaire  par défaut</string>
            </property>
           </widget>
           <widget class="QLabel" name="label_15">
            <property name="geometry">
             <rect>
-             <x>10</x>
-             <y>140</y>
+             <x>250</x>
+             <y>90</y>
              <width>141</width>
              <height>16</height>
             </rect>
@@ -794,7 +717,17 @@
             <string>Tri des résultats par défaut</string>
            </property>
           </widget>
-          <widget class="QComboBox" name="comboBox">
+          <widget class="QComboBox" name="default_owner">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>50</y>
+             <width>181</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="default_type">
            <property name="geometry">
             <rect>
              <x>10</x>
@@ -804,14 +737,75 @@
             </rect>
            </property>
           </widget>
-          <widget class="QComboBox" name="comboBox_2">
+          <widget class="QLabel" name="label_20">
            <property name="geometry">
             <rect>
-             <x>10</x>
-             <y>160</y>
+             <x>250</x>
+             <y>30</y>
+             <width>141</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Format de ficher par défaut</string>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="default_format">
+           <property name="geometry">
+            <rect>
+             <x>240</x>
+             <y>50</y>
              <width>181</width>
              <height>22</height>
             </rect>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="default_ob">
+           <property name="geometry">
+            <rect>
+             <x>240</x>
+             <y>110</y>
+             <width>181</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_21">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>90</y>
+             <width>151</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Type de ressource par défaut</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="save_default">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>160</y>
+             <width>331</width>
+             <height>23</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Enregistrer les paramètres de recherche par défaut</string>
            </property>
           </widget>
          </widget>

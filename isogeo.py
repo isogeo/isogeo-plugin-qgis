@@ -42,7 +42,7 @@ from isogeo_dlg_mdDetails import IsogeoMdDetails
 import os.path
 
 # Ajoutés par moi
-from qgis.utils import iface, QGis
+from qgis.utils import iface, QGis, reloadPlugin
 from qgis.core import QgsNetworkAccessManager, QgsPoint, \
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, \
     QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI, QgsMessageLog, \
@@ -151,7 +151,7 @@ class Isogeo:
 
         self.PostGISdict = {}
 
-        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_limit=15&_include=links'
+        self.currentUrl = self.get_default_research()
 
         self.page_index = 1
 
@@ -256,6 +256,7 @@ class Isogeo:
         # self.dockwidget = None
 
         self.pluginIsActive = False
+        reloadPlugin('isogeo_plugin')
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -373,6 +374,50 @@ class Isogeo:
 
         self.user_authentification()
 
+    def write_default_research_preferences(self):
+        """Store the user preferences regarding the research launched at the opening of the plugin."""
+        if self.dockwidget.default_owner.currentIndex() != 0:
+            d_owner = self.dockwidget.default_owner.itemData(self.dockwidget.default_owner.currentIndex)
+        else:
+            d_owner = False
+        if self.dockwidget.default_format.currentIndex() != 0:
+            d_format = self.dockwidget.default_format.itemData(self.dockwidget.default_format.currentIndex)
+        else:
+            d_format = False
+        if self.dockwidget.default_type.currentIndex() != 0:
+            d_type = self.dockwidget.default_type.itemData(self.dockwidget.default_type.currentIndex)
+        else:
+            d_type = False
+
+        s = QSettings()
+        if d_owner:
+            s.setValue("isogeo-plugin/default-research/owner", d_owner)
+        if d_format:
+            s.setValue("isogeo-plugin/default-research/format", d_format)
+        if d_type:
+            s.setValue("isogeo-plugin/default-research/type", d_type)
+
+        url = 'https://v1.api.isogeo.com/resources/search?'
+        filters = ""
+        if d_owner:
+            filters += d_owner + " "
+        if d_format:
+            filters += d_format + " "
+        if d_type:
+            filters += d_type + " "
+        if filters != "":
+            filters = "q=" + filters[:-1]
+            url += filters + '_limit=15&_include=links'
+        else:
+            url += '_limit=15&_include=links'
+        s.setValue("isogeo-plugin/default-research/url", url)
+
+    def get_default_research(self):
+        """Read QSettings to get the url of the first request."""
+        s = QSettings()
+        url = s.value("isogeo-plugin/default-research/url", 'https://v1.api.isogeo.com/resources/search?_limit=15&_include=links')
+        return url
+
     def ask_for_token(self, c_id, c_secret):
         """Ask a token from Isogeo API authentification page.
 
@@ -454,8 +499,8 @@ class Isogeo:
         elif content == "":
             if self.loopCount < 3:
                 self.loopCount += 1
-                self.API_reply = 0
-                self.token_reply = 0
+                del self.API_reply
+                del self.token_reply
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
                 QMessageBox.information(iface.mainWindow(
@@ -2064,6 +2109,8 @@ class Isogeo:
         # set_widget_status function
         self.dockwidget.favorite_combo.activated.connect(
             self.set_widget_status)
+        # default save
+        self.dockwidget.save_default.pressed.connect(self.write_default_research_preferences)
 
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()
@@ -2072,7 +2119,8 @@ class Isogeo:
         # self.dockwidget.favorite_combo.setEnabled(False)
         # self.dockwidget.save_favorite.setEnabled(False)
         self.dockwidget.groupBox.setEnabled(False)
-        self.dockwidget.groupBox_2.setEnabled(False)
+        # self.dockwidget.groupBox_2.setEnabled(False)
+        self.dockwidget.default_ob.setEnabled(False)
         self.dockwidget.groupBox_3.setEnabled(False)
         self.dockwidget.groupBox_4.setEnabled(False)
         self.dockwidget.tab_3.setEnabled(False)
