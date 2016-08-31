@@ -416,7 +416,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="resources.qrc">
                <normaloff>:/plugins/Isogeo/resources/disc.png</normaloff>:/plugins/Isogeo/resources/disc.png</iconset>
              </property>
             </widget>
@@ -451,7 +451,7 @@
            <string>Afficher les résultats</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="resources.qrc">
             <normaloff>:/plugins/Isogeo/resources/search.png</normaloff>:/plugins/Isogeo/resources/search.png</iconset>
           </property>
          </widget>
@@ -462,7 +462,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="resources.qrc">
             <normaloff>:/plugins/Isogeo/resources/refresh.png</normaloff>:/plugins/Isogeo/resources/refresh.png</iconset>
           </property>
          </widget>
@@ -596,14 +596,14 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="0" column="2">
          <widget class="QPushButton" name="changeUser">
           <property name="text">
            <string>Changer d'utilisateur</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="2">
+        <item row="1" column="0" colspan="3">
          <widget class="QGroupBox" name="groupBox">
           <property name="title">
            <string>Compte administrateur Isogeo</string>
@@ -668,41 +668,22 @@
           </widget>
          </widget>
         </item>
-        <item row="2" column="0" colspan="2">
+        <item row="2" column="0" colspan="3">
          <widget class="QGroupBox" name="groupBox_2">
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>201</height>
+            <height>71</height>
            </size>
           </property>
           <property name="title">
            <string>Paramètres de recherche par défaut</string>
           </property>
-          <widget class="QLabel" name="label_14">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>30</y>
-             <width>141</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Propriétaire  par défaut</string>
-           </property>
-          </widget>
           <widget class="QLabel" name="label_15">
            <property name="geometry">
             <rect>
-             <x>250</x>
-             <y>90</y>
+             <x>20</x>
+             <y>60</y>
              <width>141</width>
              <height>16</height>
             </rect>
@@ -717,100 +698,55 @@
             <string>Tri des résultats par défaut</string>
            </property>
           </widget>
-          <widget class="QComboBox" name="default_owner">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>181</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="default_type">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>110</y>
-             <width>181</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_20">
-           <property name="geometry">
-            <rect>
-             <x>250</x>
-             <y>30</y>
-             <width>141</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Format de ficher par défaut</string>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="default_format">
-           <property name="geometry">
-            <rect>
-             <x>240</x>
-             <y>50</y>
-             <width>181</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
           <widget class="QComboBox" name="default_ob">
            <property name="geometry">
             <rect>
-             <x>240</x>
-             <y>110</y>
-             <width>181</width>
+             <x>170</x>
+             <y>60</y>
+             <width>271</width>
              <height>22</height>
             </rect>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_21">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>90</y>
-             <width>151</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Type de ressource par défaut</string>
            </property>
           </widget>
           <widget class="QPushButton" name="save_default">
            <property name="geometry">
             <rect>
-             <x>60</x>
-             <y>160</y>
-             <width>331</width>
+             <x>340</x>
+             <y>20</y>
+             <width>101</width>
              <height>23</height>
             </rect>
            </property>
            <property name="text">
-            <string>Enregistrer les paramètres de recherche par défaut</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/Isogeo/resources/disc.png</normaloff>:/plugins/Isogeo/resources/disc.png</iconset>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_20">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>30</y>
+             <width>311</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Enregistrer la recherche actuelle comme recherche par défaut</string>
            </property>
           </widget>
          </widget>
         </item>
-        <item row="3" column="0" colspan="2">
+        <item row="3" column="0" colspan="3">
          <widget class="QGroupBox" name="groupBox_3">
           <property name="title">
            <string>Gestions des recherches pré-enregistrées</string>
@@ -884,7 +820,7 @@
           </widget>
          </widget>
         </item>
-        <item row="4" column="0" colspan="2">
+        <item row="4" column="0" colspan="3">
          <widget class="QGroupBox" name="groupBox_4">
           <property name="title">
            <string>Gestions des listes</string>
@@ -957,6 +893,22 @@
            </property>
           </widget>
          </widget>
+        </item>
+        <item row="5" column="1">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>78</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>

@@ -139,19 +139,19 @@ class Isogeo:
 
         self.IsogeoMdDetails = IsogeoMdDetails()
 
-        self.savedResearch = False
+        self.savedResearch = "first"
 
         self.loopCount = 0
 
-        self.hardReset = True
+        self.hardReset = False
 
-        self.showResult = True
+        self.showResult = False
 
         self.showDetails = False
 
         self.PostGISdict = {}
 
-        self.currentUrl = self.get_default_research()
+        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_limit=15&_include=links'
 
         self.page_index = 1
 
@@ -374,50 +374,6 @@ class Isogeo:
 
         self.user_authentification()
 
-    def write_default_research_preferences(self):
-        """Store the user preferences regarding the research launched at the opening of the plugin."""
-        if self.dockwidget.default_owner.currentIndex() != 0:
-            d_owner = self.dockwidget.default_owner.itemData(self.dockwidget.default_owner.currentIndex)
-        else:
-            d_owner = False
-        if self.dockwidget.default_format.currentIndex() != 0:
-            d_format = self.dockwidget.default_format.itemData(self.dockwidget.default_format.currentIndex)
-        else:
-            d_format = False
-        if self.dockwidget.default_type.currentIndex() != 0:
-            d_type = self.dockwidget.default_type.itemData(self.dockwidget.default_type.currentIndex)
-        else:
-            d_type = False
-
-        s = QSettings()
-        if d_owner:
-            s.setValue("isogeo-plugin/default-research/owner", d_owner)
-        if d_format:
-            s.setValue("isogeo-plugin/default-research/format", d_format)
-        if d_type:
-            s.setValue("isogeo-plugin/default-research/type", d_type)
-
-        url = 'https://v1.api.isogeo.com/resources/search?'
-        filters = ""
-        if d_owner:
-            filters += d_owner + " "
-        if d_format:
-            filters += d_format + " "
-        if d_type:
-            filters += d_type + " "
-        if filters != "":
-            filters = "q=" + filters[:-1]
-            url += filters + '_limit=15&_include=links'
-        else:
-            url += '_limit=15&_include=links'
-        s.setValue("isogeo-plugin/default-research/url", url)
-
-    def get_default_research(self):
-        """Read QSettings to get the url of the first request."""
-        s = QSettings()
-        url = s.value("isogeo-plugin/default-research/url", 'https://v1.api.isogeo.com/resources/search?_limit=15&_include=links')
-        return url
-
     def ask_for_token(self, c_id, c_secret):
         """Ask a token from Isogeo API authentification page.
 
@@ -450,7 +406,10 @@ class Isogeo:
         if 'access_token' in parsed_content:
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content['access_token']
-            self.send_request_to_Isogeo_API(self.token)
+            if self.savedResearch == "first":
+                self.set_widget_status()
+            else:
+                self.send_request_to_Isogeo_API(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
             QMessageBox.information(
@@ -548,6 +507,7 @@ class Isogeo:
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         research_list = saved_researches.keys()
+        research_list.pop(research_list.index('_default'))
         self.dockwidget.favorite_combo.clear()
         self.dockwidget.favorite_combo.addItem(" - ")
         for i in research_list:
@@ -681,53 +641,39 @@ class Isogeo:
         # Trying to make th checkboxes and radio buttons unckeckable if needed
         # View
         if 'action:view' in tags['actions']:
-            self.dockwidget.checkBox.setCheckable(True)
-            self.dockwidget.checkBox.setStyleSheet("color: black")
+            self.dockwidget.checkBox.setEnabled(True)
         else:
-            self.dockwidget.checkBox.setCheckable(False)
-            self.dockwidget.checkBox.setStyleSheet("color: grey")
+            self.dockwidget.checkBox.setEnabled(False)
         # Download
         if 'action:download' in tags['actions']:
-            self.dockwidget.checkBox_2.setCheckable(True)
-            self.dockwidget.checkBox_2.setStyleSheet("color: black")
+            self.dockwidget.checkBox_2.setEnabled(True)
         else:
-            self.dockwidget.checkBox_2.setCheckable(False)
-            self.dockwidget.checkBox_2.setStyleSheet("color: grey")
+            self.dockwidget.checkBox_2.setEnabled(False)
         # Other action
         if 'action:other' in tags['actions']:
-            self.dockwidget.checkBox_3.setCheckable(True)
-            self.dockwidget.checkBox_3.setStyleSheet("color: black")
+            self.dockwidget.checkBox_3.setEnabled(True)
         else:
-            self.dockwidget.checkBox_3.setCheckable(False)
-            self.dockwidget.checkBox_3.setStyleSheet("color: grey")
+            self.dockwidget.checkBox_3.setEnabled(False)
         # Vector
         if 'type:vector-dataset' in tags['type']:
-            self.dockwidget.vector.setCheckable(True)
-            self.dockwidget.vector.setStyleSheet("color: black")
+            self.dockwidget.vector.setEnabled(True)
         else:
-            self.dockwidget.vector.setCheckable(False)
-            self.dockwidget.vector.setStyleSheet("color: grey")
+            self.dockwidget.vector.setEnabled(False)
         # Raster
         if 'type:raster-dataset' in tags['type']:
-            self.dockwidget.raster.setCheckable(True)
-            self.dockwidget.raster.setStyleSheet("color: black")
+            self.dockwidget.raster.setEnabled(True)
         else:
-            self.dockwidget.raster.setCheckable(False)
-            self.dockwidget.raster.setStyleSheet("color: grey")
+            self.dockwidget.raster.setEnabled(False)
         # Resource
         if 'type:resource' in tags['type']:
-            self.dockwidget.resource.setCheckable(True)
-            self.dockwidget.resource.setStyleSheet("color: black")
+            self.dockwidget.resource.setEnabled(True)
         else:
-            self.dockwidget.resource.setCheckable(False)
-            self.dockwidget.resource.setStyleSheet("color: grey")
+            self.dockwidget.resource.setEnabled(False)
         # Service
         if 'type:service' in tags['type']:
-            self.dockwidget.service.setCheckable(True)
-            self.dockwidget.service.setStyleSheet("color: black")
+            self.dockwidget.service.setEnabled(True)
         else:
-            self.dockwidget.service.setCheckable(False)
-            self.dockwidget.service.setStyleSheet("color: grey")
+            self.dockwidget.service.setEnabled(False)
 
         self.dockwidget.show_button.setStyleSheet(
             "QPushButton "
@@ -1628,7 +1574,7 @@ class Isogeo:
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         # If the name already exists, ask for a new one. (TO DO)
-        if research_name in saved_researches.keys():
+        if research_name in saved_researches.keys() and research_name != '_default':
             pass
         else:
             # Write the current parameters in a dict, and store it in the saved
@@ -1649,9 +1595,13 @@ class Isogeo:
         path = self.get_plugin_path() + '/saved_researches.json'
         with open(path) as data_file:
             saved_researches = json.load(data_file)
-        research_params = saved_researches[selected_research]
+        if selected_research == "":
+            self.savedResearch = '_default'
+            research_params = saved_researches['_default']
+        else:
+            self.savedResearch = selected_research
+            research_params = saved_researches[selected_research]
         self.currentUrl = research_params['url']
-        self.savedResearch = selected_research
         if research_params['geofilter']:
             epsg = int(iface.mapCanvas().mapRenderer(
             ).destinationCrs().authid().split(':')[1])
@@ -1682,6 +1632,7 @@ class Isogeo:
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         research_list = saved_researches.keys()
+        research_list.pop(research_list.index('_default'))
         self.dockwidget.favorite_combo.clear()
         for i in research_list:
             self.dockwidget.favorite_combo.addItem(i, i)
@@ -2109,8 +2060,8 @@ class Isogeo:
         # set_widget_status function
         self.dockwidget.favorite_combo.activated.connect(
             self.set_widget_status)
-        # default save
-        self.dockwidget.save_default.pressed.connect(self.write_default_research_preferences)
+        #G default
+        self.dockwidget.save_default.pressed.connect(partial(self.write_research_params, research_name='_default'))
 
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()
@@ -2120,7 +2071,7 @@ class Isogeo:
         # self.dockwidget.save_favorite.setEnabled(False)
         self.dockwidget.groupBox.setEnabled(False)
         # self.dockwidget.groupBox_2.setEnabled(False)
-        self.dockwidget.default_ob.setEnabled(False)
         self.dockwidget.groupBox_3.setEnabled(False)
         self.dockwidget.groupBox_4.setEnabled(False)
         self.dockwidget.tab_3.setEnabled(False)
+        # self.dockwidget.tabWidget.currentChanged.connect(self.show_popup)
