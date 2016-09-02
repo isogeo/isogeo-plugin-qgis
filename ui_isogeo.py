@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Fri Sep 02 11:20:51 2016
+# Created: Fri Sep 02 13:53:14 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -523,7 +523,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.label_24.setText(_translate("IsogeoDockWidgetBase", "Data type", None))
         self.rdb_vector.setText(_translate("IsogeoDockWidgetBase", "Vector dataset", None))
         self.rdb_service.setText(_translate("IsogeoDockWidgetBase", "Service", None))
-        self.rdb_alltypes.setText(_translate("IsogeoDockWidgetBase", "Tous types", None))
+        self.rdb_alltypes.setText(_translate("IsogeoDockWidgetBase", "All", None))
         self.rdb_raster.setText(_translate("IsogeoDockWidgetBase", "Raster dataset", None))
         self.rdb_resource.setText(_translate("IsogeoDockWidgetBase", "Resource", None))
         self.label_6.setText(_translate("IsogeoDockWidgetBase", "Associated resources", None))

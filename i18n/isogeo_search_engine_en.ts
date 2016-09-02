@@ -13,86 +13,101 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="328"/>
+        <location filename="isogeo.py" line="334"/>
         <source>Alert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="325"/>
+        <location filename="isogeo.py" line="330"/>
         <source>Proxy issue : 
 QGIS and your OS have different proxy set ups.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="328"/>
+        <location filename="isogeo.py" line="334"/>
         <source>Proxy issue : 
 You have a proxy set up on your OS but none in QGIS.
 Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1528"/>
+        <location filename="isogeo.py" line="1566"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="405"/>
+        <location filename="isogeo.py" line="418"/>
         <source>Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="451"/>
+        <location filename="isogeo.py" line="468"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin. If so, please report this on the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="454"/>
+        <location filename="isogeo.py" line="471"/>
         <source>You are facing an unknown error. Code: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="475"/>
+        <location filename="isogeo.py" line="493"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="616"/>
+        <location filename="isogeo.py" line="634"/>
         <source>---- Keywords ----</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="836"/>
+        <location filename="isogeo.py" line="855"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="869"/>
+        <location filename="isogeo.py" line="888"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="882"/>
+        <location filename="isogeo.py" line="901"/>
         <source>PostGIS table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="945"/>
+        <location filename="isogeo.py" line="971"/>
         <source>The layer is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="965"/>
+        <location filename="isogeo.py" line="996"/>
         <source>The linked service is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="998"/>
+        <location filename="isogeo.py" line="1033"/>
         <source>The PostGIS layer is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1528"/>
+        <location filename="isogeo.py" line="1566"/>
         <source>Your canvas coordinate system is not defined with a EPSG code.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="520"/>
+        <source>Intersects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="521"/>
+        <source>within</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="522"/>
+        <source>contains</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -106,11 +121,6 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
     <message>
         <location filename="isogeo_dockwidget_base.ui" line="159"/>
         <source>Format</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="isogeo_dockwidget_base.ui" line="335"/>
-        <source>Tous types</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -366,6 +376,11 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
     <message>
         <location filename="isogeo_dockwidget_base.ui" line="498"/>
         <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="isogeo_dockwidget_base.ui" line="335"/>
+        <source>All</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

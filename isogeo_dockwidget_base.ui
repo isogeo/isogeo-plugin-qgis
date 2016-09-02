@@ -332,7 +332,7 @@
            <item row="5" column="0">
             <widget class="QRadioButton" name="rdb_alltypes">
              <property name="text">
-              <string>Tous types</string>
+              <string>All</string>
              </property>
             </widget>
            </item>

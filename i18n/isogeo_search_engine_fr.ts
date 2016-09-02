@@ -13,18 +13,18 @@
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="328"/>
+        <location filename="isogeo.py" line="334"/>
         <source>Alert</source>
         <translation>Alerte</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="325"/>
+        <location filename="isogeo.py" line="330"/>
         <source>Proxy issue : 
 QGIS and your OS have different proxy set ups.</source>
         <translation>Problème de proxy :\nQGIS et votre ordinateurs ont des configurations de proxy différentes.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="328"/>
+        <location filename="isogeo.py" line="334"/>
         <source>Proxy issue : 
 You have a proxy set up on your OS but none in QGIS.
 Please set it up in &apos;Preferences/Options/Network&apos;.</source>
@@ -33,69 +33,84 @@ Votre ordinateur utilise un proxy, mais il n&apos;est pas configuré
 dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1528"/>
+        <location filename="isogeo.py" line="1566"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="405"/>
+        <location filename="isogeo.py" line="418"/>
         <source>Unknown error</source>
         <translation>Erreur inconnue</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="451"/>
+        <location filename="isogeo.py" line="468"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin. If so, please report this on the bug tracker.</source>
         <translation>Le script tourne en rond. Assurez-vous d&apos;avoir partagéau moins  un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème sur le bug tracker.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="454"/>
+        <location filename="isogeo.py" line="471"/>
         <source>You are facing an unknown error. Code: </source>
         <translation>Vous rencontrez une erreur inconnue. Code : </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="475"/>
+        <location filename="isogeo.py" line="493"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="616"/>
+        <location filename="isogeo.py" line="634"/>
         <source>---- Keywords ----</source>
         <translation>---- Mot clés ----</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="836"/>
+        <location filename="isogeo.py" line="855"/>
         <source>Unknown geometry</source>
         <translation>Géométrie inconnue</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="869"/>
+        <location filename="isogeo.py" line="888"/>
         <source>Data file</source>
         <translation>Donnée fichier</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="882"/>
+        <location filename="isogeo.py" line="901"/>
         <source>PostGIS table</source>
         <translation>Table PostGIS</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="945"/>
+        <location filename="isogeo.py" line="971"/>
         <source>The layer is not valid.</source>
         <translation>La couche n&apos;est pas valide.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="965"/>
+        <location filename="isogeo.py" line="996"/>
         <source>The linked service is not valid.</source>
         <translation>Le service n&apos;est pas valide.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="998"/>
+        <location filename="isogeo.py" line="1033"/>
         <source>The PostGIS layer is not valid.</source>
         <translation>La couche PostGIS n&apos;est pas valide.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1528"/>
+        <location filename="isogeo.py" line="1566"/>
         <source>Your canvas coordinate system is not defined with a EPSG code.</source>
         <translation>Le système de projection du canevas n&apos;est pas défini avec un code EPSG.</translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="520"/>
+        <source>Intersects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="521"/>
+        <source>within</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="522"/>
+        <source>contains</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -109,11 +124,6 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <location filename="isogeo_dockwidget_base.ui" line="159"/>
         <source>Format</source>
         <translation>Format</translation>
-    </message>
-    <message>
-        <location filename="isogeo_dockwidget_base.ui" line="335"/>
-        <source>Tous types</source>
-        <translation>All</translation>
     </message>
     <message>
         <location filename="isogeo_dockwidget_base.ui" line="1035"/>
@@ -369,6 +379,11 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <location filename="isogeo_dockwidget_base.ui" line="498"/>
         <source>Add</source>
         <translation>Ajouter</translation>
+    </message>
+    <message>
+        <location filename="isogeo_dockwidget_base.ui" line="335"/>
+        <source>All</source>
+        <translation>Tous types</translation>
     </message>
 </context>
 <context>

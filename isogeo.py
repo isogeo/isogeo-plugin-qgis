@@ -517,9 +517,9 @@ class Isogeo:
         self.dockwidget.cbb_owner.addItem(" - ")
         self.dockwidget.cbb_format.addItem(" - ")
         self.dockwidget.cbb_srs.addItem(" - ")
-        dict_operation = {"Intersectent": "intersects",
-                          "Sont contenues": "within",
-                          "Contiennent": "contains"}
+        dict_operation = {self.tr('Intersects'): "intersects",
+                          self.tr('within'): "within",
+                          self.tr('contains'): "contains"}
         for operationKey in dict_operation.keys():
             self.dockwidget.cbb_operation.addItem(
                 operationKey, dict_operation[operationKey])
