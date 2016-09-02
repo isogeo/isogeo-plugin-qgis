@@ -73,9 +73,9 @@ logger.setLevel(logging.INFO)  # all errors will be get
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s || %(message)s")
 logfile = RotatingFileHandler(os.path.join(
-                                os.path.dirname(os.path.realpath(__file__)),
-                                "log_isogeo_plugin.log"),
-                                "a", 5000000, 1)
+                              os.path.dirname(os.path.realpath(__file__)),
+                              "log_isogeo_plugin.log"),
+                              "a", 5000000, 1)
 logfile.setLevel(logging.DEBUG)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
@@ -110,7 +110,7 @@ class Isogeo:
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
-            'Isogeo_{}.qm'.format(locale))
+            'isogeo_search_engine_{}.qm'.format(locale))
         logging.info('Language applied: {0}'.format(locale))
 
         if os.path.exists(locale_path):
@@ -254,7 +254,6 @@ class Isogeo:
         # Commented next statement since it causes QGIS crashe
         # when closing the docked window:
         # self.dockwidget = None
-
         self.pluginIsActive = False
         reloadPlugin('isogeo_plugin')
 
@@ -286,6 +285,7 @@ class Isogeo:
         """
         system_proxy_config = urllib.getproxies()
         if system_proxy_config == {}:
+            logging.info("The OS doesn't use a proxy. => Proxy config : OK")
             pass
         else:
             s = QSettings()
@@ -303,18 +303,14 @@ class Isogeo:
                         qgis_port = s.value("proxy/proxyPort", "")
                         if qgis_host == host:
                             if qgis_port == port:
+                                logging.info("A proxy is set up both in QGIS and the OS and they match => Proxy config : OK")
                                 pass
                             else:
                                 QMessageBox.information(iface.mainWindow(
-                                ), "Alerte", u"Problème de proxy : \nLes "
-                                   u"configurations proxy de QGIS et de votre "
-                                   u"ordinateur\nne semblent pas "
-                                   u"correspondre.")
+                                ), self.tr('Alert'), self.tr("Proxy issue : \nQGIS and your OS have different proxy set ups."))
                         else:
                             QMessageBox.information(iface.mainWindow(
-                            ), "Alerte", u"Problème de proxy : \nLes "
-                               u"configurations proxy de QGIS et de votre "
-                               u"ordinateur\nne semblent pas correspondre.")
+                                ), self.tr('Alert'), self.tr("Proxy issue : \nQGIS and your OS have different proxy set ups."))
                     elif len(elements) == 3 and elements[0] == 'http':
                         host_short = elements[1][2:]
                         host_long = elements[0] + ':' + elements[1]
@@ -323,26 +319,22 @@ class Isogeo:
                         qgis_port = s.value("proxy/proxyPort", "")
                         if qgis_host == host_short or qgis_host == host_long:
                             if qgis_port == port:
+                                logging.info("A proxy is set up both in QGIS and the OS and they match => Proxy config : OK")
                                 pass
                             else:
+                                logging.info("OS and QGIS proxy ports do not match. => Proxy config : not OK")
                                 QMessageBox.information(iface.mainWindow(
-                                ), "Alerte", u"Problème de proxy : \nLes "
-                                   u"configurations proxy de QGIS et de votre "
-                                   u"ordinateur\nne semblent pas "
-                                   u"correspondre.")
+                                ), self.tr('Alert'), self.tr("Proxy issue : \nQGIS and your OS have different proxy set ups."))
                         else:
+                            logging.info("OS and QGIS proxy hosts do not match. => Proxy config : not OK")
                             QMessageBox.information(iface.mainWindow(
-                            ), "Alerte", u"Problème de proxy : \nLes "
-                               u"configurations proxy de QGIS et de votre "
-                               u"ordinateur\nne semblent pas correspondre.")
+                                ), self.tr('Alert'), self.tr("Proxy issue : \nQGIS and your OS have different proxy set ups."))
             else:
+                logging.info("OS uses a proxy but it isn't set up in QGIS. => Proxy config : not OK")
                 QMessageBox.information(iface.mainWindow(
-                ), "Alerte", u"Problème de proxy : \nVotre ordinateur utilise "
-                    u"un proxy, mais vous n'avez pas saisi ses paramètres dans"
-                    u" QGIS.\nMerci de renseigner les paramètres proxy dans le"
-                    u" menu 'Préférences/Option/Réseau'.")
+                                ), self.tr('Alert'), self.tr("Proxy issue : \nYou have a proxy set up on your OS but none in QGIS.\nPlease set it up in 'Preferences/Options/Network'."))
 
-    def user_authentification(self):
+    def user_authentication(self):
         """Test the validity of the user id and secret.
 
         This is the first major function the plugin calls when executed. It
@@ -354,8 +346,10 @@ class Isogeo:
         self.user_id = s.value("isogeo-plugin/user-auth/id", 0)
         self.user_secret = s.value("isogeo-plugin/user-auth/secret", 0)
         if self.user_id != 0 and self.user_secret != 0:
+            logging.info("User_authentication function is trying to get a token from the id/secret")
             self.ask_for_token(self.user_id, self.user_secret)
         else:
+            logging.info("No id/secret. User authentication function is showing the auth window.")
             self.auth_prompt_form.show()
 
     def write_ids_and_test(self):
@@ -365,6 +359,7 @@ class Isogeo:
         it stores the values in the file, then call the
         user_authentification function to test them.
         """
+        logging.info("Authentication window accepted. Writting id/secret in QSettings.")
         user_id = self.auth_prompt_form.ent_app_id.text()
         user_secret = self.auth_prompt_form.\
             ent_app_secret.text()
@@ -400,10 +395,12 @@ class Isogeo:
         the initialization function. If not, it raises an error, and ask
         for new IDs
         """
+        logging.info("Asked a token and got a reply from the API.")
         bytarray = self.token_reply.readAll()
         content = str(bytarray)
         parsed_content = json.loads(content)
         if 'access_token' in parsed_content:
+            logging.info("The API reply is an access token : the request worked as expected.")
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content['access_token']
             if self.savedResearch == "first":
@@ -412,12 +409,14 @@ class Isogeo:
                 self.send_request_to_Isogeo_API(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
+            logging.info("The API reply is an error. Id and secret must be invalid. Asking for them again.")
             QMessageBox.information(
-                iface.mainWindow(), "Erreur", parsed_content['error'])
+                iface.mainWindow(), self.tr('Error'), parsed_content['error'])
             self.auth_prompt_form.show()
         else:
+            logging.info("The API reply has an unexpected form : {0}".format(parsed_content))
             QMessageBox.information(
-                iface.mainWindow(), "Erreur", "Erreur inconnue.")
+                iface.mainWindow(), self.tr('Error'), self.tr('Unknown error'))
 
     def send_request_to_Isogeo_API(self, token, limit=15):
         """Send a content url to the Isogeo API.
@@ -439,9 +438,11 @@ class Isogeo:
         content, it calls update_fields(). If it isn't, it means the token has
         expired, and it calls ask_for_token()
         """
+        logging.info("Request sent to API and reply received.")
         bytarray = self.API_reply.readAll()
         content = str(bytarray)
         if self.API_reply.error() == 0 and content != "":
+            logging.info("Reply is a result json.")
             if self.showDetails is False:
                 self.loopCount = 0
                 parsed_content = json.loads(content)
@@ -453,9 +454,11 @@ class Isogeo:
                 self.show_complete_md(parsed_content)
 
         elif self.API_reply.error() == 204:
+            logging.info("Token expired. Renewing it.")
             self.loopCount = 0
             self.ask_for_token(self.user_id, self.user_secret)
         elif content == "":
+            logging.info("Empty reply. Weither no catalog is shared with the plugin, or there is a problem (2 requests sent together)")
             if self.loopCount < 3:
                 self.loopCount += 1
                 del self.API_reply
@@ -463,16 +466,11 @@ class Isogeo:
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
                 QMessageBox.information(iface.mainWindow(
-                ), "Erreur :", u"Le script tourne en rond."
-                    u"\nVérifiez que vous avez partagé bien partagé \nun ou "
-                    u"plusieurs catalogues avec le plugin.\nSi c'est bien le "
-                    u"cas, merci de rapporter\nce problème sur le bug tracker")
+                ), self.tr('Error'), self.tr('The script is looping. Make sure you shared a catalog with the plugin. If so, please report this on the bug tracker.'))
         else:
-            QMessageBox.information(iface.mainWindow(), "Erreur :",
-                                    u"Vous rencontrez une erreur non encore "
-                                    u"gérée.\nCode : " + str(
-                self.API_reply.error()) + "\nMerci de le reporter sur le bug "
-                u"tracker.")
+            QMessageBox.information(iface.mainWindow(), self.tr('Error'),
+                                    self.tr('You are facing an unknown error. Code: ') + str(
+                self.API_reply.error()) + "\nPlease report tis on the bug tracker.")
 
     def update_fields(self, result):
         """Update the fields content.
@@ -481,86 +479,87 @@ class Isogeo:
         calls show_results in the end. This may change, so results would be
         shown only when a specific button is pressed.
         """
+        logging.info("Update_fields function called on the API reply. reset = {0}, savedResearch ={1}".format(self.hardReset, self.save_research))
         tags = self.get_tags(result)
         # Getting the index of selected items in each combobox
         self.params = self.save_params()
         # Show how many results there are
         self.results_count = result['total']
-        self.dockwidget.show_button.setText(
+        self.dockwidget.btn_show.setText(
             str(self.results_count) + u" résultats")
         # Setting the number of rows in the result table
 
         self.nb_page = str(self.calcul_nb_page(self.results_count))
-        self.dockwidget.paging.setText(
-            "page " + str(self.page_index) + " sur " + self.nb_page)
+        self.dockwidget.lbl_page.setText(
+            "page " + str(self.page_index) + self.tr(' on ') + self.nb_page)
         # clearing the previous fields
-        self.dockwidget.resultats.clearContents()
-        self.dockwidget.resultats.setRowCount(0)
+        self.dockwidget.tbl_result.clearContents()
+        self.dockwidget.tbl_result.setRowCount(0)
 
-        self.dockwidget.inspire.clear()
-        self.dockwidget.owner.clear()
-        self.dockwidget.format.clear()
-        self.dockwidget.sys_coord.clear()
-        self.dockwidget.operation.clear()
+        self.dockwidget.cbb_inspire.clear()
+        self.dockwidget.cbb_owner.clear()
+        self.dockwidget.cbb_format.clear()
+        self.dockwidget.cbb_srs.clear()
+        self.dockwidget.cbb_operation.clear()
 
         path = self.get_plugin_path() + '/saved_researches.json'
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         research_list = saved_researches.keys()
         research_list.pop(research_list.index('_default'))
-        self.dockwidget.favorite_combo.clear()
-        self.dockwidget.favorite_combo.addItem(" - ")
+        self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_saved.addItem(" - ")
         for i in research_list:
-            self.dockwidget.favorite_combo.addItem(i, i)
+            self.dockwidget.cbb_saved.addItem(i, i)
 
         # Initiating the "nothing selected" item in each combobox
-        self.dockwidget.inspire.addItem(" - ")
-        self.dockwidget.owner.addItem(" - ")
-        self.dockwidget.format.addItem(" - ")
-        self.dockwidget.sys_coord.addItem(" - ")
+        self.dockwidget.cbb_inspire.addItem(" - ")
+        self.dockwidget.cbb_owner.addItem(" - ")
+        self.dockwidget.cbb_format.addItem(" - ")
+        self.dockwidget.cbb_srs.addItem(" - ")
         dict_operation = {"Intersectent": "intersects",
                           "Sont contenues": "within",
                           "Contiennent": "contains"}
         for operationKey in dict_operation.keys():
-            self.dockwidget.operation.addItem(
+            self.dockwidget.cbb_operation.addItem(
                 operationKey, dict_operation[operationKey])
         if self.hardReset is True:
-            self.dockwidget.operation.setCurrentIndex(
-                self.dockwidget.operation.findData("intersects"))
+            self.dockwidget.cbb_operation.setCurrentIndex(
+                self.dockwidget.cbb_operation.findData("intersects"))
         else:
-            self.dockwidget.operation.setCurrentIndex(
-                self.dockwidget.operation.findData(self.params['operation']))
+            self.dockwidget.cbb_operation.setCurrentIndex(
+                self.dockwidget.cbb_operation.findData(self.params['operation']))
         # Creating combobox items, with their displayed text, and their value
         ordered = sorted(tags['owner'].items(), key=operator.itemgetter(1))
         for i in ordered:
-            self.dockwidget.owner.addItem(i[1], i[0])
+            self.dockwidget.cbb_owner.addItem(i[1], i[0])
         ordered = sorted(tags['themeinspire'].items(), key=operator.itemgetter(1))
         for i in ordered:
-            self.dockwidget.inspire.addItem(i[1], i[0])
+            self.dockwidget.cbb_inspire.addItem(i[1], i[0])
         ordered = sorted(tags['formats'].items(), key=operator.itemgetter(1))
         for i in ordered:
-            self.dockwidget.format.addItem(i[1], i[0])
+            self.dockwidget.cbb_format.addItem(i[1], i[0])
         ordered = sorted(tags['srs'].items(), key=operator.itemgetter(1))
         for i in ordered:
-            self.dockwidget.sys_coord.addItem(i[1], i[0])
+            self.dockwidget.cbb_srs.addItem(i[1], i[0])
 
         # Putting all the comboboxes selected index to their previous
         # location. Necessary as all comboboxes items have been removed and
         # put back in place. We do not want each combobox to go back to their
         # default selected item
         if self.hardReset is False:
-            self.dockwidget.owner.setCurrentIndex(
-                self.dockwidget.owner.findData(self.params['owner']))
-            self.dockwidget.inspire.setCurrentIndex(
-                self.dockwidget.inspire.findData(self.params['inspire']))
+            self.dockwidget.cbb_owner.setCurrentIndex(
+                self.dockwidget.cbb_owner.findData(self.params['owner']))
+            self.dockwidget.cbb_inspire.setCurrentIndex(
+                self.dockwidget.cbb_inspire.findData(self.params['inspire']))
             # Set the combobox current index to (get the index of the item
             # which data is (saved data))
-            self.dockwidget.format.setCurrentIndex(
-                self.dockwidget.format.findData(self.params['format']))
-            self.dockwidget.sys_coord.setCurrentIndex(
-                self.dockwidget.sys_coord.findData(self.params['srs']))
-            self.dockwidget.favorite_combo.setCurrentIndex(
-                self.dockwidget.favorite_combo.findData(
+            self.dockwidget.cbb_format.setCurrentIndex(
+                self.dockwidget.cbb_format.findData(self.params['format']))
+            self.dockwidget.cbb_srs.setCurrentIndex(
+                self.dockwidget.cbb_srs.findData(self.params['srs']))
+            self.dockwidget.cbb_saved.setCurrentIndex(
+                self.dockwidget.cbb_saved.findData(
                     self.params['favorite']))
 
             # Filling the keywords special combobox (whose items are checkable)
@@ -582,11 +581,11 @@ class Isogeo:
                         item.setData(Qt.Unchecked, Qt.CheckStateRole)
                         self.model.setItem(i, 0, item)
                     i += 1
-                first_item = QStandardItem(u"---- Mots clés ----")
+                first_item = QStandardItem(self.tr('---- Keywords ----'))
                 first_item.setSelectable(False)
                 self.model.insertRow(0, first_item)
                 self.model.itemChanged.connect(self.search)
-                self.dockwidget.keywords.setModel(self.model)
+                self.dockwidget.cbb_keywords.setModel(self.model)
             else:
                 path = self.get_plugin_path() + '/saved_researches.json'
                 with open(path) as data_file:
@@ -613,11 +612,11 @@ class Isogeo:
                         item.setData(Qt.Unchecked, Qt.CheckStateRole)
                         self.model.setItem(i, 0, item)
                     i += 1
-                first_item = QStandardItem(u"---- Mots clés ----")
+                first_item = QStandardItem(self.tr('---- Keywords ----'))
                 first_item.setSelectable(False)
                 self.model.insertRow(0, first_item)
                 self.model.itemChanged.connect(self.search)
-                self.dockwidget.keywords.setModel(self.model)
+                self.dockwidget.cbb_keywords.setModel(self.model)
         else:
             self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
             i = 1
@@ -632,11 +631,11 @@ class Isogeo:
                 item.setData(Qt.Unchecked, Qt.CheckStateRole)
                 self.model.setItem(i, 0, item)
                 i += 1
-            first_item = QStandardItem(u"---- Mots clés ----")
+            first_item = QStandardItem(self.tr('---- Keywords ----'))
             first_item.setSelectable(False)
             self.model.insertRow(0, first_item)
             self.model.itemChanged.connect(self.search)
-            self.dockwidget.keywords.setModel(self.model)
+            self.dockwidget.cbb_keywords.setModel(self.model)
 
         # Trying to make th checkboxes and radio buttons unckeckable if needed
         # View
@@ -656,26 +655,26 @@ class Isogeo:
             self.dockwidget.checkBox_3.setEnabled(False)
         # Vector
         if 'type:vector-dataset' in tags['type']:
-            self.dockwidget.vector.setEnabled(True)
+            self.dockwidget.rdb_vector.setEnabled(True)
         else:
-            self.dockwidget.vector.setEnabled(False)
+            self.dockwidget.rdb_vector.setEnabled(False)
         # Raster
         if 'type:raster-dataset' in tags['type']:
-            self.dockwidget.raster.setEnabled(True)
+            self.dockwidget.rdb_raster.setEnabled(True)
         else:
-            self.dockwidget.raster.setEnabled(False)
+            self.dockwidget.rdb_raster.setEnabled(False)
         # Resource
         if 'type:resource' in tags['type']:
-            self.dockwidget.resource.setEnabled(True)
+            self.dockwidget.rdb_resource.setEnabled(True)
         else:
-            self.dockwidget.resource.setEnabled(False)
+            self.dockwidget.rdb_resource.setEnabled(False)
         # Service
         if 'type:service' in tags['type']:
-            self.dockwidget.service.setEnabled(True)
+            self.dockwidget.rdb_service.setEnabled(True)
         else:
-            self.dockwidget.service.setEnabled(False)
+            self.dockwidget.rdb_service.setEnabled(False)
 
-        self.dockwidget.show_button.setStyleSheet(
+        self.dockwidget.btn_show.setStyleSheet(
             "QPushButton "
             "{background-color: rgb(255, 144, 0); color: white}")
 
@@ -686,20 +685,20 @@ class Isogeo:
             with open(path) as data_file:
                 saved_researches = json.load(data_file)
             research_params = saved_researches[self.savedResearch]
-            self.dockwidget.text_input.setText(research_params['text'])
-            self.dockwidget.owner.setCurrentIndex(
-                self.dockwidget.owner.findData(research_params['owner']))
-            self.dockwidget.inspire.setCurrentIndex(
-                self.dockwidget.inspire.findData(research_params['inspire']))
-            self.dockwidget.format.setCurrentIndex(
-                self.dockwidget.format.findData(research_params['format']))
-            self.dockwidget.sys_coord.setCurrentIndex(
-                self.dockwidget.sys_coord.findData(research_params['srs']))
-            self.dockwidget.operation.setCurrentIndex(
-                self.dockwidget.operation.findData(
+            self.dockwidget.txt_input.setText(research_params['text'])
+            self.dockwidget.cbb_owner.setCurrentIndex(
+                self.dockwidget.cbb_owner.findData(research_params['owner']))
+            self.dockwidget.cbb_inspire.setCurrentIndex(
+                self.dockwidget.cbb_inspire.findData(research_params['inspire']))
+            self.dockwidget.cbb_format.setCurrentIndex(
+                self.dockwidget.cbb_format.findData(research_params['format']))
+            self.dockwidget.cbb_srs.setCurrentIndex(
+                self.dockwidget.cbb_srs.findData(research_params['srs']))
+            self.dockwidget.cbb_operation.setCurrentIndex(
+                self.dockwidget.cbb_operation.findData(
                     research_params['operation']))
-            self.dockwidget.favorite_combo.setCurrentIndex(
-                self.dockwidget.favorite_combo.findData(self.savedResearch))
+            self.dockwidget.cbb_saved.setCurrentIndex(
+                self.dockwidget.cbb_saved.findData(self.savedResearch))
             if research_params['view']:
                 self.dockwidget.checkBox.setCheckState(Qt.Checked)
             if research_params['download']:
@@ -710,21 +709,21 @@ class Isogeo:
                 self.dockwidget.checkBox_4.setCheckState(Qt.Checked)
             if research_params['datatype'] is not False:
                 if research_params['datatype'] == "vector":
-                    self.dockwidget.vector.setChecked(True)
+                    self.dockwidget.rdb_vector.setChecked(True)
                 elif research_params['datatype'] == "raster":
-                    self.dockwidget.raster.setChecked(True)
+                    self.dockwidget.rdb_raster.setChecked(True)
                 elif research_params['datatype'] == "resource":
-                    self.dockwidget.resource.setChecked(True)
+                    self.dockwidget.rdb_resource.setChecked(True)
                 elif research_params['datatype'] == "service":
-                    self.dockwidget.service.setChecked(True)
+                    self.dockwidget.rdb_service.setChecked(True)
             self.savedResearch = False
 
         # Show result, if we want them to be shown (button 'show result', 'next
         # page' or 'previous page' pressed)
         if self.showResult is True:
-            self.dockwidget.next.setEnabled(True)
-            self.dockwidget.previous.setEnabled(True)
-            self.dockwidget.show_button.setStyleSheet("")
+            self.dockwidget.btn_next.setEnabled(True)
+            self.dockwidget.btn_previous.setEnabled(True)
+            self.dockwidget.btn_show.setStyleSheet("")
             self.show_results(result)
         # Re enable all user input fields now the research function is
         # finished.
@@ -735,10 +734,11 @@ class Isogeo:
 
     def show_results(self, result):
         """Display the results in a table ."""
+        logging.info("Show_results function called. Displaying the results")
         if self.results_count >= 15:
-            self.dockwidget.resultats.setRowCount(15)
+            self.dockwidget.tbl_result.setRowCount(15)
         else:
-            self.dockwidget.resultats.setRowCount(self.results_count)
+            self.dockwidget.tbl_result.setRowCount(self.results_count)
 
         polygon_list = ["CurvePolygon", "MultiPolygon",
                         "MultiSurface", "Polygon", "PolyhedralSurface"]
@@ -822,9 +822,9 @@ class Isogeo:
                 button.setToolTip(i['abstract'])
             except:
                 pass
-            self.dockwidget.resultats.setCellWidget(
+            self.dockwidget.tbl_result.setCellWidget(
                 count, 0, button)
-            self.dockwidget.resultats.setItem(
+            self.dockwidget.tbl_result.setItem(
                 count, 1, QTableWidgetItem(self.handle_date(i['_modified'])))
             try:
                 geometry = i['geometry']
@@ -832,39 +832,39 @@ class Isogeo:
                     label = QLabel()
                     pix = QPixmap(':/plugins/Isogeo/resources/point.png')
                     label.setPixmap(pix)
-                    self.dockwidget.resultats.setCellWidget(count, 2, label)
+                    self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 elif geometry in polygon_list:
                     label = QLabel()
                     pix = QPixmap(':/plugins/Isogeo/resources/polygon.png')
                     label.setPixmap(pix)
-                    self.dockwidget.resultats.setCellWidget(count, 2, label)
+                    self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 elif geometry in line_list:
                     label = QLabel()
                     pix = QPixmap(':/plugins/Isogeo/resources/line.png')
                     label.setPixmap(pix)
-                    self.dockwidget.resultats.setCellWidget(count, 2, label)
+                    self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 elif geometry in multi_list:
                     label = QLabel()
                     pix = QPixmap(':/plugins/Isogeo/resources/multi.png')
                     label.setPixmap(pix)
-                    self.dockwidget.resultats.setCellWidget(count, 2, label)
+                    self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 elif geometry == "TIN":
-                    self.dockwidget.resultats.setItem(
+                    self.dockwidget.tbl_result.setItem(
                         count, 2, QTableWidgetItem(u'TIN'))
                 else:
-                    self.dockwidget.resultats.setItem(
-                        count, 2, QTableWidgetItem(u'Géométrie inconnue'))
+                    self.dockwidget.tbl_result.setItem(
+                        count, 2, QTableWidgetItem(self.tr('Unknown geometry')))
             except:
                 if "type:raster-dataset" in i['tags']:
                     label = QLabel()
                     pix = QPixmap(':/plugins/Isogeo/resources/raster.png')
                     label.setPixmap(pix)
-                    self.dockwidget.resultats.setCellWidget(count, 2, label)
+                    self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 else:
                     label = QLabel()
                     pix = QPixmap(':/plugins/Isogeo/resources/none.png')
                     label.setPixmap(pix)
-                    self.dockwidget.resultats.setCellWidget(count, 2, label)
+                    self.dockwidget.tbl_result.setCellWidget(count, 2, label)
 
             combo = QComboBox()
             link_dict = {}
@@ -875,7 +875,7 @@ class Isogeo:
                     try:
                         test_path = open(path)
                         params = ["vector", path]
-                        link_dict[u"Donnée fichier"] = params
+                        link_dict[self.tr('Data file')] = params
 
                     except IOError:
                         pass
@@ -885,7 +885,7 @@ class Isogeo:
                     try:
                         test_path = open(path)
                         params = ["raster", path]
-                        link_dict[u"Donnée fichier"] = params
+                        link_dict[self.tr('Data file')] = params
                     except IOError:
                         pass
 
@@ -898,7 +898,7 @@ class Isogeo:
                         params['base_name'] = base_name
                         params['schema'] = i['name'].split(".")[0]
                         params['table'] = i['name'].split(".")[1]
-                        link_dict[u"Table PostGIS"] = params
+                        link_dict[self.tr('PostGIS table')] = params
 
             for link in i['links']:
                 if link['kind'] == 'wms':
@@ -909,20 +909,29 @@ class Isogeo:
                     name_url = self.build_wfs_url(link['url'])
                     if name_url != 0:
                         link_dict[u"WFS : " + name_url[1]] = name_url
+                elif link['type'] == 'link':
+                    if link['link']['kind'] == 'wms':
+                        name_url = self.build_wms_url(link['url'])
+                        if name_url != 0:
+                            link_dict[u"WMS : " + name_url[1]] = name_url
+                    elif link['link']['kind'] == 'wfs':
+                        name_url = self.build_wfs_url(link['url'])
+                        if name_url != 0:
+                            link_dict[u"WFS : " + name_url[1]] = name_url
 
             for key in link_dict.keys():
                 combo.addItem(key, link_dict[key])
 
             combo.activated.connect(partial(self.add_layer, layer_index=count))
-            self.dockwidget.resultats.setCellWidget(count, 3, combo)
+            self.dockwidget.tbl_result.setCellWidget(count, 3, combo)
 
             count += 1
-        self.dockwidget.resultats.horizontalHeader().setResizeMode(1)
-        self.dockwidget.resultats.horizontalHeader().setResizeMode(1, 0)
-        self.dockwidget.resultats.horizontalHeader().setResizeMode(2, 0)
-        self.dockwidget.resultats.horizontalHeader().resizeSection(1, 80)
-        self.dockwidget.resultats.horizontalHeader().resizeSection(2, 50)
-        self.dockwidget.resultats.verticalHeader().setResizeMode(3)
+        self.dockwidget.tbl_result.horizontalHeader().setResizeMode(1)
+        self.dockwidget.tbl_result.horizontalHeader().setResizeMode(1, 0)
+        self.dockwidget.tbl_result.horizontalHeader().setResizeMode(2, 0)
+        self.dockwidget.tbl_result.horizontalHeader().resizeSection(1, 80)
+        self.dockwidget.tbl_result.horizontalHeader().resizeSection(2, 50)
+        self.dockwidget.tbl_result.verticalHeader().setResizeMode(3)
 
     def add_layer(self, layer_index):
         """Add a layer to QGIS map canvas.
@@ -931,56 +940,68 @@ class Isogeo:
         search the information needed to add it in the temporary dictionnary
         constructed in the show_results function. It then adds it.
         """
-        combobox = self.dockwidget.resultats.cellWidget(layer_index, 3)
+        logging.info("Add_layer function called.")
+        combobox = self.dockwidget.tbl_result.cellWidget(layer_index, 3)
         layer_info = combobox.itemData(combobox.currentIndex())
         if type(layer_info) == list:
             if layer_info[0] == "vector":
+                logging.info("Data type : vector")
                 path = layer_info[1]
                 name = os.path.basename(path).split(".")[0]
                 layer = QgsVectorLayer(path, name, 'ogr')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    logging.info("Data added")
                 else:
+                    logging.info("Layer not valid. path = {0}".format(path))
                     QMessageBox.information(
-                        iface.mainWindow(), "Erreur",
-                                            "La couche n'est pas valide")
+                        iface.mainWindow(), self.tr('Error'),
+                                            self.tr('The layer is not valid.'))
 
             elif layer_info[0] == "raster":
+                logging.info("Data type : raster")
                 path = layer_info[1]
                 name = os.path.basename(path).split(".")[0]
                 layer = QgsRasterLayer(path, name)
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    logging.info("Data added")
                 else:
+                    logging.info("Layer not valid. path = {0}".format(path))
                     QMessageBox.information(
-                        iface.mainWindow(), "Erreur",
-                                            "La couche n'est pas valide")
+                        iface.mainWindow(), self.tr('Error'),
+                                            self.tr('The layer is not valid.'))
 
             elif layer_info[0] == 'WMS':
+                logging.info("Data type : WMS")
                 url = layer_info[2]
                 name = layer_info[1]
                 layer = QgsRasterLayer(url, name, 'wms')
                 if not layer.isValid():
+                    logging.info("Layer not valid. path = {0}".format(url))
                     QMessageBox.information(
-                        iface.mainWindow(), "Erreur",
-                                            u"Le service renseigné"
-                                            u" n'est pas valide")
+                        iface.mainWindow(), self.tr('Error'),
+                                            self.tr("The linked service is not valid."))
                 else:
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    logging.info("Data added")
 
             elif layer_info[0] == 'WFS':
+                logging.info("Data type : WFS")
                 url = layer_info[2]
                 name = layer_info[1]
                 layer = QgsVectorLayer(url, name, 'WFS')
                 if not layer.isValid():
+                    logging.info("Layer not valid. path = {0}".format(url))
                     QMessageBox.information(
-                        iface.mainWindow(), "Erreur",
-                                            u"Le service renseigné"
-                                            u" n'est pas valide")
+                        iface.mainWindow(), self.tr('Error'),
+                                            self.tr("The linked service is not valid."))
                 else:
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    logging.info("Data added")
 
         elif type(layer_info) == dict:
+            logging.info("Data type : PostGIS")
             # Give aliases to the data passed as arguement
             base_name = layer_info['base_name']
             schema = layer_info['schema']
@@ -1006,10 +1027,12 @@ class Isogeo:
             layer = QgsVectorLayer(uri.uri(), table, "postgres")
             if layer.isValid():
                 QgsMapLayerRegistry.instance().addMapLayer(layer)
+                logging.info("Data added")
             else:
+                logging.info("Layer not valid. table = {0}".format(table))
                 QMessageBox.information(iface.mainWindow(),
-                                        "Erreur",
-                                        u"La couche PostGis n'est pas valide."
+                                        self.tr('Error'),
+                                        self.tr("The PostGIS layer is not valid.")
                                         )
 
     def build_wms_url(self, raw_url):
@@ -1117,7 +1140,7 @@ class Isogeo:
         resources_types = {}
         owners = {}
         keywords = {}
-        theminspire = {}
+        themeinspire = {}
         formats = {}
         srs = {}
         actions = {}
@@ -1132,7 +1155,7 @@ class Isogeo:
                 keywords[tag] = tags[tag]
             # INSPIRE themes
             elif tag.startswith('keyword:inspire-theme'):
-                theminspire[tag] = tags[tag]
+                themeinspire[tag] = tags[tag]
             # formats
             elif tag.startswith('format'):
                 formats[tag] = tags[tag]
@@ -1151,7 +1174,7 @@ class Isogeo:
                 # Test : to be removed eventually
                 else:
                     actions[tag] = u'fonction get_tag à revoir'
-                    self.dockwidget.text_input.setText(tag)
+                    self.dockwidget.txt_input.setText(tag)
             # resources type
             elif tag.startswith('type'):
                 if tag.startswith('type:vector'):
@@ -1165,7 +1188,7 @@ class Isogeo:
                 # Test : to be removed eventually
                 else:
                     resources_types[tag] = u'fonction get_tag à revoir'
-                    # self.dockwidget.text_input.setText(tag)
+                    # self.dockwidget.txt_input.setText(tag)
 
         # Creating the final object the function will return : a dictionary of
         # dictionaries
@@ -1173,7 +1196,7 @@ class Isogeo:
         new_tags['type'] = resources_types
         new_tags['owner'] = owners
         new_tags['keywords'] = keywords
-        new_tags['themeinspire'] = theminspire
+        new_tags['themeinspire'] = themeinspire
         new_tags['formats'] = formats
         new_tags['srs'] = srs
         new_tags['actions'] = actions
@@ -1189,26 +1212,26 @@ class Isogeo:
         """
         # get the data of the item which index is (get the combobox current
         # index)
-        owner_param = self.dockwidget.owner.itemData(
-            self.dockwidget.owner.currentIndex())
-        inspire_param = self.dockwidget.inspire.itemData(
-            self.dockwidget.inspire.currentIndex())
-        format_param = self.dockwidget.format.itemData(
-            self.dockwidget.format.currentIndex())
-        srs_param = self.dockwidget.sys_coord.itemData(
-            self.dockwidget.sys_coord.currentIndex())
-        operation_param = self.dockwidget.operation.itemData(
-            self.dockwidget.operation.currentIndex())
-        favorite_param = self.dockwidget.favorite_combo.itemData(
-            self.dockwidget.favorite_combo.currentIndex())
+        owner_param = self.dockwidget.cbb_owner.itemData(
+            self.dockwidget.cbb_owner.currentIndex())
+        inspire_param = self.dockwidget.cbb_inspire.itemData(
+            self.dockwidget.cbb_inspire.currentIndex())
+        format_param = self.dockwidget.cbb_format.itemData(
+            self.dockwidget.cbb_format.currentIndex())
+        srs_param = self.dockwidget.cbb_srs.itemData(
+            self.dockwidget.cbb_srs.currentIndex())
+        operation_param = self.dockwidget.cbb_operation.itemData(
+            self.dockwidget.cbb_operation.currentIndex())
+        favorite_param = self.dockwidget.cbb_saved.itemData(
+            self.dockwidget.cbb_saved.currentIndex())
         # Getting the text in the research line
-        text = self.dockwidget.text_input.text()
+        text = self.dockwidget.txt_input.text()
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
-        for i in xrange(self.dockwidget.keywords.count()):
-            if self.dockwidget.keywords.itemData(i, 10) == 2:
-                key_params.append(self.dockwidget.keywords.itemData(i, 32))
+        for i in xrange(self.dockwidget.cbb_keywords.count()):
+            if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
+                key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
 
         # Saving the checked checkboxes (useful for the research saving)
         if self.dockwidget.checkBox.isChecked():
@@ -1229,13 +1252,13 @@ class Isogeo:
             geofilter_param = False
 
         # Saving the checked radio button (useful for the research saving)
-        if self.dockwidget.raster.isChecked():
+        if self.dockwidget.rdb_raster.isChecked():
             datatype = "raster"
-        elif self.dockwidget.resource.isChecked():
+        elif self.dockwidget.rdb_resource.isChecked():
             datatype = "resource"
-        elif self.dockwidget.vector.isChecked():
+        elif self.dockwidget.rdb_vector.isChecked():
             datatype = "vector"
-        elif self.dockwidget.service.isChecked():
+        elif self.dockwidget.rdb_service.isChecked():
             datatype = "service"
         else:
             datatype = False
@@ -1269,6 +1292,7 @@ class Isogeo:
         This builds the url, retrieving the parameters from the widgets. When
         the final url is built, it calls send_request_to_isogeo_API
         """
+        logging.info("Search function called. Building the url that is to be sent to the API")
         # Disabling all user inputs during the research function is running
         self.switch_widgets_on_and_off('off')
 
@@ -1276,30 +1300,30 @@ class Isogeo:
         self.page_index = 1
         self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
         # Getting the parameters chosen by the user from the combobox
-        if self.dockwidget.owner.currentIndex() != 0:
-            owner = self.dockwidget.owner.itemData(
-                self.dockwidget.owner.currentIndex())
+        if self.dockwidget.cbb_owner.currentIndex() != 0:
+            owner = self.dockwidget.cbb_owner.itemData(
+                self.dockwidget.cbb_owner.currentIndex())
         else:
             owner = False
-        if self.dockwidget.inspire.currentIndex() != 0:
-            inspire = self.dockwidget.inspire.itemData(
-                self.dockwidget.inspire.currentIndex())
+        if self.dockwidget.cbb_inspire.currentIndex() != 0:
+            inspire = self.dockwidget.cbb_inspire.itemData(
+                self.dockwidget.cbb_inspire.currentIndex())
         else:
             inspire = False
-        if self.dockwidget.format.currentIndex() != 0:
-            formats = self.dockwidget.format.itemData(
-                self.dockwidget.format.currentIndex())
+        if self.dockwidget.cbb_format.currentIndex() != 0:
+            formats = self.dockwidget.cbb_format.itemData(
+                self.dockwidget.cbb_format.currentIndex())
         else:
             formats = False
-        if self.dockwidget.sys_coord.currentIndex() != 0:
-            sys_coord = self.dockwidget.sys_coord.itemData(
-                self.dockwidget.sys_coord.currentIndex())
+        if self.dockwidget.cbb_srs.currentIndex() != 0:
+            sys_coord = self.dockwidget.cbb_srs.itemData(
+                self.dockwidget.cbb_srs.currentIndex())
         else:
             sys_coord = False
         # Getting the text entered in the text field
         filters = ""
-        if self.dockwidget.text_input.text():
-            filters += self.dockwidget.text_input.text() + " "
+        if self.dockwidget.txt_input.text():
+            filters += self.dockwidget.txt_input.text() + " "
 
         # Adding the content of the comboboxes to the request
         if owner:
@@ -1318,25 +1342,25 @@ class Isogeo:
         if self.dockwidget.checkBox_3.isChecked():
             filters += "action:other "
         # Data type in radio buttons
-        if self.dockwidget.raster.isChecked():
+        if self.dockwidget.rdb_raster.isChecked():
             filters += "type:raster-dataset "
-        elif self.dockwidget.vector.isChecked():
+        elif self.dockwidget.rdb_vector.isChecked():
             filters += "type:vector-dataset "
-        elif self.dockwidget.resource.isChecked():
+        elif self.dockwidget.rdb_resource.isChecked():
             filters += "type:resource "
-        elif self.dockwidget.service.isChecked():
+        elif self.dockwidget.rdb_service.isChecked():
             filters += "type:service "
         # Adding the keywords that are checked (whose data[10] == 2)
-        for i in xrange(self.dockwidget.keywords.count()):
-            if self.dockwidget.keywords.itemData(i, 10) == 2:
-                filters += self.dockwidget.keywords.itemData(i, 32) + " "
+        for i in xrange(self.dockwidget.cbb_keywords.count()):
+            if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
+                filters += self.dockwidget.cbb_keywords.itemData(i, 32) + " "
 
         # If the geographical filter is activated, build a spatial filter
         if self.dockwidget.checkBox_4.isChecked():
             if self.get_canvas_coordinates():
                 filters = filters[:-1]
                 filters += "&box=" + self.get_canvas_coordinates() + "&rel=" +\
-                    self.dockwidget.operation.itemData(self.dockwidget.
+                    self.dockwidget.cbb_operation.itemData(self.dockwidget.
                                                        operation.currentIndex()
                                                        ) + " "
             else:
@@ -1348,7 +1372,7 @@ class Isogeo:
                     u"problème sur le bug tracker.")
 
         filters = "q=" + filters[:-1]
-        # self.dockwidget.text_input.setText(encoded_filters)
+        # self.dockwidget.txt_input.setText(encoded_filters)
         if filters != "q=":
             self.currentUrl += filters
         if self.showResult is True:
@@ -1364,6 +1388,7 @@ class Isogeo:
         Close to the search() function (lot of code in common) but
         triggered on the click on the change page button.
         """
+        logging.info("next_page function called. Building the url that is to be sent to the API")
         # Testing if the user is asking for a unexisting page (ex : page 15 out
         # of 14)
         if self.page_index >= self.calcul_nb_page(self.results_count):
@@ -1375,30 +1400,30 @@ class Isogeo:
             self.page_index += 1
             self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
             # Getting the parameters chosen by the user from the combobox
-            if self.dockwidget.owner.currentIndex() != 0:
-                owner = self.dockwidget.owner.itemData(
-                    self.dockwidget.owner.currentIndex())
+            if self.dockwidget.cbb_owner.currentIndex() != 0:
+                owner = self.dockwidget.cbb_owner.itemData(
+                    self.dockwidget.cbb_owner.currentIndex())
             else:
                 owner = False
-            if self.dockwidget.inspire.currentIndex() != 0:
-                inspire = self.dockwidget.inspire.itemData(
-                    self.dockwidget.inspire.currentIndex())
+            if self.dockwidget.cbb_inspire.currentIndex() != 0:
+                inspire = self.dockwidget.cbb_inspire.itemData(
+                    self.dockwidget.cbb_inspire.currentIndex())
             else:
                 inspire = False
-            if self.dockwidget.format.currentIndex() != 0:
-                formats = self.dockwidget.format.itemData(
-                    self.dockwidget.format.currentIndex())
+            if self.dockwidget.cbb_format.currentIndex() != 0:
+                formats = self.dockwidget.cbb_format.itemData(
+                    self.dockwidget.cbb_format.currentIndex())
             else:
                 formats = False
-            if self.dockwidget.sys_coord.currentIndex() != 0:
-                sys_coord = self.dockwidget.sys_coord.itemData(
-                    self.dockwidget.sys_coord.currentIndex())
+            if self.dockwidget.cbb_srs.currentIndex() != 0:
+                sys_coord = self.dockwidget.cbb_srs.itemData(
+                    self.dockwidget.cbb_srs.currentIndex())
             else:
                 sys_coord = False
             # Getting the text entered in the text field
             filters = ""
-            if self.dockwidget.text_input.text():
-                filters += self.dockwidget.text_input.text() + " "
+            if self.dockwidget.txt_input.text():
+                filters += self.dockwidget.txt_input.text() + " "
 
             # Adding the content of the comboboxes to the request
             if owner:
@@ -1417,18 +1442,18 @@ class Isogeo:
             if self.dockwidget.checkBox_3.isChecked():
                 filters += "action:other "
             # Data type in radio buttons
-            if self.dockwidget.raster.isChecked():
+            if self.dockwidget.rdb_raster.isChecked():
                 filters += "type:raster-dataset "
-            elif self.dockwidget.vector.isChecked():
+            elif self.dockwidget.rdb_vector.isChecked():
                 filters += "type:vector-dataset "
-            elif self.dockwidget.resource.isChecked():
+            elif self.dockwidget.rdb_resource.isChecked():
                 filters += "type:resource "
-            elif self.dockwidget.service.isChecked():
+            elif self.dockwidget.rdb_service.isChecked():
                 filters += "type:service "
             # Adding the keywords that are checked (whose data[10] == 2)
-            for i in xrange(self.dockwidget.keywords.count()):
-                if self.dockwidget.keywords.itemData(i, 10) == 2:
-                    filters += self.dockwidget.keywords.itemData(i, 32) + " "
+            for i in xrange(self.dockwidget.cbb_keywords.count()):
+                if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
+                    filters += self.dockwidget.cbb_keywords.itemData(i, 32) + " "
 
             # If the geographical filter is activated, build a spatial filter
             if self.dockwidget.checkBox_4.isChecked():
@@ -1436,18 +1461,15 @@ class Isogeo:
                     filters = filters[:-1]
                     filters += "&box=" + self.get_canvas_coordinates() +\
                         "&rel=" + \
-                        self.dockwidget.operation.itemData(
-                            self.dockwidget.operation.currentIndex()) + " "
+                        self.dockwidget.cbb_operation.itemData(
+                            self.dockwidget.cbb_operation.currentIndex()) + " "
                 else:
                     QMessageBox.information(iface.mainWindow(
-                    ), "Erreur :",
-                       u"Le système de coordonnée de votre canevas "
-                       u"ne semble\npas défini avec un code EPSG.\nIl ne peut "
-                       u"donc pas être interprété par QGIS.\nMerci de "
-                       u"rapporter ce problème sur le bug tracker.")
+                    ), self.tr("Error"),
+                       self.tr("Your canvas coordinate system is not defined with a EPSG code."))
 
             filters = "q=" + filters[:-1]
-            # self.dockwidget.text_input.setText(encoded_filters)
+            # self.dockwidget.txt_input.setText(encoded_filters)
             if filters != "q=":
                 self.currentUrl += filters
                 self.currentUrl += "&_offset=" + \
@@ -1466,6 +1488,7 @@ class Isogeo:
         Close to the search() function (lot of code in common) but
         triggered on the click on the change page button.
         """
+        logging.info("previous_page function called. Building the url that is to be sent to the API")
         # testing if the user is asking for something impossible : page 0
         if self.page_index < 2:
             return False
@@ -1476,30 +1499,30 @@ class Isogeo:
             self.page_index -= 1
             self.currentUrl = 'https://v1.api.isogeo.com/resources/search?'
             # Getting the parameters chosen by the user from the combobox
-            if self.dockwidget.owner.currentIndex() != 0:
-                owner = self.dockwidget.owner.itemData(
-                    self.dockwidget.owner.currentIndex())
+            if self.dockwidget.cbb_owner.currentIndex() != 0:
+                owner = self.dockwidget.cbb_owner.itemData(
+                    self.dockwidget.cbb_owner.currentIndex())
             else:
                 owner = False
-            if self.dockwidget.inspire.currentIndex() != 0:
-                inspire = self.dockwidget.inspire.itemData(
-                    self.dockwidget.inspire.currentIndex())
+            if self.dockwidget.cbb_inspire.currentIndex() != 0:
+                inspire = self.dockwidget.cbb_inspire.itemData(
+                    self.dockwidget.cbb_inspire.currentIndex())
             else:
                 inspire = False
-            if self.dockwidget.format.currentIndex() != 0:
-                formats = self.dockwidget.format.itemData(
-                    self.dockwidget.format.currentIndex())
+            if self.dockwidget.cbb_format.currentIndex() != 0:
+                formats = self.dockwidget.cbb_format.itemData(
+                    self.dockwidget.cbb_format.currentIndex())
             else:
                 formats = False
-            if self.dockwidget.sys_coord.currentIndex() != 0:
-                sys_coord = self.dockwidget.sys_coord.itemData(
-                    self.dockwidget.sys_coord.currentIndex())
+            if self.dockwidget.cbb_srs.currentIndex() != 0:
+                sys_coord = self.dockwidget.cbb_srs.itemData(
+                    self.dockwidget.cbb_srs.currentIndex())
             else:
                 sys_coord = False
             # Getting the text entered in the text field
             filters = ""
-            if self.dockwidget.text_input.text():
-                filters += self.dockwidget.text_input.text() + " "
+            if self.dockwidget.txt_input.text():
+                filters += self.dockwidget.txt_input.text() + " "
 
             # Adding the content of the comboboxes to the request
             if owner:
@@ -1518,18 +1541,18 @@ class Isogeo:
             if self.dockwidget.checkBox_3.isChecked():
                 filters += "action:other "
             # Data type in radio buttons
-            if self.dockwidget.raster.isChecked():
+            if self.dockwidget.rdb_raster.isChecked():
                 filters += "type:raster-dataset "
-            elif self.dockwidget.vector.isChecked():
+            elif self.dockwidget.rdb_vector.isChecked():
                 filters += "type:vector-dataset "
-            elif self.dockwidget.resource.isChecked():
+            elif self.dockwidget.rdb_resource.isChecked():
                 filters += "type:resource "
-            elif self.dockwidget.service.isChecked():
+            elif self.dockwidget.rdb_service.isChecked():
                 filters += "type:service "
             # Adding the keywords that are checked (whose data[10] == 2)
-            for i in xrange(self.dockwidget.keywords.count()):
-                if self.dockwidget.keywords.itemData(i, 10) == 2:
-                    filters += self.dockwidget.keywords.itemData(i, 32) + " "
+            for i in xrange(self.dockwidget.cbb_keywords.count()):
+                if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
+                    filters += self.dockwidget.cbb_keywords.itemData(i, 32) + " "
 
             # If the geographical filter is activated, build a spatial filter
             if self.dockwidget.checkBox_4.isChecked():
@@ -1537,15 +1560,12 @@ class Isogeo:
                     filters = filters[:-1]
                     filters += "&box=" + self.get_canvas_coordinates() + \
                         "&rel=" + \
-                        self.dockwidget.operation.itemData(
-                            self.dockwidget.operation.currentIndex()) + " "
+                        self.dockwidget.cbb_operation.itemData(
+                            self.dockwidget.cbb_operation.currentIndex()) + " "
                 else:
                     QMessageBox.information(iface.mainWindow(
-                    ), "Erreur :",
-                       u"Le système de coordonnée de votre canevas "
-                       u"ne semble\npas défini avec un code EPSG.\nIl ne peut "
-                       u"donc pas être interprété par QGIS.\nMerci de "
-                       u"rapporter ce problème sur le bug tracker.")
+                    ), self.tr("Error"),
+                       self.tr("Your canvas coordinate system is not defined with a EPSG code."))
             filters = "q=" + filters[:-1]
 
             if filters != "q=":
@@ -1587,11 +1607,13 @@ class Isogeo:
             saved_researches[research_name] = params
             with open(path, 'w') as outfile:
                 json.dump(saved_researches, outfile)
+            logging.info("Saved reseearch written. {0}".format(params))
 
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
+        logging.info("Set_widget_status function called. User is executing a saved research.")
         self.switch_widgets_on_and_off('off')
-        selected_research = self.dockwidget.favorite_combo.currentText()
+        selected_research = self.dockwidget.cbb_saved.currentText()
         path = self.get_plugin_path() + '/saved_researches.json'
         with open(path) as data_file:
             saved_researches = json.load(data_file)
@@ -1633,9 +1655,9 @@ class Isogeo:
             saved_researches = json.load(data_file)
         research_list = saved_researches.keys()
         research_list.pop(research_list.index('_default'))
-        self.dockwidget.favorite_combo.clear()
+        self.dockwidget.cbb_saved.clear()
         for i in research_list:
-            self.dockwidget.favorite_combo.addItem(i, i)
+            self.dockwidget.cbb_saved.addItem(i, i)
 
     def calcul_nb_page(self, nb_fiches):
         """Calculate the number of pages given a number of results."""
@@ -1695,23 +1717,24 @@ class Isogeo:
         the fields : send_request() calls handle_reply(), which calls
         update_fields())
         """
+        logging.info("Reinitialize_research function called.")
         self.hardReset = True
         self.dockwidget.checkBox.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_2.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_3.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_4.setCheckState(Qt.Unchecked)
-        self.dockwidget.raster.setChecked(False)
-        self.dockwidget.resource.setChecked(False)
-        self.dockwidget.vector.setChecked(False)
-        self.dockwidget.service.setChecked(False)
-        self.dockwidget.alltypes.setChecked(True)
-        self.dockwidget.text_input.clear()
-        self.dockwidget.keywords.clear()
-        self.dockwidget.operation.clear()
-        self.dockwidget.owner.clear()
-        self.dockwidget.inspire.clear()
-        self.dockwidget.format.clear()
-        self.dockwidget.sys_coord.clear()
+        self.dockwidget.rdb_raster.setChecked(False)
+        self.dockwidget.rdb_resource.setChecked(False)
+        self.dockwidget.rdb_vector.setChecked(False)
+        self.dockwidget.rdb_service.setChecked(False)
+        self.dockwidget.rdb_alltypes.setChecked(True)
+        self.dockwidget.txt_input.clear()
+        self.dockwidget.cbb_keywords.clear()
+        self.dockwidget.cbb_operation.clear()
+        self.dockwidget.cbb_owner.clear()
+        self.dockwidget.cbb_inspire.clear()
+        self.dockwidget.cbb_format.clear()
+        self.dockwidget.cbb_srs.clear()
         self.search()
 
     def format_path(self, string):
@@ -1737,24 +1760,24 @@ class Isogeo:
         time, making the plugin crash.
         """
         if mode == 'on':
-            self.dockwidget.text_input.setReadOnly(False)
-            self.dockwidget.filters_box.setEnabled(True)
-            self.dockwidget.geofilter_box.setEnabled(True)
+            self.dockwidget.txt_input.setReadOnly(False)
+            self.dockwidget.grp_filters.setEnabled(True)
+            self.dockwidget.grp_geofilter.setEnabled(True)
             self.dockwidget.widget.setEnabled(True)
-            self.dockwidget.initialize.setEnabled(True)
-            self.dockwidget.show_button.setEnabled(True)
-            self.dockwidget.show_button.setEnabled(True)
+            self.dockwidget.btn_reinit.setEnabled(True)
+            self.dockwidget.btn_show.setEnabled(True)
+            self.dockwidget.btn_show.setEnabled(True)
 
         else:
-            self.dockwidget.text_input.setReadOnly(True)
-            self.dockwidget.filters_box.setEnabled(False)
-            self.dockwidget.geofilter_box.setEnabled(False)
+            self.dockwidget.txt_input.setReadOnly(True)
+            self.dockwidget.grp_filters.setEnabled(False)
+            self.dockwidget.grp_geofilter.setEnabled(False)
             self.dockwidget.widget.setEnabled(False)
-            self.dockwidget.next.setEnabled(False)
-            self.dockwidget.previous.setEnabled(False)
-            self.dockwidget.initialize.setEnabled(False)
-            self.dockwidget.show_button.setEnabled(False)
-            self.dockwidget.show_button.setEnabled(False)
+            self.dockwidget.btn_next.setEnabled(False)
+            self.dockwidget.btn_previous.setEnabled(False)
+            self.dockwidget.btn_reinit.setEnabled(False)
+            self.dockwidget.btn_show.setEnabled(False)
+            self.dockwidget.btn_show.setEnabled(False)
 
     def show_popup(self):
         """Open the pop up window that asks a name to save the research."""
@@ -1762,12 +1785,14 @@ class Isogeo:
 
     def send_details_request(self, md_id):
         """Send a request for aditionnal info about one data."""
+        logging.info("Full metatada sheet asked. Building the url.")
         self.currentUrl = 'https://v1.api.isogeo.com/resources/' + str(md_id) + '?_include=contacts,limitations,conditions,events,feature-attributes'
         self.showDetails = True
         self.send_request_to_Isogeo_API(self.token)
 
     def show_complete_md(self, content):
         """Open the pop up window that shows the metadata sheet details."""
+        logging.info("Displaying the whole metadata sheet.")
         tags = self.get_tags(content)
         # Set the data title
         title = content.get('title')
@@ -2018,57 +2043,57 @@ class Isogeo:
         # window
         self.auth_prompt_form.accepted.connect(self.write_ids_and_test)
         # Connecting the comboboxes to the search function
-        self.dockwidget.owner.activated.connect(self.search)
-        self.dockwidget.inspire.activated.connect(self.search)
-        self.dockwidget.format.activated.connect(self.search)
-        self.dockwidget.sys_coord.activated.connect(self.search)
-        self.dockwidget.operation.activated.connect(self.search)
+        self.dockwidget.cbb_owner.activated.connect(self.search)
+        self.dockwidget.cbb_inspire.activated.connect(self.search)
+        self.dockwidget.cbb_format.activated.connect(self.search)
+        self.dockwidget.cbb_srs.activated.connect(self.search)
+        self.dockwidget.cbb_operation.activated.connect(self.search)
         # Connecting the text input to the search function
-        self.dockwidget.text_input.editingFinished.connect(self.search)
+        self.dockwidget.txt_input.editingFinished.connect(self.search)
         # Connecting the checkboxes to the search function
         self.dockwidget.checkBox.clicked.connect(self.search)
         self.dockwidget.checkBox_2.clicked.connect(self.search)
         self.dockwidget.checkBox_3.clicked.connect(self.search)
         self.dockwidget.checkBox_4.clicked.connect(self.search)
         # Connecting the radio buttons
-        self.dockwidget.raster.clicked.connect(self.search)
-        self.dockwidget.resource.clicked.connect(self.search)
-        self.dockwidget.vector.clicked.connect(self.search)
-        self.dockwidget.service.clicked.connect(self.search)
-        self.dockwidget.alltypes.clicked.connect(self.search)
+        self.dockwidget.rdb_raster.clicked.connect(self.search)
+        self.dockwidget.rdb_resource.clicked.connect(self.search)
+        self.dockwidget.rdb_vector.clicked.connect(self.search)
+        self.dockwidget.rdb_service.clicked.connect(self.search)
+        self.dockwidget.rdb_alltypes.clicked.connect(self.search)
         # Connecting the previous and next page buttons to their functions
-        self.dockwidget.next.pressed.connect(self.next_page)
-        self.dockwidget.previous.pressed.connect(self.previous_page)
+        self.dockwidget.btn_next.pressed.connect(self.next_page)
+        self.dockwidget.btn_previous.pressed.connect(self.previous_page)
         # Connecting the bug tracker button to its function
-        self.dockwidget.report.pressed.connect(self.open_bugtracker)
+        self.dockwidget.btn_report.pressed.connect(self.open_bugtracker)
         # Connecting the "reinitialize research button" to a research without
         # filters
-        self.dockwidget.initialize.pressed.connect(self.reinitialize_research)
+        self.dockwidget.btn_reinit.pressed.connect(self.reinitialize_research)
         # Change user
-        self.dockwidget.changeUser.pressed.connect(
+        self.dockwidget.btn_change_user.pressed.connect(
             self.auth_prompt_form.show)
         # show results
-        self.dockwidget.show_button.pressed.connect(self.search_with_content)
+        self.dockwidget.btn_show.pressed.connect(self.search_with_content)
 
         # Button 'save favorite' connected to the opening of the pop up that
         # asks for a name
-        self.dockwidget.save_favorite.pressed.connect(self.show_popup)
+        self.dockwidget.btn_save.pressed.connect(self.show_popup)
         # Connect the accepted signal of the popup to the function that write
         # the research name and parameter to the file, and update the combobox
         self.ask_name_popup.accepted.connect(self.save_research)
         # Connect the activation of the "saved research" combobox with the
         # set_widget_status function
-        self.dockwidget.favorite_combo.activated.connect(
+        self.dockwidget.cbb_saved.activated.connect(
             self.set_widget_status)
         #G default
-        self.dockwidget.save_default.pressed.connect(partial(self.write_research_params, research_name='_default'))
+        self.dockwidget.btn_default.pressed.connect(partial(self.write_research_params, research_name='_default'))
 
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()
-        self.user_authentification()
+        self.user_authentication()
         self.test_proxy_configuration()
-        # self.dockwidget.favorite_combo.setEnabled(False)
-        # self.dockwidget.save_favorite.setEnabled(False)
+        # self.dockwidget.cbb_saved.setEnabled(False)
+        # self.dockwidget.btn_save.setEnabled(False)
         self.dockwidget.groupBox.setEnabled(False)
         # self.dockwidget.groupBox_2.setEnabled(False)
         self.dockwidget.groupBox_3.setEnabled(False)

@@ -10,8 +10,11 @@
     <height>866</height>
    </rect>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <property name="windowTitle">
-   <string>Isogeo</string>
+   <string notr="true">Isogeo</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
@@ -28,13 +31,13 @@
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Recherche</string>
+        <string>Search</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0" colspan="2">
-         <widget class="QPushButton" name="report">
+         <widget class="QPushButton" name="btn_report">
           <property name="text">
-           <string>Signaler un problème</string>
+           <string>Report an issue</string>
           </property>
          </widget>
         </item>
@@ -55,7 +58,7 @@
          </spacer>
         </item>
         <item row="1" column="0" colspan="2">
-         <widget class="QLineEdit" name="text_input">
+         <widget class="QLineEdit" name="txt_input">
           <property name="inputMask">
            <string/>
           </property>
@@ -66,7 +69,7 @@
         </item>
         <item row="1" column="2" colspan="3">
          <widget class="QWidget" name="widget" native="true">
-          <widget class="QComboBox" name="keywords">
+          <widget class="QComboBox" name="cbb_keywords">
            <property name="geometry">
             <rect>
              <x>10</x>
@@ -79,7 +82,7 @@
          </widget>
         </item>
         <item row="2" column="0" colspan="5">
-         <widget class="QgsCollapsibleGroupBox" name="geofilter_box">
+         <widget class="QgsCollapsibleGroupBox" name="grp_geofilter">
           <property name="font">
            <font>
             <weight>75</weight>
@@ -87,14 +90,14 @@
            </font>
           </property>
           <property name="title">
-           <string>Filtre géographique</string>
+           <string>Geographical filter</string>
           </property>
           <property name="collapsed">
            <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="1" column="1">
-            <widget class="QComboBox" name="operation"/>
+            <widget class="QComboBox" name="cbb_operation"/>
            </item>
            <item row="0" column="1">
             <widget class="QLabel" name="label_7">
@@ -105,7 +108,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Opération</string>
+              <string>Operation</string>
              </property>
             </widget>
            </item>
@@ -118,7 +121,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Activer le filtre</string>
+              <string>Activate filter</string>
              </property>
             </widget>
            </item>
@@ -126,7 +129,7 @@
          </widget>
         </item>
         <item row="3" column="0" colspan="5">
-         <widget class="QgsCollapsibleGroupBox" name="filters_box">
+         <widget class="QgsCollapsibleGroupBox" name="grp_filters">
           <property name="font">
            <font>
             <weight>75</weight>
@@ -134,7 +137,7 @@
            </font>
           </property>
           <property name="title">
-           <string>Recherche avancée</string>
+           <string>Advanced search</string>
           </property>
           <property name="collapsed">
            <bool>false</bool>
@@ -167,12 +170,12 @@
               </font>
              </property>
              <property name="text">
-              <string>Propriétaire</string>
+              <string>Owner</string>
              </property>
             </widget>
            </item>
            <item row="1" column="0" colspan="3">
-            <widget class="QComboBox" name="format">
+            <widget class="QComboBox" name="cbb_format">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -194,7 +197,7 @@
             </widget>
            </item>
            <item row="1" column="3" colspan="3">
-            <widget class="QComboBox" name="owner">
+            <widget class="QComboBox" name="cbb_owner">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -225,7 +228,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Thématiques INSPIRE</string>
+              <string>INSPIRE keywords</string>
              </property>
             </widget>
            </item>
@@ -239,12 +242,12 @@
               </font>
              </property>
              <property name="text">
-              <string>Système de coordonnées</string>
+              <string>Coordinate system</string>
              </property>
             </widget>
            </item>
            <item row="3" column="0" colspan="3">
-            <widget class="QComboBox" name="inspire">
+            <widget class="QComboBox" name="cbb_inspire">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -266,7 +269,7 @@
             </widget>
            </item>
            <item row="3" column="3" colspan="3">
-            <widget class="QComboBox" name="sys_coord">
+            <widget class="QComboBox" name="cbb_srs">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -296,12 +299,12 @@
               </font>
              </property>
              <property name="text">
-              <string>Type de donnée</string>
+              <string>Data type</string>
              </property>
             </widget>
            </item>
            <item row="4" column="1" colspan="2">
-            <widget class="QRadioButton" name="vector">
+            <widget class="QRadioButton" name="rdb_vector">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -309,12 +312,12 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Données vecteur</string>
+              <string>Vector dataset</string>
              </property>
             </widget>
            </item>
            <item row="4" column="4" colspan="2">
-            <widget class="QRadioButton" name="service">
+            <widget class="QRadioButton" name="rdb_service">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -322,19 +325,19 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Service géographique</string>
+              <string>Service</string>
              </property>
             </widget>
            </item>
            <item row="5" column="0">
-            <widget class="QRadioButton" name="alltypes">
+            <widget class="QRadioButton" name="rdb_alltypes">
              <property name="text">
               <string>Tous types</string>
              </property>
             </widget>
            </item>
            <item row="5" column="1" colspan="2">
-            <widget class="QRadioButton" name="raster">
+            <widget class="QRadioButton" name="rdb_raster">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -342,12 +345,12 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Données raster</string>
+              <string>Raster dataset</string>
              </property>
             </widget>
            </item>
            <item row="5" column="4" colspan="2">
-            <widget class="QRadioButton" name="resource">
+            <widget class="QRadioButton" name="rdb_resource">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -355,7 +358,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Ressource</string>
+              <string>Resource</string>
              </property>
             </widget>
            </item>
@@ -369,28 +372,28 @@
               </font>
              </property>
              <property name="text">
-              <string>Ressources associées à la fiche</string>
+              <string>Associated resources</string>
              </property>
             </widget>
            </item>
            <item row="7" column="0">
             <widget class="QCheckBox" name="checkBox">
              <property name="text">
-              <string>Visualisation</string>
+              <string>View</string>
              </property>
             </widget>
            </item>
            <item row="7" column="2" colspan="2">
             <widget class="QCheckBox" name="checkBox_2">
              <property name="text">
-              <string>Téléchargement</string>
+              <string>Download</string>
              </property>
             </widget>
            </item>
            <item row="7" column="4" colspan="2">
             <widget class="QCheckBox" name="checkBox_3">
              <property name="text">
-              <string>Autre action</string>
+              <string>Other actions</string>
              </property>
             </widget>
            </item>
@@ -403,72 +406,72 @@
               </font>
              </property>
              <property name="text">
-              <string>Recherches enregistrées</string>
+              <string>Saved researches</string>
              </property>
             </widget>
            </item>
            <item row="9" column="0" colspan="3">
-            <widget class="QComboBox" name="favorite_combo"/>
+            <widget class="QComboBox" name="cbb_saved"/>
            </item>
            <item row="9" column="5">
-            <widget class="QPushButton" name="save_favorite">
+            <widget class="QPushButton" name="btn_save">
              <property name="text">
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset>
                <normaloff>:/plugins/Isogeo/resources/disc.png</normaloff>:/plugins/Isogeo/resources/disc.png</iconset>
              </property>
             </widget>
            </item>
           </layout>
           <zorder>label_24</zorder>
-          <zorder>vector</zorder>
-          <zorder>service</zorder>
-          <zorder>alltypes</zorder>
-          <zorder>resource</zorder>
+          <zorder>rdb_vector</zorder>
+          <zorder>rdb_service</zorder>
+          <zorder>rdb_alltypes</zorder>
+          <zorder>rdb_resource</zorder>
           <zorder>label_2</zorder>
           <zorder>label_3</zorder>
-          <zorder>format</zorder>
-          <zorder>owner</zorder>
+          <zorder>cbb_format</zorder>
+          <zorder>cbb_owner</zorder>
           <zorder>label_4</zorder>
           <zorder>label_5</zorder>
-          <zorder>inspire</zorder>
-          <zorder>sys_coord</zorder>
+          <zorder>cbb_inspire</zorder>
+          <zorder>cbb_srs</zorder>
           <zorder>label_6</zorder>
           <zorder>checkBox</zorder>
           <zorder>checkBox_2</zorder>
           <zorder>checkBox_3</zorder>
           <zorder>label</zorder>
-          <zorder>favorite_combo</zorder>
-          <zorder>save_favorite</zorder>
-          <zorder>raster</zorder>
+          <zorder>cbb_saved</zorder>
+          <zorder>btn_save</zorder>
+          <zorder>rdb_raster</zorder>
          </widget>
         </item>
         <item row="4" column="0" colspan="4">
-         <widget class="QPushButton" name="show_button">
+         <widget class="QPushButton" name="btn_show">
           <property name="text">
-           <string>Afficher les résultats</string>
+           <string>Show results</string>
           </property>
           <property name="icon">
-           <iconset resource="resources.qrc">
+           <iconset>
             <normaloff>:/plugins/Isogeo/resources/search.png</normaloff>:/plugins/Isogeo/resources/search.png</iconset>
           </property>
          </widget>
         </item>
         <item row="4" column="4">
-         <widget class="QPushButton" name="initialize">
+         <widget class="QPushButton" name="btn_reinit">
           <property name="text">
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="resources.qrc">
+           <iconset>
             <normaloff>:/plugins/Isogeo/resources/refresh.png</normaloff>:/plugins/Isogeo/resources/refresh.png</iconset>
           </property>
          </widget>
         </item>
         <item row="5" column="0" colspan="5">
-         <widget class="QTableWidget" name="resultats">
+         <widget class="QTableWidget" name="tbl_result">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
           </property>
@@ -477,12 +480,12 @@
           </property>
           <column>
            <property name="text">
-            <string>Titre</string>
+            <string>Title</string>
            </property>
           </column>
           <column>
            <property name="text">
-            <string>Modifié</string>
+            <string>Modified</string>
            </property>
           </column>
           <column>
@@ -492,7 +495,7 @@
           </column>
           <column>
            <property name="text">
-            <string>Ajouter</string>
+            <string>Add</string>
            </property>
           </column>
          </widget>
@@ -514,7 +517,7 @@
          </spacer>
         </item>
         <item row="6" column="1">
-         <widget class="QPushButton" name="previous">
+         <widget class="QPushButton" name="btn_previous">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -522,12 +525,12 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>&lt;</string>
+           <string notr="true">&lt;</string>
           </property>
          </widget>
         </item>
         <item row="6" column="2">
-         <widget class="QLabel" name="paging">
+         <widget class="QLabel" name="lbl_page">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -541,7 +544,7 @@
          </widget>
         </item>
         <item row="6" column="3">
-         <widget class="QPushButton" name="next">
+         <widget class="QPushButton" name="btn_next">
           <property name="text">
            <string>&gt;</string>
           </property>
@@ -567,7 +570,7 @@
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Paramètres</string>
+        <string>Parameters</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_6">
         <item row="0" column="0">
@@ -592,21 +595,21 @@
            </font>
           </property>
           <property name="text">
-           <string>Paramétrage du plugin</string>
+           <string>Plugin set up</string>
           </property>
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QPushButton" name="changeUser">
+         <widget class="QPushButton" name="btn_change_user">
           <property name="text">
-           <string>Changer d'utilisateur</string>
+           <string>Change user</string>
           </property>
          </widget>
         </item>
         <item row="1" column="0" colspan="3">
          <widget class="QGroupBox" name="groupBox">
           <property name="title">
-           <string>Compte administrateur Isogeo</string>
+           <string>Isogeo administrator account</string>
           </property>
           <widget class="QLineEdit" name="lineEdit_2">
            <property name="geometry">
@@ -644,7 +647,7 @@
             </font>
            </property>
            <property name="text">
-            <string>id administrateur</string>
+            <string>administrator id</string>
            </property>
           </widget>
           <widget class="QLabel" name="label_12">
@@ -663,7 +666,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Mot de passe</string>
+            <string>Password</string>
            </property>
           </widget>
          </widget>
@@ -677,7 +680,7 @@
            </size>
           </property>
           <property name="title">
-           <string>Paramètres de recherche par défaut</string>
+           <string>Default research set up</string>
           </property>
           <widget class="QLabel" name="label_15">
            <property name="geometry">
@@ -695,7 +698,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Tri des résultats par défaut</string>
+            <string>Default results sorting</string>
            </property>
           </widget>
           <widget class="QComboBox" name="default_ob">
@@ -708,7 +711,7 @@
             </rect>
            </property>
           </widget>
-          <widget class="QPushButton" name="save_default">
+          <widget class="QPushButton" name="btn_default">
            <property name="geometry">
             <rect>
              <x>340</x>
@@ -721,7 +724,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="resources.qrc">
+            <iconset>
              <normaloff>:/plugins/Isogeo/resources/disc.png</normaloff>:/plugins/Isogeo/resources/disc.png</iconset>
            </property>
           </widget>
@@ -741,7 +744,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Enregistrer la recherche actuelle comme recherche par défaut</string>
+            <string>Save current research as default</string>
            </property>
           </widget>
          </widget>
@@ -749,7 +752,7 @@
         <item row="3" column="0" colspan="3">
          <widget class="QGroupBox" name="groupBox_3">
           <property name="title">
-           <string>Gestions des recherches pré-enregistrées</string>
+           <string>Saved researches parameters</string>
           </property>
           <widget class="QComboBox" name="comboBox_3">
            <property name="geometry">
@@ -777,7 +780,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Choisissez une recherche</string>
+            <string>Pick a research</string>
            </property>
           </widget>
           <widget class="QPushButton" name="pushButton">
@@ -796,7 +799,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Renommer</string>
+            <string>Rename</string>
            </property>
           </widget>
           <widget class="QPushButton" name="pushButton_2">
@@ -815,7 +818,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Supprimer</string>
+            <string>Delete</string>
            </property>
           </widget>
          </widget>
@@ -823,7 +826,7 @@
         <item row="4" column="0" colspan="3">
          <widget class="QGroupBox" name="groupBox_4">
           <property name="title">
-           <string>Gestions des listes</string>
+           <string>Lists parameters</string>
           </property>
           <widget class="QComboBox" name="comboBox_4">
            <property name="geometry">
@@ -851,7 +854,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Choisissez une liste</string>
+            <string>Pick a list</string>
            </property>
           </widget>
           <widget class="QPushButton" name="pushButton_3">
@@ -870,7 +873,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Renommer</string>
+            <string>Rename</string>
            </property>
           </widget>
           <widget class="QPushButton" name="pushButton_4">
@@ -889,7 +892,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Supprimer</string>
+            <string>Delete</string>
            </property>
           </widget>
          </widget>
@@ -914,7 +917,7 @@
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
-        <string>Listes</string>
+        <string>Lists</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0" colspan="3">
@@ -933,7 +936,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Listes de fiches Isogeo</string>
+           <string>Isogeo metadata lists</string>
           </property>
          </widget>
         </item>
@@ -958,7 +961,7 @@
            </font>
           </property>
           <property name="title">
-           <string>Listes personnalisées</string>
+           <string>Custom list</string>
           </property>
           <property name="flat">
            <bool>false</bool>
@@ -989,7 +992,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Choisissez une liste</string>
+            <string>Pick a list</string>
            </property>
           </widget>
           <widget class="QPushButton" name="pushButton_5">
@@ -1008,7 +1011,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Créer une liste</string>
+            <string>Create list</string>
            </property>
           </widget>
          </widget>
@@ -1058,7 +1061,7 @@
            </font>
           </property>
           <property name="text">
-           <string>12 fiches dans la liste</string>
+           <string>X metadata in the list</string>
           </property>
          </widget>
         </item>
@@ -1071,7 +1074,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Page 1 sur 1</string>
+           <string>Page 1 on 1</string>
           </property>
          </widget>
         </item>

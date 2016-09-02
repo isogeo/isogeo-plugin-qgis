@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui\ui_authentication.ui'
+# Form implementation generated from reading ui file 'ui_authentication.ui'
 #
-# Created: Fri Aug 12 15:20:19 2016
+# Created: Fri Sep 02 09:46:17 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -98,6 +98,7 @@ class Ui_dlg_form_auth_prompt(object):
         self.grb_connection_ready.setTitle(_translate("dlg_form_auth_prompt", "I have everything to connect the plugin:", None))
         self.lbl_app_id.setText(_translate("dlg_form_auth_prompt", "Application ID:", None))
         self.lbl_app_secret.setText(_translate("dlg_form_auth_prompt", "Application SECRET:", None))
+
 
 if __name__ == "__main__":
     import sys

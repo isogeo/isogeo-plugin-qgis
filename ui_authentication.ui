@@ -230,9 +230,7 @@
    </property>
   </widget>
  </widget>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>btn_ok_cancel</sender>
