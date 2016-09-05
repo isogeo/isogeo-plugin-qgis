@@ -18,7 +18,7 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="font">
        <font>
@@ -35,29 +35,6 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0" colspan="2">
-         <widget class="QPushButton" name="btn_report">
-          <property name="text">
-           <string>Report an issue</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="4">
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>28</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="0" colspan="2">
          <widget class="QLineEdit" name="txt_input">
           <property name="inputMask">
            <string/>
@@ -67,21 +44,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="2" colspan="3">
-         <widget class="QWidget" name="widget" native="true">
-          <widget class="QComboBox" name="cbb_keywords">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>0</y>
-             <width>211</width>
-             <height>20</height>
-            </rect>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item row="2" column="0" colspan="5">
+        <item row="1" column="0" colspan="6">
          <widget class="QgsCollapsibleGroupBox" name="grp_geofilter">
           <property name="font">
            <font>
@@ -96,9 +59,6 @@
            <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="1" column="1">
-            <widget class="QComboBox" name="cbb_operation"/>
-           </item>
            <item row="0" column="1">
             <widget class="QLabel" name="label_7">
              <property name="font">
@@ -125,10 +85,13 @@
              </property>
             </widget>
            </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="cbb_operation"/>
+           </item>
           </layout>
          </widget>
         </item>
-        <item row="3" column="0" colspan="5">
+        <item row="2" column="0" colspan="6">
          <widget class="QgsCollapsibleGroupBox" name="grp_filters">
           <property name="font">
            <font>
@@ -156,11 +119,45 @@
               </font>
              </property>
              <property name="text">
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/cube.png</pixmap>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" colspan="2">
+            <widget class="QLabel" name="label_8">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <italic>false</italic>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
               <string>Format</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="3" colspan="2">
+           <item row="0" column="5">
+            <widget class="QLabel" name="label_9">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <italic>false</italic>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/university.png</pixmap>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="6">
             <widget class="QLabel" name="label_3">
              <property name="font">
               <font>
@@ -174,7 +171,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0" colspan="3">
+           <item row="1" column="0" colspan="4">
             <widget class="QComboBox" name="cbb_format">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -196,7 +193,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="3" colspan="3">
+           <item row="1" column="4" colspan="4">
             <widget class="QComboBox" name="cbb_owner">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -218,7 +215,24 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0" colspan="2">
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_13">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <italic>false</italic>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/leaf.png</pixmap>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" colspan="2">
             <widget class="QLabel" name="label_4">
              <property name="font">
               <font>
@@ -232,7 +246,24 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="3" colspan="3">
+           <item row="2" column="5">
+            <widget class="QLabel" name="label_14">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <italic>false</italic>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/globe.png</pixmap>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="6" colspan="2">
             <widget class="QLabel" name="label_5">
              <property name="font">
               <font>
@@ -246,7 +277,7 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0" colspan="3">
+           <item row="3" column="0" colspan="4">
             <widget class="QComboBox" name="cbb_inspire">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -268,7 +299,7 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="3" colspan="3">
+           <item row="3" column="4" colspan="4">
             <widget class="QComboBox" name="cbb_srs">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -290,7 +321,7 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
+           <item row="4" column="0" colspan="2">
             <widget class="QLabel" name="label_24">
              <property name="font">
               <font>
@@ -303,7 +334,7 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="1" colspan="2">
+           <item row="4" column="2" colspan="2">
             <widget class="QRadioButton" name="rdb_vector">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -316,7 +347,7 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="4" colspan="2">
+           <item row="4" column="7">
             <widget class="QRadioButton" name="rdb_service">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -329,14 +360,14 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
+           <item row="5" column="0" colspan="2">
             <widget class="QRadioButton" name="rdb_alltypes">
              <property name="text">
               <string>All</string>
              </property>
             </widget>
            </item>
-           <item row="5" column="1" colspan="2">
+           <item row="5" column="2" colspan="2">
             <widget class="QRadioButton" name="rdb_raster">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -349,7 +380,7 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="4" colspan="2">
+           <item row="5" column="7">
             <widget class="QRadioButton" name="rdb_resource">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -376,21 +407,21 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="0">
+           <item row="7" column="0" colspan="2">
             <widget class="QCheckBox" name="checkBox">
              <property name="text">
               <string>View</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="2" colspan="2">
+           <item row="7" column="3" colspan="2">
             <widget class="QCheckBox" name="checkBox_2">
              <property name="text">
               <string>Download</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="4" colspan="2">
+           <item row="7" column="7">
             <widget class="QCheckBox" name="checkBox_3">
              <property name="text">
               <string>Other actions</string>
@@ -410,16 +441,16 @@
              </property>
             </widget>
            </item>
-           <item row="9" column="0" colspan="3">
+           <item row="9" column="0" colspan="6">
             <widget class="QComboBox" name="cbb_saved"/>
            </item>
-           <item row="9" column="5">
+           <item row="9" column="7">
             <widget class="QPushButton" name="btn_save">
              <property name="text">
               <string/>
              </property>
              <property name="icon">
-              <iconset>
+              <iconset resource="resources.qrc">
                <normaloff>:/plugins/Isogeo/resources/disc.png</normaloff>:/plugins/Isogeo/resources/disc.png</iconset>
              </property>
             </widget>
@@ -446,31 +477,35 @@
           <zorder>cbb_saved</zorder>
           <zorder>btn_save</zorder>
           <zorder>rdb_raster</zorder>
+          <zorder>label_8</zorder>
+          <zorder>label_9</zorder>
+          <zorder>label_13</zorder>
+          <zorder>label_14</zorder>
          </widget>
         </item>
-        <item row="4" column="0" colspan="4">
+        <item row="3" column="0" colspan="4">
          <widget class="QPushButton" name="btn_show">
           <property name="text">
            <string>Show results</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="resources.qrc">
             <normaloff>:/plugins/Isogeo/resources/search.png</normaloff>:/plugins/Isogeo/resources/search.png</iconset>
           </property>
          </widget>
         </item>
-        <item row="4" column="4">
+        <item row="3" column="4" colspan="2">
          <widget class="QPushButton" name="btn_reinit">
           <property name="text">
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="resources.qrc">
             <normaloff>:/plugins/Isogeo/resources/refresh.png</normaloff>:/plugins/Isogeo/resources/refresh.png</iconset>
           </property>
          </widget>
         </item>
-        <item row="5" column="0" colspan="5">
+        <item row="4" column="0" colspan="6">
          <widget class="QTableWidget" name="tbl_result">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -500,7 +535,7 @@
           </column>
          </widget>
         </item>
-        <item row="6" column="0">
+        <item row="5" column="0">
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -516,7 +551,7 @@
           </property>
          </spacer>
         </item>
-        <item row="6" column="1">
+        <item row="5" column="1">
          <widget class="QPushButton" name="btn_previous">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -529,7 +564,7 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="2">
+        <item row="5" column="2">
          <widget class="QLabel" name="lbl_page">
           <property name="font">
            <font>
@@ -543,14 +578,14 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="3">
+        <item row="5" column="3">
          <widget class="QPushButton" name="btn_next">
           <property name="text">
            <string>&gt;</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="4">
+        <item row="5" column="4" colspan="2">
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -566,112 +601,60 @@
           </property>
          </spacer>
         </item>
+        <item row="0" column="2" colspan="4">
+         <widget class="QWidget" name="widget" native="true">
+          <widget class="QComboBox" name="cbb_keywords">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>0</y>
+             <width>251</width>
+             <height>20</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
         <string>Parameters</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_6">
+       <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QLabel" name="label_10">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>51</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>51</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Plugin set up</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="btn_change_user">
-          <property name="text">
-           <string>Change user</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="3">
          <widget class="QGroupBox" name="groupBox">
           <property name="title">
-           <string>Isogeo administrator account</string>
+           <string>Plugin set up</string>
           </property>
-          <widget class="QLineEdit" name="lineEdit_2">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>90</y>
-             <width>181</width>
-             <height>20</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QLineEdit" name="dump">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>40</y>
-             <width>181</width>
-             <height>20</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_11">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>20</y>
-             <width>91</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>administrator id</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_12">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>70</y>
-             <width>111</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Password</string>
-           </property>
-          </widget>
+          <layout class="QGridLayout" name="gridLayout_6">
+           <item row="0" column="0">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>218</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="btn_change_user">
+             <property name="text">
+              <string>Change user</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
-        <item row="2" column="0" colspan="3">
+        <item row="1" column="0">
          <widget class="QGroupBox" name="groupBox_2">
           <property name="minimumSize">
            <size>
@@ -682,222 +665,135 @@
           <property name="title">
            <string>Default research set up</string>
           </property>
-          <widget class="QLabel" name="label_15">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>60</y>
-             <width>141</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Default results sorting</string>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="default_ob">
-           <property name="geometry">
-            <rect>
-             <x>170</x>
-             <y>60</y>
-             <width>271</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="btn_default">
-           <property name="geometry">
-            <rect>
-             <x>340</x>
-             <y>20</y>
-             <width>101</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/plugins/Isogeo/resources/disc.png</normaloff>:/plugins/Isogeo/resources/disc.png</iconset>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_20">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>30</y>
-             <width>311</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Save current research as default</string>
-           </property>
-          </widget>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_20">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Save current research as default</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="btn_default">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/plugins/Isogeo/resources/disc.png</normaloff>:/plugins/Isogeo/resources/disc.png</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
-        <item row="3" column="0" colspan="3">
+        <item row="2" column="0">
          <widget class="QGroupBox" name="groupBox_3">
           <property name="title">
            <string>Saved researches parameters</string>
           </property>
-          <widget class="QComboBox" name="comboBox_3">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>191</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_16">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>30</y>
-             <width>141</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Pick a research</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton">
-           <property name="geometry">
-            <rect>
-             <x>220</x>
-             <y>50</y>
-             <width>75</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Rename</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton_2">
-           <property name="geometry">
-            <rect>
-             <x>300</x>
-             <y>50</y>
-             <width>75</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Delete</string>
-           </property>
-          </widget>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_16">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Pick a research</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QComboBox" name="comboBox_3"/>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="pushButton">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Rename</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QPushButton" name="pushButton_2">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Delete</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
-        <item row="4" column="0" colspan="3">
+        <item row="3" column="0">
          <widget class="QGroupBox" name="groupBox_4">
           <property name="title">
-           <string>Lists parameters</string>
+           <string>Bug tracking</string>
           </property>
-          <widget class="QComboBox" name="comboBox_4">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>191</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_17">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>30</y>
-             <width>141</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Pick a list</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton_3">
-           <property name="geometry">
-            <rect>
-             <x>220</x>
-             <y>50</y>
-             <width>75</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Rename</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton_4">
-           <property name="geometry">
-            <rect>
-             <x>300</x>
-             <y>50</y>
-             <width>75</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Delete</string>
-           </property>
-          </widget>
+          <layout class="QGridLayout" name="gridLayout_9">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_17">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Report an issue on the bug tracker</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <spacer name="horizontalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>118</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="btn_report">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="resources.qrc">
+               <normaloff>:/plugins/Isogeo/resources/bell.png</normaloff>:/plugins/Isogeo/resources/bell.png</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="4" column="0">
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -908,189 +804,10 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>78</height>
+            <height>488</height>
            </size>
           </property>
          </spacer>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_3">
-       <attribute name="title">
-        <string>Lists</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_5">
-        <item row="0" column="0" colspan="3">
-         <widget class="QLabel" name="label_18">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>41</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Isogeo metadata lists</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="4">
-         <widget class="QGroupBox" name="groupBox_5">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>81</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="title">
-           <string>Custom list</string>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-          <widget class="QComboBox" name="comboBox_5">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>40</y>
-             <width>231</width>
-             <height>22</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_19">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>20</y>
-             <width>111</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Pick a list</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton_5">
-           <property name="geometry">
-            <rect>
-             <x>260</x>
-             <y>40</y>
-             <width>91</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Create list</string>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item row="2" column="0" colspan="4">
-         <widget class="QTableWidget" name="resultats_2">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="sortingEnabled">
-           <bool>true</bool>
-          </property>
-          <column>
-           <property name="text">
-            <string>Titre</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Résumé</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Date de modif</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Ajouter</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="nbresultat_2">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>X metadata in the list</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLabel" name="paging_2">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Page 1 on 1</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="2">
-         <widget class="QPushButton" name="previous_2">
-          <property name="text">
-           <string>&lt;</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="3">
-         <widget class="QPushButton" name="next_2">
-          <property name="text">
-           <string>&gt;</string>
-          </property>
-         </widget>
         </item>
        </layout>
       </widget>

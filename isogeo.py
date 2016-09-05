@@ -32,12 +32,12 @@ from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
 import resources
 
 # Import the code for the DockWidget
-from isogeo_dockwidget import IsogeoDockWidget
+from ui.isogeo_dockwidget import IsogeoDockWidget
 
 # Import du code des autres fenêtres
-from dlg_authentication import IsogeoAuthentication
-from ask_research_name import ask_research_name
-from isogeo_dlg_mdDetails import IsogeoMdDetails
+from ui.dlg_authentication import IsogeoAuthentication
+from ui.ask_research_name import ask_research_name
+from ui.isogeo_dlg_mdDetails import IsogeoMdDetails
 
 import os.path
 
@@ -367,7 +367,7 @@ class Isogeo:
         s.setValue("isogeo-plugin/user-auth/id", user_id)
         s.setValue("isogeo-plugin/user-auth/secret", user_secret)
 
-        self.user_authentification()
+        self.user_authentication()
 
     def ask_for_token(self, c_id, c_secret):
         """Ask a token from Isogeo API authentification page.
@@ -502,7 +502,7 @@ class Isogeo:
         self.dockwidget.cbb_srs.clear()
         self.dockwidget.cbb_operation.clear()
 
-        path = self.get_plugin_path() + '/saved_researches.json'
+        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         research_list = saved_researches.keys()
@@ -582,12 +582,14 @@ class Isogeo:
                         self.model.setItem(i, 0, item)
                     i += 1
                 first_item = QStandardItem(self.tr('---- Keywords ----'))
+                icon = QIcon(':/plugins/Isogeo/resources/tag.png')
+                first_item.setIcon(icon)
                 first_item.setSelectable(False)
                 self.model.insertRow(0, first_item)
                 self.model.itemChanged.connect(self.search)
                 self.dockwidget.cbb_keywords.setModel(self.model)
             else:
-                path = self.get_plugin_path() + '/saved_researches.json'
+                path = self.get_plugin_path() + '/user_settings/saved_researches.json'
                 with open(path) as data_file:
                     saved_researches = json.load(data_file)
                 research_params = saved_researches[self.savedResearch]
@@ -613,6 +615,8 @@ class Isogeo:
                         self.model.setItem(i, 0, item)
                     i += 1
                 first_item = QStandardItem(self.tr('---- Keywords ----'))
+                icon = QIcon(':/plugins/Isogeo/resources/tag.png')
+                first_item.setIcon(icon)
                 first_item.setSelectable(False)
                 self.model.insertRow(0, first_item)
                 self.model.itemChanged.connect(self.search)
@@ -632,6 +636,8 @@ class Isogeo:
                 self.model.setItem(i, 0, item)
                 i += 1
             first_item = QStandardItem(self.tr('---- Keywords ----'))
+            icon = QIcon(':/plugins/Isogeo/resources/tag.png')
+            first_item.setIcon(icon)
             first_item.setSelectable(False)
             self.model.insertRow(0, first_item)
             self.model.itemChanged.connect(self.search)
@@ -681,7 +687,7 @@ class Isogeo:
         # Putting the comboboxs to the right indexes in the case of a saved
         # research.
         if self.savedResearch is not False:
-            path = self.get_plugin_path() + '/saved_researches.json'
+            path = self.get_plugin_path() + '/user_settings/saved_researches.json'
             with open(path) as data_file:
                 saved_researches = json.load(data_file)
             research_params = saved_researches[self.savedResearch]
@@ -1590,7 +1596,7 @@ class Isogeo:
         """Write a new element in the json file when a research is saved."""
         # Open the saved_research file as a dict. Each key is a research name,
         # each value is a dict containing the parameters for this research name
-        path = self.get_plugin_path() + '/saved_researches.json'
+        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         # If the name already exists, ask for a new one. (TO DO)
@@ -1614,7 +1620,7 @@ class Isogeo:
         logging.info("Set_widget_status function called. User is executing a saved research.")
         self.switch_widgets_on_and_off('off')
         selected_research = self.dockwidget.cbb_saved.currentText()
-        path = self.get_plugin_path() + '/saved_researches.json'
+        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         if selected_research == "":
@@ -1650,7 +1656,7 @@ class Isogeo:
         """Call the write_research() function and refresh the combobox."""
         research_name = self.ask_name_popup.name.text()
         self.write_research_params(research_name)
-        path = self.get_plugin_path() + '/saved_researches.json'
+        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         research_list = saved_researches.keys()
@@ -2085,7 +2091,7 @@ class Isogeo:
         # set_widget_status function
         self.dockwidget.cbb_saved.activated.connect(
             self.set_widget_status)
-        #G default
+        # G default
         self.dockwidget.btn_default.pressed.connect(partial(self.write_research_params, research_name='_default'))
 
         """ --- Actions when the plugin is launched --- """
@@ -2094,9 +2100,9 @@ class Isogeo:
         self.test_proxy_configuration()
         # self.dockwidget.cbb_saved.setEnabled(False)
         # self.dockwidget.btn_save.setEnabled(False)
-        self.dockwidget.groupBox.setEnabled(False)
+        # self.dockwidget.groupBox.setEnabled(False)
         # self.dockwidget.groupBox_2.setEnabled(False)
-        self.dockwidget.groupBox_3.setEnabled(False)
-        self.dockwidget.groupBox_4.setEnabled(False)
-        self.dockwidget.tab_3.setEnabled(False)
+        # self.dockwidget.groupBox_3.setEnabled(False)
+        # self.dockwidget.groupBox_4.setEnabled(False)
+        # self.dockwidget.tab_3.setEnabled(False)
         # self.dockwidget.tabWidget.currentChanged.connect(self.show_popup)

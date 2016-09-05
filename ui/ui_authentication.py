@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_authentication.ui'
 #
-# Created: Fri Sep 02 09:46:17 2016
+# Created: Mon Sep 05 16:21:51 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -92,20 +92,10 @@ class Ui_dlg_form_auth_prompt(object):
 
     def retranslateUi(self, dlg_form_auth_prompt):
         dlg_form_auth_prompt.setWindowTitle(_translate("dlg_form_auth_prompt", "Isogeo authentication settings", None))
-        self.grb_need_account.setTitle(_translate("dlg_form_auth_prompt", "I need an account? Where? Tell me how!", None))
+        self.grb_need_account.setTitle(_translate("dlg_form_auth_prompt", "Don\'t have an account yet ?", None))
         self.btn_access_request.setText(_translate("dlg_form_auth_prompt", "Create Isogeo account", None))
         self.btn_account_new.setText(_translate("dlg_form_auth_prompt", "Request plugin access", None))
-        self.grb_connection_ready.setTitle(_translate("dlg_form_auth_prompt", "I have everything to connect the plugin:", None))
+        self.grb_connection_ready.setTitle(_translate("dlg_form_auth_prompt", "I already have Isogeo ID and SECRET for this application", None))
         self.lbl_app_id.setText(_translate("dlg_form_auth_prompt", "Application ID:", None))
         self.lbl_app_secret.setText(_translate("dlg_form_auth_prompt", "Application SECRET:", None))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    dlg_form_auth_prompt = QtGui.QDialog()
-    ui = Ui_dlg_form_auth_prompt()
-    ui.setupUi(dlg_form_auth_prompt)
-    dlg_form_auth_prompt.show()
-    sys.exit(app.exec_())
 

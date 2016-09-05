@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="fr_FR">
 <context>
     <name>Isogeo</name>
     <message>
@@ -100,17 +101,17 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="isogeo.py" line="520"/>
         <source>Intersects</source>
-        <translation type="unfinished"></translation>
+        <translation>Intersecte</translation>
     </message>
     <message>
         <location filename="isogeo.py" line="521"/>
         <source>within</source>
-        <translation type="unfinished"></translation>
+        <translation>Est contenu</translation>
     </message>
     <message>
         <location filename="isogeo.py" line="522"/>
         <source>contains</source>
-        <translation type="unfinished"></translation>
+        <translation>Contient</translation>
     </message>
 </context>
 <context>
@@ -155,7 +156,7 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="isogeo_dockwidget_base.ui" line="1040"/>
         <source>Résumé</source>
         <translation>Résumé</translation>

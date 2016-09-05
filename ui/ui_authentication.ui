@@ -27,7 +27,7 @@
    <string>Isogeo authentication settings</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset>
     <normaloff>:/ui/resources/settings.svg</normaloff>:/ui/resources/settings.svg</iconset>
   </property>
   <property name="windowOpacity">
@@ -49,7 +49,7 @@
     <locale language="English" country="UnitedStates"/>
    </property>
    <property name="title">
-    <string>I need an account? Where? Tell me how!</string>
+    <string>Don't have an account yet ?</string>
    </property>
    <widget class="QPushButton" name="btn_access_request">
     <property name="geometry">
@@ -76,7 +76,7 @@
      <string>Create Isogeo account</string>
     </property>
     <property name="icon">
-     <iconset resource="../resources.qrc">
+     <iconset>
       <normaloff>:/ui/resources/isogeo_trans_64x64.png</normaloff>:/ui/resources/isogeo_trans_64x64.png</iconset>
     </property>
    </widget>
@@ -105,7 +105,7 @@
      <string>Request plugin access</string>
     </property>
     <property name="icon">
-     <iconset resource="../resources.qrc">
+     <iconset>
       <normaloff>:/ui/resources/keys.svg</normaloff>:/ui/resources/keys.svg</iconset>
     </property>
    </widget>
@@ -125,7 +125,7 @@
     <locale language="English" country="UnitedStates"/>
    </property>
    <property name="title">
-    <string>I have everything to connect the plugin:</string>
+    <string>I already have Isogeo ID and SECRET for this application</string>
    </property>
    <widget class="QLineEdit" name="ent_app_id">
     <property name="geometry">

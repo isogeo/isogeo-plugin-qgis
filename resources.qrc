@@ -1,6 +1,25 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
     <file>resources/multi.png</file>
+    <file>resources/bell.png</file>
+    <file>resources/book.png</file>
+    <file>resources/bullhorn.png</file>
+    <file>resources/calendar.png</file>
+    <file>resources/certificate.png</file>
+    <file>resources/chain.png</file>
+    <file>resources/cube.png</file>
+    <file>resources/database.png</file>
+    <file>resources/floppy-o.png</file>
+    <file>resources/gavel.png</file>
+    <file>resources/gear.png</file>
+    <file>resources/gears.png</file>
+    <file>resources/globe.png</file>
+    <file>resources/leaf.png</file>
+    <file>resources/phone.png</file>
+    <file>resources/plug.png</file>
+    <file>resources/tag.png</file>
+    <file>resources/tags.png</file>
+    <file>resources/university.png</file>
     <file>resources/none.png</file>
     <file>resources/raster.png</file>
     <file>resources/line.png</file>
