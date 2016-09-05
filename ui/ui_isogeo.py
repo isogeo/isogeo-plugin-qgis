@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Mon Sep 05 15:39:46 2016
+# Created: Mon Sep 05 17:07:44 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -375,23 +375,23 @@ class Ui_IsogeoDockWidgetBase(object):
         self.label_16.setFont(font)
         self.label_16.setObjectName(_fromUtf8("label_16"))
         self.gridLayout_8.addWidget(self.label_16, 0, 0, 1, 1)
-        self.comboBox_3 = QtGui.QComboBox(self.groupBox_3)
-        self.comboBox_3.setObjectName(_fromUtf8("comboBox_3"))
-        self.gridLayout_8.addWidget(self.comboBox_3, 1, 0, 1, 1)
-        self.pushButton = QtGui.QPushButton(self.groupBox_3)
+        self.cbb_modify_sr = QtGui.QComboBox(self.groupBox_3)
+        self.cbb_modify_sr.setObjectName(_fromUtf8("cbb_modify_sr"))
+        self.gridLayout_8.addWidget(self.cbb_modify_sr, 1, 0, 1, 1)
+        self.btn_rename_sr = QtGui.QPushButton(self.groupBox_3)
         font = QtGui.QFont()
         font.setBold(False)
         font.setWeight(50)
-        self.pushButton.setFont(font)
-        self.pushButton.setObjectName(_fromUtf8("pushButton"))
-        self.gridLayout_8.addWidget(self.pushButton, 1, 1, 1, 1)
-        self.pushButton_2 = QtGui.QPushButton(self.groupBox_3)
+        self.btn_rename_sr.setFont(font)
+        self.btn_rename_sr.setObjectName(_fromUtf8("btn_rename_sr"))
+        self.gridLayout_8.addWidget(self.btn_rename_sr, 1, 1, 1, 1)
+        self.btn_delete_sr = QtGui.QPushButton(self.groupBox_3)
         font = QtGui.QFont()
         font.setBold(False)
         font.setWeight(50)
-        self.pushButton_2.setFont(font)
-        self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
-        self.gridLayout_8.addWidget(self.pushButton_2, 1, 2, 1, 1)
+        self.btn_delete_sr.setFont(font)
+        self.btn_delete_sr.setObjectName(_fromUtf8("btn_delete_sr"))
+        self.gridLayout_8.addWidget(self.btn_delete_sr, 1, 2, 1, 1)
         self.gridLayout_5.addWidget(self.groupBox_3, 2, 0, 1, 1)
         self.groupBox_4 = QtGui.QGroupBox(self.tab_2)
         self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
@@ -463,8 +463,8 @@ class Ui_IsogeoDockWidgetBase(object):
         self.label_20.setText(_translate("IsogeoDockWidgetBase", "Save current research as default", None))
         self.groupBox_3.setTitle(_translate("IsogeoDockWidgetBase", "Saved researches parameters", None))
         self.label_16.setText(_translate("IsogeoDockWidgetBase", "Pick a research", None))
-        self.pushButton.setText(_translate("IsogeoDockWidgetBase", "Rename", None))
-        self.pushButton_2.setText(_translate("IsogeoDockWidgetBase", "Delete", None))
+        self.btn_rename_sr.setText(_translate("IsogeoDockWidgetBase", "Rename", None))
+        self.btn_delete_sr.setText(_translate("IsogeoDockWidgetBase", "Delete", None))
         self.groupBox_4.setTitle(_translate("IsogeoDockWidgetBase", "Bug tracking", None))
         self.label_17.setText(_translate("IsogeoDockWidgetBase", "Report an issue on the bug tracker", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("IsogeoDockWidgetBase", "Parameters", None))

@@ -122,7 +122,7 @@
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/cube.png</pixmap>
+              <pixmap>:/plugins/Isogeo/resources/cube.png</pixmap>
              </property>
             </widget>
            </item>
@@ -153,7 +153,7 @@
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/university.png</pixmap>
+              <pixmap>:/plugins/Isogeo/resources/university.png</pixmap>
              </property>
             </widget>
            </item>
@@ -228,7 +228,7 @@
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/leaf.png</pixmap>
+              <pixmap>:/plugins/Isogeo/resources/leaf.png</pixmap>
              </property>
             </widget>
            </item>
@@ -259,7 +259,7 @@
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/globe.png</pixmap>
+              <pixmap>:/plugins/Isogeo/resources/globe.png</pixmap>
              </property>
             </widget>
            </item>
@@ -450,7 +450,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset>
                <normaloff>:/plugins/Isogeo/resources/disc.png</normaloff>:/plugins/Isogeo/resources/disc.png</iconset>
              </property>
             </widget>
@@ -489,7 +489,7 @@
            <string>Show results</string>
           </property>
           <property name="icon">
-           <iconset resource="resources.qrc">
+           <iconset>
             <normaloff>:/plugins/Isogeo/resources/search.png</normaloff>:/plugins/Isogeo/resources/search.png</iconset>
           </property>
          </widget>
@@ -500,7 +500,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="resources.qrc">
+           <iconset>
             <normaloff>:/plugins/Isogeo/resources/refresh.png</normaloff>:/plugins/Isogeo/resources/refresh.png</iconset>
           </property>
          </widget>
@@ -685,7 +685,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset>
                <normaloff>:/plugins/Isogeo/resources/disc.png</normaloff>:/plugins/Isogeo/resources/disc.png</iconset>
              </property>
             </widget>
@@ -713,10 +713,10 @@
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QComboBox" name="comboBox_3"/>
+            <widget class="QComboBox" name="cbb_modify_sr"/>
            </item>
            <item row="1" column="1">
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="btn_rename_sr">
              <property name="font">
               <font>
                <weight>50</weight>
@@ -729,7 +729,7 @@
             </widget>
            </item>
            <item row="1" column="2">
-            <widget class="QPushButton" name="pushButton_2">
+            <widget class="QPushButton" name="btn_delete_sr">
              <property name="font">
               <font>
                <weight>50</weight>
@@ -785,7 +785,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="resources.qrc">
+              <iconset>
                <normaloff>:/plugins/Isogeo/resources/bell.png</normaloff>:/plugins/Isogeo/resources/bell.png</iconset>
              </property>
             </widget>

@@ -37,6 +37,7 @@ from ui.isogeo_dockwidget import IsogeoDockWidget
 # Import du code des autres fenêtres
 from ui.dlg_authentication import IsogeoAuthentication
 from ui.ask_research_name import ask_research_name
+from ui.ask_new_name import ask_new_name
 from ui.isogeo_dlg_mdDetails import IsogeoMdDetails
 
 import os.path
@@ -136,6 +137,8 @@ class Isogeo:
         self.auth_prompt_form = IsogeoAuthentication()
 
         self.ask_name_popup = ask_research_name()
+
+        self.new_name_popup = ask_new_name()
 
         self.IsogeoMdDetails = IsogeoMdDetails()
 
@@ -508,9 +511,11 @@ class Isogeo:
         research_list = saved_researches.keys()
         research_list.pop(research_list.index('_default'))
         self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_modify_sr.clear()
         self.dockwidget.cbb_saved.addItem(" - ")
         for i in research_list:
             self.dockwidget.cbb_saved.addItem(i, i)
+            self.dockwidget.cbb_modify_sr.addItem(i, i)
 
         # Initiating the "nothing selected" item in each combobox
         self.dockwidget.cbb_inspire.addItem(" - ")
@@ -1662,8 +1667,46 @@ class Isogeo:
         research_list = saved_researches.keys()
         research_list.pop(research_list.index('_default'))
         self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_modify_sr.clear()
         for i in research_list:
             self.dockwidget.cbb_saved.addItem(i, i)
+            self.dockwidget.cbb_modify_sr.addItem(i, i)
+
+    def rename_research(self):
+        """Modify the json file in order to rename a research."""
+        old_name = self.dockwidget.cbb_modify_sr.currentText()
+        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+        with open(path) as data_file:
+            saved_researches = json.load(data_file)
+        new_name = self.new_name_popup.name.text()
+        saved_researches[new_name] = saved_researches[old_name]
+        saved_researches.pop(old_name)
+        research_list = saved_researches.keys()
+        research_list.pop(research_list.index('_default'))
+        self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_modify_sr.clear()
+        for i in research_list:
+            self.dockwidget.cbb_saved.addItem(i, i)
+            self.dockwidget.cbb_modify_sr.addItem(i, i)
+        with open(path, 'w') as outfile:
+                json.dump(saved_researches, outfile)
+
+    def delete_research(self):
+        """Modify the json file in order to delete a research."""
+        to_b_deleted = self.dockwidget.cbb_modify_sr.currentText()
+        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+        with open(path) as data_file:
+            saved_researches = json.load(data_file)
+        saved_researches.pop(to_b_deleted)
+        research_list = saved_researches.keys()
+        research_list.pop(research_list.index('_default'))
+        self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_modify_sr.clear()
+        for i in research_list:
+            self.dockwidget.cbb_saved.addItem(i, i)
+            self.dockwidget.cbb_modify_sr.addItem(i, i)
+        with open(path, 'w') as outfile:
+                json.dump(saved_researches, outfile)
 
     def calcul_nb_page(self, nb_fiches):
         """Calculate the number of pages given a number of results."""
@@ -1785,9 +1828,12 @@ class Isogeo:
             self.dockwidget.btn_show.setEnabled(False)
             self.dockwidget.btn_show.setEnabled(False)
 
-    def show_popup(self):
+    def show_popup(self, popup):
         """Open the pop up window that asks a name to save the research."""
-        self.ask_name_popup.show()
+        if popup == 'ask_name':
+            self.ask_name_popup.show()
+        elif popup == 'new_name':
+            self.new_name_popup.show()
 
     def send_details_request(self, md_id):
         """Send a request for aditionnal info about one data."""
@@ -2083,10 +2129,18 @@ class Isogeo:
 
         # Button 'save favorite' connected to the opening of the pop up that
         # asks for a name
-        self.dockwidget.btn_save.pressed.connect(self.show_popup)
+        self.dockwidget.btn_save.pressed.connect(partial(self.show_popup, popup='ask_name'))
         # Connect the accepted signal of the popup to the function that write
         # the research name and parameter to the file, and update the combobox
         self.ask_name_popup.accepted.connect(self.save_research)
+        # Button 'rename research' connected to the opening of the pop up that
+        # asks for a new name
+        self.dockwidget.btn_rename_sr.pressed.connect(partial(self.show_popup, popup = 'new_name'))
+        # Connect the accepted signal of the popup to the function that rename
+        # a research.
+        self.new_name_popup.accepted.connect(self.rename_research)
+        # Connect the delete button to the delete function
+        self.dockwidget.btn_delete_sr.pressed.connect(self.delete_research)
         # Connect the activation of the "saved research" combobox with the
         # set_widget_status function
         self.dockwidget.cbb_saved.activated.connect(
