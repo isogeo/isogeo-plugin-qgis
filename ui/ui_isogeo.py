@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Tue Sep 06 12:21:48 2016
+# Created: Tue Sep 06 14:39:03 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,8 +26,8 @@ except AttributeError:
 class Ui_IsogeoDockWidgetBase(object):
     def setupUi(self, IsogeoDockWidgetBase):
         IsogeoDockWidgetBase.setObjectName(_fromUtf8("IsogeoDockWidgetBase"))
-        IsogeoDockWidgetBase.resize(502, 873)
-        IsogeoDockWidgetBase.setMinimumSize(QtCore.QSize(502, 856))
+        IsogeoDockWidgetBase.resize(502, 852)
+        IsogeoDockWidgetBase.setMinimumSize(QtCore.QSize(502, 615))
         IsogeoDockWidgetBase.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         IsogeoDockWidgetBase.setWindowTitle(_fromUtf8("Isogeo"))
         self.dockWidgetContents = QtGui.QWidget()
@@ -485,7 +485,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_report.setObjectName(_fromUtf8("btn_report"))
         self.gridLayout_9.addWidget(self.btn_report, 0, 2, 1, 1)
         self.gridLayout_5.addWidget(self.groupBox_4, 3, 0, 1, 1)
-        spacerItem9 = QtGui.QSpacerItem(20, 488, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacerItem9 = QtGui.QSpacerItem(20, 486, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout_5.addItem(spacerItem9, 4, 0, 1, 1)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 1)

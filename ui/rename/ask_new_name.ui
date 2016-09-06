@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>Rename</class>
+ <widget class="QDialog" name="Rename">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -21,8 +21,11 @@
        <pointsize>12</pointsize>
       </font>
      </property>
+     <property name="locale">
+      <locale language="English" country="UnitedStates"/>
+     </property>
      <property name="text">
-      <string>Donnez un nom à votre recherche enregistrée !</string>
+      <string>Please give a new name to your saved research.</string>
      </property>
     </widget>
    </item>
@@ -84,7 +87,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>Rename</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -100,7 +103,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>Rename</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

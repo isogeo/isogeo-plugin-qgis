@@ -35,10 +35,10 @@ import resources
 from ui.isogeo_dockwidget import IsogeoDockWidget
 
 # Import du code des autres fenêtres
-from ui.dlg_authentication import IsogeoAuthentication
-from ui.ask_research_name import ask_research_name
-from ui.ask_new_name import ask_new_name
-from ui.isogeo_dlg_mdDetails import IsogeoMdDetails
+from ui.auth.dlg_authentication import IsogeoAuthentication
+from ui.name.ask_research_name import ask_research_name
+from ui.rename.ask_new_name import ask_new_name
+from ui.mddetails.isogeo_dlg_mdDetails import IsogeoMdDetails
 
 import os.path
 
@@ -306,14 +306,20 @@ class Isogeo:
                         qgis_port = s.value("proxy/proxyPort", "")
                         if qgis_host == host:
                             if qgis_port == port:
-                                logging.info("A proxy is set up both in QGIS and the OS and they match => Proxy config : OK")
+                                logging.info("A proxy is set up both in QGIS "
+                                             "and the OS and they match => "
+                                             "Proxy config : OK")
                                 pass
                             else:
                                 QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'), self.tr("Proxy issue : \nQGIS and your OS have different proxy set ups."))
+                                ), self.tr('Alert'),
+                                    self.tr("Proxy issue : \nQGIS and your OS "
+                                            "have different proxy set ups."))
                         else:
                             QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'), self.tr("Proxy issue : \nQGIS and your OS have different proxy set ups."))
+                            ), self.tr('Alert'),
+                                self.tr("Proxy issue : \nQGIS and your OS have"
+                                        " different proxy set ups."))
                     elif len(elements) == 3 and elements[0] == 'http':
                         host_short = elements[1][2:]
                         host_long = elements[0] + ':' + elements[1]
@@ -322,20 +328,32 @@ class Isogeo:
                         qgis_port = s.value("proxy/proxyPort", "")
                         if qgis_host == host_short or qgis_host == host_long:
                             if qgis_port == port:
-                                logging.info("A proxy is set up both in QGIS and the OS and they match => Proxy config : OK")
+                                logging.info("A proxy is set up both in QGIS"
+                                             " and the OS and they match "
+                                             "=> Proxy config : OK")
                                 pass
                             else:
-                                logging.info("OS and QGIS proxy ports do not match. => Proxy config : not OK")
+                                logging.info("OS and QGIS proxy ports do not "
+                                             "match. => Proxy config : not OK")
                                 QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'), self.tr("Proxy issue : \nQGIS and your OS have different proxy set ups."))
+                                ), self.tr('Alert'),
+                                    self.tr("Proxy issue : \nQGIS and your OS"
+                                            " have different proxy set ups."))
                         else:
-                            logging.info("OS and QGIS proxy hosts do not match. => Proxy config : not OK")
+                            logging.info("OS and QGIS proxy hosts do not "
+                                         "match. => Proxy config : not OK")
                             QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'), self.tr("Proxy issue : \nQGIS and your OS have different proxy set ups."))
+                            ), self.tr('Alert'),
+                                self.tr("Proxy issue : \nQGIS and your OS have"
+                                        " different proxy set ups."))
             else:
-                logging.info("OS uses a proxy but it isn't set up in QGIS. => Proxy config : not OK")
+                logging.info("OS uses a proxy but it isn't set up in QGIS."
+                             " => Proxy config : not OK")
                 QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'), self.tr("Proxy issue : \nYou have a proxy set up on your OS but none in QGIS.\nPlease set it up in 'Preferences/Options/Network'."))
+                ), self.tr('Alert'),
+                    self.tr("Proxy issue : \nYou have a proxy set up on your"
+                            " OS but none in QGIS.\nPlease set it up in "
+                            "'Preferences/Options/Network'."))
 
     def user_authentication(self):
         """Test the validity of the user id and secret.
@@ -349,10 +367,12 @@ class Isogeo:
         self.user_id = s.value("isogeo-plugin/user-auth/id", 0)
         self.user_secret = s.value("isogeo-plugin/user-auth/secret", 0)
         if self.user_id != 0 and self.user_secret != 0:
-            logging.info("User_authentication function is trying to get a token from the id/secret")
+            logging.info("User_authentication function is trying "
+                         "to get a token from the id/secret")
             self.ask_for_token(self.user_id, self.user_secret)
         else:
-            logging.info("No id/secret. User authentication function is showing the auth window.")
+            logging.info("No id/secret. User authentication function "
+                         "is showing the auth window.")
             self.auth_prompt_form.show()
 
     def write_ids_and_test(self):
@@ -362,7 +382,8 @@ class Isogeo:
         it stores the values in the file, then call the
         user_authentification function to test them.
         """
-        logging.info("Authentication window accepted. Writting id/secret in QSettings.")
+        logging.info("Authentication window accepted. Writting"
+                     " id/secret in QSettings.")
         user_id = self.auth_prompt_form.ent_app_id.text()
         user_secret = self.auth_prompt_form.\
             ent_app_secret.text()
@@ -403,7 +424,8 @@ class Isogeo:
         content = str(bytarray)
         parsed_content = json.loads(content)
         if 'access_token' in parsed_content:
-            logging.info("The API reply is an access token : the request worked as expected.")
+            logging.info("The API reply is an access token : "
+                         "the request worked as expected.")
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content['access_token']
             if self.savedResearch == "first":
@@ -412,14 +434,16 @@ class Isogeo:
                 self.send_request_to_Isogeo_API(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
-            logging.info("The API reply is an error. Id and secret must be invalid. Asking for them again.")
+            logging.info("The API reply is an error. Id and secret must be "
+                         "invalid. Asking for them again.")
             QMessageBox.information(
-                iface.mainWindow(), self.tr('Error'), parsed_content['error'])
+                iface.mainWindow(), self.tr("Error"), parsed_content['error'])
             self.auth_prompt_form.show()
         else:
-            logging.info("The API reply has an unexpected form : {0}".format(parsed_content))
+            logging.info("The API reply has an unexpected form : "
+                         "{0}".format(parsed_content))
             QMessageBox.information(
-                iface.mainWindow(), self.tr('Error'), self.tr('Unknown error'))
+                iface.mainWindow(), self.tr("Error"), self.tr("Unknown error"))
 
     def send_request_to_Isogeo_API(self, token, limit=15):
         """Send a content url to the Isogeo API.
@@ -461,7 +485,9 @@ class Isogeo:
             self.loopCount = 0
             self.ask_for_token(self.user_id, self.user_secret)
         elif content == "":
-            logging.info("Empty reply. Weither no catalog is shared with the plugin, or there is a problem (2 requests sent together)")
+            logging.info("Empty reply. Weither no catalog is shared with the "
+                         "plugin, or there is a problem (2 requests sent "
+                         "together)")
             if self.loopCount < 3:
                 self.loopCount += 1
                 del self.API_reply
@@ -469,11 +495,17 @@ class Isogeo:
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
                 QMessageBox.information(iface.mainWindow(
-                ), self.tr('Error'), self.tr('The script is looping. Make sure you shared a catalog with the plugin. If so, please report this on the bug tracker.'))
+                ), self.tr("Error"),
+                    self.tr("The script is looping. Make sure you shared a "
+                            "catalog with the plugin. If so, please report "
+                            "this on the bug tracker."))
         else:
-            QMessageBox.information(iface.mainWindow(), self.tr('Error'),
-                                    self.tr('You are facing an unknown error. Code: ') + str(
-                self.API_reply.error()) + "\nPlease report tis on the bug tracker.")
+            QMessageBox.information(iface.mainWindow(),
+                                    self.tr("Error"),
+                                    self.tr("You are facing an unknown error. "
+                                            "Code: ") +
+                                    str(self.API_reply.error()) +
+                                    "\nPlease report tis on the bug tracker.")
 
     def update_fields(self, result):
         """Update the fields content.
@@ -482,7 +514,9 @@ class Isogeo:
         calls show_results in the end. This may change, so results would be
         shown only when a specific button is pressed.
         """
-        logging.info("Update_fields function called on the API reply. reset = {0}, savedResearch ={1}".format(self.hardReset, self.save_research))
+        logging.info("Update_fields function called on the API reply. reset = "
+                     "{0}, savedResearch ={1}".format(self.hardReset,
+                                                      self.save_research))
         tags = self.get_tags(result)
         # Getting the index of selected items in each combobox
         self.params = self.save_params()
@@ -533,12 +567,14 @@ class Isogeo:
                 self.dockwidget.cbb_operation.findData("intersects"))
         else:
             self.dockwidget.cbb_operation.setCurrentIndex(
-                self.dockwidget.cbb_operation.findData(self.params['operation']))
+                self.dockwidget.cbb_operation.findData(
+                    self.params['operation']))
         # Creating combobox items, with their displayed text, and their value
         ordered = sorted(tags['owner'].items(), key=operator.itemgetter(1))
         for i in ordered:
             self.dockwidget.cbb_owner.addItem(i[1], i[0])
-        ordered = sorted(tags['themeinspire'].items(), key=operator.itemgetter(1))
+        ordered = sorted(tags['themeinspire'].items(),
+                         key=operator.itemgetter(1))
         for i in ordered:
             self.dockwidget.cbb_inspire.addItem(i[1], i[0])
         ordered = sorted(tags['formats'].items(), key=operator.itemgetter(1))
@@ -571,7 +607,8 @@ class Isogeo:
             if self.savedResearch is False:
                 self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
                 i = 1
-                ordered = sorted(tags['keywords'].items(), key=operator.itemgetter(1))
+                ordered = sorted(tags['keywords'].items(),
+                                 key=operator.itemgetter(1))
                 for a in ordered:
                     item = QStandardItem(a[1])
                     item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
@@ -594,7 +631,7 @@ class Isogeo:
                 self.model.itemChanged.connect(self.search)
                 self.dockwidget.cbb_keywords.setModel(self.model)
             else:
-                path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+                path = self.get_plugin_path() + "/user_settings/saved_researches.json"
                 with open(path) as data_file:
                     saved_researches = json.load(data_file)
                 research_params = saved_researches[self.savedResearch]
@@ -604,7 +641,8 @@ class Isogeo:
                         keywords_list.append(research_params[a])
                 self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
                 i = 1
-                ordered = sorted(tags['keywords'].items(), key=operator.itemgetter(1))
+                ordered = sorted(tags['keywords'].items(),
+                                 key=operator.itemgetter(1))
                 for a in ordered:
                     item = QStandardItem(a[1])
                     item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
@@ -629,7 +667,8 @@ class Isogeo:
         else:
             self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
             i = 1
-            ordered = sorted(tags['keywords'].items(), key=operator.itemgetter(1))
+            ordered = sorted(tags['keywords'].items(),
+                             key=operator.itemgetter(1))
             for a in ordered:
                 item = QStandardItem(a[1])
                 item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
@@ -695,7 +734,7 @@ class Isogeo:
         # Putting the comboboxs to the right indexes in the case of a saved
         # research.
         if self.savedResearch is not False:
-            path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+            path = self.get_plugin_path() + "/user_settings/saved_researches.json"
             with open(path) as data_file:
                 saved_researches = json.load(data_file)
             research_params = saved_researches[self.savedResearch]
@@ -703,7 +742,8 @@ class Isogeo:
             self.dockwidget.cbb_owner.setCurrentIndex(
                 self.dockwidget.cbb_owner.findData(research_params['owner']))
             self.dockwidget.cbb_inspire.setCurrentIndex(
-                self.dockwidget.cbb_inspire.findData(research_params['inspire']))
+                self.dockwidget.cbb_inspire.findData(
+                    research_params['inspire']))
             self.dockwidget.cbb_format.setCurrentIndex(
                 self.dockwidget.cbb_format.findData(research_params['format']))
             self.dockwidget.cbb_srs.setCurrentIndex(
@@ -867,7 +907,8 @@ class Isogeo:
                         count, 2, QTableWidgetItem(u'TIN'))
                 else:
                     self.dockwidget.tbl_result.setItem(
-                        count, 2, QTableWidgetItem(self.tr('Unknown geometry')))
+                        count, 2, QTableWidgetItem(
+                            self.tr('Unknown geometry')))
             except:
                 if "type:raster-dataset" in i['tags']:
                     label = QLabel()
@@ -969,8 +1010,9 @@ class Isogeo:
                 else:
                     logging.info("Layer not valid. path = {0}".format(path))
                     QMessageBox.information(
-                        iface.mainWindow(), self.tr('Error'),
-                                            self.tr('The layer is not valid.'))
+                        iface.mainWindow(),
+                        self.tr('Error'),
+                        self.tr('The layer is not valid.'))
 
             elif layer_info[0] == "raster":
                 logging.info("Data type : raster")
@@ -983,8 +1025,9 @@ class Isogeo:
                 else:
                     logging.info("Layer not valid. path = {0}".format(path))
                     QMessageBox.information(
-                        iface.mainWindow(), self.tr('Error'),
-                                            self.tr('The layer is not valid.'))
+                        iface.mainWindow(),
+                        self.tr('Error'),
+                        self.tr('The layer is not valid.'))
 
             elif layer_info[0] == 'WMS':
                 logging.info("Data type : WMS")
@@ -994,8 +1037,9 @@ class Isogeo:
                 if not layer.isValid():
                     logging.info("Layer not valid. path = {0}".format(url))
                     QMessageBox.information(
-                        iface.mainWindow(), self.tr('Error'),
-                                            self.tr("The linked service is not valid."))
+                        iface.mainWindow(),
+                        self.tr('Error'),
+                        self.tr("The linked service is not valid."))
                 else:
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
                     logging.info("Data added")
@@ -1008,8 +1052,9 @@ class Isogeo:
                 if not layer.isValid():
                     logging.info("Layer not valid. path = {0}".format(url))
                     QMessageBox.information(
-                        iface.mainWindow(), self.tr('Error'),
-                                            self.tr("The linked service is not valid."))
+                        iface.mainWindow(),
+                        self.tr('Error'),
+                        self.tr("The linked service is not valid."))
                 else:
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
                     logging.info("Data added")
@@ -1044,10 +1089,10 @@ class Isogeo:
                 logging.info("Data added")
             else:
                 logging.info("Layer not valid. table = {0}".format(table))
-                QMessageBox.information(iface.mainWindow(),
-                                        self.tr('Error'),
-                                        self.tr("The PostGIS layer is not valid.")
-                                        )
+                QMessageBox.information(
+                    iface.mainWindow(),
+                    self.tr('Error'),
+                    self.tr("The PostGIS layer is not valid."))
 
     def build_wms_url(self, raw_url):
         """Reformat the input WMS url so it fits QGIS criterias.
@@ -1306,7 +1351,8 @@ class Isogeo:
         This builds the url, retrieving the parameters from the widgets. When
         the final url is built, it calls send_request_to_isogeo_API
         """
-        logging.info("Search function called. Building the url that is to be sent to the API")
+        logging.info("Search function called. Building the "
+                     "url that is to be sent to the API")
         # Disabling all user inputs during the research function is running
         self.switch_widgets_on_and_off('off')
 
@@ -1374,16 +1420,12 @@ class Isogeo:
             if self.get_canvas_coordinates():
                 filters = filters[:-1]
                 filters += "&box=" + self.get_canvas_coordinates() + "&rel=" +\
-                    self.dockwidget.cbb_operation.itemData(self.dockwidget.
-                                                       operation.currentIndex()
-                                                       ) + " "
+                    self.dockwidget.cbb_operation.itemData(
+                        self.dockwidget.operation.currentIndex()) + " "
             else:
                 QMessageBox.information(iface.mainWindow(
-                ), "Erreur :",
-                    u"Le système de coordonnée de votre canevas ne "
-                    u"semble\npas défini avec un code EPSG.\nIl ne peut donc "
-                    u"pas être interprété par QGIS.\nMerci de rapporter ce "
-                    u"problème sur le bug tracker.")
+                ), self.tr("Your canvas coordinate system is not "
+                           "defined with a EPSG code."))
 
         filters = "q=" + filters[:-1]
         # self.dockwidget.txt_input.setText(encoded_filters)
@@ -1402,7 +1444,8 @@ class Isogeo:
         Close to the search() function (lot of code in common) but
         triggered on the click on the change page button.
         """
-        logging.info("next_page function called. Building the url that is to be sent to the API")
+        logging.info("next_page function called. Building the url "
+                     "that is to be sent to the API")
         # Testing if the user is asking for a unexisting page (ex : page 15 out
         # of 14)
         if self.page_index >= self.calcul_nb_page(self.results_count):
@@ -1465,9 +1508,10 @@ class Isogeo:
             elif self.dockwidget.rdb_service.isChecked():
                 filters += "type:service "
             # Adding the keywords that are checked (whose data[10] == 2)
-            for i in xrange(self.dockwidget.cbb_keywords.count()):
-                if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
-                    filters += self.dockwidget.cbb_keywords.itemData(i, 32) + " "
+            cbb_keywords = self.dockwidget.cbb_keywords
+            for i in xrange(cbb_keywords.count()):
+                if cbb_keywords.itemData(i, 10) == 2:
+                    filters += cbb_keywords.itemData(i, 32) + " "
 
             # If the geographical filter is activated, build a spatial filter
             if self.dockwidget.checkBox_4.isChecked():
@@ -1480,7 +1524,8 @@ class Isogeo:
                 else:
                     QMessageBox.information(iface.mainWindow(
                     ), self.tr("Error"),
-                       self.tr("Your canvas coordinate system is not defined with a EPSG code."))
+                        self.tr("Your canvas coordinate system is not defined "
+                                "with a EPSG code."))
 
             filters = "q=" + filters[:-1]
             # self.dockwidget.txt_input.setText(encoded_filters)
@@ -1502,7 +1547,8 @@ class Isogeo:
         Close to the search() function (lot of code in common) but
         triggered on the click on the change page button.
         """
-        logging.info("previous_page function called. Building the url that is to be sent to the API")
+        logging.info("previous_page function called. Building the "
+                     "url that is to be sent to the API")
         # testing if the user is asking for something impossible : page 0
         if self.page_index < 2:
             return False
@@ -1564,9 +1610,10 @@ class Isogeo:
             elif self.dockwidget.rdb_service.isChecked():
                 filters += "type:service "
             # Adding the keywords that are checked (whose data[10] == 2)
-            for i in xrange(self.dockwidget.cbb_keywords.count()):
-                if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
-                    filters += self.dockwidget.cbb_keywords.itemData(i, 32) + " "
+            cbb_keywords = self.dockwidget.cbb_keywords
+            for i in xrange(cbb_keywords.count()):
+                if cbb_keywords.itemData(i, 10) == 2:
+                    filters += cbb_keywords.itemData(i, 32) + " "
 
             # If the geographical filter is activated, build a spatial filter
             if self.dockwidget.checkBox_4.isChecked():
@@ -1579,7 +1626,8 @@ class Isogeo:
                 else:
                     QMessageBox.information(iface.mainWindow(
                     ), self.tr("Error"),
-                       self.tr("Your canvas coordinate system is not defined with a EPSG code."))
+                        self.tr("Your canvas coordinate system is not defined "
+                                "with a EPSG code."))
             filters = "q=" + filters[:-1]
 
             if filters != "q=":
@@ -1608,8 +1656,9 @@ class Isogeo:
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         # If the name already exists, ask for a new one. (TO DO)
-        if research_name in saved_researches.keys() and research_name != '_default':
-            pass
+        if research_name in saved_researches.keys():
+            if research_name != '_default':
+                pass
         else:
             # Write the current parameters in a dict, and store it in the saved
             # research dict
@@ -1625,40 +1674,43 @@ class Isogeo:
 
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
-        logging.info("Set_widget_status function called. User is executing a saved research.")
-        self.switch_widgets_on_and_off('off')
         selected_research = self.dockwidget.cbb_saved.currentText()
-        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
-        with open(path) as data_file:
-            saved_researches = json.load(data_file)
-        if selected_research == "":
-            self.savedResearch = '_default'
-            research_params = saved_researches['_default']
-        else:
-            self.savedResearch = selected_research
-            research_params = saved_researches[selected_research]
-        self.currentUrl = research_params['url']
-        if research_params['geofilter']:
-            epsg = int(iface.mapCanvas().mapRenderer(
-            ).destinationCrs().authid().split(':')[1])
-            if epsg == research_params['epsg']:
-                canvas = iface.mapCanvas()
-                e = research_params['extent']
-                rect = QgsRectangle(e[0], e[1], e[2], e[3])
-                canvas.setExtent(rect)
-                canvas.refresh()
+        if selected_research != " - ":
+            logging.info("Set_widget_status function called. "
+                         "User is executing a saved research.")
+            self.switch_widgets_on_and_off('off')
+            selected_research = self.dockwidget.cbb_saved.currentText()
+            path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+            with open(path) as data_file:
+                saved_researches = json.load(data_file)
+            if selected_research == "":
+                self.savedResearch = '_default'
+                research_params = saved_researches['_default']
             else:
-                canvas = iface.mapCanvas()
-                canvas.mapRenderer().setProjectionsEnabled(True)
-                canvas.mapRenderer().setDestinationCrs(
-                    QgsCoordinateReferenceSystem(
-                        research_params['epsg'],
-                        QgsCoordinateReferenceSystem.EpsgCrsId))
-                e = research_params['extent']
-                rect = QgsRectangle(e[0], e[1], e[2], e[3])
-                canvas.setExtent(rect)
-                canvas.refresh()
-        self.send_request_to_Isogeo_API(self.token)
+                self.savedResearch = selected_research
+                research_params = saved_researches[selected_research]
+            self.currentUrl = research_params['url']
+            if research_params['geofilter']:
+                epsg = int(iface.mapCanvas().mapRenderer(
+                ).destinationCrs().authid().split(':')[1])
+                if epsg == research_params['epsg']:
+                    canvas = iface.mapCanvas()
+                    e = research_params['extent']
+                    rect = QgsRectangle(e[0], e[1], e[2], e[3])
+                    canvas.setExtent(rect)
+                    canvas.refresh()
+                else:
+                    canvas = iface.mapCanvas()
+                    canvas.mapRenderer().setProjectionsEnabled(True)
+                    canvas.mapRenderer().setDestinationCrs(
+                        QgsCoordinateReferenceSystem(
+                            research_params['epsg'],
+                            QgsCoordinateReferenceSystem.EpsgCrsId))
+                    e = research_params['extent']
+                    rect = QgsRectangle(e[0], e[1], e[2], e[3])
+                    canvas.setExtent(rect)
+                    canvas.refresh()
+            self.send_request_to_Isogeo_API(self.token)
 
     def save_research(self):
         """Call the write_research() function and refresh the combobox."""
@@ -1841,7 +1893,9 @@ class Isogeo:
     def send_details_request(self, md_id):
         """Send a request for aditionnal info about one data."""
         logging.info("Full metatada sheet asked. Building the url.")
-        self.currentUrl = 'https://v1.api.isogeo.com/resources/' + str(md_id) + '?_include=contacts,limitations,conditions,events,feature-attributes'
+        self.currentUrl = "https://v1.api.isogeo.com/resources/"\
+            + str(md_id)\
+            + "?_include=contacts,limitations,conditions,events,feature-attributes"
         self.showDetails = True
         self.send_request_to_Isogeo_API(self.token)
 
@@ -2132,13 +2186,15 @@ class Isogeo:
 
         # Button 'save favorite' connected to the opening of the pop up that
         # asks for a name
-        self.dockwidget.btn_save.pressed.connect(partial(self.show_popup, popup='ask_name'))
+        self.dockwidget.btn_save.pressed.connect(
+            partial(self.show_popup, popup='ask_name'))
         # Connect the accepted signal of the popup to the function that write
         # the research name and parameter to the file, and update the combobox
         self.ask_name_popup.accepted.connect(self.save_research)
         # Button 'rename research' connected to the opening of the pop up that
         # asks for a new name
-        self.dockwidget.btn_rename_sr.pressed.connect(partial(self.show_popup, popup = 'new_name'))
+        self.dockwidget.btn_rename_sr.pressed.connect(
+            partial(self.show_popup, popup='new_name'))
         # Connect the accepted signal of the popup to the function that rename
         # a research.
         self.new_name_popup.accepted.connect(self.rename_research)
@@ -2149,7 +2205,8 @@ class Isogeo:
         self.dockwidget.cbb_saved.activated.connect(
             self.set_widget_status)
         # G default
-        self.dockwidget.btn_default.pressed.connect(partial(self.write_research_params, research_name='_default'))
+        self.dockwidget.btn_default.pressed.connect(
+            partial(self.write_research_params, research_name='_default'))
 
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()

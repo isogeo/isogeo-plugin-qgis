@@ -6,17 +6,17 @@ from PyQt4 import QtGui, uic
 from PyQt4.QtCore import pyqtSignal
 
 
-from ui_ask_new_name import Ui_Dialog
+from ui_ask_research_name import Ui_Name
 
 
 
-class ask_new_name(QtGui.QDialog, Ui_Dialog):
+class ask_research_name(QtGui.QDialog, Ui_Name):
 
     closingPlugin = pyqtSignal()
 
     def __init__(self, parent=None):
         """Constructor."""
-        super(ask_new_name, self).__init__(parent)
+        super(ask_research_name, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see

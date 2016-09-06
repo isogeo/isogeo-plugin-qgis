@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_10">
+  <layout class="QGridLayout" name="gridLayout_6">
    <item row="0" column="0" colspan="3">
     <widget class="QLabel" name="lbl_title">
      <property name="font">
@@ -51,6 +51,12 @@
        <height>0</height>
       </size>
      </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>141</height>
+      </size>
+     </property>
      <property name="title">
       <string>Identification</string>
      </property>
@@ -73,7 +79,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/staff.svg</pixmap>
+         <pixmap>:/plugins/Isogeo/resources/staff.svg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -85,7 +91,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>25</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="readOnly">
@@ -111,7 +117,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/font.svg</pixmap>
+         <pixmap>:/plugins/Isogeo/resources/font.svg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -143,7 +149,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/tags.svg</pixmap>
+         <pixmap>:/plugins/Isogeo/resources/tags.svg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -158,7 +164,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>25</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="readOnly">
@@ -184,7 +190,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/leaf.svg</pixmap>
+         <pixmap>:/plugins/Isogeo/resources/leaf.svg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -196,7 +202,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>25</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="readOnly">
@@ -220,44 +226,52 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="0">
-       <widget class="QLabel" name="lbl_format">
-        <property name="minimumSize">
-         <size>
-          <width>131</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Format :</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="val_format">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLabel" name="lbl_format">
+          <property name="minimumSize">
+           <size>
+            <width>131</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Format :</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="val_format">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="lbl_srs">
-        <property name="minimumSize">
-         <size>
-          <width>131</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>SRS : </string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="val_srs">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLabel" name="lbl_srs">
+          <property name="minimumSize">
+           <size>
+            <width>131</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>SRS : </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="val_srs">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -305,21 +319,21 @@
       <string>Historique de la donnée</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="2" rowspan="3">
+      <item row="0" column="1" rowspan="3" colspan="2">
        <widget class="Line" name="line_3">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
-      <item row="0" column="5" rowspan="3">
+      <item row="0" column="3" rowspan="3">
        <widget class="Line" name="line_4">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
-      <item row="0" column="6">
+      <item row="0" column="4">
        <widget class="QLabel" name="lbl_last_events">
         <property name="maximumSize">
          <size>
@@ -331,83 +345,107 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="resources.qrc">:/plugins/Isogeo/resources/calendar.svg</pixmap>
+         <pixmap>:/plugins/Isogeo/resources/calendar.svg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="7">
+      <item row="0" column="5">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Dernières modifications</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lbl_data_crea">
-        <property name="text">
-         <string>Date de création :</string>
-        </property>
-       </widget>
+      <item row="1" column="0" rowspan="2">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="lbl_data_crea">
+            <property name="text">
+             <string>Date de création :</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="val_data_crea">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="lbl_data_updt">
+            <property name="text">
+             <string>Mise à jour :</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="val_data_updt">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="val_data_crea">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
+      <item row="1" column="2" rowspan="2">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="lbl_valid_start">
+            <property name="text">
+             <string>Début de validité :</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="val_valid_start">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QLabel" name="lbl_valid_end">
+            <property name="text">
+             <string>Fin de validité :</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="val_valid_end">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </item>
-      <item row="1" column="3">
-       <widget class="QLabel" name="lbl_valid_start">
-        <property name="text">
-         <string>Début de validité :</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QLineEdit" name="val_valid_start">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="6" rowspan="2" colspan="2">
+      <item row="2" column="4" colspan="2">
        <widget class="QListWidget" name="list_events">
         <property name="minimumSize">
          <size>
           <width>215</width>
           <height>0</height>
          </size>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lbl_data_updt">
-        <property name="text">
-         <string>Mise à jour :</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="val_data_updt">
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QLabel" name="lbl_valid_end">
-        <property name="text">
-         <string>Fin de validité :</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QLineEdit" name="val_valid_end">
-        <property name="readOnly">
-         <bool>true</bool>
         </property>
        </widget>
       </item>
