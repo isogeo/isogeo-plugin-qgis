@@ -648,7 +648,7 @@ class Isogeo:
             self.model.itemChanged.connect(self.search)
             self.dockwidget.cbb_keywords.setModel(self.model)
 
-        # Trying to make th checkboxes and radio buttons unckeckable if needed
+        # Make th checkboxes and radio buttons unckeckable if needed
         # View
         if 'action:view' in tags['actions']:
             self.dockwidget.checkBox.setEnabled(True)
@@ -664,26 +664,29 @@ class Isogeo:
             self.dockwidget.checkBox_3.setEnabled(True)
         else:
             self.dockwidget.checkBox_3.setEnabled(False)
-        # Vector
-        if 'type:vector-dataset' in tags['type']:
-            self.dockwidget.rdb_vector.setEnabled(True)
-        else:
-            self.dockwidget.rdb_vector.setEnabled(False)
-        # Raster
-        if 'type:raster-dataset' in tags['type']:
-            self.dockwidget.rdb_raster.setEnabled(True)
-        else:
-            self.dockwidget.rdb_raster.setEnabled(False)
-        # Resource
-        if 'type:resource' in tags['type']:
-            self.dockwidget.rdb_resource.setEnabled(True)
-        else:
-            self.dockwidget.rdb_resource.setEnabled(False)
-        # Service
-        if 'type:service' in tags['type']:
-            self.dockwidget.rdb_service.setEnabled(True)
-        else:
-            self.dockwidget.rdb_service.setEnabled(False)
+        # Make the radio buttons uncheckables only if no type parameter
+        # has been passed to the url.
+        if "type:" not in self.currentUrl:
+            # Vector
+            if 'type:vector-dataset' in tags['type']:
+                self.dockwidget.rdb_vector.setEnabled(True)
+            else:
+                self.dockwidget.rdb_vector.setEnabled(False)
+            # Raster
+            if 'type:raster-dataset' in tags['type']:
+                self.dockwidget.rdb_raster.setEnabled(True)
+            else:
+                self.dockwidget.rdb_raster.setEnabled(False)
+            # Resource
+            if 'type:resource' in tags['type']:
+                self.dockwidget.rdb_resource.setEnabled(True)
+            else:
+                self.dockwidget.rdb_resource.setEnabled(False)
+            # Service
+            if 'type:service' in tags['type']:
+                self.dockwidget.rdb_service.setEnabled(True)
+            else:
+                self.dockwidget.rdb_service.setEnabled(False)
 
         self.dockwidget.btn_show.setStyleSheet(
             "QPushButton "
