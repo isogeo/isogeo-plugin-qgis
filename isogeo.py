@@ -152,6 +152,8 @@ class Isogeo:
 
         self.showDetails = False
 
+        self.store = False
+
         self.PostGISdict = {}
 
         self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_limit=15&_include=links'
@@ -544,6 +546,8 @@ class Isogeo:
             saved_researches = json.load(data_file)
         research_list = saved_researches.keys()
         research_list.pop(research_list.index('_default'))
+        if '_current' in research_list:
+            research_list.pop(research_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
         self.dockwidget.cbb_modify_sr.clear()
         self.dockwidget.cbb_saved.addItem(" - ")
@@ -703,29 +707,27 @@ class Isogeo:
             self.dockwidget.checkBox_3.setEnabled(True)
         else:
             self.dockwidget.checkBox_3.setEnabled(False)
-        # Make the radio buttons uncheckables only if no type parameter
-        # has been passed to the url.
-        if "type:" not in self.currentUrl:
-            # Vector
-            if 'type:vector-dataset' in tags['type']:
-                self.dockwidget.rdb_vector.setEnabled(True)
-            else:
-                self.dockwidget.rdb_vector.setEnabled(False)
-            # Raster
-            if 'type:raster-dataset' in tags['type']:
-                self.dockwidget.rdb_raster.setEnabled(True)
-            else:
-                self.dockwidget.rdb_raster.setEnabled(False)
-            # Resource
-            if 'type:resource' in tags['type']:
-                self.dockwidget.rdb_resource.setEnabled(True)
-            else:
-                self.dockwidget.rdb_resource.setEnabled(False)
-            # Service
-            if 'type:service' in tags['type']:
-                self.dockwidget.rdb_service.setEnabled(True)
-            else:
-                self.dockwidget.rdb_service.setEnabled(False)
+        # Make the radio buttons uncheckables
+        # Vector
+        if 'type:vector-dataset' in tags['type']:
+            self.dockwidget.rdb_vector.setEnabled(True)
+        else:
+            self.dockwidget.rdb_vector.setEnabled(False)
+        # Raster
+        if 'type:raster-dataset' in tags['type']:
+            self.dockwidget.rdb_raster.setEnabled(True)
+        else:
+            self.dockwidget.rdb_raster.setEnabled(False)
+        # Resource
+        if 'type:resource' in tags['type']:
+            self.dockwidget.rdb_resource.setEnabled(True)
+        else:
+            self.dockwidget.rdb_resource.setEnabled(False)
+        # Service
+        if 'type:service' in tags['type']:
+            self.dockwidget.rdb_service.setEnabled(True)
+        else:
+            self.dockwidget.rdb_service.setEnabled(False)
 
         self.dockwidget.btn_show.setStyleSheet(
             "QPushButton "
@@ -779,6 +781,8 @@ class Isogeo:
             self.dockwidget.btn_previous.setEnabled(True)
             self.dockwidget.btn_show.setStyleSheet("")
             self.show_results(result)
+            self.write_research_params('_current')
+            self.store = True
         # Re enable all user input fields now the research function is
         # finished.
         self.switch_widgets_on_and_off('on')
@@ -1355,6 +1359,24 @@ class Isogeo:
                      "url that is to be sent to the API")
         # Disabling all user inputs during the research function is running
         self.switch_widgets_on_and_off('off')
+        # STORING THE PREVIOUS RESEARCH
+        if self.store is True:
+            path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+            with open(path) as data_file:
+                saved_researches = json.load(data_file)
+            name = self.tr("Last research")
+            saved_researches[name] = saved_researches['_current']
+            research_list = saved_researches.keys()
+            research_list.pop(research_list.index('_default'))
+            research_list.pop(research_list.index('_current'))
+            self.dockwidget.cbb_saved.clear()
+            self.dockwidget.cbb_modify_sr.clear()
+            for i in research_list:
+                self.dockwidget.cbb_saved.addItem(i, i)
+                self.dockwidget.cbb_modify_sr.addItem(i, i)
+            with open(path, 'w') as outfile:
+                    json.dump(saved_researches, outfile)
+            self.store = False
 
         # Setting some variables
         self.page_index = 1
@@ -1421,7 +1443,7 @@ class Isogeo:
                 filters = filters[:-1]
                 filters += "&box=" + self.get_canvas_coordinates() + "&rel=" +\
                     self.dockwidget.cbb_operation.itemData(
-                        self.dockwidget.operation.currentIndex()) + " "
+                        self.dockwidget.cbb_operation.currentIndex()) + " "
             else:
                 QMessageBox.information(iface.mainWindow(
                 ), self.tr("Your canvas coordinate system is not "
@@ -1656,21 +1678,23 @@ class Isogeo:
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         # If the name already exists, ask for a new one. (TO DO)
-        if research_name in saved_researches.keys():
+        """"if research_name in saved_researches.keys():
             if research_name != '_default':
-                pass
-        else:
-            # Write the current parameters in a dict, and store it in the saved
-            # research dict
-            params = self.save_params()
-            params['url'] = self.currentUrl
-            for i in xrange(len(params['keys'])):
-                params['keyword_{0}'.format(i)] = params['keys'][i]
-            params.pop('keys', None)
-            saved_researches[research_name] = params
-            with open(path, 'w') as outfile:
-                json.dump(saved_researches, outfile)
-            logging.info("Saved reseearch written. {0}".format(params))
+                if research_name != self.tr('Last research'):
+                    if research_name != '_current':
+                        pass
+        else:"""
+        # Write the current parameters in a dict, and store it in the saved
+        # research dict
+        params = self.save_params()
+        params['url'] = self.currentUrl
+        for i in xrange(len(params['keys'])):
+            params['keyword_{0}'.format(i)] = params['keys'][i]
+        params.pop('keys', None)
+        saved_researches[research_name] = params
+        with open(path, 'w') as outfile:
+            json.dump(saved_researches, outfile)
+        logging.info("Saved reseearch written. {0}".format(params))
 
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
@@ -1721,6 +1745,7 @@ class Isogeo:
             saved_researches = json.load(data_file)
         research_list = saved_researches.keys()
         research_list.pop(research_list.index('_default'))
+        research_list.pop(research_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
         self.dockwidget.cbb_modify_sr.clear()
         for i in research_list:
@@ -1738,6 +1763,7 @@ class Isogeo:
         saved_researches.pop(old_name)
         research_list = saved_researches.keys()
         research_list.pop(research_list.index('_default'))
+        research_list.pop(research_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
         self.dockwidget.cbb_modify_sr.clear()
         for i in research_list:
@@ -1755,6 +1781,7 @@ class Isogeo:
         saved_researches.pop(to_b_deleted)
         research_list = saved_researches.keys()
         research_list.pop(research_list.index('_default'))
+        research_list.pop(research_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
         self.dockwidget.cbb_modify_sr.clear()
         for i in research_list:

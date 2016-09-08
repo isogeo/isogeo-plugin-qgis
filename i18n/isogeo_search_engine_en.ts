@@ -3,111 +3,116 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="isogeo.py" line="268"/>
+        <location filename="isogeo.py" line="270"/>
         <source>&amp;Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="240"/>
+        <location filename="isogeo.py" line="242"/>
         <source>Search within Isogeo catalogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="352"/>
+        <location filename="isogeo.py" line="354"/>
         <source>Alert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="345"/>
+        <location filename="isogeo.py" line="347"/>
         <source>Proxy issue : 
 QGIS and your OS have different proxy set ups.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="352"/>
+        <location filename="isogeo.py" line="354"/>
         <source>Proxy issue : 
 You have a proxy set up on your OS but none in QGIS.
 Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1627"/>
+        <location filename="isogeo.py" line="1648"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="445"/>
+        <location filename="isogeo.py" line="447"/>
         <source>Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="497"/>
+        <location filename="isogeo.py" line="499"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin. If so, please report this on the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="503"/>
+        <location filename="isogeo.py" line="505"/>
         <source>You are facing an unknown error. Code: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="530"/>
+        <location filename="isogeo.py" line="532"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="682"/>
+        <location filename="isogeo.py" line="685"/>
         <source>---- Keywords ----</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="909"/>
+        <location filename="isogeo.py" line="912"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="943"/>
+        <location filename="isogeo.py" line="946"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="956"/>
+        <location filename="isogeo.py" line="959"/>
         <source>PostGIS table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1027"/>
+        <location filename="isogeo.py" line="1030"/>
         <source>The layer is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1054"/>
+        <location filename="isogeo.py" line="1057"/>
         <source>The linked service is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1092"/>
+        <location filename="isogeo.py" line="1095"/>
         <source>The PostGIS layer is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1627"/>
+        <location filename="isogeo.py" line="1648"/>
         <source>Your canvas coordinate system is not defined with a EPSG code.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="559"/>
+        <location filename="isogeo.py" line="562"/>
         <source>Intersects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="560"/>
+        <location filename="isogeo.py" line="563"/>
         <source>within</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="561"/>
+        <location filename="isogeo.py" line="564"/>
         <source>contains</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="1366"/>
+        <source>Last research</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
