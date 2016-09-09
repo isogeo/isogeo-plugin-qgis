@@ -116,7 +116,7 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="isogeo.py" line="1366"/>
         <source>Last research</source>
-        <translation>Dernière recherche</translation>
+        <translation>Denière recherche</translation>
     </message>
 </context>
 <context>

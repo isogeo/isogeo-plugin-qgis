@@ -158,6 +158,8 @@ class Isogeo:
 
         self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_limit=15&_include=links'
 
+        self.old_text = ""
+
         self.page_index = 1
 
     # noinspection PyMethodMayBeStatic
@@ -492,8 +494,8 @@ class Isogeo:
                          "together)")
             if self.loopCount < 3:
                 self.loopCount += 1
-                del self.API_reply
-                del self.token_reply
+                self.API_reply.abort()
+                self.token_reply.abort()
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
                 QMessageBox.information(iface.mainWindow(
@@ -517,9 +519,9 @@ class Isogeo:
         shown only when a specific button is pressed.
         """
         logging.info("Update_fields function called on the API reply. reset = "
-                     "{0}, savedResearch ={1}".format(self.hardReset,
-                                                      self.save_research))
+                     "{0}".format(self.hardReset))
         tags = self.get_tags(result)
+        self.old_text = self.dockwidget.txt_input.text()
         # Getting the index of selected items in each combobox
         self.params = self.save_params()
         # Show how many results there are
@@ -1370,6 +1372,7 @@ class Isogeo:
             research_list.pop(research_list.index('_default'))
             research_list.pop(research_list.index('_current'))
             self.dockwidget.cbb_saved.clear()
+            self.dockwidget.cbb_saved.addItem(" - ")
             self.dockwidget.cbb_modify_sr.clear()
             for i in research_list:
                 self.dockwidget.cbb_saved.addItem(i, i)
@@ -1747,6 +1750,7 @@ class Isogeo:
         research_list.pop(research_list.index('_default'))
         research_list.pop(research_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_saved.addItem(" - ")
         self.dockwidget.cbb_modify_sr.clear()
         for i in research_list:
             self.dockwidget.cbb_saved.addItem(i, i)
@@ -1765,6 +1769,7 @@ class Isogeo:
         research_list.pop(research_list.index('_default'))
         research_list.pop(research_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_saved.addItem(" - ")
         self.dockwidget.cbb_modify_sr.clear()
         for i in research_list:
             self.dockwidget.cbb_saved.addItem(i, i)
@@ -1783,6 +1788,7 @@ class Isogeo:
         research_list.pop(research_list.index('_default'))
         research_list.pop(research_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_saved.addItem(" - ")
         self.dockwidget.cbb_modify_sr.clear()
         for i in research_list:
             self.dockwidget.cbb_saved.addItem(i, i)
@@ -2143,6 +2149,16 @@ class Isogeo:
         # Finally open the damn window
         self.IsogeoMdDetails.show()
 
+    def edited_search(self):
+        """On the Qline edited signal, decide weither a research has to be launched."""
+        logging.info("Editing finished signal sent.")
+        if self.dockwidget.txt_input.text() == self.old_text:
+            logging.info("The lineEdit text hasn't changed. So pass without sending a request.")
+            pass
+        else:
+            logging.info("The line Edit text changed. Calls the search function.")
+            self.search()
+
     # --------------------------------------------------------------------------
 
     # This function is launched when the plugin is activated.
@@ -2185,7 +2201,7 @@ class Isogeo:
         self.dockwidget.cbb_srs.activated.connect(self.search)
         self.dockwidget.cbb_operation.activated.connect(self.search)
         # Connecting the text input to the search function
-        self.dockwidget.txt_input.editingFinished.connect(self.search)
+        self.dockwidget.txt_input.editingFinished.connect(self.edited_search)
         # Connecting the checkboxes to the search function
         self.dockwidget.checkBox.clicked.connect(self.search)
         self.dockwidget.checkBox_2.clicked.connect(self.search)
