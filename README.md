@@ -30,8 +30,8 @@ It's fully integrated with QGIS ecosystem:
 - [X] Geographic filter from the map canvas bounding box
 - [ ] Order results by relevance, alphabetic, last updated date (data or metadata), creation date (data or metadata)
 - [X] Add the related data directly to the map canvas
-- [ ] Display full metadata information in a separated window
-- [ ] Save search bookmarks
+- [X] Display full metadata information in a separated window
+- [X] Save search bookmarks
 - [ ] Customize and manage data lists
 
 ## Screen captures ##
@@ -61,7 +61,7 @@ Internship of [Théo SINATTI](https://github.com/TheoSinatti) supervised by [Jul
 
 ## Sponsors ##
 
-This plugin is made thanks to some clients:
+This plugin is made thanks to some Isogeo active clients:
 
 ![Syndicat Mixte d'Aménagement de la Vallée de la Durance](img/sponsor_logo_SMAVD.jpg)
 
