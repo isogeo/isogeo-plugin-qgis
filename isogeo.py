@@ -87,12 +87,16 @@ logger.addHandler(logfile)
 # ########## Classes ###############
 # ##################################
 
+
 class Isogeo:
     """QGIS Plugin Implementation."""
 
     logging.info('\n\n\t============== Isogeo Search Engine for QGIS =============')
-    # logging.info('OS: {0}'.format(platform.platform()))
-    # logging.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
+    logging.info('OS: {0}'.format(platform.platform()))
+    try:
+        logging.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
+    except UnicodeEncodeError:
+        logging.info('QGIS Version: 2.16.0 or 2.16.1')
 
     def __init__(self, iface):
         """Constructor.
