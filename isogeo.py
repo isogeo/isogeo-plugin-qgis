@@ -26,7 +26,8 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
     Qt, QByteArray, QUrl
 # Ajouté oar moi à partir de QMessageBox
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
-    QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, QPixmap
+    QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, \
+    QPixmap, QProgressBar
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -61,6 +62,7 @@ import webbrowser
 from functools import partial
 import db_manager.db_plugins.postgis.connector as con
 import operator
+import time
 
 # ############################################################################
 # ########## Globals ###############
@@ -89,8 +91,8 @@ class Isogeo:
     """QGIS Plugin Implementation."""
 
     logging.info('\n\n\t============== Isogeo Search Engine for QGIS =============')
-    logging.info('OS: {0}'.format(platform.platform()))
-    logging.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
+    # logging.info('OS: {0}'.format(platform.platform()))
+    # logging.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
 
     def __init__(self, iface):
         """Constructor.
@@ -795,6 +797,7 @@ class Isogeo:
     def show_results(self, result):
         """Display the results in a table ."""
         logging.info("Show_results function called. Displaying the results")
+        # Set rable rows
         if self.results_count >= 15:
             self.dockwidget.tbl_result.setRowCount(15)
         else:
@@ -993,6 +996,15 @@ class Isogeo:
         self.dockwidget.tbl_result.horizontalHeader().resizeSection(1, 80)
         self.dockwidget.tbl_result.horizontalHeader().resizeSection(2, 50)
         self.dockwidget.tbl_result.verticalHeader().setResizeMode(3)
+        # Remove the "loading" bar
+        iface.mainWindow().statusBar().removeWidget(self.bar)
+
+    def add_this_fucking_bar(self):
+        """Display a "loading" bar."""
+        self.bar = QProgressBar()
+        self.bar.setRange(0, 0)
+        self.bar.setFixedWidth(120)
+        iface.mainWindow().statusBar().insertPermanentWidget(0, self.bar)
 
     def add_layer(self, layer_index):
         """Add a layer to QGIS map canvas.
@@ -1473,6 +1485,7 @@ class Isogeo:
                      "that is to be sent to the API")
         # Testing if the user is asking for a unexisting page (ex : page 15 out
         # of 14)
+        self.add_this_fucking_bar()
         if self.page_index >= self.calcul_nb_page(self.results_count):
             return False
         else:
@@ -1575,6 +1588,7 @@ class Isogeo:
         logging.info("previous_page function called. Building the "
                      "url that is to be sent to the API")
         # testing if the user is asking for something impossible : page 0
+        self.add_this_fucking_bar()
         if self.page_index < 2:
             return False
         else:
@@ -1886,6 +1900,7 @@ class Isogeo:
 
     def search_with_content(self):
         """Launch a search request that will end up in showing the results."""
+        self.add_this_fucking_bar()
         self.showResult = True
         self.search()
 
