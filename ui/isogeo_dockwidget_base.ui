@@ -602,35 +602,10 @@
             <widget class="QComboBox" name="cbb_saved"/>
            </item>
           </layout>
-          <zorder>label_24</zorder>
-          <zorder>rdb_vector</zorder>
-          <zorder>rdb_service</zorder>
-          <zorder>rdb_alltypes</zorder>
-          <zorder>rdb_resource</zorder>
-          <zorder>label_2</zorder>
-          <zorder>label_3</zorder>
-          <zorder>cbb_format</zorder>
-          <zorder>cbb_owner</zorder>
-          <zorder>label_4</zorder>
-          <zorder>label_5</zorder>
-          <zorder>cbb_inspire</zorder>
-          <zorder>cbb_srs</zorder>
           <zorder>label_6</zorder>
-          <zorder>checkBox</zorder>
-          <zorder>checkBox_2</zorder>
-          <zorder>checkBox_3</zorder>
           <zorder>label</zorder>
           <zorder>cbb_saved</zorder>
           <zorder>btn_save</zorder>
-          <zorder>rdb_raster</zorder>
-          <zorder>label_8</zorder>
-          <zorder>label_9</zorder>
-          <zorder>label_13</zorder>
-          <zorder>label_14</zorder>
-          <zorder>horizontalSpacer_2</zorder>
-          <zorder>horizontalSpacer_3</zorder>
-          <zorder>horizontalSpacer_5</zorder>
-          <zorder>horizontalSpacer_6</zorder>
          </widget>
         </item>
         <item row="3" column="0">

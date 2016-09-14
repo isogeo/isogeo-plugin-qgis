@@ -501,7 +501,9 @@ class Isogeo:
             if self.loopCount < 3:
                 self.loopCount += 1
                 self.API_reply.abort()
+                del self.API_reply
                 self.token_reply.abort()
+                del self.token_reply
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
                 QMessageBox.information(iface.mainWindow(
@@ -816,7 +818,7 @@ class Isogeo:
 
         vectorformat_list = ['shp', 'dxf', 'dgn', 'filegdb', 'tab']
         rasterformat_list = ['esriasciigrid', 'geotiff',
-                             'intergraphgdb', 'jpeg', 'png', 'xyz']
+                             'intergraphgdb', 'jpeg', 'png', 'xyz', 'ecw']
 
         # Get the name (and other informations) of all databases whose
         # connection is set up in QGIS
@@ -1003,7 +1005,7 @@ class Isogeo:
         # Remove the "loading" bar
         iface.mainWindow().statusBar().removeWidget(self.bar)
 
-    def add_this_fucking_bar(self):
+    def add_loading_bar(self):
         """Display a "loading" bar."""
         self.bar = QProgressBar()
         self.bar.setRange(0, 0)
@@ -1489,7 +1491,7 @@ class Isogeo:
                      "that is to be sent to the API")
         # Testing if the user is asking for a unexisting page (ex : page 15 out
         # of 14)
-        self.add_this_fucking_bar()
+        self.add_loading_bar()
         if self.page_index >= self.calcul_nb_page(self.results_count):
             return False
         else:
@@ -1592,7 +1594,7 @@ class Isogeo:
         logging.info("previous_page function called. Building the "
                      "url that is to be sent to the API")
         # testing if the user is asking for something impossible : page 0
-        self.add_this_fucking_bar()
+        self.add_loading_bar()
         if self.page_index < 2:
             return False
         else:
@@ -1904,7 +1906,7 @@ class Isogeo:
 
     def search_with_content(self):
         """Launch a search request that will end up in showing the results."""
-        self.add_this_fucking_bar()
+        self.add_loading_bar()
         self.showResult = True
         self.search()
 
