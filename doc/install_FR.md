@@ -24,17 +24,16 @@ Toujours en phase de développement active, il est possible d'installer le plugi
             ![QGIS - Experimental extensions](../img/qgis_install_experimental_settings.png)
     
         3. Il est aussi recommandé d'activer les mises à jour à chaque démarrage ou au moins hebdomadaires.
+        4. Activer l'extension via le gestionnaire de plugins de QGIS :
+
+        ![Set network preferences](../img/qgis_install_extension.png)
 
     * Utilisateurs avancés :
 
         1. Télécharger la [dernière version du plugin](https://github.com/isogeo/isogeo-plugin-qgis/releases) ;
         2. Décompresser dans `C:\Users\%USERNAME%\.qgis2\python\plugins` pour Windows ou `/home/$USER/.qgis2/python/plugins` pour Ubuntu ;
 
-5. Activer l'extension via le gestionnaire de plugins de QGIS :
-
-    ![Set network preferences](../img/qgis_install_extension.png)
-
-6. Entrer les identifiants reçus par mail au premier lancement du plugin :
+5. Entrer les identifiants reçus par mail au premier lancement du plugin :
 
     ![Prompt dialog to enter your application](../img/ui_auth_prompt.png)
 
