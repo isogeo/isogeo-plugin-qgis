@@ -57,12 +57,15 @@ import urllib
 import logging
 from logging.handlers import RotatingFileHandler
 import platform  # about operating systems
-import datetime
-import webbrowser
+
+
 from functools import partial
 import db_manager.db_plugins.postgis.connector as con
 import operator
 import time
+
+# Mes modules a moi
+from modules.tools import Tools
 
 # ############################################################################
 # ########## Globals ###############
@@ -86,6 +89,7 @@ logger.addHandler(logfile)
 # ############################################################################
 # ########## Classes ###############
 # ##################################
+tools = Tools()
 
 
 class Isogeo:
@@ -528,7 +532,7 @@ class Isogeo:
         """
         logging.info("Update_fields function called on the API reply. reset = "
                      "{0}".format(self.hardReset))
-        tags = self.get_tags(result)
+        tags = tools.get_tags(result)
         self.old_text = self.dockwidget.txt_input.text()
         # Getting the index of selected items in each combobox
         self.params = self.save_params()
@@ -538,7 +542,7 @@ class Isogeo:
             str(self.results_count) + u" résultats")
         # Setting the number of rows in the result table
 
-        self.nb_page = str(self.calcul_nb_page(self.results_count))
+        self.nb_page = str(tools.calcul_nb_page(self.results_count))
         self.dockwidget.lbl_page.setText(
             "page " + str(self.page_index) + self.tr(' on ') + self.nb_page)
         # clearing the previous fields
@@ -700,7 +704,6 @@ class Isogeo:
             self.model.insertRow(0, first_item)
             self.model.itemChanged.connect(self.search)
             self.dockwidget.cbb_keywords.setModel(self.model)
-
         # Make th checkboxes and radio buttons unckeckable if needed
         # View
         if 'action:view' in tags['actions']:
@@ -894,7 +897,7 @@ class Isogeo:
             self.dockwidget.tbl_result.setCellWidget(
                 count, 0, button)
             self.dockwidget.tbl_result.setItem(
-                count, 1, QTableWidgetItem(self.handle_date(i['_modified'])))
+                count, 1, QTableWidgetItem(tools.handle_date(i['_modified'])))
             try:
                 geometry = i['geometry']
                 if geometry in point_list:
@@ -941,7 +944,7 @@ class Isogeo:
 
             if 'format' in i.keys():
                 if i['format'] in vectorformat_list and 'path' in i:
-                    path = self.format_path(i['path'])
+                    path = tools.format_path(i['path'])
                     try:
                         test_path = open(path)
                         params = ["vector", path]
@@ -951,7 +954,7 @@ class Isogeo:
                         pass
 
                 elif i['format'] in rasterformat_list and 'path' in i:
-                    path = self.format_path(i['path'])
+                    path = tools.format_path(i['path'])
                     try:
                         test_path = open(path)
                         params = ["raster", path]
@@ -1212,80 +1215,6 @@ class Isogeo:
         else:
             return 0
 
-    def get_tags(self, answer):
-        """Return a tag dictionnary from the API answer.
-
-        This parse the tags contained in API_answer[tags] and class them so
-        they are more easy to handle in other function such as update_fields()
-        """
-        # Initiating the dicts
-        tags = answer['tags']
-        resources_types = {}
-        owners = {}
-        keywords = {}
-        themeinspire = {}
-        formats = {}
-        srs = {}
-        actions = {}
-        # loops that sort each tag in the corresponding dict, keeping the same
-        # "key : value" structure.
-        for tag in tags.keys():
-            # owners
-            if tag.startswith('owner'):
-                owners[tag] = tags[tag]
-            # custom keywords
-            elif tag.startswith('keyword:isogeo'):
-                keywords[tag] = tags[tag]
-            # INSPIRE themes
-            elif tag.startswith('keyword:inspire-theme'):
-                themeinspire[tag] = tags[tag]
-            # formats
-            elif tag.startswith('format'):
-                formats[tag] = tags[tag]
-            # coordinate systems
-            elif tag.startswith('coordinate-system'):
-                srs[tag] = tags[tag]
-            # available actions (the last 2 are a bit specific as the value
-            # field is empty and have to be filled manually)
-            elif tag.startswith('action'):
-                if tag.startswith('action:view'):
-                    actions[tag] = u'Visualisable'
-                elif tag.startswith('action:download'):
-                    actions[tag] = u'Téléchargeable'
-                elif tag.startswith('action:other'):
-                    actions[tag] = u'Autre action'
-                # Test : to be removed eventually
-                else:
-                    actions[tag] = u'fonction get_tag à revoir'
-                    self.dockwidget.txt_input.setText(tag)
-            # resources type
-            elif tag.startswith('type'):
-                if tag.startswith('type:vector'):
-                    resources_types[tag] = u'Données vecteur'
-                elif tag.startswith('type:raster'):
-                    resources_types[tag] = u'Données raster'
-                elif tag.startswith('type:resource'):
-                    resources_types[tag] = u'Ressource'
-                elif tag.startswith('type:service'):
-                    resources_types[tag] = u'Service géographique'
-                # Test : to be removed eventually
-                else:
-                    resources_types[tag] = u'fonction get_tag à revoir'
-                    # self.dockwidget.txt_input.setText(tag)
-
-        # Creating the final object the function will return : a dictionary of
-        # dictionaries
-        new_tags = {}
-        new_tags['type'] = resources_types
-        new_tags['owner'] = owners
-        new_tags['keywords'] = keywords
-        new_tags['themeinspire'] = themeinspire
-        new_tags['formats'] = formats
-        new_tags['srs'] = srs
-        new_tags['actions'] = actions
-
-        return new_tags
-
     def save_params(self):
         """Save the widgets state/index.
 
@@ -1492,7 +1421,7 @@ class Isogeo:
         # Testing if the user is asking for a unexisting page (ex : page 15 out
         # of 14)
         self.add_loading_bar()
-        if self.page_index >= self.calcul_nb_page(self.results_count):
+        if self.page_index >= tools.calcul_nb_page(self.results_count):
             return False
         else:
             self.showResult = True
@@ -1816,27 +1745,6 @@ class Isogeo:
         with open(path, 'w') as outfile:
                 json.dump(saved_researches, outfile)
 
-    def calcul_nb_page(self, nb_fiches):
-        """Calculate the number of pages given a number of results."""
-        if nb_fiches <= 15:
-            nb_page = 1
-        else:
-            if (nb_fiches % 15) == 0:
-                nb_page = (nb_fiches / 15)
-            else:
-                nb_page = (nb_fiches / 15) + 1
-        return nb_page
-
-    def handle_date(self, input_date):
-        """Create a date object with the string given as a date by the API."""
-        date = input_date.split("T")[0]
-        year = int(date.split('-')[0])
-        month = int(date.split('-')[1])
-        day = int(date.split('-')[2])
-        new_date = datetime.date(year, month, day)
-        return new_date.strftime("%d/%m/%Y")
-        return new_date
-
     def get_canvas_coordinates(self):
         """Get the canvas coordinates in the right format and SRS (WGS84)."""
         e = iface.mapCanvas().extent()
@@ -1859,13 +1767,6 @@ class Isogeo:
             return coord
         else:
             return False
-
-    def open_bugtracker(self):
-        """Open the bugtracker on the user's default browser."""
-        webbrowser.open(
-            'https://github.com/isogeo/isogeo-plugin-qgis/issues',
-            new=0,
-            autoraise=True)
 
     def reinitialize_research(self):
         """Clear all widget, putting them all back to their default value.
@@ -1893,16 +1794,6 @@ class Isogeo:
         self.dockwidget.cbb_format.clear()
         self.dockwidget.cbb_srs.clear()
         self.search()
-
-    def format_path(self, string):
-        """Reformat windows path for them to be understood by QGIS."""
-        new_string = ""
-        for character in string:
-            if character == '\\':
-                new_string += "/"
-            else:
-                new_string += character
-        return new_string
 
     def search_with_content(self):
         """Launch a search request that will end up in showing the results."""
@@ -1956,7 +1847,7 @@ class Isogeo:
     def show_complete_md(self, content):
         """Open the pop up window that shows the metadata sheet details."""
         logging.info("Displaying the whole metadata sheet.")
-        tags = self.get_tags(content)
+        tags = tools.get_tags(content)
         # Set the data title
         title = content.get('title')
         if title is not None:
@@ -1967,27 +1858,27 @@ class Isogeo:
         creation_date = content.get('_created')
         if creation_date is not None:
             self.IsogeoMdDetails.val_data_crea.setText(
-                self.handle_date(creation_date))
+                tools.handle_date(creation_date))
         else:
             self.IsogeoMdDetails.val_data_crea.setText('NR')
         # Set the data last modification date
         modif_date = content.get('_modified')
         if modif_date is not None:
-            self.IsogeoMdDetails.val_data_updt.setText(self.handle_date(
+            self.IsogeoMdDetails.val_data_updt.setText(tools.handle_date(
                 modif_date))
         else:
             self.IsogeoMdDetails.val_data_updt.setText('NR')
         # Set the date from which the data is valid
         valid_from = content.get('validFrom')
         if valid_from is not None:
-            self.IsogeoMdDetails.val_valid_start.setText(self.handle_date(
+            self.IsogeoMdDetails.val_valid_start.setText(tools.handle_date(
                 valid_from))
         else:
             self.IsogeoMdDetails.val_valid_start.setText('NR')
         # Set the date from which the data stops being valid
         valid_to = content.get('validTo')
         if valid_to is not None:
-            self.IsogeoMdDetails.val_valid_end.setText(self.handle_date(
+            self.IsogeoMdDetails.val_valid_end.setText(tools.handle_date(
                 valid_to))
         else:
             self.IsogeoMdDetails.val_valid_end.setText('NR')
@@ -2096,7 +1987,7 @@ class Isogeo:
         self.IsogeoMdDetails.list_events.clear()
         if content['events'] != []:
             for i in content['events']:
-                event = self.handle_date(i['date']) + " : " + i['kind']
+                event = tools.handle_date(i['date']) + " : " + i['kind']
                 if i['kind'] == 'update' and 'description' in i \
                         and i['description'] != '':
                     event += " (" + i['description'] + ")"
@@ -2172,12 +2063,21 @@ class Isogeo:
 
     def edited_search(self):
         """On the Qline edited signal, decide weither a research has to be launched."""
-        logging.info("Editing finished signal sent.")
+        try:
+            logging.info("Editing finished signal sent.")
+        except AttributeError:
+            pass
         if self.dockwidget.txt_input.text() == self.old_text:
-            logging.info("The lineEdit text hasn't changed. So pass without sending a request.")
+            try:
+                logging.info("The lineEdit text hasn't changed. So pass without sending a request.")
+            except AttributeError:
+                pass
             pass
         else:
-            logging.info("The line Edit text changed. Calls the search function.")
+            try:
+                logging.info("The line Edit text changed. Calls the search function.")
+            except AttributeError:
+                pass
             self.search()
 
     # --------------------------------------------------------------------------
@@ -2211,6 +2111,7 @@ class Isogeo:
         iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
         # Initiating values (TO DO : Move to init section)
 
+
         """ --- CONNECTING FUNCTIONS --- """
         # Write in the config file when the user accept the authentification
         # window
@@ -2238,7 +2139,7 @@ class Isogeo:
         self.dockwidget.btn_next.pressed.connect(self.next_page)
         self.dockwidget.btn_previous.pressed.connect(self.previous_page)
         # Connecting the bug tracker button to its function
-        self.dockwidget.btn_report.pressed.connect(self.open_bugtracker)
+        self.dockwidget.btn_report.pressed.connect(tools.open_bugtracker)
         # Connecting the "reinitialize research button" to a research without
         # filters
         self.dockwidget.btn_reinit.pressed.connect(self.reinitialize_research)

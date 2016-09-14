@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_authentication.ui'
 #
-# Created: Mon Sep 05 16:21:51 2016
+# Created: Wed Sep 14 14:57:17 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -75,7 +75,7 @@ class Ui_dlg_form_auth_prompt(object):
         self.lbl_app_id.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.lbl_app_id.setObjectName(_fromUtf8("lbl_app_id"))
         self.lbl_app_secret = QtGui.QLabel(self.grb_connection_ready)
-        self.lbl_app_secret.setGeometry(QtCore.QRect(10, 50, 96, 16))
+        self.lbl_app_secret.setGeometry(QtCore.QRect(10, 50, 121, 16))
         self.lbl_app_secret.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.lbl_app_secret.setObjectName(_fromUtf8("lbl_app_secret"))
         self.btn_ok_cancel = QtGui.QDialogButtonBox(dlg_form_auth_prompt)
