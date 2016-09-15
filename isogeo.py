@@ -44,7 +44,7 @@ from ui.mddetails.isogeo_dlg_mdDetails import IsogeoMdDetails
 import os.path
 
 # Ajoutés par moi
-from qgis.utils import iface, QGis, reloadPlugin
+from qgis.utils import iface, plugin_times, QGis, reloadPlugin
 from qgis.core import QgsNetworkAccessManager, QgsPoint, \
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, \
     QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI, QgsMessageLog, \
@@ -2042,6 +2042,8 @@ class Isogeo:
             if self.dockwidget is None:
                 # Create the dockwidget (after translation) and keep reference
                 self.dockwidget = IsogeoDockWidget()
+                logging.info("Plugin load time: {}"
+                             .format(plugin_times.get("isogeo_search_engine")))
 
             # connect to provide cleanup on closing of dockwidget
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
