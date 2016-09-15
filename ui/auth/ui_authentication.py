@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_authentication.ui'
 #
-# Created: Wed Sep 14 14:57:17 2016
+# Created: Wed Sep 14 16:57:29 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -38,21 +38,13 @@ class Ui_dlg_form_auth_prompt(object):
         self.grb_need_account.setGeometry(QtCore.QRect(9, 110, 557, 71))
         self.grb_need_account.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.grb_need_account.setObjectName(_fromUtf8("grb_need_account"))
-        self.btn_access_request = QtGui.QPushButton(self.grb_need_account)
-        self.btn_access_request.setGeometry(QtCore.QRect(10, 30, 250, 25))
-        self.btn_access_request.setMinimumSize(QtCore.QSize(150, 20))
-        self.btn_access_request.setMaximumSize(QtCore.QSize(250, 30))
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/ui/resources/isogeo_trans_64x64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btn_access_request.setIcon(icon1)
-        self.btn_access_request.setObjectName(_fromUtf8("btn_access_request"))
         self.btn_account_new = QtGui.QPushButton(self.grb_need_account)
-        self.btn_account_new.setGeometry(QtCore.QRect(290, 30, 250, 25))
+        self.btn_account_new.setGeometry(QtCore.QRect(140, 30, 250, 25))
         self.btn_account_new.setMinimumSize(QtCore.QSize(200, 20))
         self.btn_account_new.setMaximumSize(QtCore.QSize(250, 30))
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/ui/resources/keys.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btn_account_new.setIcon(icon2)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/ui/resources/keys.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_account_new.setIcon(icon1)
         self.btn_account_new.setObjectName(_fromUtf8("btn_account_new"))
         self.grb_connection_ready = QtGui.QGroupBox(dlg_form_auth_prompt)
         self.grb_connection_ready.setGeometry(QtCore.QRect(9, 9, 557, 81))
@@ -93,7 +85,6 @@ class Ui_dlg_form_auth_prompt(object):
     def retranslateUi(self, dlg_form_auth_prompt):
         dlg_form_auth_prompt.setWindowTitle(_translate("dlg_form_auth_prompt", "Isogeo authentication settings", None))
         self.grb_need_account.setTitle(_translate("dlg_form_auth_prompt", "Don\'t have an account yet ?", None))
-        self.btn_access_request.setText(_translate("dlg_form_auth_prompt", "Create Isogeo account", None))
         self.btn_account_new.setText(_translate("dlg_form_auth_prompt", "Request plugin access", None))
         self.grb_connection_ready.setTitle(_translate("dlg_form_auth_prompt", "I already have Isogeo ID and SECRET for this application", None))
         self.lbl_app_id.setText(_translate("dlg_form_auth_prompt", "Application ID:", None))

@@ -51,39 +51,10 @@
    <property name="title">
     <string>Don't have an account yet ?</string>
    </property>
-   <widget class="QPushButton" name="btn_access_request">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>250</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>150</width>
-      <height>20</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>250</width>
-      <height>30</height>
-     </size>
-    </property>
-    <property name="text">
-     <string>Create Isogeo account</string>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>:/ui/resources/isogeo_trans_64x64.png</normaloff>:/ui/resources/isogeo_trans_64x64.png</iconset>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btn_account_new">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>140</x>
       <y>30</y>
       <width>250</width>
       <height>25</height>
@@ -109,8 +80,6 @@
       <normaloff>:/ui/resources/keys.svg</normaloff>:/ui/resources/keys.svg</iconset>
     </property>
    </widget>
-   <zorder>btn_account_new</zorder>
-   <zorder>btn_access_request</zorder>
   </widget>
   <widget class="QGroupBox" name="grb_connection_ready">
    <property name="geometry">

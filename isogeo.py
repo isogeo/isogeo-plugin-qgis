@@ -554,6 +554,7 @@ class Isogeo:
         self.dockwidget.cbb_format.clear()
         self.dockwidget.cbb_srs.clear()
         self.dockwidget.cbb_operation.clear()
+        self.dockwidget.cbb_type.clear()
 
         path = self.get_plugin_path() + '/user_settings/saved_researches.json'
         with open(path) as data_file:
@@ -574,19 +575,14 @@ class Isogeo:
         self.dockwidget.cbb_owner.addItem(" - ")
         self.dockwidget.cbb_format.addItem(" - ")
         self.dockwidget.cbb_srs.addItem(" - ")
+        self.dockwidget.cbb_operation.addItem(" - ")
+        self.dockwidget.cbb_type.addItem(self.tr("All types"))
         dict_operation = {self.tr('Intersects'): "intersects",
                           self.tr('within'): "within",
                           self.tr('contains'): "contains"}
         for operationKey in dict_operation.keys():
             self.dockwidget.cbb_operation.addItem(
                 operationKey, dict_operation[operationKey])
-        if self.hardReset is True:
-            self.dockwidget.cbb_operation.setCurrentIndex(
-                self.dockwidget.cbb_operation.findData("intersects"))
-        else:
-            self.dockwidget.cbb_operation.setCurrentIndex(
-                self.dockwidget.cbb_operation.findData(
-                    self.params['operation']))
         # Creating combobox items, with their displayed text, and their value
         ordered = sorted(tags['owner'].items(), key=operator.itemgetter(1))
         for i in ordered:
@@ -601,6 +597,9 @@ class Isogeo:
         ordered = sorted(tags['srs'].items(), key=operator.itemgetter(1))
         for i in ordered:
             self.dockwidget.cbb_srs.addItem(i[1], i[0])
+        ordered = sorted(tags['type'].items(), key=operator.itemgetter(1))
+        for i in ordered:
+            self.dockwidget.cbb_type.addItem(i[1], i[0])
 
         # Putting all the comboboxes selected index to their previous
         # location. Necessary as all comboboxes items have been removed and
@@ -611,8 +610,8 @@ class Isogeo:
                 self.dockwidget.cbb_owner.findData(self.params['owner']))
             self.dockwidget.cbb_inspire.setCurrentIndex(
                 self.dockwidget.cbb_inspire.findData(self.params['inspire']))
-            # Set the combobox current index to (get the index of the item
-            # which data is (saved data))
+            self.dockwidget.cbb_type.setCurrentIndex(
+                self.dockwidget.cbb_type.findData(self.params['datatype']))
             self.dockwidget.cbb_format.setCurrentIndex(
                 self.dockwidget.cbb_format.findData(self.params['format']))
             self.dockwidget.cbb_srs.setCurrentIndex(
@@ -620,6 +619,9 @@ class Isogeo:
             self.dockwidget.cbb_saved.setCurrentIndex(
                 self.dockwidget.cbb_saved.findData(
                     self.params['favorite']))
+            self.dockwidget.cbb_operation.setCurrentIndex(
+                self.dockwidget.cbb_operation.findData(
+                    self.params['operation']))
 
             # Filling the keywords special combobox (whose items are checkable)
             if self.savedResearch is False:
@@ -720,27 +722,7 @@ class Isogeo:
             self.dockwidget.checkBox_3.setEnabled(True)
         else:
             self.dockwidget.checkBox_3.setEnabled(False)
-        # Make the radio buttons uncheckables
-        # Vector
-        if 'type:vector-dataset' in tags['type']:
-            self.dockwidget.rdb_vector.setEnabled(True)
-        else:
-            self.dockwidget.rdb_vector.setEnabled(False)
-        # Raster
-        if 'type:raster-dataset' in tags['type']:
-            self.dockwidget.rdb_raster.setEnabled(True)
-        else:
-            self.dockwidget.rdb_raster.setEnabled(False)
-        # Resource
-        if 'type:resource' in tags['type']:
-            self.dockwidget.rdb_resource.setEnabled(True)
-        else:
-            self.dockwidget.rdb_resource.setEnabled(False)
-        # Service
-        if 'type:service' in tags['type']:
-            self.dockwidget.rdb_service.setEnabled(True)
-        else:
-            self.dockwidget.rdb_service.setEnabled(False)
+        
 
         self.dockwidget.btn_show.setStyleSheet(
             "QPushButton "
@@ -766,6 +748,8 @@ class Isogeo:
             self.dockwidget.cbb_operation.setCurrentIndex(
                 self.dockwidget.cbb_operation.findData(
                     research_params['operation']))
+            self.dockwidget.cbb_type.setCurrentIndex(
+                self.dockwidget.cbb_type.findData(research_params['datatype']))
             self.dockwidget.cbb_saved.setCurrentIndex(
                 self.dockwidget.cbb_saved.findData(self.savedResearch))
             if research_params['view']:
@@ -774,17 +758,6 @@ class Isogeo:
                 self.dockwidget.checkBox_2.setCheckState(Qt.Checked)
             if research_params['other']:
                 self.dockwidget.checkBox_3.setCheckState(Qt.Checked)
-            if research_params['geofilter']:
-                self.dockwidget.checkBox_4.setCheckState(Qt.Checked)
-            if research_params['datatype'] is not False:
-                if research_params['datatype'] == "vector":
-                    self.dockwidget.rdb_vector.setChecked(True)
-                elif research_params['datatype'] == "raster":
-                    self.dockwidget.rdb_raster.setChecked(True)
-                elif research_params['datatype'] == "resource":
-                    self.dockwidget.rdb_resource.setChecked(True)
-                elif research_params['datatype'] == "service":
-                    self.dockwidget.rdb_service.setChecked(True)
             self.savedResearch = False
 
         # Show result, if we want them to be shown (button 'show result', 'next
@@ -1236,6 +1209,8 @@ class Isogeo:
             self.dockwidget.cbb_operation.currentIndex())
         favorite_param = self.dockwidget.cbb_saved.itemData(
             self.dockwidget.cbb_saved.currentIndex())
+        datatype = self.dockwidget.cbb_type.itemData(
+            self.dockwidget.cbb_type.currentIndex())
         # Getting the text in the research line
         text = self.dockwidget.txt_input.text()
         # Saving the keywords that are selected : if a keyword state is
@@ -1258,22 +1233,6 @@ class Isogeo:
             other_param = True
         else:
             other_param = False
-        if self.dockwidget.checkBox_4.isChecked():
-            geofilter_param = True
-        else:
-            geofilter_param = False
-
-        # Saving the checked radio button (useful for the research saving)
-        if self.dockwidget.rdb_raster.isChecked():
-            datatype = "raster"
-        elif self.dockwidget.rdb_resource.isChecked():
-            datatype = "resource"
-        elif self.dockwidget.rdb_vector.isChecked():
-            datatype = "vector"
-        elif self.dockwidget.rdb_service.isChecked():
-            datatype = "service"
-        else:
-            datatype = False
 
         params = {}
         params['owner'] = owner_param
@@ -1286,10 +1245,9 @@ class Isogeo:
         params['view'] = view_param
         params['download'] = download_param
         params['other'] = other_param
-        params['geofilter'] = geofilter_param
         params['text'] = text
         params['datatype'] = datatype
-        if geofilter_param:
+        if self.dockwidget.cbb_operation.currentIndex() != 0:
             e = iface.mapCanvas().extent()
             extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
             params['extent'] = extent
@@ -1352,6 +1310,11 @@ class Isogeo:
                 self.dockwidget.cbb_srs.currentIndex())
         else:
             sys_coord = False
+        if self.dockwidget.cbb_type.currentIndex() != 0:
+            datatype = self.dockwidget.cbb_type.itemData(
+                self.dockwidget.cbb_type.currentIndex())
+        else:
+            datatype = False
         # Getting the text entered in the text field
         filters = ""
         if self.dockwidget.txt_input.text():
@@ -1366,6 +1329,8 @@ class Isogeo:
             filters += formats + " "
         if sys_coord:
             filters += sys_coord + " "
+        if datatype:
+            filters += datatype + " "
         # Actions in checkboxes
         if self.dockwidget.checkBox.isChecked():
             filters += "action:view "
@@ -1373,27 +1338,17 @@ class Isogeo:
             filters += "action:download "
         if self.dockwidget.checkBox_3.isChecked():
             filters += "action:other "
-        # Data type in radio buttons
-        if self.dockwidget.rdb_raster.isChecked():
-            filters += "type:raster-dataset "
-        elif self.dockwidget.rdb_vector.isChecked():
-            filters += "type:vector-dataset "
-        elif self.dockwidget.rdb_resource.isChecked():
-            filters += "type:resource "
-        elif self.dockwidget.rdb_service.isChecked():
-            filters += "type:service "
         # Adding the keywords that are checked (whose data[10] == 2)
         for i in xrange(self.dockwidget.cbb_keywords.count()):
             if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
                 filters += self.dockwidget.cbb_keywords.itemData(i, 32) + " "
 
         # If the geographical filter is activated, build a spatial filter
-        if self.dockwidget.checkBox_4.isChecked():
+        if self.dockwidget.cbb_operation.currentIndex() != 0 and self.hardReset is False:
             if self.get_canvas_coordinates():
                 filters = filters[:-1]
                 filters += "&box=" + self.get_canvas_coordinates() + "&rel=" +\
-                    self.dockwidget.cbb_operation.itemData(
-                        self.dockwidget.cbb_operation.currentIndex()) + " "
+                    self.dockwidget.cbb_operation.itemData(self.dockwidget.cbb_operation.currentIndex()) + " "
             else:
                 QMessageBox.information(iface.mainWindow(
                 ), self.tr("Your canvas coordinate system is not "
@@ -1450,6 +1405,11 @@ class Isogeo:
                     self.dockwidget.cbb_srs.currentIndex())
             else:
                 sys_coord = False
+            if self.dockwidget.cbb_type.currentIndex() != 0:
+                datatype = self.dockwidget.cbb_type.itemData(
+                    self.dockwidget.cbb_type.currentIndex())
+            else:
+                datatype = False
             # Getting the text entered in the text field
             filters = ""
             if self.dockwidget.txt_input.text():
@@ -1464,6 +1424,8 @@ class Isogeo:
                 filters += formats + " "
             if sys_coord:
                 filters += sys_coord + " "
+            if datatype:
+                filters += datatype + " "
             # Actions in checkboxes
             if self.dockwidget.checkBox.isChecked():
                 filters += "action:view "
@@ -1471,15 +1433,6 @@ class Isogeo:
                 filters += "action:download "
             if self.dockwidget.checkBox_3.isChecked():
                 filters += "action:other "
-            # Data type in radio buttons
-            if self.dockwidget.rdb_raster.isChecked():
-                filters += "type:raster-dataset "
-            elif self.dockwidget.rdb_vector.isChecked():
-                filters += "type:vector-dataset "
-            elif self.dockwidget.rdb_resource.isChecked():
-                filters += "type:resource "
-            elif self.dockwidget.rdb_service.isChecked():
-                filters += "type:service "
             # Adding the keywords that are checked (whose data[10] == 2)
             cbb_keywords = self.dockwidget.cbb_keywords
             for i in xrange(cbb_keywords.count()):
@@ -1487,7 +1440,7 @@ class Isogeo:
                     filters += cbb_keywords.itemData(i, 32) + " "
 
             # If the geographical filter is activated, build a spatial filter
-            if self.dockwidget.checkBox_4.isChecked():
+            if self.dockwidget.cbb_operation.currentIndex() != 0:
                 if self.get_canvas_coordinates():
                     filters = filters[:-1]
                     filters += "&box=" + self.get_canvas_coordinates() +\
@@ -1553,6 +1506,11 @@ class Isogeo:
                     self.dockwidget.cbb_srs.currentIndex())
             else:
                 sys_coord = False
+            if self.dockwidget.cbb_type.currentIndex() != 0:
+                datatype = self.dockwidget.cbb_type.itemData(
+                    self.dockwidget.cbb_type.currentIndex())
+            else:
+                datatype = False
             # Getting the text entered in the text field
             filters = ""
             if self.dockwidget.txt_input.text():
@@ -1567,6 +1525,8 @@ class Isogeo:
                 filters += formats + " "
             if sys_coord:
                 filters += sys_coord + " "
+            if datatype:
+                filters += datatype + " "
             # Actions in checkboxes
             if self.dockwidget.checkBox.isChecked():
                 filters += "action:view "
@@ -1574,15 +1534,6 @@ class Isogeo:
                 filters += "action:download "
             if self.dockwidget.checkBox_3.isChecked():
                 filters += "action:other "
-            # Data type in radio buttons
-            if self.dockwidget.rdb_raster.isChecked():
-                filters += "type:raster-dataset "
-            elif self.dockwidget.rdb_vector.isChecked():
-                filters += "type:vector-dataset "
-            elif self.dockwidget.rdb_resource.isChecked():
-                filters += "type:resource "
-            elif self.dockwidget.rdb_service.isChecked():
-                filters += "type:service "
             # Adding the keywords that are checked (whose data[10] == 2)
             cbb_keywords = self.dockwidget.cbb_keywords
             for i in xrange(cbb_keywords.count()):
@@ -1590,7 +1541,7 @@ class Isogeo:
                     filters += cbb_keywords.itemData(i, 32) + " "
 
             # If the geographical filter is activated, build a spatial filter
-            if self.dockwidget.checkBox_4.isChecked():
+            if self.dockwidget.cbb_operation.currentIndex() != 0:
                 if self.get_canvas_coordinates():
                     filters = filters[:-1]
                     filters += "&box=" + self.get_canvas_coordinates() + \
@@ -1666,7 +1617,7 @@ class Isogeo:
                 self.savedResearch = selected_research
                 research_params = saved_researches[selected_research]
             self.currentUrl = research_params['url']
-            if research_params['geofilter']:
+            if 'epsg' in research_params:
                 epsg = int(iface.mapCanvas().mapRenderer(
                 ).destinationCrs().authid().split(':')[1])
                 if epsg == research_params['epsg']:
@@ -1780,14 +1731,9 @@ class Isogeo:
         self.dockwidget.checkBox.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_2.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_3.setCheckState(Qt.Unchecked)
-        self.dockwidget.checkBox_4.setCheckState(Qt.Unchecked)
-        self.dockwidget.rdb_raster.setChecked(False)
-        self.dockwidget.rdb_resource.setChecked(False)
-        self.dockwidget.rdb_vector.setChecked(False)
-        self.dockwidget.rdb_service.setChecked(False)
-        self.dockwidget.rdb_alltypes.setChecked(True)
         self.dockwidget.txt_input.clear()
         self.dockwidget.cbb_keywords.clear()
+        self.dockwidget.cbb_type.clear()
         self.dockwidget.cbb_operation.clear()
         self.dockwidget.cbb_owner.clear()
         self.dockwidget.cbb_inspire.clear()
@@ -1811,22 +1757,22 @@ class Isogeo:
         if mode == 'on':
             self.dockwidget.txt_input.setReadOnly(False)
             self.dockwidget.grp_filters.setEnabled(True)
-            self.dockwidget.grp_geofilter.setEnabled(True)
             self.dockwidget.widget.setEnabled(True)
             self.dockwidget.btn_reinit.setEnabled(True)
             self.dockwidget.btn_show.setEnabled(True)
             self.dockwidget.btn_show.setEnabled(True)
+            self.dockwidget.tbl_result.setEnabled(True)
 
         else:
             self.dockwidget.txt_input.setReadOnly(True)
             self.dockwidget.grp_filters.setEnabled(False)
-            self.dockwidget.grp_geofilter.setEnabled(False)
             self.dockwidget.widget.setEnabled(False)
             self.dockwidget.btn_next.setEnabled(False)
             self.dockwidget.btn_previous.setEnabled(False)
             self.dockwidget.btn_reinit.setEnabled(False)
             self.dockwidget.btn_show.setEnabled(False)
             self.dockwidget.btn_show.setEnabled(False)
+            self.dockwidget.tbl_result.setEnabled(False)
 
     def show_popup(self, popup):
         """Open the pop up window that asks a name to save the research."""
@@ -2109,8 +2055,6 @@ class Isogeo:
         # out" whenever a request is sent (even successfully) See :
         # http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
         iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
-        # Initiating values (TO DO : Move to init section)
-
 
         """ --- CONNECTING FUNCTIONS --- """
         # Write in the config file when the user accept the authentification
@@ -2122,19 +2066,15 @@ class Isogeo:
         self.dockwidget.cbb_format.activated.connect(self.search)
         self.dockwidget.cbb_srs.activated.connect(self.search)
         self.dockwidget.cbb_operation.activated.connect(self.search)
+        self.dockwidget.cbb_type.activated.connect(self.search)
         # Connecting the text input to the search function
         self.dockwidget.txt_input.editingFinished.connect(self.edited_search)
         # Connecting the checkboxes to the search function
         self.dockwidget.checkBox.clicked.connect(self.search)
         self.dockwidget.checkBox_2.clicked.connect(self.search)
         self.dockwidget.checkBox_3.clicked.connect(self.search)
-        self.dockwidget.checkBox_4.clicked.connect(self.search)
         # Connecting the radio buttons
-        self.dockwidget.rdb_raster.clicked.connect(self.search)
-        self.dockwidget.rdb_resource.clicked.connect(self.search)
-        self.dockwidget.rdb_vector.clicked.connect(self.search)
-        self.dockwidget.rdb_service.clicked.connect(self.search)
-        self.dockwidget.rdb_alltypes.clicked.connect(self.search)
+
         # Connecting the previous and next page buttons to their functions
         self.dockwidget.btn_next.pressed.connect(self.next_page)
         self.dockwidget.btn_previous.pressed.connect(self.previous_page)
@@ -2173,15 +2113,13 @@ class Isogeo:
         self.dockwidget.btn_default.pressed.connect(
             partial(self.write_research_params, research_name='_default'))
 
+        self.auth_prompt_form.btn_account_new.pressed.connect(partial(
+            tools.mail_to_isogeo,
+            mail=self.tr('Isogeo Team '),
+            subject=self.tr("QGIS plugin: Credentials request"),
+            body=self.tr("Name:\nOrganization:\nMotivations:\n")))
+
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()
         self.user_authentication()
         self.test_proxy_configuration()
-        # self.dockwidget.cbb_saved.setEnabled(False)
-        # self.dockwidget.btn_save.setEnabled(False)
-        # self.dockwidget.groupBox.setEnabled(False)
-        # self.dockwidget.groupBox_2.setEnabled(False)
-        # self.dockwidget.groupBox_3.setEnabled(False)
-        # self.dockwidget.groupBox_4.setEnabled(False)
-        # self.dockwidget.tab_3.setEnabled(False)
-        # self.dockwidget.tabWidget.currentChanged.connect(self.show_popup)

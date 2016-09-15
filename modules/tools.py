@@ -2,7 +2,7 @@
 
 import datetime
 import webbrowser
-
+from urllib import quote
 
 class Tools(object):
     """Basic class that holds utilitary methods for the plugin."""
@@ -113,3 +113,8 @@ class Tools(object):
             else:
                 new_string += character
         return new_string
+
+    def mail_to_isogeo(self, mail, subject, body):
+        """Preformat a mail asking for an Isogeo account."""
+        webbrowser.open("mailto:%s<projets+qgis@isogeo.com>?subject=%s&body=%s"
+                        % (quote(mail), quote(subject), quote(body)))

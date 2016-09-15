@@ -1,1 +1,1 @@
-{"_default": {"inspire": null, "format": null, "url": "https://v1.api.isogeo.com/resources/search?&_limit=0", "text": "", "favorite": null, "srs": null, "datatype": false, "other": false, "owner": null, "download": false, "geofilter": false, "operation": "intersects", "view": false}}
+{"_default": {"inspire": null, "format": null, "text": "", "url": "https://v1.api.isogeo.com/resources/search?&_limit=0", "favorite": null, "srs": null, "datatype": null, "other": false, "download": false, "owner": null, "operation": null, "view": false}}
