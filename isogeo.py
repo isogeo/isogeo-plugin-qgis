@@ -58,7 +58,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import platform  # about operating systems
 
-
+from collections import OrderedDict
 from functools import partial
 import db_manager.db_plugins.postgis.connector as con
 import operator
@@ -553,7 +553,7 @@ class Isogeo:
         self.dockwidget.cbb_owner.clear()
         self.dockwidget.cbb_format.clear()
         self.dockwidget.cbb_srs.clear()
-        self.dockwidget.cbb_operation.clear()
+        self.dockwidget.cbb_geofilter.clear()
         self.dockwidget.cbb_type.clear()
 
         path = self.get_plugin_path() + '/user_settings/saved_researches.json'
@@ -575,31 +575,42 @@ class Isogeo:
         self.dockwidget.cbb_owner.addItem(" - ")
         self.dockwidget.cbb_format.addItem(" - ")
         self.dockwidget.cbb_srs.addItem(" - ")
-        self.dockwidget.cbb_operation.addItem(" - ")
+        self.dockwidget.cbb_geofilter.addItem(" - ")
         self.dockwidget.cbb_type.addItem(self.tr("All types"))
-        dict_operation = {self.tr('Intersects'): "intersects",
-                          self.tr('within'): "within",
-                          self.tr('contains'): "contains"}
-        for operationKey in dict_operation.keys():
-            self.dockwidget.cbb_operation.addItem(
-                operationKey, dict_operation[operationKey])
+        # Initializing the geographical operator option cbb.
+        if self.savedResearch == "_default" or self.hardReset is True:
+            dict_operation = OrderedDict([(self.tr(
+                'Intersects'), "intersects"),
+                (self.tr('within'), "within"),
+                (self.tr('contains'), "contains")])
+            for operationKey in dict_operation.keys():
+                self.dockwidget.cbb_geo_op.addItem(
+                    operationKey, dict_operation[operationKey])
         # Creating combobox items, with their displayed text, and their value
+        # Owners
         ordered = sorted(tags['owner'].items(), key=operator.itemgetter(1))
         for i in ordered:
             self.dockwidget.cbb_owner.addItem(i[1], i[0])
+        # INSPIRE keywords
         ordered = sorted(tags['themeinspire'].items(),
                          key=operator.itemgetter(1))
         for i in ordered:
             self.dockwidget.cbb_inspire.addItem(i[1], i[0])
+        # Formats
         ordered = sorted(tags['formats'].items(), key=operator.itemgetter(1))
         for i in ordered:
             self.dockwidget.cbb_format.addItem(i[1], i[0])
+        # Coordinate system
         ordered = sorted(tags['srs'].items(), key=operator.itemgetter(1))
         for i in ordered:
             self.dockwidget.cbb_srs.addItem(i[1], i[0])
+        # Resource type
         ordered = sorted(tags['type'].items(), key=operator.itemgetter(1))
         for i in ordered:
             self.dockwidget.cbb_type.addItem(i[1], i[0])
+        # Geographical filter
+        self.dockwidget.cbb_geofilter.addItem(
+            self.tr("Map canvas"), "mapcanvas")
 
         # Putting all the comboboxes selected index to their previous
         # location. Necessary as all comboboxes items have been removed and
@@ -619,8 +630,11 @@ class Isogeo:
             self.dockwidget.cbb_saved.setCurrentIndex(
                 self.dockwidget.cbb_saved.findData(
                     self.params['favorite']))
-            self.dockwidget.cbb_operation.setCurrentIndex(
-                self.dockwidget.cbb_operation.findData(
+            self.dockwidget.cbb_geofilter.setCurrentIndex(
+                self.dockwidget.cbb_geofilter.findData(
+                    self.params['geofilter']))
+            self.dockwidget.cbb_geo_op.setCurrentIndex(
+                self.dockwidget.cbb_geo_op.findData(
                     self.params['operation']))
 
             # Filling the keywords special combobox (whose items are checkable)
@@ -706,7 +720,7 @@ class Isogeo:
             self.model.insertRow(0, first_item)
             self.model.itemChanged.connect(self.search)
             self.dockwidget.cbb_keywords.setModel(self.model)
-        # Make th checkboxes and radio buttons unckeckable if needed
+        # Make th checkboxes unckeckable if needed
         # View
         if 'action:view' in tags['actions']:
             self.dockwidget.checkBox.setEnabled(True)
@@ -722,8 +736,7 @@ class Isogeo:
             self.dockwidget.checkBox_3.setEnabled(True)
         else:
             self.dockwidget.checkBox_3.setEnabled(False)
-        
-
+        # Coloring the Show result button
         self.dockwidget.btn_show.setStyleSheet(
             "QPushButton "
             "{background-color: rgb(255, 144, 0); color: white}")
@@ -745,8 +758,11 @@ class Isogeo:
                 self.dockwidget.cbb_format.findData(research_params['format']))
             self.dockwidget.cbb_srs.setCurrentIndex(
                 self.dockwidget.cbb_srs.findData(research_params['srs']))
-            self.dockwidget.cbb_operation.setCurrentIndex(
-                self.dockwidget.cbb_operation.findData(
+            self.dockwidget.cbb_geofilter.setCurrentIndex(
+                self.dockwidget.cbb_geofilter.findData(
+                    research_params['geofilter']))
+            self.dockwidget.cbb_geo_op.setCurrentIndex(
+                self.dockwidget.cbb_geo_op.findData(
                     research_params['operation']))
             self.dockwidget.cbb_type.setCurrentIndex(
                 self.dockwidget.cbb_type.findData(research_params['datatype']))
@@ -1205,12 +1221,14 @@ class Isogeo:
             self.dockwidget.cbb_format.currentIndex())
         srs_param = self.dockwidget.cbb_srs.itemData(
             self.dockwidget.cbb_srs.currentIndex())
-        operation_param = self.dockwidget.cbb_operation.itemData(
-            self.dockwidget.cbb_operation.currentIndex())
+        geofilter_param = self.dockwidget.cbb_geofilter.itemData(
+            self.dockwidget.cbb_geofilter.currentIndex())
         favorite_param = self.dockwidget.cbb_saved.itemData(
             self.dockwidget.cbb_saved.currentIndex())
-        datatype = self.dockwidget.cbb_type.itemData(
+        type_param = self.dockwidget.cbb_type.itemData(
             self.dockwidget.cbb_type.currentIndex())
+        operation_param = self.dockwidget.cbb_geo_op.itemData(
+            self.dockwidget.cbb_geo_op.currentIndex())
         # Getting the text in the research line
         text = self.dockwidget.txt_input.text()
         # Saving the keywords that are selected : if a keyword state is
@@ -1241,19 +1259,21 @@ class Isogeo:
         params['srs'] = srs_param
         params['favorite'] = favorite_param
         params['keys'] = key_params
-        params['operation'] = operation_param
+        params['geofilter'] = geofilter_param
         params['view'] = view_param
         params['download'] = download_param
         params['other'] = other_param
         params['text'] = text
-        params['datatype'] = datatype
-        if self.dockwidget.cbb_operation.currentIndex() != 0:
-            e = iface.mapCanvas().extent()
-            extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
-            params['extent'] = extent
-            epsg = int(iface.mapCanvas().mapRenderer(
-            ).destinationCrs().authid().split(':')[1])
-            params['epsg'] = epsg
+        params['datatype'] = type_param
+        params['operation'] = operation_param
+        if self.dockwidget.cbb_geofilter.currentIndex() != 0:
+            if params['geofilter'] == "mapcanvas":
+                e = iface.mapCanvas().extent()
+                extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
+                params['extent'] = extent
+                epsg = int(iface.mapCanvas().mapRenderer(
+                ).destinationCrs().authid().split(':')[1])
+                params['epsg'] = epsg
         return params
 
     def search(self):
@@ -1344,11 +1364,11 @@ class Isogeo:
                 filters += self.dockwidget.cbb_keywords.itemData(i, 32) + " "
 
         # If the geographical filter is activated, build a spatial filter
-        if self.dockwidget.cbb_operation.currentIndex() != 0 and self.hardReset is False:
+        if self.dockwidget.cbb_geofilter.currentIndex() != 0 and self.hardReset is False:
             if self.get_canvas_coordinates():
                 filters = filters[:-1]
                 filters += "&box=" + self.get_canvas_coordinates() + "&rel=" +\
-                    self.dockwidget.cbb_operation.itemData(self.dockwidget.cbb_operation.currentIndex()) + " "
+                    self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
             else:
                 QMessageBox.information(iface.mainWindow(
                 ), self.tr("Your canvas coordinate system is not "
@@ -1440,13 +1460,13 @@ class Isogeo:
                     filters += cbb_keywords.itemData(i, 32) + " "
 
             # If the geographical filter is activated, build a spatial filter
-            if self.dockwidget.cbb_operation.currentIndex() != 0:
+            if self.dockwidget.cbb_geofilter.currentIndex() != 0:
                 if self.get_canvas_coordinates():
                     filters = filters[:-1]
                     filters += "&box=" + self.get_canvas_coordinates() +\
                         "&rel=" + \
-                        self.dockwidget.cbb_operation.itemData(
-                            self.dockwidget.cbb_operation.currentIndex()) + " "
+                        self.dockwidget.cbb_geo_op.itemData(
+                            self.dockwidget.cbb_geo_op.currentIndex()) + " "
                 else:
                     QMessageBox.information(iface.mainWindow(
                     ), self.tr("Error"),
@@ -1541,13 +1561,13 @@ class Isogeo:
                     filters += cbb_keywords.itemData(i, 32) + " "
 
             # If the geographical filter is activated, build a spatial filter
-            if self.dockwidget.cbb_operation.currentIndex() != 0:
+            if self.dockwidget.cbb_geofilter.currentIndex() != 0:
                 if self.get_canvas_coordinates():
                     filters = filters[:-1]
                     filters += "&box=" + self.get_canvas_coordinates() + \
                         "&rel=" + \
-                        self.dockwidget.cbb_operation.itemData(
-                            self.dockwidget.cbb_operation.currentIndex()) + " "
+                        self.dockwidget.cbb_geo_op.itemData(
+                            self.dockwidget.cbb_geo_op.currentIndex()) + " "
                 else:
                     QMessageBox.information(iface.mainWindow(
                     ), self.tr("Error"),
@@ -1734,11 +1754,12 @@ class Isogeo:
         self.dockwidget.txt_input.clear()
         self.dockwidget.cbb_keywords.clear()
         self.dockwidget.cbb_type.clear()
-        self.dockwidget.cbb_operation.clear()
+        self.dockwidget.cbb_geofilter.clear()
         self.dockwidget.cbb_owner.clear()
         self.dockwidget.cbb_inspire.clear()
         self.dockwidget.cbb_format.clear()
         self.dockwidget.cbb_srs.clear()
+        self.dockwidget.cbb_geo_op.clear()
         self.search()
 
     def search_with_content(self):
@@ -1756,21 +1777,23 @@ class Isogeo:
         """
         if mode == 'on':
             self.dockwidget.txt_input.setReadOnly(False)
+            self.dockwidget.cbb_saved.setEnabled(True)
             self.dockwidget.grp_filters.setEnabled(True)
             self.dockwidget.widget.setEnabled(True)
             self.dockwidget.btn_reinit.setEnabled(True)
-            self.dockwidget.btn_show.setEnabled(True)
+            self.dockwidget.btn_save.setEnabled(True)
             self.dockwidget.btn_show.setEnabled(True)
             self.dockwidget.tbl_result.setEnabled(True)
 
         else:
             self.dockwidget.txt_input.setReadOnly(True)
+            self.dockwidget.cbb_saved.setEnabled(False)
             self.dockwidget.grp_filters.setEnabled(False)
             self.dockwidget.widget.setEnabled(False)
             self.dockwidget.btn_next.setEnabled(False)
             self.dockwidget.btn_previous.setEnabled(False)
             self.dockwidget.btn_reinit.setEnabled(False)
-            self.dockwidget.btn_show.setEnabled(False)
+            self.dockwidget.btn_save.setEnabled(False)
             self.dockwidget.btn_show.setEnabled(False)
             self.dockwidget.tbl_result.setEnabled(False)
 
@@ -2067,7 +2090,7 @@ class Isogeo:
         self.dockwidget.cbb_inspire.activated.connect(self.search)
         self.dockwidget.cbb_format.activated.connect(self.search)
         self.dockwidget.cbb_srs.activated.connect(self.search)
-        self.dockwidget.cbb_operation.activated.connect(self.search)
+        self.dockwidget.cbb_geofilter.activated.connect(self.search)
         self.dockwidget.cbb_type.activated.connect(self.search)
         # Connecting the text input to the search function
         self.dockwidget.txt_input.editingFinished.connect(self.edited_search)

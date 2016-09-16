@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Thu Sep 15 17:22:33 2016
+# Created: Fri Sep 16 10:13:19 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,8 +26,8 @@ except AttributeError:
 class Ui_IsogeoDockWidgetBase(object):
     def setupUi(self, IsogeoDockWidgetBase):
         IsogeoDockWidgetBase.setObjectName(_fromUtf8("IsogeoDockWidgetBase"))
-        IsogeoDockWidgetBase.resize(502, 852)
-        IsogeoDockWidgetBase.setMinimumSize(QtCore.QSize(502, 676))
+        IsogeoDockWidgetBase.resize(502, 857)
+        IsogeoDockWidgetBase.setMinimumSize(QtCore.QSize(502, 857))
         IsogeoDockWidgetBase.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         IsogeoDockWidgetBase.setWindowTitle(_fromUtf8("Isogeo"))
         self.dockWidgetContents = QtGui.QWidget()
@@ -120,9 +120,9 @@ class Ui_IsogeoDockWidgetBase(object):
         spacerItem2 = QtGui.QSpacerItem(48, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_9.addItem(spacerItem2)
         self.verticalLayout_5.addLayout(self.horizontalLayout_9)
-        self.cbb_operation = QtGui.QComboBox(self.grp_filters)
-        self.cbb_operation.setObjectName(_fromUtf8("cbb_operation"))
-        self.verticalLayout_5.addWidget(self.cbb_operation)
+        self.cbb_geofilter = QtGui.QComboBox(self.grp_filters)
+        self.cbb_geofilter.setObjectName(_fromUtf8("cbb_geofilter"))
+        self.verticalLayout_5.addWidget(self.cbb_geofilter)
         self.verticalLayout_8.addLayout(self.verticalLayout_5)
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
@@ -394,8 +394,8 @@ class Ui_IsogeoDockWidgetBase(object):
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
-        self.gridLayout_5 = QtGui.QGridLayout(self.tab_2)
-        self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
+        self.gridLayout_4 = QtGui.QGridLayout(self.tab_2)
+        self.gridLayout_4.setObjectName(_fromUtf8("gridLayout_4"))
         self.groupBox = QtGui.QGroupBox(self.tab_2)
         self.groupBox.setObjectName(_fromUtf8("groupBox"))
         self.gridLayout_6 = QtGui.QGridLayout(self.groupBox)
@@ -405,7 +405,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_change_user = QtGui.QPushButton(self.groupBox)
         self.btn_change_user.setObjectName(_fromUtf8("btn_change_user"))
         self.gridLayout_6.addWidget(self.btn_change_user, 0, 1, 1, 1)
-        self.gridLayout_5.addWidget(self.groupBox, 0, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.groupBox, 0, 0, 1, 1)
         self.groupBox_2 = QtGui.QGroupBox(self.tab_2)
         self.groupBox_2.setMinimumSize(QtCore.QSize(0, 71))
         self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
@@ -423,7 +423,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_default.setIcon(icon)
         self.btn_default.setObjectName(_fromUtf8("btn_default"))
         self.gridLayout_7.addWidget(self.btn_default, 0, 1, 1, 1)
-        self.gridLayout_5.addWidget(self.groupBox_2, 1, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.groupBox_2, 1, 0, 1, 1)
         self.groupBox_3 = QtGui.QGroupBox(self.tab_2)
         self.groupBox_3.setObjectName(_fromUtf8("groupBox_3"))
         self.gridLayout_8 = QtGui.QGridLayout(self.groupBox_3)
@@ -452,7 +452,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_delete_sr.setFont(font)
         self.btn_delete_sr.setObjectName(_fromUtf8("btn_delete_sr"))
         self.gridLayout_8.addWidget(self.btn_delete_sr, 1, 2, 1, 1)
-        self.gridLayout_5.addWidget(self.groupBox_3, 2, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.groupBox_3, 2, 0, 1, 1)
         self.groupBox_4 = QtGui.QGroupBox(self.tab_2)
         self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
         self.gridLayout_9 = QtGui.QGridLayout(self.groupBox_4)
@@ -473,9 +473,17 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_report.setIcon(icon3)
         self.btn_report.setObjectName(_fromUtf8("btn_report"))
         self.gridLayout_9.addWidget(self.btn_report, 0, 2, 1, 1)
-        self.gridLayout_5.addWidget(self.groupBox_4, 3, 0, 1, 1)
-        spacerItem13 = QtGui.QSpacerItem(20, 486, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout_5.addItem(spacerItem13, 4, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.groupBox_4, 3, 0, 1, 1)
+        self.horizontalLayout_18 = QtGui.QHBoxLayout()
+        self.horizontalLayout_18.setObjectName(_fromUtf8("horizontalLayout_18"))
+        spacerItem13 = QtGui.QSpacerItem(215, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_18.addItem(spacerItem13)
+        self.cbb_geo_op = QtGui.QComboBox(self.tab_2)
+        self.cbb_geo_op.setObjectName(_fromUtf8("cbb_geo_op"))
+        self.horizontalLayout_18.addWidget(self.cbb_geo_op)
+        self.gridLayout_4.addLayout(self.horizontalLayout_18, 4, 0, 1, 1)
+        spacerItem14 = QtGui.QSpacerItem(20, 458, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        self.gridLayout_4.addItem(spacerItem14, 5, 0, 1, 1)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 1)
         IsogeoDockWidgetBase.setWidget(self.dockWidgetContents)
