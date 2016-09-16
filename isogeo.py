@@ -816,6 +816,8 @@ class Isogeo:
         # Re enable all user input fields now the research function is
         # finished.
         self.switch_widgets_on_and_off('on')
+        if self.results_count == 0:
+            self.dockwidget.btn_show.setEnabled(False)
         # hard reset
         self.hardReset = False
         self.showResult = False
