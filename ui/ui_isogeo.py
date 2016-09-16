@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Fri Sep 16 10:13:19 2016
+# Created: Fri Sep 16 13:49:17 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,8 +26,8 @@ except AttributeError:
 class Ui_IsogeoDockWidgetBase(object):
     def setupUi(self, IsogeoDockWidgetBase):
         IsogeoDockWidgetBase.setObjectName(_fromUtf8("IsogeoDockWidgetBase"))
-        IsogeoDockWidgetBase.resize(502, 857)
-        IsogeoDockWidgetBase.setMinimumSize(QtCore.QSize(502, 857))
+        IsogeoDockWidgetBase.resize(502, 842)
+        IsogeoDockWidgetBase.setMinimumSize(QtCore.QSize(502, 842))
         IsogeoDockWidgetBase.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         IsogeoDockWidgetBase.setWindowTitle(_fromUtf8("Isogeo"))
         self.dockWidgetContents = QtGui.QWidget()
@@ -35,6 +35,12 @@ class Ui_IsogeoDockWidgetBase(object):
         self.gridLayout = QtGui.QGridLayout(self.dockWidgetContents)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.tabWidget = QtGui.QTabWidget(self.dockWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
+        self.tabWidget.setSizePolicy(sizePolicy)
+        self.tabWidget.setMaximumSize(QtCore.QSize(16777215, 802))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -159,7 +165,7 @@ class Ui_IsogeoDockWidgetBase(object):
         sizePolicy.setHeightForWidth(self.cbb_format.sizePolicy().hasHeightForWidth())
         self.cbb_format.setSizePolicy(sizePolicy)
         self.cbb_format.setMinimumSize(QtCore.QSize(30, 0))
-        self.cbb_format.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.cbb_format.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.cbb_format.setObjectName(_fromUtf8("cbb_format"))
         self.verticalLayout.addWidget(self.cbb_format)
         self.verticalLayout_8.addLayout(self.verticalLayout)
@@ -198,7 +204,7 @@ class Ui_IsogeoDockWidgetBase(object):
         sizePolicy.setHeightForWidth(self.cbb_inspire.sizePolicy().hasHeightForWidth())
         self.cbb_inspire.setSizePolicy(sizePolicy)
         self.cbb_inspire.setMinimumSize(QtCore.QSize(30, 0))
-        self.cbb_inspire.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.cbb_inspire.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.cbb_inspire.setObjectName(_fromUtf8("cbb_inspire"))
         self.verticalLayout_3.addWidget(self.cbb_inspire)
         self.verticalLayout_8.addLayout(self.verticalLayout_3)
@@ -259,7 +265,7 @@ class Ui_IsogeoDockWidgetBase(object):
         sizePolicy.setHeightForWidth(self.cbb_owner.sizePolicy().hasHeightForWidth())
         self.cbb_owner.setSizePolicy(sizePolicy)
         self.cbb_owner.setMinimumSize(QtCore.QSize(30, 0))
-        self.cbb_owner.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.cbb_owner.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.cbb_owner.setObjectName(_fromUtf8("cbb_owner"))
         self.verticalLayout_2.addWidget(self.cbb_owner)
         self.verticalLayout_9.addLayout(self.verticalLayout_2)
@@ -298,7 +304,7 @@ class Ui_IsogeoDockWidgetBase(object):
         sizePolicy.setHeightForWidth(self.cbb_srs.sizePolicy().hasHeightForWidth())
         self.cbb_srs.setSizePolicy(sizePolicy)
         self.cbb_srs.setMinimumSize(QtCore.QSize(30, 0))
-        self.cbb_srs.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.cbb_srs.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.cbb_srs.setObjectName(_fromUtf8("cbb_srs"))
         self.verticalLayout_4.addWidget(self.cbb_srs)
         self.verticalLayout_9.addLayout(self.verticalLayout_4)
@@ -482,10 +488,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_geo_op.setObjectName(_fromUtf8("cbb_geo_op"))
         self.horizontalLayout_18.addWidget(self.cbb_geo_op)
         self.gridLayout_4.addLayout(self.horizontalLayout_18, 4, 0, 1, 1)
-        spacerItem14 = QtGui.QSpacerItem(20, 458, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacerItem14 = QtGui.QSpacerItem(20, 444, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         self.gridLayout_4.addItem(spacerItem14, 5, 0, 1, 1)
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
-        self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
         IsogeoDockWidgetBase.setWidget(self.dockWidgetContents)
 
         self.retranslateUi(IsogeoDockWidgetBase)

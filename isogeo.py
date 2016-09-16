@@ -577,15 +577,32 @@ class Isogeo:
         self.dockwidget.cbb_srs.addItem(" - ")
         self.dockwidget.cbb_geofilter.addItem(" - ")
         self.dockwidget.cbb_type.addItem(self.tr("All types"))
-        # Initializing the geographical operator option cbb.
+        # Initializing the cbb that dont't need to be actualised.
         if self.savedResearch == "_default" or self.hardReset is True:
+            # Geographical operator cbb
             dict_operation = OrderedDict([(self.tr(
                 'Intersects'), "intersects"),
                 (self.tr('within'), "within"),
                 (self.tr('contains'), "contains")])
-            for operationKey in dict_operation.keys():
+            for key in dict_operation.keys():
                 self.dockwidget.cbb_geo_op.addItem(
-                    operationKey, dict_operation[operationKey])
+                    key, dict_operation[key])
+            # Order by cbb
+            dict_ob = OrderedDict([(self.tr("Relevance"), "_created"),
+                                   (self.tr("Alphabetical order"), "title"),
+                                   (self.tr("Data modified"), "modified"),
+                                   (self.tr("Data created"), "created"),
+                                   (self.tr("Metadata modified"), "_modified")]
+                                  )
+            for key in dict_ob.keys():
+                self.dockwidget.cbb_ob.addItem(key, dict_ob[key])
+            # Order direction cbb
+            dict_od = OrderedDict([(self.tr("Descending"), "desc"),
+                                   (self.tr("Ascendant"), "asc")]
+                                  )
+            for key in dict_od.keys():
+                self.dockwidget.cbb_od.addItem(key, dict_od[key])
+
         # Creating combobox items, with their displayed text, and their value
         # Owners
         ordered = sorted(tags['owner'].items(), key=operator.itemgetter(1))
@@ -627,6 +644,10 @@ class Isogeo:
                 self.dockwidget.cbb_format.findData(self.params['format']))
             self.dockwidget.cbb_srs.setCurrentIndex(
                 self.dockwidget.cbb_srs.findData(self.params['srs']))
+            self.dockwidget.cbb_ob.setCurrentIndex(
+                self.dockwidget.cbb_ob.findData(self.params['ob']))
+            self.dockwidget.cbb_od.setCurrentIndex(
+                self.dockwidget.cbb_od.findData(self.params['od']))
             self.dockwidget.cbb_saved.setCurrentIndex(
                 self.dockwidget.cbb_saved.findData(
                     self.params['favorite']))
@@ -766,8 +787,13 @@ class Isogeo:
                     research_params['operation']))
             self.dockwidget.cbb_type.setCurrentIndex(
                 self.dockwidget.cbb_type.findData(research_params['datatype']))
-            self.dockwidget.cbb_saved.setCurrentIndex(
-                self.dockwidget.cbb_saved.findData(self.savedResearch))
+            self.dockwidget.cbb_ob.setCurrentIndex(
+                self.dockwidget.cbb_ob.findData(research_params['ob']))
+            self.dockwidget.cbb_od.setCurrentIndex(
+                self.dockwidget.cbb_od.findData(research_params['od']))
+            if self.savedResearch != "_default":
+                self.dockwidget.cbb_saved.setCurrentIndex(
+                    self.dockwidget.cbb_saved.findData(self.savedResearch))
             if research_params['view']:
                 self.dockwidget.checkBox.setCheckState(Qt.Checked)
             if research_params['download']:
@@ -1229,6 +1255,10 @@ class Isogeo:
             self.dockwidget.cbb_type.currentIndex())
         operation_param = self.dockwidget.cbb_geo_op.itemData(
             self.dockwidget.cbb_geo_op.currentIndex())
+        order_param = self.dockwidget.cbb_ob.itemData(
+            self.dockwidget.cbb_ob.currentIndex())
+        dir_param = self.dockwidget.cbb_od.itemData(
+            self.dockwidget.cbb_od.currentIndex())
         # Getting the text in the research line
         text = self.dockwidget.txt_input.text()
         # Saving the keywords that are selected : if a keyword state is
@@ -1266,6 +1296,8 @@ class Isogeo:
         params['text'] = text
         params['datatype'] = type_param
         params['operation'] = operation_param
+        params['ob'] = order_param
+        params['od'] = dir_param
         if self.dockwidget.cbb_geofilter.currentIndex() != 0:
             if params['geofilter'] == "mapcanvas":
                 e = iface.mapCanvas().extent()
@@ -1378,6 +1410,10 @@ class Isogeo:
         # self.dockwidget.txt_input.setText(encoded_filters)
         if filters != "q=":
             self.currentUrl += filters
+        if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
+            ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
+            od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
+            self.currentUrl += "&ob={0}&od={1}".format(ob, od)
         if self.showResult is True:
             self.currentUrl += "&_limit=15&_include=links"
         else:
@@ -1477,10 +1513,18 @@ class Isogeo:
             # self.dockwidget.txt_input.setText(encoded_filters)
             if filters != "q=":
                 self.currentUrl += filters
+                if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
+                    ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
+                    od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
+                    self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                 self.currentUrl += "&_offset=" + \
                     str((15 * (self.page_index - 1))) + \
                     "&_limit=15&_include=links"
             else:
+                if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
+                    ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
+                    od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
+                    self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                 self.currentUrl += "_offset=" + \
                     str((15 * (self.page_index - 1))) + \
                     "&_limit=15&_include=links"
@@ -1577,15 +1621,32 @@ class Isogeo:
 
             if filters != "q=":
                 if self.page_index == 1:
-                    self.currentUrl += filters + "&_limit=15&_include=links"
+                    self.currentUrl += filters
+                    if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
+                        ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
+                        od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
+                        self.currentUrl += "&ob={0}&od={1}".format(ob, od)
+                    self.currentUrl += "&_limit=15&_include=links"
                 else:
+                    if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
+                        ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
+                        od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
+                        self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                     self.currentUrl += filters + "&_offset=" + \
                         str((15 * (self.page_index - 1))) + \
                         "&_limit=15&_include=links"
             else:
                 if self.page_index == 1:
+                    if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
+                        ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
+                        od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
+                        self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                     self.currentUrl += "_limit=15&_include=links"
                 else:
+                    if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
+                        ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
+                        od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
+                        self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                     self.currentUrl += "&_offset=" + \
                         str((15 * (self.page_index - 1))) + \
                         "&_limit=15&_include=links"
@@ -1760,6 +1821,8 @@ class Isogeo:
         self.dockwidget.cbb_format.clear()
         self.dockwidget.cbb_srs.clear()
         self.dockwidget.cbb_geo_op.clear()
+        self.dockwidget.cbb_ob.clear()
+        self.dockwidget.cbb_od.clear()
         self.search()
 
     def search_with_content(self):
@@ -2113,6 +2176,8 @@ class Isogeo:
             self.auth_prompt_form.show)
         # show results
         self.dockwidget.btn_show.pressed.connect(self.search_with_content)
+        self.dockwidget.cbb_ob.activated.connect(self.search_with_content)
+        self.dockwidget.cbb_od.activated.connect(self.search_with_content)
 
         # Button 'save favorite' connected to the opening of the pop up that
         # asks for a name
