@@ -510,8 +510,7 @@ class Isogeo:
                 del self.token_reply
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
-                QMessageBox.information(iface.mainWindow(
-                ), self.tr("Error"),
+                iface.messageBar.pushMessage(
                     self.tr("The script is looping. Make sure you shared a "
                             "catalog with the plugin. If so, please report "
                             "this on the bug tracker."))
@@ -588,11 +587,12 @@ class Isogeo:
                 self.dockwidget.cbb_geo_op.addItem(
                     key, dict_operation[key])
             # Order by cbb
-            dict_ob = OrderedDict([(self.tr("Relevance"), "_created"),
+            dict_ob = OrderedDict([(self.tr("Relevance"), "relevance"),
                                    (self.tr("Alphabetical order"), "title"),
                                    (self.tr("Data modified"), "modified"),
                                    (self.tr("Data created"), "created"),
-                                   (self.tr("Metadata modified"), "_modified")]
+                                   (self.tr("Metadata modified"), "_modified"),
+                                   (self.tr("Metadata created"), "_created")]
                                   )
             for key in dict_ob.keys():
                 self.dockwidget.cbb_ob.addItem(key, dict_ob[key])
@@ -807,6 +807,8 @@ class Isogeo:
         if self.showResult is True:
             self.dockwidget.btn_next.setEnabled(True)
             self.dockwidget.btn_previous.setEnabled(True)
+            self.dockwidget.cbb_ob.setEnabled(True)
+            self.dockwidget.cbb_od.setEnabled(True)
             self.dockwidget.btn_show.setStyleSheet("")
             self.show_results(result)
             self.write_research_params('_current')
@@ -1658,16 +1660,13 @@ class Isogeo:
         """Write a new element in the json file when a research is saved."""
         # Open the saved_research file as a dict. Each key is a research name,
         # each value is a dict containing the parameters for this research name
+        bar = iface.messageBar()
+        bar.pushMessage("Research successfully saved.", duration=5)
         path = self.get_plugin_path() + '/user_settings/saved_researches.json'
         with open(path) as data_file:
             saved_researches = json.load(data_file)
         # If the name already exists, ask for a new one. (TO DO)
-        """"if research_name in saved_researches.keys():
-            if research_name != '_default':
-                if research_name != self.tr('Last research'):
-                    if research_name != '_current':
-                        pass
-        else:"""
+
         # Write the current parameters in a dict, and store it in the saved
         # research dict
         params = self.save_params()
@@ -1855,6 +1854,8 @@ class Isogeo:
             self.dockwidget.widget.setEnabled(False)
             self.dockwidget.btn_next.setEnabled(False)
             self.dockwidget.btn_previous.setEnabled(False)
+            self.dockwidget.cbb_ob.setEnabled(False)
+            self.dockwidget.cbb_od.setEnabled(False)
             self.dockwidget.btn_reinit.setEnabled(False)
             self.dockwidget.btn_save.setEnabled(False)
             self.dockwidget.btn_show.setEnabled(False)

@@ -1,25 +1,29 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
-    <file>resources/multi.png</file>
-    <file>resources/bell.png</file>
-    <file>resources/certificate.png</file>
+    <file>resources/eye.png</file>
+    <file>resources/asterisk.png</file>
+    <file>resources/calendar.png</file>
+    <file>resources/calendar-o.png</file>
     <file>resources/cube.png</file>
+    <file>resources/disc.png</file>
+    <file>resources/gear.png</file>
     <file>resources/globe.png</file>
     <file>resources/leaf.png</file>
-    <file>resources/phone.png</file>
-    <file>resources/tag.png</file>
-    <file>resources/university.png</file>
-    <file>resources/none.png</file>
-    <file>resources/raster.png</file>
     <file>resources/line.png</file>
+    <file>resources/map.png</file>
+    <file>resources/multi.png</file>
+    <file>resources/next.png</file>
+    <file>resources/none.png</file>
+    <file>resources/phone.png</file>
+    <file>resources/play.png</file>
     <file>resources/point.png</file>
     <file>resources/polygon.png</file>
-    <file>resources/next.png</file>
     <file>resources/previous.png</file>
-    <file>resources/disc.png</file>
-    <file>resources/staff.svg</file>
-    <file>resources/search.png</file>
+    <file>resources/raster.png</file>
     <file>resources/refresh.png</file>
-    <file>icon.png</file>
+    <file>resources/search.png</file>
+    <file>resources/tag.png</file>
+    <file>resources/university.png</file>
+    <file>resources/users.png</file>
   </qresource>
 </RCC>
