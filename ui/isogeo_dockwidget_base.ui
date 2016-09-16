@@ -695,7 +695,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="cbb_ob"/>
+           <widget class="QComboBox" name="cbb_ob">
+            <property name="toolTip">
+             <string>Sorting method</string>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QComboBox" name="cbb_od">
@@ -710,6 +714,9 @@
               <width>111</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Sorting direction</string>
             </property>
            </widget>
           </item>
@@ -827,9 +834,6 @@
          </layout>
         </item>
        </layout>
-       <zorder>grp_filters</zorder>
-       <zorder>tbl_result</zorder>
-       <zorder>btn_show</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="icon">

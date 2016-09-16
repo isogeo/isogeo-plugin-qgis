@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Fri Sep 16 17:16:13 2016
+# Created: Fri Sep 16 18:14:50 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -529,6 +529,8 @@ class Ui_IsogeoDockWidgetBase(object):
         self.checkBox_3.setText(_translate("IsogeoDockWidgetBase", "Other actions", None))
         self.btn_show.setToolTip(_translate("IsogeoDockWidgetBase", "Display the results list", None))
         self.btn_show.setText(_translate("IsogeoDockWidgetBase", "Show results", None))
+        self.cbb_ob.setToolTip(_translate("IsogeoDockWidgetBase", "Sorting method", None))
+        self.cbb_od.setToolTip(_translate("IsogeoDockWidgetBase", "Sorting direction", None))
         self.tbl_result.setSortingEnabled(False)
         item = self.tbl_result.horizontalHeaderItem(0)
         item.setText(_translate("IsogeoDockWidgetBase", "Title", None))
