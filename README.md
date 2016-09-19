@@ -7,8 +7,7 @@ You can see and vote for [this plugin on the official QGIS extensions website](h
 
 ## Purpose ##
 
-* allow Isogeo users to search for datas in their own and external metadata catalogs and add it to a QGIS project ;
-* this is still an **experimental plugin** (distributed through the experimental release channel).
+Allow Isogeo users to search for datas in their own and external metadata catalogs and add it to a QGIS project. Its goal is to improve access to internal and external geodata.
 
 ## How does it works ##
 
@@ -28,8 +27,8 @@ It's fully integrated with QGIS ecosystem:
 - [X] Dynamic filter on keywords, INSPIRE themes, catalog owners, source coordinate system and available links
 - [ ] Geographic filter from a layer bounding box
 - [X] Geographic filter from the map canvas bounding box
-- [ ] Order results by relevance, alphabetic, last updated date (data or metadata), creation date (data or metadata)
-- [X] Add the related data directly to the map canvas
+- [X] Order results by relevance, alphabetic, last updated date (data or metadata), creation date (data or metadata)
+- [X] Add the related data directly to the map canvas throught raw data or web services
 - [X] Display full metadata information in a separated window
 - [X] Save search bookmarks
 - [ ] Customize and manage data lists
@@ -47,8 +46,9 @@ It's fully integrated with QGIS ecosystem:
 In a nutshell:
 
 1. QGIS *Plugins* menu -> *Manage and Install Plugins...*;
-2. In settings, check the box allowing experimental extensions;
-3. Search for *isogeo*, select it and install it.
+2. Search for *isogeo*, select it and install it.
+
+If you want a more advanced version, check the box allowing experimental extensions in settings.
 
 See the documentation:
 

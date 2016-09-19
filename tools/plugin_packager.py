@@ -113,7 +113,7 @@ final_zip.write(r"ui\rename\ui_ask_new_name.py",
                 plg_dir + r"\ui\rename\ui_ask_new_name.py")
 
 # User settings
-final_zip.write(r"user_settings\saved_researches.json",
-                plg_dir + r"\user_settings\saved_researches.json")
+final_zip.write(r"user_settings\saved_searches.json",
+                plg_dir + r"\user_settings\saved_searches.json")
 
 # ----------------------------------------------------------------------------
