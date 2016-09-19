@@ -1,12 +1,13 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/bolt.png</file>
     <file>resources/eye.png</file>
     <file>resources/asterisk.png</file>
     <file>resources/calendar.png</file>
     <file>resources/calendar-o.png</file>
     <file>resources/cube.png</file>
-    <file>resources/disc.png</file>
     <file>resources/gear.png</file>
+    <file>resources/save.png</file>
     <file>resources/globe.png</file>
     <file>resources/leaf.png</file>
     <file>resources/line.png</file>

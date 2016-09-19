@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Fri Sep 16 18:14:50 2016
+# Created: Mon Sep 19 12:38:38 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -74,16 +74,16 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_13.addWidget(self.cbb_saved)
         spacerItem = QtGui.QSpacerItem(13, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_13.addItem(spacerItem)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_13.addItem(spacerItem1)
         self.btn_save = QtGui.QPushButton(self.tab)
         self.btn_save.setMaximumSize(QtCore.QSize(71, 16777215))
         self.btn_save.setText(_fromUtf8(""))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/disc.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/save.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_save.setIcon(icon)
         self.btn_save.setObjectName(_fromUtf8("btn_save"))
         self.horizontalLayout_13.addWidget(self.btn_save)
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_13.addItem(spacerItem1)
         self.btn_reinit = QtGui.QPushButton(self.tab)
         self.btn_reinit.setMinimumSize(QtCore.QSize(81, 0))
         self.btn_reinit.setMaximumSize(QtCore.QSize(81, 16777215))

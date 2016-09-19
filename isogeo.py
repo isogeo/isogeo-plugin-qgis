@@ -27,7 +27,7 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
 # Ajouté oar moi à partir de QMessageBox
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
     QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, \
-    QPixmap, QProgressBar
+    QPixmap, QProgressBar, QLineEdit
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -117,7 +117,7 @@ class Isogeo:
         self.plugin_dir = os.path.dirname(__file__)
 
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
+        locale = QSettings().value('locale/userlocale')[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
@@ -130,6 +130,11 @@ class Isogeo:
 
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
+
+        if locale == "fr":
+            self.lang = "fr"
+        else:
+            self.lang = "en"
 
         # Declare instance attributes
         self.actions = []
@@ -152,7 +157,7 @@ class Isogeo:
 
         self.IsogeoMdDetails = IsogeoMdDetails()
 
-        self.savedResearch = "first"
+        self.savedSearch = "first"
 
         self.loopCount = 0
 
@@ -166,7 +171,7 @@ class Isogeo:
 
         self.PostGISdict = {}
 
-        self.currentUrl = 'https://v1.api.isogeo.com/resources/search?_limit=15&_include=links'
+        #self.currentUrl = "https://v1.api.isogeo.com/resources/search?_limit=15&_include=links&_lang={0}".format(self.lang)
 
         self.old_text = ""
 
@@ -442,7 +447,7 @@ class Isogeo:
                          "the request worked as expected.")
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content['access_token']
-            if self.savedResearch == "first":
+            if self.savedSearch == "first":
                 self.set_widget_status()
             else:
                 self.send_request_to_Isogeo_API(self.token)
@@ -555,17 +560,18 @@ class Isogeo:
         self.dockwidget.cbb_geofilter.clear()
         self.dockwidget.cbb_type.clear()
 
-        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+        path = self.get_plugin_path() + '/user_settings/saved_searches.json'
         with open(path) as data_file:
-            saved_researches = json.load(data_file)
-        research_list = saved_researches.keys()
-        research_list.pop(research_list.index('_default'))
-        if '_current' in research_list:
-            research_list.pop(research_list.index('_current'))
+            saved_searches = json.load(data_file)
+        search_list = saved_searches.keys()
+        search_list.pop(search_list.index('_default'))
+        if '_current' in search_list:
+            search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
         self.dockwidget.cbb_modify_sr.clear()
-        self.dockwidget.cbb_saved.addItem(" - ")
-        for i in research_list:
+        icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
+        self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
+        for i in search_list:
             self.dockwidget.cbb_saved.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
 
@@ -577,7 +583,13 @@ class Isogeo:
         self.dockwidget.cbb_geofilter.addItem(" - ")
         self.dockwidget.cbb_type.addItem(self.tr("All types"))
         # Initializing the cbb that dont't need to be actualised.
-        if self.savedResearch == "_default" or self.hardReset is True:
+        if self.savedSearch == "_default" or self.hardReset is True:
+            self.dockwidget.tbl_result.horizontalHeader().setResizeMode(1)
+            self.dockwidget.tbl_result.horizontalHeader().setResizeMode(1, 0)
+            self.dockwidget.tbl_result.horizontalHeader().setResizeMode(2, 0)
+            self.dockwidget.tbl_result.horizontalHeader().resizeSection(1, 80)
+            self.dockwidget.tbl_result.horizontalHeader().resizeSection(2, 50)
+            self.dockwidget.tbl_result.verticalHeader().setResizeMode(3)
             # Geographical operator cbb
             dict_operation = OrderedDict([(self.tr(
                 'Intersects'), "intersects"),
@@ -613,6 +625,13 @@ class Isogeo:
                          key=operator.itemgetter(1))
         for i in ordered:
             self.dockwidget.cbb_inspire.addItem(i[1], i[0])
+        self.dockwidget.cbb_inspire.view().setMinimumWidth(self.dockwidget.cbb_inspire.view().sizeHintForColumn(0)+10)
+        """self.dockwidget.cbb_inspire.setStyleSheet('''*
+        QComboBox QAbstractItemView
+            {
+            min-width: 350px;
+            }
+        ''')"""
         # Formats
         ordered = sorted(tags['formats'].items(), key=operator.itemgetter(1))
         for i in ordered:
@@ -659,7 +678,7 @@ class Isogeo:
                     self.params['operation']))
 
             # Filling the keywords special combobox (whose items are checkable)
-            if self.savedResearch is False:
+            if self.savedSearch is False:
                 self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
                 i = 1
                 ordered = sorted(tags['keywords'].items(),
@@ -686,14 +705,14 @@ class Isogeo:
                 self.model.itemChanged.connect(self.search)
                 self.dockwidget.cbb_keywords.setModel(self.model)
             else:
-                path = self.get_plugin_path() + "/user_settings/saved_researches.json"
+                path = self.get_plugin_path() + "/user_settings/saved_searches.json"
                 with open(path) as data_file:
-                    saved_researches = json.load(data_file)
-                research_params = saved_researches[self.savedResearch]
+                    saved_searches = json.load(data_file)
+                search_params = saved_searches[self.savedSearch]
                 keywords_list = []
-                for a in research_params.keys():
+                for a in search_params.keys():
                     if a.startswith("keyword"):
-                        keywords_list.append(research_params[a])
+                        keywords_list.append(search_params[a])
                 self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
                 i = 1
                 ordered = sorted(tags['keywords'].items(),
@@ -763,44 +782,44 @@ class Isogeo:
             "{background-color: rgb(255, 144, 0); color: white}")
 
         # Putting the comboboxs to the right indexes in the case of a saved
-        # research.
-        if self.savedResearch is not False:
-            path = self.get_plugin_path() + "/user_settings/saved_researches.json"
+        # search.
+        if self.savedSearch is not False:
+            path = self.get_plugin_path() + "/user_settings/saved_searches.json"
             with open(path) as data_file:
-                saved_researches = json.load(data_file)
-            research_params = saved_researches[self.savedResearch]
-            self.dockwidget.txt_input.setText(research_params['text'])
+                saved_searches = json.load(data_file)
+            search_params = saved_searches[self.savedSearch]
+            self.dockwidget.txt_input.setText(search_params['text'])
             self.dockwidget.cbb_owner.setCurrentIndex(
-                self.dockwidget.cbb_owner.findData(research_params['owner']))
+                self.dockwidget.cbb_owner.findData(search_params['owner']))
             self.dockwidget.cbb_inspire.setCurrentIndex(
                 self.dockwidget.cbb_inspire.findData(
-                    research_params['inspire']))
+                    search_params['inspire']))
             self.dockwidget.cbb_format.setCurrentIndex(
-                self.dockwidget.cbb_format.findData(research_params['format']))
+                self.dockwidget.cbb_format.findData(search_params['format']))
             self.dockwidget.cbb_srs.setCurrentIndex(
-                self.dockwidget.cbb_srs.findData(research_params['srs']))
+                self.dockwidget.cbb_srs.findData(search_params['srs']))
             self.dockwidget.cbb_geofilter.setCurrentIndex(
                 self.dockwidget.cbb_geofilter.findData(
-                    research_params['geofilter']))
+                    search_params['geofilter']))
             self.dockwidget.cbb_geo_op.setCurrentIndex(
                 self.dockwidget.cbb_geo_op.findData(
-                    research_params['operation']))
+                    search_params['operation']))
             self.dockwidget.cbb_type.setCurrentIndex(
-                self.dockwidget.cbb_type.findData(research_params['datatype']))
+                self.dockwidget.cbb_type.findData(search_params['datatype']))
             self.dockwidget.cbb_ob.setCurrentIndex(
-                self.dockwidget.cbb_ob.findData(research_params['ob']))
+                self.dockwidget.cbb_ob.findData(search_params['ob']))
             self.dockwidget.cbb_od.setCurrentIndex(
-                self.dockwidget.cbb_od.findData(research_params['od']))
-            if self.savedResearch != "_default":
+                self.dockwidget.cbb_od.findData(search_params['od']))
+            if self.savedSearch != "_default":
                 self.dockwidget.cbb_saved.setCurrentIndex(
-                    self.dockwidget.cbb_saved.findData(self.savedResearch))
-            if research_params['view']:
+                    self.dockwidget.cbb_saved.findData(self.savedSearch))
+            if search_params['view']:
                 self.dockwidget.checkBox.setCheckState(Qt.Checked)
-            if research_params['download']:
+            if search_params['download']:
                 self.dockwidget.checkBox_2.setCheckState(Qt.Checked)
-            if research_params['other']:
+            if search_params['other']:
                 self.dockwidget.checkBox_3.setCheckState(Qt.Checked)
-            self.savedResearch = False
+            self.savedSearch = False
 
         # Show result, if we want them to be shown (button 'show result', 'next
         # page' or 'previous page' pressed)
@@ -811,9 +830,9 @@ class Isogeo:
             self.dockwidget.cbb_od.setEnabled(True)
             self.dockwidget.btn_show.setStyleSheet("")
             self.show_results(result)
-            self.write_research_params('_current')
+            self.write_search_params('_current')
             self.store = True
-        # Re enable all user input fields now the research function is
+        # Re enable all user input fields now the search function is
         # finished.
         self.switch_widgets_on_and_off('on')
         if self.results_count == 0:
@@ -1018,12 +1037,6 @@ class Isogeo:
             self.dockwidget.tbl_result.setCellWidget(count, 3, combo)
 
             count += 1
-        self.dockwidget.tbl_result.horizontalHeader().setResizeMode(1)
-        self.dockwidget.tbl_result.horizontalHeader().setResizeMode(1, 0)
-        self.dockwidget.tbl_result.horizontalHeader().setResizeMode(2, 0)
-        self.dockwidget.tbl_result.horizontalHeader().resizeSection(1, 80)
-        self.dockwidget.tbl_result.horizontalHeader().resizeSection(2, 50)
-        self.dockwidget.tbl_result.verticalHeader().setResizeMode(3)
         # Remove the "loading" bar
         iface.mainWindow().statusBar().removeWidget(self.bar)
 
@@ -1263,7 +1276,7 @@ class Isogeo:
             self.dockwidget.cbb_ob.currentIndex())
         dir_param = self.dockwidget.cbb_od.itemData(
             self.dockwidget.cbb_od.currentIndex())
-        # Getting the text in the research line
+        # Getting the text in the search line
         text = self.dockwidget.txt_input.text()
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
@@ -1272,7 +1285,7 @@ class Isogeo:
             if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
                 key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
 
-        # Saving the checked checkboxes (useful for the research saving)
+        # Saving the checked checkboxes (useful for the search saving)
         if self.dockwidget.checkBox.isChecked():
             view_param = True
         else:
@@ -1320,26 +1333,27 @@ class Isogeo:
         """
         logging.info("Search function called. Building the "
                      "url that is to be sent to the API")
-        # Disabling all user inputs during the research function is running
+        # Disabling all user inputs during the search function is running
         self.switch_widgets_on_and_off('off')
-        # STORING THE PREVIOUS RESEARCH
+        # STORING THE PREVIOUS search
         if self.store is True:
-            path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+            path = self.get_plugin_path() + '/user_settings/saved_searches.json'
             with open(path) as data_file:
-                saved_researches = json.load(data_file)
-            name = self.tr("Last research")
-            saved_researches[name] = saved_researches['_current']
-            research_list = saved_researches.keys()
-            research_list.pop(research_list.index('_default'))
-            research_list.pop(research_list.index('_current'))
+                saved_searches = json.load(data_file)
+            name = self.tr("Last search")
+            saved_searches[name] = saved_searches['_current']
+            search_list = saved_searches.keys()
+            search_list.pop(search_list.index('_default'))
+            search_list.pop(search_list.index('_current'))
             self.dockwidget.cbb_saved.clear()
-            self.dockwidget.cbb_saved.addItem(" - ")
+            icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
+            self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
             self.dockwidget.cbb_modify_sr.clear()
-            for i in research_list:
+            for i in search_list:
                 self.dockwidget.cbb_saved.addItem(i, i)
                 self.dockwidget.cbb_modify_sr.addItem(i, i)
             with open(path, 'w') as outfile:
-                    json.dump(saved_researches, outfile)
+                    json.dump(saved_searches, outfile)
             self.store = False
 
         # Setting some variables
@@ -1419,9 +1433,9 @@ class Isogeo:
             od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
             self.currentUrl += "&ob={0}&od={1}".format(ob, od)
         if self.showResult is True:
-            self.currentUrl += "&_limit=15&_include=links"
+            self.currentUrl += "&_limit=15&_include=links&_lang={0}".format(self.lang)
         else:
-            self.currentUrl += "&_limit=0"
+            self.currentUrl += "&_limit=0&_lang={0}".format(self.lang)
         # self.dockwidget.dump.setText(self.currentUrl)
         self.send_request_to_Isogeo_API(self.token)
 
@@ -1523,7 +1537,7 @@ class Isogeo:
                     self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                 self.currentUrl += "&_offset=" + \
                     str((15 * (self.page_index - 1))) + \
-                    "&_limit=15&_include=links"
+                    "&_limit=15&_include=links&_lang={0}".format(self.lang)
             else:
                 if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
                     ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
@@ -1531,7 +1545,7 @@ class Isogeo:
                     self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                 self.currentUrl += "_offset=" + \
                     str((15 * (self.page_index - 1))) + \
-                    "&_limit=15&_include=links"
+                    "&_limit=15&_include=links&_lang={0}".format(self.lang)
             # self.dockwidget.dump.setText(self.currentUrl)
             self.send_request_to_Isogeo_API(self.token)
 
@@ -1630,7 +1644,7 @@ class Isogeo:
                         ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
                         od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
                         self.currentUrl += "&ob={0}&od={1}".format(ob, od)
-                    self.currentUrl += "&_limit=15&_include=links"
+                    self.currentUrl += "&_limit=15&_include=links&_lang={0}".format(self.lang)
                 else:
                     if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
                         ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
@@ -1638,14 +1652,14 @@ class Isogeo:
                         self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                     self.currentUrl += filters + "&_offset=" + \
                         str((15 * (self.page_index - 1))) + \
-                        "&_limit=15&_include=links"
+                        "&_limit=15&_include=links&_lang={0}".format(self.lang)
             else:
                 if self.page_index == 1:
                     if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
                         ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
                         od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
                         self.currentUrl += "&ob={0}&od={1}".format(ob, od)
-                    self.currentUrl += "_limit=15&_include=links"
+                    self.currentUrl += "_limit=15&_include=links&_lang={0}".format(self.lang)
                 else:
                     if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
                         ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
@@ -1653,58 +1667,58 @@ class Isogeo:
                         self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                     self.currentUrl += "&_offset=" + \
                         str((15 * (self.page_index - 1))) + \
-                        "&_limit=15&_include=links"
+                        "&_limit=15&_include=links&_lang={0}".format(self.lang)
 
             # self.dockwidget.dump.setText(self.currentUrl)
             self.send_request_to_Isogeo_API(self.token)
 
-    def write_research_params(self, research_name):
-        """Write a new element in the json file when a research is saved."""
-        # Open the saved_research file as a dict. Each key is a research name,
-        # each value is a dict containing the parameters for this research name
+    def write_search_params(self, search_name):
+        """Write a new element in the json file when a search is saved."""
+        # Open the saved_search file as a dict. Each key is a search name,
+        # each value is a dict containing the parameters for this search name
         bar = iface.messageBar()
-        bar.pushMessage("Research successfully saved.", duration=5)
-        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+        bar.pushMessage("search successfully saved.", duration=5)
+        path = self.get_plugin_path() + '/user_settings/saved_searches.json'
         with open(path) as data_file:
-            saved_researches = json.load(data_file)
+            saved_searches = json.load(data_file)
         # If the name already exists, ask for a new one. (TO DO)
 
         # Write the current parameters in a dict, and store it in the saved
-        # research dict
+        # search dict
         params = self.save_params()
         params['url'] = self.currentUrl
         for i in xrange(len(params['keys'])):
             params['keyword_{0}'.format(i)] = params['keys'][i]
         params.pop('keys', None)
-        saved_researches[research_name] = params
+        saved_searches[search_name] = params
         with open(path, 'w') as outfile:
-            json.dump(saved_researches, outfile)
+            json.dump(saved_searches, outfile)
         logging.info("Saved reseearch written. {0}".format(params))
 
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
-        selected_research = self.dockwidget.cbb_saved.currentText()
-        if selected_research != " - ":
+        selected_search = self.dockwidget.cbb_saved.currentText()
+        if selected_search != self.tr('Quick Search'):
             logging.info("Set_widget_status function called. "
-                         "User is executing a saved research.")
+                         "User is executing a saved search.")
             self.switch_widgets_on_and_off('off')
-            selected_research = self.dockwidget.cbb_saved.currentText()
-            path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+            selected_search = self.dockwidget.cbb_saved.currentText()
+            path = self.get_plugin_path() + '/user_settings/saved_searches.json'
             with open(path) as data_file:
-                saved_researches = json.load(data_file)
-            if selected_research == "":
-                self.savedResearch = '_default'
-                research_params = saved_researches['_default']
+                saved_searches = json.load(data_file)
+            if selected_search == "":
+                self.savedSearch = '_default'
+                search_params = saved_searches['_default']
             else:
-                self.savedResearch = selected_research
-                research_params = saved_researches[selected_research]
-            self.currentUrl = research_params['url']
-            if 'epsg' in research_params:
+                self.savedSearch = selected_search
+                search_params = saved_searches[selected_search]
+            self.currentUrl = search_params['url']
+            if 'epsg' in search_params:
                 epsg = int(iface.mapCanvas().mapRenderer(
                 ).destinationCrs().authid().split(':')[1])
-                if epsg == research_params['epsg']:
+                if epsg == search_params['epsg']:
                     canvas = iface.mapCanvas()
-                    e = research_params['extent']
+                    e = search_params['extent']
                     rect = QgsRectangle(e[0], e[1], e[2], e[3])
                     canvas.setExtent(rect)
                     canvas.refresh()
@@ -1713,70 +1727,73 @@ class Isogeo:
                     canvas.mapRenderer().setProjectionsEnabled(True)
                     canvas.mapRenderer().setDestinationCrs(
                         QgsCoordinateReferenceSystem(
-                            research_params['epsg'],
+                            search_params['epsg'],
                             QgsCoordinateReferenceSystem.EpsgCrsId))
-                    e = research_params['extent']
+                    e = search_params['extent']
                     rect = QgsRectangle(e[0], e[1], e[2], e[3])
                     canvas.setExtent(rect)
                     canvas.refresh()
             self.send_request_to_Isogeo_API(self.token)
 
-    def save_research(self):
-        """Call the write_research() function and refresh the combobox."""
-        research_name = self.ask_name_popup.name.text()
-        self.write_research_params(research_name)
-        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+    def save_search(self):
+        """Call the write_search() function and refresh the combobox."""
+        search_name = self.ask_name_popup.name.text()
+        self.write_search_params(search_name)
+        path = self.get_plugin_path() + '/user_settings/saved_searches.json'
         with open(path) as data_file:
-            saved_researches = json.load(data_file)
-        research_list = saved_researches.keys()
-        research_list.pop(research_list.index('_default'))
-        research_list.pop(research_list.index('_current'))
+            saved_searches = json.load(data_file)
+        search_list = saved_searches.keys()
+        search_list.pop(search_list.index('_default'))
+        search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
-        self.dockwidget.cbb_saved.addItem(" - ")
+        icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
+        self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
-        for i in research_list:
+        for i in search_list:
             self.dockwidget.cbb_saved.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
 
-    def rename_research(self):
-        """Modify the json file in order to rename a research."""
+    def rename_search(self):
+        """Modify the json file in order to rename a search."""
         old_name = self.dockwidget.cbb_modify_sr.currentText()
-        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+        path = self.get_plugin_path() + '/user_settings/saved_searches.json'
         with open(path) as data_file:
-            saved_researches = json.load(data_file)
+            saved_searches = json.load(data_file)
         new_name = self.new_name_popup.name.text()
-        saved_researches[new_name] = saved_researches[old_name]
-        saved_researches.pop(old_name)
-        research_list = saved_researches.keys()
-        research_list.pop(research_list.index('_default'))
-        research_list.pop(research_list.index('_current'))
+        saved_searches[new_name] = saved_searches[old_name]
+        saved_searches.pop(old_name)
+        search_list = saved_searches.keys()
+        search_list.pop(search_list.index('_default'))
+        search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
-        self.dockwidget.cbb_saved.addItem(" - ")
+        icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
+        self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
-        for i in research_list:
+        for i in search_list:
             self.dockwidget.cbb_saved.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
         with open(path, 'w') as outfile:
-                json.dump(saved_researches, outfile)
+                json.dump(saved_searches, outfile)
 
-    def delete_research(self):
-        """Modify the json file in order to delete a research."""
+    def delete_search(self):
+        """Modify the json file in order to delete a search."""
         to_b_deleted = self.dockwidget.cbb_modify_sr.currentText()
-        path = self.get_plugin_path() + '/user_settings/saved_researches.json'
+        path = self.get_plugin_path() + '/user_settings/saved_searches.json'
         with open(path) as data_file:
-            saved_researches = json.load(data_file)
-        saved_researches.pop(to_b_deleted)
-        research_list = saved_researches.keys()
-        research_list.pop(research_list.index('_default'))
-        research_list.pop(research_list.index('_current'))
+            saved_searches = json.load(data_file)
+        saved_searches.pop(to_b_deleted)
+        search_list = saved_searches.keys()
+        search_list.pop(search_list.index('_default'))
+        search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
-        self.dockwidget.cbb_saved.addItem(" - ")
+        icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
+        self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
-        for i in research_list:
+        for i in search_list:
             self.dockwidget.cbb_saved.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
         with open(path, 'w') as outfile:
-                json.dump(saved_researches, outfile)
+                json.dump(saved_searches, outfile)
 
     def get_canvas_coordinates(self):
         """Get the canvas coordinates in the right format and SRS (WGS84)."""
@@ -1801,14 +1818,14 @@ class Isogeo:
         else:
             return False
 
-    def reinitialize_research(self):
+    def reinitialize_search(self):
         """Clear all widget, putting them all back to their default value.
 
         Clear all widget and send a request to the API (which ends up updating
         the fields : send_request() calls handle_reply(), which calls
         update_fields())
         """
-        logging.info("Reinitialize_research function called.")
+        logging.info("Reinitialize_search function called.")
         self.hardReset = True
         self.dockwidget.checkBox.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_2.setCheckState(Qt.Unchecked)
@@ -1864,7 +1881,7 @@ class Isogeo:
             self.dockwidget.tbl_result.setEnabled(False)
 
     def show_popup(self, popup):
-        """Open the pop up window that asks a name to save the research."""
+        """Open the pop up window that asks a name to save the search."""
         if popup == 'ask_name':
             self.ask_name_popup.show()
         elif popup == 'new_name':
@@ -2097,7 +2114,7 @@ class Isogeo:
         self.IsogeoMdDetails.show()
 
     def edited_search(self):
-        """On the Qline edited signal, decide weither a research has to be launched."""
+        """On the Qline edited signal, decide weither a search has to be launched."""
         try:
             logging.info("Editing finished signal sent.")
         except AttributeError:
@@ -2171,9 +2188,9 @@ class Isogeo:
         self.dockwidget.btn_previous.pressed.connect(self.previous_page)
         # Connecting the bug tracker button to its function
         self.dockwidget.btn_report.pressed.connect(tools.open_bugtracker)
-        # Connecting the "reinitialize research button" to a research without
+        # Connecting the "reinitialize search button" to a search without
         # filters
-        self.dockwidget.btn_reinit.pressed.connect(self.reinitialize_research)
+        self.dockwidget.btn_reinit.pressed.connect(self.reinitialize_search)
         # Change user
         self.dockwidget.btn_change_user.pressed.connect(
             self.auth_prompt_form.show)
@@ -2187,24 +2204,24 @@ class Isogeo:
         self.dockwidget.btn_save.pressed.connect(
             partial(self.show_popup, popup='ask_name'))
         # Connect the accepted signal of the popup to the function that write
-        # the research name and parameter to the file, and update the combobox
-        self.ask_name_popup.accepted.connect(self.save_research)
-        # Button 'rename research' connected to the opening of the pop up that
+        # the search name and parameter to the file, and update the combobox
+        self.ask_name_popup.accepted.connect(self.save_search)
+        # Button 'rename search' connected to the opening of the pop up that
         # asks for a new name
         self.dockwidget.btn_rename_sr.pressed.connect(
             partial(self.show_popup, popup='new_name'))
         # Connect the accepted signal of the popup to the function that rename
-        # a research.
-        self.new_name_popup.accepted.connect(self.rename_research)
+        # a search.
+        self.new_name_popup.accepted.connect(self.rename_search)
         # Connect the delete button to the delete function
-        self.dockwidget.btn_delete_sr.pressed.connect(self.delete_research)
-        # Connect the activation of the "saved research" combobox with the
+        self.dockwidget.btn_delete_sr.pressed.connect(self.delete_search)
+        # Connect the activation of the "saved search" combobox with the
         # set_widget_status function
         self.dockwidget.cbb_saved.activated.connect(
             self.set_widget_status)
         # G default
         self.dockwidget.btn_default.pressed.connect(
-            partial(self.write_research_params, research_name='_default'))
+            partial(self.write_search_params, search_name='_default'))
 
         self.auth_prompt_form.btn_account_new.pressed.connect(partial(
             tools.mail_to_isogeo,

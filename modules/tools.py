@@ -25,7 +25,7 @@ class Tools(object):
         month = int(date.split('-')[1])
         day = int(date.split('-')[2])
         new_date = datetime.date(year, month, day)
-        return new_date.strftime("%d/%m/%Y")
+        return new_date.strftime("%Y-%m-%d")
         return new_date
 
     def open_bugtracker(self):
@@ -73,11 +73,11 @@ class Tools(object):
             # field is empty and have to be filled manually)
             elif tag.startswith('action'):
                 if tag.startswith('action:view'):
-                    actions[tag] = u'Visualisable'
+                    actions[tag] = u'View'
                 elif tag.startswith('action:download'):
-                    actions[tag] = u'Téléchargeable'
+                    actions[tag] = u'Download'
                 elif tag.startswith('action:other'):
-                    actions[tag] = u'Autre action'
+                    actions[tag] = u'Other action'
                 # Test : to be removed eventually
                 else:
                     actions[tag] = u'fonction get_tag à revoir'
@@ -85,9 +85,9 @@ class Tools(object):
             # resources type
             elif tag.startswith('type'):
                 if tag.startswith('type:vector'):
-                    resources_types[tag] = u'Données vecteur'
+                    resources_types[tag] = u'Vecteur'
                 elif tag.startswith('type:raster'):
-                    resources_types[tag] = u'Données raster'
+                    resources_types[tag] = u'Raster'
                 elif tag.startswith('type:resource'):
                     resources_types[tag] = u'Ressource'
                 elif tag.startswith('type:service'):
