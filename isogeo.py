@@ -1013,20 +1013,24 @@ class Isogeo:
 
             for link in i['links']:
                 if link['kind'] == 'wms':
-                    name_url = self.build_wms_url(link['url'])
+                    url = [link['title'], link['url']]
+                    name_url = self.build_wms_url(url)
                     if name_url != 0:
                         link_dict[u"WMS : " + name_url[1]] = name_url
                 elif link['kind'] == 'wfs':
-                    name_url = self.build_wfs_url(link['url'])
+                    url = [link['title'], link['url']]
+                    name_url = self.build_wfs_url(url)
                     if name_url != 0:
                         link_dict[u"WFS : " + name_url[1]] = name_url
                 elif link['type'] == 'link':
                     if link['link']['kind'] == 'wms':
-                        name_url = self.build_wms_url(link['url'])
+                        url = [link['title'], link['url']]
+                        name_url = self.build_wms_url(url)
                         if name_url != 0:
                             link_dict[u"WMS : " + name_url[1]] = name_url
                     elif link['link']['kind'] == 'wfs':
-                        name_url = self.build_wfs_url(link['url'])
+                        url = [link['title'], link['url']]
+                        name_url = self.build_wfs_url(url)
                         if name_url != 0:
                             link_dict[u"WFS : " + name_url[1]] = name_url
 
@@ -1159,8 +1163,9 @@ class Isogeo:
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
-        input_url = raw_url.split("?")[0] + "?"
-        list_parameters = raw_url.split("?")[1].split('&')
+        title = raw_url[0]
+        input_url = raw_url[1].split("?")[0] + "?"
+        list_parameters = raw_url[1].split("?")[1].split('&')
         valid = False
         style_defined = False
         srs_defined = False
@@ -1175,6 +1180,11 @@ class Isogeo:
                 valid = True
                 name = i.split('=')[1]
                 layers = "layers=" + name
+            elif "getcapabilities" in ilow:
+                logging.info("Dans le cas ou getcap dans l'url")
+                valid = True
+                name = title
+                layers = "layers=" + title
             elif "styles=" in ilow:
                 style_defined = True
                 style = i
@@ -1186,6 +1196,7 @@ class Isogeo:
                 imgformat = i
 
         if valid is True:
+            logging.info("Tout roule dans la fonction build")
             if input_url.lower().startswith('url='):
                 output_url = input_url + "&" + layers
             else:
@@ -1204,6 +1215,7 @@ class Isogeo:
             if srs_defined is True:
                 output_url += '&' + srs
             output = ["WMS", name, output_url]
+            logging.info("On va return")
             return output
 
         else:
@@ -1215,8 +1227,9 @@ class Isogeo:
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
-        input_url = raw_url.split("?")[0] + "?"
-        list_parameters = raw_url.split("?")[1].split('&')
+        title = raw_url[0]
+        input_url = raw_url[1].split("?")[0] + "?"
+        list_parameters = raw_url[1].split("?")[1].split('&')
         valid = False
         srs_defined = False
         for i in list_parameters:
@@ -1228,6 +1241,10 @@ class Isogeo:
             elif "layers=" in ilow or "layer=" in ilow:
                 valid = True
                 name = i.split('=')[1]
+                typename = "typename=" + name
+            elif "getcapabilities" in ilow:
+                valid = True
+                name = title
                 typename = "typename=" + name
             elif "srsname=" in ilow:
                 srs_defined = True
