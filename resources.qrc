@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>icon.png</file>
     <file>resources/trash.png</file>
     <file>resources/bolt.png</file>
     <file>resources/eye.png</file>
