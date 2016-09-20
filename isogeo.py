@@ -44,7 +44,7 @@ from ui.mddetails.isogeo_dlg_mdDetails import IsogeoMdDetails
 import os.path
 
 # Ajoutés par moi
-from qgis.utils import iface, plugin_times, QGis, reloadPlugin
+from qgis.utils import iface, plugin_times, QGis, reloadPlugin, plugins
 from qgis.core import QgsNetworkAccessManager, QgsPoint, \
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, \
     QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI, QgsMessageLog, \
@@ -277,7 +277,9 @@ class Isogeo:
         # when closing the docked window:
         # self.dockwidget = None
         self.pluginIsActive = False
-        reloadPlugin('isogeo_plugin')
+        for plugin in plugins.keys():
+            if plugin.startswith('isogeo'):
+                reloadPlugin(plugin)
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -1350,6 +1352,7 @@ class Isogeo:
         """
         logging.info("Search function called. Building the "
                      "url that is to be sent to the API")
+
         # Disabling all user inputs during the search function is running
         self.switch_widgets_on_and_off('off')
         # STORING THE PREVIOUS search
