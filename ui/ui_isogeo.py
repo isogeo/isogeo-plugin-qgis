@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Thu Sep 22 11:09:18 2016
+# Created: Thu Sep 22 12:28:45 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -66,18 +66,18 @@ class Ui_IsogeoDockWidgetBase(object):
         self.widget = QtGui.QWidget(self.tab)
         self.widget.setMinimumSize(QtCore.QSize(271, 59))
         self.widget.setObjectName(_fromUtf8("widget"))
-        self.widget1 = QtGui.QWidget(self.widget)
-        self.widget1.setGeometry(QtCore.QRect(1, 4, 261, 54))
-        self.widget1.setObjectName(_fromUtf8("widget1"))
-        self.verticalLayout_11 = QtGui.QVBoxLayout(self.widget1)
+        self.layoutWidget = QtGui.QWidget(self.widget)
+        self.layoutWidget.setGeometry(QtCore.QRect(1, 4, 261, 54))
+        self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
+        self.verticalLayout_11 = QtGui.QVBoxLayout(self.layoutWidget)
         self.verticalLayout_11.setMargin(0)
         self.verticalLayout_11.setObjectName(_fromUtf8("verticalLayout_11"))
-        self.cbb_keywords = QtGui.QComboBox(self.widget1)
+        self.cbb_keywords = QtGui.QComboBox(self.layoutWidget)
         self.cbb_keywords.setObjectName(_fromUtf8("cbb_keywords"))
         self.verticalLayout_11.addWidget(self.cbb_keywords)
         self.horizontalLayout_13 = QtGui.QHBoxLayout()
         self.horizontalLayout_13.setObjectName(_fromUtf8("horizontalLayout_13"))
-        self.btn_save = QtGui.QPushButton(self.widget1)
+        self.btn_save = QtGui.QPushButton(self.layoutWidget)
         self.btn_save.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.btn_save.setText(_fromUtf8(""))
         icon = QtGui.QIcon()
@@ -85,7 +85,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_save.setIcon(icon)
         self.btn_save.setObjectName(_fromUtf8("btn_save"))
         self.horizontalLayout_13.addWidget(self.btn_save)
-        self.btn_reinit = QtGui.QPushButton(self.widget1)
+        self.btn_reinit = QtGui.QPushButton(self.layoutWidget)
         self.btn_reinit.setMinimumSize(QtCore.QSize(81, 0))
         self.btn_reinit.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.btn_reinit.setText(_fromUtf8(""))
@@ -436,6 +436,8 @@ class Ui_IsogeoDockWidgetBase(object):
         self.verticalLayout_10.setObjectName(_fromUtf8("verticalLayout_10"))
         self.gridLayout_4 = QtGui.QGridLayout()
         self.gridLayout_4.setObjectName(_fromUtf8("gridLayout_4"))
+        spacerItem10 = QtGui.QSpacerItem(128, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        self.gridLayout_4.addItem(spacerItem10, 0, 1, 1, 1)
         self.label_20 = QtGui.QLabel(self.groupBox_2)
         font = QtGui.QFont()
         font.setBold(False)
@@ -443,8 +445,6 @@ class Ui_IsogeoDockWidgetBase(object):
         self.label_20.setFont(font)
         self.label_20.setObjectName(_fromUtf8("label_20"))
         self.gridLayout_4.addWidget(self.label_20, 0, 0, 1, 1)
-        spacerItem10 = QtGui.QSpacerItem(128, 20, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_4.addItem(spacerItem10, 0, 1, 1, 1)
         self.btn_default = QtGui.QPushButton(self.groupBox_2)
         self.btn_default.setMinimumSize(QtCore.QSize(71, 0))
         self.btn_default.setText(_fromUtf8(""))
@@ -522,7 +522,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_report.setObjectName(_fromUtf8("btn_report"))
         self.gridLayout_9.addWidget(self.btn_report, 0, 2, 1, 1)
         self.gridLayout_7.addWidget(self.groupBox_4, 2, 0, 1, 1)
-        spacerItem14 = QtGui.QSpacerItem(20, 468, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        spacerItem14 = QtGui.QSpacerItem(20, 498, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         self.gridLayout_7.addItem(spacerItem14, 3, 0, 1, 1)
         icon8 = QtGui.QIcon()
         icon8.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/gear.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)

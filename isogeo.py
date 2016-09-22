@@ -649,6 +649,18 @@ class Isogeo:
         # Geographical filter
         self.dockwidget.cbb_geofilter.addItem(
             self.tr("Map canvas"), "mapcanvas")
+        layers = QgsMapLayerRegistry.instance().mapLayers().values()
+        polycon = QIcon(':/plugins/Isogeo/resources/polygon.png')
+        linicon = QIcon(':/plugins/Isogeo/resources/line.png')
+        pointicon = QIcon(':/plugins/Isogeo/resources/point.png')
+        for layer in layers:
+            if layer.type() == 0:
+                if layer.geometryType() == 2:
+                    self.dockwidget.cbb_geofilter.addItem(polycon, layer.name(), layer)
+                elif layer.geometryType() == 1:
+                    self.dockwidget.cbb_geofilter.addItem(linicon, layer.name(), layer)
+                elif layer.geometryType() == 0:
+                    self.dockwidget.cbb_geofilter.addItem(pointicon, layer.name(), layer)
 
         # Putting all the comboboxes selected index to their previous
         # location. Necessary as all comboboxes items have been removed and
@@ -672,12 +684,15 @@ class Isogeo:
             self.dockwidget.cbb_saved.setCurrentIndex(
                 self.dockwidget.cbb_saved.findData(
                     self.params['favorite']))
-            self.dockwidget.cbb_geofilter.setCurrentIndex(
-                self.dockwidget.cbb_geofilter.findData(
-                    self.params['geofilter']))
             self.dockwidget.cbb_geo_op.setCurrentIndex(
                 self.dockwidget.cbb_geo_op.findData(
                     self.params['operation']))
+            if self.params['geofilter'] == "mapcanvas":
+                self.dockwidget.cbb_geofilter.setCurrentIndex(
+                    self.dockwidget.cbb_geofilter.findData("mapcanvas"))
+            else:
+                self.dockwidget.cbb_geofilter.setCurrentIndex(
+                    self.dockwidget.cbb_geofilter.findText(self.params['geofilter']))
 
             # Filling the keywords special combobox (whose items are checkable)
             if self.savedSearch is False:
@@ -1283,8 +1298,11 @@ class Isogeo:
             self.dockwidget.cbb_format.currentIndex())
         srs_param = self.dockwidget.cbb_srs.itemData(
             self.dockwidget.cbb_srs.currentIndex())
-        geofilter_param = self.dockwidget.cbb_geofilter.itemData(
-            self.dockwidget.cbb_geofilter.currentIndex())
+        if self.dockwidget.cbb_geofilter.currentIndex() < 2:
+            geofilter_param = self.dockwidget.cbb_geofilter.itemData(
+                self.dockwidget.cbb_geofilter.currentIndex())
+        else:
+            geofilter_param = self.dockwidget.cbb_geofilter.currentText()
         favorite_param = self.dockwidget.cbb_saved.itemData(
             self.dockwidget.cbb_saved.currentIndex())
         type_param = self.dockwidget.cbb_type.itemData(
@@ -1434,15 +1452,25 @@ class Isogeo:
                 filters += self.dockwidget.cbb_keywords.itemData(i, 32) + " "
 
         # If the geographical filter is activated, build a spatial filter
-        if self.dockwidget.cbb_geofilter.currentIndex() != 0 and self.hardReset is False:
-            if self.get_canvas_coordinates():
+        if self.dockwidget.cbb_geofilter.currentIndex() == 1:
+            coord = self.get_canvas_coordinates('canvas')
+            if coord:
                 filters = filters[:-1]
-                filters += "&box=" + self.get_canvas_coordinates() + "&rel=" +\
+                filters += "&box=" + coord + "&rel=" +\
                     self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
             else:
                 QMessageBox.information(iface.mainWindow(
                 ), self.tr("Your canvas coordinate system is not "
                            "defined with a EPSG code."))
+        elif self.dockwidget.cbb_geofilter.currentIndex() > 1:
+            logging.info("OK on est bien pas dans le cas du canvas mais d'une couche")
+            index = self.dockwidget.cbb_geofilter.currentIndex()
+            logging.info("Fonction get coord appelé sur l'index : " + str(index))
+            coord = self.get_canvas_coordinates(index)
+            if coord:
+                filters = filters[:-1]
+                filters += "&box=" + coord + "&rel=" +\
+                    self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
 
         filters = "q=" + filters[:-1]
         # self.dockwidget.txt_input.setText(encoded_filters)
@@ -1815,27 +1843,40 @@ class Isogeo:
         with open(path, 'w') as outfile:
                 json.dump(saved_searches, outfile)
 
-    def get_canvas_coordinates(self):
+    def get_canvas_coordinates(self, filter):
         """Get the canvas coordinates in the right format and SRS (WGS84)."""
-        e = iface.mapCanvas().extent()
-        current_epsg = int(iface.mapCanvas().mapRenderer(
-        ).destinationCrs().authid().split(':')[1])
+        if filter == 'canvas':
+            e = iface.mapCanvas().extent()
+            current_epsg = int(iface.mapCanvas().mapRenderer(
+            ).destinationCrs().authid().split(':')[1])
+        else:
+            logging.info("Dans la fonction coord, on a bien compris que filter était pas = a coord")
+            layer = self.dockwidget.cbb_geofilter.itemData(filter)
+            logging.info("la couchhe = " + layer.name())
+            e = layer.extent()
+            current_epsg = int(layer.crs().authid().split(':')[1])
+            logging.info(str(current_epsg))
+
         if current_epsg == 4326:
             coord = "{0},{1},{2},{3}".format(
                 e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum())
+            logging.info("EPSG = WGS donc pas de retransformation" + str(coord))
             return coord
         elif type(current_epsg) is int:
+            coordfezzefefrfrezdzaze = "{0},{1},{2},{3}".format(e.xMinimum(), e.yMinimum(),e.xMaximum(), e.yMaximum())
+            logging.info("Coordonnées avant transformation : " + str(coordfezzefefrfrezdzaze))
             current_srs = QgsCoordinateReferenceSystem(
                 current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId)
-            wgs = QgsCoordinateReferenceSystem(
-                4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+            wgs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             xform = QgsCoordinateTransform(current_srs, wgs)
             minimum = xform.transform(QgsPoint(e.xMinimum(), e.yMinimum()))
             maximum = xform.transform(QgsPoint(e.xMaximum(), e.yMaximum()))
             coord = "{0},{1},{2},{3}".format(
                 minimum[0], minimum[1], maximum[0], maximum[1])
+            logging.info("Coordonnées après transformation : " + str(coord))
             return coord
         else:
+            logging.info('False')
             return False
 
     def reinitialize_search(self):

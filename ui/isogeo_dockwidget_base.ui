@@ -83,7 +83,7 @@
               <height>59</height>
              </size>
             </property>
-            <widget class="QWidget" name="">
+            <widget class="QWidget" name="layoutWidget">
              <property name="geometry">
               <rect>
                <x>1</x>
@@ -865,19 +865,6 @@
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
               <layout class="QGridLayout" name="gridLayout_4">
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_20">
-                 <property name="font">
-                  <font>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Save current research as default</string>
-                 </property>
-                </widget>
-               </item>
                <item row="0" column="1">
                 <spacer name="horizontalSpacer_14">
                  <property name="orientation">
@@ -893,6 +880,19 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_20">
+                 <property name="font">
+                  <font>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Save current research as default</string>
+                 </property>
+                </widget>
                </item>
                <item row="0" column="2">
                 <widget class="QPushButton" name="btn_default">
@@ -1088,7 +1088,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>468</height>
+            <height>498</height>
            </size>
           </property>
          </spacer>
