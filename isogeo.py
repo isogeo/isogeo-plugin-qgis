@@ -1562,18 +1562,25 @@ class Isogeo:
                     filters += cbb_keywords.itemData(i, 32) + " "
 
             # If the geographical filter is activated, build a spatial filter
-            if self.dockwidget.cbb_geofilter.currentIndex() != 0:
-                if self.get_canvas_coordinates():
-                    filters = filters[:-1]
-                    filters += "&box=" + self.get_canvas_coordinates() +\
-                        "&rel=" + \
-                        self.dockwidget.cbb_geo_op.itemData(
-                            self.dockwidget.cbb_geo_op.currentIndex()) + " "
-                else:
-                    QMessageBox.information(iface.mainWindow(
-                    ), self.tr("Error"),
-                        self.tr("Your canvas coordinate system is not defined "
-                                "with a EPSG code."))
+            if self.dockwidget.cbb_geofilter.currentIndex() == 1:
+            coord = self.get_canvas_coordinates('canvas')
+            if coord:
+                filters = filters[:-1]
+                filters += "&box=" + coord + "&rel=" +\
+                    self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
+            else:
+                QMessageBox.information(iface.mainWindow(
+                ), self.tr("Your canvas coordinate system is not "
+                           "defined with a EPSG code."))
+        elif self.dockwidget.cbb_geofilter.currentIndex() > 1:
+            logging.info("OK on est bien pas dans le cas du canvas mais d'une couche")
+            index = self.dockwidget.cbb_geofilter.currentIndex()
+            logging.info("Fonction get coord appelé sur l'index : " + str(index))
+            coord = self.get_canvas_coordinates(index)
+            if coord:
+                filters = filters[:-1]
+                filters += "&box=" + coord + "&rel=" +\
+                    self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
 
             filters = "q=" + filters[:-1]
             # self.dockwidget.txt_input.setText(encoded_filters)
@@ -1671,18 +1678,25 @@ class Isogeo:
                     filters += cbb_keywords.itemData(i, 32) + " "
 
             # If the geographical filter is activated, build a spatial filter
-            if self.dockwidget.cbb_geofilter.currentIndex() != 0:
-                if self.get_canvas_coordinates():
-                    filters = filters[:-1]
-                    filters += "&box=" + self.get_canvas_coordinates() + \
-                        "&rel=" + \
-                        self.dockwidget.cbb_geo_op.itemData(
-                            self.dockwidget.cbb_geo_op.currentIndex()) + " "
-                else:
-                    QMessageBox.information(iface.mainWindow(
-                    ), self.tr("Error"),
-                        self.tr("Your canvas coordinate system is not defined "
-                                "with a EPSG code."))
+            if self.dockwidget.cbb_geofilter.currentIndex() == 1:
+            coord = self.get_canvas_coordinates('canvas')
+            if coord:
+                filters = filters[:-1]
+                filters += "&box=" + coord + "&rel=" +\
+                    self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
+            else:
+                QMessageBox.information(iface.mainWindow(
+                ), self.tr("Your canvas coordinate system is not "
+                           "defined with a EPSG code."))
+        elif self.dockwidget.cbb_geofilter.currentIndex() > 1:
+            logging.info("OK on est bien pas dans le cas du canvas mais d'une couche")
+            index = self.dockwidget.cbb_geofilter.currentIndex()
+            logging.info("Fonction get coord appelé sur l'index : " + str(index))
+            coord = self.get_canvas_coordinates(index)
+            if coord:
+                filters = filters[:-1]
+                filters += "&box=" + coord + "&rel=" +\
+                    self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
             filters = "q=" + filters[:-1]
 
             if filters != "q=":
