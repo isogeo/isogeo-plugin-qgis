@@ -994,14 +994,13 @@ class Isogeo:
                     label.setPixmap(pix)
                     self.dockwidget.tbl_result.setCellWidget(count, 2, label)
 
-            combo = QComboBox()
             link_dict = {}
 
             if 'format' in i.keys():
                 if i['format'] in vectorformat_list and 'path' in i:
                     path = tools.format_path(i['path'])
                     try:
-                        test_path = open(path)
+                        open(path)
                         params = ["vector", path]
                         link_dict[self.tr('Data file')] = params
 
@@ -1011,7 +1010,7 @@ class Isogeo:
                 elif i['format'] in rasterformat_list and 'path' in i:
                     path = tools.format_path(i['path'])
                     try:
-                        test_path = open(path)
+                        open(path)
                         params = ["raster", path]
                         link_dict[self.tr('Data file')] = params
                     except IOError:
@@ -1051,11 +1050,20 @@ class Isogeo:
                         if name_url != 0:
                             link_dict[u"WFS : " + name_url[1]] = name_url
 
-            for key in link_dict.keys():
-                combo.addItem(key, link_dict[key])
-
-            combo.activated.connect(partial(self.add_layer, layer_index=count))
-            self.dockwidget.tbl_result.setCellWidget(count, 3, combo)
+            if link_dict == {}:
+                pass
+            elif len(link_dict) == 1:
+                text = link_dict.keys()[0]
+                params = link_dict.get(text)
+                bigbutt = QPushButton(text)
+                bigbutt.pressed.connect(partial(self.add_layer, layer_info=["info", params]))
+                self.dockwidget.tbl_result.setCellWidget(count, 3, bigbutt)
+            else:
+                combo = QComboBox()
+                for key in link_dict.keys():
+                    combo.addItem(key, link_dict[key])
+                combo.activated.connect(partial(self.add_layer, layer_info=["index", count]))
+                self.dockwidget.tbl_result.setCellWidget(count, 3, combo)
 
             count += 1
         # Remove the "loading" bar
@@ -1068,7 +1076,7 @@ class Isogeo:
         self.bar.setFixedWidth(120)
         iface.mainWindow().statusBar().insertPermanentWidget(0, self.bar)
 
-    def add_layer(self, layer_index):
+    def add_layer(self, layer_info):
         """Add a layer to QGIS map canvas.
 
         This take as an argument the index of the layer. From this index,
@@ -1076,8 +1084,12 @@ class Isogeo:
         constructed in the show_results function. It then adds it.
         """
         logging.info("Add_layer function called.")
-        combobox = self.dockwidget.tbl_result.cellWidget(layer_index, 3)
-        layer_info = combobox.itemData(combobox.currentIndex())
+        if layer_info[0] == "index":
+            combobox = self.dockwidget.tbl_result.cellWidget(layer_info[1], 3)
+            layer_info = combobox.itemData(combobox.currentIndex())
+        elif layer_info[0] == "info":
+            layer_info = layer_info[1]
+
         if type(layer_info) == list:
             if layer_info[0] == "vector":
                 logging.info("Data type : vector")
@@ -1563,24 +1575,24 @@ class Isogeo:
 
             # If the geographical filter is activated, build a spatial filter
             if self.dockwidget.cbb_geofilter.currentIndex() == 1:
-            coord = self.get_canvas_coordinates('canvas')
-            if coord:
-                filters = filters[:-1]
-                filters += "&box=" + coord + "&rel=" +\
-                    self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
-            else:
-                QMessageBox.information(iface.mainWindow(
-                ), self.tr("Your canvas coordinate system is not "
-                           "defined with a EPSG code."))
-        elif self.dockwidget.cbb_geofilter.currentIndex() > 1:
-            logging.info("OK on est bien pas dans le cas du canvas mais d'une couche")
-            index = self.dockwidget.cbb_geofilter.currentIndex()
-            logging.info("Fonction get coord appelé sur l'index : " + str(index))
-            coord = self.get_canvas_coordinates(index)
-            if coord:
-                filters = filters[:-1]
-                filters += "&box=" + coord + "&rel=" +\
-                    self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
+                coord = self.get_canvas_coordinates('canvas')
+                if coord:
+                    filters = filters[:-1]
+                    filters += "&box=" + coord + "&rel=" +\
+                        self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
+                else:
+                    QMessageBox.information(iface.mainWindow(
+                    ), self.tr("Your canvas coordinate system is not "
+                               "defined with a EPSG code."))
+            elif self.dockwidget.cbb_geofilter.currentIndex() > 1:
+                logging.info("OK on est bien pas dans le cas du canvas mais d'une couche")
+                index = self.dockwidget.cbb_geofilter.currentIndex()
+                logging.info("Fonction get coord appelé sur l'index : " + str(index))
+                coord = self.get_canvas_coordinates(index)
+                if coord:
+                    filters = filters[:-1]
+                    filters += "&box=" + coord + "&rel=" +\
+                        self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
 
             filters = "q=" + filters[:-1]
             # self.dockwidget.txt_input.setText(encoded_filters)
@@ -1679,24 +1691,24 @@ class Isogeo:
 
             # If the geographical filter is activated, build a spatial filter
             if self.dockwidget.cbb_geofilter.currentIndex() == 1:
-            coord = self.get_canvas_coordinates('canvas')
-            if coord:
-                filters = filters[:-1]
-                filters += "&box=" + coord + "&rel=" +\
-                    self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
-            else:
-                QMessageBox.information(iface.mainWindow(
-                ), self.tr("Your canvas coordinate system is not "
-                           "defined with a EPSG code."))
-        elif self.dockwidget.cbb_geofilter.currentIndex() > 1:
-            logging.info("OK on est bien pas dans le cas du canvas mais d'une couche")
-            index = self.dockwidget.cbb_geofilter.currentIndex()
-            logging.info("Fonction get coord appelé sur l'index : " + str(index))
-            coord = self.get_canvas_coordinates(index)
-            if coord:
-                filters = filters[:-1]
-                filters += "&box=" + coord + "&rel=" +\
-                    self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
+                coord = self.get_canvas_coordinates('canvas')
+                if coord:
+                    filters = filters[:-1]
+                    filters += "&box=" + coord + "&rel=" +\
+                        self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
+                else:
+                    QMessageBox.information(iface.mainWindow(
+                    ), self.tr("Your canvas coordinate system is not "
+                               "defined with a EPSG code."))
+            elif self.dockwidget.cbb_geofilter.currentIndex() > 1:
+                logging.info("OK on est bien pas dans le cas du canvas mais d'une couche")
+                index = self.dockwidget.cbb_geofilter.currentIndex()
+                logging.info("Fonction get coord appelé sur l'index : " + str(index))
+                coord = self.get_canvas_coordinates(index)
+                if coord:
+                    filters = filters[:-1]
+                    filters += "&box=" + coord + "&rel=" +\
+                        self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
             filters = "q=" + filters[:-1]
 
             if filters != "q=":
