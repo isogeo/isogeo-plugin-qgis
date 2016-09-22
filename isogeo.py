@@ -2244,10 +2244,7 @@ class Isogeo:
             partial(self.write_search_params, search_name='_default'))
 
         self.auth_prompt_form.btn_account_new.pressed.connect(partial(
-            tools.mail_to_isogeo,
-            mail=self.tr('Isogeo Team '),
-            subject=self.tr("QGIS plugin: Credentials request"),
-            body=self.tr("Name:\nOrganization:\nMotivations:\n")))
+            tools.mail_to_isogeo, lang=self.lang))
 
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()

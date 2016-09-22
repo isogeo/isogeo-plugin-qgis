@@ -114,7 +114,15 @@ class Tools(object):
                 new_string += character
         return new_string
 
-    def mail_to_isogeo(self, mail, subject, body):
+    def mail_to_isogeo(self, lang):
         """Preformat a mail asking for an Isogeo account."""
-        webbrowser.open("mailto:%s<projets+qgis@isogeo.com>?subject=%s&body=%s"
-                        % (quote(mail), quote(subject), quote(body)))
+        if lang == "fr":
+            webbrowser.open('http://www.isogeo.com/fr/Plugin-QGIS/22',
+                            new=0,
+                            autoraise=True
+                            )
+        else:
+            webbrowser.open('http://www.isogeo.com/en/QGIS-Plugin/22',
+                            new=0,
+                            autoraise=True
+                            )
