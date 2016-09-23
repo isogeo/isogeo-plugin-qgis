@@ -1,4 +1,4 @@
-# Installer le plugin QGIS
+# Installer le plugin QGIS en version de développement
 
 Toujours en phase de développement active, il est possible d'installer le plugin de deux façons différentes :
 
