@@ -117,7 +117,10 @@ class Isogeo:
         self.plugin_dir = os.path.dirname(__file__)
 
         # initialize locale
-        locale = QSettings().value('locale/userlocale')[0:2]
+        try:
+            locale = QSettings().value('locale/userlocale')[0:2]
+        except:
+            locale = "fr"
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
@@ -1496,6 +1499,7 @@ class Isogeo:
             self.currentUrl += "&_limit=15&_include=links&_lang={0}".format(self.lang)
         else:
             self.currentUrl += "&_limit=0&_lang={0}".format(self.lang)
+        logging.info(self.currentUrl)
         # self.dockwidget.dump.setText(self.currentUrl)
         self.send_request_to_Isogeo_API(self.token)
 
@@ -1876,21 +1880,15 @@ class Isogeo:
             current_epsg = int(iface.mapCanvas().mapRenderer(
             ).destinationCrs().authid().split(':')[1])
         else:
-            logging.info("Dans la fonction coord, on a bien compris que filter était pas = a coord")
             layer = self.dockwidget.cbb_geofilter.itemData(filter)
-            logging.info("la couchhe = " + layer.name())
             e = layer.extent()
             current_epsg = int(layer.crs().authid().split(':')[1])
-            logging.info(str(current_epsg))
 
         if current_epsg == 4326:
             coord = "{0},{1},{2},{3}".format(
                 e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum())
-            logging.info("EPSG = WGS donc pas de retransformation" + str(coord))
             return coord
         elif type(current_epsg) is int:
-            coordfezzefefrfrezdzaze = "{0},{1},{2},{3}".format(e.xMinimum(), e.yMinimum(),e.xMaximum(), e.yMaximum())
-            logging.info("Coordonnées avant transformation : " + str(coordfezzefefrfrezdzaze))
             current_srs = QgsCoordinateReferenceSystem(
                 current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId)
             wgs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
@@ -1899,7 +1897,6 @@ class Isogeo:
             maximum = xform.transform(QgsPoint(e.xMaximum(), e.yMaximum()))
             coord = "{0},{1},{2},{3}".format(
                 minimum[0], minimum[1], maximum[0], maximum[1])
-            logging.info("Coordonnées après transformation : " + str(coord))
             return coord
         else:
             logging.info('False')
