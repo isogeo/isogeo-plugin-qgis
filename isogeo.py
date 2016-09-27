@@ -162,6 +162,8 @@ class Isogeo:
 
         self.savedSearch = "first"
 
+        self.requestStatusClear = True
+
         self.loopCount = 0
 
         self.hardReset = False
@@ -171,6 +173,8 @@ class Isogeo:
         self.showDetails = False
 
         self.store = False
+
+        self.settingsRequest = False
 
         self.PostGISdict = {}
 
@@ -431,8 +435,10 @@ class Isogeo:
         url = QUrl('https://id.api.isogeo.com/oauth/token')
         request = QNetworkRequest(url)
         request.setRawHeader("Authorization", headervalue)
-        self.token_reply = manager.post(request, databyte)
-        self.token_reply.finished.connect(self.handle_token)
+        if self.requestStatusClear is True:
+            self.requestStatusClear = False
+            self.token_reply = manager.post(request, databyte)
+            self.token_reply.finished.connect(self.handle_token)
 
         QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
 
@@ -453,8 +459,10 @@ class Isogeo:
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content['access_token']
             if self.savedSearch == "first":
+                self.requestStatusClear = True
                 self.set_widget_status()
             else:
+                self.requestStatusClear = True
                 self.send_request_to_Isogeo_API(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
@@ -462,8 +470,10 @@ class Isogeo:
                          "invalid. Asking for them again.")
             QMessageBox.information(
                 iface.mainWindow(), self.tr("Error"), parsed_content['error'])
+            self.requestStatusClear = True
             self.auth_prompt_form.show()
         else:
+            self.requestStatusClear = True
             logging.info("The API reply has an unexpected form : "
                          "{0}".format(parsed_content))
             QMessageBox.information(
@@ -479,8 +489,10 @@ class Isogeo:
         request = QNetworkRequest(myurl)
         request.setRawHeader("Authorization", token)
         manager = QgsNetworkAccessManager.instance()
-        self.API_reply = manager.get(request)
-        self.API_reply.finished.connect(self.handle_API_reply)
+        if self.requestStatusClear is True:
+            self.requestStatusClear = False
+            self.API_reply = manager.get(request)
+            self.API_reply.finished.connect(self.handle_API_reply)
 
     def handle_API_reply(self):
         """Handle the different possible Isogeo API answer.
@@ -494,19 +506,28 @@ class Isogeo:
         content = str(bytarray)
         if self.API_reply.error() == 0 and content != "":
             logging.info("Reply is a result json.")
-            if self.showDetails is False:
+            if self.showDetails is False and self.settingsRequest is False:
                 self.loopCount = 0
                 parsed_content = json.loads(content)
+                self.requestStatusClear = True
                 self.update_fields(parsed_content)
-            else:
+            elif self.showDetails is True:
                 self.showDetails = False
                 self.loopCount = 0
                 parsed_content = json.loads(content)
+                self.requestStatusClear = True
                 self.show_complete_md(parsed_content)
+            elif self.settingsRequest is True:
+                self.settingsRequest = False
+                self.loopCount = 0
+                parsed_content = json.loads(content)
+                self.requestStatusClear = True
+                self.tepanyaki(parsed_content)
 
         elif self.API_reply.error() == 204:
             logging.info("Token expired. Renewing it.")
             self.loopCount = 0
+            self.requestStatusClear = True
             self.ask_for_token(self.user_id, self.user_secret)
         elif content == "":
             logging.info("Empty reply. Weither no catalog is shared with the "
@@ -518,13 +539,16 @@ class Isogeo:
                 del self.API_reply
                 self.token_reply.abort()
                 del self.token_reply
+                self.requestStatusClear = True
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
+                self.requestStatusClear = True
                 iface.messageBar.pushMessage(
                     self.tr("The script is looping. Make sure you shared a "
                             "catalog with the plugin. If so, please report "
                             "this on the bug tracker."))
         else:
+            self.requestStatusClear = True
             QMessageBox.information(iface.mainWindow(),
                                     self.tr("Error"),
                                     self.tr("You are facing an unknown error. "
@@ -1501,7 +1525,8 @@ class Isogeo:
             self.currentUrl += "&_limit=0&_lang={0}".format(self.lang)
         logging.info(self.currentUrl)
         # self.dockwidget.dump.setText(self.currentUrl)
-        self.send_request_to_Isogeo_API(self.token)
+        if self.requestStatusClear is True:
+            self.send_request_to_Isogeo_API(self.token)
 
     def next_page(self):
         """Add the _offset parameter to the current url to display next page.
@@ -1618,7 +1643,8 @@ class Isogeo:
                     str((15 * (self.page_index - 1))) + \
                     "&_limit=15&_include=links&_lang={0}".format(self.lang)
             # self.dockwidget.dump.setText(self.currentUrl)
-            self.send_request_to_Isogeo_API(self.token)
+            if self.requestStatusClear is True:
+                self.send_request_to_Isogeo_API(self.token)
 
     def previous_page(self):
         """Add the _offset parameter to the url to display previous page.
@@ -1748,7 +1774,8 @@ class Isogeo:
                         "&_limit=15&_include=links&_lang={0}".format(self.lang)
 
             # self.dockwidget.dump.setText(self.currentUrl)
-            self.send_request_to_Isogeo_API(self.token)
+            if self.requestStatusClear is True:
+                self.send_request_to_Isogeo_API(self.token)
 
     def write_search_params(self, search_name):
         """Write a new element in the json file when a search is saved."""
@@ -1811,7 +1838,8 @@ class Isogeo:
                     rect = QgsRectangle(e[0], e[1], e[2], e[3])
                     canvas.setExtent(rect)
                     canvas.refresh()
-            self.send_request_to_Isogeo_API(self.token)
+            if self.requestStatusClear is True:
+                self.send_request_to_Isogeo_API(self.token)
 
     def save_search(self):
         """Call the write_search() function and refresh the combobox."""
@@ -1978,7 +2006,8 @@ class Isogeo:
             + str(md_id)\
             + "?_include=contacts,limitations,conditions,events,feature-attributes"
         self.showDetails = True
-        self.send_request_to_Isogeo_API(self.token)
+        if self.requestStatusClear is True:
+            self.send_request_to_Isogeo_API(self.token)
 
     def show_complete_md(self, content):
         """Open the pop up window that shows the metadata sheet details."""
@@ -2216,6 +2245,37 @@ class Isogeo:
                 pass
             self.search()
 
+    def kawabounga(self, index):
+        """TODO : Only if not already done before."""
+        if index == 0:
+            pass
+        elif index == 1 and self.requestStatusClear is True:
+            if self.dockwidget.txt_shares.toPlainText() == "":
+                self.settingsRequest = True
+                self.currentUrl = 'https://v1.api.isogeo.com/shares'
+                self.send_request_to_Isogeo_API(self.token)
+            else:
+                pass
+
+    def tepanyaki(self, content):
+        total = len(content)
+        if total == 1:
+            text = self.tr(u"<html><p><b><br/>This plugin is powered by 1 share.<br/></b></p>")
+        else:
+            text = self.tr(u"<html><p><b><br/>This plugin is powered by {0} shares.<br/></b></p>").format(total)
+        text += u"<p>   _____________________________________________________________________________   </p>"
+        for share in content:
+            text += u"<p><b>{0}</p></b>".format(share['name'])
+            text += self.tr(u"<p>Modified: {0}</p>").format(tools.handle_date(share['_modified']))
+            text += self.tr(u"<p>Contact: {0}</p>").format(share['_creator']['contact']['name'])
+            text += self.tr(u"<p>Applications powered by this share:</p>")
+            for a in share['applications']:
+                text += u"<p>   - {0} : {1}</p>".format(a['name'], a['url'])
+            text += u"<p>   _____________________________________________________________________________   </p>"
+        #text = text[:-90]
+        text += u"</html>"
+        self.dockwidget.txt_shares.setText(text)
+
     # --------------------------------------------------------------------------
 
     # This function is launched when the plugin is activated.
@@ -2310,7 +2370,10 @@ class Isogeo:
         self.auth_prompt_form.btn_account_new.pressed.connect(partial(
             tools.mail_to_isogeo, lang=self.lang))
 
+        self.dockwidget.tabWidget.currentChanged.connect(self.kawabounga)
+
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()
-        self.user_authentication()
         self.test_proxy_configuration()
+        self.user_authentication()
+        
