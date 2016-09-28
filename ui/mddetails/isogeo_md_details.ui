@@ -226,7 +226,7 @@
       </size>
      </property>
      <property name="title">
-      <string>Informations techniques</string>
+      <string>Technical informations</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
@@ -374,7 +374,7 @@
       </size>
      </property>
      <property name="title">
-      <string>Historique de la donnée</string>
+      <string>Data history</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="1" rowspan="3">
@@ -416,7 +416,7 @@
       <item row="0" column="2">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Dernières modifications</string>
+         <string>Last modifications</string>
         </property>
        </widget>
       </item>
@@ -441,7 +441,7 @@
               <item>
                <widget class="QLabel" name="lbl_data_crea">
                 <property name="text">
-                 <string>Date de création :</string>
+                 <string>Creation date:</string>
                 </property>
                </widget>
               </item>
@@ -486,7 +486,7 @@
               <item>
                <widget class="QLabel" name="lbl_data_updt">
                 <property name="text">
-                 <string>Mise à jour :</string>
+                 <string>Last update:</string>
                 </property>
                </widget>
               </item>
@@ -542,7 +542,7 @@
               <item>
                <widget class="QLabel" name="lbl_valid_start">
                 <property name="text">
-                 <string>Début de validité :</string>
+                 <string>Validity period start:</string>
                 </property>
                </widget>
               </item>
@@ -587,7 +587,7 @@
               <item>
                <widget class="QLabel" name="lbl_valid_end">
                 <property name="text">
-                 <string>Fin de validité :</string>
+                 <string>Validity period end:</string>
                 </property>
                </widget>
               </item>
@@ -623,23 +623,13 @@
      <zorder>list_events</zorder>
      <zorder>label</zorder>
      <zorder>line_4</zorder>
-     <zorder>label_2</zorder>
-     <zorder>label_3</zorder>
-     <zorder>label_4</zorder>
-     <zorder>label_5</zorder>
-     <zorder></zorder>
-     <zorder>line</zorder>
-     <zorder>horizontalSpacer_3</zorder>
-     <zorder>horizontalSpacer_4</zorder>
-     <zorder>horizontalSpacer_5</zorder>
-     <zorder>horizontalSpacer_6</zorder>
      <zorder>verticalSpacer</zorder>
     </widget>
    </item>
    <item row="4" column="1" rowspan="3">
     <widget class="QGroupBox" name="grp_fields">
      <property name="title">
-      <string>Attributs</string>
+      <string>Attributes</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
@@ -649,7 +639,7 @@
         </property>
         <column>
          <property name="text">
-          <string>Nom</string>
+          <string>Name</string>
          </property>
         </column>
         <column>
@@ -670,20 +660,20 @@
    <item row="5" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Collecte</string>
+      <string>Collection</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_8">
       <item row="0" column="0">
        <widget class="QLabel" name="lbl_context">
         <property name="text">
-         <string>Contexte de collecte :</string>
+         <string>Collection context</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
        <widget class="QLabel" name="lbl_method">
         <property name="text">
-         <string>Méthode de collecte :</string>
+         <string>Collection method</string>
         </property>
        </widget>
       </item>

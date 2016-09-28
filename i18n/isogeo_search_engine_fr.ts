@@ -174,27 +174,27 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2263"/>
+        <location filename="isogeo.py" line="2265"/>
         <source>&lt;html&gt;&lt;p&gt;&lt;b&gt;&lt;br/&gt;This plugin is powered by 1 share.&lt;br/&gt;&lt;/b&gt;&lt;/p&gt;</source>
         <translation>&lt;html&gt;&lt;p&gt;&lt;b&gt;&lt;br/&gt;Ce plugin est alimenté par un seul partage.&lt;br/&gt;&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2265"/>
+        <location filename="isogeo.py" line="2267"/>
         <source>&lt;html&gt;&lt;p&gt;&lt;b&gt;&lt;br/&gt;This plugin is powered by {0} shares.&lt;br/&gt;&lt;/b&gt;&lt;/p&gt;</source>
         <translation>&lt;html&gt;&lt;p&gt;&lt;b&gt;&lt;br/&gt;Ce plugin est alimenté par {0} partages.&lt;br/&gt;&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2269"/>
+        <location filename="isogeo.py" line="2271"/>
         <source>&lt;p&gt;Modified: {0}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Dernière modification : {0}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2270"/>
+        <location filename="isogeo.py" line="2272"/>
         <source>&lt;p&gt;Contact: {0}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Contact : {0}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2271"/>
+        <location filename="isogeo.py" line="2273"/>
         <source>&lt;p&gt;Applications powered by this share:&lt;/p&gt;</source>
         <translation>&lt;p&gt;Applications alimentées par ce partage :&lt;/p&gt;</translation>
     </message>
@@ -377,117 +377,117 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="363"/>
         <source>Isogeo Metadata</source>
-        <translation>Détail d&apos;une métadonnée</translation>
+        <translation>Fiche de métadonnée Isogeo</translation>
     </message>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="364"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;NR&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;NR&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="365"/>
         <source>Identification</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="366"/>
-        <source>Informations techniques</source>
-        <translation type="unfinished"></translation>
+        <translation>Identification</translation>
     </message>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="367"/>
         <source>Format :</source>
-        <translation type="unfinished"></translation>
+        <translation>Format :</translation>
     </message>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="381"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="369"/>
         <source>SRS :</source>
-        <translation type="unfinished"></translation>
+        <translation>SRS :</translation>
     </message>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="371"/>
         <source>Contacts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="372"/>
-        <source>Historique de la donnÃ©e</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="373"/>
-        <source>DerniÃ¨res modifications</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="374"/>
-        <source>Date de crÃ©ation :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="376"/>
-        <source>Mise Ã  jour :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="378"/>
-        <source>DÃ©but de validitÃ© :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="380"/>
-        <source>Fin de validitÃ© :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="382"/>
-        <source>Attributs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="385"/>
-        <source>Nom</source>
-        <translation type="unfinished"></translation>
+        <translation>Contacts</translation>
     </message>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="387"/>
         <source>Type</source>
-        <translation type="unfinished">Type</translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="389"/>
         <source>Description</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="390"/>
-        <source>Collecte</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="391"/>
-        <source>Contexte de collecte :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="392"/>
-        <source>MÃ©thode de collecte :</source>
-        <translation type="unfinished"></translation>
+        <translation>Description</translation>
     </message>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="393"/>
         <source>Limitations</source>
-        <translation type="unfinished"></translation>
+        <translation>Limitations</translation>
     </message>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="394"/>
         <source>Conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>Conditions</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="366"/>
+        <source>Technical informations</source>
+        <translation>Informations techniques</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="372"/>
+        <source>Data history</source>
+        <translation>Historique de la donnée</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="373"/>
+        <source>Last modifications</source>
+        <translation>Dernières opérations</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="374"/>
+        <source>Creation date:</source>
+        <translation>Date de création :</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="376"/>
+        <source>Last update:</source>
+        <translation>Dernière modification :</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="378"/>
+        <source>Validity period start:</source>
+        <translation>Début de validité :</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="380"/>
+        <source>Validity period end:</source>
+        <translation>Fin de validité :</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="382"/>
+        <source>Attributes</source>
+        <translation>Attributs</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="390"/>
+        <source>Collection</source>
+        <translation>Collecte</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="391"/>
+        <source>Collection context</source>
+        <translation>Contexte de collecte</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="392"/>
+        <source>Collection method</source>
+        <translation>Méthode de collecte</translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="385"/>
+        <source>Name</source>
+        <translation>Nom</translation>
     </message>
 </context>
 <context>

@@ -171,27 +171,27 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2263"/>
+        <location filename="isogeo.py" line="2265"/>
         <source>&lt;html&gt;&lt;p&gt;&lt;b&gt;&lt;br/&gt;This plugin is powered by 1 share.&lt;br/&gt;&lt;/b&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2265"/>
+        <location filename="isogeo.py" line="2267"/>
         <source>&lt;html&gt;&lt;p&gt;&lt;b&gt;&lt;br/&gt;This plugin is powered by {0} shares.&lt;br/&gt;&lt;/b&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2269"/>
+        <location filename="isogeo.py" line="2271"/>
         <source>&lt;p&gt;Modified: {0}&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2270"/>
+        <location filename="isogeo.py" line="2272"/>
         <source>&lt;p&gt;Contact: {0}&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2271"/>
+        <location filename="isogeo.py" line="2273"/>
         <source>&lt;p&gt;Applications powered by this share:&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -387,11 +387,6 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="366"/>
-        <source>Informations techniques</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="367"/>
         <source>Format :</source>
         <translation type="unfinished"></translation>
@@ -412,46 +407,6 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="372"/>
-        <source>Historique de la donn&#xc3;&#xa9;e</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="373"/>
-        <source>Derni&#xc3;&#xa8;res modifications</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="374"/>
-        <source>Date de cr&#xc3;&#xa9;ation :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="376"/>
-        <source>Mise &#xc3;&#xa0; jour :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="378"/>
-        <source>D&#xc3;&#xa9;but de validit&#xc3;&#xa9; :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="380"/>
-        <source>Fin de validit&#xc3;&#xa9; :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="382"/>
-        <source>Attributs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="385"/>
-        <source>Nom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="387"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
@@ -462,21 +417,6 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="390"/>
-        <source>Collecte</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="391"/>
-        <source>Contexte de collecte :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="392"/>
-        <source>M&#xc3;&#xa9;thode de collecte :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="393"/>
         <source>Limitations</source>
         <translation type="unfinished"></translation>
@@ -484,6 +424,66 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
     <message>
         <location filename="ui/mddetails/ui_isogeo_md_details.py" line="394"/>
         <source>Conditions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="366"/>
+        <source>Technical informations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="372"/>
+        <source>Data history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="373"/>
+        <source>Last modifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="374"/>
+        <source>Creation date:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="376"/>
+        <source>Last update:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="378"/>
+        <source>Validity period start:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="380"/>
+        <source>Validity period end:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="382"/>
+        <source>Attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="390"/>
+        <source>Collection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="391"/>
+        <source>Collection context</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="392"/>
+        <source>Collection method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/mddetails/ui_isogeo_md_details.py" line="385"/>
+        <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

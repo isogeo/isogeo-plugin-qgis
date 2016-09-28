@@ -522,7 +522,7 @@ class Isogeo:
                 self.loopCount = 0
                 parsed_content = json.loads(content)
                 self.requestStatusClear = True
-                self.tepanyaki(parsed_content)
+                self.write_shares_info(parsed_content)
 
         elif self.API_reply.error() == 204:
             logging.info("Token expired. Renewing it.")
@@ -2245,19 +2245,21 @@ class Isogeo:
                 pass
             self.search()
 
-    def kawabounga(self, index):
+    def ask_shares_info(self, index):
         """TODO : Only if not already done before."""
         if index == 0:
             pass
         elif index == 1 and self.requestStatusClear is True:
             if self.dockwidget.txt_shares.toPlainText() == "":
                 self.settingsRequest = True
+                self.oldUrl = self.currentUrl
                 self.currentUrl = 'https://v1.api.isogeo.com/shares'
                 self.send_request_to_Isogeo_API(self.token)
             else:
                 pass
 
-    def tepanyaki(self, content):
+    def write_shares_info(self, content):
+        self.currentUrl = self.oldUrl
         total = len(content)
         if total == 1:
             text = self.tr(u"<html><p><b><br/>This plugin is powered by 1 share.<br/></b></p>")
@@ -2270,7 +2272,7 @@ class Isogeo:
             text += self.tr(u"<p>Contact: {0}</p>").format(share['_creator']['contact']['name'])
             text += self.tr(u"<p>Applications powered by this share:</p>")
             for a in share['applications']:
-                text += u"<p>   - {0} : {1}</p>".format(a['name'], a['url'])
+                text += u"<p>   - <a href='{0}'>{1}</a></p>".format(a['url'], a['name'])
             text += u"<p>   _____________________________________________________________________________   </p>"
         #text = text[:-90]
         text += u"</html>"
@@ -2331,7 +2333,15 @@ class Isogeo:
         self.dockwidget.btn_next.pressed.connect(self.next_page)
         self.dockwidget.btn_previous.pressed.connect(self.previous_page)
         # Connecting the bug tracker button to its function
-        self.dockwidget.btn_report.pressed.connect(tools.open_bugtracker)
+        self.dockwidget.btn_report.pressed.connect(
+            partial(tools.open_webpage,
+                    link='https://github.com/isogeo/isogeo-plugin-qgis/issues'
+                    ))
+
+        self.dockwidget.btn_help.pressed.connect(
+            partial(tools.open_webpage,
+                    link="https://github.com/isogeo/isogeo-plugin-qgis/wiki"
+                    ))
         # Connecting the "reinitialize search button" to a search without
         # filters
         self.dockwidget.btn_reinit.pressed.connect(self.reinitialize_search)
@@ -2370,7 +2380,10 @@ class Isogeo:
         self.auth_prompt_form.btn_account_new.pressed.connect(partial(
             tools.mail_to_isogeo, lang=self.lang))
 
-        self.dockwidget.tabWidget.currentChanged.connect(self.kawabounga)
+        self.dockwidget.tabWidget.currentChanged.connect(self.ask_shares_info)
+
+        self.dockwidget.txt_shares.setOpenLinks(False)
+        self.dockwidget.txt_shares.anchorClicked.connect(tools.open_webpage)
 
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()

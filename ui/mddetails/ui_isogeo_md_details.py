@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_md_details.ui'
 #
-# Created: Fri Sep 16 17:58:43 2016
+# Created: Wed Sep 28 15:11:10 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -363,33 +363,33 @@ class Ui_MetadataDetails(object):
         MetadataDetails.setWindowTitle(_translate("MetadataDetails", "Isogeo Metadata", None))
         self.lbl_title.setText(_translate("MetadataDetails", "<html><head/><body><p><span style=\" font-style:italic;\">NR</span></p></body></html>", None))
         self.grp_ident.setTitle(_translate("MetadataDetails", "Identification", None))
-        self.grp_technic.setTitle(_translate("MetadataDetails", "Informations techniques", None))
+        self.grp_technic.setTitle(_translate("MetadataDetails", "Technical informations", None))
         self.lbl_format.setText(_translate("MetadataDetails", "Format :", None))
         self.val_format.setText(_translate("MetadataDetails", "TextLabel", None))
         self.lbl_srs.setText(_translate("MetadataDetails", "SRS :", None))
         self.val_srs.setText(_translate("MetadataDetails", "TextLabel", None))
         self.grp_contacts.setTitle(_translate("MetadataDetails", "Contacts", None))
-        self.grp_history.setTitle(_translate("MetadataDetails", "Historique de la donnée", None))
-        self.label.setText(_translate("MetadataDetails", "Dernières modifications", None))
-        self.lbl_data_crea.setText(_translate("MetadataDetails", "Date de création :", None))
+        self.grp_history.setTitle(_translate("MetadataDetails", "Data history", None))
+        self.label.setText(_translate("MetadataDetails", "Last modifications", None))
+        self.lbl_data_crea.setText(_translate("MetadataDetails", "Creation date:", None))
         self.val_data_crea.setText(_translate("MetadataDetails", "TextLabel", None))
-        self.lbl_data_updt.setText(_translate("MetadataDetails", "Mise à jour :", None))
+        self.lbl_data_updt.setText(_translate("MetadataDetails", "Last update:", None))
         self.val_data_updt.setText(_translate("MetadataDetails", "TextLabel", None))
-        self.lbl_valid_start.setText(_translate("MetadataDetails", "Début de validité :", None))
+        self.lbl_valid_start.setText(_translate("MetadataDetails", "Validity period start:", None))
         self.val_valid_start.setText(_translate("MetadataDetails", "TextLabel", None))
-        self.lbl_valid_end.setText(_translate("MetadataDetails", "Fin de validité :", None))
+        self.lbl_valid_end.setText(_translate("MetadataDetails", "Validity period end:", None))
         self.val_valid_end.setText(_translate("MetadataDetails", "TextLabel", None))
-        self.grp_fields.setTitle(_translate("MetadataDetails", "Attributs", None))
+        self.grp_fields.setTitle(_translate("MetadataDetails", "Attributes", None))
         self.tbl_attributes.setSortingEnabled(True)
         item = self.tbl_attributes.horizontalHeaderItem(0)
-        item.setText(_translate("MetadataDetails", "Nom", None))
+        item.setText(_translate("MetadataDetails", "Name", None))
         item = self.tbl_attributes.horizontalHeaderItem(1)
         item.setText(_translate("MetadataDetails", "Type", None))
         item = self.tbl_attributes.horizontalHeaderItem(2)
         item.setText(_translate("MetadataDetails", "Description", None))
-        self.groupBox.setTitle(_translate("MetadataDetails", "Collecte", None))
-        self.lbl_context.setText(_translate("MetadataDetails", "Contexte de collecte :", None))
-        self.lbl_method.setText(_translate("MetadataDetails", "Méthode de collecte :", None))
+        self.groupBox.setTitle(_translate("MetadataDetails", "Collection", None))
+        self.lbl_context.setText(_translate("MetadataDetails", "Collection context", None))
+        self.lbl_method.setText(_translate("MetadataDetails", "Collection method", None))
         self.grp_limitations.setTitle(_translate("MetadataDetails", "Limitations", None))
         self.grp_conditions.setTitle(_translate("MetadataDetails", "Conditions", None))
 

@@ -3,6 +3,7 @@
 import datetime
 import webbrowser
 from urllib import quote
+from PyQt4.QtCore import QUrl
 
 class Tools(object):
     """Basic class that holds utilitary methods for the plugin."""
@@ -28,10 +29,13 @@ class Tools(object):
         return new_date.strftime("%Y-%m-%d")
         return new_date
 
-    def open_bugtracker(self):
+    def open_webpage(self, link):
         """Open the bugtracker on the user's default browser."""
+        if type(link) is QUrl:
+            link = link.toString()
+
         webbrowser.open(
-            'https://github.com/isogeo/isogeo-plugin-qgis/issues',
+            link,
             new=0,
             autoraise=True)
 
