@@ -117,10 +117,7 @@ class Isogeo:
         self.plugin_dir = os.path.dirname(__file__)
 
         # initialize locale
-        try:
-            locale = QSettings().value('locale/userlocale')[0:2]
-        except:
-            locale = "fr"
+        locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
@@ -1045,7 +1042,10 @@ class Isogeo:
 
                 elif i['format'] == 'postgis':
                     # Récupère le nom de la base de données
-                    base_name = i['path']
+                    try:
+                        base_name = i['path']
+                    except KeyError:
+                        base_name = "_invalid_metadata"
 
                     if base_name in self.PostGISdict.keys():
                         params = {}
@@ -1221,7 +1221,10 @@ class Isogeo:
         """
         title = raw_url[0]
         input_url = raw_url[1].split("?")[0] + "?"
-        list_parameters = raw_url[1].split("?")[1].split('&')
+        try:
+            list_parameters = raw_url[1].split("?")[1].split('&')
+        except IndexError:
+            return 0
         valid = False
         style_defined = False
         srs_defined = False
@@ -1285,7 +1288,10 @@ class Isogeo:
         """
         title = raw_url[0]
         input_url = raw_url[1].split("?")[0] + "?"
-        list_parameters = raw_url[1].split("?")[1].split('&')
+        try:
+            list_parameters = raw_url[1].split("?")[1].split('&')
+        except IndexError:
+            return 0
         valid = False
         srs_defined = False
         for i in list_parameters:
