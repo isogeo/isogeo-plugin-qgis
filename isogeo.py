@@ -149,6 +149,8 @@ class Isogeo:
 
         self.dockwidget = None
 
+        self.manager = QgsNetworkAccessManager.instance()
+
         self.auth_prompt_form = IsogeoAuthentication()
 
         self.ask_name_popup = ask_research_name()
@@ -428,18 +430,17 @@ class Isogeo:
         data = urllib.urlencode({"grant_type": "client_credentials"})
         databyte = QByteArray()
         databyte.append(data)
-        manager = QgsNetworkAccessManager.instance()
         url = QUrl('https://id.api.isogeo.com/oauth/token')
         request = QNetworkRequest(url)
         request.setRawHeader("Authorization", headervalue)
         if self.requestStatusClear is True:
             self.requestStatusClear = False
-            self.token_reply = manager.post(request, databyte)
-            self.token_reply.finished.connect(self.handle_token)
+            token_reply = self.manager.post(request, databyte)
+            token_reply.finished.connect(partial(self.handle_token, answer=token_reply))
 
         QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
 
-    def handle_token(self):
+    def handle_token(self, answer):
         """Handle the API answer when asked for a token.
 
         This handles the API answer. If it has sent an access token, it calls
@@ -447,7 +448,7 @@ class Isogeo:
         for new IDs
         """
         logging.info("Asked a token and got a reply from the API.")
-        bytarray = self.token_reply.readAll()
+        bytarray = answer.readAll()
         content = str(bytarray)
         parsed_content = json.loads(content)
         if 'access_token' in parsed_content:
@@ -485,13 +486,13 @@ class Isogeo:
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
         request.setRawHeader("Authorization", token)
-        manager = QgsNetworkAccessManager.instance()
         if self.requestStatusClear is True:
             self.requestStatusClear = False
-            self.API_reply = manager.get(request)
-            self.API_reply.finished.connect(self.handle_API_reply)
+            api_reply = self.manager.get(request)
+            api_reply.finished.connect(
+                partial(self.handle_api_reply, answer=api_reply))
 
-    def handle_API_reply(self):
+    def handle_api_reply(self, answer):
         """Handle the different possible Isogeo API answer.
 
         This is called when the answer from the API is finished. If it's
@@ -499,9 +500,9 @@ class Isogeo:
         expired, and it calls ask_for_token()
         """
         logging.info("Request sent to API and reply received.")
-        bytarray = self.API_reply.readAll()
+        bytarray = answer.readAll()
         content = str(bytarray)
-        if self.API_reply.error() == 0 and content != "":
+        if answer.error() == 0 and content != "":
             logging.info("Reply is a result json.")
             if self.showDetails is False and self.settingsRequest is False:
                 self.loopCount = 0
@@ -521,7 +522,7 @@ class Isogeo:
                 self.requestStatusClear = True
                 self.write_shares_info(parsed_content)
 
-        elif self.API_reply.error() == 204:
+        elif answer.error() == 204:
             logging.info("Token expired. Renewing it.")
             self.loopCount = 0
             self.requestStatusClear = True
@@ -532,10 +533,8 @@ class Isogeo:
                          "together)")
             if self.loopCount < 3:
                 self.loopCount += 1
-                self.API_reply.abort()
-                del self.API_reply
-                self.token_reply.abort()
-                del self.token_reply
+                answer.abort()
+                del answer
                 self.requestStatusClear = True
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
@@ -550,7 +549,7 @@ class Isogeo:
                                     self.tr("Error"),
                                     self.tr("You are facing an unknown error. "
                                             "Code: ") +
-                                    str(self.API_reply.error()) +
+                                    str(answer.error()) +
                                     "\nPlease report tis on the bug tracker.")
 
     def update_fields(self, result):
@@ -1269,7 +1268,7 @@ class Isogeo:
             if format_defined is True:
                 output_url += '&' + imgformat
             else:
-                output_url += '&format=image/jpeg'
+                output_url += '&format=image/png'
 
             if srs_defined is True:
                 output_url += '&' + srs
