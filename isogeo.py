@@ -27,7 +27,7 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
 # Ajouté oar moi à partir de QMessageBox
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
     QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, \
-    QPixmap, QProgressBar, QLineEdit
+    QPixmap, QProgressBar, QLineEdit, QMenu
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -965,15 +965,15 @@ class Isogeo:
             for line in lines:
                 final_text += line + "\n"
             final_text = final_text[:-1]
-            button = QPushButton(final_text)
-            button.pressed.connect(partial(
+            title_button = QPushButton(final_text)
+            title_button.pressed.connect(partial(
                 self.send_details_request, md_id=i['_id']))
             try:
-                button.setToolTip(i['abstract'])
+                title_button.setToolTip(i['abstract'])
             except:
                 pass
             self.dockwidget.tbl_result.setCellWidget(
-                count, 0, button)
+                count, 0, title_button)
             self.dockwidget.tbl_result.setItem(
                 count, 1, QTableWidgetItem(tools.handle_date(i['_modified'])))
             try:
@@ -1077,13 +1077,15 @@ class Isogeo:
                             link_dict[u"WFS : " + name_url[1]] = name_url
 
             if link_dict == {}:
-                pass
+                self.dockwidget.tbl_result.setItem(
+                    count, 3, QTableWidgetItem(self.tr("Can't be added")))
             elif len(link_dict) == 1:
                 text = link_dict.keys()[0]
                 params = link_dict.get(text)
-                bigbutt = QPushButton(text)
-                bigbutt.pressed.connect(partial(self.add_layer, layer_info=["info", params]))
-                self.dockwidget.tbl_result.setCellWidget(count, 3, bigbutt)
+                add_button = QPushButton(text)
+                add_button.setStyleSheet("text-align: left")
+                add_button.pressed.connect(partial(self.add_layer, layer_info=["info", params]))
+                self.dockwidget.tbl_result.setCellWidget(count, 3, add_button)
             else:
                 combo = QComboBox()
                 for key in link_dict.keys():
