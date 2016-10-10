@@ -1077,8 +1077,11 @@ class Isogeo:
                             link_dict[u"WFS : " + name_url[1]] = name_url
 
             if link_dict == {}:
-                self.dockwidget.tbl_result.setItem(
-                    count, 3, QTableWidgetItem(self.tr("Can't be added")))
+                text = self.tr("Can't be added")
+                fake_button = QPushButton(text)
+                fake_button.setStyleSheet("text-align: left")
+                fake_button.setEnabled(False)
+                self.dockwidget.tbl_result.setCellWidget(count, 3, fake_button)
             elif len(link_dict) == 1:
                 text = link_dict.keys()[0]
                 params = link_dict.get(text)
