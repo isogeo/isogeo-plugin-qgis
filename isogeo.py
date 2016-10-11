@@ -602,9 +602,13 @@ class Isogeo:
 
         # Initiating the "nothing selected" item in each combobox
         self.dockwidget.cbb_inspire.addItem(" - ")
+        icon = QIcon(':/plugins/Isogeo/resources/ban.png')
+        self.dockwidget.cbb_inspire.addItem(icon, self.tr("None"), "has-no:keyword:inspire-theme")
         self.dockwidget.cbb_owner.addItem(" - ")
         self.dockwidget.cbb_format.addItem(" - ")
+        self.dockwidget.cbb_format.addItem(icon, self.tr("None"), "has-no:format")
         self.dockwidget.cbb_srs.addItem(" - ")
+        self.dockwidget.cbb_srs.addItem(icon, self.tr("None"), "has-no:coordinate-system")
         self.dockwidget.cbb_geofilter.addItem(" - ")
         self.dockwidget.cbb_type.addItem(self.tr("All types"))
         # Initializing the cbb that dont't need to be actualised.
@@ -859,6 +863,8 @@ class Isogeo:
                 self.dockwidget.checkBox_2.setCheckState(Qt.Checked)
             if search_params['other']:
                 self.dockwidget.checkBox_3.setCheckState(Qt.Checked)
+            if search_params['noaction']:
+                self.dockwidget.checkBox_4.setCheckState(Qt.Checked)
             self.savedSearch = False
 
         # Show result, if we want them to be shown (button 'show result', 'next
@@ -1422,6 +1428,10 @@ class Isogeo:
             other_param = True
         else:
             other_param = False
+        if self.dockwidget.checkBox_4.isChecked():
+            noaction_param = True
+        else:
+            noaction_param = False
 
         params = {}
         params['owner'] = owner_param
@@ -1434,6 +1444,7 @@ class Isogeo:
         params['view'] = view_param
         params['download'] = download_param
         params['other'] = other_param
+        params['noaction'] = noaction_param
         params['text'] = text
         params['datatype'] = type_param
         params['operation'] = operation_param
@@ -1533,6 +1544,8 @@ class Isogeo:
             filters += "action:download "
         if self.dockwidget.checkBox_3.isChecked():
             filters += "action:other "
+        if self.dockwidget.checkBox_4.isChecked():
+            filters += "has-no:action "
         # Adding the keywords that are checked (whose data[10] == 2)
         for i in xrange(self.dockwidget.cbb_keywords.count()):
             if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
@@ -1644,6 +1657,8 @@ class Isogeo:
                 filters += "action:download "
             if self.dockwidget.checkBox_3.isChecked():
                 filters += "action:other "
+            if self.dockwidget.checkBox_4.isChecked():
+                filters += "has-no:action "
             # Adding the keywords that are checked (whose data[10] == 2)
             cbb_keywords = self.dockwidget.cbb_keywords
             for i in xrange(cbb_keywords.count()):
@@ -1761,6 +1776,8 @@ class Isogeo:
                 filters += "action:download "
             if self.dockwidget.checkBox_3.isChecked():
                 filters += "action:other "
+            if self.dockwidget.checkBox_4.isChecked():
+                filters += "has-no:action "
             # Adding the keywords that are checked (whose data[10] == 2)
             cbb_keywords = self.dockwidget.cbb_keywords
             for i in xrange(cbb_keywords.count()):
@@ -1990,6 +2007,7 @@ class Isogeo:
         self.dockwidget.checkBox.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_2.setCheckState(Qt.Unchecked)
         self.dockwidget.checkBox_3.setCheckState(Qt.Unchecked)
+        self.dockwidget.checkBox_4.setCheckState(Qt.Unchecked)
         self.dockwidget.txt_input.clear()
         self.dockwidget.cbb_keywords.clear()
         self.dockwidget.cbb_type.clear()
@@ -2313,7 +2331,7 @@ class Isogeo:
             text = self.tr(u"<html><p><b><br/>This plugin is powered by 1 share.<br/></b></p>")
         else:
             text = self.tr(u"<html><p><b><br/>This plugin is powered by {0} shares.<br/></b></p>").format(total)
-        text += u"<p>   _____________________________________________________________________________   </p>"
+        text += u"<p>   ___________________________________________________________________   </p>"
         for share in content:
             text += u"<p><b>{0}</p></b>".format(share['name'])
             text += self.tr(u"<p>Modified: {0}</p>").format(tools.handle_date(share['_modified']))
@@ -2321,8 +2339,8 @@ class Isogeo:
             text += self.tr(u"<p>Applications powered by this share:</p>")
             for a in share['applications']:
                 text += u"<p>   - <a href='{0}'>{1}</a></p>".format(a['url'], a['name'])
-            text += u"<p>   _____________________________________________________________________________   </p>"
-        #text = text[:-90]
+            text += u"<p>   ___________________________________________________________________   </p>"
+        #text = text[:-80]
         text += u"</html>"
         self.dockwidget.txt_shares.setText(text)
 
@@ -2375,6 +2393,7 @@ class Isogeo:
         self.dockwidget.checkBox.clicked.connect(self.search)
         self.dockwidget.checkBox_2.clicked.connect(self.search)
         self.dockwidget.checkBox_3.clicked.connect(self.search)
+        self.dockwidget.checkBox_4.clicked.connect(self.search)
         # Connecting the radio buttons
 
         # Connecting the previous and next page buttons to their functions

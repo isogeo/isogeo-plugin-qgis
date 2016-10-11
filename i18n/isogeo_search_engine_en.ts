@@ -31,7 +31,7 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1212"/>
+        <location filename="isogeo.py" line="1259"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -56,148 +56,153 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="796"/>
+        <location filename="isogeo.py" line="800"/>
         <source>---- Keywords ----</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1005"/>
+        <location filename="isogeo.py" line="1011"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1038"/>
+        <location filename="isogeo.py" line="1044"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1054"/>
+        <location filename="isogeo.py" line="1060"/>
         <source>PostGIS table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1147"/>
+        <location filename="isogeo.py" line="1194"/>
         <source>The layer is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1174"/>
+        <location filename="isogeo.py" line="1221"/>
         <source>The linked service is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1212"/>
+        <location filename="isogeo.py" line="1259"/>
         <source>The PostGIS layer is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1737"/>
+        <location filename="isogeo.py" line="1795"/>
         <source>Your canvas coordinate system is not defined with a EPSG code.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="619"/>
+        <location filename="isogeo.py" line="623"/>
         <source>Intersects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="619"/>
+        <location filename="isogeo.py" line="623"/>
         <source>within</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="619"/>
+        <location filename="isogeo.py" line="623"/>
         <source>contains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="609"/>
+        <location filename="isogeo.py" line="613"/>
         <source>All types</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="627"/>
+        <location filename="isogeo.py" line="631"/>
         <source>Relevance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="627"/>
+        <location filename="isogeo.py" line="631"/>
         <source>Alphabetical order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="627"/>
+        <location filename="isogeo.py" line="631"/>
         <source>Data modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="627"/>
+        <location filename="isogeo.py" line="631"/>
         <source>Data created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="627"/>
+        <location filename="isogeo.py" line="631"/>
         <source>Metadata modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="627"/>
+        <location filename="isogeo.py" line="631"/>
         <source>Metadata created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="637"/>
+        <location filename="isogeo.py" line="641"/>
         <source>Descending</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="637"/>
+        <location filename="isogeo.py" line="641"/>
         <source>Ascendant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="673"/>
+        <location filename="isogeo.py" line="677"/>
         <source>Map canvas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1903"/>
+        <location filename="isogeo.py" line="1961"/>
         <source>Quick Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1427"/>
+        <location filename="isogeo.py" line="1479"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2272"/>
+        <location filename="isogeo.py" line="2331"/>
         <source>&lt;html&gt;&lt;p&gt;&lt;b&gt;&lt;br/&gt;This plugin is powered by 1 share.&lt;br/&gt;&lt;/b&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2274"/>
+        <location filename="isogeo.py" line="2333"/>
         <source>&lt;html&gt;&lt;p&gt;&lt;b&gt;&lt;br/&gt;This plugin is powered by {0} shares.&lt;br/&gt;&lt;/b&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2278"/>
+        <location filename="isogeo.py" line="2337"/>
         <source>&lt;p&gt;Modified: {0}&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2279"/>
+        <location filename="isogeo.py" line="2338"/>
         <source>&lt;p&gt;Contact: {0}&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2280"/>
+        <location filename="isogeo.py" line="2339"/>
         <source>&lt;p&gt;Applications powered by this share:&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1080"/>
+        <location filename="isogeo.py" line="1124"/>
         <source>Can&apos;t be added</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="611"/>
+        <source>None</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -214,82 +219,82 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="251"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="253"/>
         <source>Format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="493"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="454"/>
         <source>Owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="329"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="331"/>
         <source>INSPIRE keywords</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="571"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="532"/>
         <source>Coordinate system</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="396"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="603"/>
         <source>Associated resources</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="621"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="623"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="628"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="630"/>
         <source>Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="635"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="637"/>
         <source>Other actions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="662"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="669"/>
         <source>Show results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="717"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="724"/>
         <source>Title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="722"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="729"/>
         <source>Modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="727"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="734"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="732"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="739"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="779"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="786"/>
         <source>Page x sur x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="874"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="881"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1094"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1101"/>
         <source>Report an issue on the bug tracker</source>
         <translation type="unfinished"></translation>
     </message>
@@ -304,73 +309,78 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="194"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="196"/>
         <source>Geographic filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="436"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="397"/>
         <source>Resource type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="659"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="666"/>
         <source>Display the results list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="673"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="680"/>
         <source>Sorting method</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="692"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="699"/>
         <source>Sorting direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="817"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="824"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1025"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1032"/>
         <source>Authentication settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="829"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="836"/>
         <source>Search settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="988"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="995"/>
         <source>Geographical operator applied to the filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="924"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="931"/>
         <source>Default search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1036"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1043"/>
         <source>Change user id and secret</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1078"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1085"/>
         <source>Resources</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1141"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1148"/>
         <source>Open online plugin help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1188"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1195"/>
         <source>Open plugin credits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="644"/>
+        <source>None</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
