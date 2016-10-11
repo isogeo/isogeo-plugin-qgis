@@ -1006,7 +1006,7 @@ class Isogeo:
                         count, 2, QTableWidgetItem(
                             self.tr('Unknown geometry')))
             except:
-                if "type:raster-dataset" in i['tags']:
+                if "rasterDataset" in i.get('type'):
                     label = QLabel()
                     pix = QPixmap(':/plugins/Isogeo/resources/raster.png')
                     label.setPixmap(pix)
@@ -1075,6 +1075,44 @@ class Isogeo:
                         name_url = self.build_wfs_url(url)
                         if name_url != 0:
                             link_dict[u"WFS : " + name_url[1]] = name_url
+
+            if i.get('type') == "vectorDataset" or i.get('type') == "rasterDataset":
+                for layer in i.get('serviceLayers'):
+                    service = layer.get("service")
+                    if service.get("format") == "wfs":
+                        name = layer.get("titles")[0].get("value")
+                        path = "{0}?typename={1}".format(service.get("path"), layer.get("id"))
+                        url =[name, path]
+                        name_url = self.build_wfs_url(url)
+                        if name_url != 0:
+                            link_dict[u"WFS : " + name_url[1]] = name_url
+                    elif service.get("format") == "wms":
+                        name = layer.get("titles")[0].get("value")
+                        path = "{0}?layers={1}".format(service.get("path"), layer.get("id"))
+                        url =[name, path]
+                        name_url = self.build_wms_url(url)
+                        if name_url != 0:
+                            link_dict[u"WMS : " + name_url[1]] = name_url
+            elif i.get('type') == "service":
+                if i.get("layers") is not None:
+                    if i.get("format") == "wfs":
+                        base_url = i.get("path")
+                        for layer in i.get('layers'):
+                            name = layer.get("titles")[0].get("value", "wfslayer")
+                            path = "{0}?typename={1}".format(base_url, layer.get("id"))
+                            url =[name, path]
+                            name_url = self.build_wfs_url(url)
+                            if name_url != 0:
+                                link_dict[u"WFS : " + name_url[1]] = name_url
+                    elif i.get("format") == "wms":
+                        base_url = i.get("path")
+                        for layer in i.get('layers'):
+                            name = layer.get("titles")[0].get("value", "wmslayer")
+                            path = "{0}?layers={1}".format(base_url, layer.get("id"))
+                            url =[name, path]
+                            name_url = self.build_wms_url(url)
+                            if name_url != 0:
+                                link_dict[u"WMS : " + name_url[1]] = name_url
 
             if link_dict == {}:
                 text = self.tr("Can't be added")
@@ -1530,7 +1568,7 @@ class Isogeo:
             od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
             self.currentUrl += "&ob={0}&od={1}".format(ob, od)
         if self.showResult is True:
-            self.currentUrl += "&_limit=15&_include=links&_lang={0}".format(self.lang)
+            self.currentUrl += "&_limit=15&_include=links,serviceLayers,layers&_lang={0}".format(self.lang)
         else:
             self.currentUrl += "&_limit=0&_lang={0}".format(self.lang)
         logging.info(self.currentUrl)
@@ -1643,7 +1681,7 @@ class Isogeo:
                     self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                 self.currentUrl += "&_offset=" + \
                     str((15 * (self.page_index - 1))) + \
-                    "&_limit=15&_include=links&_lang={0}".format(self.lang)
+                    "&_limit=15&_include=links,serviceLayers,layers&_lang={0}".format(self.lang)
             else:
                 if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
                     ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
@@ -1651,7 +1689,7 @@ class Isogeo:
                     self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                 self.currentUrl += "_offset=" + \
                     str((15 * (self.page_index - 1))) + \
-                    "&_limit=15&_include=links&_lang={0}".format(self.lang)
+                    "&_limit=15&_include=links,serviceLayers,layers&_lang={0}".format(self.lang)
             # self.dockwidget.dump.setText(self.currentUrl)
             if self.requestStatusClear is True:
                 self.send_request_to_Isogeo_API(self.token)
@@ -1758,7 +1796,7 @@ class Isogeo:
                         ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
                         od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
                         self.currentUrl += "&ob={0}&od={1}".format(ob, od)
-                    self.currentUrl += "&_limit=15&_include=links&_lang={0}".format(self.lang)
+                    self.currentUrl += "&_limit=15&_include=links,serviceLayers,layers&_lang={0}".format(self.lang)
                 else:
                     if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
                         ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
@@ -1766,14 +1804,14 @@ class Isogeo:
                         self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                     self.currentUrl += filters + "&_offset=" + \
                         str((15 * (self.page_index - 1))) + \
-                        "&_limit=15&_include=links&_lang={0}".format(self.lang)
+                        "&_limit=15&_include=links,serviceLayers,layers&_lang={0}".format(self.lang)
             else:
                 if self.page_index == 1:
                     if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
                         ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
                         od = self.dockwidget.cbb_od.itemData(self.dockwidget.cbb_od.currentIndex())
                         self.currentUrl += "&ob={0}&od={1}".format(ob, od)
-                    self.currentUrl += "_limit=15&_include=links&_lang={0}".format(self.lang)
+                    self.currentUrl += "_limit=15&_include=links,serviceLayers,layers&_lang={0}".format(self.lang)
                 else:
                     if self.dockwidget.cbb_ob.currentIndex() != 0 or self.dockwidget.cbb_od.currentIndex() != 0:
                         ob = self.dockwidget.cbb_ob.itemData(self.dockwidget.cbb_ob.currentIndex())
@@ -1781,7 +1819,7 @@ class Isogeo:
                         self.currentUrl += "&ob={0}&od={1}".format(ob, od)
                     self.currentUrl += "&_offset=" + \
                         str((15 * (self.page_index - 1))) + \
-                        "&_limit=15&_include=links&_lang={0}".format(self.lang)
+                        "&_limit=15&_include=links,serviceLayers,layers&_lang={0}".format(self.lang)
 
             # self.dockwidget.dump.setText(self.currentUrl)
             if self.requestStatusClear is True:
