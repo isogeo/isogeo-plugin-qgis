@@ -1,5 +1,31 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/asterisk.svg</file>
+    <file>resources/ban.svg</file>
+    <file>resources/bolt.svg</file>
+    <file>resources/bullhorn.svg</file>
+    <file>resources/calendar.svg</file>
+    <file>resources/calendar-o.svg</file>
+    <file>resources/caret-left.svg</file>
+    <file>resources/caret-right.svg</file>
+    <file>resources/cube.svg</file>
+    <file>resources/eye.svg</file>
+    <file>resources/gear.svg</file>
+    <file>resources/globe.svg</file>
+    <file>resources/info.svg</file>
+    <file>resources/leaf.svg</file>
+    <file>resources/map.svg</file>
+    <file>resources/pencil.svg</file>
+    <file>resources/phone.svg</file>
+    <file>resources/play.svg</file>
+    <file>resources/question.svg</file>
+    <file>resources/save.svg</file>
+    <file>resources/search.svg</file>
+    <file>resources/tag.svg</file>
+    <file>resources/trash.svg</file>
+    <file>resources/undo.svg</file>
+    <file>resources/users.svg</file>
+    <file>resources/user-times.svg</file>
     <file>resources/ban.png</file>
     <file>resources/info.png</file>
     <file>resources/question.png</file>

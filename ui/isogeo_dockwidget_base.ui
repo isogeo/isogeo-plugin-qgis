@@ -50,13 +50,13 @@
       <widget class="QWidget" name="tab">
        <attribute name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/plugins/Isogeo/resources/search.png</normaloff>:/plugins/Isogeo/resources/search.png</iconset>
+         <normaloff>:/plugins/Isogeo/resources/search.svg</normaloff>:/plugins/Isogeo/resources/search.svg</iconset>
        </attribute>
        <attribute name="title">
         <string>Search</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout_14">
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_14">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -114,7 +114,7 @@
                   </property>
                   <property name="icon">
                    <iconset resource="../resources.qrc">
-                    <normaloff>:/plugins/Isogeo/resources/save.png</normaloff>:/plugins/Isogeo/resources/save.png</iconset>
+                    <normaloff>:/plugins/Isogeo/resources/save.svg</normaloff>:/plugins/Isogeo/resources/save.svg</iconset>
                   </property>
                  </widget>
                 </item>
@@ -140,7 +140,7 @@
                   </property>
                   <property name="icon">
                    <iconset resource="../resources.qrc">
-                    <normaloff>:/plugins/Isogeo/resources/refresh.png</normaloff>:/plugins/Isogeo/resources/refresh.png</iconset>
+                    <normaloff>:/plugins/Isogeo/resources/undo.svg</normaloff>:/plugins/Isogeo/resources/undo.svg</iconset>
                   </property>
                  </widget>
                 </item>
@@ -152,7 +152,7 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="0">
+        <item>
          <widget class="QgsCollapsibleGroupBox" name="grp_filters">
           <property name="font">
            <font>
@@ -173,20 +173,29 @@
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_15">
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_8">
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_5">
+                  <layout class="QVBoxLayout" name="verticalLayout">
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_9">
+                    <layout class="QHBoxLayout" name="horizontalLayout">
                      <item>
                       <widget class="QLabel" name="label">
+                       <property name="maximumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
                        <property name="text">
                         <string/>
                        </property>
                        <property name="pixmap">
-                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/map.png</pixmap>
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/map.svg</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
                        </property>
                       </widget>
                      </item>
@@ -218,43 +227,48 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout">
+                  <layout class="QVBoxLayout" name="verticalLayout_3">
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_5">
+                    <layout class="QHBoxLayout" name="horizontalLayout_3">
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout">
-                       <item>
-                        <widget class="QLabel" name="label_2">
-                         <property name="font">
-                          <font>
-                           <weight>75</weight>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="pixmap">
-                          <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/cube.png</pixmap>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_8">
-                         <property name="font">
-                          <font>
-                           <weight>75</weight>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>Format</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
+                      <widget class="QLabel" name="label_2">
+                       <property name="maximumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <italic>false</italic>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/cube.svg</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_8">
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <italic>false</italic>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Format</string>
+                       </property>
+                      </widget>
                      </item>
                      <item>
                       <spacer name="horizontalSpacer_2">
@@ -296,43 +310,48 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_3">
+                  <layout class="QVBoxLayout" name="verticalLayout_4">
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_7">
+                    <layout class="QHBoxLayout" name="horizontalLayout_4">
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_2">
-                       <item>
-                        <widget class="QLabel" name="label_13">
-                         <property name="font">
-                          <font>
-                           <weight>75</weight>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="pixmap">
-                          <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/leaf.png</pixmap>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_4">
-                         <property name="font">
-                          <font>
-                           <weight>75</weight>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>INSPIRE keywords</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
+                      <widget class="QLabel" name="label_13">
+                       <property name="maximumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <italic>false</italic>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/leaf.svg</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_4">
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <italic>false</italic>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>INSPIRE keywords</string>
+                       </property>
+                      </widget>
                      </item>
                      <item>
                       <spacer name="horizontalSpacer_5">
@@ -378,16 +397,25 @@
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_9">
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <layout class="QVBoxLayout" name="verticalLayout_2">
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_10">
+                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                      <item>
                       <widget class="QLabel" name="label_10">
+                       <property name="maximumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
                        <property name="text">
                         <string/>
                        </property>
                        <property name="pixmap">
-                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/asterisk.png</pixmap>
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/asterisk.svg</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
                        </property>
                       </widget>
                      </item>
@@ -419,43 +447,48 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_2">
+                  <layout class="QVBoxLayout" name="verticalLayout_5">
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_6">
+                    <layout class="QHBoxLayout" name="horizontalLayout_5">
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_3">
-                       <item>
-                        <widget class="QLabel" name="label_9">
-                         <property name="font">
-                          <font>
-                           <weight>75</weight>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="pixmap">
-                          <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/users.png</pixmap>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_3">
-                         <property name="font">
-                          <font>
-                           <weight>75</weight>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>Owner</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
+                      <widget class="QLabel" name="label_9">
+                       <property name="maximumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <italic>false</italic>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/users.svg</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_3">
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <italic>false</italic>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Owner</string>
+                       </property>
+                      </widget>
                      </item>
                      <item>
                       <spacer name="horizontalSpacer_3">
@@ -497,43 +530,48 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_4">
+                  <layout class="QVBoxLayout" name="verticalLayout_7">
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_8">
+                    <layout class="QHBoxLayout" name="horizontalLayout_6">
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_4">
-                       <item>
-                        <widget class="QLabel" name="label_14">
-                         <property name="font">
-                          <font>
-                           <weight>75</weight>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="pixmap">
-                          <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/globe.png</pixmap>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_5">
-                         <property name="font">
-                          <font>
-                           <weight>75</weight>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>Coordinate system</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
+                      <widget class="QLabel" name="label_14">
+                       <property name="maximumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <italic>false</italic>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/globe.svg</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_5">
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <italic>false</italic>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Coordinate system</string>
+                       </property>
+                      </widget>
                      </item>
                      <item>
                       <spacer name="horizontalSpacer_6">
@@ -579,14 +617,23 @@
               </layout>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_11">
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
                <item>
                 <widget class="QLabel" name="label_12">
+                 <property name="maximumSize">
+                  <size>
+                   <width>18</width>
+                   <height>18</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
                  <property name="pixmap">
-                  <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/play.png</pixmap>
+                  <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/play.svg</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -652,7 +699,7 @@
           </layout>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_17">
           <item>
            <widget class="QPushButton" name="btn_show">
@@ -670,7 +717,7 @@
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/eye.png</normaloff>:/plugins/Isogeo/resources/eye.png</iconset>
+              <normaloff>:/plugins/Isogeo/resources/eye.svg</normaloff>:/plugins/Isogeo/resources/eye.svg</iconset>
             </property>
            </widget>
           </item>
@@ -702,7 +749,7 @@
           </item>
          </layout>
         </item>
-        <item row="3" column="0">
+        <item>
          <widget class="QTableWidget" name="tbl_result">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -741,7 +788,7 @@
           </column>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_12">
           <item>
            <spacer name="horizontalSpacer_7">
@@ -769,7 +816,7 @@
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/previous.png</normaloff>:/plugins/Isogeo/resources/previous.png</iconset>
+              <normaloff>:/plugins/Isogeo/resources/caret-left.svg</normaloff>:/plugins/Isogeo/resources/caret-left.svg</iconset>
             </property>
            </widget>
           </item>
@@ -794,7 +841,7 @@
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/next.png</normaloff>:/plugins/Isogeo/resources/next.png</iconset>
+              <normaloff>:/plugins/Isogeo/resources/caret-right.svg</normaloff>:/plugins/Isogeo/resources/caret-right.svg</iconset>
             </property>
            </widget>
           </item>
@@ -814,11 +861,14 @@
          </layout>
         </item>
        </layout>
+       <zorder>grp_filters</zorder>
+       <zorder>tbl_result</zorder>
+       <zorder></zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/plugins/Isogeo/resources/gear.png</normaloff>:/plugins/Isogeo/resources/gear.png</iconset>
+         <normaloff>:/plugins/Isogeo/resources/gear.svg</normaloff>:/plugins/Isogeo/resources/gear.svg</iconset>
        </attribute>
        <attribute name="title">
         <string>Settings</string>
@@ -882,7 +932,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/pencil.png</normaloff>:/plugins/Isogeo/resources/pencil.png</iconset>
+                   <normaloff>:/plugins/Isogeo/resources/pencil.svg</normaloff>:/plugins/Isogeo/resources/pencil.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -911,7 +961,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/trash.png</normaloff>:/plugins/Isogeo/resources/trash.png</iconset>
+                   <normaloff>:/plugins/Isogeo/resources/trash.svg</normaloff>:/plugins/Isogeo/resources/trash.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -958,7 +1008,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/save.png</normaloff>:/plugins/Isogeo/resources/save.png</iconset>
+                   <normaloff>:/plugins/Isogeo/resources/save.svg</normaloff>:/plugins/Isogeo/resources/save.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -981,7 +1031,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/refresh.png</normaloff>:/plugins/Isogeo/resources/refresh.png</iconset>
+                   <normaloff>:/plugins/Isogeo/resources/undo.svg</normaloff>:/plugins/Isogeo/resources/undo.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -1070,7 +1120,7 @@
                </property>
                <property name="icon">
                 <iconset resource="../resources.qrc">
-                 <normaloff>:/plugins/Isogeo/resources/user-times.png</normaloff>:/plugins/Isogeo/resources/user-times.png</iconset>
+                 <normaloff>:/plugins/Isogeo/resources/user-times.svg</normaloff>:/plugins/Isogeo/resources/user-times.svg</iconset>
                </property>
               </widget>
              </item>
@@ -1128,7 +1178,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/bullhorn.png</normaloff>:/plugins/Isogeo/resources/bullhorn.png</iconset>
+                   <normaloff>:/plugins/Isogeo/resources/bullhorn.svg</normaloff>:/plugins/Isogeo/resources/bullhorn.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -1175,7 +1225,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/question.png</normaloff>:/plugins/Isogeo/resources/question.png</iconset>
+                   <normaloff>:/plugins/Isogeo/resources/question.svg</normaloff>:/plugins/Isogeo/resources/question.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -1222,7 +1272,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/info.png</normaloff>:/plugins/Isogeo/resources/info.png</iconset>
+                   <normaloff>:/plugins/Isogeo/resources/info.svg</normaloff>:/plugins/Isogeo/resources/info.svg</iconset>
                  </property>
                 </widget>
                </item>

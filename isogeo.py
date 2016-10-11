@@ -27,7 +27,7 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
 # Ajouté oar moi à partir de QMessageBox
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
     QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, \
-    QPixmap, QProgressBar, QLineEdit, QMenu
+    QPixmap, QProgressBar, QLineEdit, QMenu, QColor
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -2452,6 +2452,7 @@ class Isogeo:
         self.dockwidget.txt_shares.setOpenLinks(False)
         self.dockwidget.txt_shares.anchorClicked.connect(tools.open_webpage)
 
+    
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()
         self.test_proxy_configuration()
