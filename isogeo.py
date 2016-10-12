@@ -491,6 +491,8 @@ class Isogeo:
             api_reply = self.manager.get(request)
             api_reply.finished.connect(
                 partial(self.handle_api_reply, answer=api_reply))
+        else:
+            pass
 
     def handle_api_reply(self, answer):
         """Handle the different possible Isogeo API answer.
@@ -551,6 +553,8 @@ class Isogeo:
                                             "Code: ") +
                                     str(answer.error()) +
                                     "\nPlease report tis on the bug tracker.")
+        # method end
+        return
 
     def update_fields(self, result):
         """Update the fields content.
@@ -948,6 +952,14 @@ class Isogeo:
                                          connection_name +
                                          '/database')
                             ] = dictionary
+                        else:
+                            continue
+                    else:
+                        pass
+                else:
+                    pass
+        else:
+            pass
         # Looping on the table line. For each of them, showing the title, the
         # abstract, the geometry type, and a button that allow to add the data
         # to the canvas.
@@ -1095,7 +1107,7 @@ class Isogeo:
                     elif service.get("format") == "wms":
                         name = layer.get("titles")[0].get("value")
                         path = "{0}?layers={1}".format(service.get("path"), layer.get("id"))
-                        url =[name, path]
+                        url = [name, path]
                         name_url = self.build_wms_url(url)
                         if name_url != 0:
                             link_dict[u"WMS : " + name_url[1]] = name_url
@@ -1106,10 +1118,12 @@ class Isogeo:
                         for layer in i.get('layers'):
                             name = layer.get("titles")[0].get("value", "wfslayer")
                             path = "{0}?typename={1}".format(base_url, layer.get("id"))
-                            url =[name, path]
+                            url = [name, path]
                             name_url = self.build_wfs_url(url)
                             if name_url != 0:
                                 link_dict[u"WFS : " + name_url[1]] = name_url
+                            else:
+                                pass
                     elif i.get("format") == "wms":
                         base_url = i.get("path")
                         for layer in i.get('layers'):
@@ -1119,6 +1133,12 @@ class Isogeo:
                             name_url = self.build_wms_url(url)
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
+                            else:
+                                pass
+                    else:
+                        pass
+            else:
+                pass
 
             if link_dict == {}:
                 text = self.tr("Can't be added")
@@ -1164,6 +1184,8 @@ class Isogeo:
             layer_info = combobox.itemData(combobox.currentIndex())
         elif layer_info[0] == "info":
             layer_info = layer_info[1]
+        else:
+            pass
 
         if type(layer_info) == list:
             if layer_info[0] == "vector":
@@ -1224,7 +1246,9 @@ class Isogeo:
                         self.tr("The linked service is not valid."))
                 else:
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logging.info("Data added")
+                    logging.info("Data added: ".format(name))
+            else:
+                pass
 
         elif type(layer_info) == dict:
             logging.info("Data type : PostGIS")
@@ -1491,6 +1515,8 @@ class Isogeo:
             with open(path, 'w') as outfile:
                     json.dump(saved_searches, outfile)
             self.store = False
+        else:
+            pass
 
         # Setting some variables
         self.page_index = 1
@@ -1550,6 +1576,8 @@ class Isogeo:
         for i in xrange(self.dockwidget.cbb_keywords.count()):
             if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
                 filters += self.dockwidget.cbb_keywords.itemData(i, 32) + " "
+            else:
+                continue
 
         # If the geographical filter is activated, build a spatial filter
         if self.dockwidget.cbb_geofilter.currentIndex() == 1:
@@ -1571,6 +1599,8 @@ class Isogeo:
                 filters = filters[:-1]
                 filters += "&box=" + coord + "&rel=" +\
                     self.dockwidget.cbb_geo_op.itemData(self.dockwidget.cbb_geo_op.currentIndex()) + " "
+            else:
+                pass
 
         filters = "q=" + filters[:-1]
         # self.dockwidget.txt_input.setText(encoded_filters)
@@ -1588,6 +1618,11 @@ class Isogeo:
         # self.dockwidget.dump.setText(self.currentUrl)
         if self.requestStatusClear is True:
             self.send_request_to_Isogeo_API(self.token)
+        else:
+            pass
+
+        # method end
+        return
 
     def next_page(self):
         """Add the _offset parameter to the current url to display next page.
@@ -2291,6 +2326,8 @@ class Isogeo:
             ).setResizeMode(3)
         # Finally open the damn window
         self.IsogeoMdDetails.show()
+        QgsMessageLog.logMessage("Detailed metadata displayed: {}".format(title),
+                                 "Isogeo")
 
     def edited_search(self):
         """On the Qline edited signal, decide weither a search has to be launched."""
@@ -2323,6 +2360,8 @@ class Isogeo:
                 self.send_request_to_Isogeo_API(self.token)
             else:
                 pass
+        else:
+            pass
 
     def write_shares_info(self, content):
         self.currentUrl = self.oldUrl
@@ -2452,9 +2491,7 @@ class Isogeo:
         self.dockwidget.txt_shares.setOpenLinks(False)
         self.dockwidget.txt_shares.anchorClicked.connect(tools.open_webpage)
 
-    
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()
         self.test_proxy_configuration()
         self.user_authentication()
-        
