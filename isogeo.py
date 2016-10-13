@@ -561,8 +561,13 @@ class Isogeo:
         calls show_results in the end. This may change, so results would be
         shown only when a specific button is pressed.
         """
+        # logs
         logging.info("Update_fields function called on the API reply. reset = "
                      "{0}".format(self.hardReset))
+        QgsMessageLog.logMessage("Query sent & received: {}"
+                                 .format(result.get("query")),
+                                 "Isogeo")
+        # parsing
         tags = tools.get_tags(result)
         self.old_text = self.dockwidget.txt_input.text()
         # Getting the index of selected items in each combobox
@@ -1198,7 +1203,17 @@ class Isogeo:
                 layer = QgsVectorLayer(path, name, 'ogr')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logging.info("Data added")
+                    try:
+                        QgsMessageLog.logMessage("Data layer added: {}"
+                                                 .format(name),
+                                                 "Isogeo")
+                        logging.info("Data layer added: {}".format(name))
+                    except UnicodeEncodeError:
+                        QgsMessageLog.logMessage("Data layer added:: {}"
+                                                 .format(name.decode("latin1")),
+                                                 "Isogeo")
+                        logging.info("Data layer added: {}"
+                                     .format(name.decode("latin1")))
                 else:
                     logging.info("Layer not valid. path = {0}".format(path))
                     QMessageBox.information(
@@ -2329,8 +2344,14 @@ class Isogeo:
             ).setResizeMode(3)
         # Finally open the damn window
         self.IsogeoMdDetails.show()
-        QgsMessageLog.logMessage("Detailed metadata displayed: {}".format(title),
-                                 "Isogeo")
+        try:
+            QgsMessageLog.logMessage("Detailed metadata displayed: {}"
+                                     .format(title),
+                                     "Isogeo")
+        except UnicodeEncodeError:
+            QgsMessageLog.logMessage("Detailed metadata displayed: {}"
+                                     .format(title.decode("latin1")),
+                                     "Isogeo")
 
     def edited_search(self):
         """On the Qline edited signal, decide weither a search has to be launched."""
@@ -2365,6 +2386,10 @@ class Isogeo:
                 pass
         else:
             pass
+        QgsMessageLog.logMessage("Shares information retrieved in settings tab.",
+                                 "Isogeo")
+        # method end
+        return
 
     def write_shares_info(self, content):
         self.currentUrl = self.oldUrl
