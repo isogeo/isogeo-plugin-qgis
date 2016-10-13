@@ -598,7 +598,7 @@ class Isogeo:
             search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
         self.dockwidget.cbb_modify_sr.clear()
-        icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
+        icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
         self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
         for i in search_list:
             self.dockwidget.cbb_saved.addItem(i, i)
@@ -606,7 +606,7 @@ class Isogeo:
 
         # Initiating the "nothing selected" item in each combobox
         self.dockwidget.cbb_inspire.addItem(" - ")
-        icon = QIcon(':/plugins/Isogeo/resources/ban.png')
+        icon = QIcon(':/plugins/Isogeo/resources/none.svg')
         self.dockwidget.cbb_inspire.addItem(icon, self.tr("None"), "has-no:keyword:inspire-theme")
         self.dockwidget.cbb_owner.addItem(" - ")
         self.dockwidget.cbb_format.addItem(" - ")
@@ -1100,7 +1100,7 @@ class Isogeo:
                     if service.get("format") == "wfs":
                         name = layer.get("titles")[0].get("value")
                         path = "{0}?typename={1}".format(service.get("path"), layer.get("id"))
-                        url =[name, path]
+                        url = [name, path]
                         name_url = self.build_wfs_url(url)
                         if name_url != 0:
                             link_dict[u"WFS : " + name_url[1]] = name_url
@@ -1129,7 +1129,7 @@ class Isogeo:
                         for layer in i.get('layers'):
                             name = layer.get("titles")[0].get("value", "wmslayer")
                             path = "{0}?layers={1}".format(base_url, layer.get("id"))
-                            url =[name, path]
+                            url = [name, path]
                             name_url = self.build_wms_url(url)
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
@@ -1952,7 +1952,7 @@ class Isogeo:
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
-        icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
+        icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
         self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
         for i in search_list:
@@ -1972,7 +1972,7 @@ class Isogeo:
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
-        icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
+        icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
         self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
         for i in search_list:
@@ -1992,7 +1992,7 @@ class Isogeo:
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_saved.clear()
-        icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
+        icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
         self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
         for i in search_list:
