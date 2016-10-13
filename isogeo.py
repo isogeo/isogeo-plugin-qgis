@@ -1045,7 +1045,7 @@ class Isogeo:
                     path = tools.format_path(i['path'])
                     try:
                         open(path)
-                        params = ["vector", path]
+                        params = ["vector", path, i.get("title")]
                         link_dict[self.tr('Data file')] = params
 
                     except IOError:
@@ -1200,7 +1200,7 @@ class Isogeo:
                 logging.info("Data type : vector")
                 path = layer_info[1]
                 name = os.path.basename(path).split(".")[0]
-                layer = QgsVectorLayer(path, name, 'ogr')
+                layer = QgsVectorLayer(path, layer_info[2], 'ogr')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
                     try:
