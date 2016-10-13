@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>531</width>
-    <height>842</height>
+    <height>716</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>531</width>
-    <height>842</height>
+    <height>523</height>
    </size>
   </property>
   <property name="locale">
@@ -55,8 +55,8 @@
        <attribute name="title">
         <string>Search</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_14">
-        <item>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_14">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -152,7 +152,7 @@
           </item>
          </layout>
         </item>
-        <item>
+        <item row="1" column="0">
          <widget class="QgsCollapsibleGroupBox" name="grp_filters">
           <property name="font">
            <font>
@@ -699,7 +699,7 @@
           </layout>
          </widget>
         </item>
-        <item>
+        <item row="2" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_17">
           <item>
            <widget class="QPushButton" name="btn_show">
@@ -749,7 +749,7 @@
           </item>
          </layout>
         </item>
-        <item>
+        <item row="3" column="0">
          <widget class="QTableWidget" name="tbl_result">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -788,7 +788,7 @@
           </column>
          </widget>
         </item>
-        <item>
+        <item row="4" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_12">
           <item>
            <spacer name="horizontalSpacer_7">
@@ -864,6 +864,7 @@
        <zorder>grp_filters</zorder>
        <zorder>tbl_result</zorder>
        <zorder></zorder>
+       <zorder>horizontalSpacer_8</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="icon">

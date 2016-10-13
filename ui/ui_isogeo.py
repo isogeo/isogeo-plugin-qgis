@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Thu Oct 13 11:25:47 2016
+# Created: Thu Oct 13 18:00:43 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,8 +26,8 @@ except AttributeError:
 class Ui_IsogeoDockWidgetBase(object):
     def setupUi(self, IsogeoDockWidgetBase):
         IsogeoDockWidgetBase.setObjectName(_fromUtf8("IsogeoDockWidgetBase"))
-        IsogeoDockWidgetBase.resize(531, 842)
-        IsogeoDockWidgetBase.setMinimumSize(QtCore.QSize(531, 842))
+        IsogeoDockWidgetBase.resize(531, 716)
+        IsogeoDockWidgetBase.setMinimumSize(QtCore.QSize(531, 523))
         IsogeoDockWidgetBase.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         IsogeoDockWidgetBase.setWindowTitle(_fromUtf8("Isogeo"))
         self.dockWidgetContents = QtGui.QWidget()
@@ -48,8 +48,8 @@ class Ui_IsogeoDockWidgetBase(object):
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
-        self.verticalLayout_14 = QtGui.QVBoxLayout(self.tab)
-        self.verticalLayout_14.setObjectName(_fromUtf8("verticalLayout_14"))
+        self.gridLayout_3 = QtGui.QGridLayout(self.tab)
+        self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
         self.horizontalLayout_14 = QtGui.QHBoxLayout()
         self.horizontalLayout_14.setObjectName(_fromUtf8("horizontalLayout_14"))
         self.verticalLayout_6 = QtGui.QVBoxLayout()
@@ -96,7 +96,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_13.addWidget(self.btn_reinit)
         self.verticalLayout_11.addLayout(self.horizontalLayout_13)
         self.horizontalLayout_14.addWidget(self.widget)
-        self.verticalLayout_14.addLayout(self.horizontalLayout_14)
+        self.gridLayout_3.addLayout(self.horizontalLayout_14, 0, 0, 1, 1)
         self.grp_filters = QgsCollapsibleGroupBox(self.tab)
         font = QtGui.QFont()
         font.setBold(True)
@@ -345,7 +345,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_7.addWidget(self.checkBox_4)
         self.verticalLayout_13.addLayout(self.horizontalLayout_7)
         self.gridLayout_2.addLayout(self.verticalLayout_13, 0, 0, 1, 1)
-        self.verticalLayout_14.addWidget(self.grp_filters)
+        self.gridLayout_3.addWidget(self.grp_filters, 1, 0, 1, 1)
         self.horizontalLayout_17 = QtGui.QHBoxLayout()
         self.horizontalLayout_17.setObjectName(_fromUtf8("horizontalLayout_17"))
         self.btn_show = QtGui.QPushButton(self.tab)
@@ -363,7 +363,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_od.setMaximumSize(QtCore.QSize(111, 16777215))
         self.cbb_od.setObjectName(_fromUtf8("cbb_od"))
         self.horizontalLayout_17.addWidget(self.cbb_od)
-        self.verticalLayout_14.addLayout(self.horizontalLayout_17)
+        self.gridLayout_3.addLayout(self.horizontalLayout_17, 2, 0, 1, 1)
         self.tbl_result = QtGui.QTableWidget(self.tab)
         self.tbl_result.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.tbl_result.setObjectName(_fromUtf8("tbl_result"))
@@ -380,7 +380,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.tbl_result.horizontalHeader().setVisible(True)
         self.tbl_result.horizontalHeader().setSortIndicatorShown(False)
         self.tbl_result.verticalHeader().setVisible(True)
-        self.verticalLayout_14.addWidget(self.tbl_result)
+        self.gridLayout_3.addWidget(self.tbl_result, 3, 0, 1, 1)
         self.horizontalLayout_12 = QtGui.QHBoxLayout()
         self.horizontalLayout_12.setObjectName(_fromUtf8("horizontalLayout_12"))
         spacerItem7 = QtGui.QSpacerItem(98, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -414,7 +414,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_12.addWidget(self.btn_next)
         spacerItem8 = QtGui.QSpacerItem(128, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_12.addItem(spacerItem8)
-        self.verticalLayout_14.addLayout(self.horizontalLayout_12)
+        self.gridLayout_3.addLayout(self.horizontalLayout_12, 4, 0, 1, 1)
         icon5 = QtGui.QIcon()
         icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/search.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.tab, icon5, _fromUtf8(""))

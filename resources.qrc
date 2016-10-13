@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/ban.png</file>
     <file>resources/line.png</file>
     <file>resources/leaf.svg</file>
     <file>resources/multi.png</file>

@@ -1031,7 +1031,7 @@ class Isogeo:
                     self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 else:
                     label = QLabel()
-                    pix = QPixmap(':/plugins/Isogeo/resources/none.png')
+                    pix = QPixmap(':/plugins/Isogeo/resources/ban.png')
                     label.setPixmap(pix)
                     self.dockwidget.tbl_result.setCellWidget(count, 2, label)
 
