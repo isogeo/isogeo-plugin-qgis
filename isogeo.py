@@ -1077,7 +1077,10 @@ class Isogeo:
                             link_dict[self.tr('PostGIS table')] = params
                         else:
                             pass
-
+                    else:
+                        pass
+                else:
+                    pass
 
             for link in i['links']:
                 if link['kind'] == 'wms':
@@ -1085,22 +1088,34 @@ class Isogeo:
                     name_url = self.build_wms_url(url)
                     if name_url != 0:
                         link_dict[u"WMS : " + name_url[1]] = name_url
+                    else:
+                        pass
                 elif link['kind'] == 'wfs':
                     url = [link['title'], link['url']]
                     name_url = self.build_wfs_url(url)
                     if name_url != 0:
                         link_dict[u"WFS : " + name_url[1]] = name_url
+                    else:
+                        pass
                 elif link['type'] == 'link':
                     if link['link']['kind'] == 'wms':
                         url = [link['title'], link['url']]
                         name_url = self.build_wms_url(url)
                         if name_url != 0:
                             link_dict[u"WMS : " + name_url[1]] = name_url
+                        else:
+                            pass
                     elif link['link']['kind'] == 'wfs':
                         url = [link['title'], link['url']]
                         name_url = self.build_wfs_url(url)
                         if name_url != 0:
                             link_dict[u"WFS : " + name_url[1]] = name_url
+                        else:
+                            pass
+                    else:
+                        pass
+                else:
+                    pass
 
             if i.get('type') == "vectorDataset" or i.get('type') == "rasterDataset":
                 for layer in i.get('serviceLayers'):
@@ -1112,6 +1127,8 @@ class Isogeo:
                         name_url = self.build_wfs_url(url)
                         if name_url != 0:
                             link_dict[u"WFS : " + name_url[1]] = name_url
+                        else:
+                            pass
                     elif service.get("format") == "wms":
                         name = layer.get("titles")[0].get("value")
                         path = "{0}?layers={1}".format(service.get("path"), layer.get("id"))
@@ -1119,6 +1136,10 @@ class Isogeo:
                         name_url = self.build_wms_url(url)
                         if name_url != 0:
                             link_dict[u"WMS : " + name_url[1]] = name_url
+                        else:
+                            pass
+                    else:
+                        pass
             elif i.get('type') == "service":
                 if i.get("layers") is not None:
                     if i.get("format") == "wfs":
