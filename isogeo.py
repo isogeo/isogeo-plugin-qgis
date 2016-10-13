@@ -1067,9 +1067,14 @@ class Isogeo:
                     if base_name in self.PostGISdict.keys():
                         params = {}
                         params['base_name'] = base_name
-                        params['schema'] = i['name'].split(".")[0]
-                        params['table'] = i['name'].split(".")[1]
-                        link_dict[self.tr('PostGIS table')] = params
+                        schema_table = i.get('name')
+                        if schema_table is not None:
+                            params['schema'] = schema_table.split(".")[0]
+                            params['table'] = schema_table.split(".")[1]
+                            link_dict[self.tr('PostGIS table')] = params
+                        else:
+                            pass
+
 
             for link in i['links']:
                 if link['kind'] == 'wms':
