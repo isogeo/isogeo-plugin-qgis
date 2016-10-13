@@ -50,7 +50,6 @@ from qgis.core import QgsNetworkAccessManager, QgsPoint, \
     QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI, QgsMessageLog, \
     QgsRectangle
 from PyQt4.QtNetwork import QNetworkRequest
-import ConfigParser
 import json
 import base64
 import urllib
@@ -62,7 +61,6 @@ from collections import OrderedDict
 from functools import partial
 import db_manager.db_plugins.postgis.connector as con
 import operator
-import time
 
 # Mes modules a moi
 from modules.tools import Tools
