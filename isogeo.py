@@ -281,9 +281,14 @@ class Isogeo:
         # when closing the docked window:
         # self.dockwidget = None
         self.pluginIsActive = False
-        for plugin in plugins.keys():
-            if plugin.startswith('isogeo'):
-                reloadPlugin(plugin)
+        try:
+            reloadPlugin("isogeo_search_engine")
+        except TypeError:
+            pass
+        try:
+            reloadPlugin("isogeo_plugin")
+        except TypeError:
+            pass
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -729,9 +734,22 @@ class Isogeo:
                     self.dockwidget.cbb_geofilter.findText(self.params['geofilter']))
 
             # Filling the keywords special combobox (whose items are checkable)
+            # In the case where it isn't a saved research. So we just have to
+            # check the items that were previously checked
             if self.savedSearch is False:
                 self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-                i = 1
+                # Creating the "None" option, always on top.
+                none_item = QStandardItem(self.tr('None'))
+                none_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                none_item.setData("has-no:keyword", 32)
+                if none_item.data(32) in self.params['keys']:
+                    none_item.setData(Qt.Checked, Qt.CheckStateRole)
+                    self.model.insertRow(1, none_item)
+                else:
+                    none_item.setData(Qt.Unchecked, Qt.CheckStateRole)
+                    self.model.insertRow(1, none_item)
+                # Filling the combobox with all the normal items
+                i = 2
                 ordered = sorted(tags['keywords'].items(),
                                  key=operator.itemgetter(1))
                 for a in ordered:
@@ -740,7 +758,7 @@ class Isogeo:
                     item.setData(a[0], 32)
                     # As all items have been destroyed and generated again, we
                     # have to set the checkstate (checked/unchecked) according
-                    # to what the user had chosen
+                    # to what the user had chosen.
                     if item.data(32) in self.params['keys']:
                         item.setData(Qt.Checked, Qt.CheckStateRole)
                         self.model.insertRow(0, item)
@@ -748,14 +766,19 @@ class Isogeo:
                         item.setData(Qt.Unchecked, Qt.CheckStateRole)
                         self.model.setItem(i, 0, item)
                     i += 1
+                # Creating the first item, that is just a banner for
+                # the combobox.
                 first_item = QStandardItem(self.tr('---- Keywords ----'))
-                icon = QIcon(':/plugins/Isogeo/resources/tag.png')
+                icon = QIcon(':/plugins/Isogeo/resources/tag.svg')
                 first_item.setIcon(icon)
                 first_item.setSelectable(False)
                 self.model.insertRow(0, first_item)
                 self.model.itemChanged.connect(self.search)
                 self.dockwidget.cbb_keywords.setModel(self.model)
+            # When it is a saved research, we have to look in the json, and then
+            # check the items accordingly (quite close to the previous case)
             else:
+                # Opening the json and getting the keywords
                 path = self.get_plugin_path() + "/user_settings/saved_searches.json"
                 with open(path) as data_file:
                     saved_searches = json.load(data_file)
@@ -765,7 +788,18 @@ class Isogeo:
                     if a.startswith("keyword"):
                         keywords_list.append(search_params[a])
                 self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-                i = 1
+                # None item, on top of the cbb
+                none_item = QStandardItem(self.tr('None'))
+                none_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                none_item.setData("has-no:keyword", 32)
+                if none_item.data(32) in keywords_list:
+                    none_item.setData(Qt.Checked, Qt.CheckStateRole)
+                    self.model.insertRow(1, none_item)
+                else:
+                    none_item.setData(Qt.Unchecked, Qt.CheckStateRole)
+                    self.model.insertRow(1, none_item)
+                # Filling with the standard items
+                i = 2
                 ordered = sorted(tags['keywords'].items(),
                                  key=operator.itemgetter(1))
                 for a in ordered:
@@ -782,16 +816,30 @@ class Isogeo:
                         item.setData(Qt.Unchecked, Qt.CheckStateRole)
                         self.model.setItem(i, 0, item)
                     i += 1
+                # Banner item
                 first_item = QStandardItem(self.tr('---- Keywords ----'))
-                icon = QIcon(':/plugins/Isogeo/resources/tag.png')
+                icon = QIcon(':/plugins/Isogeo/resources/tag.svg')
                 first_item.setIcon(icon)
                 first_item.setSelectable(False)
                 self.model.insertRow(0, first_item)
                 self.model.itemChanged.connect(self.search)
                 self.dockwidget.cbb_keywords.setModel(self.model)
+        # In case of a hard reset, we don't have to worry about widgets
+        # previous state as they are to be reset
         else:
             self.model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-            i = 1
+            # None item
+            none_item = QStandardItem(self.tr('None'))
+            none_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            none_item.setData("has-no:keyword", 32)
+            if none_item.data(32) in self.params['keys']:
+                none_item.setData(Qt.Checked, Qt.CheckStateRole)
+                self.model.insertRow(1, none_item)
+            else:
+                none_item.setData(Qt.Unchecked, Qt.CheckStateRole)
+                self.model.insertRow(1, none_item)
+            # Standard items
+            i = 2
             ordered = sorted(tags['keywords'].items(),
                              key=operator.itemgetter(1))
             for a in ordered:
@@ -804,8 +852,9 @@ class Isogeo:
                 item.setData(Qt.Unchecked, Qt.CheckStateRole)
                 self.model.setItem(i, 0, item)
                 i += 1
+            # Banner item
             first_item = QStandardItem(self.tr('---- Keywords ----'))
-            icon = QIcon(':/plugins/Isogeo/resources/tag.png')
+            icon = QIcon(':/plugins/Isogeo/resources/tag.svg')
             first_item.setIcon(icon)
             first_item.setSelectable(False)
             self.model.insertRow(0, first_item)
