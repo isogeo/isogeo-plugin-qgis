@@ -864,7 +864,6 @@
        <zorder>grp_filters</zorder>
        <zorder>tbl_result</zorder>
        <zorder></zorder>
-       <zorder>horizontalSpacer_8</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="icon">

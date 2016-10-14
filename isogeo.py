@@ -1227,14 +1227,30 @@ class Isogeo:
             elif len(link_dict) == 1:
                 text = link_dict.keys()[0]
                 params = link_dict.get(text)
-                add_button = QPushButton(text)
+                if text.startswith("WMS"):
+                    icon = QIcon(':/plugins/Isogeo/resources/wms.png')
+                elif text.startswith("WFS"):
+                    icon = QIcon(':/plugins/Isogeo/resources/wfs.png')
+                elif text.startswith(self.tr('PostGIS table')):
+                    icon = QIcon(':/plugins/Isogeo/resources/database.svg')
+                elif text.startswith(self.tr('Data file')):
+                    icon = QIcon(':/plugins/Isogeo/resources/file.svg')
+                add_button = QPushButton(icon, text)
                 add_button.setStyleSheet("text-align: left")
                 add_button.pressed.connect(partial(self.add_layer, layer_info=["info", params]))
                 self.dockwidget.tbl_result.setCellWidget(count, 3, add_button)
             else:
                 combo = QComboBox()
                 for key in link_dict.keys():
-                    combo.addItem(key, link_dict[key])
+                    if key.startswith("WMS"):
+                        icon = QIcon(':/plugins/Isogeo/resources/wms.png')
+                    elif key.startswith("WFS"):
+                        icon = QIcon(':/plugins/Isogeo/resources/wfs.png')
+                    elif key.startswith(self.tr('PostGIS table')):
+                        icon = QIcon(':/plugins/Isogeo/resources/database.svg')
+                    elif key.startswith(self.tr('Data file')):
+                        icon = QIcon(':/plugins/Isogeo/resources/file.svg')
+                    combo.addItem(icon, key, link_dict[key])
                 combo.activated.connect(partial(self.add_layer, layer_info=["index", count]))
                 self.dockwidget.tbl_result.setCellWidget(count, 3, combo)
 
@@ -2420,7 +2436,7 @@ class Isogeo:
                                      "Isogeo")
         except UnicodeEncodeError:
             QgsMessageLog.logMessage("Detailed metadata displayed: {}"
-                                     .format(title.decode("latin1")),
+                                     .format(title.encode("latin1")),
                                      "Isogeo")
 
     def edited_search(self):
