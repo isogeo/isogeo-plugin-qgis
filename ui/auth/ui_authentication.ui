@@ -30,9 +30,6 @@
    <iconset>
     <normaloff>:/ui/resources/settings.svg</normaloff>:/ui/resources/settings.svg</iconset>
   </property>
-  <property name="windowOpacity">
-   <double>0.900000000000000</double>
-  </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>

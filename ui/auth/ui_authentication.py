@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_authentication.ui'
 #
-# Created: Wed Sep 14 16:57:29 2016
+# Created: Fri Oct 14 15:25:36 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -32,7 +32,6 @@ class Ui_dlg_form_auth_prompt(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/ui/resources/settings.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         dlg_form_auth_prompt.setWindowIcon(icon)
-        dlg_form_auth_prompt.setWindowOpacity(0.9)
         dlg_form_auth_prompt.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.grb_need_account = QtGui.QGroupBox(dlg_form_auth_prompt)
         self.grb_need_account.setGeometry(QtCore.QRect(9, 110, 557, 71))
