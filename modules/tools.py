@@ -130,3 +130,197 @@ class Tools(object):
                             new=0,
                             autoraise=True
                             )
+
+    def format_button_title(self, title):
+        """Format the title for it to fit the button."""
+        words = title.split(' ')
+        line_length = 0
+        lines = []
+        string = ""
+        for word in words:
+            line_length += len(word)
+            if line_length < 22:
+                string += word + " "
+            else:
+                line_length = len(word)
+                lines.append(string[:-1])
+                string = word + " "
+        if string[:-1] not in lines:
+            lines.append(string[:-1])
+        final_text = ""
+        for line in lines:
+            final_text += line + "\n"
+        final_text = final_text[:-1]
+        return final_text
+
+    def build_request_url(self, params):
+        """Build the request url according to the widgets."""
+        # Base url for a request to Isogeo API
+        url = 'https://v1.api.isogeo.com/resources/search?'
+        # Build the url according to the params
+        filters = ""
+        # Owner
+        if params.get('owner') is not None:
+            filters += params.get('owner') + " "
+        # INSPIRE keywords
+        if params.get('inspire') is not None:
+            filters += params.get('inspire') + " "
+        # Format
+        if params.get('format') is not None:
+            filters += params.get('format') + " "
+        # Data type
+        if params.get('datatype') is not None:
+            filters += params.get('datatype') + " "
+        # Action : view
+        if params.get("view"):
+            filters += "action:view "
+        # Action : download
+        if params.get("download"):
+            filters += "action:download "
+        # Action : Other
+        if params.get("other"):
+            filters += "action:other "
+        # No actions
+        if params.get("noaction"):
+            filters += "has-no:action "
+        # Keywords
+        for keyword in params["keys"]:
+            filters += keyword + " "
+        # Formating the filters
+        if filters != "":
+            filters = "q={0}".format(filters[:-1])
+        # Geographical filter
+        if params.get("geofilter") is not None:
+            if params.get("coord") is not False:
+                filters += "&box={0}&rel={1}".format(params.get("coord"),
+                                                     params.get("operation"))
+            else:
+                pass
+        else:
+            pass
+        # Sorting order and direction
+        if params.get("show"):
+            filters += "&ob={0}&od={1}".format(params.get("ob"),
+                                               params.get("od"))
+            filters += "&_include=links,serviceLayers,layers"
+            limit = 15
+        else:
+            limit = 0
+        # Limit and offset
+        offset = (params.get("page") - 1) * 15
+        filters += "&_limit={0}&_offset={1}".format(limit, offset)
+        # Language
+        "&_lang={0}".format(params.get("lang"))
+        # BUILDING FINAL URL
+        url += filters
+        return url
+
+    def build_wfs_url(self, raw_url):
+        """Reformat the input WFS url so it fits QGIS criterias.
+
+        Tests weither all the needed information is provided in the url, and
+        then build the url in the syntax understood by QGIS.
+        """
+        title = raw_url[0]
+        input_url = raw_url[1].split("?")[0] + "?"
+        try:
+            list_parameters = raw_url[1].split("?")[1].split('&')
+        except IndexError:
+            return 0
+        valid = False
+        srs_defined = False
+        for i in list_parameters:
+            ilow = i.lower()
+            if "typename=" in ilow:
+                valid = True
+                name = i.split('=')[1]
+                typename = i
+            elif "layers=" in ilow or "layer=" in ilow:
+                valid = True
+                name = i.split('=')[1]
+                typename = "typename=" + name
+            elif "getcapabilities" in ilow:
+                valid = True
+                name = title
+                typename = "typename=" + name
+            elif "srsname=" in ilow:
+                srs_defined = True
+                srs = i
+
+        if valid is True:
+            output_url = input_url + typename
+
+            if srs_defined is True:
+                output_url += '&' + srs
+
+            output_url += '&service=WFS&version=1.0.0&request=GetFeature'
+
+            output = ["WFS", name, output_url]
+            return output
+
+        else:
+            return 0
+
+    def build_wms_url(self, raw_url):
+        """Reformat the input WMS url so it fits QGIS criterias.
+
+        Tests weither all the needed information is provided in the url, and
+        then build the url in the syntax understood by QGIS.
+        """
+        title = raw_url[0]
+        input_url = raw_url[1].split("?")[0] + "?"
+        try:
+            list_parameters = raw_url[1].split("?")[1].split('&')
+        except IndexError:
+            return 0
+        valid = False
+        style_defined = False
+        srs_defined = False
+        format_defined = False
+        for i in list_parameters:
+            ilow = i.lower()
+            if "layers=" in ilow:
+                valid = True
+                name = i.split('=')[1]
+                layers = i
+            elif "layer=" in ilow:
+                valid = True
+                name = i.split('=')[1]
+                layers = "layers=" + name
+            elif "getcapabilities" in ilow:
+                valid = True
+                name = title
+                layers = "layers=" + title
+            elif "styles=" in ilow:
+                style_defined = True
+                style = i
+            elif "crs=" in ilow:
+                srs_defined = True
+                srs = i
+            elif "format=" in ilow:
+                format_defined = True
+                imgformat = i
+
+        if valid is True:
+            if input_url.lower().startswith('url='):
+                output_url = input_url + "&" + layers
+            else:
+                output_url = "url=" + input_url + "&" + layers
+
+            if style_defined is True:
+                output_url += '&' + style
+            else:
+                output_url += '&styles='
+
+            if format_defined is True:
+                output_url += '&' + imgformat
+            else:
+                output_url += '&format=image/png'
+
+            if srs_defined is True:
+                output_url += '&' + srs
+            output = ["WMS", name, output_url]
+            return output
+
+        else:
+            return 0
