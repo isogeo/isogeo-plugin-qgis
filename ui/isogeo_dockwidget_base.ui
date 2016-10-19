@@ -879,7 +879,7 @@
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>71</height>
+            <height>121</height>
            </size>
           </property>
           <property name="title">
@@ -889,13 +889,13 @@
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_18">
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
                 <widget class="QComboBox" name="cbb_modify_sr">
                  <property name="minimumSize">
                   <size>
                    <width>221</width>
-                   <height>0</height>
+                   <height>20</height>
                   </size>
                  </property>
                 </widget>
@@ -918,7 +918,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>111</width>
-                   <height>0</height>
+                   <height>24</height>
                   </size>
                  </property>
                  <property name="font">
@@ -941,7 +941,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>61</width>
-                   <height>0</height>
+                   <height>24</height>
                   </size>
                  </property>
                  <property name="maximumSize">
@@ -968,7 +968,7 @@
               </layout>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <layout class="QHBoxLayout" name="horizontalLayout_10">
                <item>
                 <widget class="QLabel" name="label_20">
                  <property name="font">
@@ -1000,7 +1000,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>111</width>
-                   <height>0</height>
+                   <height>24</height>
                   </size>
                  </property>
                  <property name="text">
@@ -1017,7 +1017,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>61</width>
-                   <height>0</height>
+                   <height>24</height>
                   </size>
                  </property>
                  <property name="maximumSize">
@@ -1038,7 +1038,7 @@
               </layout>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_20">
+              <layout class="QHBoxLayout" name="horizontalLayout_11">
                <item>
                 <widget class="QLabel" name="label_15">
                  <property name="text">
@@ -1064,7 +1064,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>176</width>
-                   <height>0</height>
+                   <height>20</height>
                   </size>
                  </property>
                 </widget>
@@ -1291,7 +1291,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>231</height>
+            <height>105</height>
            </size>
           </property>
          </spacer>

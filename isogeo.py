@@ -93,7 +93,7 @@ tools = Tools()
 class Isogeo:
     """QGIS Plugin Implementation."""
 
-    logging.info('\n\n\t============== Isogeo Search Engine for QGIS =============')
+    logging.info('\n\n\t========== Isogeo Search Engine for QGIS ==========')
     logging.info('OS: {0}'.format(platform.platform()))
     try:
         logging.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
@@ -175,7 +175,8 @@ class Isogeo:
 
         self.PostGISdict = {}
 
-        #self.currentUrl = "https://v1.api.isogeo.com/resources/search?_limit=15&_include=links&_lang={0}".format(self.lang)
+        # self.currentUrl = "https://v1.api.isogeo.com/resources/search?
+        # _limit=15&_include=links&_lang={0}".format(self.lang)
 
         self.old_text = ""
 
@@ -588,7 +589,7 @@ class Isogeo:
         self.dockwidget.lbl_page.setText(
             "page " + str(self.page_index) + self.tr(' on ') + self.nb_page)
 
-        # Creating aliases for the widgets
+        # CREATING ALIASES FOR THE FREQUENTLY CALLED WIDGETS
         # User text input
         txt_input = self.dockwidget.txt_input
         # Owners
@@ -1014,49 +1015,7 @@ class Isogeo:
         # connection is set up in QGIS
         qs = QSettings()
         if self.PostGISdict == {}:
-            for k in sorted(qs.allKeys()):
-                if k.startswith("PostgreSQL/connections/")\
-                        and k.endswith("/database"):
-                    if len(k.split("/")) == 4:
-                        connection_name = k.split("/")[2]
-                        password_saved = qs.value('PostgreSQL/connections/' +
-                                                  connection_name +
-                                                  '/savePassword')
-                        user_saved = qs.value('PostgreSQL/connections/' +
-                                              connection_name +
-                                              '/saveUsername')
-                        if password_saved == 'true' and user_saved == 'true':
-                            dictionary = {'name':
-                                          qs.value('PostgreSQL/connections/' +
-                                                   connection_name +
-                                                   '/database'),
-                                          'host':
-                                          qs.value('PostgreSQL/connections/' +
-                                                   connection_name +
-                                                   '/host'),
-                                          'port':
-                                          qs.value('PostgreSQL/connections/' +
-                                                   connection_name +
-                                                   '/port'),
-                                          'username':
-                                          qs.value('PostgreSQL/connections/' +
-                                                   connection_name +
-                                                   '/username'),
-                                          'password':
-                                          qs.value('PostgreSQL/connections/' +
-                                                   connection_name +
-                                                   '/password')}
-                            self.PostGISdict[
-                                qs.value('PostgreSQL/connections/' +
-                                         connection_name +
-                                         '/database')
-                            ] = dictionary
-                        else:
-                            continue
-                    else:
-                        pass
-                else:
-                    pass
+            self.PostGISdict = tools.build_postgis_dict(qs)
         else:
             pass
         # Looping inside the table lines. For each of them, showing the title,
@@ -1130,7 +1089,7 @@ class Isogeo:
                     label.setPixmap(pix)
                     self.dockwidget.tbl_result.setCellWidget(count, 2, label)
 
-            # We are still looping inside the table lines. For each line, we
+            # We are still looping inside the table lines. For a given line, we
             # have displayed title, date, and geometry type. Now we have to
             # deal with the "add data" column. We need to see if the data can
             # be added directly, and/or using a geographical service.

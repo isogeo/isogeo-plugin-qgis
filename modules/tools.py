@@ -2,8 +2,8 @@
 
 import datetime
 import webbrowser
-from urllib import quote
 from PyQt4.QtCore import QUrl
+
 
 class Tools(object):
     """Basic class that holds utilitary methods for the plugin."""
@@ -324,3 +324,58 @@ class Tools(object):
 
         else:
             return 0
+
+    def build_postgis_dict(self, input_dict):
+        """Build the dict that stores informations about PostGIS connexions."""
+        final_dict = {}
+        for k in sorted(input_dict.allKeys()):
+            if k.startswith("PostgreSQL/connections/")\
+                    and k.endswith("/database"):
+                if len(k.split("/")) == 4:
+                    connection_name = k.split("/")[2]
+                    password_saved = input_dict.value(
+                        'PostgreSQL/connections/' +
+                        connection_name +
+                        '/savePassword')
+                    user_saved = input_dict.value(
+                        'PostgreSQL/connections/' +
+                        connection_name +
+                        '/saveUsername')
+                    if password_saved == 'true' and user_saved == 'true':
+                        dictionary = {'name':
+                                      input_dict.value(
+                                          'PostgreSQL/connections/' +
+                                          connection_name +
+                                          '/database'),
+                                      'host':
+                                      input_dict.value(
+                                          'PostgreSQL/connections/' +
+                                          connection_name +
+                                          '/host'),
+                                      'port':
+                                      input_dict.value(
+                                          'PostgreSQL/connections/' +
+                                          connection_name +
+                                          '/port'),
+                                      'username':
+                                      input_dict.value(
+                                          'PostgreSQL/connections/' +
+                                          connection_name +
+                                          '/username'),
+                                      'password':
+                                      input_dict.value(
+                                          'PostgreSQL/connections/' +
+                                          connection_name +
+                                          '/password')}
+                        final_dict[
+                            input_dict.value('PostgreSQL/connections/' +
+                                             connection_name +
+                                             '/database')
+                        ] = dictionary
+                    else:
+                        continue
+                else:
+                    pass
+            else:
+                pass
+        return final_dict
