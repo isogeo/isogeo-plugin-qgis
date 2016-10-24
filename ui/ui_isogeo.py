@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Wed Oct 19 14:52:09 2016
+# Created: Mon Oct 24 11:58:33 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_IsogeoDockWidgetBase(object):
     def setupUi(self, IsogeoDockWidgetBase):
         IsogeoDockWidgetBase.setObjectName(_fromUtf8("IsogeoDockWidgetBase"))
-        IsogeoDockWidgetBase.resize(531, 716)
+        IsogeoDockWidgetBase.resize(531, 808)
         IsogeoDockWidgetBase.setMinimumSize(QtCore.QSize(531, 523))
         IsogeoDockWidgetBase.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         IsogeoDockWidgetBase.setWindowTitle(_fromUtf8("Isogeo"))
@@ -40,7 +40,7 @@ class Ui_IsogeoDockWidgetBase(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
         self.tabWidget.setSizePolicy(sizePolicy)
-        self.tabWidget.setMaximumSize(QtCore.QSize(16777215, 802))
+        self.tabWidget.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)

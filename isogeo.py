@@ -182,6 +182,9 @@ class Isogeo:
 
         self.page_index = 1
 
+        basepath = os.path.dirname(os.path.realpath(__file__))
+        self.json_path = basepath + '/user_settings/saved_searches.json'
+
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -195,17 +198,7 @@ class Isogeo:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('Isogeo', message)
 
-    def add_action(
-            self,
-            icon_path,
-            text,
-            callback,
-            enabled_flag=True,
-            add_to_menu=True,
-            add_to_toolbar=True,
-            status_tip=None,
-            whats_this=None,
-            parent=None):
+    def add_action(self, icon_path, text, callback, enabled_flag=True, add_to_menu=True, add_to_toolbar=True, status_tip=None, whats_this=None, parent=None):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -304,11 +297,6 @@ class Isogeo:
         del self.toolbar
 
     # --------------------------------------------------------------------------
-
-    def get_path(self):
-        """Retrieve the path to the folder where the plugin is."""
-        basepath = os.path.dirname(os.path.realpath(__file__))
-        return basepath
 
     def test_proxy_configuration(self):
         """Check the proxy configuration.
@@ -634,8 +622,7 @@ class Isogeo:
         cbb_geofilter.clear()
         cbb_type.clear()
         # Filling the quick search combobox (also the one in settings tab)
-        path = self.get_path() + '/user_settings/saved_searches.json'
-        with open(path) as data_file:
+        with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
         search_list = saved_searches.keys()
         search_list.pop(search_list.index('_default'))
@@ -817,8 +804,7 @@ class Isogeo:
             # check the items accordingly (quite close to the previous case)
             else:
                 # Opening the json and getting the keywords
-                path = self.get_path() + "/user_settings/saved_searches.json"
-                with open(path) as data_file:
+                with open(self.json_path) as data_file:
                     saved_searches = json.load(data_file)
                 search_params = saved_searches.get(self.savedSearch)
                 keywords_list = []
@@ -1541,8 +1527,7 @@ class Isogeo:
         # STORING THE PREVIOUS SEARCH
         if self.store is True:
             # Open json file
-            path = self.get_path() + '/user_settings/saved_searches.json'
-            with open(path) as data_file:
+            with open(self.json_path) as data_file:
                 saved_searches = json.load(data_file)
             # Store the search
             name = self.tr("Last search")
@@ -1660,8 +1645,7 @@ class Isogeo:
         # each value is a dict containing the parameters for this search name
         bar = iface.messageBar()
         bar.pushMessage("search successfully saved.", duration=5)
-        path = self.get_path() + '/user_settings/saved_searches.json'
-        with open(path) as data_file:
+        with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
         # If the name already exists, ask for a new one. (TO DO)
 
@@ -1685,8 +1669,7 @@ class Isogeo:
                          "User is executing a saved search.")
             self.switch_widgets_on_and_off('off')
             selected_search = self.dockwidget.cbb_saved.currentText()
-            path = self.get_path() + '/user_settings/saved_searches.json'
-            with open(path) as data_file:
+            with open(self.json_path) as data_file:
                 saved_searches = json.load(data_file)
             if selected_search == "":
                 self.savedSearch = '_default'
@@ -1722,8 +1705,7 @@ class Isogeo:
         """Call the write_search() function and refresh the combobox."""
         search_name = self.ask_name_popup.name.text()
         self.write_search_params(search_name)
-        path = self.get_path() + '/user_settings/saved_searches.json'
-        with open(path) as data_file:
+        with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
         search_list = saved_searches.keys()
         search_list.pop(search_list.index('_default'))
@@ -1739,8 +1721,7 @@ class Isogeo:
     def rename_search(self):
         """Modify the json file in order to rename a search."""
         old_name = self.dockwidget.cbb_modify_sr.currentText()
-        path = self.get_path() + '/user_settings/saved_searches.json'
-        with open(path) as data_file:
+        with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
         new_name = self.new_name_popup.name.text()
         saved_searches[new_name] = saved_searches[old_name]
@@ -1761,8 +1742,7 @@ class Isogeo:
     def delete_search(self):
         """Modify the json file in order to delete a search."""
         to_b_deleted = self.dockwidget.cbb_modify_sr.currentText()
-        path = self.get_path() + '/user_settings/saved_searches.json'
-        with open(path) as data_file:
+        with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
         saved_searches.pop(to_b_deleted)
         search_list = saved_searches.keys()
