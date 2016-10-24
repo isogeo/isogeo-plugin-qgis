@@ -1544,7 +1544,7 @@ class Isogeo:
                 self.dockwidget.cbb_saved.addItem(i, i)
                 self.dockwidget.cbb_modify_sr.addItem(i, i)
             # Write modifications in the json
-            with open(path, 'w') as outfile:
+            with open(self.json_path, 'w') as outfile:
                     json.dump(saved_searches, outfile)
             self.store = False
         else:
@@ -1657,7 +1657,7 @@ class Isogeo:
             params['keyword_{0}'.format(i)] = params['keys'][i]
         params.pop('keys', None)
         saved_searches[search_name] = params
-        with open(path, 'w') as outfile:
+        with open(self.json_path, 'w') as outfile:
             json.dump(saved_searches, outfile)
         logging.info("Saved reseearch written. {0}".format(params))
 
@@ -1736,7 +1736,7 @@ class Isogeo:
         for i in search_list:
             self.dockwidget.cbb_saved.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
-        with open(path, 'w') as outfile:
+        with open(self.json_path, 'w') as outfile:
                 json.dump(saved_searches, outfile)
 
     def delete_search(self):
@@ -1755,7 +1755,7 @@ class Isogeo:
         for i in search_list:
             self.dockwidget.cbb_saved.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
-        with open(path, 'w') as outfile:
+        with open(self.json_path, 'w') as outfile:
                 json.dump(saved_searches, outfile)
 
     def get_coords(self, filter):
