@@ -158,7 +158,10 @@ class Tools(object):
         # Base url for a request to Isogeo API
         url = 'https://v1.api.isogeo.com/resources/search?'
         # Build the url according to the params
-        filters = ""
+        if params.get("text") != "":
+            filters = params.get("text") + " "
+        else:
+            filters = ""
         # Owner
         if params.get('owner') is not None:
             filters += params.get('owner') + " "
@@ -184,11 +187,11 @@ class Tools(object):
         if params.get("noaction"):
             filters += "has-no:action "
         # Keywords
-        for keyword in params["keys"]:
+        for keyword in params.get("keys"):
             filters += keyword + " "
         # Formating the filters
         if filters != "":
-            filters = "q={0}".format(filters[:-1])
+            filters = "q=" + filters[:-1]
         # Geographical filter
         if params.get("geofilter") is not None:
             if params.get("coord") is not False:

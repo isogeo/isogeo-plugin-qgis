@@ -1178,26 +1178,29 @@ class Isogeo:
             if d_type == "vectorDataset" or d_type == "rasterDataset":
                 for layer in i.get('serviceLayers'):
                     service = layer.get("service")
-                    # WFS
-                    if service.get("format") == "wfs":
-                        name = layer.get("titles")[0].get("value", "WFS")
-                        path = "{0}?typename={1}".format(service.get("path"),
-                                                         layer.get("id"))
-                        url = [name, path]
-                        name_url = tools.build_wfs_url(url)
-                        if name_url != 0:
-                            link_dict[u"WFS : " + name_url[1]] = name_url
-                        else:
-                            pass
-                    # WMS
-                    elif service.get("format") == "wms":
-                        name = layer.get("titles")[0].get("value", "WMS")
-                        path = "{0}?layers={1}".format(service.get("path"),
-                                                       layer.get("id"))
-                        url = [name, path]
-                        name_url = tools.build_wms_url(url)
-                        if name_url != 0:
-                            link_dict[u"WMS : " + name_url[1]] = name_url
+                    if service is not None:
+                        # WFS
+                        if service.get("format") == "wfs":
+                            name = layer.get("titles")[0].get("value", "WFS")
+                            path = "{0}?typename={1}".format(
+                                service.get("path"), layer.get("id"))
+                            url = [name, path]
+                            name_url = tools.build_wfs_url(url)
+                            if name_url != 0:
+                                link_dict[u"WFS : " + name_url[1]] = name_url
+                            else:
+                                pass
+                        # WMS
+                        elif service.get("format") == "wms":
+                            name = layer.get("titles")[0].get("value", "WMS")
+                            path = "{0}?layers={1}".format(service.get("path"),
+                                                           layer.get("id"))
+                            url = [name, path]
+                            name_url = tools.build_wms_url(url)
+                            if name_url != 0:
+                                link_dict[u"WMS : " + name_url[1]] = name_url
+                            else:
+                                pass
                         else:
                             pass
                     else:
