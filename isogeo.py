@@ -570,7 +570,7 @@ class Isogeo:
         # Show how many results there are
         self.results_count = result['total']
         self.dockwidget.btn_show.setText(
-            str(self.results_count) + u" résultats")
+            str(self.results_count) + self.tr(" results"))
         # Setting the number of rows in the result table
 
         self.nb_page = str(tools.calcul_nb_page(self.results_count))
@@ -1768,7 +1768,8 @@ class Isogeo:
             current_epsg = int(iface.mapCanvas().mapRenderer(
             ).destinationCrs().authid().split(':')[1])
         else:
-            layer = self.dockwidget.cbb_geofilter.itemData(filter)
+            index = self.dockwidget.cbb_geofilter.findText(filter)
+            layer = self.dockwidget.cbb_geofilter.itemData(index)
             e = layer.extent()
             current_epsg = int(layer.crs().authid().split(':')[1])
 
@@ -2135,6 +2136,7 @@ class Isogeo:
         return
 
     def write_shares_info(self, content):
+        """Write informations about the shares in the Settings pannel."""
         self.currentUrl = self.oldUrl
         total = len(content)
         if total == 1:

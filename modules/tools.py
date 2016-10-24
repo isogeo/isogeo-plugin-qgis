@@ -213,7 +213,7 @@ class Tools(object):
         offset = (params.get("page") - 1) * 15
         filters += "&_limit={0}&_offset={1}".format(limit, offset)
         # Language
-        "&_lang={0}".format(params.get("lang"))
+        filters += "&_lang={0}".format(params.get("lang"))
         # BUILDING FINAL URL
         url += filters
         return url
