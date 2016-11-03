@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>icon.png</file>
     <file>resources/database.svg</file>
     <file>resources/file.svg</file>
     <file>resources/wfs.png</file>

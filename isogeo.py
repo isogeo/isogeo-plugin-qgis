@@ -1534,7 +1534,9 @@ class Isogeo:
                 saved_searches = json.load(data_file)
             # Store the search
             name = self.tr("Last search")
-            saved_searches[name] = saved_searches['_current']
+            saved_searches[name] = saved_searches.get(
+                '_current',
+                "https://v1.api.isogeo.com/resources/search?&_limit=0")
             # Refresh the quick searches comboboxes content
             search_list = saved_searches.keys()
             search_list.pop(search_list.index('_default'))

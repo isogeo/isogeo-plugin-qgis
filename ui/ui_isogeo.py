@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
 #
-# Created: Mon Oct 24 11:58:33 2016
+# Created: Thu Nov 03 10:23:58 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -507,7 +507,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
         self.txt_shares = QtGui.QTextBrowser(self.groupBox)
         self.txt_shares.setObjectName(_fromUtf8("txt_shares"))
-        self.gridLayout_5.addWidget(self.txt_shares, 0, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.txt_shares, 1, 0, 1, 1)
         self.horizontalLayout_21 = QtGui.QHBoxLayout()
         self.horizontalLayout_21.setObjectName(_fromUtf8("horizontalLayout_21"))
         self.label_16 = QtGui.QLabel(self.groupBox)
@@ -523,7 +523,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_change_user.setIcon(icon8)
         self.btn_change_user.setObjectName(_fromUtf8("btn_change_user"))
         self.horizontalLayout_21.addWidget(self.btn_change_user)
-        self.gridLayout_5.addLayout(self.horizontalLayout_21, 1, 0, 1, 1)
+        self.gridLayout_5.addLayout(self.horizontalLayout_21, 0, 0, 1, 1)
         self.gridLayout_7.addWidget(self.groupBox, 1, 0, 1, 1)
         self.groupBox_4 = QtGui.QGroupBox(self.tab_2)
         self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
