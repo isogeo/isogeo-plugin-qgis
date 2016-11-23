@@ -80,7 +80,8 @@ logfile = RotatingFileHandler(os.path.join(
                               os.path.dirname(os.path.realpath(__file__)),
                               "log_isogeo_plugin.log"),
                               "a", 5000000, 1)
-logfile.setLevel(logging.DEBUG)
+logfile.setLevel(logging.INFO)
+# logfile.setLevel(logging.DEBUG)  # switch on it only for dev works
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 
