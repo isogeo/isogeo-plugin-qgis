@@ -1219,7 +1219,7 @@ class Isogeo:
                     else:
                         pass
             # New association mode. For services metadata sheet, the layers
-            # are stored in the purposely named include : "layers".
+            # are stored in the purposely named include: "layers".
             elif i.get('type') == "service":
                 if i.get("layers") is not None:
                     # WFS
@@ -1331,7 +1331,7 @@ class Isogeo:
         search the information needed to add it in the temporary dictionnary
         constructed in the show_results function. It then adds it.
         """
-        logging.info("Add_layer function called.")
+        logging.info("add_layer method called.")
         if layer_info[0] == "index":
             combobox = self.dockwidget.tbl_result.cellWidget(layer_info[1], 3)
             layer_info = combobox.itemData(combobox.currentIndex())
@@ -1343,7 +1343,6 @@ class Isogeo:
         if type(layer_info) == list:
             # If the layer to be added is a vector file
             if layer_info[0] == "vector":
-                logging.info("Data type : vector")
                 path = layer_info[1]
                 name = os.path.basename(path).split(".")[0]
                 layer = QgsVectorLayer(path, layer_info[2], 'ogr')
@@ -1353,12 +1352,12 @@ class Isogeo:
                         QgsMessageLog.logMessage("Data layer added: {}"
                                                  .format(name),
                                                  "Isogeo")
-                        logging.info("Data layer added: {}".format(name))
+                        logging.info("Vector layer added: {}".format(path))
                     except UnicodeEncodeError:
                         QgsMessageLog.logMessage(
-                            "Data layer added:: {}".format(
+                            "Vector layer added:: {}".format(
                                 name.decode("latin1")), "Isogeo")
-                        logging.info("Data layer added: {}"
+                        logging.info("Vector layer added: {}"
                                      .format(name.decode("latin1")))
                 else:
                     logging.info("Layer not valid. path = {0}".format(path))
@@ -1368,54 +1367,51 @@ class Isogeo:
                         self.tr('The layer is not valid.'))
             # If raster file
             elif layer_info[0] == "raster":
-                logging.info("Data type : raster")
                 path = layer_info[1]
                 name = os.path.basename(path).split(".")[0]
                 layer = QgsRasterLayer(path, name)
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logging.info("Data added")
+                    logging.info("Raster datasource added: {0}".format(path))
                 else:
-                    logging.info("Layer not valid. path = {0}".format(path))
+                    logging.warning("Invalid datasource: {0}".format(path))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
                         self.tr('The layer is not valid.'))
             # If WMS link
             elif layer_info[0] == 'WMS':
-                logging.info("Data type : WMS")
                 url = layer_info[2]
                 name = layer_info[1]
                 layer = QgsRasterLayer(url, name, 'wms')
-                if not layer.isValid():
-                    logging.info("Layer not valid. path = {0}".format(url))
+                if layer.isValid():
+                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    logging.info("WMS service layer added: {0}".format(url))
+                else:
+                    logging.warning("Invalid service: {0}".format(url))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
                         self.tr("The linked service is not valid."))
-                else:
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logging.info("Data added")
             # If WFS link
             elif layer_info[0] == 'WFS':
-                logging.info("Data type : WFS")
                 url = layer_info[2]
                 name = layer_info[1]
                 layer = QgsVectorLayer(url, name, 'WFS')
-                if not layer.isValid():
-                    logging.info("Layer not valid. path = {0}".format(url))
+                if layer.isValid():
+                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    logging.info("WFS service layer added: {0}".format(url))
+                else:
+                    logging.warning("Invalid service: {0}".format(url))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
                         self.tr("The linked service is not valid."))
-                else:
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logging.info("Data added: ".format(name))
             else:
                 pass
         # If the data is a PostGIS table
         elif type(layer_info) == dict:
-            logging.info("Data type : PostGIS")
+            logging.info("Data type: PostGIS")
             # Give aliases to the data passed as arguement
             base_name = layer_info['base_name']
             schema = layer_info['schema']
@@ -1441,7 +1437,7 @@ class Isogeo:
             layer = QgsVectorLayer(uri.uri(), table, "postgres")
             if layer.isValid():
                 QgsMapLayerRegistry.instance().addMapLayer(layer)
-                logging.info("Data added")
+                logging.info("Data added: {}".format(table))
             else:
                 logging.info("Layer not valid. table = {0}".format(table))
                 QMessageBox.information(
