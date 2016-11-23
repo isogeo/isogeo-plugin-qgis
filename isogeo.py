@@ -2241,7 +2241,7 @@ class Isogeo:
         # Connecting the bug tracker button to its function
         self.dockwidget.btn_report.pressed.connect(
             partial(tools.open_webpage,
-                    link='https://github.com/isogeo/isogeo-plugin-qgis/issues'
+                    link=self.tr(u'https://github.com/isogeo/isogeo-plugin-qgis/issues')
                     ))
 
         self.dockwidget.btn_help.pressed.connect(
