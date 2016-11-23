@@ -1183,8 +1183,14 @@ class Isogeo:
                         # WFS
                         if service.get("format") == "wfs":
                             name = layer.get("titles")[0].get("value", "WFS")
-                            path = "{0}?typename={1}".format(
-                                service.get("path"), layer.get("id"))
+                            try:
+                                path = "{0}?typeName={1}".format(service.get("path"),
+                                                                 layer.get("id"))
+                            except UnicodeEncodeError:
+                                logging.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
+                                              .format(i.get("_id"),
+                                                      layer.get("_id")))
+                                continue
                             url = [name, path]
                             name_url = tools.build_wfs_url(url)
                             if name_url != 0:
@@ -1194,8 +1200,14 @@ class Isogeo:
                         # WMS
                         elif service.get("format") == "wms":
                             name = layer.get("titles")[0].get("value", "WMS")
-                            path = "{0}?layers={1}".format(service.get("path"),
-                                                           layer.get("id"))
+                            try:
+                                path = "{0}?layers={1}".format(service.get("path"),
+                                                               layer.get("id"))
+                            except UnicodeEncodeError:
+                                logging.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
+                                              .format(i.get("_id"),
+                                                      layer.get("_id")))
+                                continue
                             url = [name, path]
                             name_url = tools.build_wms_url(url)
                             if name_url != 0:
@@ -1216,8 +1228,14 @@ class Isogeo:
                         for layer in i.get('layers'):
                             name = layer.get("titles")[0].get("value",
                                                               "wfslayer")
-                            path = "{0}?typename={1}".format(base_url,
-                                                             layer.get("id"))
+                            try:
+                                path = "{0}?typeName={1}".format(base_url,
+                                                                 layer.get("id"))
+                            except UnicodeEncodeError:
+                                logging.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
+                                              .format(i.get("_id"),
+                                                      layer.get("_id")))
+                                continue
                             url = [name, path]
                             name_url = tools.build_wfs_url(url)
                             if name_url != 0:
@@ -1230,8 +1248,14 @@ class Isogeo:
                         for layer in i.get('layers'):
                             name = layer.get("titles")[0].get("value",
                                                               "wmslayer")
-                            path = "{0}?layers={1}".format(base_url,
-                                                           layer.get("id"))
+                            try:
+                                path = "{0}?layers={1}".format(base_url,
+                                                               layer.get("id"))
+                            except UnicodeEncodeError:
+                                logging.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
+                                              .format(i.get("_id"),
+                                                      layer.get("_id")))
+                                continue
                             url = [name, path]
                             name_url = tools.build_wms_url(url)
                             if name_url != 0:
