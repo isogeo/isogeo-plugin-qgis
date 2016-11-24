@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui_authentication.ui'
+# Form implementation generated from reading ui file 'ui\auth\ui_authentication.ui'
 #
-# Created: Fri Oct 14 15:25:36 2016
+# Created: Thu Nov 24 21:01:51 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -88,4 +88,14 @@ class Ui_dlg_form_auth_prompt(object):
         self.grb_connection_ready.setTitle(_translate("dlg_form_auth_prompt", "I already have Isogeo ID and SECRET for this application", None))
         self.lbl_app_id.setText(_translate("dlg_form_auth_prompt", "Application ID:", None))
         self.lbl_app_secret.setText(_translate("dlg_form_auth_prompt", "Application SECRET:", None))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    dlg_form_auth_prompt = QtGui.QDialog()
+    ui = Ui_dlg_form_auth_prompt()
+    ui.setupUi(dlg_form_auth_prompt)
+    dlg_form_auth_prompt.show()
+    sys.exit(app.exec_())
 

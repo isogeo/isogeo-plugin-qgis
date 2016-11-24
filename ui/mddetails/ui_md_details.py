@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'isogeo_md_details.ui'
+# Form implementation generated from reading ui file 'ui\mddetails\ui_md_details.ui'
 #
-# Created: Fri Oct 14 15:14:23 2016
+# Created: Thu Nov 24 21:02:06 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -379,3 +379,13 @@ class Ui_MetadataDetails(object):
         self.grp_conditions.setTitle(_translate("MetadataDetails", "Conditions", None))
 
 from qgis.gui import QgsCollapsibleGroupBox
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    MetadataDetails = QtGui.QDialog()
+    ui = Ui_MetadataDetails()
+    ui.setupUi(MetadataDetails)
+    MetadataDetails.show()
+    sys.exit(app.exec_())
+

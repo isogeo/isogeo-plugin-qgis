@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'isogeo_dockwidget_base.ui'
+# Form implementation generated from reading ui file 'ui\isogeo_dockwidget_base.ui'
 #
-# Created: Thu Nov 03 10:23:58 2016
+# Created: Thu Nov 24 21:00:48 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -647,4 +647,17 @@ class Ui_IsogeoDockWidgetBase(object):
         self.label_19.setText(_translate("IsogeoDockWidgetBase", "Open plugin credits", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("IsogeoDockWidgetBase", "Settings", None))
 
+    def closeEvent(self, event):
+        self.closingPlugin.emit()
+        event.accept()
+
 from qgis.gui import QgsCollapsibleGroupBox
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    IsogeoDockWidgetBase = QtGui.QDockWidget()
+    ui = Ui_IsogeoDockWidgetBase()
+    ui.setupUi(IsogeoDockWidgetBase)
+    IsogeoDockWidgetBase.show()
+    sys.exit(app.exec_())

@@ -16,6 +16,10 @@
     <height>523</height>
    </size>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resources.qrc">
+    <normaloff>:/plugins/Isogeo/icon.png</normaloff>:/plugins/Isogeo/icon.png</iconset>
+  </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
@@ -163,10 +167,10 @@
           <property name="title">
            <string>Advanced search</string>
           </property>
-          <property name="collapsed">
+          <property name="collapsed" stdset="0">
            <bool>false</bool>
           </property>
-          <property name="scrollOnExpand">
+          <property name="scrollOnExpand" stdset="0">
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">

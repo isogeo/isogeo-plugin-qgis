@@ -21,49 +21,48 @@
  ***************************************************************************/
 """
 
-# Ajouté par moi à partir de QByteArray
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
-    Qt, QByteArray, QUrl
-# Ajouté oar moi à partir de QMessageBox
-from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
-    QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, \
-    QPixmap, QProgressBar
-
-# Initialize Qt resources from file resources.py
-import resources
-
-# Import the code for the DockWidget
-from ui.isogeo_dockwidget import IsogeoDockWidget
-
-# Import du code des autres fenêtres
-from ui.auth.dlg_authentication import IsogeoAuthentication
-from ui.name.ask_research_name import ask_research_name
-from ui.rename.ask_new_name import ask_new_name
-from ui.mddetails.isogeo_dlg_mdDetails import IsogeoMdDetails
-
+# Standard library
 import os.path
-
-# Ajoutés par moi
-from qgis.utils import iface, plugin_times, QGis, reloadPlugin
-from qgis.core import QgsNetworkAccessManager, QgsPoint, \
-    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, \
-    QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI, QgsMessageLog, \
-    QgsRectangle
-from PyQt4.QtNetwork import QNetworkRequest
 import json
 import base64
 import urllib
 import logging
 from logging.handlers import RotatingFileHandler
 import platform  # about operating systems
-
 from collections import OrderedDict
 from functools import partial
 import db_manager.db_plugins.postgis.connector as con
 import operator
-from ui.credits.dlg_credits import IsogeoCredits
 
-# Mes modules a moi
+# PyQT
+# from de QByteArray
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
+    Qt, QByteArray, QUrl
+# from QMessageBox
+from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
+    QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, \
+    QPixmap, QProgressBar
+from PyQt4.QtNetwork import QNetworkRequest
+
+# PyQGIS
+from qgis.utils import iface, plugin_times, QGis, reloadPlugin
+from qgis.core import QgsNetworkAccessManager, QgsPoint, \
+    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, \
+    QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI, QgsMessageLog, \
+    QgsRectangle
+
+# Initialize Qt resources from file resources.py
+import resources
+
+# UI classes
+from ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
+from ui.auth.dlg_authentication import IsogeoAuthentication
+from ui.credits.dlg_credits import IsogeoCredits
+from ui.mddetails.dlg_md_details import IsogeoMdDetails
+from ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
+from ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
+
+# Custom modules
 from modules.tools import Tools
 
 # ############################################################################
@@ -146,36 +145,27 @@ class Isogeo:
         # print "** INITIALIZING Isogeo"
 
         self.pluginIsActive = False
-
         self.dockwidget = None
 
+        # network manager included within QGIS
         self.manager = QgsNetworkAccessManager.instance()
 
+        # UI submodules
         self.auth_prompt_form = IsogeoAuthentication()
-
-        self.ask_name_popup = ask_research_name()
-
-        self.new_name_popup = ask_new_name()
-
+        self.quicksearch_new_dialog = QuicksearchNew()
+        self.quicksearch_rename_dialog = QuicksearchRename()
         self.credits_dialog = IsogeoCredits()
         self.IsogeoMdDetails = IsogeoMdDetails()
 
+        # start variables
         self.savedSearch = "first"
-
         self.requestStatusClear = True
-
         self.loopCount = 0
-
         self.hardReset = False
-
         self.showResult = False
-
         self.showDetails = False
-
         self.store = False
-
         self.settingsRequest = False
-
         self.PostGISdict = {}
 
         # self.currentUrl = "https://v1.api.isogeo.com/resources/search?
@@ -1731,7 +1721,7 @@ class Isogeo:
 
     def save_search(self):
         """Call the write_search() function and refresh the combobox."""
-        search_name = self.ask_name_popup.name.text()
+        search_name = self.quicksearch_new_dialog.name.text()
         self.write_search_params(search_name)
         with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
@@ -1751,7 +1741,7 @@ class Isogeo:
         old_name = self.dockwidget.cbb_modify_sr.currentText()
         with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
-        new_name = self.new_name_popup.name.text()
+        new_name = self.quicksearch_rename_dialog.name.text()
         saved_searches[new_name] = saved_searches[old_name]
         saved_searches.pop(old_name)
         search_list = saved_searches.keys()
@@ -1883,9 +1873,8 @@ class Isogeo:
     def show_popup(self, popup):
         """Open the pop up window that asks a name to save the search."""
         if popup == 'ask_name':
-            self.ask_name_popup.show()
+            self.quicksearch_new_dialog.show()
         elif popup == 'new_name':
-            self.new_name_popup.show()
             self.quicksearch_rename_dialog.show()
         elif popup == 'credits':
             self.credits_dialog.show()
@@ -2260,6 +2249,8 @@ class Isogeo:
         # Change user
         self.dockwidget.btn_change_user.pressed.connect(
             self.auth_prompt_form.show)
+
+
         # show results
         self.dockwidget.btn_show.pressed.connect(self.search_with_content)
         self.dockwidget.cbb_ob.activated.connect(self.search_with_content)
@@ -2271,14 +2262,14 @@ class Isogeo:
             partial(self.show_popup, popup='ask_name'))
         # Connect the accepted signal of the popup to the function that write
         # the search name and parameter to the file, and update the combobox
-        self.ask_name_popup.accepted.connect(self.save_search)
+        self.quicksearch_new_dialog.accepted.connect(self.save_search)
         # Button 'rename search' connected to the opening of the pop up that
         # asks for a new name
         self.dockwidget.btn_rename_sr.pressed.connect(
             partial(self.show_popup, popup='new_name'))
         # Connect the accepted signal of the popup to the function that rename
         # a search.
-        self.new_name_popup.accepted.connect(self.rename_search)
+        self.quicksearch_rename_dialog.accepted.connect(self.rename_search)
         # Connect the delete button to the delete function
         self.dockwidget.btn_delete_sr.pressed.connect(self.delete_search)
         # Connect the activation of the "saved search" combobox with the
