@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>dlg_credits</class>
+ <widget class="QDialog" name="dlg_credits">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -29,6 +29,9 @@
    <iconset resource="../../resources.qrc">
     <normaloff>:/plugins/Isogeo/resources/gavel.svg</normaloff>:/plugins/Isogeo/resources/gavel.svg</iconset>
   </property>
+  <property name="windowOpacity">
+   <double>0.900000000000000</double>
+  </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
@@ -41,7 +44,7 @@
      <x>0</x>
      <y>0</y>
      <width>481</width>
-     <height>423</height>
+     <height>424</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -55,13 +58,16 @@
      <number>5</number>
     </property>
     <item>
-     <widget class="QGroupBox" name="groupBox_5">
+     <widget class="QGroupBox" name="grp_realization">
       <property name="title">
        <string>Realization</string>
       </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
-        <widget class="QLabel" name="label_10">
+        <widget class="QLabel" name="lbl_development">
          <property name="text">
           <string>Developed by Théo Sinatti, internship supervised by Julien Moura for Isogeo.</string>
          </property>
@@ -73,7 +79,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QLabel" name="label_12">
+          <widget class="QLabel" name="lbl_isogeo_logo">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -98,7 +104,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_11">
+          <widget class="QLabel" name="lbl_isogeo_punchline">
            <property name="font">
             <font>
              <pointsize>13</pointsize>
@@ -124,17 +130,27 @@
      </widget>
     </item>
     <item>
-     <widget class="QGroupBox" name="groupBox_7">
+     <widget class="QGroupBox" name="grp_sponsors">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
       <property name="title">
        <string>Sponsors</string>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
         <layout class="QGridLayout" name="gridLayout_5">
          <item row="0" column="0">
-          <widget class="QLabel" name="label_21">
+          <widget class="QLabel" name="lbl_smavd_url">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.smavd.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Syndicat Mixte d'Aménagement&lt;br/&gt;de la Durance (SMAVD)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.smavd.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Syndicat Mixte d'Aménagement&lt;br/&gt;de la Durance (SMAVD)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>
@@ -145,7 +161,7 @@
           </widget>
          </item>
          <item row="0" column="2">
-          <widget class="QLabel" name="label_22">
+          <widget class="QLabel" name="lbl_smavd_logo">
            <property name="text">
             <string notr="true"/>
            </property>
@@ -182,7 +198,7 @@
        <item>
         <layout class="QGridLayout" name="gridLayout_6">
          <item row="1" column="2">
-          <widget class="QLabel" name="label_17">
+          <widget class="QLabel" name="lbl_lorient_logo">
            <property name="maximumSize">
             <size>
              <width>800</width>
@@ -210,7 +226,7 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label_18">
+          <widget class="QLabel" name="lbl_lorient_url">
            <property name="text">
             <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.lorient-agglo.fr/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Communauté d'agglomération de&lt;br/&gt;Lorient (Lorient Agglomération)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -229,18 +245,24 @@
      </widget>
     </item>
     <item>
-     <widget class="QGroupBox" name="groupBox_6">
+     <widget class="QGroupBox" name="grp_sources">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="title">
        <string>Sources and license</string>
       </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="0" column="2">
-          <widget class="QLabel" name="label_20">
+          <widget class="QLabel" name="lbl_license_logo_gpl3">
            <property name="text">
             <string notr="true"/>
            </property>
@@ -256,7 +278,7 @@
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QLabel" name="label_19">
+          <widget class="QLabel" name="lbl_source_repository">
            <property name="text">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/isogeo/isogeo-plugin-qgis&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -275,7 +297,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QDialogButtonBox" name="buttonBox">
+     <widget class="QDialogButtonBox" name="btn_ok_close">
       <property name="layoutDirection">
        <enum>Qt::LeftToRight</enum>
       </property>
@@ -299,14 +321,11 @@
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="../../resources.qrc"/>
- </resources>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>btn_ok_close</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>dlg_credits</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -320,9 +339,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>btn_ok_close</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>dlg_credits</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

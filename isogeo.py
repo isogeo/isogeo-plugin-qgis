@@ -61,6 +61,7 @@ from collections import OrderedDict
 from functools import partial
 import db_manager.db_plugins.postgis.connector as con
 import operator
+from ui.credits.dlg_credits import IsogeoCredits
 
 # Mes modules a moi
 from modules.tools import Tools
@@ -156,6 +157,7 @@ class Isogeo:
 
         self.new_name_popup = ask_new_name()
 
+        self.credits_dialog = IsogeoCredits()
         self.IsogeoMdDetails = IsogeoMdDetails()
 
         self.savedSearch = "first"
@@ -1884,6 +1886,11 @@ class Isogeo:
             self.ask_name_popup.show()
         elif popup == 'new_name':
             self.new_name_popup.show()
+            self.quicksearch_rename_dialog.show()
+        elif popup == 'credits':
+            self.credits_dialog.show()
+        else:
+            pass
 
     def send_details_request(self, md_id):
         """Send a request for aditionnal info about one data."""
@@ -2244,6 +2251,9 @@ class Isogeo:
             partial(tools.open_webpage,
                     link="https://github.com/isogeo/isogeo-plugin-qgis/wiki"
                     ))
+        # view credits
+        self.dockwidget.btn_credits.pressed.connect(
+            partial(self.show_popup, popup='credits'))
         # Connecting the "reinitialize search button" to a search without
         # filters
         self.dockwidget.btn_reinit.pressed.connect(self.reinitialize_search)
