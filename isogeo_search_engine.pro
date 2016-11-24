@@ -1,17 +1,19 @@
 FORMS = ui/isogeo_dockwidget_base.ui \
     ui/auth/ui_authentication.ui \
-    ui/mddetails/isogeo_md_details.ui \
-    ui/name/ask_research_name.ui \
-    ui/rename/ask_new_name.ui \
+    ui/credits/ui_credits.ui \
+    ui/mddetails/ui_md_details.ui \
+    ui/quicksearch/ui_quicksearch_new.ui \
+    ui/quicksearch/ui_quicksearch_rename.ui
 
 SOURCES = __init__.py \
 	isogeo.py \
     modules\tools.py \
 	ui/isogeo_dockwidget.py \
 	ui/auth/ui_authentication.py \
-    ui/mddetails/ui_isogeo_md_details.py \
-	ui/name/ui_ask_research_name.py \
-	ui/rename/ui_ask_new_name.py
+    ui/credits/ui_credits.py \
+    ui/mddetails/ui_md_details.py \
+	ui/quicksearch/ui_quicksearch_new.py \
+	ui/quicksearch/ui_quicksearch_rename.py
 
 TRANSLATIONS = i18n/isogeo_search_engine_fr.ts \
 	i18n/isogeo_search_engine_en.ts
