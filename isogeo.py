@@ -69,6 +69,9 @@ from modules.tools import Tools
 # ########## Globals ###############
 # ##################################
 
+# utils
+tools = Tools()
+
 # LOG FILE ##
 logger = logging.getLogger()
 logging.captureWarnings(True)
@@ -88,7 +91,6 @@ logger.addHandler(logfile)
 # ############################################################################
 # ########## Classes ###############
 # ##################################
-tools = Tools()
 
 
 class Isogeo:
@@ -99,7 +101,8 @@ class Isogeo:
     try:
         logging.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
     except UnicodeEncodeError:
-        logging.info('QGIS Version: 2.16.0 or 2.16.1')
+        qgis_version = QGis.QGIS_VERSION.decode("latin1")
+        logging.info('QGIS Version: {0}'.format(qgis_version))
 
     def __init__(self, iface):
         """Constructor.
@@ -129,6 +132,10 @@ class Isogeo:
 
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
+            else:
+                pass
+        else:
+            pass
 
         if locale == "fr":
             self.lang = "fr"
@@ -556,7 +563,7 @@ class Isogeo:
                                  .format(result.get("query")),
                                  "Isogeo")
         # parsing
-        tags = tools.get_tags(result)
+        tags = utils.get_tags(result)
         self.old_text = self.dockwidget.txt_input.text()
         # Getting the index of selected items in each combobox
         params = self.save_params()
@@ -566,7 +573,7 @@ class Isogeo:
             str(self.results_count) + self.tr(" results"))
         # Setting the number of rows in the result table
 
-        self.nb_page = str(tools.calcul_nb_page(self.results_count))
+        self.nb_page = str(utils.calcul_nb_page(self.results_count))
         self.dockwidget.lbl_page.setText(
             "page " + str(self.page_index) + self.tr(' on ') + self.nb_page)
 
@@ -994,7 +1001,7 @@ class Isogeo:
         # connection is set up in QGIS
         qs = QSettings()
         if self.PostGISdict == {}:
-            self.PostGISdict = tools.build_postgis_dict(qs)
+            self.PostGISdict = utils.build_postgis_dict(qs)
         else:
             pass
         # Looping inside the table lines. For each of them, showing the title,
@@ -1003,7 +1010,7 @@ class Isogeo:
         count = 0
         for i in result.get('results'):
             # Displaying the metadata title inside a button
-            final_text = tools.format_button_title(i.get('title'))
+            final_text = utils.format_button_title(i.get('title'))
             title_button = QPushButton(final_text)
             # Connecting the button to the full metadata popup
             title_button.pressed.connect(partial(
@@ -1016,7 +1023,7 @@ class Isogeo:
             # Insert the modification date in column 2
             self.dockwidget.tbl_result.setItem(
                 count, 1, QTableWidgetItem(
-                    tools.handle_date(i.get('_modified'))))
+                    utils.handle_date(i.get('_modified'))))
             # Getting the geometry
             geometry = i.get('geometry')
             if geometry is not None:
@@ -1078,7 +1085,7 @@ class Isogeo:
                 # If the data is a vector and the path is available, store
                 # useful information in the dict
                 if i.get('format') in vectorformat_list and 'path' in i:
-                    path = tools.format_path(i.get('path'))
+                    path = utils.format_path(i.get('path'))
                     try:
                         open(path)
                         params = ["vector", path, i.get("title")]
@@ -1087,7 +1094,7 @@ class Isogeo:
                         pass
                 # Same if the data is a raster
                 elif i.get('format') in rasterformat_list and 'path' in i:
-                    path = tools.format_path(i.get('path'))
+                    path = utils.format_path(i.get('path'))
                     try:
                         open(path)
                         params = ["raster", path]
@@ -1124,7 +1131,7 @@ class Isogeo:
                 if link.get('kind') == 'wms':
                     # Test if all the needed information is in the url.
                     url = [link.get('title'), link.get('url')]
-                    name_url = tools.build_wms_url(url)
+                    name_url = utils.build_wms_url(url)
                     # In which case, store it in the dict.
                     if name_url != 0:
                         link_dict[u"WMS : " + name_url[1]] = name_url
@@ -1133,7 +1140,7 @@ class Isogeo:
                 # If the link is a WFS
                 elif link.get('kind') == 'wfs':
                     url = [link.get('title'), link.get('url')]
-                    name_url = tools.build_wfs_url(url)
+                    name_url = utils.build_wfs_url(url)
                     if name_url != 0:
                         link_dict[u"WFS : " + name_url[1]] = name_url
                     else:
@@ -1145,7 +1152,7 @@ class Isogeo:
                         # WMS
                         if _link.get('kind') == 'wms':
                             url = [link.get('title'), link.get('url')]
-                            name_url = tools.build_wms_url(url)
+                            name_url = utils.build_wms_url(url)
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
                             else:
@@ -1153,7 +1160,7 @@ class Isogeo:
                         # WFS
                         elif _link.get('kind') == 'wfs':
                             url = [link.get('title'), link.get('url')]
-                            name_url = tools.build_wfs_url(url)
+                            name_url = utils.build_wfs_url(url)
                             if name_url != 0:
                                 link_dict[u"WFS : " + name_url[1]] = name_url
                             else:
@@ -1184,7 +1191,7 @@ class Isogeo:
                                                       layer.get("_id")))
                                 continue
                             url = [name, path]
-                            name_url = tools.build_wfs_url(url)
+                            name_url = utils.build_wfs_url(url)
                             if name_url != 0:
                                 link_dict[u"WFS : " + name_url[1]] = name_url
                             else:
@@ -1201,7 +1208,7 @@ class Isogeo:
                                                       layer.get("_id")))
                                 continue
                             url = [name, path]
-                            name_url = tools.build_wms_url(url)
+                            name_url = utils.build_wms_url(url)
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
                             else:
@@ -1229,7 +1236,7 @@ class Isogeo:
                                                       layer.get("_id")))
                                 continue
                             url = [name, path]
-                            name_url = tools.build_wfs_url(url)
+                            name_url = utils.build_wfs_url(url)
                             if name_url != 0:
                                 link_dict[u"WFS : " + name_url[1]] = name_url
                             else:
@@ -1249,7 +1256,7 @@ class Isogeo:
                                                       layer.get("_id")))
                                 continue
                             url = [name, path]
-                            name_url = tools.build_wms_url(url)
+                            name_url = utils.build_wms_url(url)
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
                             else:
@@ -1582,7 +1589,7 @@ class Isogeo:
         # Info for _lang parameter
         params['lang'] = self.lang
         # URL BUILDING FUNCTION CALLED.
-        self.currentUrl = tools.build_request_url(params)
+        self.currentUrl = utils.build_request_url(params)
 
         logging.info(self.currentUrl)
         # Sending the request to Isogeo API
@@ -1604,7 +1611,7 @@ class Isogeo:
                      "that is to be sent to the API")
         # Testing if the user is asking for a unexisting page (ex : page 6 out
         # of 5)
-        if self.page_index >= tools.calcul_nb_page(self.results_count):
+        if self.page_index >= utils.calcul_nb_page(self.results_count):
             return False
         else:
             # Adding the loading bar
@@ -1621,7 +1628,7 @@ class Isogeo:
             # Info for _lang parameter
             params['lang'] = self.lang
             # URL BUILDING FUNCTION CALLED.
-            self.currentUrl = tools.build_request_url(params)
+            self.currentUrl = utils.build_request_url(params)
             # Sending the request
             if self.requestStatusClear is True:
                 self.send_request_to_isogeo_api(self.token)
@@ -1652,7 +1659,7 @@ class Isogeo:
             # Info for _lang parameter
             params['lang'] = self.lang
             # URL BUILDING FUNCTION CALLED.
-            self.currentUrl = tools.build_request_url(params)
+            self.currentUrl = utils.build_request_url(params)
             # Sending the request
             if self.requestStatusClear is True:
                 self.send_request_to_isogeo_api(self.token)
@@ -1894,7 +1901,7 @@ class Isogeo:
     def show_complete_md(self, content):
         """Open the pop up window that shows the metadata sheet details."""
         logging.info("Displaying the whole metadata sheet.")
-        tags = tools.get_tags(content)
+        tags = utils.get_tags(content)
         # Set the data title
         title = content.get('title')
         if title is not None:
@@ -1905,27 +1912,27 @@ class Isogeo:
         creation_date = content.get('_created')
         if creation_date is not None:
             self.IsogeoMdDetails.val_data_crea.setText(
-                tools.handle_date(creation_date))
+                utils.handle_date(creation_date))
         else:
             self.IsogeoMdDetails.val_data_crea.setText('NR')
         # Set the data last modification date
         modif_date = content.get('_modified')
         if modif_date is not None:
-            self.IsogeoMdDetails.val_data_updt.setText(tools.handle_date(
+            self.IsogeoMdDetails.val_data_updt.setText(utils.handle_date(
                 modif_date))
         else:
             self.IsogeoMdDetails.val_data_updt.setText('NR')
         # Set the date from which the data is valid
         valid_from = content.get('validFrom')
         if valid_from is not None:
-            self.IsogeoMdDetails.val_valid_start.setText(tools.handle_date(
+            self.IsogeoMdDetails.val_valid_start.setText(utils.handle_date(
                 valid_from))
         else:
             self.IsogeoMdDetails.val_valid_start.setText('NR')
         # Set the date from which the data stops being valid
         valid_to = content.get('validTo')
         if valid_to is not None:
-            self.IsogeoMdDetails.val_valid_end.setText(tools.handle_date(
+            self.IsogeoMdDetails.val_valid_end.setText(utils.handle_date(
                 valid_to))
         else:
             self.IsogeoMdDetails.val_valid_end.setText('NR')
@@ -2034,7 +2041,7 @@ class Isogeo:
         self.IsogeoMdDetails.list_events.clear()
         if content['events'] != []:
             for i in content['events']:
-                event = tools.handle_date(i['date']) + " : " + i['kind']
+                event = utils.handle_date(i['date']) + " : " + i['kind']
                 if i['kind'] == 'update' and 'description' in i \
                         and i['description'] != '':
                     event += " (" + i['description'] + ")"
@@ -2165,7 +2172,7 @@ class Isogeo:
         text += u"<p>   ___________________________________________________________________   </p>"
         for share in content:
             text += u"<p><b>{0}</p></b>".format(share['name'])
-            text += self.tr(u"<p>Modified: {0}</p>").format(tools.handle_date(share['_modified']))
+            text += self.tr(u"<p>Modified: {0}</p>").format(utils.handle_date(share['_modified']))
             text += self.tr(u"<p>Contact: {0}</p>").format(share['_creator']['contact']['name'])
             text += self.tr(u"<p>Applications powered by this share:</p>")
             for a in share['applications']:
@@ -2232,12 +2239,12 @@ class Isogeo:
         self.dockwidget.btn_previous.pressed.connect(self.previous_page)
         # Connecting the bug tracker button to its function
         self.dockwidget.btn_report.pressed.connect(
-            partial(tools.open_webpage,
+            partial(utils.open_webpage,
                     link=self.tr(u'https://github.com/isogeo/isogeo-plugin-qgis/issues')
                     ))
 
         self.dockwidget.btn_help.pressed.connect(
-            partial(tools.open_webpage,
+            partial(utils.open_webpage,
                     link="https://github.com/isogeo/isogeo-plugin-qgis/wiki"
                     ))
         # view credits
