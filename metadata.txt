@@ -10,7 +10,7 @@
 name=Isogeo
 qgisMinimumVersion=2.0
 description=Isogeo search engine within QGIS
-version=1.1.1
+version=1.2.0
 author=Isogeo,Theo Sinatti,GeoJulien
 email=projects+qgis@isogeo.com
 
@@ -32,7 +32,7 @@ homepage=https://github.com/isogeo/isogeo-plugin-qgis
 category=Web
 icon=icon.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
