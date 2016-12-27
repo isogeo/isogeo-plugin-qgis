@@ -70,7 +70,9 @@ final_zip.write(r"isogeo.py", plg_dir + r"\isogeo.py")
 
 # Modules
 final_zip.write(r"modules\__init__.py", plg_dir + r"\modules\__init__.py")
+final_zip.write(r"modules\api.py", plg_dir + r"\modules\api.py")
 final_zip.write(r"modules\tools.py", plg_dir + r"\modules\tools.py")
+final_zip.write(r"modules\url_builder.py", plg_dir + r"\modules\url_builder.py")
 
 # Resources
 resources_files = [path.relpath(f) for f in listdir(r"resources")
@@ -101,7 +103,8 @@ final_zip.write(r"resources.qrc",
                 plg_dir + r"\resources.qrc")
 
 # UI - Auth
-final_zip.write(r"ui\auth\__init__.py", plg_dir + r"\ui\auth\__init__.py")
+final_zip.write(r"ui\auth\__init__.py",
+                plg_dir + r"\ui\auth\__init__.py")
 final_zip.write(r"ui\auth\ui_authentication.ui",
                 plg_dir + r"\ui\auth\ui_authentication.ui")
 final_zip.write(r"ui\auth\ui_authentication.py",
@@ -109,35 +112,43 @@ final_zip.write(r"ui\auth\ui_authentication.py",
 final_zip.write(r"ui\auth\dlg_authentication.py",
                 plg_dir + r"\ui\auth\dlg_authentication.py")
 
+# UI - Credits
+final_zip.write(r"ui\credits\__init__.py",
+                plg_dir + r"\ui\credits\__init__.py")
+final_zip.write(r"ui\credits\ui_credits.ui",
+                plg_dir + r"\ui\credits\ui_credits.ui")
+final_zip.write(r"ui\credits\ui_credits.py",
+                plg_dir + r"\ui\credits\ui_credits.py")
+final_zip.write(r"ui\credits\dlg_credits.py",
+                plg_dir + r"\ui\credits\dlg_credits.py")
+
 # UI - MdDetails
 final_zip.write(r"ui\mddetails\__init__.py",
                 plg_dir + r"\ui\mddetails\__init__.py")
-final_zip.write(r"ui\mddetails\isogeo_md_details.ui",
-                plg_dir + r"\ui\mddetails\isogeo_md_details.ui")
-final_zip.write(r"ui\mddetails\isogeo_dlg_mdDetails.py",
-                plg_dir + r"\ui\mddetails\isogeo_dlg_mdDetails.py")
-final_zip.write(r"ui\mddetails\ui_isogeo_md_details.py",
-                plg_dir + r"\ui\mddetails\ui_isogeo_md_details.py")
+final_zip.write(r"ui\mddetails\ui_md_details.ui",
+                plg_dir + r"\ui\mddetails\ui_md_details.ui")
+final_zip.write(r"ui\mddetails\ui_md_details.py",
+                plg_dir + r"\ui\mddetails\ui_md_details.py")
+final_zip.write(r"ui\mddetails\dlg_md_details.py",
+                plg_dir + r"\ui\mddetails\dlg_md_details.py")
 
-# UI - Saved search - name
-final_zip.write(r"ui\name\__init__.py",
-                plg_dir + r"\ui\name\__init__.py")
-final_zip.write(r"ui\name\ask_research_name.py",
-                plg_dir + r"\ui\name\ask_research_name.py")
-final_zip.write(r"ui\name\ask_research_name.ui",
-                plg_dir + r"\ui\name\ask_research_name.ui")
-final_zip.write(r"ui\name\ui_ask_research_name.py",
-                plg_dir + r"\ui\name\ui_ask_research_name.py")
+# UI - Quicksearch - name
+final_zip.write(r"ui\quicksearch\__init__.py",
+                plg_dir + r"\ui\quicksearch\__init__.py")
+final_zip.write(r"ui\quicksearch\ui_quicksearch_new.py",
+                plg_dir + r"\ui\quicksearch\ui_quicksearch_new.py")
+final_zip.write(r"ui\quicksearch\ui_quicksearch_new.ui",
+                plg_dir + r"\ui\quicksearch\ui_quicksearch_new.ui")
+final_zip.write(r"ui\quicksearch\dlg_quicksearch_new.py",
+                plg_dir + r"\ui\quicksearch\dlg_quicksearch_new.py")
 
-# UI - Saved search - rename
-final_zip.write(r"ui\rename\__init__.py",
-                plg_dir + r"\ui\rename\__init__.py")
-final_zip.write(r"ui\rename\ask_new_name.py",
-                plg_dir + r"\ui\rename\ask_new_name.py")
-final_zip.write(r"ui\rename\ask_new_name.ui",
-                plg_dir + r"\ui\rename\ask_new_name.ui")
-final_zip.write(r"ui\rename\ui_ask_new_name.py",
-                plg_dir + r"\ui\rename\ui_ask_new_name.py")
+# UI - Quicksearch - rename
+final_zip.write(r"ui\quicksearch\ui_quicksearch_rename.py",
+                plg_dir + r"\ui\quicksearch\ui_quicksearch_rename.py")
+final_zip.write(r"ui\quicksearch\ui_quicksearch_rename.ui",
+                plg_dir + r"\ui\quicksearch\ui_quicksearch_rename.ui")
+final_zip.write(r"ui\quicksearch\dlg_quicksearch_rename.py",
+                plg_dir + r"\ui\quicksearch\dlg_quicksearch_rename.py")
 
 # User settings
 final_zip.write(r"user_settings\saved_searches.json",
