@@ -14,8 +14,35 @@ See: http://www.qgis.org/pyqgis-cookbook/releasing.html
 """
 
 # ------------ Imports --------------------------------------------
-from os import listdir, makedirs, path
+from os import listdir, makedirs, path, walk
+import xml.etree.ElementTree as ET
 import zipfile
+
+# ------------ UI files check --------------------------------------------
+
+# see: http://gis.stackexchange.com/a/155599/19817
+ui_dir = path.abspath(r"ui")
+for dirpath, dirs, files in walk(ui_dir):
+    for file in files:
+        if (file.endswith(".ui")):
+            with open(path.join(dirpath, file), 'r') as ui_file:
+                ui_xml = ET.parse(ui_file)
+                root = ui_xml.getroot()
+                for rsrc in root.iter('resources'):
+                    if len(rsrc) > 0:
+                        print("WARNING - resources tag spotted in: {}"\
+                              .format(file))
+                        # AUTO REMOVE ##
+                        root.remove(rsrc)
+                        ui_xml.write(path.join(dirpath, file),
+                                     encoding='utf-8',
+                                     xml_declaration='version="1.0"',
+                                     method='xml')
+                        print("INFO - resources tag has been removed.")
+                    else:
+                        continue
+        else:
+            continue
 
 # ------------ Destination folder --------------------------------------------
 # folder name
