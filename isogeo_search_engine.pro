@@ -7,7 +7,9 @@ FORMS = ui/isogeo_dockwidget_base.ui \
 
 SOURCES = __init__.py \
 	isogeo.py \
+    modules\api.py \
     modules\tools.py \
+    modules\url_builder.py \
 	ui/isogeo_dockwidget.py \
 	ui/auth/ui_authentication.py \
     ui/credits/ui_credits.py \

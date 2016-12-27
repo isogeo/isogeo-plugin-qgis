@@ -3,210 +3,210 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="isogeo.py" line="285"/>
+        <location filename="isogeo.py" line="296"/>
         <source>&amp;Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="250"/>
+        <location filename="isogeo.py" line="261"/>
         <source>Search within Isogeo catalogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="364"/>
+        <location filename="isogeo.py" line="375"/>
         <source>Alert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="357"/>
+        <location filename="isogeo.py" line="368"/>
         <source>Proxy issue : 
 QGIS and your OS have different proxy set ups.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="364"/>
+        <location filename="isogeo.py" line="375"/>
         <source>Proxy issue : 
 You have a proxy set up on your OS but none in QGIS.
 Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1435"/>
+        <location filename="isogeo.py" line="1446"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="463"/>
+        <location filename="isogeo.py" line="474"/>
         <source>Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="530"/>
+        <location filename="isogeo.py" line="541"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin. If so, please report this on the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="536"/>
+        <location filename="isogeo.py" line="547"/>
         <source>You are facing an unknown error. Code: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="570"/>
+        <location filename="isogeo.py" line="581"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="925"/>
+        <location filename="isogeo.py" line="936"/>
         <source>---- Keywords ----</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1053"/>
+        <location filename="isogeo.py" line="1064"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1301"/>
+        <location filename="isogeo.py" line="1312"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1299"/>
+        <location filename="isogeo.py" line="1310"/>
         <source>PostGIS table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1370"/>
+        <location filename="isogeo.py" line="1381"/>
         <source>The layer is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1398"/>
+        <location filename="isogeo.py" line="1409"/>
         <source>The linked service is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1435"/>
+        <location filename="isogeo.py" line="1446"/>
         <source>The PostGIS layer is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="654"/>
+        <location filename="isogeo.py" line="665"/>
         <source>Intersects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="654"/>
+        <location filename="isogeo.py" line="665"/>
         <source>within</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="654"/>
+        <location filename="isogeo.py" line="665"/>
         <source>contains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="644"/>
+        <location filename="isogeo.py" line="655"/>
         <source>All types</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="661"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Relevance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="661"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Alphabetical order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="661"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Data modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="661"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Data created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="661"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Metadata modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="661"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Metadata created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="671"/>
+        <location filename="isogeo.py" line="682"/>
         <source>Descending</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="671"/>
+        <location filename="isogeo.py" line="682"/>
         <source>Ascendant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="703"/>
+        <location filename="isogeo.py" line="714"/>
         <source>Map canvas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1771"/>
+        <location filename="isogeo.py" line="1782"/>
         <source>Quick Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1549"/>
+        <location filename="isogeo.py" line="1560"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2162"/>
+        <location filename="isogeo.py" line="2173"/>
         <source>&lt;html&gt;&lt;p&gt;&lt;b&gt;&lt;br/&gt;This plugin is powered by 1 share.&lt;br/&gt;&lt;/b&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2164"/>
+        <location filename="isogeo.py" line="2175"/>
         <source>&lt;html&gt;&lt;p&gt;&lt;b&gt;&lt;br/&gt;This plugin is powered by {0} shares.&lt;br/&gt;&lt;/b&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2168"/>
+        <location filename="isogeo.py" line="2179"/>
         <source>&lt;p&gt;Modified: {0}&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2169"/>
+        <location filename="isogeo.py" line="2180"/>
         <source>&lt;p&gt;Contact: {0}&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2170"/>
+        <location filename="isogeo.py" line="2181"/>
         <source>&lt;p&gt;Applications powered by this share:&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1267"/>
+        <location filename="isogeo.py" line="1278"/>
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="901"/>
+        <location filename="isogeo.py" line="912"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="565"/>
+        <location filename="isogeo.py" line="576"/>
         <source> results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="2234"/>
+        <location filename="isogeo.py" line="2245"/>
         <source>https://github.com/isogeo/isogeo-plugin-qgis/issues</source>
         <translation type="unfinished"></translation>
     </message>
