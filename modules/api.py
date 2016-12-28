@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Standard library
+import logging
 
 # PyQT
 from PyQt4.QtCore import QUrl
@@ -76,6 +77,10 @@ class IsogeoApiManager(object):
         new_tags['formats'] = formats
         new_tags['srs'] = srs
         new_tags['actions'] = actions
+
+        # log
+        logging.info("Tags retrieved")
+        # method ending
         return new_tags
 
     def build_request_url(self, params):
@@ -141,4 +146,5 @@ class IsogeoApiManager(object):
         filters += "&_lang={0}".format(params.get("lang"))
         # BUILDING FINAL URL
         url += filters
+        # method ending
         return url

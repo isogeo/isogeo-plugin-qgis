@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Standard library
+import logging
 
 # PyQT
 from PyQt4.QtCore import QUrl
@@ -19,7 +20,8 @@ class UrlBuilder(object):
         input_url = raw_url[1].split("?")[0] + "?"
         try:
             list_parameters = raw_url[1].split("?")[1].split('&')
-        except IndexError:
+        except IndexError, e:
+            logging.error("Build WFS URL failed: {}".format(e))
             return 0
         valid = False
         srs_defined = False
@@ -65,7 +67,8 @@ class UrlBuilder(object):
         input_url = raw_url[1].split("?")[0] + "?"
         try:
             list_parameters = raw_url[1].split("?")[1].split('&')
-        except IndexError:
+        except IndexError, e:
+            logging.error("Build WMS URL failed: {}".format(e))
             return 0
         valid = False
         style_defined = False

@@ -2,6 +2,7 @@
 
 # Standard library
 import datetime
+import logging
 import webbrowser
 
 # PyQT
@@ -31,6 +32,7 @@ class Tools(object):
         for line in lines:
             final_text += line + "\n"
         final_text = final_text[:-1]
+        # method ending
         return final_text
 
     def format_path(self, string):
@@ -41,6 +43,7 @@ class Tools(object):
                 new_string += "/"
             else:
                 new_string += character
+        # method ending
         return new_string
 
     def handle_date(self, input_date):
@@ -50,11 +53,11 @@ class Tools(object):
         month = int(date.split('-')[1])
         day = int(date.split('-')[2])
         new_date = datetime.date(year, month, day)
+        # method ending
         return new_date.strftime("%Y-%m-%d")
-        return new_date
 
     def mail_to_isogeo(self, lang):
-        """Preformat a mail asking for an Isogeo account."""
+        """Open the credentials request online form in web browser."""
         if lang == "fr":
             webbrowser.open('http://www.isogeo.com/fr/Plugin-QGIS/22',
                             new=0,
@@ -65,6 +68,9 @@ class Tools(object):
                             new=0,
                             autoraise=True
                             )
+        # method ending
+        logging.info("Bugtracker launched in the default web browser")
+        return
 
     def open_webpage(self, link):
         """Open the bugtracker on the user's default browser."""
@@ -75,6 +81,9 @@ class Tools(object):
             link,
             new=0,
             autoraise=True)
+        # method ending
+        logging.info("Bugtracker launched in the default web browser")
+        return
 
     def results_pages_counter(self, nb_fiches):
         """Calculate the number of pages for a given number of results."""
@@ -85,4 +94,5 @@ class Tools(object):
                 nb_page = (nb_fiches / 15)
             else:
                 nb_page = (nb_fiches / 15) + 1
+        # method ending
         return nb_page
