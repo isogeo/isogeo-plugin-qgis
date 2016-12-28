@@ -41,7 +41,7 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
     QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, \
     QPixmap, QProgressBar
-from PyQt4.QtNetwork import QNetworkRequest
+from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # PyQGIS
 import db_manager.db_plugins.postgis.connector as con
@@ -71,10 +71,12 @@ from modules.url_builder import UrlBuilder
 # ########## Globals ###############
 # ##################################
 
-# useful submodules
+# useful submodules and shortcuts
 isogeo_api_mng = IsogeoApiManager()
 custom_tools = Tools()
 srv_url_bld = UrlBuilder()
+msgBar = iface.messageBar()
+network_mng = QNetworkAccessManager()
 
 # LOG FILE ##
 logger = logging.getLogger()
@@ -159,7 +161,8 @@ class Isogeo:
         self.dockwidget = None
 
         # network manager included within QGIS
-        self.manager = QgsNetworkAccessManager.instance()
+        # self.manager = QgsNetworkAccessManager.instance()
+        self.manager = QNetworkAccessManager()
 
         # UI submodules
         self.auth_prompt_form = IsogeoAuthentication()
@@ -461,16 +464,16 @@ class Isogeo:
                 self.send_request_to_isogeo_api(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
-            logging.info("The API reply is an error. Id and secret must be "
-                         "invalid. Asking for them again.")
+            logging.error("The API reply is an error. Id and secret must be "
+                          "invalid. Asking for them again.")
             QMessageBox.information(
                 iface.mainWindow(), self.tr("Error"), parsed_content['error'])
             self.requestStatusClear = True
             self.auth_prompt_form.show()
         else:
             self.requestStatusClear = True
-            logging.info("The API reply has an unexpected form : "
-                         "{0}".format(parsed_content))
+            logging.error("The API reply has an unexpected form : "
+                          "{0}".format(parsed_content))
             QMessageBox.information(
                 iface.mainWindow(), self.tr("Error"), self.tr("Unknown error"))
 
@@ -538,7 +541,7 @@ class Isogeo:
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
                 self.requestStatusClear = True
-                iface.messageBar.pushMessage(
+                msgBar.pushMessage(
                     self.tr("The script is looping. Make sure you shared a "
                             "catalog with the plugin. If so, please report "
                             "this on the bug tracker."))
@@ -970,7 +973,7 @@ class Isogeo:
             cbb_od.setEnabled(True)
             self.dockwidget.btn_show.setStyleSheet("")
             self.show_results(result)
-            self.write_search_params('_current')
+            self.write_search_params('_current', search_kind="Current")
             self.store = True
         # Re enable all user input fields now the search function is
         # finished.
@@ -1445,8 +1448,9 @@ class Isogeo:
                 logging.info("Layer not valid. table = {0}".format(table))
                 QMessageBox.information(
                     iface.mainWindow(),
-                    self.tr('Error'),
-                    self.tr("The PostGIS layer is not valid."))
+                    self.tr("Error"),
+                    self.tr("The PostGIS layer is not valid."
+                            " Reason: {}".format(layer.error().message())))
 
     def save_params(self):
         """Save the widgets state/index.
@@ -1574,7 +1578,8 @@ class Isogeo:
                 self.dockwidget.cbb_modify_sr.addItem(i, i)
             # Write modifications in the json
             with open(self.json_path, 'w') as outfile:
-                    json.dump(saved_searches, outfile)
+                json.dump(saved_searches, outfile,
+                          sort_keys=True, indent=4)
             self.store = False
         else:
             pass
@@ -1668,15 +1673,13 @@ class Isogeo:
             if self.requestStatusClear is True:
                 self.send_request_to_isogeo_api(self.token)
 
-    def write_search_params(self, search_name):
+    def write_search_params(self, search_name, search_kind="Default"):
         """Write a new element in the json file when a search is saved."""
         # Open the saved_search file as a dict. Each key is a search name,
         # each value is a dict containing the parameters for this search name
-        bar = iface.messageBar()
-        bar.pushMessage("search successfully saved.", duration=5)
         with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
-        # If the name already exists, ask for a new one. (TO DO)
+        # If the name already exists, ask for a new one. ================ TO DO
 
         # Write the current parameters in a dict, and store it in the saved
         # search dict
@@ -1686,9 +1689,20 @@ class Isogeo:
             params['keyword_{0}'.format(i)] = params['keys'][i]
         params.pop('keys', None)
         saved_searches[search_name] = params
+        # writing file
         with open(self.json_path, 'w') as outfile:
-            json.dump(saved_searches, outfile)
-        logging.info("Saved reseearch written. {0}".format(params))
+            json.dump(saved_searches, outfile,
+                      sort_keys=True, indent=4)
+        # Log and messages
+        logging.info("{} search stored: {}. Parameters: {}"
+                     .format(search_kind, search_name, params))
+        if search_kind != "Current":
+            msgBar.pushMessage(self.tr("{} successfully saved: {}")
+                                       .format(search_kind, search_name),
+                               duration=3)
+        else:
+            pass
+        return
 
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
@@ -1730,12 +1744,16 @@ class Isogeo:
             if self.requestStatusClear is True:
                 self.send_request_to_isogeo_api(self.token)
 
-    def save_search(self):
+    # ------------ Quicksearches ------------------------------------------
+
+    def quicksearch_save(self):
         """Call the write_search() function and refresh the combobox."""
+        # retrieve quicksearch given name and store it
         search_name = self.quicksearch_new_dialog.name.text()
-        self.write_search_params(search_name)
-        with open(self.json_path) as data_file:
-            saved_searches = json.load(data_file)
+        self.write_search_params(search_name, search_kind="Quicksearch")
+        # load all saved quicksearches and populate drop-down (combobox)
+        with open(self.json_path, "r") as saved_searches_file:
+            saved_searches = json.load(saved_searches_file)
         search_list = saved_searches.keys()
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
@@ -1746,12 +1764,20 @@ class Isogeo:
         for i in search_list:
             self.dockwidget.cbb_saved.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
+        # inform user
+        # msgBar.pushMessage("Isogeo",
+        #                    self.tr("New quicksearch saved: {}")\
+        #                            .format(search_name),
+        #                    level=msgBar.INFO,
+        #                    duration=3)
+        # method ending
+        return
 
-    def rename_search(self):
+    def quicksearch_rename(self):
         """Modify the json file in order to rename a search."""
         old_name = self.dockwidget.cbb_modify_sr.currentText()
-        with open(self.json_path) as data_file:
-            saved_searches = json.load(data_file)
+        with open(self.json_path, "r") as saved_searches_file:
+            saved_searches = json.load(saved_searches_file)
         new_name = self.quicksearch_rename_dialog.name.text()
         saved_searches[new_name] = saved_searches[old_name]
         saved_searches.pop(old_name)
@@ -1765,15 +1791,25 @@ class Isogeo:
         for i in search_list:
             self.dockwidget.cbb_saved.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
+        # Update JSON file
         with open(self.json_path, 'w') as outfile:
-                json.dump(saved_searches, outfile)
+            json.dump(saved_searches, outfile,
+                      sort_keys=True, indent=4)
+        # inform user
+        msgBar.pushMessage("Isogeo",
+                           self.tr("Quicksearch renamed: from {} to {}")
+                                   .format(old_name, new_name),
+                           level=msgBar.INFO,
+                           duration=3)
+        # method ending
+        return
 
-    def delete_search(self):
+    def quicksearch_remove(self):
         """Modify the json file in order to delete a search."""
-        to_b_deleted = self.dockwidget.cbb_modify_sr.currentText()
-        with open(self.json_path) as data_file:
-            saved_searches = json.load(data_file)
-        saved_searches.pop(to_b_deleted)
+        to_be_deleted = self.dockwidget.cbb_modify_sr.currentText()
+        with open(self.json_path, "r") as saved_searches_file:
+            saved_searches = json.load(saved_searches_file)
+        saved_searches.pop(to_be_deleted)
         search_list = saved_searches.keys()
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
@@ -1784,8 +1820,20 @@ class Isogeo:
         for i in search_list:
             self.dockwidget.cbb_saved.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
+        # Update JSON file
         with open(self.json_path, 'w') as outfile:
-                json.dump(saved_searches, outfile)
+            json.dump(saved_searches, outfile,
+                      sort_keys=True, indent=4)
+        # inform user
+        msgBar.pushMessage("Isogeo",
+                           self.tr("Quicksearch removed: {}")
+                                   .format(to_be_deleted),
+                           level=msgBar.INFO,
+                           duration=3)
+        # method ending
+        return
+
+    # ----------------------------------------------------------------
 
     def get_coords(self, filter):
         """Get the canvas coordinates in the right format and SRS (WGS84)."""
@@ -2135,16 +2183,20 @@ class Isogeo:
             pass
         if self.dockwidget.txt_input.text() == self.old_text:
             try:
-                logging.info("The lineEdit text hasn't changed. So pass without sending a request.")
+                logging.info("The lineEdit text hasn't changed."
+                             " So pass without sending a request.")
             except AttributeError:
                 pass
             pass
         else:
             try:
-                logging.info("The line Edit text changed. Calls the search function.")
+                logging.info("The line Edit text changed."
+                             " Calls the search function.")
             except AttributeError:
                 pass
             self.search()
+
+    # ------------ SETTINGS - Shares -----------------------------------------
 
     def ask_shares_info(self, index):
         """TODO : Only if not already done before."""
@@ -2216,7 +2268,7 @@ class Isogeo:
         # Fixing a qgis.core bug that shows a warning banner "connexion time
         # out" whenever a request is sent (even successfully) See :
         # http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
-        iface.messageBar().widgetAdded.connect(iface.messageBar().clearWidgets)
+        # msgBar.widgetAdded.connect(msgBar.clearWidgets)
 
         """ --- CONNECTING FUNCTIONS --- """
         # Write in the config file when the user accept the authentification
@@ -2261,7 +2313,6 @@ class Isogeo:
         self.dockwidget.btn_change_user.pressed.connect(
             self.auth_prompt_form.show)
 
-
         # show results
         self.dockwidget.btn_show.pressed.connect(self.search_with_content)
         self.dockwidget.cbb_ob.activated.connect(self.search_with_content)
@@ -2273,23 +2324,23 @@ class Isogeo:
             partial(self.show_popup, popup='ask_name'))
         # Connect the accepted signal of the popup to the function that write
         # the search name and parameter to the file, and update the combobox
-        self.quicksearch_new_dialog.accepted.connect(self.save_search)
+        self.quicksearch_new_dialog.accepted.connect(self.quicksearch_save)
         # Button 'rename search' connected to the opening of the pop up that
         # asks for a new name
         self.dockwidget.btn_rename_sr.pressed.connect(
             partial(self.show_popup, popup='new_name'))
         # Connect the accepted signal of the popup to the function that rename
         # a search.
-        self.quicksearch_rename_dialog.accepted.connect(self.rename_search)
+        self.quicksearch_rename_dialog.accepted.connect(self.quicksearch_rename)
         # Connect the delete button to the delete function
-        self.dockwidget.btn_delete_sr.pressed.connect(self.delete_search)
+        self.dockwidget.btn_delete_sr.pressed.connect(self.quicksearch_remove)
         # Connect the activation of the "saved search" combobox with the
         # set_widget_status function
         self.dockwidget.cbb_saved.activated.connect(
             self.set_widget_status)
         # G default
         self.dockwidget.btn_default.pressed.connect(
-            partial(self.write_search_params, search_name='_default'))
+            partial(self.write_search_params, '_default', "Default"))
 
         self.auth_prompt_form.btn_account_new.pressed.connect(partial(
             custom_tools.mail_to_isogeo, lang=self.lang))
