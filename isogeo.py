@@ -1394,7 +1394,8 @@ class Isogeo:
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
                     logging.info("WMS service layer added: {0}".format(url))
                 else:
-                    logging.warning("Invalid service: {0}".format(url))
+                    logging.warning("Invalid service URL: {} - {}"
+                                    .format(url, layer.error().message().decode("latin1")))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
@@ -1408,11 +1409,13 @@ class Isogeo:
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
                     logging.info("WFS service layer added: {0}".format(url))
                 else:
-                    logging.warning("Invalid service: {0}".format(url))
+                    logging.warning("Invalid service: {0}"
+                                    .format(url, layer.error().message()))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
-                        self.tr("The linked service is not valid."))
+                        self.tr("The linked service is not valid. QGIS says: {}")
+                                .format(layer.error().message()))
             else:
                 pass
         # If the data is a PostGIS table
