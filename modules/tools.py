@@ -8,8 +8,8 @@ from urllib import unquote, urlencode
 import webbrowser
 
 # PyQGIS
-from qgis.core import QgsMapLayerRegistry, QgsRasterLayer, QgsRectangle,
-                      QgsVectorLayer, QgsLayerDefinition
+from qgis.core import QgsMapLayerRegistry, QgsRasterLayer, QgsRectangle,\
+                      QgsVectorLayer
 from qgis.utils import iface
 
 # PyQT
