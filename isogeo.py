@@ -2185,14 +2185,21 @@ class Isogeo:
             try:
                 logging.info("The lineEdit text hasn't changed."
                              " So pass without sending a request.")
-            except AttributeError:
+            except AttributeError, e:
+                logging.error(e)
                 pass
             pass
         else:
             try:
                 logging.info("The line Edit text changed."
                              " Calls the search function.")
-            except AttributeError:
+            except AttributeError, e:
+                logging.error(e)
+                pass
+            if self.dockwidget.txt_input.text() == "Ici c'est Isogeo !":
+                custom_tools.special_search("isogeo")
+                return
+            else:
                 pass
             self.search()
 
