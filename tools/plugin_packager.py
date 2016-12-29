@@ -73,6 +73,7 @@ final_zip.write(r"modules\__init__.py", plg_dir + r"\modules\__init__.py")
 final_zip.write(r"modules\api.py", plg_dir + r"\modules\api.py")
 final_zip.write(r"modules\tools.py", plg_dir + r"\modules\tools.py")
 final_zip.write(r"modules\url_builder.py", plg_dir + r"\modules\url_builder.py")
+final_zip.write(r"modules\isogeo.qml", plg_dir + r"\modules\isogeo.qml")
 
 # Resources
 resources_files = [path.relpath(f) for f in listdir(r"resources")
