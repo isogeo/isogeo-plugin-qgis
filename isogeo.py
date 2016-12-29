@@ -2227,23 +2227,36 @@ class Isogeo:
     def write_shares_info(self, content):
         """Write informations about the shares in the Settings pannel."""
         self.currentUrl = self.oldUrl
-        total = len(content)
-        if total == 1:
-            text = self.tr(u"<html><p><b><br/>This plugin is powered by 1 share.<br/></b></p>")
+        text = u"<html>"  # opening html content
+        # Isogeo application authenticated in the plugin
+        app = content[0].get("applications")[0]
+        text += self.tr(u"<p>This plugin is authenticated as "
+                        u"<a href='{}'>{}</a> and ")\
+                    .format(app.get("url"), app.get("name"))
+        # shares feeding the application
+        if len(content) == 1:
+            text += self.tr(u" powered by 1 share:</p></br>")
         else:
-            text = self.tr(u"<html><p><b><br/>This plugin is powered by {0} shares.<br/></b></p>").format(total)
-        text += u"<p>   ___________________________________________________________________   </p>"
-        for share in content:
-            text += u"<p><b>{0}</p></b>".format(share['name'])
-            text += self.tr(u"<p>Modified: {0}</p>").format(custom_tools.handle_date(share['_modified']))
-            text += self.tr(u"<p>Contact: {0}</p>").format(share['_creator']['contact']['name'])
-            text += self.tr(u"<p>Applications powered by this share:</p>")
-            for a in share['applications']:
-                text += u"<p>   - <a href='{0}'>{1}</a></p>".format(a['url'], a['name'])
+            text += self.tr(u" powered by {0} shares:</p></br>")\
+                        .format(len(content))
+        # shares details
+        for share in sorted(content):
+            creator_id = share.get("_creator").get("_tag")[6:]
+            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}"\
+                        .format(creator_id, share.get("_id"))
+            text += u"<p><a href='{}'><b>{}</b></a></p>"\
+                    .format(share_url,
+                            share.get("name"))
+            text += self.tr(u"<p>Updated: {}</p>")\
+                        .format(custom_tools.handle_date(share.get("_modified")))
+            text += self.tr(u"<p>Contact: {} - {}</p>")\
+                        .format(share['_creator']['contact']['name'],
+                                share['_creator']['contact']['email'])
             text += u"<p>   ___________________________________________________________________   </p>"
-        #text = text[:-80]
         text += u"</html>"
         self.dockwidget.txt_shares.setText(text)
+        # method ending
+        return
 
     # --------------------------------------------------------------------------
 
