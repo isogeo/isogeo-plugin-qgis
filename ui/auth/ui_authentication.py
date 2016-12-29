@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\auth\ui_authentication.ui'
 #
-# Created: Thu Nov 24 21:01:51 2016
+# Created: Thu Dec 29 18:29:53 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\credits\ui_credits.ui'
 #
-# Created: Thu Nov 24 22:50:59 2016
+# Created: Thu Dec 29 18:29:57 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,9 +26,9 @@ except AttributeError:
 class Ui_dlg_credits(object):
     def setupUi(self, dlg_credits):
         dlg_credits.setObjectName(_fromUtf8("dlg_credits"))
-        dlg_credits.resize(482, 424)
-        dlg_credits.setMinimumSize(QtCore.QSize(482, 300))
-        dlg_credits.setMaximumSize(QtCore.QSize(482, 16777215))
+        dlg_credits.resize(490, 560)
+        dlg_credits.setMinimumSize(QtCore.QSize(490, 560))
+        dlg_credits.setMaximumSize(QtCore.QSize(490, 560))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/gavel.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         dlg_credits.setWindowIcon(icon)
@@ -36,7 +36,7 @@ class Ui_dlg_credits(object):
         dlg_credits.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         dlg_credits.setSizeGripEnabled(False)
         self.verticalLayoutWidget = QtGui.QWidget(dlg_credits)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 481, 424))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 481, 556))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setSpacing(12)
@@ -44,6 +44,9 @@ class Ui_dlg_credits(object):
         self.verticalLayout.setMargin(5)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.grp_realization = QtGui.QGroupBox(self.verticalLayoutWidget)
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.grp_realization.setFont(font)
         self.grp_realization.setFlat(True)
         self.grp_realization.setObjectName(_fromUtf8("grp_realization"))
         self.verticalLayout_7 = QtGui.QVBoxLayout(self.grp_realization)
@@ -55,6 +58,7 @@ class Ui_dlg_credits(object):
         self.horizontalLayout_4 = QtGui.QHBoxLayout()
         self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
         self.lbl_isogeo_logo = QtGui.QLabel(self.grp_realization)
+        self.lbl_isogeo_logo.setMinimumSize(QtCore.QSize(200, 100))
         self.lbl_isogeo_logo.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.lbl_isogeo_logo.setText(_fromUtf8(""))
         self.lbl_isogeo_logo.setPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/isogeo.png")))
@@ -78,7 +82,7 @@ class Ui_dlg_credits(object):
         self.verticalLayout.addWidget(self.grp_realization)
         self.grp_sponsors = QtGui.QGroupBox(self.verticalLayoutWidget)
         font = QtGui.QFont()
-        font.setPointSize(8)
+        font.setPointSize(9)
         font.setBold(False)
         font.setWeight(50)
         self.grp_sponsors.setFont(font)
@@ -89,7 +93,7 @@ class Ui_dlg_credits(object):
         self.gridLayout_5 = QtGui.QGridLayout()
         self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
         self.lbl_smavd_url = QtGui.QLabel(self.grp_sponsors)
-        self.lbl_smavd_url.setText(_fromUtf8("<html><head/><body><p align=\"center\"><a href=\"http://www.smavd.org/\"><span style=\" text-decoration: underline; color:#0000ff;\">Syndicat Mixte d\'Aménagement<br/>de la Durance (SMAVD)</span></a></p></body></html>"))
+        self.lbl_smavd_url.setText(_fromUtf8("<html><head/><body><p align=\"center\"><a href=\"http://www.smavd.org/\"><span style=\" text-decoration: underline; color:#0000ff;\">Syndicat Mixte d&apos;Am&eacute;nagement<br/>de la Durance (SMAVD)</span></a></p></body></html>"))
         self.lbl_smavd_url.setWordWrap(True)
         self.lbl_smavd_url.setOpenExternalLinks(False)
         self.lbl_smavd_url.setObjectName(_fromUtf8("lbl_smavd_url"))
@@ -126,7 +130,7 @@ class Ui_dlg_credits(object):
         self.lbl_lorient_logo.setObjectName(_fromUtf8("lbl_lorient_logo"))
         self.gridLayout_6.addWidget(self.lbl_lorient_logo, 1, 2, 1, 1)
         self.lbl_lorient_url = QtGui.QLabel(self.grp_sponsors)
-        self.lbl_lorient_url.setText(_fromUtf8("<html><head/><body><p align=\"center\"><a href=\"https://www.lorient-agglo.fr/\"><span style=\" text-decoration: underline; color:#0000ff;\">Communauté d\'agglomération de<br/>Lorient (Lorient Agglomération)</span></a></p></body></html>"))
+        self.lbl_lorient_url.setText(_fromUtf8("<html><head/><body><p align=\"center\"><a href=\"https://www.lorient-agglo.fr/\"><span style=\" text-decoration: underline; color:#0000ff;\">Communaut&eacute; d&apos;agglom&eacute;ration de<br/>Lorient (Lorient Agglom&eacute;ration)</span></a></p></body></html>"))
         self.lbl_lorient_url.setObjectName(_fromUtf8("lbl_lorient_url"))
         self.gridLayout_6.addWidget(self.lbl_lorient_url, 1, 0, 1, 1)
         self.line_3 = QtGui.QFrame(self.grp_sponsors)
@@ -138,6 +142,9 @@ class Ui_dlg_credits(object):
         self.verticalLayout.addWidget(self.grp_sponsors)
         self.grp_sources = QtGui.QGroupBox(self.verticalLayoutWidget)
         self.grp_sources.setEnabled(True)
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.grp_sources.setFont(font)
         self.grp_sources.setFlat(True)
         self.grp_sources.setCheckable(False)
         self.grp_sources.setObjectName(_fromUtf8("grp_sources"))

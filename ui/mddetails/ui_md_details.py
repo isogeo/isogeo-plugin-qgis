@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\mddetails\ui_md_details.ui'
 #
-# Created: Thu Nov 24 21:02:06 2016
+# Created: Thu Dec 29 18:30:02 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
