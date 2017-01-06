@@ -2,6 +2,8 @@
 
 # Standard library
 import logging
+from urllib import unquote, urlencode
+from urlparse import urlparse
 
 # PyQT
 from PyQt4.QtCore import QUrl
@@ -10,11 +12,13 @@ from PyQt4.QtCore import QUrl
 class UrlBuilder(object):
     """Basic class that holds utilitary methods for the plugin."""
 
-    def build_wfs_url(self, raw_url):
+    def build_wfs_url(self, raw_url, rsc_type="service"):
         """Reformat the input WFS url so it fits QGIS criterias.
 
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
+
+        rsc_type: possible values = "service" or "link"
         """
         title = raw_url[0]
         input_url = raw_url[1].split("?")[0] + "?"
@@ -57,12 +61,27 @@ class UrlBuilder(object):
         else:
             return 0
 
-    def build_wms_url(self, raw_url):
+    def build_wms_url(self, raw_url, rsc_type="service"):
         """Reformat the input WMS url so it fits QGIS criterias.
 
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
+        # TESTING
+        url_parsed = urlparse(raw_url[1])
+        print(url_parsed)
+        # wms_params = {"service": "WMS",
+        #               "version": "1.3.0",
+        #               "request": "GetMap",
+        #               "layers": "Isogeo:isogeo_logo",
+        #               "crs": "EPSG:3857",
+        #               "format": "image/png",
+        #               "styles": "isogeo_logo",
+        #               "url": "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?"
+        #               }
+        # wms_uri = unquote(urlencode(wms_params))
+
+        # METHOD
         title = raw_url[0]
         input_url = raw_url[1].split("?")[0] + "?"
         try:

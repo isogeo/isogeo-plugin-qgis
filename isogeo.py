@@ -282,14 +282,14 @@ class Isogeo:
         # when closing the docked window:
         # self.dockwidget = None
         self.pluginIsActive = False
-        try:
-            reloadPlugin("isogeo_search_engine")
-        except TypeError:
-            pass
-        try:
-            reloadPlugin("isogeo_plugin")
-        except TypeError:
-            pass
+        # try:
+        #     reloadPlugin("isogeo_search_engine")
+        # except TypeError:
+        #     pass
+        # try:
+        #     reloadPlugin("isogeo_search_engine_dev")
+        # except TypeError:
+        #     pass
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -1138,7 +1138,7 @@ class Isogeo:
                 if link.get('kind') == 'wms':
                     # Test if all the needed information is in the url.
                     url = [link.get('title'), link.get('url')]
-                    name_url = srv_url_bld.build_wms_url(url)
+                    name_url = srv_url_bld.build_wms_url(url, rsc_type="link")
                     # In which case, store it in the dict.
                     if name_url != 0:
                         link_dict[u"WMS : " + name_url[1]] = name_url
@@ -1147,7 +1147,7 @@ class Isogeo:
                 # If the link is a WFS
                 elif link.get('kind') == 'wfs':
                     url = [link.get('title'), link.get('url')]
-                    name_url = srv_url_bld.build_wfs_url(url)
+                    name_url = srv_url_bld.build_wfs_url(url, rsc_type="link")
                     if name_url != 0:
                         link_dict[u"WFS : " + name_url[1]] = name_url
                     else:
@@ -1159,7 +1159,7 @@ class Isogeo:
                         # WMS
                         if _link.get('kind') == 'wms':
                             url = [link.get('title'), link.get('url')]
-                            name_url = srv_url_bld.build_wms_url(url)
+                            name_url = srv_url_bld.build_wms_url(url, rsc_type="link")
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
                             else:
@@ -1167,7 +1167,7 @@ class Isogeo:
                         # WFS
                         elif _link.get('kind') == 'wfs':
                             url = [link.get('title'), link.get('url')]
-                            name_url = srv_url_bld.build_wfs_url(url)
+                            name_url = srv_url_bld.build_wfs_url(url, rsc_type="link")
                             if name_url != 0:
                                 link_dict[u"WFS : " + name_url[1]] = name_url
                             else:
@@ -1198,7 +1198,7 @@ class Isogeo:
                                                       layer.get("_id")))
                                 continue
                             url = [name, path]
-                            name_url = srv_url_bld.build_wfs_url(url)
+                            name_url = srv_url_bld.build_wfs_url(url, rsc_type="service")
                             if name_url != 0:
                                 link_dict[u"WFS : " + name_url[1]] = name_url
                             else:
@@ -1215,7 +1215,7 @@ class Isogeo:
                                                       layer.get("_id")))
                                 continue
                             url = [name, path]
-                            name_url = srv_url_bld.build_wms_url(url)
+                            name_url = srv_url_bld.build_wms_url(url, rsc_type="service")
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
                             else:
@@ -1243,7 +1243,7 @@ class Isogeo:
                                                       layer.get("_id")))
                                 continue
                             url = [name, path]
-                            name_url = srv_url_bld.build_wfs_url(url)
+                            name_url = srv_url_bld.build_wfs_url(url, rsc_type="service")
                             if name_url != 0:
                                 link_dict[u"WFS : " + name_url[1]] = name_url
                             else:
@@ -1263,7 +1263,7 @@ class Isogeo:
                                                       layer.get("_id")))
                                 continue
                             url = [name, path]
-                            name_url = srv_url_bld.build_wms_url(url)
+                            name_url = srv_url_bld.build_wms_url(url, rsc_type="service")
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
                             else:
@@ -1445,8 +1445,10 @@ class Isogeo:
                     geometry_column = i[8]
             # set database schema, table name, geometry column
             uri.setDataSource(schema, table, geometry_column)
+            # uri.setKeyColumn('iqrgqsd')
             # Adding the layer to the map canvas
             layer = QgsVectorLayer(uri.uri(), table, "postgres")
+            print(layer.isValid())
             if layer.isValid():
                 QgsMapLayerRegistry.instance().addMapLayer(layer)
                 logging.info("Data added: {}".format(table))
