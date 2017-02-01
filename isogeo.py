@@ -79,8 +79,8 @@ msgBar = iface.messageBar()
 network_mng = QNetworkAccessManager()
 
 # LOG FILE ##
-logger = logging.getLogger()
-logging.captureWarnings(True)
+logger = logging.getLogger("IsogeoQgisPlugin")
+logger.captureWarnings(True)
 logger.setLevel(logging.INFO)  # all errors will be get
 # logger.setLevel(logging.DEBUG)  # switch on it only for dev works
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
@@ -2382,6 +2382,9 @@ class Isogeo:
 
         self.dockwidget.txt_shares.setOpenLinks(False)
         self.dockwidget.txt_shares.anchorClicked.connect(custom_tools.open_webpage)
+
+        # catch QGIS log messages
+        QgsMessageLog.instance().messageReceived.connect(custom_tools.errorCatcher)
 
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()
