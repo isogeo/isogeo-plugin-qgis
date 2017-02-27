@@ -97,10 +97,10 @@ class Tools(object):
         if nb_fiches <= 15:
             nb_page = 1
         else:
-            if (nb_fiches % 15) == 0:
-                nb_page = (nb_fiches / 15)
+            if (nb_fiches % 10) == 0:
+                nb_page = (nb_fiches / 10)
             else:
-                nb_page = (nb_fiches / 15) + 1
+                nb_page = (nb_fiches / 10) + 1
         # method ending
         return nb_page
 

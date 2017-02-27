@@ -477,7 +477,7 @@ class Isogeo:
             QMessageBox.information(
                 iface.mainWindow(), self.tr("Error"), self.tr("Unknown error"))
 
-    def send_request_to_isogeo_api(self, token, limit=15):
+    def send_request_to_isogeo_api(self, token, limit=10):
         """Send a content url to the Isogeo API.
 
         This takes the currentUrl variable and send a request to this url,
@@ -988,8 +988,8 @@ class Isogeo:
         """Display the results in a table ."""
         logging.info("Show_results function called. Displaying the results")
         # Set rable rows
-        if self.results_count >= 15:
-            self.dockwidget.tbl_result.setRowCount(15)
+        if self.results_count >= 10:
+            self.dockwidget.tbl_result.setRowCount(10)
         else:
             self.dockwidget.tbl_result.setRowCount(self.results_count)
 
