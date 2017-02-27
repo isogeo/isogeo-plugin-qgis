@@ -15,6 +15,7 @@ from qgis.utils import iface
 from PyQt4.QtCore import QSettings, QUrl
 from PyQt4.QtGui import QMessageBox
 
+logger = logging.getLogger("IsogeoQgisPlugin")
 
 class Tools(object):
     """Basic class that holds utilitary methods for the plugin."""
@@ -76,7 +77,7 @@ class Tools(object):
                             autoraise=True
                             )
         # method ending
-        logging.info("Bugtracker launched in the default web browser")
+        logger.info("Bugtracker launched in the default web browser")
         return
 
     def open_webpage(self, link):
@@ -89,7 +90,7 @@ class Tools(object):
             new=0,
             autoraise=True)
         # method ending
-        logging.info("Bugtracker launched in the default web browser")
+        logger.info("Bugtracker launched in the default web browser")
         return
 
     def results_pages_counter(self, nb_fiches):
@@ -123,9 +124,9 @@ class Tools(object):
             # if wms_lyr.isValid:
             #     QgsMapLayerRegistry.instance().addMapLayer(wms_lyr)
 
-            #     logging.info("Isogeo easter egg used and WMS displayed!")
+            #     logger.info("Isogeo easter egg used and WMS displayed!")
             # else:
-            #     logging.error("WMS layer failed: {}"
+            #     logger.error("WMS layer failed: {}"
             #                   .format(wms_lyr.error().message()))
 
             # WFS
@@ -143,9 +144,9 @@ class Tools(object):
                                       "isogeo.qml")
                 wfs_lyr.loadNamedStyle(wfs_style)
                 QgsMapLayerRegistry.instance().addMapLayer(wfs_lyr)
-                logging.info("Isogeo easter egg used and WFS displayed!")
+                logger.info("Isogeo easter egg used and WFS displayed!")
             else:
-                logging.error("WFS layer failed: {}"
+                logger.error("WFS layer failed: {}"
                               .format(wfs_lyr.error().message()))
             canvas.setExtent(QgsRectangle(2.224199,48.815573,2.469921, 48.902145))
         else:
@@ -153,6 +154,7 @@ class Tools(object):
         # ending method
         return
 
+<<<<<<< HEAD
     def test_proxy_configuration(self):
         """Check the proxy configuration.
 
@@ -228,3 +230,12 @@ class Tools(object):
                     self.tr("Proxy issue : \nYou have a proxy set up on your"
                             " OS but none in QGIS.\nPlease set it up in "
                             "'Preferences/Options/Network'."))
+=======
+    def errorCatcher( msg, tag, level ):
+        if tag == 'WMS' and level != 0:
+            logger.error("WMS error: {}".format(msg))
+        elif tag == 'PostGIS' and level != 0:
+            logger.error("PostGIS error: {}".format(msg))
+        else:
+            pass
+>>>>>>> f4487193a20f70d3d8744ca592433027ded55332
