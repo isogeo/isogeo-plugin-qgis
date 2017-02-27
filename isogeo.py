@@ -80,7 +80,7 @@ network_mng = QNetworkAccessManager()
 # LOG FILE ##
 logger = logging.getLogger()
 logging.captureWarnings(True)
-logger.setLevel(logging.INFO)  # all errors will be get
+logger.setLevel(logging.DEBUG)  # all errors will be get
 # logger.setLevel(logging.DEBUG)  # switch on it only for dev works
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s || %(message)s")
@@ -88,7 +88,7 @@ logfile = RotatingFileHandler(os.path.join(
                               os.path.dirname(os.path.realpath(__file__)),
                               "log_isogeo_plugin.log"),
                               "a", 5000000, 1)
-logfile.setLevel(logging.INFO)
+logfile.setLevel(logging.DEBUG)
 # logfile.setLevel(logging.DEBUG)  # switch on it only for dev works
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
@@ -298,102 +298,6 @@ class Isogeo:
 
     # --------------------------------------------------------------------------
 
-    def test_proxy_configuration(self):
-        """Check the proxy configuration.
-
-        if a proxy configuration is set up for the computer, and for QGIS.
-        If none or both is set up, pass. But if there is a proxy config for the
-        computer but not in QGIS, pops an alert message.
-        """
-        system_proxy_config = urllib.getproxies()
-        if system_proxy_config == {}:
-            logging.info("The OS doesn't use a proxy. => Proxy config : OK")
-            pass
-        else:
-            s = QSettings()
-            qgis_proxy = s.value("proxy/proxyEnabled", "")
-            if str(qgis_proxy) == "true":
-                http = system_proxy_config.get('http')
-                if http is None:
-                    pass
-                else:
-                    elements = http.split(':')
-                    if len(elements) == 2:
-                        host = elements[0]
-                        port = elements[1]
-                        qgis_host = s.value("proxy/proxyHost", "")
-                        qgis_port = s.value("proxy/proxyPort", "")
-                        if qgis_host == host:
-                            if qgis_port == port:
-                                logging.info("A proxy is set up both in QGIS "
-                                             "and the OS and they match => "
-                                             "Proxy config : OK")
-                                pass
-                            else:
-                                QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'),
-                                    self.tr("Proxy issue : \nQGIS and your OS "
-                                            "have different proxy set ups."))
-                        else:
-                            QMessageBox.information(iface.mainWindow(
-                            ), self.tr('Alert'),
-                                self.tr("Proxy issue : \nQGIS and your OS have"
-                                        " different proxy set ups."))
-                    elif len(elements) == 3 and elements[0] == 'http':
-                        host_short = elements[1][2:]
-                        host_long = elements[0] + ':' + elements[1]
-                        port = elements[2]
-                        qgis_host = s.value("proxy/proxyHost", "")
-                        qgis_port = s.value("proxy/proxyPort", "")
-                        if qgis_host == host_short or qgis_host == host_long:
-                            if qgis_port == port:
-                                logging.info("A proxy is set up both in QGIS"
-                                             " and the OS and they match "
-                                             "=> Proxy config : OK")
-                                pass
-                            else:
-                                logging.info("OS and QGIS proxy ports do not "
-                                             "match. => Proxy config : not OK")
-                                QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'),
-                                    self.tr("Proxy issue : \nQGIS and your OS"
-                                            " have different proxy set ups."))
-                        else:
-                            logging.info("OS and QGIS proxy hosts do not "
-                                         "match. => Proxy config : not OK")
-                            QMessageBox.information(iface.mainWindow(
-                            ), self.tr('Alert'),
-                                self.tr("Proxy issue : \nQGIS and your OS have"
-                                        " different proxy set ups."))
-            else:
-                logging.info("OS uses a proxy but it isn't set up in QGIS."
-                             " => Proxy config : not OK")
-                QMessageBox.information(iface.mainWindow(
-                ), self.tr('Alert'),
-                    self.tr("Proxy issue : \nYou have a proxy set up on your"
-                            " OS but none in QGIS.\nPlease set it up in "
-                            "'Preferences/Options/Network'."))
-
-    def user_authentication(self):
-        """Test the validity of the user id and secret.
-
-        This is the first major function the plugin calls when executed. It
-        retrieves the id and secret from the config file. If they are set to
-        their default value, it asks for them.
-        If not, it tries to send a request.
-        """
-        s = QSettings()
-        self.user_id = s.value("isogeo-plugin/user-auth/id", 0)
-        self.user_secret = s.value("isogeo-plugin/user-auth/secret", 0)
-        if self.user_id != 0 and self.user_secret != 0:
-            logging.info("User_authentication function is trying "
-                         "to get a token from the id/secret")
-            self.ask_for_token(self.user_id, self.user_secret)
-        else:
-            logging.info("No id/secret. User authentication function "
-                         "is showing the auth window.")
-            self.auth_prompt_form.show()
-
     def write_ids_and_test(self):
         """Store the id & secret and launch the test function.
 
@@ -410,28 +314,7 @@ class Isogeo:
         s.setValue("isogeo-plugin/user-auth/id", user_id)
         s.setValue("isogeo-plugin/user-auth/secret", user_secret)
 
-        self.user_authentication()
-
-    def ask_for_token(self, c_id, c_secret):
-        """Ask a token from Isogeo API authentification page.
-
-        This send a POST request to Isogeo API with the user id and secret in
-        its header. The API should return an access token
-        """
-        headervalue = "Basic " + base64.b64encode(c_id + ":" + c_secret)
-        data = urllib.urlencode({"grant_type": "client_credentials"})
-        databyte = QByteArray()
-        databyte.append(data)
-        url = QUrl('https://id.api.isogeo.com/oauth/token')
-        request = QNetworkRequest(url)
-        request.setRawHeader("Authorization", headervalue)
-        if self.requestStatusClear is True:
-            self.requestStatusClear = False
-            token_reply = self.manager.post(request, databyte)
-            token_reply.finished.connect(
-                partial(self.handle_token, answer=token_reply))
-
-        QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
+        isogeo_api_mng.user_authentication()
 
     def handle_token(self, answer):
         """Handle the API answer when asked for a token.
@@ -521,7 +404,7 @@ class Isogeo:
             logging.info("Token expired. Renewing it.")
             self.loopCount = 0
             self.requestStatusClear = True
-            self.ask_for_token(self.user_id, self.user_secret)
+            isogeo_api_mng.ask_for_token(self.user_id, self.user_secret)
         elif content == "":
             logging.info("Empty reply. Weither no catalog is shared with the "
                          "plugin, or there is a problem (2 requests sent "
@@ -531,7 +414,7 @@ class Isogeo:
                 answer.abort()
                 del answer
                 self.requestStatusClear = True
-                self.ask_for_token(self.user_id, self.user_secret)
+                isogeo_api_mng.ask_for_token(self.user_id, self.user_secret)
             else:
                 self.requestStatusClear = True
                 msgBar.pushMessage(
@@ -2378,5 +2261,5 @@ class Isogeo:
 
         """ --- Actions when the plugin is launched --- """
         # self.test_config_file_existence()
-        self.test_proxy_configuration()
-        self.user_authentication()
+        custom_tools.test_proxy_configuration()
+        isogeo_api_mng.user_authentication()
