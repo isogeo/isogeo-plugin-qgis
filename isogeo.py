@@ -1355,17 +1355,39 @@ class Isogeo:
             # uri.setKeyColumn('iqrgqsd')
             # Adding the layer to the map canvas
             layer = QgsVectorLayer(uri.uri(), table, "postgres")
-            print(layer.isValid())
             if layer.isValid():
                 QgsMapLayerRegistry.instance().addMapLayer(layer)
-                logging.info("Data added: {}".format(table))
+                logger.info("Data added: {}".format(table))
+            elif not layer.isValid() and\
+                custom_tools.last_error[0] == "postgis" and\
+                "prim" in custom_tools.last_error[1]:
+                logger.info("PostGIS layer may be a view, "
+                            "so key column is missing. "
+                            "Trying to automatically set one...")
+                # get layer fields to set as key column
+                fields = layer.dataProvider().fields()
+                fields_names = [i.name() for i in fields]
+                # sort them by name containing id to better perf
+                fields_names.sort(key=lambda x: ("id" not in x, x))
+                for field in fields_names:
+                    uri.setKeyColumn(field)
+                    layer = QgsVectorLayer(uri.uri(True), table, "postgres")
+                    if layer.isValid():
+                        QgsMapLayerRegistry.instance().addMapLayer(layer)
+                        logger.info("PostGIS view layer added with [{}] as key column"
+                                    .format(field))
+                        return 1
+                    else:
+                        continue
             else:
-                logging.info("Layer not valid. table = {0}".format(table))
+                logger.info("Layer not valid. table = {0}".format(table))
                 QMessageBox.information(
                     iface.mainWindow(),
                     self.tr("Error"),
                     self.tr("The PostGIS layer is not valid."
-                            " Reason: {}".format(layer.error().message())))
+                            " Reason: {}".format(custom_tools.last_error)))
+                return 0
+        return 1
 
     def save_params(self):
         """Save the widgets state/index.
