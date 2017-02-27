@@ -73,29 +73,24 @@ from modules.url_builder import UrlBuilder
 # useful submodules and shortcuts
 isogeo_api_mng = IsogeoApiManager()
 custom_tools = Tools()
-srv_url_bld = UrlBuilder()
 msgBar = iface.messageBar()
 network_mng = QNetworkAccessManager()
+qsettings = QSettings()
+srv_url_bld = UrlBuilder()
 
 # LOG FILE ##
-<<<<<<< HEAD
-logger = logging.getLogger()
-logging.captureWarnings(True)
-logger.setLevel(logging.DEBUG)  # all errors will be get
-=======
 logger = logging.getLogger("IsogeoQgisPlugin")
-logger.captureWarnings(True)
-logger.setLevel(logging.INFO)  # all errors will be get
->>>>>>> f4487193a20f70d3d8744ca592433027ded55332
-# logger.setLevel(logging.DEBUG)  # switch on it only for dev works
+logging.captureWarnings(True)
+# logger.setLevel(logging.INFO)  # all errors will be get
+logger.setLevel(logging.DEBUG)  # switch on it only for dev works
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s || %(message)s")
 logfile = RotatingFileHandler(os.path.join(
                               os.path.dirname(os.path.realpath(__file__)),
                               "log_isogeo_plugin.log"),
                               "a", 5000000, 1)
-logfile.setLevel(logging.DEBUG)
-# logfile.setLevel(logging.DEBUG)  # switch on it only for dev works
+# logfile.setLevel(logging.INFO)
+logfile.setLevel(logging.DEBUG)  # switch on it only for dev works
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 
@@ -107,13 +102,13 @@ logger.addHandler(logfile)
 class Isogeo:
     """QGIS Plugin Implementation."""
 
-    logging.info('\n\n\t========== Isogeo Search Engine for QGIS ==========')
-    logging.info('OS: {0}'.format(platform.platform()))
+    logger.info('\n\n\t========== Isogeo Search Engine for QGIS ==========')
+    logger.info('OS: {0}'.format(platform.platform()))
     try:
-        logging.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
+        logger.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
     except UnicodeEncodeError:
         qgis_version = QGis.QGIS_VERSION.decode("latin1")
-        logging.info('QGIS Version: {0}'.format(qgis_version))
+        logger.info('QGIS Version: {0}'.format(qgis_version))
 
     def __init__(self, iface):
         """Constructor.
@@ -130,12 +125,12 @@ class Isogeo:
         self.plugin_dir = os.path.dirname(__file__)
 
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
+        locale = qsettings.value('locale/userLocale')[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
             'isogeo_search_engine_{}.qm'.format(locale))
-        logging.info('Language applied: {0}'.format(locale))
+        logger.info('Language applied: {0}'.format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
@@ -162,8 +157,8 @@ class Isogeo:
         self.dockwidget = None
 
         # network manager included within QGIS
-        # self.manager = QgsNetworkAccessManager.instance()
-        self.manager = QNetworkAccessManager()
+        self.manager = QgsNetworkAccessManager.instance()
+        # self.manager = QNetworkAccessManager()
 
         # UI submodules
         self.auth_prompt_form = IsogeoAuthentication()
@@ -270,8 +265,6 @@ class Isogeo:
 
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed."""
-        # print "** CLOSING Isogeo"
-
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
 
@@ -292,8 +285,6 @@ class Isogeo:
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
-        # print "** UNLOAD Isogeo"
-
         for action in self.actions:
             self.iface.removePluginWebMenu(
                 self.tr(u'&Isogeo'),
@@ -304,9 +295,27 @@ class Isogeo:
 
     # --------------------------------------------------------------------------
 
+    def user_authentication(self):
+        """Test the validity of the user id and secret.
+        This is the first major function the plugin calls when executed. It
+        retrieves the id and secret from the config file. If they are set to
+        their default value, it asks for them.
+        If not, it tries to send a request.
+        """
+        s = QSettings()
+        self.user_id = s.value("isogeo-plugin/user-auth/id", 0)
+        self.user_secret = s.value("isogeo-plugin/user-auth/secret", 0)
+        if self.user_id != 0 and self.user_secret != 0:
+            logging.info("User_authentication function is trying "
+                         "to get a token from the id/secret")
+            self.ask_for_token(self.user_id, self.user_secret)
+        else:
+            logging.info("No id/secret. User authentication function "
+                         "is showing the auth window.")
+            self.auth_prompt_form.show()
+
     def write_ids_and_test(self):
         """Store the id & secret and launch the test function.
-
         Called when the authentification window is closed,
         it stores the values in the file, then call the
         user_authentification function to test them.
@@ -320,11 +329,30 @@ class Isogeo:
         s.setValue("isogeo-plugin/user-auth/id", user_id)
         s.setValue("isogeo-plugin/user-auth/secret", user_secret)
 
-        isogeo_api_mng.user_authentication()
+        self.user_authentication()
+
+    def ask_for_token(self, c_id, c_secret):
+        """Ask a token from Isogeo API authentification page.
+        This send a POST request to Isogeo API with the user id and secret in
+        its header. The API should return an access token
+        """
+        headervalue = "Basic " + base64.b64encode(c_id + ":" + c_secret)
+        data = urllib.urlencode({"grant_type": "client_credentials"})
+        databyte = QByteArray()
+        databyte.append(data)
+        url = QUrl('https://id.api.isogeo.com/oauth/token')
+        request = QNetworkRequest(url)
+        request.setRawHeader("Authorization", headervalue)
+        if self.requestStatusClear is True:
+            self.requestStatusClear = False
+            token_reply = self.manager.post(request, databyte)
+            token_reply.finished.connect(
+                partial(self.handle_token, answer=token_reply))
+
+        QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
 
     def handle_token(self, answer):
         """Handle the API answer when asked for a token.
-
         This handles the API answer. If it has sent an access token, it calls
         the initialization function. If not, it raises an error, and ask
         for new IDs
@@ -361,7 +389,6 @@ class Isogeo:
 
     def send_request_to_isogeo_api(self, token, limit=10):
         """Send a content url to the Isogeo API.
-
         This takes the currentUrl variable and send a request to this url,
         using the token variable.
         """
@@ -378,7 +405,6 @@ class Isogeo:
 
     def handle_api_reply(self, answer):
         """Handle the different possible Isogeo API answer.
-
         This is called when the answer from the API is finished. If it's
         content, it calls update_fields(). If it isn't, it means the token has
         expired, and it calls ask_for_token()
@@ -410,7 +436,7 @@ class Isogeo:
             logging.info("Token expired. Renewing it.")
             self.loopCount = 0
             self.requestStatusClear = True
-            isogeo_api_mng.ask_for_token(self.user_id, self.user_secret)
+            self.ask_for_token(self.user_id, self.user_secret)
         elif content == "":
             logging.info("Empty reply. Weither no catalog is shared with the "
                          "plugin, or there is a problem (2 requests sent "
@@ -420,7 +446,7 @@ class Isogeo:
                 answer.abort()
                 del answer
                 self.requestStatusClear = True
-                isogeo_api_mng.ask_for_token(self.user_id, self.user_secret)
+                self.ask_for_token(self.user_id, self.user_secret)
             else:
                 self.requestStatusClear = True
                 msgBar.pushMessage(
@@ -446,8 +472,8 @@ class Isogeo:
         shown only when a specific button is pressed.
         """
         # logs
-        logging.info("Update_fields function called on the API reply. reset = "
-                     "{0}".format(self.hardReset))
+        logger.info("Update_fields function called on the API reply. reset = "
+                    "{0}".format(self.hardReset))
         QgsMessageLog.logMessage("Query sent & received: {}"
                                  .format(result.get("query")),
                                  "Isogeo")
@@ -488,15 +514,15 @@ class Isogeo:
         # Sorting direction
         cbb_od = self.dockwidget.cbb_od
         # Quick searches
-        cbb_saved = self.dockwidget.cbb_saved
+        cbb_quicksearch = self.dockwidget.cbb_quicksearch
         # Action : view
-        cb_view = self.dockwidget.checkBox
+        cb_view = self.dockwidget.chb_view
         # Action : download
-        cb_dl = self.dockwidget.checkBox_2
+        cb_dl = self.dockwidget.chb_download
         # Action : other
-        cb_other = self.dockwidget.checkBox_3
+        cb_other = self.dockwidget.chb_other
         # Action : None
-        cb_none = self.dockwidget.checkBox_4
+        cb_none = self.dockwidget.chb_none
         # Results table
         tbl_result = self.dockwidget.tbl_result
 
@@ -517,12 +543,12 @@ class Isogeo:
         search_list.pop(search_list.index('_default'))
         if '_current' in search_list:
             search_list.pop(search_list.index('_current'))
-        cbb_saved.clear()
+        cbb_quicksearch.clear()
         self.dockwidget.cbb_modify_sr.clear()
         icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
-        cbb_saved.addItem(icon, self.tr('Quick Search'))
+        cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
         for i in search_list:
-            cbb_saved.addItem(i, i)
+            cbb_quicksearch.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
 
         # Initiating the "nothing selected" and "None" items in each combobox
@@ -636,8 +662,8 @@ class Isogeo:
                 # Sorting direction
                 cbb_od.setCurrentIndex(cbb_od.findData(params.get('od')))
                 # Quick searches
-                previous_index = cbb_saved.findData(params.get('favorite'))
-                cbb_saved.setCurrentIndex(previous_index)
+                previous_index = cbb_quicksearch.findData(params.get('favorite'))
+                cbb_quicksearch.setCurrentIndex(previous_index)
                 # Operator for geographical filter
                 previous_index = cbb_geo_op.findData(params.get('operation'))
                 cbb_geo_op.setCurrentIndex(previous_index)
@@ -773,8 +799,8 @@ class Isogeo:
                 cbb_od.setCurrentIndex(saved_index)
                 # Quick searches
                 if self.savedSearch != "_default":
-                    saved_index = cbb_saved.findData(self.savedSearch)
-                    cbb_saved.setCurrentIndex(saved_index)
+                    saved_index = cbb_quicksearch.findData(self.savedSearch)
+                    cbb_quicksearch.setCurrentIndex(saved_index)
                 # Action : view
                 if search_params.get('view'):
                     cb_view.setCheckState(Qt.Checked)
@@ -868,7 +894,7 @@ class Isogeo:
 
     def show_results(self, result):
         """Display the results in a table ."""
-        logging.info("Show_results function called. Displaying the results")
+        logger.info("Show_results function called. Displaying the results")
         # Set rable rows
         if self.results_count >= 10:
             self.dockwidget.tbl_result.setRowCount(10)
@@ -888,9 +914,8 @@ class Isogeo:
 
         # Get the name (and other informations) of all databases whose
         # connection is set up in QGIS
-        qs = QSettings()
         if self.PostGISdict == {}:
-            self.PostGISdict = srv_url_bld.build_postgis_dict(qs)
+            self.PostGISdict = srv_url_bld.build_postgis_dict(qsettings)
         else:
             pass
         # Looping inside the table lines. For each of them, showing the title,
@@ -1075,7 +1100,7 @@ class Isogeo:
                                 path = "{0}?typeName={1}".format(service.get("path"),
                                                                  layer.get("id"))
                             except UnicodeEncodeError:
-                                logging.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
+                                logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
                                               .format(i.get("_id"),
                                                       layer.get("_id")))
                                 continue
@@ -1092,7 +1117,7 @@ class Isogeo:
                                 path = "{0}?layers={1}".format(service.get("path"),
                                                                layer.get("id"))
                             except UnicodeEncodeError:
-                                logging.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
+                                logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
                                               .format(i.get("_id"),
                                                       layer.get("_id")))
                                 continue
@@ -1120,7 +1145,7 @@ class Isogeo:
                                 path = "{0}?typeName={1}".format(base_url,
                                                                  layer.get("id"))
                             except UnicodeEncodeError:
-                                logging.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
+                                logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
                                               .format(i.get("_id"),
                                                       layer.get("_id")))
                                 continue
@@ -1140,7 +1165,7 @@ class Isogeo:
                                 path = "{0}?layers={1}".format(base_url,
                                                                layer.get("id"))
                             except UnicodeEncodeError:
-                                logging.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
+                                logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
                                               .format(i.get("_id"),
                                                       layer.get("_id")))
                                 continue
@@ -1219,7 +1244,7 @@ class Isogeo:
         search the information needed to add it in the temporary dictionnary
         constructed in the show_results function. It then adds it.
         """
-        logging.info("add_layer method called.")
+        logger.info("add_layer method called.")
         if layer_info[0] == "index":
             combobox = self.dockwidget.tbl_result.cellWidget(layer_info[1], 3)
             layer_info = combobox.itemData(combobox.currentIndex())
@@ -1240,15 +1265,15 @@ class Isogeo:
                         QgsMessageLog.logMessage("Data layer added: {}"
                                                  .format(name),
                                                  "Isogeo")
-                        logging.info("Vector layer added: {}".format(path))
+                        logger.info("Vector layer added: {}".format(path))
                     except UnicodeEncodeError:
                         QgsMessageLog.logMessage(
                             "Vector layer added:: {}".format(
                                 name.decode("latin1")), "Isogeo")
-                        logging.info("Vector layer added: {}"
-                                     .format(name.decode("latin1")))
+                        logger.info("Vector layer added: {}"
+                                    .format(name.decode("latin1")))
                 else:
-                    logging.info("Layer not valid. path = {0}".format(path))
+                    logger.info("Layer not valid. path = {0}".format(path))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
@@ -1260,9 +1285,9 @@ class Isogeo:
                 layer = QgsRasterLayer(path, name)
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logging.info("Raster datasource added: {0}".format(path))
+                    logger.info("Raster datasource added: {0}".format(path))
                 else:
-                    logging.warning("Invalid datasource: {0}".format(path))
+                    logger.warning("Invalid datasource: {0}".format(path))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
@@ -1274,11 +1299,11 @@ class Isogeo:
                 layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logging.info("WMS service layer added: {0}".format(url))
+                    logger.info("WMS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
-                    logging.warning("Invalid service URL: {} - {}"
-                                    .format(url, error_msg.encode("latin1")))
+                    logger.warning("Invalid service URL: {} - {}"
+                                   .format(url, error_msg.encode("latin1")))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
@@ -1291,10 +1316,10 @@ class Isogeo:
                 layer = QgsVectorLayer(url, name, 'WFS')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logging.info("WFS service layer added: {0}".format(url))
+                    logger.info("WFS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
-                    logging.warning("Invalid service: {0}"
+                    logger.warning("Invalid service: {0}"
                                     .format(url, error_msg.encode("latin1")))
                     QMessageBox.information(
                         iface.mainWindow(),
@@ -1305,7 +1330,7 @@ class Isogeo:
                 pass
         # If the data is a PostGIS table
         elif type(layer_info) == dict:
-            logging.info("Data type: PostGIS")
+            logger.info("Data type: PostGIS")
             # Give aliases to the data passed as arguement
             base_name = layer_info['base_name']
             schema = layer_info['schema']
@@ -1364,8 +1389,8 @@ class Isogeo:
                 self.dockwidget.cbb_geofilter.currentIndex())
         else:
             geofilter_param = self.dockwidget.cbb_geofilter.currentText()
-        favorite_param = self.dockwidget.cbb_saved.itemData(
-            self.dockwidget.cbb_saved.currentIndex())
+        favorite_param = self.dockwidget.cbb_quicksearch.itemData(
+            self.dockwidget.cbb_quicksearch.currentIndex())
         type_param = self.dockwidget.cbb_type.itemData(
             self.dockwidget.cbb_type.currentIndex())
         operation_param = self.dockwidget.cbb_geo_op.itemData(
@@ -1384,19 +1409,19 @@ class Isogeo:
                 key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
 
         # Saving the checked checkboxes (useful for the search saving)
-        if self.dockwidget.checkBox.isChecked():
+        if self.dockwidget.chb_view.isChecked():
             view_param = True
         else:
             view_param = False
-        if self.dockwidget.checkBox_2.isChecked():
+        if self.dockwidget.chb_download.isChecked():
             download_param = True
         else:
             download_param = False
-        if self.dockwidget.checkBox_3.isChecked():
+        if self.dockwidget.chb_other.isChecked():
             other_param = True
         else:
             other_param = False
-        if self.dockwidget.checkBox_4.isChecked():
+        if self.dockwidget.chb_none.isChecked():
             noaction_param = True
         else:
             noaction_param = False
@@ -1432,7 +1457,7 @@ class Isogeo:
                 params['coord'] = self.get_coords('canvas')
             else:
                 params['coord'] = self.get_coords(params.get('geofilter'))
-        logging.info(params)
+        logger.info(params)
         return params
 
     def search(self):
@@ -1441,8 +1466,8 @@ class Isogeo:
         This builds the url, retrieving the parameters from the widgets. When
         the final url is built, it calls send_request_to_isogeo_api
         """
-        logging.info("Search function called. Building the "
-                     "url that is to be sent to the API")
+        logger.info("Search function called. Building the "
+                    "url that is to be sent to the API")
         # Disabling all user inputs during the search function is running
         self.switch_widgets_on_and_off('off')
         # STORING THE PREVIOUS SEARCH
@@ -1459,12 +1484,12 @@ class Isogeo:
             search_list = saved_searches.keys()
             search_list.pop(search_list.index('_default'))
             search_list.pop(search_list.index('_current'))
-            self.dockwidget.cbb_saved.clear()
+            self.dockwidget.cbb_quicksearch.clear()
             icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
-            self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
+            self.dockwidget.cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
             self.dockwidget.cbb_modify_sr.clear()
             for i in search_list:
-                self.dockwidget.cbb_saved.addItem(i, i)
+                self.dockwidget.cbb_quicksearch.addItem(i, i)
                 self.dockwidget.cbb_modify_sr.addItem(i, i)
             # Write modifications in the json
             with open(self.json_path, 'w') as outfile:
@@ -1490,7 +1515,7 @@ class Isogeo:
         # URL BUILDING FUNCTION CALLED.
         self.currentUrl = isogeo_api_mng.build_request_url(params)
 
-        logging.info(self.currentUrl)
+        logger.info(self.currentUrl)
         # Sending the request to Isogeo API
         if self.requestStatusClear is True:
             self.send_request_to_isogeo_api(self.token)
@@ -1506,7 +1531,7 @@ class Isogeo:
         Close to the search() function (lot of code in common) but
         triggered on the click on the change page button.
         """
-        logging.info("next_page function called. Building the url "
+        logger.info("next_page function called. Building the url "
                      "that is to be sent to the API")
         # Testing if the user is asking for a unexisting page (ex : page 6 out
         # of 5)
@@ -1538,8 +1563,8 @@ class Isogeo:
         Close to the search() function (lot of code in common) but
         triggered on the click on the change page button.
         """
-        logging.info("previous_page function called. Building the "
-                     "url that is to be sent to the API")
+        logger.info("previous_page function called. Building the "
+                    "url that is to be sent to the API")
         # testing if the user is asking for something impossible : page 0
         if self.page_index < 2:
             return False
@@ -1584,7 +1609,7 @@ class Isogeo:
             json.dump(saved_searches, outfile,
                       sort_keys=True, indent=4)
         # Log and messages
-        logging.info("{} search stored: {}. Parameters: {}"
+        logger.info("{} search stored: {}. Parameters: {}"
                      .format(search_kind, search_name, params))
         if search_kind != "Current":
             msgBar.pushMessage(self.tr("{} successfully saved: {}")
@@ -1596,12 +1621,12 @@ class Isogeo:
 
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
-        selected_search = self.dockwidget.cbb_saved.currentText()
+        selected_search = self.dockwidget.cbb_quicksearch.currentText()
         if selected_search != self.tr('Quick Search'):
-            logging.info("Set_widget_status function called. "
+            logger.info("Set_widget_status function called. "
                          "User is executing a saved search.")
             self.switch_widgets_on_and_off('off')
-            selected_search = self.dockwidget.cbb_saved.currentText()
+            selected_search = self.dockwidget.cbb_quicksearch.currentText()
             with open(self.json_path) as data_file:
                 saved_searches = json.load(data_file)
             if selected_search == "":
@@ -1647,12 +1672,12 @@ class Isogeo:
         search_list = saved_searches.keys()
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_quicksearch.clear()
         icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
-        self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
         for i in search_list:
-            self.dockwidget.cbb_saved.addItem(i, i)
+            self.dockwidget.cbb_quicksearch.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
         # inform user
         # msgBar.pushMessage("Isogeo",
@@ -1674,12 +1699,12 @@ class Isogeo:
         search_list = saved_searches.keys()
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_quicksearch.clear()
         icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
-        self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
         for i in search_list:
-            self.dockwidget.cbb_saved.addItem(i, i)
+            self.dockwidget.cbb_quicksearch.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
         # Update JSON file
         with open(self.json_path, 'w') as outfile:
@@ -1703,12 +1728,12 @@ class Isogeo:
         search_list = saved_searches.keys()
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_saved.clear()
+        self.dockwidget.cbb_quicksearch.clear()
         icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
-        self.dockwidget.cbb_saved.addItem(icon, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
         for i in search_list:
-            self.dockwidget.cbb_saved.addItem(i, i)
+            self.dockwidget.cbb_quicksearch.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
         # Update JSON file
         with open(self.json_path, 'w') as outfile:
@@ -1753,7 +1778,7 @@ class Isogeo:
                 minimum[0], minimum[1], maximum[0], maximum[1])
             return coord
         else:
-            logging.info('Wrong EPSG')
+            logger.info('Wrong EPSG')
             return False
 
     def reinitialize_search(self):
@@ -1763,12 +1788,12 @@ class Isogeo:
         the fields : send_request() calls handle_reply(), which calls
         update_fields())
         """
-        logging.info("Reinitialize_search function called.")
+        logger.info("Reinitialize_search function called.")
         self.hardReset = True
-        self.dockwidget.checkBox.setCheckState(Qt.Unchecked)
-        self.dockwidget.checkBox_2.setCheckState(Qt.Unchecked)
-        self.dockwidget.checkBox_3.setCheckState(Qt.Unchecked)
-        self.dockwidget.checkBox_4.setCheckState(Qt.Unchecked)
+        self.dockwidget.chb_view.setCheckState(Qt.Unchecked)
+        self.dockwidget.chb_download.setCheckState(Qt.Unchecked)
+        self.dockwidget.chb_other.setCheckState(Qt.Unchecked)
+        self.dockwidget.chb_none.setCheckState(Qt.Unchecked)
         self.dockwidget.txt_input.clear()
         self.dockwidget.cbb_keywords.clear()
         self.dockwidget.cbb_type.clear()
@@ -1797,7 +1822,7 @@ class Isogeo:
         """
         if mode == 'on':
             self.dockwidget.txt_input.setReadOnly(False)
-            self.dockwidget.cbb_saved.setEnabled(True)
+            self.dockwidget.cbb_quicksearch.setEnabled(True)
             self.dockwidget.grp_filters.setEnabled(True)
             self.dockwidget.widget.setEnabled(True)
             self.dockwidget.btn_reinit.setEnabled(True)
@@ -1807,7 +1832,7 @@ class Isogeo:
 
         else:
             self.dockwidget.txt_input.setReadOnly(True)
-            self.dockwidget.cbb_saved.setEnabled(False)
+            self.dockwidget.cbb_quicksearch.setEnabled(False)
             self.dockwidget.grp_filters.setEnabled(False)
             self.dockwidget.widget.setEnabled(False)
             self.dockwidget.btn_next.setEnabled(False)
@@ -1832,7 +1857,7 @@ class Isogeo:
 
     def send_details_request(self, md_id):
         """Send a request for aditionnal info about one data."""
-        logging.info("Full metatada sheet asked. Building the url.")
+        logger.info("Full metatada sheet asked. Building the url.")
         self.currentUrl = "https://v1.api.isogeo.com/resources/"\
             + str(md_id)\
             + "?_include=contacts,limitations,conditions,events,feature-attributes"
@@ -1842,7 +1867,7 @@ class Isogeo:
 
     def show_complete_md(self, content):
         """Open the pop up window that shows the metadata sheet details."""
-        logging.info("Displaying the whole metadata sheet.")
+        logger.info("Displaying the whole metadata sheet.")
         tags = isogeo_api_mng.get_tags(content)
         # Set the data title
         title = content.get('title')
@@ -1913,11 +1938,8 @@ class Isogeo:
         else:
             self.IsogeoMdDetails.val_inspire_themes.setText('None')
         # Set the data abstract
-        abstract = content.get('abstract')
-        if abstract is not None:
-            self.IsogeoMdDetails.val_abstract.setText(content['abstract'])
-        else:
-            self.IsogeoMdDetails.val_abstract.setText('NR')
+        self.IsogeoMdDetails.val_abstract.setText(content.get("abstract",
+                                                              "NR"))
         # Set the collection method text
         coll_method = content.get('collectionMethod')
         if coll_method is not None:
@@ -2068,23 +2090,23 @@ class Isogeo:
     def edited_search(self):
         """On the Qline edited signal, decide weither a search has to be launched."""
         try:
-            logging.info("Editing finished signal sent.")
+            logger.info("Editing finished signal sent.")
         except AttributeError:
             pass
         if self.dockwidget.txt_input.text() == self.old_text:
             try:
-                logging.info("The lineEdit text hasn't changed."
-                             " So pass without sending a request.")
-            except AttributeError, e:
-                logging.error(e)
+                logger.info("The lineEdit text hasn't changed."
+                            " So pass without sending a request.")
+            except AttributeError as e:
+                logger.error(e)
                 pass
             pass
         else:
             try:
-                logging.info("The line Edit text changed."
-                             " Calls the search function.")
-            except AttributeError, e:
-                logging.error(e)
+                logger.info("The line Edit text changed."
+                            " Calls the search function.")
+            except AttributeError as e:
+                logger.error(e)
                 pass
             if self.dockwidget.txt_input.text() == "Ici c'est Isogeo !":
                 custom_tools.special_search("isogeo")
@@ -2160,17 +2182,15 @@ class Isogeo:
         """Run method that loads and starts the plugin."""
         if not self.pluginIsActive:
             self.pluginIsActive = True
-
-            # print "** STARTING Isogeo"
-
             # dockwidget may not exist if:
             #    first run of plugin
             #    removed on close (see self.onClosePlugin method)
             if self.dockwidget is None:
                 # Create the dockwidget (after translation) and keep reference
                 self.dockwidget = IsogeoDockWidget()
-                logging.info("Plugin load time: {}"
-                             .format(plugin_times.get("isogeo_search_engine")))
+                logger.info("Plugin load time: {}"
+                             .format(plugin_times.get("isogeo_search_engine",
+                                                      "NR")))
 
             # connect to provide cleanup on closing of dockwidget
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
@@ -2199,10 +2219,10 @@ class Isogeo:
         # Connecting the text input to the search function
         self.dockwidget.txt_input.editingFinished.connect(self.edited_search)
         # Connecting the checkboxes to the search function
-        self.dockwidget.checkBox.clicked.connect(self.search)
-        self.dockwidget.checkBox_2.clicked.connect(self.search)
-        self.dockwidget.checkBox_3.clicked.connect(self.search)
-        self.dockwidget.checkBox_4.clicked.connect(self.search)
+        self.dockwidget.chb_view.clicked.connect(self.search)
+        self.dockwidget.chb_download.clicked.connect(self.search)
+        self.dockwidget.chb_other.clicked.connect(self.search)
+        self.dockwidget.chb_none.clicked.connect(self.search)
         # Connecting the radio buttons
 
         # Connecting the previous and next page buttons to their functions
@@ -2251,7 +2271,7 @@ class Isogeo:
         self.dockwidget.btn_delete_sr.pressed.connect(self.quicksearch_remove)
         # Connect the activation of the "saved search" combobox with the
         # set_widget_status function
-        self.dockwidget.cbb_saved.activated.connect(
+        self.dockwidget.cbb_quicksearch.activated.connect(
             self.set_widget_status)
         # G default
         self.dockwidget.btn_default.pressed.connect(
@@ -2266,9 +2286,8 @@ class Isogeo:
         self.dockwidget.txt_shares.anchorClicked.connect(custom_tools.open_webpage)
 
         # catch QGIS log messages
-        QgsMessageLog.instance().messageReceived.connect(custom_tools.errorCatcher)
+        QgsMessageLog.instance().messageReceived.connect(custom_tools.error_catcher)
 
         """ --- Actions when the plugin is launched --- """
-        # self.test_config_file_existence()
         custom_tools.test_proxy_configuration()
-        isogeo_api_mng.user_authentication()
+        self.user_authentication()

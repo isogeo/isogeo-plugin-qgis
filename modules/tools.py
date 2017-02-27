@@ -6,6 +6,7 @@ import logging
 from os import path
 from urllib import getproxies, unquote, urlencode
 import webbrowser
+import requests
 
 # PyQGIS
 from qgis.core import QgsMapLayerRegistry, QgsRectangle, QgsVectorLayer
@@ -15,10 +16,33 @@ from qgis.utils import iface
 from PyQt4.QtCore import QSettings, QUrl
 from PyQt4.QtGui import QMessageBox
 
+# ############################################################################
+# ########## Globals ###############
+# ##################################
+
+qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
+# ############################################################################
+# ########## Classes ###############
+# ##################################
+
+
 class Tools(object):
-    """Basic class that holds utilitary methods for the plugin."""
+    """Basic class that holds utilitary methods for the Isogeo plugin."""
+    last_error = None
+
+    def error_catcher(self, msg, tag, level):
+        """Catch QGIS error messages for introspection."""
+        # print(type(logger), dir(logger))
+        # print(msg, tag, level)
+        if tag == 'WMS' and level != 0:
+            # logger.error("WMS error: {}".format(msg))
+            self.last_error = "wms", msg
+        elif tag == 'PostGIS' and level != 0:
+            self.last_error = "postgis", msg
+        else:
+            pass
 
     def format_button_title(self, title):
         """Format the title for it to fit the button."""
@@ -154,21 +178,19 @@ class Tools(object):
         # ending method
         return
 
-<<<<<<< HEAD
     def test_proxy_configuration(self):
-        """Check the proxy configuration.
+        """Check adequation between system and QGIS proxy configuration.
 
-        if a proxy configuration is set up for the computer, and for QGIS.
+        If a proxy configuration is set up for the computer, and for QGIS.
         If none or both is set up, pass. But if there is a proxy config for the
         computer but not in QGIS, pops an alert message.
         """
         system_proxy_config = getproxies()
         if system_proxy_config == {}:
-            logging.info("The OS doesn't use a proxy. => Proxy config : OK")
-            pass
+            logger.info("No proxy found on the OS: OK.")
+            return 0
         else:
-            s = QSettings()
-            qgis_proxy = s.value("proxy/proxyEnabled", "")
+            qgis_proxy = qsettings.value("proxy/proxyEnabled", "")
             if str(qgis_proxy) == "true":
                 http = system_proxy_config.get('http')
                 if http is None:
@@ -178,13 +200,13 @@ class Tools(object):
                     if len(elements) == 2:
                         host = elements[0]
                         port = elements[1]
-                        qgis_host = s.value("proxy/proxyHost", "")
-                        qgis_port = s.value("proxy/proxyPort", "")
+                        qgis_host = qsettings.value("proxy/proxyHost", "")
+                        qgis_port = qsettings.value("proxy/proxyPort", "")
                         if qgis_host == host:
                             if qgis_port == port:
-                                logging.info("A proxy is set up both in QGIS "
-                                             "and the OS and they match => "
-                                             "Proxy config : OK")
+                                logger.info("A proxy is set up both in QGIS "
+                                            "and the OS and they match => "
+                                            "Proxy config : OK")
                                 pass
                             else:
                                 QMessageBox.information(iface.mainWindow(
@@ -200,42 +222,33 @@ class Tools(object):
                         host_short = elements[1][2:]
                         host_long = elements[0] + ':' + elements[1]
                         port = elements[2]
-                        qgis_host = s.value("proxy/proxyHost", "")
-                        qgis_port = s.value("proxy/proxyPort", "")
+                        qgis_host = qsettings.value("proxy/proxyHost", "")
+                        qgis_port = qsettings.value("proxy/proxyPort", "")
                         if qgis_host == host_short or qgis_host == host_long:
                             if qgis_port == port:
-                                logging.info("A proxy is set up both in QGIS"
-                                             " and the OS and they match "
-                                             "=> Proxy config : OK")
+                                logger.info("A proxy is set up both in QGIS"
+                                            " and the OS and they match "
+                                            "=> Proxy config : OK")
                                 pass
                             else:
-                                logging.error("OS and QGIS proxy ports do not "
-                                              "match. => Proxy config: not OK")
+                                logger.error("OS and QGIS proxy ports do not "
+                                             "match. => Proxy config: not OK")
                                 QMessageBox.information(iface.mainWindow(
                                 ), self.tr('Alert'),
                                     self.tr("Proxy issue : \nQGIS and your OS"
                                             " have different proxy set ups."))
                         else:
-                            logging.error("OS and QGIS proxy hosts do not "
-                                          "match. => Proxy config: not OK")
+                            logger.error("OS and QGIS proxy hosts do not "
+                                         "match. => Proxy config: not OK")
                             QMessageBox.information(iface.mainWindow(
                             ), self.tr('Alert'),
                                 self.tr("Proxy issue : \nQGIS and your OS have"
                                         " different proxy set ups."))
             else:
-                logging.error("OS uses a proxy but it isn't set up in QGIS."
-                              " => Proxy config: not OK")
+                logger.error("OS uses a proxy but it isn't set up in QGIS."
+                             " => Proxy config: not OK")
                 QMessageBox.information(iface.mainWindow(
                 ), self.tr('Alert'),
                     self.tr("Proxy issue : \nYou have a proxy set up on your"
                             " OS but none in QGIS.\nPlease set it up in "
                             "'Preferences/Options/Network'."))
-=======
-    def errorCatcher( msg, tag, level ):
-        if tag == 'WMS' and level != 0:
-            logger.error("WMS error: {}".format(msg))
-        elif tag == 'PostGIS' and level != 0:
-            logger.error("PostGIS error: {}".format(msg))
-        else:
-            pass
->>>>>>> f4487193a20f70d3d8744ca592433027ded55332

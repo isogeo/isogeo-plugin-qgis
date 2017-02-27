@@ -8,6 +8,16 @@ from urlparse import urlparse
 # PyQT
 from PyQt4.QtCore import QUrl
 
+# ############################################################################
+# ########## Globals ###############
+# ##################################
+
+logger = logging.getLogger("IsogeoQgisPlugin")
+
+# ############################################################################
+# ########## Classes ###############
+# ##################################
+
 
 class UrlBuilder(object):
     """Basic class that holds utilitary methods for the plugin."""
@@ -20,12 +30,13 @@ class UrlBuilder(object):
 
         rsc_type: possible values = "service" or "link"
         """
+        logger.debug("WFS URL TYPE: " + rsc_type)
         title = raw_url[0]
         input_url = raw_url[1].split("?")[0] + "?"
         try:
             list_parameters = raw_url[1].split("?")[1].split('&')
         except IndexError, e:
-            logging.error("Build WFS URL failed: {}".format(e))
+            logger.error("Build WFS URL failed: {}".format(e))
             return 0
         valid = False
         srs_defined = False
@@ -69,7 +80,8 @@ class UrlBuilder(object):
         """
         # TESTING
         url_parsed = urlparse(raw_url[1])
-        print(url_parsed)
+        logger.debug("WFS URL TYPE: " + rsc_type)
+        # print(url_parsed)
         # wms_params = {"service": "WMS",
         #               "version": "1.3.0",
         #               "request": "GetMap",
@@ -87,7 +99,7 @@ class UrlBuilder(object):
         try:
             list_parameters = raw_url[1].split("?")[1].split('&')
         except IndexError, e:
-            logging.error("Build WMS URL failed: {}".format(e))
+            logger.error("Build WMS URL failed: {}".format(e))
             return 0
         valid = False
         style_defined = False

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
  <class>IsogeoDockWidgetBase</class>
  <widget class="QDockWidget" name="IsogeoDockWidgetBase">
@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>531</width>
+    <width>623</width>
     <height>808</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>531</width>
-    <height>523</height>
+    <width>623</width>
+    <height>596</height>
    </size>
   </property>
   <property name="windowIcon">
@@ -21,14 +21,14 @@
     <normaloff>:/plugins/Isogeo/icon.png</normaloff>:/plugins/Isogeo/icon.png</iconset>
   </property>
   <property name="locale">
-   <locale language="English" country="UnitedStates"/>
+   <locale country="UnitedStates" language="English" />
   </property>
   <property name="windowTitle">
    <string notr="true">Isogeo</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <item column="0" row="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -51,7 +51,7 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="tab_search">
        <attribute name="icon">
         <iconset resource="../resources.qrc">
          <normaloff>:/plugins/Isogeo/resources/search.svg</normaloff>:/plugins/Isogeo/resources/search.svg</iconset>
@@ -60,22 +60,22 @@
         <string>Search</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
+        <item column="0" row="0">
          <layout class="QHBoxLayout" name="horizontalLayout_14">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
              <widget class="QLineEdit" name="txt_input">
               <property name="inputMask">
-               <string/>
+               <string />
               </property>
               <property name="text">
-               <string/>
+               <string />
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="cbb_saved"/>
+             <widget class="QComboBox" name="cbb_quicksearch" />
             </item>
            </layout>
           </item>
@@ -93,12 +93,12 @@
                <x>1</x>
                <y>4</y>
                <width>261</width>
-               <height>54</height>
+               <height>63</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
               <item>
-               <widget class="QComboBox" name="cbb_keywords"/>
+               <widget class="QComboBox" name="cbb_keywords" />
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_13">
@@ -114,7 +114,7 @@
                    <string>Save research</string>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string />
                   </property>
                   <property name="icon">
                    <iconset resource="../resources.qrc">
@@ -140,7 +140,7 @@
                    <string>Reset all input fields</string>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string />
                   </property>
                   <property name="icon">
                    <iconset resource="../resources.qrc">
@@ -156,7 +156,7 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="0">
+        <item column="0" row="1">
          <widget class="QgsCollapsibleGroupBox" name="grp_filters">
           <property name="font">
            <font>
@@ -174,7 +174,7 @@
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -185,7 +185,7 @@
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout">
                      <item>
-                      <widget class="QLabel" name="label">
+                      <widget class="QLabel" name="ico_geofilter">
                        <property name="maximumSize">
                         <size>
                          <width>18</width>
@@ -193,7 +193,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/map.svg</pixmap>
@@ -204,7 +204,7 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="label_7">
+                      <widget class="QLabel" name="lbl_geofilter">
                        <property name="text">
                         <string>Geographic filter</string>
                        </property>
@@ -226,7 +226,7 @@
                     </layout>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="cbb_geofilter"/>
+                    <widget class="QComboBox" name="cbb_geofilter" />
                    </item>
                   </layout>
                  </item>
@@ -235,7 +235,7 @@
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_3">
                      <item>
-                      <widget class="QLabel" name="label_2">
+                      <widget class="QLabel" name="ico_format">
                        <property name="maximumSize">
                         <size>
                          <width>18</width>
@@ -250,7 +250,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/cube.svg</pixmap>
@@ -261,7 +261,7 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="label_8">
+                      <widget class="QLabel" name="lbl_format">
                        <property name="font">
                         <font>
                          <weight>75</weight>
@@ -318,7 +318,7 @@
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_4">
                      <item>
-                      <widget class="QLabel" name="label_13">
+                      <widget class="QLabel" name="ico_inspire">
                        <property name="maximumSize">
                         <size>
                          <width>18</width>
@@ -333,7 +333,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/leaf.svg</pixmap>
@@ -344,7 +344,7 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="label_4">
+                      <widget class="QLabel" name="lbl_inspire">
                        <property name="font">
                         <font>
                          <weight>75</weight>
@@ -405,7 +405,7 @@
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_2">
                      <item>
-                      <widget class="QLabel" name="label_10">
+                      <widget class="QLabel" name="ico_type">
                        <property name="maximumSize">
                         <size>
                          <width>18</width>
@@ -413,7 +413,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/asterisk.svg</pixmap>
@@ -424,7 +424,7 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="label_11">
+                      <widget class="QLabel" name="lbl_type">
                        <property name="text">
                         <string>Resource type</string>
                        </property>
@@ -446,7 +446,7 @@
                     </layout>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="cbb_type"/>
+                    <widget class="QComboBox" name="cbb_type" />
                    </item>
                   </layout>
                  </item>
@@ -455,7 +455,7 @@
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_5">
                      <item>
-                      <widget class="QLabel" name="label_9">
+                      <widget class="QLabel" name="ico_owner">
                        <property name="maximumSize">
                         <size>
                          <width>18</width>
@@ -470,7 +470,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/users.svg</pixmap>
@@ -481,7 +481,7 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="label_3">
+                      <widget class="QLabel" name="lbl_owner">
                        <property name="font">
                         <font>
                          <weight>75</weight>
@@ -538,7 +538,7 @@
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_6">
                      <item>
-                      <widget class="QLabel" name="label_14">
+                      <widget class="QLabel" name="ico_srs">
                        <property name="maximumSize">
                         <size>
                          <width>18</width>
@@ -553,7 +553,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/globe.svg</pixmap>
@@ -564,7 +564,7 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="label_5">
+                      <widget class="QLabel" name="lbl_srs">
                        <property name="font">
                         <font>
                          <weight>75</weight>
@@ -623,7 +623,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_7">
                <item>
-                <widget class="QLabel" name="label_12">
+                <widget class="QLabel" name="ico_actions">
                  <property name="maximumSize">
                   <size>
                    <width>18</width>
@@ -631,7 +631,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="pixmap">
                   <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/play.svg</pixmap>
@@ -642,7 +642,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="label_6">
+                <widget class="QLabel" name="lbl_actions">
                  <property name="font">
                   <font>
                    <weight>75</weight>
@@ -669,28 +669,28 @@
                 </spacer>
                </item>
                <item>
-                <widget class="QCheckBox" name="checkBox">
+                <widget class="QCheckBox" name="chb_view">
                  <property name="text">
                   <string>View</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="checkBox_2">
+                <widget class="QCheckBox" name="chb_download">
                  <property name="text">
                   <string>Download</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="checkBox_3">
+                <widget class="QCheckBox" name="chb_other">
                  <property name="text">
                   <string>Other actions</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="checkBox_4">
+                <widget class="QCheckBox" name="chb_none">
                  <property name="text">
                   <string>None</string>
                  </property>
@@ -703,7 +703,7 @@
           </layout>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item column="0" row="2">
          <layout class="QHBoxLayout" name="horizontalLayout_17">
           <item>
            <widget class="QPushButton" name="btn_show">
@@ -753,7 +753,7 @@
           </item>
          </layout>
         </item>
-        <item row="3" column="0">
+        <item column="0" row="3">
          <widget class="QTableWidget" name="tbl_result">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -762,13 +762,13 @@
            <bool>false</bool>
           </property>
           <attribute name="horizontalHeaderVisible">
-           <bool>true</bool>
+           <bool>false</bool>
           </attribute>
           <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
            <bool>false</bool>
           </attribute>
           <attribute name="verticalHeaderVisible">
-           <bool>true</bool>
+           <bool>false</bool>
           </attribute>
           <column>
            <property name="text">
@@ -792,7 +792,7 @@
           </column>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item column="0" row="4">
          <layout class="QHBoxLayout" name="horizontalLayout_12">
           <item>
            <spacer name="horizontalSpacer_7">
@@ -816,7 +816,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string notr="true"/>
+             <string notr="true" />
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -834,14 +834,14 @@
              </font>
             </property>
             <property name="text">
-             <string>Page x sur x</string>
+             <string>Page x on x</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="btn_next">
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -867,9 +867,9 @@
        </layout>
        <zorder>grp_filters</zorder>
        <zorder>tbl_result</zorder>
-       <zorder></zorder>
+       <zorder />
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="tab_settings">
        <attribute name="icon">
         <iconset resource="../resources.qrc">
          <normaloff>:/plugins/Isogeo/resources/gear.svg</normaloff>:/plugins/Isogeo/resources/gear.svg</iconset>
@@ -878,7 +878,7 @@
         <string>Settings</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="0" column="0">
+        <item column="0" row="0">
          <widget class="QGroupBox" name="groupBox_2">
           <property name="minimumSize">
            <size>
@@ -890,7 +890,7 @@
            <string>Search settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -961,7 +961,7 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -974,7 +974,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_10">
                <item>
-                <widget class="QLabel" name="label_20">
+                <widget class="QLabel" name="lbl_default">
                  <property name="font">
                   <font>
                    <weight>50</weight>
@@ -1008,7 +1008,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -1031,7 +1031,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -1044,7 +1044,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_11">
                <item>
-                <widget class="QLabel" name="label_15">
+                <widget class="QLabel" name="lbl_geo_op">
                  <property name="text">
                   <string>Geographical operator applied to the filter</string>
                  </property>
@@ -1080,19 +1080,19 @@
           </layout>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item column="0" row="1">
          <widget class="QGroupBox" name="groupBox">
           <property name="title">
            <string>Authentication settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
-           <item row="1" column="0">
-            <widget class="QTextBrowser" name="txt_shares"/>
+           <item column="0" row="1">
+            <widget class="QTextBrowser" name="txt_shares" />
            </item>
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QHBoxLayout" name="horizontalLayout_21">
              <item>
-              <widget class="QLabel" name="label_16">
+              <widget class="QLabel" name="lbl_auth">
                <property name="text">
                 <string>Change user id and secret</string>
                </property>
@@ -1120,7 +1120,7 @@
                 </size>
                </property>
                <property name="text">
-                <string/>
+                <string />
                </property>
                <property name="icon">
                 <iconset resource="../resources.qrc">
@@ -1133,18 +1133,18 @@
           </layout>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item column="0" row="2">
          <widget class="QGroupBox" name="groupBox_4">
           <property name="title">
            <string>Resources</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_6">
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QVBoxLayout" name="verticalLayout_12">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_24">
                <item>
-                <widget class="QLabel" name="label_17">
+                <widget class="QLabel" name="lbl_report">
                  <property name="font">
                   <font>
                    <weight>50</weight>
@@ -1178,7 +1178,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -1191,7 +1191,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_23">
                <item>
-                <widget class="QLabel" name="label_18">
+                <widget class="QLabel" name="lbl_help">
                  <property name="font">
                   <font>
                    <weight>50</weight>
@@ -1225,7 +1225,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -1238,7 +1238,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_22">
                <item>
-                <widget class="QLabel" name="label_19">
+                <widget class="QLabel" name="lbl_credits">
                  <property name="font">
                   <font>
                    <weight>50</weight>
@@ -1272,7 +1272,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -1287,7 +1287,7 @@
           </layout>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item column="0" row="3">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -1315,6 +1315,5 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
- <connections/>
+ <connections />
 </ui>
