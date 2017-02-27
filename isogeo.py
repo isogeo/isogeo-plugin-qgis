@@ -37,7 +37,6 @@ import operator
 # from QByteArray
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
     Qt, QByteArray, QUrl
-# from QMessageBox
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
     QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, \
     QPixmap, QProgressBar
@@ -151,12 +150,8 @@ class Isogeo:
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&Isogeo')
-        # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'Isogeo')
         self.toolbar.setObjectName(u'Isogeo')
-
-        # print "** INITIALIZING Isogeo"
-
         self.pluginIsActive = False
         self.dockwidget = None
 
@@ -186,9 +181,7 @@ class Isogeo:
         # _limit=15&_include=links&_lang={0}".format(self.lang)
 
         self.old_text = ""
-
         self.page_index = 1
-
         basepath = os.path.dirname(os.path.realpath(__file__))
         self.json_path = basepath + '/user_settings/saved_searches.json'
 
