@@ -14,14 +14,14 @@ See: http://www.qgis.org/pyqgis-cookbook/releasing.html
 """
 
 # ------------ Imports --------------------------------------------
-from os import listdir, makedirs, path, walk
+from os import getcwd, listdir, makedirs, path, remove, walk
 import xml.etree.ElementTree as ET
 import zipfile
 
 # ------------ UI files check --------------------------------------------
 
 # see: http://gis.stackexchange.com/a/155599/19817
-ui_dir = path.abspath(r"ui")
+ui_dir = path.abspath(getcwd())
 for dirpath, dirs, files in walk(ui_dir):
     for file in files:
         if (file.endswith(".ui")):
@@ -41,6 +41,9 @@ for dirpath, dirs, files in walk(ui_dir):
                         print("INFO - resources tag has been removed.")
                     else:
                         continue
+        elif (file.endswith(".pyc")):
+            remove(path.join(dirpath, file))
+
         else:
             continue
 
