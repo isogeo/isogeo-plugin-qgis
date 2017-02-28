@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
 
 # Standard library
+from datetime import datetime
 import logging
+import requests
+from owslib.wms import WebMapService
 from urllib import unquote, urlencode
 from urlparse import urlparse
 
 # PyQT
 from PyQt4.QtCore import QUrl
+from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
+
+# QGIS
+from qgis.core import QgsNetworkAccessManager
 
 # ############################################################################
 # ########## Globals ###############
@@ -21,6 +28,11 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 class UrlBuilder(object):
     """Basic class that holds utilitary methods for the plugin."""
+    def __init__(self):
+        """Class constructor."""
+        self.manager = QNetworkAccessManager()
+        # self.manager = QgsNetworkAccessManager.instance()
+        self.manager.finished.connect(self.handle_download)
 
     def build_wfs_url(self, raw_url, rsc_type="service"):
         """Reformat the input WFS url so it fits QGIS criterias.
@@ -79,7 +91,7 @@ class UrlBuilder(object):
         then build the url in the syntax understood by QGIS.
         """
         # TESTING
-        url_parsed = urlparse(raw_url[1])
+        
         logger.debug("WFS URL TYPE: " + rsc_type)
         # print(url_parsed)
         # wms_params = {"service": "WMS",
@@ -207,3 +219,66 @@ class UrlBuilder(object):
             else:
                 pass
         return final_dict
+
+    # FIXING #90 -------------------------------------------------------------
+
+    def new_build_wms_url(self, api_layer, rsc_type="service"):
+        """Reformat the input WMS url so it fits QGIS criterias.
+
+        Tests weither all the needed information is provided in the url, and
+        then build the url in the syntax understood by QGIS.
+        """
+        # TESTING
+        print(type(api_layer), rsc_type)
+        if rsc_type == "service":
+            layer_name = api_layer.get("id")
+            layer_title = api_layer.get("titles")[0].get("value", "WMS Service")
+            srv_details = api_layer.get("service")
+            print(srv_details.get("path"), srv_details.get("formatVersion", "1.3.0"))
+            wms = WebMapService(srv_details.get("path") + "?request=GetCapabilities&service=WMS")
+            # print(dir(wms)) :
+            # contents', 'exceptions', 'getOperationByName', 'getServiceXML', 'getcapabilities', 'getfeatureinfo',
+            # 'getmap', 'identification', 'items', 'operations', 'password', 'provider', 'url', 'username', 'version']
+            wms_lyr = wms[layer_name]
+            print("CRS: ", wms_lyr.crsOptions)
+            print("Formats: ", wms.getOperationByName('GetMap').formatOptions)
+            print("Styles: ", wms_lyr.styles)
+            # print([op.name for op in wms.operations])
+            # self.complete_from_capabilities(srv_details.get("path"), "wms")
+            wms_params = {"service": "WMS",
+                          "version": srv_details.get("formatVersion", "1.3.0"),
+                          "request": "GetMap",
+                          "layers": layer_name,
+                          "crs": "EPSG:3857",
+                          "format": "image/png",
+                          "styles": "default",
+                          "url": srv_details.get("path"),
+                          }
+            url_final = unquote(urlencode(wms_params))
+            print(url_final)
+            return url_final, layer_title
+        # else:
+        #     pass
+
+    def complete_from_capabilities(self, url_service, service_type):
+        """Complete services URI from services GetCapabilities."""
+        print(url_service)
+        url_parsed = urlparse(url_service)
+        print(url_parsed)
+        self.request_download(self.manager, url_service)
+
+    # REQUESTS MANAGEMENT ----------------------------------------------------
+
+    def request_download(self, manager, url_service):
+        """Send request to download GetCapabilities."""
+        url = QUrl(url_service)
+        request = QNetworkRequest(url)
+        logger.info("GetCapabilities download start time: {}".format(datetime.now()))
+        self.manager.get(request)
+
+    def handle_download(self, reply):
+        """Handle requests reply and clean up."""
+        logger.info("Download finish time: {}".format(datetime.now()))
+        logger.info("Finished: {}".format(reply.isFinished()))
+        logger.info("Bytes received: {}".format(len(reply.readAll())))
+        reply.deleteLater()

@@ -1116,14 +1116,16 @@ class Isogeo:
                                 pass
                         # WMS
                         elif service.get("format") == "wms":
+                            srv_url_bld.new_build_wms_url(layer, rsc_type="service")
+                            print("wms spotted")
                             name = layer.get("titles")[0].get("value", "WMS")
                             try:
                                 path = "{0}?layers={1}".format(service.get("path"),
                                                                layer.get("id"))
                             except UnicodeEncodeError:
                                 logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
-                                              .format(i.get("_id"),
-                                                      layer.get("_id")))
+                                             .format(i.get("_id"),
+                                                     layer.get("_id")))
                                 continue
                             url = [name, path]
                             name_url = srv_url_bld.build_wms_url(url, rsc_type="service")
@@ -2320,3 +2322,5 @@ class Isogeo:
         """ --- Actions when the plugin is launched --- """
         custom_tools.test_proxy_configuration()
         self.user_authentication()
+
+        # srv_url_bld.complete_from_capabilities("http://sampleserver6.arcgisonline.com/arcgis/rest/services/WorldTimeZones/MapServer/WMTS?request=GetCapabilities")
