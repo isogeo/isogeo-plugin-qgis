@@ -1027,6 +1027,10 @@ class Isogeo:
                         if schema_table is not None and "." in schema_table:
                             params['schema'] = schema_table.split(".")[0]
                             params['table'] = schema_table.split(".")[1]
+                            params['abstract'] = i.get("abstract", None)
+                            params['title'] = i.get("title", None)
+                            params['keywords'] = [i.get("tags").get(k) for k in i.get("tags")
+                                                  if k.startswith("keyword:isogeo")]
                             link_dict[self.tr('PostGIS table')] = params
                         else:
                             pass
@@ -1332,9 +1336,10 @@ class Isogeo:
         elif type(layer_info) == dict:
             logger.info("Data type: PostGIS")
             # Give aliases to the data passed as arguement
-            base_name = layer_info['base_name']
-            schema = layer_info['schema']
-            table = layer_info['table']
+            base_name = layer_info.get("base_name", "")
+            schema = layer_info.get("schema", "")
+            table = layer_info.get("table", "")
+            print(layer_info.keys(), layer_info.get("keywords"))
             # Retrieve the database information stored in the PostGISdict
             uri = QgsDataSourceURI()
             host = self.PostGISdict[base_name]['host']
@@ -1352,9 +1357,11 @@ class Isogeo:
                     geometry_column = i[8]
             # set database schema, table name, geometry column
             uri.setDataSource(schema, table, geometry_column)
-            # uri.setKeyColumn('iqrgqsd')
             # Adding the layer to the map canvas
             layer = QgsVectorLayer(uri.uri(), table, "postgres")
+            layer.setTitle(layer_info.get("title", "notitle"))
+            layer.setAbstract(layer_info.get("abstract", ""))
+            # layer.setKeywordList(",".join(layer_info.get("keywords", ())))
             if layer.isValid():
                 QgsMapLayerRegistry.instance().addMapLayer(layer)
                 logger.info("Data added: {}".format(table))
@@ -1373,7 +1380,7 @@ class Isogeo:
                     uri.setKeyColumn(field)
                     layer = QgsVectorLayer(uri.uri(True), table, "postgres")
                     if layer.isValid():
-                        QgsMapLayerRegistry.instance().addMapLayer(layer)
+                        lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
                         logger.info("PostGIS view layer added with [{}] as key column"
                                     .format(field))
                         return 1
