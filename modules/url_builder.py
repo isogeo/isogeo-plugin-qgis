@@ -1,24 +1,33 @@
 # -*- coding: utf-8 -*-
+from __future__ import (absolute_import, division, print_function)
 
 # Standard library
 from datetime import datetime
 import logging
 import requests
 from owslib.wms import WebMapService
+from owslib.util import HTTPError, ServiceException
+# from owslib.util import *
 from urllib import unquote, urlencode
 from urlparse import urlparse
 
 # PyQT
-from PyQt4.QtCore import QUrl
+from PyQt4.QtCore import QSettings, QUrl
 from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # QGIS
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import QgsNetworkAccessManager,\
+                      QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer
+
+# Custom modules
+from .tools import Tools
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
+custom_tools = Tools()
+qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 # ############################################################################
@@ -228,37 +237,121 @@ class UrlBuilder(object):
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
+        #
+        qgis_wms_formats = ('image/png', 'image/png8',
+                            'image/jpeg',
+                            'image/svg',
+                            'image/gif',
+                            'image/geotiff', 'image/tiff')
         # TESTING
-        print(type(api_layer), rsc_type)
+        # print(type(api_layer), rsc_type)
         if rsc_type == "service":
             layer_name = api_layer.get("id")
             layer_title = api_layer.get("titles")[0].get("value", "WMS Service")
             srv_details = api_layer.get("service")
-            print(srv_details.get("path"), srv_details.get("formatVersion", "1.3.0"))
-            wms = WebMapService(srv_details.get("path") + "?request=GetCapabilities&service=WMS")
-            # print(dir(wms)) :
-            # contents', 'exceptions', 'getOperationByName', 'getServiceXML', 'getcapabilities', 'getfeatureinfo',
-            # 'getmap', 'identification', 'items', 'operations', 'password', 'provider', 'url', 'username', 'version']
-            wms_lyr = wms[layer_name]
-            print("CRS: ", wms_lyr.crsOptions)
-            print("Formats: ", wms.getOperationByName('GetMap').formatOptions)
-            print("Styles: ", wms_lyr.styles)
-            # print([op.name for op in wms.operations])
+            wms_url_getcap = srv_details.get("path")\
+                           + "?request=GetCapabilities&service=WMS"
+            # print(srv_details.get("path"), srv_details.get("formatVersion", "1.3.0"))
+            # wms = WebMapService(wms_url_getcap)
+            try:
+                wms = WebMapService(wms_url_getcap)
+                # print(dir(wms)) :
+                # contents', 'exceptions', 'getOperationByName', 'getServiceXML', 'getcapabilities',
+                # 'getfeatureinfo', 'getmap', 'identification', 'items',
+                # 'operations', 'password', 'provider', 'url', 'username', 'version']
+            except ServiceException as e:
+                print(str(e))
+                return 0, "WMS - Bad operation: " + wms_url_getcap, str(e)
+            except HTTPError as e:
+                print(str(e))
+                return 0, "WMS - Service not reached: " + wms_url_getcap, str(e)
+            except Exception as e:
+                return 0, e
+            # check if GetMap operation is available
+            if "GetMap" not in [op.name for op in wms.operations]:
+                return 0, "Required GetMap operation not available in: " + wms_url_getcap
+            else:
+                pass
+            # check if layer is present and queryable
+            try:
+                wms_lyr = wms[layer_name]
+            except KeyError as e:
+                return (0,
+                        "Layer {} not found in WMS service: {}"
+                        .format(layer_name,
+                                wms_url_getcap),
+                        e)
+
+            # SRS definition
+            srs_map = custom_tools.get_map_crs()
+            srs_lyr_new = qsettings.value("/Projections/defaultBehaviour")
+            srs_lyr_crs = qsettings.value("/Projections/layerDefaultCrs")
+            srs_qgs_new = qsettings.value("/Projections/projectDefaultCrs")
+            srs_qgs_otf_on = qsettings.value("/Projections/otfTransformEnabled")
+            srs_qgs_otf_auto = qsettings.value("/Projections/otfTransformAutoEnable")
+
+            # DEV
+            # print("CRS: ", wms_lyr.crsOptions,
+            #       "For new layers: " + srs_lyr_new + srs_lyr_crs,
+            #       "For new projects: " + srs_qgs_new,
+            #       "OTF enabled: " + srs_qgs_otf_on,
+            #       "OTF smart enabled: " + srs_qgs_otf_auto,
+            #       "Map canvas SRS:" + custom_tools.get_map_crs())
+
+            if srs_map in wms_lyr.crsOptions:
+                print("It's a SRS match! With map canvas: " + srs_map)
+                srs = srs_map
+            elif srs_qgs_new in wms_lyr.crsOptions\
+                 and srs_qgs_otf_on == "false"\
+                 and srs_qgs_otf_auto == "false":
+                print("It's a SRS match! With default new project: " + srs_qgs_new)
+                srs = srs_qgs_new
+            elif srs_lyr_crs in wms_lyr.crsOptions and srs_lyr_new == "useGlobal":
+                print("It's a SRS match! With default new layer: " + srs_lyr_crs)
+                srs = srs_lyr_crs
+            elif "EPSG:4326" in wms_lyr.crsOptions:
+                print("It's a SRS match! With standard WGS 84 (EPSG:4326)")
+                srs = "EPSG:4326"
+            else:
+                print("Map Canvas SRS not available within service CRS.")
+                srs = ""
+
+            # Format definition
+            wms_lyr_formats = wms.getOperationByName('GetMap').formatOptions
+            formats_image = [f.split(" ", 1)[0] for f in wms_lyr_formats
+                             if f in qgis_wms_formats]
+            if "image/png" in formats_image:
+                layer_format = "image/png"
+            elif "image/jpeg" in formats_image:
+                layer_format = "image/jpeg"
+            else:
+                layer_format = formats_image[0]
+
+            # Style definition
+            # print("Styles: ", wms_lyr.styles, type(wms_lyr.styles))
+            lyr_style = wms_lyr.styles.keys()[0]
+            # print(lyr_style)
+
+            # GetMap URL
+            wms_lyr_url = wms.getOperationByName('GetMap').methods
+            # print(wms_lyr_url, type(wms_lyr_url))
+
             # self.complete_from_capabilities(srv_details.get("path"), "wms")
-            wms_params = {"service": "WMS",
-                          "version": srv_details.get("formatVersion", "1.3.0"),
-                          "request": "GetMap",
-                          "layers": layer_name,
-                          "crs": "EPSG:3857",
-                          "format": "image/png",
-                          "styles": "default",
-                          "url": srv_details.get("path"),
-                          }
-            url_final = unquote(urlencode(wms_params))
-            print(url_final)
-            return url_final, layer_title
-        # else:
-        #     pass
+            wms_url_params = {"service": "WMS",
+                              "version": srv_details.get("formatVersion", "1.3.0"),
+                              "request": "GetMap",
+                              "layers": layer_name,
+                              "crs": srs,
+                              "format": layer_format,
+                              "styles": lyr_style,
+                              "url": srv_details.get("path"),
+                              }
+            wms_url_final = unquote(urlencode(wms_url_params))
+            print(wms_url_final)
+            return ["WMS", layer_title, wms_url_final]
+            # return QgsRasterLayer(wms_url_final, layer_title, 'wms')
+        else:
+            pass
 
     def complete_from_capabilities(self, url_service, service_type):
         """Complete services URI from services GetCapabilities."""

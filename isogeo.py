@@ -1116,7 +1116,7 @@ class Isogeo:
                                 pass
                         # WMS
                         elif service.get("format") == "wms":
-                            srv_url_bld.new_build_wms_url(layer, rsc_type="service")
+                            # srv_url_bld.new_build_wms_url(layer, rsc_type="service")
                             print("wms spotted")
                             name = layer.get("titles")[0].get("value", "WMS")
                             try:
@@ -1129,6 +1129,7 @@ class Isogeo:
                                 continue
                             url = [name, path]
                             name_url = srv_url_bld.build_wms_url(url, rsc_type="service")
+                            name_url = srv_url_bld.new_build_wms_url(layer, rsc_type="service")
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
                             else:
