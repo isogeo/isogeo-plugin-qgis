@@ -1785,13 +1785,14 @@ class Isogeo:
         """Get the canvas coordinates in the right format and SRS (WGS84)."""
         if filter == 'canvas':
             e = iface.mapCanvas().extent()
-            current_epsg = int(iface.mapCanvas().mapRenderer(
-            ).destinationCrs().authid().split(':')[1])
+            current_epsg = custom_tools.get_map_crs()
         else:
             index = self.dockwidget.cbb_geofilter.findText(filter)
             layer = self.dockwidget.cbb_geofilter.itemData(index)
             e = layer.extent()
-            current_epsg = int(layer.crs().authid().split(':')[1])
+            current_epsg = layer.crs().authid()
+        # epsg code as integer
+        current_epsg = int(current_epsg.split(':')[1])
 
         if current_epsg == 4326:
             coord = "{0},{1},{2},{3}".format(

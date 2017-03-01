@@ -78,6 +78,14 @@ class Tools(object):
         # method ending
         return new_string
 
+    def get_map_crs(self):
+        """Get QGIS map canvas current EPSG code."""
+        current_crs = str(iface.mapCanvas()
+                               .mapRenderer()
+                               .destinationCrs()
+                               .authid())
+        return current_crs
+
     def handle_date(self, input_date):
         """Create a date object with the string given as a date by the API."""
         date = input_date.split("T")[0]
