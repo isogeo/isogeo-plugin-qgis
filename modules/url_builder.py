@@ -37,7 +37,6 @@ qgis_wms_formats = ('image/png', 'image/png8',
 # ##################################
 
 try:
-    from owslib.wfs import WebFeatureService
     from owslib.wms import WebMapService
     from owslib.wmts import WebMapTileService
     from owslib.util import ServiceException
@@ -46,6 +45,13 @@ try:
                 .format(owslib.__version__))
 except ImportError as e:
     logger.error("Depencencies - owslib is not present")
+    # raise e
+
+try:
+    from owslib.wfs import WebFeatureService
+except ImportError as e:
+    logger.error("Depencencies - owslib WFS issue: {}"
+                 .format(e))
 
 try:
     from owslib.util import HTTPError
@@ -54,14 +60,12 @@ except ImportError as e:
     logger.error("Depencencies - HTTPError not within owslib."
                  " Trying to get it from urllib2 directly.")
     from urllib2 import HTTPError
-
 try:
     import requests
     logger.info("Depencencies - Requests version: {}"
                 .format(requests.__version__))
 except ImportError as e:
     logger.warning("Depencencies - Requests not available")
-
 
 # ############################################################################
 # ########## Classes ###############
@@ -500,8 +504,8 @@ class UrlBuilder(object):
             logger.error(e)
             return 0, "WMTS - Service not reached: " + wmts_url_getcap, e
         except Exception as e:
-            logger.error(str(wmts_url_getcap), str(e))
-            return 0, e
+            logger.error("WMTS - {}: {}".format(wmts_url_getcap, e))
+            return 0, "WMTS - Service not reached: " + wmts_url_getcap, e
 
         # check if GetTile operation is available
         if not hasattr(wmts, "gettile") or "GetTile" not in [op.name for op in wmts.operations]:

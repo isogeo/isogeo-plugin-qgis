@@ -289,7 +289,12 @@ class Isogeo:
             self.iface.removePluginWebMenu(
                 self.tr(u'&Isogeo'),
                 action)
+            try:
+                self.iface.mainWindow().statusBar().removeWidget(self.bar)
+            except:
+                pass
             self.iface.removeToolBarIcon(action)
+            logger.handlers = []
         # remove the toolbar
         del self.toolbar
 
@@ -980,13 +985,11 @@ class Isogeo:
             else:
                 # It may be a raster, then raster icon in column 3
                 if "rasterDataset" in i.get('type'):
-                    label = QLabel()
                     pix = QPixmap(':/plugins/Isogeo/resources/raster.png')
                     label.setPixmap(pix)
                     self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 # Or it isn't spatial, then "no geometry" icon in column 3
                 else:
-                    label = QLabel()
                     pix = QPixmap(':/plugins/Isogeo/resources/ban.png')
                     label.setPixmap(pix)
                     self.dockwidget.tbl_result.setCellWidget(count, 2, label)
@@ -1123,9 +1126,6 @@ class Isogeo:
                             if name_url[0] != 0:
                                 link_dict[u"WFS : " + name_url[1]] = name_url
                             else:
-                                msgBar.pushMessage(name_url[1],
-                                                   level=msgBar.WARNING,
-                                                   duration=3)
                                 continue
                                 pass
                         # WMS
@@ -1145,9 +1145,6 @@ class Isogeo:
                             if name_url[0] != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
                             else:
-                                msgBar.pushMessage(name_url[1],
-                                                   level=msgBar.WARNING,
-                                                   duration=60)
                                 continue
                                 pass
                         # WMTS
@@ -1167,6 +1164,7 @@ class Isogeo:
                             if name_url[0] != 0:
                                 link_dict[u"WMTS : " + name_url[1]] = name_url
                             else:
+                                continue
                                 pass
                         else:
                             pass
@@ -1193,9 +1191,10 @@ class Isogeo:
                                 continue
                             name_url = srv_url_bld.new_build_wfs_url(layer, srv_details,
                                                                      rsc_type="service")
-                            if name_url != 0:
-                                link_dict[u"WFS : " + name_url[1]] = name_url
+                            if name_url[0] != 0:
+                                link_dict["WFS : " + name_url[1]] = name_url
                             else:
+                                continue
                                 pass
                     # WMS
                     elif i.get("format") == "wms":
@@ -1212,9 +1211,30 @@ class Isogeo:
                                 continue
                             name_url = srv_url_bld.new_build_wms_url(layer, srv_details,
                                                                      rsc_type="service")
-                            if name_url != 0:
-                                link_dict[u"WMS : " + name_url[1]] = name_url
+                            if name_url[0] != 0:
+                                link_dict["WMS : " + name_url[1]] = name_url
                             else:
+                                continue
+                                pass
+                    # WMTS
+                    elif i.get("format") == "wmts":
+                        for layer in i.get('layers'):
+                            name = layer.get("titles")[0].get("value",
+                                                              "WMTS Layer")
+                            try:
+                                path = "{0}?layers={1}".format(srv_details.get("path"),
+                                                               layer.get("id"))
+                            except UnicodeEncodeError:
+                                logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
+                                             .format(i.get("_id"),
+                                                     layer.get("_id")))
+                                continue
+                            name_url = srv_url_bld.build_wmts_url(layer, srv_details,
+                                                                  rsc_type="service")
+                            if name_url[0] != 0:
+                                link_dict["WMTS : " + str(name_url[1])] = name_url
+                            else:
+                                continue
                                 pass
                     else:
                         pass
@@ -1240,6 +1260,8 @@ class Isogeo:
                     icon = QIcon(':/plugins/Isogeo/resources/wms.png')
                 elif text.startswith("WFS"):
                     icon = QIcon(':/plugins/Isogeo/resources/wfs.png')
+                elif text.startswith("WMTS"):
+                    icon = QIcon(':/plugins/Isogeo/resources/wms.png')
                 elif text.startswith(self.tr('PostGIS table')):
                     icon = QIcon(':/plugins/Isogeo/resources/database.svg')
                 elif text.startswith(self.tr('Data file')):
@@ -1258,6 +1280,8 @@ class Isogeo:
                         icon = QIcon(':/plugins/Isogeo/resources/wms.png')
                     elif key.startswith("WFS"):
                         icon = QIcon(':/plugins/Isogeo/resources/wfs.png')
+                    elif key.startswith("WMTS"):
+                        icon = QIcon(':/plugins/Isogeo/resources/wms.png')
                     elif key.startswith(self.tr('PostGIS table')):
                         icon = QIcon(':/plugins/Isogeo/resources/database.svg')
                     elif key.startswith(self.tr('Data file')):
