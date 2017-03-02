@@ -255,7 +255,7 @@ class UrlBuilder(object):
             wfs_url_getcap = srv_details.get("path")\
                              + "?request=GetCapabilities&service=WFS"
             try:
-                wfs = WebMapService(wfs_url_getcap)
+                wfs = WebFeatureService(wfs_url_getcap)
                 print(dir(wfs))
                 # contents', 'exceptions', 'getOperationByName', 'getServiceXML', 'getcapabilities',
                 # 'getfeatureinfo', 'getmap', 'identification', 'items',
@@ -454,6 +454,11 @@ class UrlBuilder(object):
 
             # GetMap URL
             wms_lyr_url = wms.getOperationByName('GetMap').methods
+            wms_lyr_url = wms_lyr_url[0].get("url")
+            if wms_lyr_url[-1] == "&":
+                wms_lyr_url = wms_lyr_url[-1:]
+            else:
+                pass 
             # print(wms_lyr_url, type(wms_lyr_url))
 
             # self.complete_from_capabilities(srv_details.get("path"), "wms")
