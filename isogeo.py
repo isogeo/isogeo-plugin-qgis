@@ -923,50 +923,52 @@ class Isogeo:
         # to the canvas.
         count = 0
         for i in result.get('results'):
+            # get useful metadata
+            md_id = i.get('_id')
+            md_keywords = [i.get("tags").get(k)
+                           for k in i.get("tags", ["NR", ])
+                           if k.startswith("keyword:isogeo")]
+            md_title = i.get("title", "NR")
+            ds_geometry = i.get('geometry')
             # Displaying the metadata title inside a button
-            final_text = custom_tools.format_button_title(i.get('title'))
-            title_button = QPushButton(final_text)
+            btn_md_title = QPushButton(custom_tools.format_button_title(md_title))
             # Connecting the button to the full metadata popup
-            title_button.pressed.connect(partial(
-                self.send_details_request, md_id=i.get('_id')))
+            btn_md_title.pressed.connect(partial(
+                self.send_details_request, md_id=md_id))
             # Putting the abstract as a tooltip on this button
-            title_button.setToolTip(i.get('abstract'))
+            btn_md_title.setToolTip(i.get('abstract'))
             # Insert it in column 1
             self.dockwidget.tbl_result.setCellWidget(
-                count, 0, title_button)
+                count, 0, btn_md_title)
             # Insert the modification date in column 2
             self.dockwidget.tbl_result.setItem(
                 count, 1, QTableWidgetItem(
                     custom_tools.handle_date(i.get('_modified'))))
             # Getting the geometry
-            geometry = i.get('geometry')
-            if geometry is not None:
+            label = QLabel()
+            if ds_geometry:
                 # If the geometry type is point, insert point icon in column 3
-                if geometry in point_list:
-                    label = QLabel()
+                if ds_geometry in point_list:
                     pix = QPixmap(':/plugins/Isogeo/resources/point.png')
                     label.setPixmap(pix)
                     self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 # If the type is polygon, insert polygon icon in column 3
-                elif geometry in polygon_list:
-                    label = QLabel()
+                elif ds_geometry in polygon_list:
                     pix = QPixmap(':/plugins/Isogeo/resources/polygon.png')
                     label.setPixmap(pix)
                     self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 # If the type is line, insert line icon in column 3
-                elif geometry in line_list:
-                    label = QLabel()
+                elif ds_geometry in line_list:
                     pix = QPixmap(':/plugins/Isogeo/resources/line.png')
                     label.setPixmap(pix)
                     self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 # If the type is multi, insert multi icon in column 3
-                elif geometry in multi_list:
-                    label = QLabel()
+                elif ds_geometry in multi_list:
                     pix = QPixmap(':/plugins/Isogeo/resources/multi.png')
                     label.setPixmap(pix)
                     self.dockwidget.tbl_result.setCellWidget(count, 2, label)
                 # If the type is TIN, insert TIN text in column 3
-                elif geometry == "TIN":
+                elif ds_geometry == "TIN":
                     self.dockwidget.tbl_result.setItem(
                         count, 2, QTableWidgetItem(u'TIN'))
                 # If the type isn't any of the above, unknown(shouldn't happen)
@@ -998,11 +1000,14 @@ class Isogeo:
             if 'format' in i.keys():
                 # If the data is a vector and the path is available, store
                 # useful information in the dict
-                if i.get('format') in vectorformat_list and 'path' in i:
+                if i.get('format', "NR") in vectorformat_list and 'path' in i:
                     path = custom_tools.format_path(i.get('path'))
                     try:
                         open(path)
-                        params = ["vector", path, i.get("title")]
+                        params = ["vector", path,
+                                  i.get("title", "NR"),
+                                  i.get("abstract", "NR"),
+                                  md_keywords]
                         link_dict[self.tr('Data file')] = params
                     except IOError:
                         pass
@@ -1011,7 +1016,10 @@ class Isogeo:
                     path = custom_tools.format_path(i.get('path'))
                     try:
                         open(path)
-                        params = ["raster", path]
+                        params = ["raster", path,
+                                  i.get("title", "NR"),
+                                  i.get("abstract", "NR"),
+                                  md_keywords]
                         link_dict[self.tr('Data file')] = params
                     except IOError:
                         pass
@@ -1029,8 +1037,7 @@ class Isogeo:
                             params['table'] = schema_table.split(".")[1]
                             params['abstract'] = i.get("abstract", None)
                             params['title'] = i.get("title", None)
-                            params['keywords'] = [i.get("tags").get(k) for k in i.get("tags")
-                                                  if k.startswith("keyword:isogeo")]
+                            params['keywords'] = md_keywords
                             link_dict[self.tr('PostGIS table')] = params
                         else:
                             pass
@@ -1294,7 +1301,11 @@ class Isogeo:
                 name = os.path.basename(path).split(".")[0]
                 layer = QgsVectorLayer(path, layer_info[2], 'ogr')
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    # fill QGIS metadata from Isogeo
+                    lyr.setTitle(layer_info[2])
+                    lyr.setAbstract(layer_info[3])
+                    lyr.setKeywordList(",".join(layer_info[4]))
                     try:
                         QgsMessageLog.logMessage("Data layer added: {}"
                                                  .format(name),
@@ -1406,11 +1417,15 @@ class Isogeo:
             uri.setDataSource(schema, table, geometry_column)
             # Adding the layer to the map canvas
             layer = QgsVectorLayer(uri.uri(), table, "postgres")
-            layer.setTitle(layer_info.get("title", "notitle"))
-            layer.setAbstract(layer_info.get("abstract", ""))
+            # layer.setTitle(layer_info.get("title", "notitle"))
+            # layer.setAbstract(layer_info.get("abstract", ""))
             # layer.setKeywordList(",".join(layer_info.get("keywords", ())))
             if layer.isValid():
-                QgsMapLayerRegistry.instance().addMapLayer(layer)
+                lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                # fill QGIS metadata from Isogeo
+                lyr.setTitle(layer_info.get("title", "notitle"))
+                lyr.setAbstract(layer_info.get("abstract", ""))
+                lyr.setKeywordList(",".join(layer_info.get("keywords", ())))
                 logger.info("Data added: {}".format(table))
             elif not layer.isValid() and\
                 custom_tools.last_error[0] == "postgis" and\
@@ -1428,6 +1443,10 @@ class Isogeo:
                     layer = QgsVectorLayer(uri.uri(True), table, "postgres")
                     if layer.isValid():
                         lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                        # fill QGIS metadata from Isogeo
+                        lyr.setTitle(layer_info.get("title", "notitle"))
+                        lyr.setAbstract(layer_info.get("abstract", ""))
+                        lyr.setKeywordList(",".join(layer_info.get("keywords", ())))
                         logger.info("PostGIS view layer added with [{}] as key column"
                                     .format(field))
                         return 1
