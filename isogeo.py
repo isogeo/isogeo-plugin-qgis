@@ -1099,14 +1099,15 @@ class Isogeo:
                     if service is not None:
                         # WFS
                         if service.get("format") == "wfs":
+                            srv_url_bld.new_build_wfs_url(layer, rsc_type="service")
                             name = layer.get("titles")[0].get("value", "WFS")
                             try:
                                 path = "{0}?typeName={1}".format(service.get("path"),
                                                                  layer.get("id"))
                             except UnicodeEncodeError:
                                 logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
-                                              .format(i.get("_id"),
-                                                      layer.get("_id")))
+                                             .format(i.get("_id"),
+                                                     layer.get("_id")))
                                 continue
                             url = [name, path]
                             name_url = srv_url_bld.build_wfs_url(url, rsc_type="service")
@@ -1116,8 +1117,6 @@ class Isogeo:
                                 pass
                         # WMS
                         elif service.get("format") == "wms":
-                            # srv_url_bld.new_build_wms_url(layer, rsc_type="service")
-                            print("wms spotted")
                             name = layer.get("titles")[0].get("value", "WMS")
                             try:
                                 path = "{0}?layers={1}".format(service.get("path"),
@@ -1128,7 +1127,7 @@ class Isogeo:
                                                      layer.get("_id")))
                                 continue
                             url = [name, path]
-                            name_url = srv_url_bld.build_wms_url(url, rsc_type="service")
+                            # name_url = srv_url_bld.build_wms_url(url, rsc_type="service")
                             name_url = srv_url_bld.new_build_wms_url(layer, rsc_type="service")
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
@@ -1173,7 +1172,7 @@ class Isogeo:
                                                                layer.get("id"))
                             except UnicodeEncodeError:
                                 logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
-                                              .format(i.get("_id"),
+                                             .format(i.get("_id"),
                                                       layer.get("_id")))
                                 continue
                             url = [name, path]
