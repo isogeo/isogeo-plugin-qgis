@@ -1097,9 +1097,10 @@ class Isogeo:
                 for layer in i.get('serviceLayers'):
                     service = layer.get("service")
                     if service is not None:
+                        srv_details = {"path": service.get("path", "NR"),
+                                       "formatVersion": service.get("formatVersion")}
                         # WFS
                         if service.get("format") == "wfs":
-                            srv_url_bld.new_build_wfs_url(layer, rsc_type="service")
                             name = layer.get("titles")[0].get("value", "WFS")
                             try:
                                 path = "{0}?typeName={1}".format(service.get("path"),
@@ -1110,10 +1111,15 @@ class Isogeo:
                                                      layer.get("_id")))
                                 continue
                             url = [name, path]
-                            name_url = srv_url_bld.build_wfs_url(url, rsc_type="service")
-                            if name_url != 0:
+                            name_url = srv_url_bld.new_build_wfs_url(layer, srv_details,
+                                                                     rsc_type="ds_dyn_lyr_srv")
+                            if name_url[0] != 0:
                                 link_dict[u"WFS : " + name_url[1]] = name_url
                             else:
+                                msgBar.pushMessage(name_url[1],
+                                                   level=msgBar.WARNING,
+                                                   duration=3)
+                                continue
                                 pass
                         # WMS
                         elif service.get("format") == "wms":
@@ -1127,11 +1133,15 @@ class Isogeo:
                                                      layer.get("_id")))
                                 continue
                             url = [name, path]
-                            # name_url = srv_url_bld.build_wms_url(url, rsc_type="service")
-                            name_url = srv_url_bld.new_build_wms_url(layer, rsc_type="service")
-                            if name_url != 0:
+                            name_url = srv_url_bld.new_build_wms_url(layer, srv_details,
+                                                                     rsc_type="ds_dyn_lyr_srv")
+                            if name_url[0] != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
                             else:
+                                msgBar.pushMessage(name_url[1],
+                                                   level=msgBar.WARNING,
+                                                   duration=60)
+                                continue
                                 pass
                         else:
                             pass
@@ -1141,42 +1151,42 @@ class Isogeo:
             # are stored in the purposely named include: "layers".
             elif i.get('type') == "service":
                 if i.get("layers") is not None:
+                    srv_details = {"path": i.get("path", "NR"),
+                                   "formatVersion": i.get("formatVersion")}
                     # WFS
                     if i.get("format") == "wfs":
-                        base_url = i.get("path")
                         for layer in i.get('layers'):
                             name = layer.get("titles")[0].get("value",
                                                               "wfslayer")
                             try:
-                                path = "{0}?typeName={1}".format(base_url,
+                                path = "{0}?typeName={1}".format(srv_details.get("path"),
                                                                  layer.get("id"))
                             except UnicodeEncodeError:
                                 logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
-                                              .format(i.get("_id"),
-                                                      layer.get("_id")))
+                                             .format(i.get("_id"),
+                                                     layer.get("_id")))
                                 continue
-                            url = [name, path]
-                            name_url = srv_url_bld.build_wfs_url(url, rsc_type="service")
+                            name_url = srv_url_bld.new_build_wfs_url(layer, srv_details,
+                                                                     rsc_type="service")
                             if name_url != 0:
                                 link_dict[u"WFS : " + name_url[1]] = name_url
                             else:
                                 pass
                     # WMS
                     elif i.get("format") == "wms":
-                        base_url = i.get("path")
                         for layer in i.get('layers'):
                             name = layer.get("titles")[0].get("value",
                                                               "wmslayer")
                             try:
-                                path = "{0}?layers={1}".format(base_url,
+                                path = "{0}?layers={1}".format(srv_details.get("path"),
                                                                layer.get("id"))
                             except UnicodeEncodeError:
                                 logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
                                              .format(i.get("_id"),
-                                                      layer.get("_id")))
+                                                     layer.get("_id")))
                                 continue
-                            url = [name, path]
-                            name_url = srv_url_bld.build_wms_url(url, rsc_type="service")
+                            name_url = srv_url_bld.new_build_wms_url(layer, srv_details,
+                                                                     rsc_type="service")
                             if name_url != 0:
                                 link_dict[u"WMS : " + name_url[1]] = name_url
                             else:
