@@ -1143,6 +1143,24 @@ class Isogeo:
                                                    duration=60)
                                 continue
                                 pass
+                        # WMTS
+                        elif service.get("format") == "wmts":
+                            name = layer.get("titles")[0].get("value", "WMTS")
+                            try:
+                                path = "{0}?layers={1}".format(service.get("path"),
+                                                               layer.get("id"))
+                            except UnicodeEncodeError:
+                                logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
+                                             .format(i.get("_id"),
+                                                     layer.get("_id")))
+                                continue
+                            url = [name, path]
+                            name_url = srv_url_bld.build_wmts_url(layer, srv_details,
+                                                                  rsc_type="ds_dyn_lyr_srv")
+                            if name_url[0] != 0:
+                                link_dict[u"WMTS : " + name_url[1]] = name_url
+                            else:
+                                pass
                         else:
                             pass
                     else:
@@ -1323,7 +1341,7 @@ class Isogeo:
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
-                        self.tr("The linked service is not valid. QGIS says: {}")
+                        self.tr("The linked WMS is not valid. QGIS says: {} {}")
                             .format(error_msg))
             # If WFS link
             elif layer_info[0] == 'WFS':
@@ -1340,7 +1358,24 @@ class Isogeo:
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
-                        self.tr("The linked service is not valid. QGIS says: {}")
+                        self.tr("The linked WFS is not valid. QGIS says: {}")
+                            .format(error_msg))
+            # If WMTS link
+            elif layer_info[0] == 'WMTS':
+                url = layer_info[2]
+                name = layer_info[1]
+                layer = QgsRasterLayer(url, name, 'wms')
+                if layer.isValid():
+                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    logger.info("WMTS service layer added: {0}".format(url))
+                else:
+                    error_msg = layer.error().message()
+                    logger.warning("Invalid service: {0}"
+                                    .format(url, error_msg.encode("latin1")))
+                    QMessageBox.information(
+                        iface.mainWindow(),
+                        self.tr('Error'),
+                        self.tr("The linked WMTS is not valid. QGIS says: {} {}")
                             .format(error_msg))
             else:
                 pass

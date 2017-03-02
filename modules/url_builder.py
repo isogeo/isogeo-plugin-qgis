@@ -39,6 +39,7 @@ qgis_wms_formats = ('image/png', 'image/png8',
 try:
     from owslib.wms import WebMapService
     from owslib.wfs import WebFeatureService
+    from owslib.wmts import WebMapTileService
     from owslib.util import ServiceException
     import owslib
     logger.info("Depencencies - owslib version: {}"
@@ -474,12 +475,116 @@ class UrlBuilder(object):
         return ["WMS", layer_title, wms_url_final]
         # return QgsRasterLayer(wms_url_final, layer_title, 'wms')
 
-    def complete_from_capabilities(self, url_service, service_type):
-        """Complete services URI from services GetCapabilities."""
-        print(url_service)
-        url_parsed = urlparse(url_service)
-        print(url_parsed)
-        self.request_download(self.manager, url_service)
+    def build_wmts_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv"):
+        """Format the input WMTS URL to fit QGIS criterias.
+
+        Retrieve GetCapabilities from information transmitted by Isogeo API
+        to complete URL syntax.
+        """
+        # local variables
+        layer_name = api_layer.get("id")
+        layer_title = api_layer.get("titles")[0].get("value", "WMTS Layer")
+        wmts_url_getcap = srv_details.get("path")\
+                          + "?request=GetCapabilities&service=WMTS"
+
+        # basic checks on service url
+        try:
+            wmts = WebMapTileService(wmts_url_getcap)
+        except TypeError as e:
+            logger.error("WMTS - OWSLib mixing str and unicode args", e)
+            wmts = WebMapTileService(unicode(wmts_url_getcap))
+        except ServiceException as e:
+            logger.error(e)
+            return 0, "WMTS - Bad operation: " + wmts_url_getcap, str(e)
+        except HTTPError as e:
+            logger.error(e)
+            return 0, "WMTS - Service not reached: " + wmts_url_getcap, e
+        except Exception as e:
+            logger.error(str(wmts_url_getcap), str(e))
+            return 0, e
+
+        # check if GetTile operation is available
+        if not hasattr(wmts, "gettile") or "GetTile" not in [op.name for op in wmts.operations]:
+            return 0, "Required GetTile operation not available in: " + wmts_url_getcap
+        else:
+            logger.debug("GetTile available")
+            pass
+
+        # check if layer is present and queryable
+        try:
+            wmts_lyr = wmts[layer_name]
+            layer_title = wmts_lyr.title
+            layer_id = wmts_lyr.id
+        except KeyError as e:
+            logger.error("Layer {} not found in WMTS service: {}"
+                         .format(layer_name,
+                                 wmts_url_getcap))
+            return (0,
+                    "Layer {} not found in WMS service: {}"
+                    .format(layer_name,
+                            wmts_url_getcap), e)
+
+        # Tile Matrix Set & SRS
+        srs_map = custom_tools.get_map_crs()
+        def_tile_matrix_set = wmts_lyr.tilematrixsets[0]
+        if srs_map in wmts_lyr.tilematrixsets:
+            logger.debug("WMTS - It's a SRS match! With map canvas: " + srs_map)
+            tile_matrix_set = wmts.tilematrixsets.get(srs_map).identifier
+            srs = srs_map
+        elif "EPSG:4326" in wmts_lyr.tilematrixsets:
+            logger.debug("WMTS - It's a SRS match! With standard WGS 84 (4326)")
+            tile_matrix_set = wmts.tilematrixsets.get("EPSG:4326").identifier
+            srs = "EPSG:4326"
+        elif "EPSG:900913" in wmts_lyr.tilematrixsets:
+            logger.debug("WMTS - It's a SRS match! With Google (900913)")
+            tile_matrix_set = wmts.tilematrixsets.get("EPSG:900913").identifier
+            srs = "EPSG:900913"
+        else:
+            logger.debug("WMTS - Searched SRS not available within service CRS.")
+            tile_matrix_set = wmts.tilematrixsets.get(def_tile_matrix_set).identifier
+            srs = tile_matrix_set
+
+        # Format definition
+        wmts_lyr_formats = wmts.getOperationByName('GetTile').formatOptions
+        formats_image = [f.split(" ", 1)[0] for f in wmts_lyr_formats
+                         if f in qgis_wms_formats]
+        if len(formats_image):
+            if "image/png" in formats_image:
+                layer_format = "image/png"
+            elif "image/jpeg" in formats_image:
+                layer_format = "image/jpeg"
+            else:
+                layer_format = formats_image[0]
+        else:
+            logger.debug("WMTS - No format available among preferred by QGIS.")
+            layer_format = "image/png"
+
+        # Style definition
+        lyr_style = wmts_lyr.styles.keys()[0]
+
+        # GetTile URL
+        wmts_lyr_url = wmts.getOperationByName('GetTile').methods
+        wmts_lyr_url = wmts_lyr_url[0].get("url")
+        if wmts_lyr_url[-1] == "&":
+            wmts_lyr_url = wmts_lyr_url[:-1]
+        else:
+            pass
+
+        # construct URL
+        wmts_url_params = {"service": "WMTS",
+                           "version": "1.0.0",
+                           "request": "GetCapabilities",
+                           "layers": layer_id,
+                           "crs": srs,
+                           "format": layer_format,
+                           "styles": "",
+                           "tileMatrixSet": tile_matrix_set,
+                           "url": wmts_lyr_url,
+                            }
+        wmts_url_final = unquote(urlencode(wmts_url_params))
+        logger.debug(wmts_url_final)
+        return ["WMTS", layer_title, wmts_url_final]
+        # return QgsRasterLayer(wms_url_final, layer_title, 'wms')
 
     # REQUESTS MANAGEMENT ----------------------------------------------------
 
