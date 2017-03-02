@@ -6,7 +6,6 @@ import logging
 from os import path
 from urllib import getproxies, unquote, urlencode
 import webbrowser
-import requests
 
 # PyQGIS
 from qgis.core import QgsMapLayerRegistry, QgsRectangle, QgsVectorLayer
