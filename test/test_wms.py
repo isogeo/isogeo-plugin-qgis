@@ -7,7 +7,6 @@ from sys import exit
 
 try:
     from owslib.wms import WebMapService
-    from owslib.wfs import WebFeatureService
     from owslib.util import ServiceException
     import owslib
     print("Depencencies - owslib version: {}"
@@ -42,6 +41,8 @@ qgis_wms_formats = ('image/png', 'image/png8',
 # ######## Script  #################
 # ################################
 
+QgsMapLayerRegistry.instance().removeAllMapLayers()
+
 # opening WMS
 wms_url_getcap = "http://geobretagne.fr/geoserver/lorientagglo/wms?request=GetCapabilities&service=WMS"
 
@@ -58,6 +59,18 @@ print(dir(wms))
 # contents', 'exceptions', 'getOperationByName', 'getServiceXML', 'getcapabilities',
 # 'getfeatureinfo', 'getmap', 'identification', 'items',
 # 'operations', 'password', 'provider', 'url', 'username', 'version']
+
+# service responsible
+print(wms.provider.name, wms.provider.url)
+print("Contact: ", wms.provider.contact.name,
+                           wms.provider.contact.email,
+                           wms.provider.contact.position,
+                           wms.provider.contact.organization,
+                           wms.provider.contact.address,
+                           wms.provider.contact.postcode,
+                           wms.provider.contact.city,
+                           wms.provider.contact.region,
+                           wms.provider.contact.country)
 
 # check if GetMap operation is available
 if not hasattr(wms, "getmap") or "GetMap" not in [op.name for op in wms.operations]:
@@ -124,15 +137,19 @@ wms_url_final = unquote(urlencode(wms_url_params))
 print(wms_url_final)
 
 # let's try to add it to the map canvas
-qgis_wms_lyr = QgsRasterLayer(wms_url_final, "Auto - " + layer_title, 'wms')
-if qgis_wms_lyr.isValid():
-    QgsMapLayerRegistry.instance().addMapLayer(qgis_wms_lyr)
+qgis_wms_lyr_manual = QgsRasterLayer(wms_url_final, "Auto - " + layer_title, 'wms')
+if qgis_wms_lyr_manual.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer(qgis_wms_lyr_manual)
 else:
-    print(qgis_wms_lyr.error().message())
+    print(qgis_wms_lyr_manual.error().message())
 
 manual_lyr = "layers=prescription_pct&crs=EPSG:4326&version=1.1.0&url=http://geobretagne.fr/geoserver/lorientagglo/wms?SERVICE=WMS&service=WMS&format=image/png&styles=&request=GetMap"
 qgis_wms_lyr = QgsRasterLayer(manual_lyr, "Manual - " + layer_title, 'wms')
 if qgis_wms_lyr.isValid():
     QgsMapLayerRegistry.instance().addMapLayer(qgis_wms_lyr)
+    pass
 else:
     print(qgis_wms_lyr.error().message())
+
+# to remove manual layer
+# QgsMapLayerRegistry.instance().removeMapLayer(qgis_wms_lyr_manual)
