@@ -37,8 +37,8 @@ qgis_wms_formats = ('image/png', 'image/png8',
 # ##################################
 
 try:
-    from owslib.wms import WebMapService
     from owslib.wfs import WebFeatureService
+    from owslib.wms import WebMapService
     from owslib.wmts import WebMapTileService
     from owslib.util import ServiceException
     import owslib
@@ -434,7 +434,7 @@ class UrlBuilder(object):
             srs = "EPSG:4326"
         else:
             logger.debug("Map Canvas SRS not available within service CRS.")
-            srs = ""
+            srs = wms_lyr.crsOptions[0]
 
         # Format definition
         wms_lyr_formats = wms.getOperationByName('GetMap').formatOptions
