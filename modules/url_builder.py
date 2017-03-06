@@ -353,13 +353,15 @@ class UrlBuilder(object):
             pass
 
         # print(wms_lyr_url, type(wms_lyr_url))
-        wfs_url_params = {"service": "WFS",
-                          "version": "1.0.0",
-                          "typename": layer_name,
-                          "srsname": srs,
+        wfs_url_params = {"SERVICE": "wfs",
+                          "VERSION": "1.0.0",
+                          "TYPENAME": layer_name,
+                          "SRSNAME": srs,
+                          "REQUEST": "GetFeature",
                           }
         wfs_url_final = wfs_lyr_url + unquote(urlencode(wfs_url_params))
         logger.debug(wfs_url_final)
+        print(wfs_url_final)
         return ["WFS", layer_title, wfs_url_final]
         # return QgsVectorLayer(wfs_uri, layer_title, "WFS")
 
