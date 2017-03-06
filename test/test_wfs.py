@@ -46,8 +46,10 @@ wfs_url_in_v2_mix_2 = "https://www.ppige-npdc.fr/geoserver/wfs?request=GetCapabi
 
 QgsMapLayerRegistry.instance().removeAllMapLayers()
 
+print("Using OWSLib")
+
 # opening WFS
-wfs_url_getcap = wfs_url_in_v2_public_1
+wfs_url_getcap = wfs_url_in_v1_public
 
 #try:
 #    wfs = WebFeatureService(wfs_url_getcap)
@@ -170,8 +172,11 @@ wfs_url_getcap = wfs_url_in_v2_public_1
 # ######## With GDAL  ###############
 # ################################
 
+print("Using GDAL (ogr)")
+
 QgsMapLayerRegistry.instance().removeAllMapLayers()
 
+# Open the service
 try:
     wfs_gdal = gdal.OpenEx(wfs_url_getcap)
 except Exception as e:
@@ -179,10 +184,8 @@ except Exception as e:
 
 print(dir(wfs_gdal))
 
-
-
-# get a layer
-print("Available layers: ", wfs.GetLayerCount())
+# Get a layer
+print("Available layers: ", wfs_gdal.GetLayerCount())
 try:
     wfs_lyr = wfs_gdal.GetLayerByName("epci_2015")
 except KeyError as e:
@@ -195,4 +198,27 @@ layer_name = wfs_lyr.GetName()
 print("First layer picked: ", layer_title, layer_name)
 
 # SRS
-srs = wfs_lyr.GetSpatialRef()
+lyr_srs = wfs_lyr.GetSpatialRef()
+lyr_srs.AutoIdentifyEPSG()
+if lyr_srs.GetAuthorityName("PROJCS"):
+    print("CRS type: projected")
+    srs = "{}:{}".format(lyr_srs.GetAuthorityName("PROJCS"),
+                                    lyr_srs.GetAuthorityCode("PROJCS"))
+elif lyr_srs.GetAuthorityName("GEOGCS"):
+    print("CRS type: geographic")
+    srs = "{}:{}".format(lyr_srs.GetAuthorityName("GEOGCS"),
+                                    lyr_srs.GetAuthorityCode("GEOGCS"))
+else:
+    print("SRS: undetermined CRS")
+    pass
+
+print(srs)
+
+if current_crs in srs:
+    print("It's a SRS match! With map canvas: " + current_crs)
+elif "EPSG:4326" in srs:
+    print("It's a SRS match! With standard WGS 84 (EPSG:4326)")
+    srs = "EPSG:4326"
+else:
+    print("Searched SRS not available within service CRS.")
+    srs = srs
