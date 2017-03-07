@@ -41,6 +41,18 @@ for dirpath, dirs, files in walk(ui_dir):
                         print("INFO - resources tag has been removed.")
                     else:
                         continue
+                for custom in root.iter('customwidget'):
+                    header = custom.getchildren()[2]
+                    print(header, dir(header), header.text)
+                    if header.text != "qgis.gui":
+                        header.text = header.text.replace(header.text, 'qgis.gui')
+                        ui_xml.write(path.join(dirpath, file),
+                                     encoding='utf-8',
+                                     xml_declaration='version="1.0"',
+                                     method='xml')
+                        print("INFO - Custom widget header fixed.")
+                    else:
+                        continue
         elif (file.endswith(".pyc")):
             remove(path.join(dirpath, file))
 
