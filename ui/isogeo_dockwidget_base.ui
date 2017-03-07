@@ -13,7 +13,7 @@
   <property name="minimumSize">
    <size>
     <width>623</width>
-    <height>596</height>
+    <height>602</height>
    </size>
   </property>
   <property name="windowIcon">
@@ -84,7 +84,7 @@
             <property name="minimumSize">
              <size>
               <width>271</width>
-              <height>59</height>
+              <height>65</height>
              </size>
             </property>
             <widget class="QWidget" name="layoutWidget">
@@ -110,6 +110,11 @@
                     <height>16777215</height>
                    </size>
                   </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>8</pointsize>
+                   </font>
+                  </property>
                   <property name="toolTip">
                    <string>Save research</string>
                   </property>
@@ -119,6 +124,12 @@
                   <property name="icon">
                    <iconset resource="../resources.qrc">
                     <normaloff>:/plugins/Isogeo/resources/save.svg</normaloff>:/plugins/Isogeo/resources/save.svg</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>18</width>
+                    <height>18</height>
+                   </size>
                   </property>
                  </widget>
                 </item>
@@ -146,6 +157,12 @@
                    <iconset resource="../resources.qrc">
                     <normaloff>:/plugins/Isogeo/resources/undo.svg</normaloff>:/plugins/Isogeo/resources/undo.svg</iconset>
                   </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>18</width>
+                    <height>18</height>
+                   </size>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -167,10 +184,10 @@
           <property name="title">
            <string>Advanced search</string>
           </property>
-          <property name="collapsed" stdset="0">
+          <property name="collapsed">
            <bool>false</bool>
           </property>
-          <property name="scrollOnExpand" stdset="0">
+          <property name="scrollOnExpand">
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
