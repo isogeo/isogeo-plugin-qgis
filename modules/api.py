@@ -108,11 +108,11 @@ class IsogeoApiManager(object):
             filters += "&ob={0}&od={1}".format(params.get("ob"),
                                                params.get("od"))
             filters += "&_include=links,serviceLayers,layers"
-            limit = 15
+            limit = 10
         else:
             limit = 0
         # Limit and offset
-        offset = (params.get("page") - 1) * 15
+        offset = (params.get("page") - 1) * 10
         filters += "&_limit={0}&_offset={1}".format(limit, offset)
         # Language
         filters += "&_lang={0}".format(params.get("lang"))
