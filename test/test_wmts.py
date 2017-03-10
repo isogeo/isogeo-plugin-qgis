@@ -53,7 +53,7 @@ wmts_url_in_publc_6 = "http://openlayers.org/en/v4.0.1/examples/data/WMTSCapabil
 wmts_url_in_publc_7 = "https://www.ppige-npdc.fr/geoserver/gwc/service/wmts?REQUEST=GetCapabilities"
 
 # opening WMTS
-wmts_url_getcap = wmts_url_in_public_4_esri
+wmts_url_getcap = wmts_url_in_public_1
 
 try:
     wmts = WebMapTileService(wmts_url_getcap)
@@ -156,9 +156,9 @@ else:
     pass
 
 # URL construction
-wmts_url_params = {"service": "WMTS",
-                           #"version": "1.3.0",
-                           "request": "GetCapabilities",
+wmts_url_params = {"SERVICE": "WMTS",
+                           "VERSION": "1.0.0",
+                           "REQUEST": "GetCapabilities",
                            "layers": layer_id,
                            "crs": srs,
                            "format": layer_format,
