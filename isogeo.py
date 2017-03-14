@@ -57,12 +57,14 @@ import resources
 from ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
 from ui.auth.dlg_authentication import IsogeoAuthentication
 from ui.credits.dlg_credits import IsogeoCredits
-from ui.mddetails.dlg_md_details import IsogeoMdDetails
+# from ui.mddetails.dlg_md_details import IsogeoMdDetails
+from ui.metadata.dlg_md_details import IsogeoMdDetails
 from ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
 from ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
 
 # Custom modules
 from modules.api import IsogeoApiManager
+from modules.metadata_display import MetadataDisplayer
 from modules.results import ResultsManager
 from modules.tools import Tools
 from modules.url_builder import UrlBuilder
@@ -71,8 +73,12 @@ from modules.url_builder import UrlBuilder
 # ########## Globals ###############
 # ##################################
 
+# UI
+IsogeoMdDetails = IsogeoMdDetails()
+
 # useful submodules and shortcuts
 isogeo_api_mng = IsogeoApiManager()
+md_display = MetadataDisplayer(IsogeoMdDetails)
 custom_tools = Tools()
 msgBar = iface.messageBar()
 network_mng = QNetworkAccessManager()
@@ -166,7 +172,7 @@ class Isogeo:
         self.quicksearch_new_dialog = QuicksearchNew()
         self.quicksearch_rename_dialog = QuicksearchRename()
         self.credits_dialog = IsogeoCredits()
-        self.IsogeoMdDetails = IsogeoMdDetails()
+        # self.IsogeoMdDetails = IsogeoMdDetails()
 
         # start variables
         self.savedSearch = "first"
@@ -442,7 +448,7 @@ class Isogeo:
                 self.loopCount = 0
                 parsed_content = json.loads(content)
                 self.requestStatusClear = True
-                self.show_complete_md(parsed_content)
+                md_display.show_complete_md(parsed_content)
             elif self.settingsRequest is True:
                 self.settingsRequest = False
                 self.loopCount = 0
@@ -1624,228 +1630,6 @@ class Isogeo:
         self.showDetails = True
         if self.requestStatusClear is True:
             self.send_request_to_isogeo_api(self.token)
-
-    def show_complete_md(self, content):
-        """Open the pop up window that shows the metadata sheet details."""
-        logger.info("Displaying the whole metadata sheet.")
-        tags = isogeo_api_mng.get_tags(content)
-        # Set the data title
-        title = content.get('title')
-        if title is not None:
-            self.IsogeoMdDetails.lbl_title.setText(title)
-        else:
-            self.IsogeoMdDetails.lbl_title.setText("NR")
-        # Set the data creation date
-        creation_date = content.get('_created')
-        if creation_date is not None:
-            self.IsogeoMdDetails.val_data_crea.setText(
-                custom_tools.handle_date(creation_date))
-        else:
-            self.IsogeoMdDetails.val_data_crea.setText('NR')
-        # Set the data last modification date
-        modif_date = content.get('_modified')
-        if modif_date is not None:
-            self.IsogeoMdDetails.val_data_updt.setText(custom_tools.handle_date(
-                modif_date))
-        else:
-            self.IsogeoMdDetails.val_data_updt.setText('NR')
-        # Set the date from which the data is valid
-        valid_from = content.get('validFrom')
-        if valid_from is not None:
-            self.IsogeoMdDetails.val_valid_start.setText(custom_tools.handle_date(
-                valid_from))
-        else:
-            self.IsogeoMdDetails.val_valid_start.setText('NR')
-        # Set the date from which the data stops being valid
-        valid_to = content.get('validTo')
-        if valid_to is not None:
-            self.IsogeoMdDetails.val_valid_end.setText(custom_tools.handle_date(
-                valid_to))
-        else:
-            self.IsogeoMdDetails.val_valid_end.setText('NR')
-        # Set the data owner
-        if tags['owner'] != {}:
-            self.IsogeoMdDetails.val_owner.setText(tags['owner'].values()[0])
-        else:
-            self.IsogeoMdDetails.val_owner.setText('NR')
-        # Set the data coordinate system
-        if tags['srs'] != {}:
-            self.IsogeoMdDetails.val_srs.setText(tags['srs'].values()[0])
-        else:
-            self.IsogeoMdDetails.val_srs.setText('NR')
-        # Set the data format
-        if tags['formats'] != {}:
-            self.IsogeoMdDetails.val_format.setText(
-                tags['formats'].values()[0])
-        else:
-            self.IsogeoMdDetails.val_format.setText('NR')
-        # Set the associated keywords list
-        if tags['keywords'] != {}:
-            keystring = ""
-            for key in tags['keywords'].values():
-                keystring += key + ", "
-            keystring = keystring[:-2]
-            self.IsogeoMdDetails.val_keywords.setText(keystring)
-        else:
-            self.IsogeoMdDetails.val_keywords.setText('None')
-        # Set the associated INSPIRE themes list
-        if tags['themeinspire'] != {}:
-            inspirestring = ""
-            for inspire in tags['themeinspire'].values():
-                inspirestring += inspire + ", "
-            inspirestring = inspirestring[:-2]
-            self.IsogeoMdDetails.val_inspire_themes.setText(inspirestring)
-        else:
-            self.IsogeoMdDetails.val_inspire_themes.setText('None')
-        # Set the data abstract
-        self.IsogeoMdDetails.val_abstract.setText(content.get("abstract",
-                                                              "NR"))
-        # Set the collection method text
-        coll_method = content.get('collectionMethod')
-        if coll_method is not None:
-            self.IsogeoMdDetails.val_method.setText(
-                content['collectionMethod'])
-        else:
-            self.IsogeoMdDetails.val_method.setText('NR')
-        coll_context = content.get('collectionContext')
-        if coll_context is not None:
-            self.IsogeoMdDetails.val_context.setText(
-                content['collectionContext'])
-        else:
-            self.IsogeoMdDetails.val_context.setText('NR')
-        # Set the data contacts (data creator, data manager, ...)
-        ctc = content.get('contacts')
-        if ctc is not None and ctc != []:
-            ctc_text = ""
-            for i in ctc:
-                role = i.get('role')
-                if role is not None:
-                    ctc_text += "Role :\n" + role + "\n\n"
-                else:
-                    ctc_text += "Role :\nNR\n\n"
-                contact = i.get('contact')
-                if contact is not None:
-                    ctc_text += "Contact :\n"
-                    name = contact.get('name')
-                    if name is not None:
-                        ctc_text += name
-                        org = contact.get('organization')
-                        if org is not None:
-                            ctc_text += " - " + org + "\n"
-                        else:
-                            ctc_text += "\n"
-                    mail = contact.get('email')
-                    if mail is not None:
-                        ctc_text += mail + "\n"
-                    phone = contact.get('phone')
-                    if phone is not None:
-                        ctc_text += phone + "\n"
-                    adress = contact.get('addressLine1')
-                    if adress is not None:
-                        adress2 = contact.get('addressLine2')
-                        if adress2 is not None:
-                            ctc_text += adress + " - " + adress2 + "\n"
-                        else:
-                            ctc_text += adress + "\n"
-                    zipc = contact.get('zipCode')
-                    if zipc is not None:
-                        ctc_text += zipc + "\n"
-                    city = contact.get('city')
-                    if city is not None:
-                        ctc_text += city + "\n"
-                    country = contact.get('countryCode')
-                    if country is not None:
-                        ctc_text += country + "\n"
-                ctc_text += " ________________ \n\n"
-            ctc_text = ctc_text[:-20]
-            self.IsogeoMdDetails.val_contact.setText(ctc_text)
-        else:
-            self.IsogeoMdDetails.val_contact.setText("None")
-        # Set the data events list (creation, multiple modifications, ...)
-        self.IsogeoMdDetails.list_events.clear()
-        if content['events'] != []:
-            for i in content['events']:
-                event = custom_tools.handle_date(i['date']) + " : " + i['kind']
-                if i['kind'] == 'update' and 'description' in i \
-                        and i['description'] != '':
-                    event += " (" + i['description'] + ")"
-                self.IsogeoMdDetails.list_events.addItem(event)
-        # Set the data usage conditions
-        cond = content.get('conditions')
-        if cond is not None and cond != []:
-            cond_text = ""
-            for i in cond:
-                lc = i.get('license')
-                if lc is not None:
-                    name = lc.get('name')
-                    if name is not None:
-                        cond_text += name + "\n"
-                    link = lc.get('link')
-                    if link is not None:
-                        cond_text += link + "\n"
-                desc = i.get('description')
-                if desc is not None and desc != []:
-                    cond_text += desc + "\n"
-                cond_text += " ________________ \n\n"
-            cond_text = cond_text[:-20]
-            self.IsogeoMdDetails.val_conditions.setText(cond_text)
-        else:
-            self.IsogeoMdDetails.val_conditions.setText("None")
-        # Set the data usage limitations
-        lim = content.get('limitations')
-        if lim is not None and lim != []:
-            lim_text = ""
-            for i in lim:
-                lim_type = i.get('type')
-                if lim_type == 'legal':
-                    restriction = i.get('restriction')
-                    if restriction is not None:
-                        lim_text += restriction + "\n"
-                desc = i.get('description')
-                if desc is not None and desc != []:
-                    lim_text += desc + "\n"
-                dr = i.get('directive')
-                if dr is not None:
-                    lim_text += "Directive :\n"
-                    name = dr.get('name')
-                    if name is not None:
-                        lim_text += name + "\n"
-                    dr_desc = dr.get('desc')
-                    if dr_desc is not None:
-                        lim_text += dr_desc + "\n"
-                lim_text += " ________________ \n\n"
-            lim_text = lim_text[:-20]
-            self.IsogeoMdDetails.val_limitations.setText(lim_text)
-        else:
-            self.IsogeoMdDetails.val_limitations.setText("None")
-        # Set the data attributes description
-        if 'feature-attributes' in content:
-            nb = len(content['feature-attributes'])
-            self.IsogeoMdDetails.tbl_attributes.setRowCount(nb)
-            count = 0
-            for i in content['feature-attributes']:
-                self.IsogeoMdDetails.tbl_attributes.setItem(
-                    count, 0, QTableWidgetItem(i['name']))
-                self.IsogeoMdDetails.tbl_attributes.setItem(
-                    count, 1, QTableWidgetItem(i['dataType']))
-                if 'description' in i:
-                    self.IsogeoMdDetails.tbl_attributes.setItem(
-                        count, 2, QTableWidgetItem(i['description']))
-                count += 1
-            self.IsogeoMdDetails.tbl_attributes.horizontalHeader(
-            ).setStretchLastSection(True)
-            self.IsogeoMdDetails.tbl_attributes.verticalHeader(
-            ).setResizeMode(3)
-        # Finally open the damn window
-        self.IsogeoMdDetails.show()
-        try:
-            QgsMessageLog.logMessage("Detailed metadata displayed: {}"
-                                     .format(title),
-                                     "Isogeo")
-        except UnicodeEncodeError:
-            QgsMessageLog.logMessage("Detailed metadata displayed: {}"
-                                     .format(title.encode("latin1")),
-                                     "Isogeo")
 
     def edited_search(self):
         """On the Qline edited signal, decide weither a search has to be launched."""
