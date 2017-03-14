@@ -76,6 +76,9 @@ class UrlBuilder(object):
     """Basic class that holds utilitary methods for the plugin."""
     def __init__(self):
         """Class constructor."""
+        self.cached_wfs = dict()
+        self.cached_wms = dict()
+        self.cached_wmts = dict()
 
     def build_wfs_url(self, raw_url, rsc_type="service"):
         """Reformat the input WFS url so it fits QGIS criterias.
@@ -291,6 +294,12 @@ class UrlBuilder(object):
 
         elif mode == "complete":
             # Clean, complete but slower way - OWSLib -------------------------
+            if srv_details.get("path") == self.cached_wfs.get("srv_path"):
+                logger.debug("WFS: already in cache")
+            else:
+                self.cached_wfs["srv_path"] = srv_details.get("path")
+                logger.debug("WFS: new service")
+                pass
             # basic checks on service url
             try:
                 wfs = WebFeatureService(wfs_url_getcap)
@@ -305,14 +314,18 @@ class UrlBuilder(object):
 
             # check if GetFeature and DescribeFeatureType operation are available
             if not hasattr(wfs, "getfeature") or "GetFeature" not in [op.name for op in wfs.operations]:
+                self.cached_wfs["GetFeature"] = 0
                 return 0, "Required GetFeature operation not available in: " + wfs_url_getcap
             else:
+                self.cached_wfs["GetFeature"] = 1
                 logger.info("GetFeature available")
                 pass
 
             if "DescribeFeatureType" not in [op.name for op in wfs.operations]:
+                self.cached_wfs["DescribeFeatureType"] = 0
                 return 0, "Required DescribeFeatureType operation not available in: " + wfs_url_getcap
             else:
+                self.cached_wfs["DescribeFeatureType"] = 1
                 logger.info("DescribeFeatureType available")
                 pass
 
@@ -347,6 +360,7 @@ class UrlBuilder(object):
 
             wfs_lyr_crs_epsg = ["{}:{}".format(srs.authority, srs.code)
                                 for srs in wfs_lyr.crsOptions]
+            self.cached_wfs["CRS"] = wfs_lyr_crs_epsg
             if srs_map in wfs_lyr_crs_epsg:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
                 srs = srs_map
@@ -377,6 +391,7 @@ class UrlBuilder(object):
                 wfs_lyr_url = wfs_lyr_url + "&"
             else:
                 pass
+            self.cached_wfs["url"] = wfs_lyr_url
 
             # url construction
             try:
@@ -443,24 +458,36 @@ class UrlBuilder(object):
 
         elif mode == "complete":
             # Clean, complete but slower way - OWSLib -------------------------
+            if srv_details.get("path") == self.cached_wms.get("srv_path"):
+                logger.debug("WMS: already in cache")
+            else:
+                self.cached_wms["srv_path"] = srv_details.get("path")
+                logger.debug("WMS: new service")
+                pass
             # basic checks on service url
             try:
                 wms = WebMapService(wms_url_getcap)
+                self.cached_wms["Reachable"] = 1
             except ServiceException as e:
                 logger.error(str(e))
+                self.cached_wms["Reachable"] = 0
                 return 0, "WMS - Bad operation: " + wms_url_getcap, str(e)
             except HTTPError as e:
+                self.cached_wms["Reachable"] = 0
                 logger.error(str(e))
                 return 0, "WMS - Service not reached: " + wms_url_getcap, str(e)
             except Exception as e:
+                self.cached_wms["Reachable"] = 0
                 logger.error(str(e))
                 return 0, e
 
             # check if GetMap operation is available
             if not hasattr(wms, "getmap") or "GetMap" not in [op.name for op in wms.operations]:
+                self.cached_wms["GetMap"] = 1
                 return 0, "Required GetMap operation not available in: "\
                           + wms_url_getcap
             else:
+                self.cached_wms["GetMap"] = 0
                 pass
             # check if layer is present and queryable
             try:
@@ -489,7 +516,7 @@ class UrlBuilder(object):
             #       "OTF enabled: " + srs_qgs_otf_on,
             #       "OTF smart enabled: " + srs_qgs_otf_auto,
             #       "Map canvas SRS:" + custom_tools.get_map_crs())
-
+            self.cached_wms["CRS"] = wms_lyr.crsOptions
             if srs_map in wms_lyr.crsOptions:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
                 srs = srs_map
@@ -512,6 +539,7 @@ class UrlBuilder(object):
             wms_lyr_formats = wms.getOperationByName('GetMap').formatOptions
             formats_image = [f.split(" ", 1)[0] for f in wms_lyr_formats
                              if f in qgis_wms_formats]
+            self.cached_wms["formats"] = formats_image
             if "image/png" in formats_image:
                 layer_format = "image/png"
             elif "image/jpeg" in formats_image:
@@ -529,6 +557,7 @@ class UrlBuilder(object):
                 wms_lyr_url = wms_lyr_url[:-1]
             else:
                 pass
+            self.cached_wms["url"] = wms_lyr_url
 
             # url construction
             try:
@@ -562,7 +591,7 @@ class UrlBuilder(object):
         else:
             return None
 
-    def build_wmts_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv"):
+    def build_wmts_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
         """Format the input WMTS URL to fit QGIS criterias.
 
         Retrieve GetCapabilities from information transmitted by Isogeo API
