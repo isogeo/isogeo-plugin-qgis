@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
  <class>MetadataDetails</class>
  <widget class="QDialog" name="MetadataDetails">
@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>1031</width>
-    <height>718</height>
+    <height>719</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Isogeo Metadata</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <item row="0" column="0" colspan="2">
+   <item colspan="2" column="0" row="0">
     <widget class="QLabel" name="lbl_title">
      <property name="font">
       <font>
@@ -24,7 +24,7 @@
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;NR&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-style:italic;"&gt;NR&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -37,7 +37,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" rowspan="2">
+   <item column="0" row="1" rowspan="2">
     <widget class="QGroupBox" name="grp_ident">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -61,7 +61,7 @@
       <string>Identification</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
+      <item column="0" row="0">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout">
@@ -82,7 +82,7 @@
                </size>
               </property>
               <property name="text">
-               <string/>
+               <string />
               </property>
               <property name="pixmap">
                <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/users.svg</pixmap>
@@ -130,7 +130,7 @@
                </size>
               </property>
               <property name="text">
-               <string/>
+               <string />
               </property>
               <property name="pixmap">
                <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/tag.svg</pixmap>
@@ -144,15 +144,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QTextEdit" name="val_keywords">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
+             <widget class="QLabel" name="val_keywords">
+              <property name="text">
+               <string>TextLabel</string>
               </property>
              </widget>
             </item>
@@ -175,7 +169,7 @@
                </size>
               </property>
               <property name="text">
-               <string/>
+               <string />
               </property>
               <property name="pixmap">
                <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/leaf.svg</pixmap>
@@ -217,7 +211,7 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item column="1" row="1">
     <widget class="QGroupBox" name="grp_technic">
      <property name="maximumSize">
       <size>
@@ -229,7 +223,7 @@
       <string>Technical informations</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
+      <item column="0" row="0">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -242,7 +236,7 @@
              </size>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="pixmap">
              <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/cube.svg</pixmap>
@@ -292,7 +286,7 @@
              </size>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="pixmap">
              <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/globe.svg</pixmap>
@@ -336,7 +330,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="1" rowspan="2">
+   <item column="1" row="2" rowspan="2">
     <widget class="QgsCollapsibleGroupBox" name="grp_contacts">
      <property name="minimumSize">
       <size>
@@ -357,7 +351,7 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
+      <item column="0" row="0">
        <widget class="QTextEdit" name="val_contact">
         <property name="readOnly">
          <bool>true</bool>
@@ -367,7 +361,7 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" rowspan="2">
+   <item column="0" row="3" rowspan="2">
     <widget class="QGroupBox" name="grp_history">
      <property name="minimumSize">
       <size>
@@ -379,28 +373,28 @@
       <string>Data history</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
-      <item row="0" column="1" rowspan="3" colspan="2">
+      <item colspan="2" column="1" row="0" rowspan="3">
        <widget class="Line" name="line">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
-      <item row="0" column="3" rowspan="4">
+      <item column="3" row="0" rowspan="4">
        <widget class="Line" name="line_4">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
-      <item row="0" column="4" rowspan="2">
+      <item column="4" row="0" rowspan="2">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Last modifications</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" rowspan="2">
+      <item column="0" row="1" rowspan="2">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -413,7 +407,7 @@
              </size>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="pixmap">
              <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-o.svg</pixmap>
@@ -463,7 +457,7 @@
              </size>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="pixmap">
              <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar.svg</pixmap>
@@ -504,7 +498,7 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="2" rowspan="2">
+      <item column="2" row="1" rowspan="2">
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -517,7 +511,7 @@
              </size>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="pixmap">
              <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-o.svg</pixmap>
@@ -567,7 +561,7 @@
              </size>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="pixmap">
              <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar.svg</pixmap>
@@ -608,7 +602,7 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="4" rowspan="2">
+      <item column="4" row="2" rowspan="2">
        <widget class="QListWidget" name="list_events">
         <property name="minimumSize">
          <size>
@@ -621,7 +615,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item column="0" row="3">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -638,19 +632,20 @@
        </spacer>
       </item>
      </layout>
+     <zorder>line</zorder>
      <zorder>list_events</zorder>
      <zorder>label</zorder>
      <zorder>line_4</zorder>
      <zorder>verticalSpacer</zorder>
     </widget>
    </item>
-   <item row="4" column="1" rowspan="3">
+   <item column="1" row="4" rowspan="3">
     <widget class="QGroupBox" name="grp_fields">
      <property name="title">
       <string>Attributes</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
+      <item column="0" row="0">
        <widget class="QTableWidget" name="tbl_attributes">
         <property name="sortingEnabled">
          <bool>true</bool>
@@ -675,27 +670,27 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item column="0" row="5">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Collection</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_8">
-      <item row="0" column="0">
+      <item column="0" row="0">
        <widget class="QLabel" name="lbl_context">
         <property name="text">
          <string>Collection context</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item column="1" row="0">
        <widget class="QLabel" name="lbl_method">
         <property name="text">
          <string>Collection method</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item column="0" row="1">
        <widget class="QTextEdit" name="val_context">
         <property name="minimumSize">
          <size>
@@ -708,7 +703,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item column="1" row="1">
        <widget class="QTextEdit" name="val_method">
         <property name="minimumSize">
          <size>
@@ -724,7 +719,7 @@
      </layout>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item column="0" row="6">
     <layout class="QHBoxLayout" name="horizontalLayout_20">
      <item>
       <widget class="QGroupBox" name="grp_limitations">
@@ -732,7 +727,7 @@
         <string>Limitations</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="0" column="0">
+        <item column="0" row="0">
          <widget class="QTextEdit" name="val_limitations">
           <property name="readOnly">
            <bool>true</bool>
@@ -748,7 +743,7 @@
         <string>Conditions</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_9">
-        <item row="0" column="0">
+        <item column="0" row="0">
          <widget class="QTextEdit" name="val_conditions">
           <property name="readOnly">
            <bool>true</bool>
@@ -760,7 +755,7 @@
      </item>
     </layout>
    </item>
-   <item row="7" column="1">
+   <item column="1" row="7">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -780,7 +775,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

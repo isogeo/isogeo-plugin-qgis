@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
  <class>ui_main_window</class>
  <widget class="QDialog" name="ui_main_window">
@@ -9,25 +9,1035 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>820</width>
-    <height>748</height>
+    <width>905</width>
+    <height>834</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Isogeo Metadata</string>
   </property>
   <property name="locale">
-   <locale language="English" country="UnitedStates"/>
+   <locale country="UnitedStates" language="English" />
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
+  <layout class="QGridLayout" name="gridLayout_2">
    <property name="margin">
     <number>0</number>
    </property>
-   <item>
-    <widget class="QListWidget" name="listWidget">
+   <item column="1" row="0">
+    <layout class="QVBoxLayout" name="verticalLayout_13">
+     <item>
+      <widget class="QStackedWidget" name="stackedWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>300</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="md_general">
+        <layout class="QVBoxLayout" name="verticalLayout_11">
+         <item>
+          <widget class="QLabel" name="lbl_title">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-style:italic;"&gt;No title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::AutoText</enum>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item column="0" row="0">
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QLabel" name="lbl_owner">
+                 <property name="minimumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string />
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/users.svg</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTextEdit" name="val_owner">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>23</height>
+                  </size>
+                 </property>
+                 <property name="verticalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAlwaysOff</enum>
+                 </property>
+                 <property name="horizontalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAlwaysOff</enum>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <widget class="QLabel" name="lbl_keywords">
+                 <property name="minimumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string />
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/tag.svg</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTextEdit" name="val_keywords">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_17">
+               <item>
+                <widget class="QLabel" name="lbl_inspire_themes">
+                 <property name="minimumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string />
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/leaf.svg</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTextEdit" name="val_inspire_themes">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+           <item column="0" row="1">
+            <widget class="QTextEdit" name="val_abstract">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Sunken</enum>
+             </property>
+             <property name="lineWidth">
+              <number>0</number>
+             </property>
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="md_feat_attributes">
+        <layout class="QGridLayout" name="gridLayout">
+         <item column="0" row="0">
+          <widget class="QTableWidget" name="tbl_attributes">
+           <property name="sortingEnabled">
+            <bool>true</bool>
+           </property>
+           <column>
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Alias</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Description</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="md_contacts">
+        <layout class="QGridLayout" name="gridLayout_7">
+         <item column="0" row="0">
+          <widget class="QTextEdit" name="val_contact">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="md_history">
+        <layout class="QVBoxLayout" name="verticalLayout_18">
+         <item>
+          <widget class="QGroupBox" name="grp_history">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="title">
+            <string>Data history</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_5">
+            <item column="3" row="0" rowspan="4">
+             <widget class="Line" name="line_4">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item column="0" row="1" rowspan="2">
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_19">
+                <item>
+                 <widget class="QLabel" name="label_29">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string />
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_data_updt">
+                  <property name="text">
+                   <string>Last update:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>13</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="val_data_updt">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item colspan="2" column="1" row="0" rowspan="3">
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item column="0" row="3">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>48</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item column="2" row="1" rowspan="2">
+             <layout class="QVBoxLayout" name="verticalLayout_15">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_20">
+                <item>
+                 <widget class="QLabel" name="label_30">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string />
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-o.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_valid_start">
+                  <property name="text">
+                   <string>Validity period start:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>13</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="val_valid_start">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_21">
+                <item>
+                 <widget class="QLabel" name="label_31">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string />
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_valid_end">
+                  <property name="text">
+                   <string>Validity period end:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>28</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="val_valid_end">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item column="0" row="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_18">
+              <item>
+               <widget class="QLabel" name="label_28">
+                <property name="maximumSize">
+                 <size>
+                  <width>16</width>
+                  <height>16</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string />
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-o.svg</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_data_crea">
+                <property name="text">
+                 <string>Creation date:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>18</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="val_data_crea">
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+           <zorder>line</zorder>
+           <zorder>line_4</zorder>
+           <zorder>verticalSpacer</zorder>
+           <zorder />
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Collection</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_17">
+            <item>
+             <widget class="QLabel" name="lbl_method">
+              <property name="text">
+               <string>Collection method</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTextEdit" name="val_method">
+              <property name="minimumSize">
+               <size>
+                <width>271</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="lbl_context">
+              <property name="text">
+               <string>Collection context</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTextEdit" name="val_context">
+              <property name="minimumSize">
+               <size>
+                <width>271</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
+           <property name="title">
+            <string>Last modifications</string>
+           </property>
+           <property name="collapsed">
+            <bool>true</bool>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_16">
+            <item>
+             <widget class="QListWidget" name="list_events">
+              <property name="minimumSize">
+               <size>
+                <width>215</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="selectionRectVisible">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="md_geography">
+        <layout class="QVBoxLayout" name="verticalLayout_22">
+         <item>
+          <widget class="QGroupBox" name="grp_technic">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="title">
+            <string>Technical informations</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <item column="0" row="0">
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <item>
+                 <widget class="QLabel" name="label_32">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string />
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/cube.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_format">
+                  <property name="text">
+                   <string>Format:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="val_format">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_22">
+                <item>
+                 <widget class="QLabel" name="label_33">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string />
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/globe.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_srs">
+                  <property name="text">
+                   <string>SRS:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_7">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="val_srs">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item column="0" row="1">
+             <layout class="QVBoxLayout" name="verticalLayout_21">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_27">
+                <item>
+                 <widget class="QLabel" name="label_38">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string />
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/cube.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_format_4">
+                  <property name="text">
+                   <string>Features count:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_12">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="val_format_4">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_28">
+                <item>
+                 <widget class="QLabel" name="label_39">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string />
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/globe.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_srs_4">
+                  <property name="text">
+                   <string>Geometry type:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_13">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="val_srs_4">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QWidget" name="widget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>200</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="md_cgu">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="lbl_licenses">
+           <property name="text">
+            <string>Licenses</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="val_licenses">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lbl_limitations">
+           <property name="text">
+            <string>Limitations</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="val_limitations">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="md_advanced">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QScrollArea" name="scrollArea_2">
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="scrollAreaWidgetContents_2">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>719</width>
+              <height>763</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item column="0" row="0">
+              <widget class="QGroupBox" name="grp_technic_2">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="title">
+                <string>Technical informations</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <widget class="QLabel" name="label_40">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string />
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/cube.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_format_5">
+                  <property name="text">
+                   <string>metadata language</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_14">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>470</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="val_format_5">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item column="0" row="1">
+              <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item column="0" row="1">
+    <widget class="QPushButton" name="md_edit_button">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Edit it on Isogeo</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../resources.qrc">
+       <normaloff>:/plugins/Isogeo/resources/pencil.svg</normaloff>:/plugins/Isogeo/resources/pencil.svg</iconset>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item column="1" row="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="contextMenuPolicy">
+      <enum>Qt::NoContextMenu</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item column="0" row="0">
+    <widget class="QListWidget" name="li_menu">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -81,636 +1091,97 @@ QListWidget::item::selected {
      </property>
      <item>
       <property name="text">
-       <string>Quick query</string>
+       <string>General</string>
+      </property>
+      <property name="background">
+       <brush brushstyle="NoBrush">
+        <color alpha="255">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </brush>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>:/plugins/QuickOSM/resources/quick.png</normaloff>:/plugins/QuickOSM/resources/quick.png</iconset>
+       <iconset resource="../../resources.qrc">
+        <normaloff>:/plugins/Isogeo/resources/bookmark.svg</normaloff>:/plugins/Isogeo/resources/bookmark.svg</iconset>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>My queries</string>
+       <string>Feature attributes</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>:/plugins/QuickOSM/resources/favorites.png</normaloff>:/plugins/QuickOSM/resources/favorites.png</iconset>
+       <iconset resource="../../resources.qrc">
+        <normaloff>:/plugins/Isogeo/resources/list-alt.svg</normaloff>:/plugins/Isogeo/resources/list-alt.svg</iconset>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Query</string>
+       <string>Contacts</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>:/plugins/QuickOSM/resources/edit.png</normaloff>:/plugins/QuickOSM/resources/edit.png</iconset>
+       <iconset resource="../../resources.qrc">
+        <normaloff>:/plugins/Isogeo/resources/phone.svg</normaloff>:/plugins/Isogeo/resources/phone.svg</iconset>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>OSM File</string>
+       <string>History</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>:/plugins/QuickOSM/resources/open.png</normaloff>:/plugins/QuickOSM/resources/open.png</iconset>
+       <iconset resource="../../resources.qrc">
+        <normaloff>:/plugins/Isogeo/resources/calendar.svg</normaloff>:/plugins/Isogeo/resources/calendar.svg</iconset>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Parameters</string>
+       <string>Geography</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>:/plugins/QuickOSM/resources/general.svg</normaloff>:/plugins/QuickOSM/resources/general.svg</iconset>
+       <iconset resource="../../resources.qrc">
+        <normaloff>:/plugins/Isogeo/resources/globe.svg</normaloff>:/plugins/Isogeo/resources/globe.svg</iconset>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Help</string>
+       <string>Licenses</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>:/plugins/QuickOSM/resources/about.png</normaloff>:/plugins/QuickOSM/resources/about.png</iconset>
+       <iconset resource="../../resources.qrc">
+        <normaloff>:/plugins/Isogeo/resources/gavel.svg</normaloff>:/plugins/Isogeo/resources/gavel.svg</iconset>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>About</string>
+       <string>Advanced</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>:/plugins/QuickOSM/resources/info.png</normaloff>:/plugins/QuickOSM/resources/info.png</iconset>
+       <iconset resource="../../resources.qrc">
+        <normaloff>:/plugins/Isogeo/resources/code.svg</normaloff>:/plugins/Isogeo/resources/code.svg</iconset>
       </property>
      </item>
     </widget>
    </item>
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout_13">
-     <item>
-      <widget class="QStackedWidget" name="stackedWidget">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>300</width>
-         <height>200</height>
-        </size>
-       </property>
-       <property name="currentIndex">
-        <number>4</number>
-       </property>
-       <widget class="QWidget" name="md_general"/>
-       <widget class="QWidget" name="md_feat_attributes"/>
-       <widget class="QWidget" name="query"/>
-       <widget class="QWidget" name="osm_file"/>
-       <widget class="QWidget" name="parameters">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QGroupBox" name="groupBox">
-           <property name="title">
-            <string>Overpass API</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_8">
-              <item>
-               <widget class="QComboBox" name="comboBox_default_OAPI"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="QPushButton" name="pushButton_OAPI_timestamp">
-                <property name="text">
-                 <string>Get timestamp</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_timestamp_oapi">
-                <property name="text">
-                 <string>unknow</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="groupBox_3">
-           <property name="title">
-            <string>Queries</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_10">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_7">
-              <item>
-               <widget class="QPushButton" name="pushButton_restoreQueries">
-                <property name="text">
-                 <string>Restore queries</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="groupBox_7">
-           <property name="title">
-            <string>Outputs</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_11">
-            <item>
-             <widget class="QRadioButton" name="radioButton_outputJson">
-              <property name="text">
-               <string>GeoJSON (not editable, column's name longer)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="radioButton_outputShape">
-              <property name="text">
-               <string>Shapefile (editable, column's name shorter)</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="help">
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QScrollArea" name="scrollArea">
-           <property name="widgetResizable">
-            <bool>true</bool>
-           </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>641</width>
-              <height>722</height>
-             </rect>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_5">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_3">
-               <item>
-                <widget class="QPushButton" name="pushButton_homeHelp">
-                 <property name="text">
-                  <string>Home</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QWebView" name="webBrowser"/>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="about">
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <widget class="QScrollArea" name="scrollArea_2">
-           <property name="widgetResizable">
-            <bool>true</bool>
-           </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents_2">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>641</width>
-              <height>722</height>
-             </rect>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_9">
-             <item>
-              <widget class="QGroupBox" name="groupBox_2">
-               <property name="title">
-                <string>Realization</string>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_6">
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_5">
-                  <item>
-                   <widget class="QLabel" name="label_13">
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Etienne Trimaille&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="scaledContents">
-                     <bool>false</bool>
-                    </property>
-                    <property name="openExternalLinks">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_14">
-                    <property name="text">
-                     <string notr="true">&lt;a href=&quot;mailto:etienne@trimaille.eu?subject=Plugin QuickOSM - About&quot; style=&quot;color:#7BA11A;text-decoration:none;&quot;&gt;etienne@trimaille.eu&lt;/a&gt;</string>
-                    </property>
-                    <property name="openExternalLinks">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="groupBox_5">
-               <property name="title">
-                <string>Supervision</string>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_7">
-                <item>
-                 <widget class="QLabel" name="label_10">
-                  <property name="text">
-                   <string>This intership was supervised by 3Liz</string>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_4">
-                  <item>
-                   <widget class="QLabel" name="label_11">
-                    <property name="text">
-                     <string notr="true">&lt;a href=&quot;http://www.3liz.com&quot; style=&quot;color:#7BA11A;text-decoration:none;&quot;&gt;Libérez vos SIG !&lt;/a&gt;</string>
-                    </property>
-                    <property name="openExternalLinks">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_12">
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://www.3liz.com/&quot;&gt;&lt;img src=&quot;:/plugins/QuickOSM/resources/3liz.png&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
-</string>
-                  </property>
-                  <property name="scaledContents">
-                   <bool>false</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                  <property name="openExternalLinks">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="groupBox_8">
-               <property name="title">
-                <string>Translators</string>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_9">
-                <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_12">
-                  <item>
-                   <widget class="QLabel" name="label_18">
-                    <property name="text">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The web-based translating platform &lt;a href=&quot;https://www.transifex.com/projects/p/gui/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;Transifex&lt;/span&gt;&lt;/a&gt; is used. It's easier for translators.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="scaledContents">
-                     <bool>true</bool>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_14">
-                    <item>
-                     <widget class="QLabel" name="label_21">
-                      <property name="text">
-                       <string>Dutch</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_22">
-                      <property name="text">
-                       <string notr="true">Antony Bartolo</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_15">
-                    <item>
-                     <widget class="QLabel" name="label_23">
-                      <property name="text">
-                       <string>Finnish</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_24">
-                      <property name="text">
-                       <string notr="true">Kari Salovaara</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_13">
-                    <item>
-                     <widget class="QLabel" name="label_17">
-                      <property name="text">
-                       <string>French</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_9">
-                      <property name="text">
-                       <string notr="true">Etienne Trimaille</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_12">
-                    <item>
-                     <widget class="QLabel" name="label_6">
-                      <property name="text">
-                       <string>German</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_5">
-                      <property name="text">
-                       <string notr="true">Thomas Moenkemeier</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_11">
-                    <item>
-                     <widget class="QLabel" name="label_8">
-                      <property name="text">
-                       <string>Italian</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_7">
-                      <property name="text">
-                       <string notr="true">Francesco Bisantis</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_10">
-                    <item>
-                     <widget class="QLabel" name="label_4">
-                      <property name="text">
-                       <string>Russian</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_3">
-                      <property name="text">
-                       <string notr="true">&lt;a href=&quot;https://github.com/freeExec&quot; style=&quot;color:#7BA11A;text-decoration:none;&quot;&gt;freeExec&lt;/a&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_16">
-                    <item>
-                     <widget class="QLabel" name="label_26">
-                      <property name="text">
-                       <string>Taiwanese Mandarin</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_25">
-                      <property name="text">
-                       <string notr="true">Supaplextw</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="groupBox_6">
-               <property name="title">
-                <string>Sources</string>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_8">
-                <item>
-                 <layout class="QGridLayout" name="gridLayout_4">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_19">
-                    <property name="text">
-                     <string>Github's repository</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="label_20">
-                    <property name="text">
-                     <string notr="true">&lt;a href=&quot;https://github.com/3liz/QgisQuickOSMPlugin&quot; style=&quot;color:#7BA11A;text-decoration:none;&quot;&gt;https://github.com/3liz/QgisQuickOSMPlugin&lt;/a&gt;</string>
-                    </property>
-                    <property name="openExternalLinks">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="groupBox_4">
-               <property name="title">
-                <string>Licence</string>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_6">
-                <item>
-                 <layout class="QGridLayout" name="gridLayout_3">
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label">
-                    <property name="text">
-                     <string notr="true">OpenStreetMap</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLabel" name="label_16">
-                    <property name="text">
-                     <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://www.gnu.org/licenses/gpl-2.0.html&quot;&gt;&lt;img src=&quot;:/plugins/QuickOSM/resources/gnu.png&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                    <property name="openExternalLinks">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_15">
-                    <property name="text">
-                     <string notr="true">Plugin : Licence GPL Version 2</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QLabel" name="label_2">
-                    <property name="text">
-                     <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ODBL : © OpenStreetMap's contributors &lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://www.openstreetmap.org/copyright&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;http://www.openstreetmap.org/copyright&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-     </item>
-    </layout>
+   <item column="0" row="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_3" />
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>pushButton_OAPI_timestamp</tabstop>
-  <tabstop>listWidget</tabstop>
+  <tabstop>li_menu</tabstop>
  </tabstops>
- <resources>
-  <include location="../../resources.qrc"/>
- </resources>
  <connections>
   <connection>
-   <sender>listWidget</sender>
+   <sender>li_menu</sender>
    <signal>currentRowChanged(int)</signal>
    <receiver>stackedWidget</receiver>
    <slot>setCurrentIndex(int)</slot>
