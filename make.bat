@@ -13,5 +13,8 @@ pyuic4 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksear
 Echo "Updating Qt resources files (images)"
 pyrcc4 -o resources.py resources.qrc
 
+Echo "Packaging plugin"
+python tools\plugin_packager.py
+
 Echo "End of compilation."
 Echo "Remind that you have to remove 'import resources_rc' at the end of py files generated from ui."
