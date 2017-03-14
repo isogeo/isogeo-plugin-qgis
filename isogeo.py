@@ -366,12 +366,24 @@ class Isogeo:
         logging.info("Asked a token and got a reply from the API.")
         bytarray = answer.readAll()
         content = str(bytarray)
-        parsed_content = json.loads(content)
+        try:
+            parsed_content = json.loads(content)
+        except ValueError as e:
+            if "No JSON object could be decoded" in e:
+                msgBar.pushMessage(self.tr("Request to Isogeo failed: please check your Internet connection."),
+                                   duration=3,
+                                   level=msgBar.WARNING)
+                logger.error("Internet connection failed")
+                self.onClosePlugin()
+            else:
+                pass
+            return
+
         if 'access_token' in parsed_content:
             logging.info("The API reply is an access token : "
                          "the request worked as expected.")
             # TO DO : Appeler la fonction d'initialisation
-            self.token = "Bearer " + parsed_content['access_token']
+            self.token = "Bearer " + parsed_content.get('access_token')
             if self.savedSearch == "first":
                 self.requestStatusClear = True
                 self.set_widget_status()
