@@ -43,7 +43,7 @@ for dirpath, dirs, files in walk(ui_dir):
                         continue
                 for custom in root.iter('customwidget'):
                     header = custom.getchildren()[2]
-                    print(header, dir(header), header.text)
+                    # print(header, dir(header), header.text)
                     if header.text != "qgis.gui":
                         header.text = header.text.replace(header.text, 'qgis.gui')
                         ui_xml.write(path.join(dirpath, file),
