@@ -1,9 +1,12 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/code.svg</file>
+    <file>resources/list-alt.svg</file>
     <file>resources/gavel.png</file>
     <file>resources/gavel.svg</file>
     <file>resources/gplv3.png</file>
     <file>icon.png</file>
+    <file>resources/bookmark.svg</file>
     <file>resources/isogeo.png</file>
     <file>resources/sponsor_logo_ca_lorient.png</file>
     <file>resources/sponsor_logo_SMAVD.jpg</file>
