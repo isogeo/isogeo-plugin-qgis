@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\isogeo_dockwidget_base.ui'
 #
-# Created: Mon Mar 13 20:42:57 2017
+# Created: Tue Mar 14 10:47:18 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!

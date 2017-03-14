@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\mddetails\ui_md_details.ui'
 #
-# Created: Thu Dec 29 18:30:02 2016
+# Created: Tue Mar 14 10:47:34 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MetadataDetails(object):
     def setupUi(self, MetadataDetails):
         MetadataDetails.setObjectName(_fromUtf8("MetadataDetails"))
-        MetadataDetails.resize(1031, 718)
+        MetadataDetails.resize(1031, 719)
         self.gridLayout_6 = QtGui.QGridLayout(MetadataDetails)
         self.gridLayout_6.setObjectName(_fromUtf8("gridLayout_6"))
         self.lbl_title = QtGui.QLabel(MetadataDetails)
@@ -84,9 +84,7 @@ class Ui_MetadataDetails(object):
         self.lbl_keywords.setWordWrap(False)
         self.lbl_keywords.setObjectName(_fromUtf8("lbl_keywords"))
         self.horizontalLayout_2.addWidget(self.lbl_keywords)
-        self.val_keywords = QtGui.QTextEdit(self.grp_ident)
-        self.val_keywords.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.val_keywords.setReadOnly(True)
+        self.val_keywords = QtGui.QLabel(self.grp_ident)
         self.val_keywords.setObjectName(_fromUtf8("val_keywords"))
         self.horizontalLayout_2.addWidget(self.val_keywords)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
@@ -348,6 +346,7 @@ class Ui_MetadataDetails(object):
         MetadataDetails.setWindowTitle(_translate("MetadataDetails", "Isogeo Metadata", None))
         self.lbl_title.setText(_translate("MetadataDetails", "<html><head/><body><p><span style=\" font-style:italic;\">NR</span></p></body></html>", None))
         self.grp_ident.setTitle(_translate("MetadataDetails", "Identification", None))
+        self.val_keywords.setText(_translate("MetadataDetails", "TextLabel", None))
         self.grp_technic.setTitle(_translate("MetadataDetails", "Technical informations", None))
         self.lbl_format.setText(_translate("MetadataDetails", "Format :", None))
         self.val_format.setText(_translate("MetadataDetails", "TextLabel", None))
