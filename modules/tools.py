@@ -87,13 +87,17 @@ class Tools(object):
 
     def handle_date(self, input_date):
         """Create a date object with the string given as a date by the API."""
-        date = input_date.split("T")[0]
-        year = int(date.split('-')[0])
-        month = int(date.split('-')[1])
-        day = int(date.split('-')[2])
-        new_date = datetime.date(year, month, day)
-        # method ending
-        return new_date.strftime("%Y-%m-%d")
+        if input_date != "NR":
+            date = input_date.split("T")[0]
+            year = int(date.split('-')[0])
+            month = int(date.split('-')[1])
+            day = int(date.split('-')[2])
+            new_date = datetime.date(year, month, day)
+            # method ending
+            return new_date.strftime("%Y-%m-%d")
+        else:
+            return input_date
+            pass
 
     def mail_to_isogeo(self, lang):
         """Open the credentials request online form in web browser."""
