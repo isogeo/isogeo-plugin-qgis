@@ -77,9 +77,9 @@ from modules.url_builder import UrlBuilder
 IsogeoMdDetails = IsogeoMdDetails()
 
 # useful submodules and shortcuts
+custom_tools = Tools()
 isogeo_api_mng = IsogeoApiManager()
 md_display = MetadataDisplayer(IsogeoMdDetails)
-custom_tools = Tools()
 msgBar = iface.messageBar()
 network_mng = QNetworkAccessManager()
 qsettings = QSettings()
@@ -377,10 +377,18 @@ class Isogeo:
         except ValueError as e:
             if "No JSON object could be decoded" in e:
                 msgBar.pushMessage(self.tr("Request to Isogeo failed: please check your Internet connection."),
-                                   duration=3,
+                                   duration=10,
                                    level=msgBar.WARNING)
                 logger.error("Internet connection failed")
-                self.onClosePlugin()
+                self.pluginIsActive = False
+        # try:
+        #     reloadPlugin("isogeo_search_engine")
+        # except TypeError:
+        #     pass
+        # try:
+        #     reloadPlugin("isogeo_search_engine_dev")
+        # except TypeError:
+        #     pass
             else:
                 pass
             return
@@ -443,18 +451,21 @@ class Isogeo:
                 parsed_content = json.loads(content)
                 self.requestStatusClear = True
                 self.update_fields(parsed_content)
+                del parsed_content
             elif self.showDetails is True:
                 self.showDetails = False
                 self.loopCount = 0
                 parsed_content = json.loads(content)
                 self.requestStatusClear = True
                 md_display.show_complete_md(parsed_content)
+                del parsed_content
             elif self.settingsRequest is True:
                 self.settingsRequest = False
                 self.loopCount = 0
                 parsed_content = json.loads(content)
                 self.requestStatusClear = True
                 self.write_shares_info(parsed_content)
+                del parsed_content
 
         elif answer.error() == 204:
             logging.info("Token expired. Renewing it.")
@@ -1733,8 +1744,8 @@ class Isogeo:
                 # Create the dockwidget (after translation) and keep reference
                 self.dockwidget = IsogeoDockWidget()
                 logger.info("Plugin load time: {}"
-                             .format(plugin_times.get("isogeo_search_engine",
-                                                      "NR")))
+                            .format(plugin_times.get("isogeo_search_engine",
+                                                     "NR")))
 
             # connect to provide cleanup on closing of dockwidget
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
