@@ -137,6 +137,7 @@ class IsogeoApiManager(object):
         formats = {}
         srs = {}
         actions = {}
+        conformity = 0
         # loops that sort each tag in the corresponding dict, keeping the
         # same "key : value" structure.
         for tag in tags.keys():
@@ -178,6 +179,9 @@ class IsogeoApiManager(object):
                     resources_types[tag] = u'Ressource'
                 elif tag.startswith('type:service'):
                     resources_types[tag] = u'Service géographique'
+            elif tag.startswith('conformity'):
+                conformity = 1
+
         # Creating the final object the function will return : a dictionary
         # of dictionaries
         new_tags = {}
@@ -188,6 +192,7 @@ class IsogeoApiManager(object):
         new_tags['formats'] = formats
         new_tags['srs'] = srs
         new_tags['actions'] = actions
+        new_tags['inspire_conformity'] = conformity
 
         # log
         logger.info("Tags retrieved")
