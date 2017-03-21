@@ -1,5 +1,21 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/inspire.png</file>
+    <file>resources/th.svg</file>
+    <file>resources/arrows-h.svg</file>
+    <file>resources/compass.svg</file>
+    <file>resources/map-o.svg</file>
+    <file>resources/map-signs.svg</file>
+    <file>resources/cubes.svg</file>
+    <file>resources/comment.svg</file>
+    <file>resources/refresh.svg</file>
+    <file>resources/comment-o.svg</file>
+    <file>resources/calendar-check-o.svg</file>
+    <file>resources/calendar-minus-o.svg</file>
+    <file>resources/calendar-plus-o.svg</file>
+    <file>resources/calendar-times-o.svg</file>
+    <file>resources/edit.svg</file>
+    <file>resources/download.svg</file>
     <file>resources/code.svg</file>
     <file>resources/list-alt.svg</file>
     <file>resources/gavel.png</file>
