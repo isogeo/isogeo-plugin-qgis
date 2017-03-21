@@ -78,6 +78,15 @@ dict_md_fields_fr = {
             "minutes": "minute(s)",
             "seconds": "seconde(s)"
             },
+        "frequencyShortTypes": {
+            "Y": "an(s)",
+            "M": "mois",
+            "W": "semaine(s)",
+            "D": "jour(s)",
+            "H": "heure(s)",
+            "M": "minute(s)",
+            "S": "seconde(s)"
+            },
         "events": {
             "update": "Mise à jour",
             "creation": "Création",
@@ -156,6 +165,15 @@ dict_md_fields_en = {
             "minutes": "minute(s)",
             "seconds": "second(s)"
             },
+        "frequencyShortTypes": {
+            "Y": "year(s)",
+            "M": "month(s)",
+            "W": "week(s)",
+            "D": "day(s)",
+            "H": "hour(s)",
+            "M": "minute(s)",
+            "S": "second(s)"
+            },
         "events": {
             "update": "Update",
             "creation": "Creation",
@@ -206,6 +224,7 @@ if __name__ == '__main__':
     # French
     translator_fr = IsogeoTranslator("FR")
     print(translator_fr.tr("roles", "pointOfContact"))
+    print(translator_fr.tr(None, "frequencyUpdateHelp"))
 
     # English
     translator_en = IsogeoTranslator("EN")
