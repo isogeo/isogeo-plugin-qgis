@@ -1635,12 +1635,17 @@ class Isogeo:
     def send_details_request(self, md_id):
         """Send a request for aditionnal info about one data."""
         logger.info("Full metatada sheet asked. Building the url.")
-        self.currentUrl = "https://v1.api.isogeo.com/resources/"\
-            + str(md_id)\
-            + "?_include=contacts,limitations,conditions,events,feature-attributes"
+        self.currentUrl = "https://v1.api.isogeo.com/resources/{}{}"\
+                          .format(md_id,
+                                  "?_include=conditions,contacts,"
+                                  "coordinate-system,events,"
+                                  "feature-attributes,limitations,"
+                                  "keywords,specifications")
         self.showDetails = True
         if self.requestStatusClear is True:
             self.send_request_to_isogeo_api(self.token)
+        else:
+            pass
 
     def edited_search(self):
         """On the Qline edited signal, decide weither a search has to be launched."""
