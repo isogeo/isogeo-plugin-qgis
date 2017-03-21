@@ -86,9 +86,10 @@ final_zip.write(r"isogeo.py", plg_dir + r"\isogeo.py")
 # Modules
 final_zip.write(r"modules\__init__.py", plg_dir + r"\modules\__init__.py")
 final_zip.write(r"modules\api.py", plg_dir + r"\modules\api.py")
-final_zip.write(r"modules\tools.py", plg_dir + r"\modules\metadata_display.py")
-final_zip.write(r"modules\tools.py", plg_dir + r"\modules\results.py")
+final_zip.write(r"modules\metadata_display.py", plg_dir + r"\modules\metadata_display.py")
+final_zip.write(r"modules\results.py", plg_dir + r"\modules\results.py")
 final_zip.write(r"modules\tools.py", plg_dir + r"\modules\tools.py")
+final_zip.write(r"modules\translator.py", plg_dir + r"\modules\translator.py")
 final_zip.write(r"modules\url_builder.py", plg_dir + r"\modules\url_builder.py")
 final_zip.write(r"modules\isogeo.qml", plg_dir + r"\modules\isogeo.qml")
 
@@ -151,7 +152,6 @@ final_zip.write(r"ui\mddetails\dlg_md_details.py",
                 plg_dir + r"\ui\mddetails\dlg_md_details.py")
 
 # --- NEW #64
-
 final_zip.write(r"ui\metadata\__init__.py",
                 plg_dir + r"\ui\metadata\__init__.py")
 final_zip.write(r"ui\metadata\ui_md_details.ui",
