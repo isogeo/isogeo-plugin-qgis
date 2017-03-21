@@ -526,6 +526,29 @@
     </message>
 </context>
 <context>
+    <name>ResultsManager</name>
+    <message>
+        <location filename="modules/results.py" line="132"/>
+        <source>Unknown geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="modules/results.py" line="429"/>
+        <source>Data file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="modules/results.py" line="427"/>
+        <source>PostGIS table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="modules/results.py" line="391"/>
+        <source>Can&apos;t be added</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tools</name>
     <message>
         <location filename="modules/tools.py" line="261"/>
@@ -620,6 +643,247 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
     <message>
         <location filename="ui/auth/ui_authentication.py" line="88"/>
         <source>I already have Isogeo ID and SECRET for this application</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>isogeo_tr</name>
+    <message>
+        <location filename="modules/metadata_display.py" line="110"/>
+        <source>roles</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ui_main_window</name>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="23"/>
+        <source>Isogeo Metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="87"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;No title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="355"/>
+        <source>INSPIRE themes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="284"/>
+        <source>Keywords</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="318"/>
+        <source>Abstract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1192"/>
+        <source>Metadata owner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1401"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="424"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="429"/>
+        <source>Alias</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="434"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="439"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="457"/>
+        <source>Point of contact</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="503"/>
+        <source>Others contacts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="566"/>
+        <source>Data history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1367"/>
+        <source>Last update:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="642"/>
+        <source>Creation date:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="689"/>
+        <source>Validity period end:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="722"/>
+        <source>Validity period start:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="772"/>
+        <source>Collection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="778"/>
+        <source>Collection method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="798"/>
+        <source>Collection context</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="821"/>
+        <source>Last modifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="856"/>
+        <source>Technical informations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="885"/>
+        <source>Format:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="935"/>
+        <source>SRS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="989"/>
+        <source>Features count:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1039"/>
+        <source>Geometry type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1628"/>
+        <source>Licenses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1114"/>
+        <source>Limitations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1160"/>
+        <source>Download metadata XML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1245"/>
+        <source>wg_email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1255"/>
+        <source>wg_address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1262"/>
+        <source>wg_phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1269"/>
+        <source>wg_pc_city</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1302"/>
+        <source>wg_country</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1328"/>
+        <source>wg_name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1350"/>
+        <source>Metadata properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1380"/>
+        <source>Metadata language: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1408"/>
+        <source>Created:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1574"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1592"/>
+        <source>Feature attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1601"/>
+        <source>Contacts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1610"/>
+        <source>History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1619"/>
+        <source>Geography</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1637"/>
+        <source>Advanced</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/metadata/ui_md_details.ui" line="1655"/>
+        <source>Edit it on Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

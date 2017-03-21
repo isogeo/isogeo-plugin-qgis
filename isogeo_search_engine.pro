@@ -2,12 +2,15 @@ FORMS = ui/isogeo_dockwidget_base.ui \
     ui/auth/ui_authentication.ui \
     ui/credits/ui_credits.ui \
     ui/mddetails/ui_md_details.ui \
+    ui/metadata/ui_md_details.ui \
     ui/quicksearch/ui_quicksearch_new.ui \
     ui/quicksearch/ui_quicksearch_rename.ui
 
 SOURCES = __init__.py \
 	isogeo.py \
     modules\api.py \
+    modules\metadata_display.py \
+    modules\results.py \
     modules\tools.py \
     modules\url_builder.py \
 	ui/isogeo_dockwidget.py \
