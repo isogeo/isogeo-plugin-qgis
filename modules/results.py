@@ -4,6 +4,7 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 # Standard library
 import logging
 from functools import partial
+import textwrap
 
 # PyQT
 # from QByteArray
@@ -92,7 +93,7 @@ class ResultsManager(object):
             btn_md_title.pressed.connect(partial(
                 self.send_details_request, md_id=md_id))
             # Putting the abstract as a tooltip on this button
-            btn_md_title.setToolTip(i.get('abstract'))
+            btn_md_title.setToolTip(i.get('abstract', "")[:300])
             # Insert it in column 1
             tbl_result.setCellWidget(
                 count, 0, btn_md_title)
