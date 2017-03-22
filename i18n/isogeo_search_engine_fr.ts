@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="fr_FR">
 <context>
     <name>Isogeo</name>
     <message>
@@ -185,22 +186,22 @@
     <message>
         <location filename="isogeo.py" line="1022"/>
         <source>The linked WFS is not valid. QGIS says: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>La couche du service WFS liée semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
         <location filename="isogeo.py" line="1050"/>
         <source>The linked WMS is not valid. QGIS says: {}</source>
-        <translation type="unfinished"></translation>
+        <translation>La couche du service WMS liée semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
         <location filename="isogeo.py" line="1067"/>
         <source>The linked WMTS is not valid. QGIS says: {} {}</source>
-        <translation type="unfinished"></translation>
+        <translation>La couche du service WMTS liée semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
         <location filename="isogeo.py" line="379"/>
         <source>Request to Isogeo failed: please check your Internet connection.</source>
-        <translation type="unfinished"></translation>
+        <translation>La requête à l&apos;API Isogeo a échoué. Merci de vérifier la connexion Internet et de réessayer.</translation>
     </message>
 </context>
 <context>
@@ -378,7 +379,7 @@
     <message>
         <location filename="ui/isogeo_dockwidget_base.ui" line="854"/>
         <source>Page x on x</source>
-        <translation type="unfinished"></translation>
+        <translation>Page x sur x</translation>
     </message>
 </context>
 <context>
@@ -530,22 +531,22 @@
     <message>
         <location filename="modules/results.py" line="132"/>
         <source>Unknown geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Géométrie inconnue</translation>
     </message>
     <message>
         <location filename="modules/results.py" line="429"/>
         <source>Data file</source>
-        <translation type="unfinished"></translation>
+        <translation>Donnée fichier</translation>
     </message>
     <message>
         <location filename="modules/results.py" line="427"/>
         <source>PostGIS table</source>
-        <translation type="unfinished"></translation>
+        <translation>Table PostGIS</translation>
     </message>
     <message>
         <location filename="modules/results.py" line="391"/>
         <source>Can&apos;t be added</source>
-        <translation type="unfinished"></translation>
+        <translation>Non ajoutable</translation>
     </message>
 </context>
 <context>
@@ -553,26 +554,26 @@
     <message>
         <location filename="modules/tools.py" line="261"/>
         <source>Alert</source>
-        <translation type="unfinished">Alerte</translation>
+        <translation>Alerte</translation>
     </message>
     <message>
         <location filename="modules/tools.py" line="223"/>
         <source>Proxy issue : 
 QGIS and your OS have different proxy set up.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de proxy :\nQGIS et les paramètres du système d&apos;exploitation sont différents.</translation>
     </message>
     <message>
         <location filename="modules/tools.py" line="254"/>
         <source>Proxy issue : 
 QGIS and your OS have different proxy set ups.</source>
-        <translation type="unfinished">Problème de proxy :\nQGIS et votre ordinateurs ont des configurations de proxy différentes.</translation>
+        <translation>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.</translation>
     </message>
     <message>
         <location filename="modules/tools.py" line="261"/>
         <source>Proxy issue : 
 You have a proxy set up on your OS but none in QGIS.
 Please set it up in &apos;Preferences/Options/Network&apos;.</source>
-        <translation type="unfinished">Problème de proxy :
+        <translation>Problème de proxy :
 Votre ordinateur utilise un proxy, mais il n&apos;est pas configuré
 dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     </message>
@@ -591,7 +592,7 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     </message>
     <message>
         <location filename="ui/credits/ui_credits.py" line="190"/>
-        <source>Developed by Th&#xc3;&#xa9;o Sinatti, internship supervised by Julien Moura for Isogeo.</source>
+        <source>Developed by ThÃ©o Sinatti, internship supervised by Julien Moura for Isogeo.</source>
         <translation>Développé par Théo Sinatti, stagiaire encadré par Julien Moura pour Isogeo.</translation>
     </message>
     <message>
@@ -653,7 +654,7 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="modules/metadata_display.py" line="110"/>
         <source>roles</source>
-        <translation type="unfinished"></translation>
+        <translation>Rôles</translation>
     </message>
 </context>
 <context>
@@ -661,232 +662,232 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="23"/>
         <source>Isogeo Metadata</source>
-        <translation type="unfinished">Fiche de métadonnée Isogeo</translation>
+        <translation>Fiche de métadonnée Isogeo</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="87"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;No title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Sans titre&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="355"/>
         <source>INSPIRE themes</source>
-        <translation type="unfinished"></translation>
+        <translation>Thématiques INSPIRE</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="284"/>
         <source>Keywords</source>
-        <translation type="unfinished"></translation>
+        <translation>Mots-clés</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="318"/>
         <source>Abstract</source>
-        <translation type="unfinished"></translation>
+        <translation>Résumé</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1192"/>
         <source>Metadata owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétaire de la métadonnée</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1401"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="424"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="429"/>
         <source>Alias</source>
-        <translation type="unfinished"></translation>
+        <translation>Alias</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="434"/>
         <source>Type</source>
-        <translation type="unfinished">Type</translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="439"/>
         <source>Description</source>
-        <translation type="unfinished">Description</translation>
+        <translation>Description</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="457"/>
         <source>Point of contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Point(s) de contact</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="503"/>
         <source>Others contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Autre(s) contact(s)</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="566"/>
         <source>Data history</source>
-        <translation type="unfinished">Historique de la donnée</translation>
+        <translation>Historique de la donnée</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1367"/>
         <source>Last update:</source>
-        <translation type="unfinished">Dernière modification :</translation>
+        <translation>Dernière modification :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="642"/>
         <source>Creation date:</source>
-        <translation type="unfinished">Date de création :</translation>
+        <translation>Date de création :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="689"/>
         <source>Validity period end:</source>
-        <translation type="unfinished">Fin de validité :</translation>
+        <translation>Fin de validité :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="722"/>
         <source>Validity period start:</source>
-        <translation type="unfinished">Début de validité :</translation>
+        <translation>Début de validité :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="772"/>
         <source>Collection</source>
-        <translation type="unfinished">Collecte</translation>
+        <translation>Collecte</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="778"/>
         <source>Collection method</source>
-        <translation type="unfinished">Méthode de collecte</translation>
+        <translation>Méthode de collecte</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="798"/>
         <source>Collection context</source>
-        <translation type="unfinished">Contexte de collecte</translation>
+        <translation>Contexte de collecte</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="821"/>
         <source>Last modifications</source>
-        <translation type="unfinished">Dernières opérations</translation>
+        <translation>Dernières modifications</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="856"/>
         <source>Technical informations</source>
-        <translation type="unfinished">Informations techniques</translation>
+        <translation>Informations techniques</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="885"/>
         <source>Format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Format :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="935"/>
         <source>SRS:</source>
-        <translation type="unfinished"></translation>
+        <translation>SRS :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="989"/>
         <source>Features count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre d&apos;objets :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1039"/>
         <source>Geometry type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de géométrie :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1628"/>
         <source>Licenses</source>
-        <translation type="unfinished"></translation>
+        <translation>Licences</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1114"/>
         <source>Limitations</source>
-        <translation type="unfinished">Limitations</translation>
+        <translation>Limitations</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1160"/>
         <source>Download metadata XML</source>
-        <translation type="unfinished"></translation>
+        <translation>Télécharger la version XML ISO 19139</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1245"/>
         <source>wg_email</source>
-        <translation type="unfinished"></translation>
+        <translation>Email</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1255"/>
         <source>wg_address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresse</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1262"/>
         <source>wg_phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Tél</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1269"/>
         <source>wg_pc_city</source>
-        <translation type="unfinished"></translation>
+        <translation>Code postal et ville</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1302"/>
         <source>wg_country</source>
-        <translation type="unfinished"></translation>
+        <translation>Pays</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1328"/>
         <source>wg_name</source>
-        <translation type="unfinished"></translation>
+        <translation>Organisation</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1350"/>
         <source>Metadata properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Détails de la métadonnées</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1380"/>
         <source>Metadata language: </source>
-        <translation type="unfinished"></translation>
+        <translation>Langue de la métadonnée</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1408"/>
         <source>Created:</source>
-        <translation type="unfinished"></translation>
+        <translation>Date de création :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1574"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Général</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1592"/>
         <source>Feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributs</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1601"/>
         <source>Contacts</source>
-        <translation type="unfinished">Contacts</translation>
+        <translation>Contacts</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1610"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Historique</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1619"/>
         <source>Geography</source>
-        <translation type="unfinished"></translation>
+        <translation>Géométrie</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1637"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Divers</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.ui" line="1655"/>
         <source>Edit it on Isogeo</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer sur Isogeo</translation>
     </message>
 </context>
 </TS>
