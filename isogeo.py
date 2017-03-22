@@ -183,7 +183,7 @@ class Isogeo:
         self.showDetails = False
         self.store = False
         self.settingsRequest = False
-        self.PostGISdict = {}
+        self.PostGISdict = srv_url_bld.build_postgis_dict(qsettings)
 
         # self.currentUrl = "https://v1.api.isogeo.com/resources/search?
         # _limit=15&_include=links&_lang={0}".format(self.lang)
@@ -1078,7 +1078,7 @@ class Isogeo:
             base_name = layer_info.get("base_name", "")
             schema = layer_info.get("schema", "")
             table = layer_info.get("table", "")
-            print(layer_info.keys(), layer_info.get("keywords"))
+            # print(layer_info.keys(), layer_info.get("keywords"))
             # Retrieve the database information stored in the PostGISdict
             uri = QgsDataSourceURI()
             host = self.PostGISdict[base_name]['host']
