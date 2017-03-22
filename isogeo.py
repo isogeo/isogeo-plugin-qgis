@@ -411,6 +411,9 @@ class Isogeo:
             QMessageBox.information(
                 iface.mainWindow(), self.tr("Error"), parsed_content['error'])
             self.requestStatusClear = True
+            # displaying auth form
+            self.auth_prompt_form.ent_app_id.setText(self.user_id)
+            self.auth_prompt_form.ent_app_secret.setText(self.user_secret)
             self.auth_prompt_form.show()
         else:
             self.requestStatusClear = True

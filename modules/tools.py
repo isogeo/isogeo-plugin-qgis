@@ -140,6 +140,15 @@ class Tools(object):
         # method ending
         return nb_page
 
+    def display_auth_form(self, ui_auth_form):
+        """Show authentication form with prefilled fields."""
+        print("roo")
+        ui_auth_form.ent_app_id.setText(
+                                qsettings.value("isogeo-plugin/user-auth/id", 0))
+        ui_auth_form.ent_app_secret.setText(
+                                    qsettings.value("isogeo-plugin/user-auth/secret", 0))
+        ui_auth_form.show()
+
     def special_search(self, easter_code="isogeo"):
         """Make some special actions in certains cases."""
         canvas = iface.mapCanvas()
