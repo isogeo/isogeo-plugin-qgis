@@ -279,16 +279,16 @@ class Isogeo:
         # for reuse if plugin is reopened
         # Commented next statement since it causes QGIS crashe
         # when closing the docked window:
-        # self.dockwidget = None
+        self.dockwidget = None
         self.pluginIsActive = False
-        # try:
-        #     reloadPlugin("isogeo_search_engine")
-        # except TypeError:
-        #     pass
-        # try:
-        #     reloadPlugin("isogeo_search_engine_dev")
-        # except TypeError:
-        #     pass
+        try:
+            reloadPlugin("isogeo_search_engine")
+        except TypeError:
+            pass
+        try:
+            reloadPlugin("isogeo_search_engine_dev")
+        except TypeError:
+            pass
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
