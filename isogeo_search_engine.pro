@@ -1,7 +1,6 @@
 FORMS = ui/isogeo_dockwidget_base.ui \
     ui/auth/ui_authentication.ui \
     ui/credits/ui_credits.ui \
-    ui/mddetails/ui_md_details.ui \
     ui/metadata/ui_md_details.ui \
     ui/quicksearch/ui_quicksearch_new.ui \
     ui/quicksearch/ui_quicksearch_rename.ui
@@ -16,7 +15,7 @@ SOURCES = __init__.py \
 	ui/isogeo_dockwidget.py \
 	ui/auth/ui_authentication.py \
     ui/credits/ui_credits.py \
-    ui/mddetails/ui_md_details.py \
+    ui/metadata/ui_md_details.py \
 	ui/quicksearch/ui_quicksearch_new.py \
 	ui/quicksearch/ui_quicksearch_rename.py
 
