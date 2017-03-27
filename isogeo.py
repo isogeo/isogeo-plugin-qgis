@@ -57,7 +57,6 @@ import resources
 from ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
 from ui.auth.dlg_authentication import IsogeoAuthentication
 from ui.credits.dlg_credits import IsogeoCredits
-# from ui.mddetails.dlg_md_details import IsogeoMdDetails
 from ui.metadata.dlg_md_details import IsogeoMdDetails
 from ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
 from ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
