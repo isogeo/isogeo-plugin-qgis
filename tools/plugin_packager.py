@@ -142,16 +142,6 @@ final_zip.write(r"ui\credits\dlg_credits.py",
                 plg_dir + r"\ui\credits\dlg_credits.py")
 
 # UI - MdDetails
-final_zip.write(r"ui\mddetails\__init__.py",
-                plg_dir + r"\ui\mddetails\__init__.py")
-final_zip.write(r"ui\mddetails\ui_md_details.ui",
-                plg_dir + r"\ui\mddetails\ui_md_details.ui")
-final_zip.write(r"ui\mddetails\ui_md_details.py",
-                plg_dir + r"\ui\mddetails\ui_md_details.py")
-final_zip.write(r"ui\mddetails\dlg_md_details.py",
-                plg_dir + r"\ui\mddetails\dlg_md_details.py")
-
-# --- NEW #64
 final_zip.write(r"ui\metadata\__init__.py",
                 plg_dir + r"\ui\metadata\__init__.py")
 final_zip.write(r"ui\metadata\ui_md_details.ui",
