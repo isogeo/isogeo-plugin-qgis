@@ -1,7 +1,10 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/sign-in.svg</file>
+    <file>resources/key.svg</file>
     <file>resources/inspire.png</file>
     <file>resources/th.svg</file>
+    <file>resources/send-o.svg</file>
     <file>resources/arrows-h.svg</file>
     <file>resources/compass.svg</file>
     <file>resources/map-o.svg</file>
