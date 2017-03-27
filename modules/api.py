@@ -8,8 +8,8 @@ import logging
 from urllib import urlencode
 
 # PyQT
-from PyQt4.QtCore import QByteArray, QSettings, QUrl
-from PyQt4.QtNetwork import QNetworkRequest
+from PyQt4.QtCore import QByteArray, QFile, QIODevice, QSettings, QUrl
+from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # PyQGIS
 from qgis.core import QgsMessageLog
@@ -30,8 +30,8 @@ class IsogeoApiManager(object):
     """Basic class that holds utilitary methods for the plugin."""
     def __init__(self):
         """Construct."""
-        self.api_token = ""
-        self.api_secret = ""
+        self.api_id = qsettings.value("isogeo-plugin/user-auth/id", 0)
+        self.api_secret = qsettings.value("isogeo-plugin/user-auth/secret", 0)
         self.currentUrl = ""
 
     # def ask_for_token(self, c_id, c_secret, request_status):
@@ -129,7 +129,7 @@ class IsogeoApiManager(object):
         update_fields()
         """
         # Initiating the dicts
-        tags = answer['tags']
+        tags = answer.get('tags')
         resources_types = {}
         owners = {}
         keywords = {}
@@ -143,19 +143,19 @@ class IsogeoApiManager(object):
         for tag in tags.keys():
             # owners
             if tag.startswith('owner'):
-                owners[tag] = tags[tag]
+                owners[tag] = tags.get(tag)
             # custom keywords
             elif tag.startswith('keyword:isogeo'):
-                keywords[tag] = tags[tag]
+                keywords[tag] = tags.get(tag)
             # INSPIRE themes
             elif tag.startswith('keyword:inspire-theme'):
-                themeinspire[tag] = tags[tag]
+                themeinspire[tag] = tags.get(tag)
             # formats
             elif tag.startswith('format'):
-                formats[tag] = tags[tag]
+                formats[tag] = tags.get(tag)
             # coordinate systems
             elif tag.startswith('coordinate-system'):
-                srs[tag] = tags[tag]
+                srs[tag] = tags.get(tag)
             # available actions (the last 2 are a bit specific as the value
             # field is empty and have to be filled manually)
             elif tag.startswith('action'):

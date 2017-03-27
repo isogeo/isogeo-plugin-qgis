@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
- <class>ui_main_window</class>
- <widget class="QDialog" name="ui_main_window">
+ <class>dlg_metadata_details</class>
+ <widget class="QDialog" name="dlg_metadata_details">
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
@@ -42,7 +42,7 @@
    <item column="1" row="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="btn_addtomap">
        <property name="minimumSize">
         <size>
          <width>150</width>
@@ -68,7 +68,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
+      <widget class="QDialogButtonBox" name="btn_ok_cancel">
        <property name="minimumSize">
         <size>
          <width>150</width>
@@ -329,7 +329,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>5</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="md_general">
         <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -2517,6 +2517,38 @@ QListWidget::item::selected {
     <hint type="destinationlabel">
      <x>428</x>
      <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_ok_cancel</sender>
+   <signal>accepted()</signal>
+   <receiver>dlg_metadata_details</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>686</x>
+     <y>757</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>391</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_ok_cancel</sender>
+   <signal>rejected()</signal>
+   <receiver>dlg_metadata_details</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>686</x>
+     <y>757</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>391</y>
     </hint>
    </hints>
   </connection>

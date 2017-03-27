@@ -4,10 +4,12 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 # Standard library
 from functools import partial
 from os import path
+import json
 import logging
 
 # PyQGIS
-from qgis.core import QgsApplication, QgsMapLayerRegistry, QgsMessageLog, QgsVectorLayer
+from qgis.core import (QgsApplication, QgsMapLayerRegistry, QgsMessageLog,
+                       QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry)
 from qgis.gui import QgsMapCanvas, QgsMapCanvasLayer
 
 # PyQT
@@ -41,12 +43,13 @@ class MetadataDisplayer(object):
     def __init__(self, ui_md_details):
         """Class constructor."""
         self.complete_md = ui_md_details
+        self.complete_md.stackedWidget.setCurrentIndex(0)
         # self.complete_md.btn_ok_close.connect(ui_md_details.closeEvent)
 
         # some basic settings
         self.map = QgsMapCanvas(parent=self.complete_md.wid_bbox)
-        # self.complete_md.wid_bbox.setCanvasColor(Qt.white)
-        # self.complete_md.wid_bbox.enableAntiAliasing(True)
+        self.complete_md.wid_bbox.setCanvasColor(Qt.white)
+        self.complete_md.wid_bbox.enableAntiAliasing(True)
 
     def show_complete_md(self, md, lang="EN"):
         """Open the pop up window that shows the metadata sheet details."""
@@ -83,6 +86,11 @@ class MetadataDisplayer(object):
 
         # -- FEATURE ATTRIBUTES ----------------------------------------------
         if md.get("type") == "vectorDataset":
+            # display
+            menu_list = self.complete_md.li_menu
+            item = menu_list.item(1)
+            item.setHidden(0)
+            # fillfull
             tbl_attr = self.complete_md.tbl_attributes
             fields = md.get("feature-attributes", dict())
             tbl_attr.setRowCount(len(fields))
@@ -142,8 +150,8 @@ class MetadataDisplayer(object):
                               for ctact in sorted(contacts) if ctact.get("role") != "pointOfContact"]
 
         # write
-        self.complete_md.val_ct_pointof.setText("<br>________________<br>".join(contacts_pt_cct))
-        self.complete_md.val_ct_other.setText("<br>__________________<br>".join(contacts_other_cct))
+        self.complete_md.val_ct_pointof.setText("<br><hr><br>".join(contacts_pt_cct))
+        self.complete_md.val_ct_other.setText("<br><hr><br>".join(contacts_other_cct))
 
         # -- HISTORY ---------------------------------------------------------
         # Data creation and last update dates
@@ -191,29 +199,38 @@ class MetadataDisplayer(object):
 
         # -- TECHNICAL -------------------------------------------------------
         # SRS
-        if tags['srs'] != {}:
-            self.complete_md.val_srs.setText(tags['srs'].values()[0])
-        else:
-            self.complete_md.val_srs.setText('NR')
+        coord_sys = md.get("coordinate-system", {"None": "NR"})
+        self.complete_md.val_srs.setText("{} (EPSG:{})"
+                                         .format(coord_sys.get("name", "NR"),
+                                                 coord_sys.get("code", "NR")))
         # Set the data format
-        if tags['formats'] != {}:
+        if tags.get('formats') != {}:
             self.complete_md.val_format.setText(
-                tags['formats'].values()[0])
+                tags.get('formats').values()[0])
         else:
             self.complete_md.val_format.setText('NR')
-        # Geography
-        # print(dir(self.complete_md.wid_bbox))
-        geojson_contributors = path.join(path.dirname(
-                                         QgsApplication.developersMapFilePath()),
-                                         "contributors.json")
 
-        layer = QgsVectorLayer(geojson_contributors, "Contributors", "ogr")
-        layers = QgsMapLayerRegistry.instance().mapLayers()
-        # QgsMapLayerRegistry.instance().addMapLayer(layer)
-        map_canvas_layer_list = [QgsMapCanvasLayer(layer)]
-        # layers.addMapLayer(layer)
-        self.complete_md.wid_bbox.setLayerSet(map_canvas_layer_list)
-        self.complete_md.wid_bbox.setExtent(layer.extent())
+        # feature info
+        self.complete_md.val_feat_count.setText(str(md.get("features", "/")))
+        self.complete_md.val_geometry.setText(md.get("geometry", ""))
+        self.complete_md.val_resolution.setText(str(md.get("distance", "")))
+        self.complete_md.val_scale.setText(str(md.get("scale", "")))
+        # Geography
+        if "envelope" in md:
+            coords = md.get("envelope").get("coordinates")[0]
+            points = [QgsPoint(i[0], i[1]) for i in coords]
+            layer = QgsVectorLayer('Polygon', md.get("title"), "memory")
+            pr = layer.dataProvider()
+            poly = QgsFeature()
+            poly.setGeometry(QgsGeometry.fromPolygon([points]))
+            pr.addFeatures([poly])
+            layer.updateExtents()
+            QgsMapLayerRegistry.instance().addMapLayers([layer], 0)
+            map_canvas_layer_list = [QgsMapCanvasLayer(layer)]
+            self.complete_md.wid_bbox.setLayerSet(map_canvas_layer_list)
+            self.complete_md.wid_bbox.setExtent(layer.extent())
+        else:
+            pass
 
         # -- CGUs ------------------------------------------------------------
         # Licences
@@ -232,13 +249,11 @@ class MetadataDisplayer(object):
                            "<br>{1}".format(isogeo_tr.tr("conditions", "noLicense"),
                                             c_in.get("description", ""))
 
-
-
             # store into the final list
             cgus_out.append(cgu_text)
 
         # write
-        self.complete_md.val_licenses.setText("<br>________________<br>".join(cgus_out))          
+        self.complete_md.val_licenses.setText("<br><hr><br>".join(cgus_out))
 
         # Limitations
         lims_in = md.get("limitations", dict())
@@ -265,27 +280,7 @@ class MetadataDisplayer(object):
             lims_out.append(lim_text)
 
         # write
-        self.complete_md.val_limitations.setText("<br>________________<br>".join(lims_out))
-
-        # for l_in in lims_in:
-        #     limitation = {}
-        #     # ensure other fields
-        #     limitation["description"] = self.clean_xml(l_in.get("description", ""))
-        #     limitation["type"] = self.tr("limitations", l_in.get("type"))
-        #     # legal type
-        #     if l_in.get("type") == "legal":
-        #         limitation["restriction"] = self.tr("restrictions", l_in.get("restriction"))
-        #     else:
-        #         pass
-        #     # INSPIRE precision
-        #     if "directive" in l_in.keys():
-        #         limitation["inspire"] = self.clean_xml(l_in.get("directive").get("name"))
-        #         limitation["content"] = self.clean_xml(l_in.get("directive").get("description"))
-        #     else:
-        #         pass
-
-            # store into the final list
-            # lims_out.append(limitation)
+        self.complete_md.val_limitations.setText("<br><hr><br>".join(lims_out))
 
         # -- ADVANCED  TAB ---------------------------------------------------
         # Workgroup owner
@@ -294,12 +289,14 @@ class MetadataDisplayer(object):
         self.complete_md.val_owner_name.setText(wg_contact.get("name", ""))
         self.complete_md.val_owner_email.setText(wg_contact.get("email", ""))
         self.complete_md.val_owner_phone.setText(wg_contact.get("phone", ""))
-        self.complete_md.val_owner_address.setText(wg_contact.get("addressLine1", ""))
+        self.complete_md.val_owner_address.setText("{}<br>{}"
+                                                   .format(wg_contact.get("addressLine1", "NR"),
+                                                           wg_contact.get("addressLine2", "")))
         self.complete_md.val_owner_city.setText(wg_contact.get("zipCode", ""))
         self.complete_md.val_owner_country.setText(wg_contact.get("countryCode", ""))
 
         # Metadata
-        self.complete_md.val_md_lang.setText(md.get("language", ""))
+        self.complete_md.val_md_lang.setText(md.get("language", "NR"))
         self.complete_md.val_md_date_crea.setText(custom_tools.handle_date(
                                                   md.get("_modified")[:19]))
         self.complete_md.val_md_date_update.setText(custom_tools.handle_date(
