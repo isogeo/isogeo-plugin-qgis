@@ -1731,7 +1731,7 @@ class Isogeo:
             text += self.tr(u"<p>Contact: {} - {}</p>")\
                         .format(creator_name,
                                 creator_email)
-            text += u"<p>   ___________________________________________________________________   </p>"
+            text += u"<p><hr></p>"
         text += u"</html>"
         self.dockwidget.txt_shares.setText(text)
         # method ending
@@ -1808,7 +1808,8 @@ class Isogeo:
         self.dockwidget.btn_reinit.pressed.connect(self.reinitialize_search)
         # Change user
         self.dockwidget.btn_change_user.pressed.connect(
-            self.auth_prompt_form.show)
+            partial(custom_tools.display_auth_form,
+                    ui_auth_form=self.auth_prompt_form))
 
         # show results
         self.dockwidget.btn_show.pressed.connect(self.search_with_content)
