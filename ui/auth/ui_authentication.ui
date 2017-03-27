@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
  <author>Isogeo</author>
  <class>dlg_form_auth_prompt</class>
@@ -7,20 +7,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>608</width>
-    <height>225</height>
+    <width>783</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>575</width>
-    <height>225</height>
+    <width>750</width>
+    <height>300</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>700</width>
-    <height>225</height>
+    <width>800</width>
+    <height>400</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -31,111 +31,293 @@
     <normaloff>:/ui/resources/settings.svg</normaloff>:/ui/resources/settings.svg</iconset>
   </property>
   <property name="locale">
-   <locale language="English" country="UnitedStates"/>
+   <locale country="UnitedStates" language="English" />
+  </property>
+  <property name="modal">
+   <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="grb_connection_ready">
      <property name="minimumSize">
       <size>
-       <width>450</width>
-       <height>50</height>
+       <width>500</width>
+       <height>135</height>
       </size>
      </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
      <property name="locale">
-      <locale language="English" country="UnitedStates"/>
+      <locale country="UnitedStates" language="English" />
      </property>
      <property name="title">
       <string>I already have Isogeo ID and SECRET for this application</string>
      </property>
-     <widget class="QLineEdit" name="ent_app_id">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>20</y>
-        <width>450</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>450</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>500</width>
-        <height>20</height>
-       </size>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="ent_app_secret">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>50</y>
-        <width>450</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>450</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>500</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="text">
-       <string notr="true"/>
-      </property>
-      <property name="maxLength">
-       <number>64</number>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbl_app_id">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>96</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="locale">
-       <locale language="English" country="UnitedStates"/>
-      </property>
-      <property name="text">
-       <string>Application ID:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbl_app_secret">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>121</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="locale">
-       <locale language="English" country="UnitedStates"/>
-      </property>
-      <property name="text">
-       <string>Application SECRET:</string>
-      </property>
-     </widget>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item column="1" row="1">
+       <widget class="QLabel" name="lbl_app_secret">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="locale">
+         <locale country="UnitedStates" language="English" />
+        </property>
+        <property name="text">
+         <string>Application SECRET:</string>
+        </property>
+       </widget>
+      </item>
+      <item column="1" row="0">
+       <widget class="QLabel" name="lbl_app_id">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="locale">
+         <locale country="UnitedStates" language="English" />
+        </property>
+        <property name="text">
+         <string>Application ID:</string>
+        </property>
+       </widget>
+      </item>
+      <item column="2" row="0">
+       <widget class="QLineEdit" name="ent_app_id">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>475</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>800</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+       </widget>
+      </item>
+      <item column="4" row="0" rowspan="2">
+       <widget class="QPushButton" name="btn_check_auth">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="toolTip">
+         <string>Check access validity</string>
+        </property>
+        <property name="text">
+         <string>Check</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/sign-in.svg</normaloff>:/plugins/Isogeo/resources/sign-in.svg</iconset>
+        </property>
+        <property name="default">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item colspan="5" column="0" row="2">
+       <widget class="QDialogButtonBox" name="btn_ok_cancel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>1</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+        </property>
+        <property name="centerButtons">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item column="2" row="1">
+       <widget class="QLineEdit" name="ent_app_secret">
+        <property name="minimumSize">
+         <size>
+          <width>475</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>800</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string notr="true" />
+        </property>
+        <property name="maxLength">
+         <number>64</number>
+        </property>
+       </widget>
+      </item>
+      <item column="3" row="0">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item column="3" row="1">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+     <zorder>ent_app_id</zorder>
+     <zorder>ent_app_secret</zorder>
+     <zorder>lbl_app_id</zorder>
+     <zorder>lbl_app_secret</zorder>
+     <zorder>grb_need_account</zorder>
+     <zorder>btn_ok_cancel</zorder>
+     <zorder>btn_check_auth</zorder>
+     <zorder>horizontalSpacer</zorder>
+     <zorder>horizontalSpacer_2</zorder>
     </widget>
    </item>
    <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="QGroupBox" name="grb_need_account">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>150</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>200</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
      <property name="locale">
-      <locale language="English" country="UnitedStates"/>
+      <locale country="UnitedStates" language="English" />
      </property>
      <property name="title">
       <string>Don't have an account yet ?</string>
@@ -143,56 +325,90 @@
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
-     <widget class="QPushButton" name="btn_account_new">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>30</y>
-        <width>250</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>200</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>300</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="autoFillBackground">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Request plugin access</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>:/ui/resources/keys.svg</normaloff>:/ui/resources/keys.svg</iconset>
-      </property>
-     </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="QDialogButtonBox" name="btn_ok_cancel">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+     <property name="flat">
+      <bool>true</bool>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-     </property>
-     <property name="centerButtons">
-      <bool>false</bool>
-     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item column="0" row="1">
+       <widget class="QPushButton" name="btn_account_new">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>700</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Request plugin access</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/send-o.svg</normaloff>:/plugins/Isogeo/resources/send-o.svg</iconset>
+        </property>
+        <property name="default">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item column="0" row="0">
+       <widget class="QLabel" name="lbl_access_conditions">
+        <property name="maximumSize">
+         <size>
+          <width>700</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+&lt;/ul&gt; 
+
+&lt;/body&gt;
+&lt;/html&gt;
+</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::RichText</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+     <zorder>btn_account_new</zorder>
+     <zorder>grb_connection_ready</zorder>
+     <zorder>lbl_access_conditions</zorder>
     </widget>
    </item>
   </layout>
  </widget>
- <resources/>
  <connections>
   <connection>
    <sender>btn_ok_cancel</sender>
