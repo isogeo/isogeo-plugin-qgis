@@ -35,20 +35,21 @@ import operator
 
 # PyQT
 # from QByteArray
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, \
-    Qt, QByteArray, QUrl
-from PyQt4.QtGui import QAction, QIcon, QMessageBox, QTableWidgetItem, \
-    QStandardItemModel, QStandardItem, QComboBox, QPushButton, QLabel, \
-    QPixmap, QProgressBar
+from PyQt4.QtCore import (QByteArray, QCoreApplication, QSettings,
+                          Qt, QTranslator, QUrl, qVersion)
+from PyQt4.QtGui import (QAction, QIcon, QMessageBox, QStandardItemModel,
+                         QStandardItem, QProgressBar)
 from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # PyQGIS
 import db_manager.db_plugins.postgis.connector as con
 from qgis.utils import iface, plugin_times, QGis, reloadPlugin
-from qgis.core import QgsNetworkAccessManager, QgsPoint, \
-    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsVectorLayer, \
-    QgsMapLayerRegistry, QgsRasterLayer, QgsDataSourceURI, QgsMessageLog, \
-    QgsRectangle
+from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
+                       QgsCoordinateReferenceSystem, QgsCoordinateTransform,
+                       QgsDataSourceURI,
+                       QgsMapLayerRegistry, QgsMessageLog,
+                       QgsNetworkAccessManager,
+                       QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer)
 
 # Initialize Qt resources from file resources.py
 import resources
