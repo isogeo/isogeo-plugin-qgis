@@ -8,8 +8,9 @@ import json
 import logging
 
 # PyQGIS
-from qgis.core import (QgsApplication, QgsMapLayerRegistry, QgsMessageLog,
-                       QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry)
+from qgis.core import (QgsMapLayerRegistry, QgsMessageLog,
+                       QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry,
+                       QgsRasterLayer, QgsCoordinateReferenceSystem)
 from qgis.gui import QgsMapCanvas, QgsMapCanvasLayer
 
 # PyQT
