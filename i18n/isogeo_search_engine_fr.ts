@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="fr_FR">
 <context>
     <name>Isogeo</name>
     <message>
@@ -473,7 +474,7 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     </message>
     <message>
         <location filename="ui/credits/ui_credits.py" line="190"/>
-        <source>Developed by Th&#xc3;&#xa9;o Sinatti, internship supervised by Julien Moura for Isogeo.</source>
+        <source>Developed by ThÃ©o Sinatti, internship supervised by Julien Moura for Isogeo.</source>
         <translation>Développé par Théo Sinatti, stagiaire encadré par Julien Moura pour Isogeo.</translation>
     </message>
     <message>
@@ -502,42 +503,42 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="ui/auth/ui_authentication.py" line="191"/>
         <source>Isogeo authentication settings</source>
-        <translation>Paramètres d&apos;identification Isogeo</translation>
+        <translation>Paramètres d&apos;authentification du plugin</translation>
     </message>
     <message>
         <location filename="ui/auth/ui_authentication.py" line="198"/>
         <source>Request plugin access</source>
-        <translation>Demander des identifiants</translation>
+        <translation>Demander un accès</translation>
     </message>
     <message>
         <location filename="ui/auth/ui_authentication.py" line="194"/>
         <source>Application ID:</source>
-        <translation>ID application :</translation>
+        <translation>ID :</translation>
     </message>
     <message>
         <location filename="ui/auth/ui_authentication.py" line="193"/>
         <source>Application SECRET:</source>
-        <translation>Secret application :</translation>
+        <translation>Secret :</translation>
     </message>
     <message>
         <location filename="ui/auth/ui_authentication.py" line="197"/>
         <source>Don&apos;t have an account yet ?</source>
-        <translation>Pas encore de compte Isogeo ?</translation>
+        <translation>Pas encore de compte ?</translation>
     </message>
     <message>
         <location filename="ui/auth/ui_authentication.py" line="192"/>
         <source>I already have Isogeo ID and SECRET for this application</source>
-        <translation>J&apos;ai déjà les ID et secret pour cette application</translation>
+        <translation>Je dispose déjà des ID et Secret pour ce plugin</translation>
     </message>
     <message>
         <location filename="ui/auth/ui_authentication.py" line="195"/>
         <source>Check access validity</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier la validité</translation>
     </message>
     <message>
         <location filename="ui/auth/ui_authentication.py" line="196"/>
         <source>Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier</translation>
     </message>
     <message>
         <location filename="ui/auth/ui_authentication.ui" line="385"/>
@@ -546,15 +547,26 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+&lt;/ul&gt; 
+
+&lt;/body&gt;
+&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="ui/auth/ui_authentication.py" line="199"/>
@@ -571,7 +583,18 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+&lt;/ul&gt; 
+
+&lt;/body&gt;
+&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -579,72 +602,72 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="983"/>
         <source>Isogeo Metadata</source>
-        <translation type="unfinished">Fiche de métadonnée Isogeo</translation>
+        <translation>Fiche de métadonnée Isogeo</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="984"/>
         <source>addButton</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter à la carte</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="989"/>
         <source>General</source>
-        <translation type="unfinished">Général</translation>
+        <translation>Général</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="991"/>
         <source>Feature attributes</source>
-        <translation type="unfinished">Attributs</translation>
+        <translation>Attributs</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="993"/>
         <source>Contacts</source>
-        <translation type="unfinished">Contacts</translation>
+        <translation>Contacts</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="995"/>
         <source>History</source>
-        <translation type="unfinished">Historique</translation>
+        <translation>Historique</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="997"/>
         <source>Geography</source>
-        <translation type="unfinished">Géométrie</translation>
+        <translation>Géométrie</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1067"/>
         <source>Licenses</source>
-        <translation type="unfinished">Licences</translation>
+        <translation>Licences</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1001"/>
         <source>Advanced</source>
-        <translation type="unfinished">Divers</translation>
+        <translation>Divers</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1003"/>
         <source>Edit it on Isogeo</source>
-        <translation type="unfinished">Editer sur Isogeo</translation>
+        <translation>Editer sur Isogeo</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1004"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;No title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Sans titre&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Sans titre&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1008"/>
         <source>INSPIRE themes</source>
-        <translation type="unfinished">Thématiques INSPIRE</translation>
+        <translation>Thématiques INSPIRE</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1010"/>
         <source>Keywords</source>
-        <translation type="unfinished">Mots-clés</translation>
+        <translation>Mots-clés</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1014"/>
         <source>Abstract</source>
-        <translation type="unfinished">Résumé</translation>
+        <translation>Résumé</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1084"/>
@@ -654,192 +677,192 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1072"/>
         <source>Metadata owner</source>
-        <translation type="unfinished">Propriétaire de la métadonnée</translation>
+        <translation>Propriétaire de la métadonnée</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1018"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1020"/>
         <source>Alias</source>
-        <translation type="unfinished">Alias</translation>
+        <translation>Alias</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1022"/>
         <source>Type</source>
-        <translation type="unfinished">Type</translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1052"/>
         <source>Description</source>
-        <translation type="unfinished">Description</translation>
+        <translation>Description</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1025"/>
         <source>Point of contact</source>
-        <translation type="unfinished">Point(s) de contact</translation>
+        <translation>Point(s) de contact</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1027"/>
         <source>Others contacts</source>
-        <translation type="unfinished">Autre(s) contact(s)</translation>
+        <translation>Autre(s) contact(s)</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1029"/>
         <source>Data history</source>
-        <translation type="unfinished">Historique de la donnée</translation>
+        <translation>Historique de la donnée</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1031"/>
         <source>Updated every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à jour tous les :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1080"/>
         <source>Last update:</source>
-        <translation type="unfinished">Dernière modification :</translation>
+        <translation>Dernière modification :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1035"/>
         <source>Creation date:</source>
-        <translation type="unfinished">Date de création :</translation>
+        <translation>Date de création :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1036"/>
         <source>Validity comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Commentaire :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1039"/>
         <source>Validity period start:</source>
-        <translation type="unfinished">Début de validité :</translation>
+        <translation>Début de validité :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1041"/>
         <source>Validity period end:</source>
-        <translation type="unfinished">Fin de validité :</translation>
+        <translation>Fin de validité :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1042"/>
         <source>Collection</source>
-        <translation type="unfinished">Collecte</translation>
+        <translation>Collecte</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1043"/>
         <source>Context</source>
-        <translation type="unfinished"></translation>
+        <translation>Contexte</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1045"/>
         <source>Method</source>
-        <translation type="unfinished"></translation>
+        <translation>Méthode</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1047"/>
         <source>Last modifications</source>
-        <translation type="unfinished">Dernières opérations</translation>
+        <translation>Dernières modifications sur la donnée</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1050"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Date</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1053"/>
         <source>Technical informations</source>
-        <translation type="unfinished">Informations techniques</translation>
+        <translation>Informations techniques</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1055"/>
         <source>Scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>Echelle :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1056"/>
         <source>SRS:</source>
-        <translation type="unfinished">SRS :</translation>
+        <translation>SRS :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1058"/>
         <source>Resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Résolution :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1061"/>
         <source>Format:</source>
-        <translation type="unfinished">Format :</translation>
+        <translation>Format :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1062"/>
         <source>Features count:</source>
-        <translation type="unfinished">Nombre d&apos;objets :</translation>
+        <translation>Nombre d&apos;objets :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1064"/>
         <source>Geometry type:</source>
-        <translation type="unfinished">Type de géométrie :</translation>
+        <translation>Type de géométrie :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1066"/>
         <source>Bounding box preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Aperçu de l&apos;enveloppe</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1069"/>
         <source>Limitations</source>
-        <translation type="unfinished">Limitations</translation>
+        <translation>Limitations</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1071"/>
         <source>Download metadata XML</source>
-        <translation type="unfinished">Télécharger la version XML ISO 19139</translation>
+        <translation>Télécharger la métadonnée en XML ISO 19139</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1073"/>
         <source>wg_email</source>
-        <translation type="unfinished">Email</translation>
+        <translation>Email</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1074"/>
         <source>wg_address</source>
-        <translation type="unfinished">Adresse</translation>
+        <translation>Adresse</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1075"/>
         <source>wg_phone</source>
-        <translation type="unfinished">Tél</translation>
+        <translation>Tél</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1076"/>
         <source>wg_pc_city</source>
-        <translation type="unfinished">Code postal et ville</translation>
+        <translation>Code postal et ville</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1077"/>
         <source>wg_country</source>
-        <translation type="unfinished">Pays</translation>
+        <translation>Pays</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1078"/>
         <source>wg_name</source>
-        <translation type="unfinished">Organisation</translation>
+        <translation>Organisation</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1079"/>
         <source>Metadata properties</source>
-        <translation type="unfinished">Détails de la métadonnées</translation>
+        <translation>Détails de la métadonnée</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1081"/>
         <source>Metadata language: </source>
-        <translation type="unfinished">Langue de la métadonnée</translation>
+        <translation>Langue de la métadonnée :</translation>
     </message>
     <message>
         <location filename="ui/metadata/ui_md_details.py" line="1085"/>
         <source>Created:</source>
-        <translation type="unfinished">Date de création :</translation>
+        <translation>Créée le :</translation>
     </message>
 </context>
 <context>
@@ -853,34 +876,34 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <location filename="modules/metadata_display.py" line="74"/>
         <source>quality</source>
         <comment>isConform</comment>
-        <translation type="unfinished"></translation>
+        <translation>Conforme</translation>
     </message>
     <message>
         <location filename="modules/metadata_display.py" line="80"/>
         <source>quality</source>
         <comment>isNotConform</comment>
-        <translation type="unfinished"></translation>
+        <translation>Non conforme</translation>
     </message>
     <message>
         <location filename="modules/metadata_display.py" line="166"/>
         <source>frequencyShortTypes</source>
-        <translation type="unfinished"></translation>
+        <translation>Codes des fréquences de mise à jour</translation>
     </message>
     <message>
         <location filename="modules/metadata_display.py" line="249"/>
         <source>conditions</source>
         <comment>noLicense</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pas de licence</translation>
     </message>
     <message>
         <location filename="modules/metadata_display.py" line="263"/>
         <source>limitations</source>
-        <translation type="unfinished"></translation>
+        <translation>Limitations</translation>
     </message>
     <message>
         <location filename="modules/metadata_display.py" line="267"/>
         <source>restrictions</source>
-        <translation type="unfinished"></translation>
+        <translation>Restrictions</translation>
     </message>
 </context>
 </TS>
