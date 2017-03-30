@@ -336,9 +336,38 @@ class Isogeo:
         user_id = self.auth_prompt_form.ent_app_id.text()
         user_secret = self.auth_prompt_form.\
             ent_app_secret.text()
-        s = QSettings()
-        s.setValue("isogeo-plugin/user-auth/id", user_id)
-        s.setValue("isogeo-plugin/user-auth/secret", user_secret)
+        # old name maintained for compatibility reasons
+        qsettings.setValue("isogeo-plugin/user-auth/id", user_id)
+        qsettings.setValue("isogeo-plugin/user-auth/secret", user_secret)
+
+        # new name to anticipate on future migration
+        qsettings.setValue("isogeo/app_auth/id", user_id)
+        qsettings.setValue("isogeo/app_auth/secret", user_secret)
+
+        # anticipating on QGIS Auth Management
+        if qgis_auth_mng.authenticationDbPath():
+            logger.info("TRACKING - AUTH: new QGIS system already initialized")
+            # already initilised => we are inside a QGIS app.
+            if qgis_auth_mng.masterPasswordIsSet():
+                logger.info("TRACKING - AUTH: master password has been set")
+                auth_isogeo_cfg = QgsAuthMethodConfig()
+                auth_isogeo_cfg.setName("Isogeo")
+                auth_isogeo_cfg.setMethod("Basic")
+                auth_isogeo_cfg.setUri("https://v1.api.isogeo.com/about")
+                auth_isogeo_cfg.setConfig("username", user_id)
+                auth_isogeo_cfg.setConfig("password", user_secret)
+                # check if method parameters are correctly set and store it
+                if auth_isogeo_cfg.isValid():
+                    qgis_auth_mng.storeAuthenticationConfig(auth_isogeo_cfg)
+                    qsettings.setValue("isogeo/app_auth/qgis_auth_id",
+                                       auth_isogeo_cfg.id())
+                else:
+                    logger.error("AUTH - Fail to create and store configuration")
+            else:
+                logger.debug("TRACKING - AUTH: master password is not set")
+                pass
+        else:
+            pass
 
         self.user_authentication()
 
