@@ -313,9 +313,8 @@ class Isogeo:
         their default value, it asks for them.
         If not, it tries to send a request.
         """
-        s = QSettings()
-        self.user_id = s.value("isogeo-plugin/user-auth/id", 0)
-        self.user_secret = s.value("isogeo-plugin/user-auth/secret", 0)
+        self.user_id = qsettings.value("isogeo-plugin/user-auth/id", 0)
+        self.user_secret = qsettings.value("isogeo-plugin/user-auth/secret", 0)
         if self.user_id != 0 and self.user_secret != 0:
             logging.info("User_authentication function is trying "
                          "to get a token from the id/secret")

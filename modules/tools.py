@@ -3,6 +3,7 @@
 # Standard library
 import datetime
 import logging
+from functools import partial
 from os import path
 from urllib import getproxies, unquote, urlencode
 import webbrowser
@@ -142,11 +143,17 @@ class Tools(object):
 
     def display_auth_form(self, ui_auth_form):
         """Show authentication form with prefilled fields."""
-        print("roo")
-        ui_auth_form.ent_app_id.setText(
-                                qsettings.value("isogeo-plugin/user-auth/id", 0))
-        ui_auth_form.ent_app_secret.setText(
-                                    qsettings.value("isogeo-plugin/user-auth/secret", 0))
+        # fillfull auth form fields from stored settings
+        ui_auth_form.ent_app_id.setText(qsettings
+                                        .value("isogeo-plugin/user-auth/id", 0))
+        ui_auth_form.ent_app_secret.setText(qsettings
+                                            .value("isogeo-plugin/user-auth/secret", 0))
+
+        # check auth validity
+        # connect check button
+        # ui_auth_form.btn_check_auth.connect(partial(print("check API authentication")))
+
+        # display
         ui_auth_form.show()
 
     def special_search(self, easter_code="isogeo"):
