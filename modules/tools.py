@@ -148,6 +148,8 @@ class Tools(object):
                                         .value("isogeo-plugin/user-auth/id", 0))
         ui_auth_form.ent_app_secret.setText(qsettings
                                             .value("isogeo-plugin/user-auth/secret", 0))
+        ui_auth_form.chb_isogeo_editor.setChecked(qsettings
+                                                  .value("isogeo/user/editor", 0))
 
         # check auth validity
         # connect check button

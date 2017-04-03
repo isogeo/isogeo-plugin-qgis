@@ -27,8 +27,8 @@
    <string>Isogeo authentication settings</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/ui/resources/settings.svg</normaloff>:/ui/resources/settings.svg</iconset>
+   <iconset resource="../../resources.qrc">
+    <normaloff>:/plugins/Isogeo/resources/users.svg</normaloff>:/plugins/Isogeo/resources/users.svg</iconset>
   </property>
   <property name="locale">
    <locale country="UnitedStates" language="English" />
@@ -86,29 +86,7 @@
         </property>
        </widget>
       </item>
-      <item column="1" row="0">
-       <widget class="QLabel" name="lbl_app_id">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="locale">
-         <locale country="UnitedStates" language="English" />
-        </property>
-        <property name="text">
-         <string>Application ID:</string>
-        </property>
-       </widget>
-      </item>
-      <item column="2" row="0">
+      <item column="3" row="0">
        <widget class="QLineEdit" name="ent_app_id">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -136,7 +114,7 @@
         </property>
        </widget>
       </item>
-      <item column="4" row="0" rowspan="2">
+      <item column="5" row="0" rowspan="2">
        <widget class="QPushButton" name="btn_check_auth">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -174,7 +152,29 @@
         </property>
        </widget>
       </item>
-      <item colspan="5" column="0" row="2">
+      <item column="1" row="0">
+       <widget class="QLabel" name="lbl_app_id">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="locale">
+         <locale country="UnitedStates" language="English" />
+        </property>
+        <property name="text">
+         <string>Application ID:</string>
+        </property>
+       </widget>
+      </item>
+      <item colspan="6" column="0" row="3">
        <widget class="QDialogButtonBox" name="btn_ok_cancel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -214,7 +214,7 @@
         </property>
        </widget>
       </item>
-      <item column="2" row="1">
+      <item column="3" row="1">
        <widget class="QLineEdit" name="ent_app_secret">
         <property name="minimumSize">
          <size>
@@ -242,7 +242,7 @@
         </property>
        </widget>
       </item>
-      <item column="3" row="0">
+      <item column="4" row="0">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -255,7 +255,7 @@
         </property>
        </spacer>
       </item>
-      <item column="3" row="1">
+      <item column="4" row="1">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -268,16 +268,51 @@
         </property>
        </spacer>
       </item>
+      <item column="3" row="2">
+       <widget class="QCheckBox" name="chb_isogeo_editor">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>I've got the power hey yeah heh!</string>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>I've got edition rights on app.isogeo.com</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/user.svg</normaloff>:/plugins/Isogeo/resources/user.svg</iconset>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
      <zorder>ent_app_id</zorder>
      <zorder>ent_app_secret</zorder>
      <zorder>lbl_app_id</zorder>
      <zorder>lbl_app_secret</zorder>
-     <zorder>grb_need_account</zorder>
      <zorder>btn_ok_cancel</zorder>
      <zorder>btn_check_auth</zorder>
      <zorder>horizontalSpacer</zorder>
      <zorder>horizontalSpacer_2</zorder>
+     <zorder>chb_isogeo_editor</zorder>
     </widget>
    </item>
    <item>
@@ -402,9 +437,6 @@
        </widget>
       </item>
      </layout>
-     <zorder>btn_account_new</zorder>
-     <zorder>grb_connection_ready</zorder>
-     <zorder>lbl_access_conditions</zorder>
     </widget>
    </item>
   </layout>

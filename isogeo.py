@@ -77,9 +77,9 @@ from modules.url_builder import UrlBuilder
 IsogeoMdDetails = IsogeoMdDetails()
 
 # useful submodules and shortcuts
+qgis_auth_mng = QgsAuthManager.instance()
 custom_tools = Tools()
 isogeo_api_mng = IsogeoApiManager()
-qgis_auth_mng = QgsAuthManager.instance()
 msgBar = iface.messageBar()
 network_mng = QNetworkAccessManager()
 qsettings = QSettings()
@@ -337,6 +337,7 @@ class Isogeo:
         app_id = self.auth_prompt_form.ent_app_id.text()
         app_secret = self.auth_prompt_form.\
             ent_app_secret.text()
+        user_editor = self.auth_prompt_form.chb_isogeo_editor.isChecked()
         # old name maintained for compatibility reasons
         qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
         qsettings.setValue("isogeo-plugin/user-auth/secret", app_secret)
@@ -344,6 +345,7 @@ class Isogeo:
         # new name to anticipate on future migration
         qsettings.setValue("isogeo/app_auth/id", app_id)
         qsettings.setValue("isogeo/app_auth/secret", app_secret)
+        qsettings.setValue("isogeo/user/editor", int(user_editor))
 
         # anticipating on QGIS Auth Management
         if qgis_auth_mng.authenticationDbPath():
