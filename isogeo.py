@@ -1255,20 +1255,22 @@ class Isogeo:
         params['operation'] = operation_param
         params['ob'] = order_param
         params['od'] = dir_param
-        if params.get('geofilter') is not None:
-            if params.get('geofilter') == "mapcanvas":
-                e = iface.mapCanvas().extent()
-                extent = [e.xMinimum(),
-                          e.yMinimum(),
-                          e.xMaximum(),
-                          e.yMaximum()]
-                params['extent'] = extent
-                epsg = int(iface.mapCanvas().mapRenderer(
-                ).destinationCrs().authid().split(':')[1])
-                params['epsg'] = epsg
-                params['coord'] = self.get_coords('canvas')
-            else:
-                params['coord'] = self.get_coords(params.get('geofilter'))
+        # check geographic filter
+        if params.get('geofilter') == "mapcanvas":
+            e = iface.mapCanvas().extent()
+            extent = [e.xMinimum(),
+                      e.yMinimum(),
+                      e.xMaximum(),
+                      e.yMaximum()]
+            params['extent'] = extent
+            epsg = int(iface.mapCanvas().mapRenderer(
+            ).destinationCrs().authid().split(':')[1])
+            params['epsg'] = epsg
+            params['coord'] = self.get_coords('canvas')
+        elif params.get('geofilter') in QgsMapLayerRegistry.instance().mapLayers().values():
+            params['coord'] = self.get_coords(params.get('geofilter'))
+        else:
+            pass
         logger.info(params)
         return params
 
