@@ -45,7 +45,6 @@ class MetadataDisplayer(object):
         """Class constructor."""
         self.complete_md = ui_md_details
         self.complete_md.stackedWidget.setCurrentIndex(0)
-        # self.complete_md.btn_ok_close.connect(ui_md_details.closeEvent)
 
         # some basic settings
         self.complete_md.wid_bbox.setCanvasColor(Qt.white)
