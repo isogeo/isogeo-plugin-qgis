@@ -1062,6 +1062,12 @@
               <layout class="QHBoxLayout" name="horizontalLayout_11">
                <item>
                 <widget class="QLabel" name="lbl_geo_op">
+                 <property name="font">
+                  <font>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
                  <property name="text">
                   <string>Geographical operator applied to the filter</string>
                  </property>
@@ -1110,8 +1116,14 @@
             <layout class="QHBoxLayout" name="horizontalLayout_21">
              <item>
               <widget class="QLabel" name="lbl_auth">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
                <property name="text">
-                <string>Change user id and secret</string>
+                <string>Set plugin authentication:</string>
                </property>
               </widget>
              </item>
@@ -1141,7 +1153,7 @@
                </property>
                <property name="icon">
                 <iconset resource="../resources.qrc">
-                 <normaloff>:/plugins/Isogeo/resources/user-times.svg</normaloff>:/plugins/Isogeo/resources/user-times.svg</iconset>
+                 <normaloff>:/plugins/Isogeo/resources/key.svg</normaloff>:/plugins/Isogeo/resources/key.svg</iconset>
                </property>
               </widget>
              </item>

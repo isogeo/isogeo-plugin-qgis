@@ -1,61 +1,81 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
- <class>Rename</class>
- <widget class="QDialog" name="Rename">
+ <class>dlg_quicksearch_rename</class>
+ <widget class="QDialog" name="dlg_quicksearch_rename">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>498</width>
-    <height>189</height>
+    <height>100</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>340</width>
+    <height>100</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>700</width>
+    <height>116</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Isogeo - Rename quicksearch</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../resources.qrc">
+    <normaloff>:/plugins/Isogeo/resources/bolt.svg</normaloff>:/plugins/Isogeo/resources/bolt.svg</iconset>
+  </property>
+  <property name="windowOpacity">
+   <double>0.900000000000000</double>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
+  <property name="locale">
+   <locale country="UnitedStates" language="English" />
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="label">
+   <item column="1" row="0">
+    <widget class="QLabel" name="lbl_title">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>8</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::NoContextMenu</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
      <property name="locale">
-      <locale language="English" country="UnitedStates"/>
+      <locale country="UnitedStates" language="English" />
      </property>
      <property name="text">
-      <string>Please give a new name to your saved research.</string>
+      <string>Quicksearch new name:</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QLineEdit" name="name"/>
-   </item>
-   <item row="4" column="0">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
+   <item column="2" row="0">
+    <widget class="QLineEdit" name="txt_quicksearch_rename">
+     <property name="minimumSize">
       <size>
-       <width>238</width>
-       <height>20</height>
+       <width>50</width>
+       <height>25</height>
       </size>
      </property>
-    </spacer>
-   </item>
-   <item row="4" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item colspan="2" column="0" row="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -68,26 +88,26 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QLabel" name="label_2">
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
+   <item colspan="3" column="0" row="3">
+    <widget class="QDialogButtonBox" name="btn_save_cancel">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="text">
-      <string/>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+     </property>
+     <property name="centerButtons">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>btn_save_cancel</sender>
    <signal>accepted()</signal>
-   <receiver>Rename</receiver>
+   <receiver>dlg_quicksearch_rename</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -101,9 +121,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>btn_save_cancel</sender>
    <signal>rejected()</signal>
-   <receiver>Rename</receiver>
+   <receiver>dlg_quicksearch_rename</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

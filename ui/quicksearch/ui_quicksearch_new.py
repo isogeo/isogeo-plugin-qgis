@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\quicksearch\ui_quicksearch_new.ui'
 #
-# Created: Tue Mar 14 10:47:49 2017
+# Created: Mon Apr 03 12:02:24 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,55 +23,70 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_Name(object):
-    def setupUi(self, Name):
-        Name.setObjectName(_fromUtf8("Name"))
-        Name.resize(498, 189)
-        self.gridLayout = QtGui.QGridLayout(Name)
+class Ui_dlg_quicksearch_new(object):
+    def setupUi(self, dlg_quicksearch_new):
+        dlg_quicksearch_new.setObjectName(_fromUtf8("dlg_quicksearch_new"))
+        dlg_quicksearch_new.setWindowModality(QtCore.Qt.WindowModal)
+        dlg_quicksearch_new.resize(468, 100)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(dlg_quicksearch_new.sizePolicy().hasHeightForWidth())
+        dlg_quicksearch_new.setSizePolicy(sizePolicy)
+        dlg_quicksearch_new.setMinimumSize(QtCore.QSize(340, 100))
+        dlg_quicksearch_new.setMaximumSize(QtCore.QSize(700, 110))
+        dlg_quicksearch_new.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/bolt.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        dlg_quicksearch_new.setWindowIcon(icon)
+        dlg_quicksearch_new.setWindowOpacity(0.9)
+        dlg_quicksearch_new.setAutoFillBackground(True)
+        dlg_quicksearch_new.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
+        dlg_quicksearch_new.setSizeGripEnabled(False)
+        dlg_quicksearch_new.setModal(True)
+        self.gridLayout = QtGui.QGridLayout(dlg_quicksearch_new)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.label = QtGui.QLabel(Name)
+        spacerItem = QtGui.QSpacerItem(20, 62, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem, 1, 0, 1, 3)
+        self.lbl_title = QtGui.QLabel(dlg_quicksearch_new)
+        self.lbl_title.setMinimumSize(QtCore.QSize(0, 25))
         font = QtGui.QFont()
-        font.setPointSize(12)
-        self.label.setFont(font)
-        self.label.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
-        self.label.setObjectName(_fromUtf8("label"))
-        self.gridLayout.addWidget(self.label, 0, 0, 1, 2)
-        self.name = QtGui.QLineEdit(Name)
-        self.name.setObjectName(_fromUtf8("name"))
-        self.gridLayout.addWidget(self.name, 2, 0, 1, 2)
-        spacerItem = QtGui.QSpacerItem(238, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem, 4, 0, 1, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(Name)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.gridLayout.addWidget(self.buttonBox, 4, 1, 1, 1)
-        spacerItem1 = QtGui.QSpacerItem(20, 62, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem1, 3, 0, 1, 1)
-        self.label_2 = QtGui.QLabel(Name)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.label_2.setFont(font)
-        self.label_2.setText(_fromUtf8(""))
-        self.label_2.setObjectName(_fromUtf8("label_2"))
-        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 2)
+        font.setPointSize(8)
+        font.setBold(True)
+        font.setWeight(75)
+        self.lbl_title.setFont(font)
+        self.lbl_title.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
+        self.lbl_title.setAutoFillBackground(True)
+        self.lbl_title.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
+        self.lbl_title.setObjectName(_fromUtf8("lbl_title"))
+        self.gridLayout.addWidget(self.lbl_title, 0, 0, 1, 1)
+        self.btn_save_cancel = QtGui.QDialogButtonBox(dlg_quicksearch_new)
+        self.btn_save_cancel.setOrientation(QtCore.Qt.Horizontal)
+        self.btn_save_cancel.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
+        self.btn_save_cancel.setCenterButtons(True)
+        self.btn_save_cancel.setObjectName(_fromUtf8("btn_save_cancel"))
+        self.gridLayout.addWidget(self.btn_save_cancel, 2, 0, 1, 4)
+        self.txt_quicksearch_name = QtGui.QLineEdit(dlg_quicksearch_new)
+        self.txt_quicksearch_name.setMinimumSize(QtCore.QSize(50, 25))
+        self.txt_quicksearch_name.setObjectName(_fromUtf8("txt_quicksearch_name"))
+        self.gridLayout.addWidget(self.txt_quicksearch_name, 0, 1, 1, 3)
 
-        self.retranslateUi(Name)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), Name.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), Name.reject)
-        QtCore.QMetaObject.connectSlotsByName(Name)
+        self.retranslateUi(dlg_quicksearch_new)
+        QtCore.QObject.connect(self.btn_save_cancel, QtCore.SIGNAL(_fromUtf8("accepted()")), dlg_quicksearch_new.accept)
+        QtCore.QObject.connect(self.btn_save_cancel, QtCore.SIGNAL(_fromUtf8("rejected()")), dlg_quicksearch_new.reject)
+        QtCore.QMetaObject.connectSlotsByName(dlg_quicksearch_new)
 
-    def retranslateUi(self, Name):
-        Name.setWindowTitle(_translate("Name", "Dialog", None))
-        self.label.setText(_translate("Name", "Please name your saved research.", None))
+    def retranslateUi(self, dlg_quicksearch_new):
+        dlg_quicksearch_new.setWindowTitle(_translate("dlg_quicksearch_new", "Isogeo - New quicksearch", None))
+        self.lbl_title.setText(_translate("dlg_quicksearch_new", "Quicksearch name:", None))
 
 
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    Name = QtGui.QDialog()
-    ui = Ui_Name()
-    ui.setupUi(Name)
-    Name.show()
+    dlg_quicksearch_new = QtGui.QDialog()
+    ui = Ui_dlg_quicksearch_new()
+    ui.setupUi(dlg_quicksearch_new)
+    dlg_quicksearch_new.show()
     sys.exit(app.exec_())
 

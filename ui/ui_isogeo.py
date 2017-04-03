@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\isogeo_dockwidget_base.ui'
 #
-# Created: Tue Mar 14 10:47:18 2017
+# Created: Mon Apr 03 12:01:39 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -498,6 +498,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_11 = QtGui.QHBoxLayout()
         self.horizontalLayout_11.setObjectName(_fromUtf8("horizontalLayout_11"))
         self.lbl_geo_op = QtGui.QLabel(self.groupBox_2)
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.lbl_geo_op.setFont(font)
         self.lbl_geo_op.setObjectName(_fromUtf8("lbl_geo_op"))
         self.horizontalLayout_11.addWidget(self.lbl_geo_op)
         spacerItem11 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -519,6 +523,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_21 = QtGui.QHBoxLayout()
         self.horizontalLayout_21.setObjectName(_fromUtf8("horizontalLayout_21"))
         self.lbl_auth = QtGui.QLabel(self.groupBox)
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.lbl_auth.setFont(font)
         self.lbl_auth.setObjectName(_fromUtf8("lbl_auth"))
         self.horizontalLayout_21.addWidget(self.lbl_auth)
         spacerItem12 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -527,7 +535,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_change_user.setMinimumSize(QtCore.QSize(91, 0))
         self.btn_change_user.setText(_fromUtf8(""))
         icon9 = QtGui.QIcon()
-        icon9.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/user-times.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon9.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/key.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_change_user.setIcon(icon9)
         self.btn_change_user.setObjectName(_fromUtf8("btn_change_user"))
         self.horizontalLayout_21.addWidget(self.btn_change_user)
@@ -648,7 +656,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_default.setText(_translate("IsogeoDockWidgetBase", "Default search", None))
         self.lbl_geo_op.setText(_translate("IsogeoDockWidgetBase", "Geographical operator applied to the filter", None))
         self.groupBox.setTitle(_translate("IsogeoDockWidgetBase", "Authentication settings", None))
-        self.lbl_auth.setText(_translate("IsogeoDockWidgetBase", "Change user id and secret", None))
+        self.lbl_auth.setText(_translate("IsogeoDockWidgetBase", "Set plugin authentication:", None))
         self.groupBox_4.setTitle(_translate("IsogeoDockWidgetBase", "Resources", None))
         self.lbl_report.setText(_translate("IsogeoDockWidgetBase", "Report an issue on the bug tracker", None))
         self.lbl_help.setText(_translate("IsogeoDockWidgetBase", "Open online plugin help", None))
