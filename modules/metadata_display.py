@@ -9,9 +9,9 @@ import logging
 
 # PyQGIS
 from qgis.core import (QgsMapLayerRegistry, QgsMessageLog,
-                       QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry,
-                       QgsRasterLayer, QgsCoordinateReferenceSystem)
-from qgis.gui import QgsMapCanvas, QgsMapCanvasLayer
+                       QgsVectorLayer, QgsPoint, QgsRectangle, QgsFeature,
+                       QgsGeometry, QgsRasterLayer)
+from qgis.gui import QgsMapCanvasLayer
 
 # PyQT
 from PyQt4.QtCore import QSettings, Qt
@@ -48,15 +48,47 @@ class MetadataDisplayer(object):
         # self.complete_md.btn_ok_close.connect(ui_md_details.closeEvent)
 
         # some basic settings
-        self.map = QgsMapCanvas(parent=self.complete_md.wid_bbox)
         self.complete_md.wid_bbox.setCanvasColor(Qt.white)
         self.complete_md.wid_bbox.enableAntiAliasing(True)
+        world_wmts_url = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&"\
+                         "featureCount=10&format=image/jpeg&layers=opengeo:countries&"\
+                         "styles=&tileMatrixSet=EPSG:4326&"\
+                         "url=http://suite.opengeo.org/geoserver/gwc/service/wmts?request%3DGetCapabilities"
+        self.world_lyr = QgsRasterLayer(world_wmts_url, "Countries", 'wms')
 
     def show_complete_md(self, md, lang="EN"):
         """Open the pop up window that shows the metadata sheet details."""
         logger.info("Displaying the whole metadata sheet.")
         tags = isogeo_api_mng.get_tags(md)
         isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])
+
+        # -- DISPLAY ---------------------------------------------------------
+        # adapt display according to metadata type
+        if md.get("type") == "vectorDataset":
+            print("vector dataset")
+
+        elif md.get("type") == "rasterDataset" and not md.get("series"):
+            print("raster dataset")
+            self.complete_md.val_feat_count.setHidden(1)
+            self.complete_md.val_geometry.setHidden(1)
+
+        elif md.get("type") == "rasterDataset" and md.get("series"):
+            print("datasets serie")
+
+        elif md.get("type") == "service":
+            print("web service")
+
+        elif md.get("type") == "resource":
+            print("resource")
+
+        else:
+            # should not exist
+            pass
+
+        # clean map canvas
+        vec_lyr = [i for i in self.complete_md.wid_bbox.layers() if i.type() == 0]
+        QgsMapLayerRegistry.instance().removeMapLayers(vec_lyr)
+        self.complete_md.wid_bbox.refresh()
 
         # -- GENERAL ---------------------------------------------------------
         title = md.get("title", "NR")
@@ -218,20 +250,21 @@ class MetadataDisplayer(object):
         self.complete_md.val_scale.setText(str(md.get("scale", "")))
         # Geography
         if "envelope" in md:
-            coords = md.get("envelope").get("coordinates")[0]
-            points = [QgsPoint(i[0], i[1]) for i in coords]
-            layer = QgsVectorLayer('Polygon', md.get("title"), "memory")
-            pr = layer.dataProvider()
-            poly = QgsFeature()
-            poly.setGeometry(QgsGeometry.fromPolygon([points]))
-            pr.addFeatures([poly])
-            layer.updateExtents()
-            QgsMapLayerRegistry.instance().addMapLayers([layer], 0)
-            map_canvas_layer_list = [QgsMapCanvasLayer(layer)]
+            # display
+            self.complete_md.wid_bbox.setDisabled(0)
+            # get convex hull coordinates and create the polygon
+            md_lyr = self.envelope2layer(md.get("envelope"))
+            # add layers
+            QgsMapLayerRegistry.instance().addMapLayers([md_lyr,
+                                                         self.world_lyr],
+                                                        0)
+            map_canvas_layer_list = [QgsMapCanvasLayer(md_lyr),
+                                     QgsMapCanvasLayer(self.world_lyr)]
             self.complete_md.wid_bbox.setLayerSet(map_canvas_layer_list)
-            self.complete_md.wid_bbox.setExtent(layer.extent())
+            self.complete_md.wid_bbox.setExtent(md_lyr.extent())
         else:
-            pass
+            self.complete_md.wid_bbox.setExtent(self.world_lyr.extent())
+            self.complete_md.grp_bbox.setDisabled(1)
 
         # -- CGUs ------------------------------------------------------------
         # Licences
@@ -307,7 +340,14 @@ class MetadataDisplayer(object):
         url_edition = "https://app.isogeo.com/groups/{}/resources/{}"\
                       .format(wg_id, md.get("_id"))
         self.complete_md.btn_md_edit.pressed.connect(
-             partial(custom_tools.open_webpage, link=url_edition))
+                                             partial(custom_tools.open_webpage,
+                                                     link=url_edition))
+        # only if user declared himself as Isogeo editor in authentication form
+        self.complete_md.btn_md_edit.setEnabled(qsettings
+                                                .value("isogeo/user/editor", 1))
+
+        # -- ADD OPTIONS ------------------------------------------------------
+        self.complete_md.btn_addtomap.setHidden(1)
 
         # -- DISPLAY ---------------------------------------------------------
         # Finally open the damn window
@@ -320,3 +360,39 @@ class MetadataDisplayer(object):
             QgsMessageLog.logMessage("Detailed metadata displayed: {}"
                                      .format(title.encode("latin1")),
                                      "Isogeo")
+
+    def envelope2layer(self, envelope):
+        """Transform metadata envelope into a QGIS layer."""
+        # layer
+        md_lyr = QgsVectorLayer("Polygon?crs=epsg:4326",
+                                "Metadata envelope",
+                                "memory")
+        md_lyr.setLayerTransparency(75)
+
+        if envelope.get("type") == "Polygon":
+            # parse coordinates
+            coords = envelope.get("coordinates")[0]
+            poly_pts = [QgsPoint(round(i[0], 3),
+                                 round(i[1], 3))
+                        for i in coords]
+            # add geometry to layer
+            poly = QgsFeature()
+            poly.setGeometry(QgsGeometry.fromPolygon([poly_pts]))
+            md_lyr.dataProvider().addFeatures([poly])
+            md_lyr.updateExtents()
+        elif envelope.get("type") == "MultiPolygon":
+            coords = envelope.get("bbox")
+            bbox = QgsRectangle(round(coords[0], 3),
+                                round(coords[1], 3),
+                                round(coords[2], 3),
+                                round(coords[3], 3),)
+            poly = QgsFeature()
+            poly.setGeometry(QgsGeometry.fromWkt(bbox.asWktPolygon()))
+            md_lyr.dataProvider().addFeatures([poly])
+            md_lyr.updateExtents()
+        elif envelope.get("type") == "Point":
+            return md_lyr
+        else:
+            pass
+        # method ending
+        return md_lyr
