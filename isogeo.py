@@ -73,9 +73,6 @@ from modules.url_builder import UrlBuilder
 # ########## Globals ###############
 # ##################################
 
-# UI
-IsogeoMdDetails = IsogeoMdDetails()
-
 # useful submodules and shortcuts
 qgis_auth_mng = QgsAuthManager.instance()
 custom_tools = Tools()
@@ -166,14 +163,15 @@ class Isogeo:
         # network manager included within QGIS
         self.manager = QgsNetworkAccessManager.instance()
         # self.manager = QNetworkAccessManager()
-        self.md_display = MetadataDisplayer(IsogeoMdDetails)
+        self.md_display = MetadataDisplayer(IsogeoMdDetails())
 
         # UI submodules
         self.auth_prompt_form = IsogeoAuthentication()
         self.quicksearch_new_dialog = QuicksearchNew()
         self.quicksearch_rename_dialog = QuicksearchRename()
         self.credits_dialog = IsogeoCredits()
-        # self.md_display = MetadataDisplayer(IsogeoMdDetails)
+        self.md_display = MetadataDisplayer(IsogeoMdDetails())
+        self.results_mng = ResultsManager(self)
 
         # start variables
         self.savedSearch = "first"
@@ -187,7 +185,7 @@ class Isogeo:
         self.PostGISdict = srv_url_bld.build_postgis_dict(qsettings)
 
         # self.currentUrl = "https://v1.api.isogeo.com/resources/search?
-        # _limit=15&_include=links&_lang={0}".format(self.lang)
+        # _limit=10&_include=links&_lang={0}".format(self.lang)
 
         self.old_text = ""
         self.page_index = 1
@@ -1888,4 +1886,3 @@ class Isogeo:
         """ --- Actions when the plugin is launched --- """
         custom_tools.test_proxy_configuration()
         self.user_authentication()
-        self.results_mng = ResultsManager(self)
