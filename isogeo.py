@@ -79,7 +79,7 @@ IsogeoMdDetails = IsogeoMdDetails()
 # useful submodules and shortcuts
 custom_tools = Tools()
 isogeo_api_mng = IsogeoApiManager()
-md_display = MetadataDisplayer(IsogeoMdDetails)
+qgis_auth_mng = QgsAuthManager.instance()
 msgBar = iface.messageBar()
 network_mng = QNetworkAccessManager()
 qsettings = QSettings()
@@ -166,13 +166,14 @@ class Isogeo:
         # network manager included within QGIS
         self.manager = QgsNetworkAccessManager.instance()
         # self.manager = QNetworkAccessManager()
+        self.md_display = MetadataDisplayer(IsogeoMdDetails)
 
         # UI submodules
         self.auth_prompt_form = IsogeoAuthentication()
         self.quicksearch_new_dialog = QuicksearchNew()
         self.quicksearch_rename_dialog = QuicksearchRename()
         self.credits_dialog = IsogeoCredits()
-        # self.IsogeoMdDetails = IsogeoMdDetails()
+        # self.md_display = MetadataDisplayer(IsogeoMdDetails)
 
         # start variables
         self.savedSearch = "first"
@@ -279,16 +280,16 @@ class Isogeo:
         # for reuse if plugin is reopened
         # Commented next statement since it causes QGIS crashe
         # when closing the docked window:
-        self.dockwidget = None
+        # self.dockwidget = None
         self.pluginIsActive = False
-        try:
-            reloadPlugin("isogeo_search_engine")
-        except TypeError:
-            pass
-        try:
-            reloadPlugin("isogeo_search_engine_dev")
-        except TypeError:
-            pass
+        # try:
+        #     reloadPlugin("isogeo_search_engine")
+        # except TypeError:
+        #     pass
+        # try:
+        #     reloadPlugin("isogeo_search_engine_dev")
+        # except TypeError:
+        #     pass
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -333,16 +334,16 @@ class Isogeo:
         """
         logging.info("Authentication window accepted. Writting"
                      " id/secret in QSettings.")
-        user_id = self.auth_prompt_form.ent_app_id.text()
-        user_secret = self.auth_prompt_form.\
+        app_id = self.auth_prompt_form.ent_app_id.text()
+        app_secret = self.auth_prompt_form.\
             ent_app_secret.text()
         # old name maintained for compatibility reasons
-        qsettings.setValue("isogeo-plugin/user-auth/id", user_id)
-        qsettings.setValue("isogeo-plugin/user-auth/secret", user_secret)
+        qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
+        qsettings.setValue("isogeo-plugin/user-auth/secret", app_secret)
 
         # new name to anticipate on future migration
-        qsettings.setValue("isogeo/app_auth/id", user_id)
-        qsettings.setValue("isogeo/app_auth/secret", user_secret)
+        qsettings.setValue("isogeo/app_auth/id", app_id)
+        qsettings.setValue("isogeo/app_auth/secret", app_secret)
 
         # anticipating on QGIS Auth Management
         if qgis_auth_mng.authenticationDbPath():
@@ -354,8 +355,8 @@ class Isogeo:
                 auth_isogeo_cfg.setName("Isogeo")
                 auth_isogeo_cfg.setMethod("Basic")
                 auth_isogeo_cfg.setUri("https://v1.api.isogeo.com/about")
-                auth_isogeo_cfg.setConfig("username", user_id)
-                auth_isogeo_cfg.setConfig("password", user_secret)
+                auth_isogeo_cfg.setConfig("username", app_id)
+                auth_isogeo_cfg.setConfig("password", app_secret)
                 # check if method parameters are correctly set and store it
                 if auth_isogeo_cfg.isValid():
                     qgis_auth_mng.storeAuthenticationConfig(auth_isogeo_cfg)
@@ -369,6 +370,7 @@ class Isogeo:
         else:
             pass
 
+        # launch authentiication
         self.user_authentication()
 
     def ask_for_token(self, c_id, c_secret):
@@ -488,7 +490,7 @@ class Isogeo:
                 self.loopCount = 0
                 parsed_content = json.loads(content)
                 self.requestStatusClear = True
-                md_display.show_complete_md(parsed_content)
+                self.md_display.show_complete_md(parsed_content)
                 del parsed_content
             elif self.settingsRequest is True:
                 self.settingsRequest = False
@@ -1020,6 +1022,10 @@ class Isogeo:
                 layer = QgsRasterLayer(path, name)
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    # fill QGIS metadata from Isogeo
+                    lyr.setTitle(layer_info[2])
+                    lyr.setAbstract(layer_info[3])
+                    lyr.setKeywordList(",".join(layer_info[4]))
                     logger.info("Raster datasource added: {0}".format(path))
                 else:
                     logger.warning("Invalid datasource: {0}".format(path))
@@ -1109,7 +1115,6 @@ class Isogeo:
             base_name = layer_info.get("base_name", "")
             schema = layer_info.get("schema", "")
             table = layer_info.get("table", "")
-            # print(layer_info.keys(), layer_info.get("keywords"))
             # Retrieve the database information stored in the PostGISdict
             uri = QgsDataSourceURI()
             host = self.PostGISdict[base_name]['host']
@@ -1338,8 +1343,7 @@ class Isogeo:
         Close to the search() function (lot of code in common) but
         triggered on the click on the change page button.
         """
-        logger.info("next_page function called. Building the url "
-                     "that is to be sent to the API")
+        logger.info("next_page function called.")
         # Testing if the user is asking for a unexisting page (ex : page 6 out
         # of 5)
         if self.page_index >= custom_tools.results_pages_counter(self.results_count):
@@ -1370,8 +1374,7 @@ class Isogeo:
         Close to the search() function (lot of code in common) but
         triggered on the click on the change page button.
         """
-        logger.info("previous_page function called. Building the "
-                    "url that is to be sent to the API")
+        logger.info("previous_page function called.")
         # testing if the user is asking for something impossible : page 0
         if self.page_index < 2:
             return False
@@ -1407,8 +1410,8 @@ class Isogeo:
         # search dict
         params = self.save_params()
         params['url'] = self.currentUrl
-        for i in xrange(len(params['keys'])):
-            params['keyword_{0}'.format(i)] = params['keys'][i]
+        for i in xrange(len(params.get('keys'))):
+            params['keyword_{0}'.format(i)] = params.get('keys')[i]
         params.pop('keys', None)
         saved_searches[search_name] = params
         # writing file
@@ -1417,7 +1420,7 @@ class Isogeo:
                       sort_keys=True, indent=4)
         # Log and messages
         logger.info("{} search stored: {}. Parameters: {}"
-                     .format(search_kind, search_name, params))
+                    .format(search_kind, search_name, params))
         if search_kind != "Current":
             msgBar.pushMessage(self.tr("{} successfully saved: {}")
                                        .format(search_kind, search_name),
@@ -1431,7 +1434,7 @@ class Isogeo:
         selected_search = self.dockwidget.cbb_quicksearch.currentText()
         if selected_search != self.tr('Quick Search'):
             logger.info("Set_widget_status function called. "
-                         "User is executing a saved search.")
+                        "User is executing a saved search.")
             self.switch_widgets_on_and_off('off')
             selected_search = self.dockwidget.cbb_quicksearch.currentText()
             with open(self.json_path) as data_file:
@@ -1471,7 +1474,7 @@ class Isogeo:
     def quicksearch_save(self):
         """Call the write_search() function and refresh the combobox."""
         # retrieve quicksearch given name and store it
-        search_name = self.quicksearch_new_dialog.name.text()
+        search_name = self.quicksearch_new_dialog.txt_quicksearch_name.text()
         self.write_search_params(search_name, search_kind="Quicksearch")
         # load all saved quicksearches and populate drop-down (combobox)
         with open(self.json_path, "r") as saved_searches_file:
@@ -1500,7 +1503,7 @@ class Isogeo:
         old_name = self.dockwidget.cbb_modify_sr.currentText()
         with open(self.json_path, "r") as saved_searches_file:
             saved_searches = json.load(saved_searches_file)
-        new_name = self.quicksearch_rename_dialog.name.text()
+        new_name = self.quicksearch_rename_dialog.txt_quicksearch_rename.text()
         saved_searches[new_name] = saved_searches[old_name]
         saved_searches.pop(old_name)
         search_list = saved_searches.keys()
@@ -1883,5 +1886,4 @@ class Isogeo:
         """ --- Actions when the plugin is launched --- """
         custom_tools.test_proxy_configuration()
         self.user_authentication()
-        # self.results_mng = ResultsManager(self.dockwidget, self.send_details_request, self.tr)
         self.results_mng = ResultsManager(self)
