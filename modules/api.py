@@ -28,32 +28,168 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 class IsogeoApiManager(object):
     """Basic class that holds utilitary methods for the plugin."""
+
     def __init__(self):
         """Construct."""
         self.api_id = qsettings.value("isogeo-plugin/user-auth/id", 0)
         self.api_secret = qsettings.value("isogeo-plugin/user-auth/secret", 0)
         self.currentUrl = ""
+        self.request_status_clear = 1
 
-    # def ask_for_token(self, c_id, c_secret, request_status):
-    #     """Ask a token from Isogeo API authentification page.
+    # API COMMUNICATION ------------------------------------------------------
 
-    #     This send a POST request to Isogeo API with the user id and secret in
-    #     its header. The API should return an access token
+    def ask_for_token(self, c_id, c_secret):
+        """Ask a token from Isogeo API authentification page.
+
+        This send a POST request to Isogeo API with the user id and secret in
+        its header. The API should return an access token
+        """
+        # check if API access are already set
+        if self.api_id != 0 and self.api_secret != 0:
+            logger.info("User_authentication function is trying "
+                        "to get a token from the id/secret")
+            self.request_status_clear = 1
+            pass
+        else:
+            logger.error("No id/secret.")
+            return 0
+
+        # API token request
+        headervalue = "Basic " + base64.b64encode(c_id + ":" + c_secret)
+        data = urlencode({"grant_type": "client_credentials"})
+        databyte = QByteArray()
+        databyte.append(data)
+        url = QUrl('https://id.api.isogeo.com/oauth/token')
+        request = QNetworkRequest(url)
+        request.setRawHeader("Authorization", headervalue)
+        if self.request_status_clear:
+            self.request_status_clear = 0
+            token_reply = self.manager.post(request, databyte)
+            token_reply.finished.connect(
+                partial(self.handle_token, answer=token_reply))
+            QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
+        else:
+            pass
+
+    def handle_token(self, answer):
+        """Handle the API answer when asked for a token.
+
+        This handles the API answer. If it has sent an access token, it calls
+        the initialization function. If not, it raises an error, and ask
+        for new IDs
+        """
+        logger.info("Asked a token and got a reply from the API.")
+        bytarray = answer.readAll()
+        content = str(bytarray)
+        parsed_content = json.loads(content)
+        if 'access_token' in parsed_content:
+            logger.info("The API reply is an access token : "
+                         "the request worked as expected.")
+            # TO DO : Appeler la fonction d'initialisation
+            self.token = "Bearer " + parsed_content['access_token']
+            if self.savedSearch == "first":
+                self.requestStatusClear = True
+                self.set_widget_status()
+            else:
+                self.requestStatusClear = True
+                self.send_request_to_isogeo_api(self.token)
+        # TO DO : Distinguer plusieurs cas d'erreur
+        elif 'error' in parsed_content:
+            logger.error("The API reply is an error. Id and secret must be "
+                          "invalid. Asking for them again.")
+            QMessageBox.information(
+                iface.mainWindow(), self.tr("Error"), parsed_content['error'])
+            self.requestStatusClear = True
+            self.auth_prompt_form.show()
+        else:
+            self.requestStatusClear = True
+            logger.error("The API reply has an unexpected form : "
+                          "{0}".format(parsed_content))
+            QMessageBox.information(
+                iface.mainWindow(), self.tr("Error"), self.tr("Unknown error"))
+
+    # def handle_api_reply(self, answer):
+    #     """Handle the different possible Isogeo API answer.
+
+    #     This is called when the answer from the API is finished. If it's
+    #     content, it calls update_fields(). If it isn't, it means the token has
+    #     expired, and it calls ask_for_token()
     #     """
-    #     headervalue = "Basic " + base64.b64encode(c_id + ":" + c_secret)
-    #     data = urlencode({"grant_type": "client_credentials"})
-    #     databyte = QByteArray()
-    #     databyte.append(data)
-    #     url = QUrl('https://id.api.isogeo.com/oauth/token')
-    #     request = QNetworkRequest(url)
-    #     request.setRawHeader("Authorization", headervalue)
-    #     if request_status is True:
-    #         request_status = False
-    #         token_reply = self.manager.post(request, databyte)
-    #         token_reply.finished.connect(
-    #             partial(self.handle_token, answer=token_reply))
+    #     logger.info("Request sent to API and reply received.")
+    #     bytarray = answer.readAll()
+    #     content = str(bytarray)
+    #     if answer.error() == 0 and content != "":
+    #         logger.info("Reply is a result json.")
+    #         if self.showDetails is False and self.settingsRequest is False:
+    #             self.loopCount = 0
+    #             parsed_content = json.loads(content)
+    #             self.requestStatusClear = True
+    #             self.update_fields(parsed_content)
+    #         elif self.showDetails is True:
+    #             self.showDetails = False
+    #             self.loopCount = 0
+    #             parsed_content = json.loads(content)
+    #             self.requestStatusClear = True
+    #             self.show_complete_md(parsed_content)
+    #         elif self.settingsRequest is True:
+    #             self.settingsRequest = False
+    #             self.loopCount = 0
+    #             parsed_content = json.loads(content)
+    #             self.requestStatusClear = True
+    #             self.write_shares_info(parsed_content)
 
-    #     QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
+    #     elif answer.error() == 204:
+    #         logger.info("Token expired. Renewing it.")
+    #         self.loopCount = 0
+    #         self.requestStatusClear = True
+    #         self.ask_for_token(self.user_id, self.user_secret,
+    #                            self.requestStatusClear)
+    #     elif content == "":
+    #         logger.info("Empty reply. Weither no catalog is shared with the "
+    #                     "plugin, or there is a problem (2 requests sent "
+    #                     "together)")
+    #         if self.loopCount < 3:
+    #             self.loopCount += 1
+    #             answer.abort()
+    #             del answer
+    #             self.requestStatusClear = True
+    #             self.ask_for_token(self.user_id, self.user_secret,
+    #                                self.requestStatusClear)
+    #         else:
+    #             self.requestStatusClear = True
+    #             msgBar.pushMessage(
+    #                 self.tr("The script is looping. Make sure you shared a "
+    #                         "catalog with the plugin. If so, please report "
+    #                         "this on the bug tracker."))
+    #     else:
+    #         self.requestStatusClear = True
+    #         QMessageBox.information(iface.mainWindow(),
+    #                                 self.tr("Error"),
+    #                                 self.tr("You are facing an unknown error. "
+    #                                         "Code: ") +
+    #                                 str(answer.error()) +
+    #                                 "\nPlease report tis on the bug tracker.")
+    #     # method end
+    #     return
+
+    def send_request_to_isogeo_api(self, token, limit=10):
+        """Send a content url to the Isogeo API.
+
+        This takes the currentUrl variable and send a request to this url,
+        using the token variable.
+        """
+        myurl = QUrl(self.currentUrl)
+        request = QNetworkRequest(myurl)
+        request.setRawHeader("Authorization", token)
+        if self.requestStatusClear is True:
+            self.requestStatusClear = False
+            api_reply = self.manager.get(request)
+            api_reply.finished.connect(
+                partial(self.handle_api_reply, answer=api_reply))
+        else:
+            pass
+
+    # REQUEST and RESULTS ----------------------------------------------------
 
     def build_request_url(self, params):
         """Build the request url according to the widgets."""
@@ -198,157 +334,3 @@ class IsogeoApiManager(object):
         logger.info("Tags retrieved")
         # method ending
         return new_tags
-
-    # def handle_api_reply(self, answer):
-    #     """Handle the different possible Isogeo API answer.
-
-    #     This is called when the answer from the API is finished. If it's
-    #     content, it calls update_fields(). If it isn't, it means the token has
-    #     expired, and it calls ask_for_token()
-    #     """
-    #     logger.info("Request sent to API and reply received.")
-    #     bytarray = answer.readAll()
-    #     content = str(bytarray)
-    #     if answer.error() == 0 and content != "":
-    #         logger.info("Reply is a result json.")
-    #         if self.showDetails is False and self.settingsRequest is False:
-    #             self.loopCount = 0
-    #             parsed_content = json.loads(content)
-    #             self.requestStatusClear = True
-    #             self.update_fields(parsed_content)
-    #         elif self.showDetails is True:
-    #             self.showDetails = False
-    #             self.loopCount = 0
-    #             parsed_content = json.loads(content)
-    #             self.requestStatusClear = True
-    #             self.show_complete_md(parsed_content)
-    #         elif self.settingsRequest is True:
-    #             self.settingsRequest = False
-    #             self.loopCount = 0
-    #             parsed_content = json.loads(content)
-    #             self.requestStatusClear = True
-    #             self.write_shares_info(parsed_content)
-
-    #     elif answer.error() == 204:
-    #         logger.info("Token expired. Renewing it.")
-    #         self.loopCount = 0
-    #         self.requestStatusClear = True
-    #         self.ask_for_token(self.user_id, self.user_secret,
-    #                            self.requestStatusClear)
-    #     elif content == "":
-    #         logger.info("Empty reply. Weither no catalog is shared with the "
-    #                     "plugin, or there is a problem (2 requests sent "
-    #                     "together)")
-    #         if self.loopCount < 3:
-    #             self.loopCount += 1
-    #             answer.abort()
-    #             del answer
-    #             self.requestStatusClear = True
-    #             self.ask_for_token(self.user_id, self.user_secret,
-    #                                self.requestStatusClear)
-    #         else:
-    #             self.requestStatusClear = True
-    #             msgBar.pushMessage(
-    #                 self.tr("The script is looping. Make sure you shared a "
-    #                         "catalog with the plugin. If so, please report "
-    #                         "this on the bug tracker."))
-    #     else:
-    #         self.requestStatusClear = True
-    #         QMessageBox.information(iface.mainWindow(),
-    #                                 self.tr("Error"),
-    #                                 self.tr("You are facing an unknown error. "
-    #                                         "Code: ") +
-    #                                 str(answer.error()) +
-    #                                 "\nPlease report tis on the bug tracker.")
-    #     # method end
-    #     return
-
-    # def handle_token(self, answer):
-    #     """Handle the API answer when asked for a token.
-
-    #     This handles the API answer. If it has sent an access token, it calls
-    #     the initialization function. If not, it raises an error, and ask
-    #     for new IDs
-    #     """
-    #     logger.info("Asked a token and got a reply from the API.")
-    #     bytarray = answer.readAll()
-    #     content = str(bytarray)
-    #     parsed_content = json.loads(content)
-    #     if 'access_token' in parsed_content:
-    #         logger.info("The API reply is an access token : "
-    #                      "the request worked as expected.")
-    #         # TO DO : Appeler la fonction d'initialisation
-    #         self.token = "Bearer " + parsed_content['access_token']
-    #         if self.savedSearch == "first":
-    #             self.requestStatusClear = True
-    #             self.set_widget_status()
-    #         else:
-    #             self.requestStatusClear = True
-    #             self.send_request_to_isogeo_api(self.token)
-    #     # TO DO : Distinguer plusieurs cas d'erreur
-    #     elif 'error' in parsed_content:
-    #         logger.error("The API reply is an error. Id and secret must be "
-    #                       "invalid. Asking for them again.")
-    #         QMessageBox.information(
-    #             iface.mainWindow(), self.tr("Error"), parsed_content['error'])
-    #         self.requestStatusClear = True
-    #         self.auth_prompt_form.show()
-    #     else:
-    #         self.requestStatusClear = True
-    #         logger.error("The API reply has an unexpected form : "
-    #                       "{0}".format(parsed_content))
-    #         QMessageBox.information(
-    #             iface.mainWindow(), self.tr("Error"), self.tr("Unknown error"))
-
-    # def send_request_to_isogeo_api(self, token, limit=10):
-    #     """Send a content url to the Isogeo API.
-
-    #     This takes the currentUrl variable and send a request to this url,
-    #     using the token variable.
-    #     """
-    #     myurl = QUrl(self.currentUrl)
-    #     request = QNetworkRequest(myurl)
-    #     request.setRawHeader("Authorization", token)
-    #     if self.requestStatusClear is True:
-    #         self.requestStatusClear = False
-    #         api_reply = self.manager.get(request)
-    #         api_reply.finished.connect(
-    #             partial(self.handle_api_reply, answer=api_reply))
-    #     else:
-    #         pass
-
-    # def user_authentication(self):
-    #     """Test the validity of the user id and secret.
-
-    #     This is the first major function the plugin calls when executed. It
-    #     retrieves the id and secret from the config file. If they are set to
-    #     their default value, it asks for them.
-    #     If not, it tries to send a request.
-    #     """
-    #     self.user_id = qsettings.value("isogeo-plugin/user-auth/id", 0)
-    #     self.user_secret = qsettings.value("isogeo-plugin/user-auth/secret", 0)
-    #     if self.user_id != 0 and self.user_secret != 0:
-    #         logger.info("User_authentication function is trying "
-    #                      "to get a token from the id/secret")
-    #         self.ask_for_token(self.user_id, self.user_secret, 1)
-    #     else:
-    #         logger.info("No id/secret. User authentication function "
-    #                      "is showing the auth window.")
-    #         self.auth_prompt_form.show()
-
-    # def write_ids_and_test(self):
-    #     """Store the id & secret and launch the test function.
-
-    #     Called when the authentification window is closed,
-    #     it stores the values in the file, then call the
-    #     user_authentification function to test them.
-    #     """
-    #     logger.info("Authentication window accepted. Writting"
-    #                  " id/secret in QSettings.")
-    #     user_id = self.auth_prompt_form.ent_app_id.text()
-    #     user_secret = self.auth_prompt_form.\
-    #         ent_app_secret.text()
-    #     qsettings.setValue("isogeo-plugin/user-auth/id", user_id)
-    #     qsettings.setValue("isogeo-plugin/user-auth/secret", user_secret)
-
-    #     isogeo_api_mng.user_authentication()

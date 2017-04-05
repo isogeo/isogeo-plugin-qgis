@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function, unicode_literals)
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 # Standard library
 import logging
@@ -7,7 +8,7 @@ from functools import partial
 
 # PyQT
 # from QByteArray
-from PyQt4.QtCore import QSettings, QCoreApplication, QTranslator
+from PyQt4.QtCore import QSettings
 from PyQt4.QtGui import QIcon, QTableWidgetItem, QComboBox, QPushButton, QLabel, QPixmap, QProgressBar
 
 # PyQGIS
@@ -51,12 +52,11 @@ class ResultsManager(object):
         self.isogeo_widget = isogeo_plugin.dockwidget
         self.add_layer = isogeo_plugin.add_layer
         self.send_details_request = isogeo_plugin.send_details_request
-        # self.tr = isogeo_plugin.tr
+        self.tr = isogeo_plugin.tr
         self.pg_connections = srv_url_bld.build_postgis_dict(qsettings)
 
     def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
         """Display the results in a table ."""
-        print(help(self.tr))
         logger.info("Results manager called. Displaying the results")
         # check parameters
         if not tbl_result:
@@ -439,15 +439,3 @@ class ResultsManager(object):
         iface.mainWindow().statusBar().removeWidget(progress_bar)
         # method ending
         return None
-
-    def tr(self, message):
-        """Get the translation for a string using Qt translation API.
-
-        We implement this ourselves since we do not inherit QObject.
-        :param message: String for translation.
-        :type message: str, QString
-        :returns: Translated version of message.
-        :rtype: QString
-        """
-        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('Isogeo', message)

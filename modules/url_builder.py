@@ -57,9 +57,9 @@ try:
     from owslib.util import HTTPError
     logger.info("Depencencies - HTTPError within owslib")
 except ImportError as e:
-    logger.error("Depencencies - HTTPError not within owslib."
-                 " Trying to get it from urllib2 directly.")
     from urllib2 import HTTPError
+    logger.error("Depencencies - HTTPError not within owslib."
+                 "Directly imported from urllib2.")
 try:
     import requests
     logger.info("Depencencies - Requests version: {}"

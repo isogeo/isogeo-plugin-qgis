@@ -277,6 +277,9 @@ QListWidget::item::selected {
      <property name="enabled">
       <bool>true</bool>
      </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="autoFillBackground">
       <bool>true</bool>
      </property>
@@ -290,11 +293,20 @@ QListWidget::item::selected {
      <property name="checkable">
       <bool>false</bool>
      </property>
+     <property name="autoRepeat">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
      <property name="default">
       <bool>false</bool>
      </property>
      <property name="flat">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -809,8 +821,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
-                 <height>188</height>
+                 <width>98</width>
+                 <height>172</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_16">
@@ -892,8 +904,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
-                 <height>188</height>
+                 <width>98</width>
+                 <height>172</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_15">
