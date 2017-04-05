@@ -280,14 +280,14 @@ class Isogeo:
         # when closing the docked window:
         # self.dockwidget = None
         self.pluginIsActive = False
-        # try:
-        #     reloadPlugin("isogeo_search_engine")
-        # except TypeError:
-        #     pass
-        # try:
-        #     reloadPlugin("isogeo_search_engine_dev")
-        # except TypeError:
-        #     pass
+        try:
+            reloadPlugin("isogeo_search_engine")
+        except TypeError:
+            pass
+        try:
+            reloadPlugin("isogeo_search_engine_dev")
+        except TypeError:
+            pass
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -341,16 +341,35 @@ class Isogeo:
         qsettings.setValue("isogeo-plugin/user-auth/secret", app_secret)
 
         # new name to anticipate on future migration
-        qsettings.setValue("isogeo/app_auth/id", app_id)
-        qsettings.setValue("isogeo/app_auth/secret", app_secret)
+        qsettings.setValue("isogeo/api_auth/id", app_id)
+        qsettings.setValue("isogeo/api_auth/secret", app_secret)
         qsettings.setValue("isogeo/user/editor", int(user_editor))
 
         # anticipating on QGIS Auth Management
         if qgis_auth_mng.authenticationDbPath():
             logger.info("TRACKING - AUTH: new QGIS system already initialized")
-            # already initilised => we are inside a QGIS app.
-            if qgis_auth_mng.masterPasswordIsSet():
-                logger.info("TRACKING - AUTH: master password has been set")
+            auth_isogeo_id = qsettings.value("isogeo/app_auth/qgis_auth_id")
+            # already initialised => we are inside a QGIS app.
+            if (qgis_auth_mng.masterPasswordIsSet() and
+               auth_isogeo_id in qgis_auth_mng.availableAuthMethodConfigs()):
+                logger.info("TRACKING - AUTH: master password has been set"
+                            " and Isogeo auth config already exists."
+                            " Let's update it if needed.")
+                # get existing Isogeo auth id
+                auth_isogeo = qgis_auth_mng.availableAuthMethodConfigs()\
+                                           .get(auth_isogeo_id)
+                # update values from form
+                auth_isogeo.setConfig("username", app_id)
+                auth_isogeo.setConfig("password", app_secret)
+                # check if method parameters are correctly set and store it
+                if auth_isogeo.isValid():
+                    qgis_auth_mng.updateAuthenticationConfig(auth_isogeo)
+                else:
+                    logger.error("AUTH - Fail to create and store configuration")
+            elif (qgis_auth_mng.masterPasswordIsSet() and
+                  auth_isogeo_id not in qgis_auth_mng.availableAuthMethodConfigs()):
+                logger.info("TRACKING - AUTH: master password has been set"
+                            " and Isogeo auth config doesn't exist yet")
                 auth_isogeo_cfg = QgsAuthMethodConfig()
                 auth_isogeo_cfg.setName("Isogeo")
                 auth_isogeo_cfg.setMethod("Basic")
@@ -370,7 +389,7 @@ class Isogeo:
         else:
             pass
 
-        # launch authentiication
+        # launch authentication
         self.user_authentication()
 
     def ask_for_token(self, c_id, c_secret):
