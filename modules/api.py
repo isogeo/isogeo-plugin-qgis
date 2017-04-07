@@ -203,6 +203,9 @@ class IsogeoApiManager(object):
         # Owner
         if params.get('owner') is not None:
             filters += params.get('owner') + " "
+        # SRS
+        if params.get('srs') is not None:
+            filters += params.get('srs') + " "
         # INSPIRE keywords
         if params.get('inspire') is not None:
             filters += params.get('inspire') + " "
