@@ -15,6 +15,7 @@ See: http://www.qgis.org/pyqgis-cookbook/releasing.html
 
 # ------------ Imports --------------------------------------------
 from os import getcwd, listdir, makedirs, path, remove, walk
+import json
 import xml.etree.ElementTree as ET
 import zipfile
 
@@ -169,7 +170,31 @@ final_zip.write(r"ui\quicksearch\ui_quicksearch_rename.ui",
 final_zip.write(r"ui\quicksearch\dlg_quicksearch_rename.py",
                 plg_dir + r"\ui\quicksearch\dlg_quicksearch_rename.py")
 
-# User settings
+# -- User settings ----------------------------------------------------------
+
+quicksearches = {"_default": {"inspire": None,
+                              "format": None,
+                              "datatype": None,
+                              "text": "",
+                              "od": "desc",
+                              "favorite": None,
+                              "ob": "relevance",
+                              "noaction": 0,
+                              "srs": None,
+                              "other": 0,
+                              "url": "https://v1.api.isogeo.com/resources/search?&_limit=0&_offset=0&_lang=fr",
+                              "owner": None,
+                              "download": 0,
+                              "geofilter": None,
+                              "operation": "intersects",
+                              "view": 0,
+                              },
+                 }
+
+
+with open(r"user_settings\saved_searches.json", "w") as qs:
+    json.dump(quicksearches, qs, sort_keys=True, indent=4)
+
 final_zip.write(r"user_settings\saved_searches.json",
                 plg_dir + r"\user_settings\saved_searches.json")
 
