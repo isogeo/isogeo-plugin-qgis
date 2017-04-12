@@ -975,7 +975,7 @@ class Isogeo:
             self.store = True
         # Re enable all user input fields now the search function is
         # finished.
-        self.switch_widgets_on_and_off('on')
+        self.switch_widgets_on_and_off()
         if self.results_count == 0:
             self.dockwidget.btn_show.setEnabled(False)
         # hard reset
@@ -1290,6 +1290,9 @@ class Isogeo:
             params['coord'] = self.get_coords(params.get('geofilter'))
         else:
             pass
+        # saving params in QSettings
+        qsettings.setValue("isogeo/settings/georelation", operation_param)
+
         logger.info(params)
         return params
 
@@ -1302,7 +1305,7 @@ class Isogeo:
         logger.info("Search function called. Building the "
                     "url that is to be sent to the API")
         # Disabling all user inputs during the search function is running
-        self.switch_widgets_on_and_off('off')
+        self.switch_widgets_on_and_off(0)
         # STORING THE PREVIOUS SEARCH
         if self.store is True:
             # Open json file
@@ -1347,7 +1350,6 @@ class Isogeo:
         params['lang'] = self.lang
         # URL BUILDING FUNCTION CALLED.
         self.currentUrl = isogeo_api_mng.build_request_url(params)
-
         logger.info(self.currentUrl)
         # Sending the request to Isogeo API
         if self.requestStatusClear is True:
@@ -1377,7 +1379,7 @@ class Isogeo:
             # Info for _limit parameter
             self.showResult = True
             params['show'] = True
-            self.switch_widgets_on_and_off('off')
+            self.switch_widgets_on_and_off(0)
             # Building up the request
             self.page_index += 1
             params['page'] = self.page_index
@@ -1407,7 +1409,7 @@ class Isogeo:
             # Info for _limit parameter
             self.showResult = True
             params['show'] = True
-            self.switch_widgets_on_and_off('off')
+            self.switch_widgets_on_and_off(0)
             # Building up the request
             self.page_index -= 1
             params['page'] = self.page_index
@@ -1456,23 +1458,23 @@ class Isogeo:
         if selected_search != self.tr('Quick Search'):
             logger.info("Set_widget_status function called. "
                         "User is executing a saved search.")
-            self.switch_widgets_on_and_off('off')
+            self.switch_widgets_on_and_off(0)
             selected_search = self.dockwidget.cbb_quicksearch.currentText()
             with open(self.json_path) as data_file:
                 saved_searches = json.load(data_file)
             if selected_search == "":
                 self.savedSearch = '_default'
-                search_params = saved_searches['_default']
+                search_params = saved_searches.get('_default')
             else:
                 self.savedSearch = selected_search
                 search_params = saved_searches[selected_search]
-            self.currentUrl = search_params['url']
+            self.currentUrl = search_params.get('url')
             if 'epsg' in search_params:
                 epsg = int(iface.mapCanvas().mapRenderer(
                 ).destinationCrs().authid().split(':')[1])
-                if epsg == search_params['epsg']:
+                if epsg == search_params.get('epsg'):
                     canvas = iface.mapCanvas()
-                    e = search_params['extent']
+                    e = search_params.get('extent')
                     rect = QgsRectangle(e[0], e[1], e[2], e[3])
                     canvas.setExtent(rect)
                     canvas.refresh()
@@ -1481,9 +1483,9 @@ class Isogeo:
                     canvas.mapRenderer().setProjectionsEnabled(True)
                     canvas.mapRenderer().setDestinationCrs(
                         QgsCoordinateReferenceSystem(
-                            search_params['epsg'],
+                            search_params.get('epsg'),
                             QgsCoordinateReferenceSystem.EpsgCrsId))
-                    e = search_params['extent']
+                    e = search_params.get('extent')
                     rect = QgsRectangle(e[0], e[1], e[2], e[3])
                     canvas.setExtent(rect)
                     canvas.refresh()
@@ -1645,14 +1647,14 @@ class Isogeo:
         self.showResult = True
         self.search()
 
-    def switch_widgets_on_and_off(self, mode):
+    def switch_widgets_on_and_off(self, mode=1):
         """Disable all the UI widgets when a request is being sent.
 
         Deactivate the widgets while a funcion is running so the user doesn't
         clic everywhere ending up in multiple requests being sent at the same
         time, making the plugin crash.
         """
-        if mode == 'on':
+        if mode:
             self.dockwidget.txt_input.setReadOnly(False)
             self.dockwidget.cbb_quicksearch.setEnabled(True)
             self.dockwidget.grp_filters.setEnabled(True)
