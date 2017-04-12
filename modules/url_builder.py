@@ -4,6 +4,7 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 # Standard library
 from datetime import datetime
 import logging
+import re
 from urllib import unquote, urlencode
 from urlparse import urlparse
 
@@ -260,10 +261,11 @@ class UrlBuilder(object):
         then build the url in the syntax understood by QGIS.
         """
         # local variables
-        layer_name = api_layer.get("id")
+        layer_name = re.sub('\{.*?}', "", api_layer.get("id"))
         layer_title = api_layer.get("titles")[0].get("value", "WFS Layer")
         wfs_url_getcap = srv_details.get("path")\
                          + "?request=GetCapabilities&service=WFS"
+        geoserver = "geoserver" in wfs_url_getcap
 
         if mode == "quicky":
             # let's try a quick & dirty url build
@@ -336,11 +338,17 @@ class UrlBuilder(object):
                 logger.error("Layer {} not found in WFS service: {}"
                              .format(layer_name,
                                      wfs_url_getcap))
-                return (0,
-                        "Layer {} not found in WFS service: {}"
-                        .format(layer_name,
-                                wfs_url_getcap),
-                        e)
+                if geoserver and layer_name in [l.split(":")[1] for l in list(wfs.contents)]:
+                    layer_name = list(wfs.contents)[[l.split(":")[1]
+                                                    for l in list(wfs.contents)].index(layer_name)]
+                    try:
+                        wfs_lyr = wfs[layer_name]
+                    except KeyError as e:
+                        return (0,
+                                "Layer {} not found in WFS service: {}"
+                                .format(layer_name,
+                                        wfs_url_getcap),
+                                e)
 
             # SRS definition
             srs_map = custom_tools.get_map_crs()
