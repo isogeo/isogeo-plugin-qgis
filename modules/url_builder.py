@@ -261,11 +261,18 @@ class UrlBuilder(object):
         then build the url in the syntax understood by QGIS.
         """
         # local variables
-        layer_name = re.sub('\{.*?}', "", api_layer.get("id"))
         layer_title = api_layer.get("titles")[0].get("value", "WFS Layer")
         wfs_url_getcap = srv_details.get("path")\
                          + "?request=GetCapabilities&service=WFS"
         geoserver = "geoserver" in wfs_url_getcap
+        layer_id = api_layer.get("id")
+        layer_name = re.sub('\{.*?}', "", layer_id)
+        # handling WFS namespaces
+        if "{" in layer_id:
+            namespace = layer_id[layer_id.find("{") + 1:layer_id.find("}")]
+            logging.debug("WFS - Namespace: " + namespace)
+        else:
+            namespace = ""
 
         if mode == "quicky":
             # let's try a quick & dirty url build
@@ -280,6 +287,7 @@ class UrlBuilder(object):
                               "typename": layer_name,
                               "srsname": srs_map,
                               "REQUEST": "GetFeature",
+                              "namespace": namespace,
                               }
             wfs_url_quicky = wfs_url_base +\
                              unquote(urlencode(wfs_url_params, "utf8"))
@@ -433,6 +441,7 @@ class UrlBuilder(object):
         layer_title = api_layer.get("titles")[0].get("value", "WMS Layer")
         wms_url_getcap = srv_details.get("path")\
                        + "?request=GetCapabilities&service=WMS"
+        geoserver = "geoserver" in wms_url_getcap
 
         if mode == "quicky":
             # let's try a quick & dirty url build
@@ -610,7 +619,7 @@ class UrlBuilder(object):
         layer_title = api_layer.get("titles")[0].get("value", "WMTS Layer")
         wmts_url_getcap = srv_details.get("path")\
                           + "?request=GetCapabilities&service=WMTS"
-
+        geoserver = "geoserver" in wmts_url_getcap
         # basic checks on service url
         try:
             wmts = WebMapTileService(wmts_url_getcap)
