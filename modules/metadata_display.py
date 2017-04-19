@@ -347,6 +347,7 @@ class MetadataDisplayer(object):
 
         # -- ADD OPTIONS ------------------------------------------------------
         self.complete_md.btn_addtomap.setHidden(1)
+        self.complete_md.btn_xml_dl.setHidden(1)
 
         # -- DISPLAY ---------------------------------------------------------
         # Finally open the damn window
