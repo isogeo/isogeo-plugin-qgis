@@ -1909,3 +1909,4 @@ class Isogeo:
         """ --- Actions when the plugin is launched --- """
         custom_tools.test_proxy_configuration()
         self.user_authentication()
+        self.dockwidget.txt_input.setFocus()
