@@ -193,7 +193,7 @@ class Isogeo:
         self.json_path = basepath + '/user_settings/saved_searches.json'
 
     # noinspection PyMethodMayBeStatic
-    def tr(self, message):
+    def tr(self, message, context="Isogeo"):
         """Get the translation for a string using Qt translation API.
 
         We implement this ourselves since we do not inherit QObject.
@@ -203,7 +203,7 @@ class Isogeo:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('Isogeo', message)
+        return QCoreApplication.translate(context, message)
 
     def add_action(self, icon_path, text, callback, enabled_flag=True, add_to_menu=True, add_to_toolbar=True, status_tip=None, whats_this=None, parent=None):
         """Add a toolbar icon to the toolbar.

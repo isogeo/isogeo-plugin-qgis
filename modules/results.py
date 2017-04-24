@@ -132,7 +132,7 @@ class ResultsManager(object):
                 else:
                     tbl_result.setItem(
                         count, 2, QTableWidgetItem(
-                            self.tr('Unknown geometry')))
+                            self.tr('Unknown geometry', "ResultsManager")))
             # If the data doesn't have a geometry type
             else:
                 # It may be a raster, then raster icon in column 3
@@ -163,7 +163,7 @@ class ResultsManager(object):
                                   i.get("title", "NR"),
                                   i.get("abstract", "NR"),
                                   md_keywords]
-                        link_dict[self.tr('Data file')] = params
+                        link_dict[self.tr('Data file', "ResultsManager")] = params
                     except IOError:
                         pass
                 # Same if the data is a raster
@@ -175,7 +175,7 @@ class ResultsManager(object):
                                   i.get("title", "NR"),
                                   i.get("abstract", "NR"),
                                   md_keywords]
-                        link_dict[self.tr('Data file')] = params
+                        link_dict[self.tr('Data file', "ResultsManager")] = params
                     except IOError:
                         pass
                 # If the data is a postGIS table and the connexion has
@@ -193,7 +193,7 @@ class ResultsManager(object):
                             params['abstract'] = i.get("abstract", None)
                             params['title'] = i.get("title", None)
                             params['keywords'] = md_keywords
-                            link_dict[self.tr('PostGIS table')] = params
+                            link_dict[self.tr('PostGIS table', "ResultsManager")] = params
                         else:
                             pass
                     else:
@@ -389,7 +389,7 @@ class ResultsManager(object):
 
             # If the data can't be added, just insert "can't" text.
             if link_dict == {}:
-                text = self.tr("Can't be added")
+                text = self.tr("Can't be added", "ResultsManager")
                 fake_button = QPushButton(text)
                 fake_button.setStyleSheet("text-align: left")
                 fake_button.setEnabled(False)
@@ -405,9 +405,9 @@ class ResultsManager(object):
                     icon = QIcon(':/plugins/Isogeo/resources/wfs.png')
                 elif text.startswith("WMTS"):
                     icon = QIcon(':/plugins/Isogeo/resources/wms.png')
-                elif text.startswith(self.tr('PostGIS table')):
+                elif text.startswith(self.tr('PostGIS table', "ResultsManager")):
                     icon = QIcon(':/plugins/Isogeo/resources/database.svg')
-                elif text.startswith(self.tr('Data file')):
+                elif text.startswith(self.tr('Data file', "ResultsManager")):
                     icon = QIcon(':/plugins/Isogeo/resources/file.svg')
                 add_button = QPushButton(icon, text)
                 add_button.setStyleSheet("text-align: left")
@@ -425,9 +425,9 @@ class ResultsManager(object):
                         icon = QIcon(':/plugins/Isogeo/resources/wfs.png')
                     elif key.startswith("WMTS"):
                         icon = QIcon(':/plugins/Isogeo/resources/wms.png')
-                    elif key.startswith(self.tr('PostGIS table')):
+                    elif key.startswith(self.tr('PostGIS table', "ResultsManager")):
                         icon = QIcon(':/plugins/Isogeo/resources/database.svg')
-                    elif key.startswith(self.tr('Data file')):
+                    elif key.startswith(self.tr('Data file', "ResultsManager")):
                         icon = QIcon(':/plugins/Isogeo/resources/file.svg')
                     combo.addItem(icon, key, link_dict[key])
                 combo.activated.connect(partial(self.add_layer,

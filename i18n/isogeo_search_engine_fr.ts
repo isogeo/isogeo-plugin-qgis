@@ -4,202 +4,202 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="isogeo.py" line="295"/>
+        <location filename="isogeo.py" line="297"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="264"/>
+        <location filename="isogeo.py" line="266"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1193"/>
+        <location filename="isogeo.py" line="1195"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="471"/>
+        <location filename="isogeo.py" line="473"/>
         <source>Unknown error</source>
         <translation>Erreur inconnue</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="539"/>
+        <location filename="isogeo.py" line="541"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin. If so, please report this on the bug tracker.</source>
         <translation>Le script tourne en rond. Assurez-vous d&apos;avoir partagéau moins  un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème sur le bug tracker.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="545"/>
+        <location filename="isogeo.py" line="547"/>
         <source>You are facing an unknown error. Code: </source>
         <translation>Vous rencontrez une erreur inconnue. Code : </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="579"/>
+        <location filename="isogeo.py" line="581"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="934"/>
+        <location filename="isogeo.py" line="936"/>
         <source>---- Keywords ----</source>
         <translation>---- Mot clés ----</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1051"/>
+        <location filename="isogeo.py" line="1053"/>
         <source>The layer is not valid.</source>
         <translation>La couche n&apos;est pas valide.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="663"/>
+        <location filename="isogeo.py" line="665"/>
         <source>Intersects</source>
         <translation>Intersecte</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="663"/>
+        <location filename="isogeo.py" line="665"/>
         <source>within</source>
         <translation>Est contenu</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="663"/>
+        <location filename="isogeo.py" line="665"/>
         <source>contains</source>
         <translation>Contient</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="653"/>
+        <location filename="isogeo.py" line="655"/>
         <source>All types</source>
         <translation>Tous</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="670"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Relevance</source>
         <translation>Pertinence</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="670"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Alphabetical order</source>
         <translation>Ordre alphabétique</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="670"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Data modified</source>
         <translation>Donnée modifiée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="670"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Data created</source>
         <translation>Donnée créée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="670"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Metadata modified</source>
         <translation>Métadonnée modifiée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="670"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Metadata created</source>
         <translation>Métadonnée créée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="680"/>
+        <location filename="isogeo.py" line="682"/>
         <source>Descending</source>
         <translation>Descendant</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="680"/>
+        <location filename="isogeo.py" line="682"/>
         <source>Ascendant</source>
         <translation>Ascendant</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="712"/>
+        <location filename="isogeo.py" line="714"/>
         <source>Map canvas</source>
         <translation>Emprise de la carte</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1566"/>
+        <location filename="isogeo.py" line="1568"/>
         <source>Quick Search</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1315"/>
+        <location filename="isogeo.py" line="1317"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="910"/>
+        <location filename="isogeo.py" line="912"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="574"/>
+        <location filename="isogeo.py" line="576"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1849"/>
+        <location filename="isogeo.py" line="1851"/>
         <source>https://github.com/isogeo/isogeo-plugin-qgis/issues</source>
         <translation>https://github.com/isogeo/isogeo-plugin-qgis/issues</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1193"/>
+        <location filename="isogeo.py" line="1195"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation>La table ou la vue PostGIS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1448"/>
+        <location filename="isogeo.py" line="1450"/>
         <source>{} successfully saved: {}</source>
         <translation>{} sauvegardée correctement : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1547"/>
+        <location filename="isogeo.py" line="1549"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation>Recherche rapide renommée de {} à {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1576"/>
+        <location filename="isogeo.py" line="1578"/>
         <source>Quicksearch removed: {}</source>
         <translation>Recherche rapide supprimée : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1768"/>
+        <location filename="isogeo.py" line="1770"/>
         <source> powered by 1 share:&lt;/p&gt;&lt;/br&gt;</source>
         <translation>alimenté par 1 seul partage :&lt;/p&gt;&lt;/br&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1770"/>
+        <location filename="isogeo.py" line="1772"/>
         <source> powered by {0} shares:&lt;/p&gt;&lt;/br&gt;</source>
         <translation>alimenté par {0} partages :&lt;/p&gt;&lt;/br&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1784"/>
+        <location filename="isogeo.py" line="1786"/>
         <source>&lt;p&gt;Updated: {}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Dernière mise à jour : {}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1786"/>
+        <location filename="isogeo.py" line="1788"/>
         <source>&lt;p&gt;Contact: {} - {}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Groupe de travail propriétaire : {} - {}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1762"/>
+        <location filename="isogeo.py" line="1764"/>
         <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
         <translation>&lt;p&gt;Ce plugin est authentifié en tant que &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; et </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1078"/>
+        <location filename="isogeo.py" line="1080"/>
         <source>The linked WFS is not valid. QGIS says: {}</source>
         <translation>La couche du service WFS liée semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1106"/>
+        <location filename="isogeo.py" line="1108"/>
         <source>The linked WMS is not valid. QGIS says: {}</source>
         <translation>La couche du service WMS liée semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1123"/>
+        <location filename="isogeo.py" line="1125"/>
         <source>The linked WMTS is not valid. QGIS says: {} {}</source>
         <translation>La couche du service WMTS liée semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="428"/>
+        <location filename="isogeo.py" line="430"/>
         <source>Request to Isogeo failed: please check your Internet connection.</source>
         <translation>La requête à l&apos;API Isogeo a échoué. Merci de vérifier la connexion Internet et de réessayer.</translation>
     </message>
@@ -403,23 +403,27 @@
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="modules/results.py" line="133"/>
+        <location filename="modules/results.py" line="134"/>
         <source>Unknown geometry</source>
+        <comment>ResultsManager</comment>
         <translation>Géométrie inconnue</translation>
     </message>
     <message>
-        <location filename="modules/results.py" line="430"/>
+        <location filename="modules/results.py" line="431"/>
         <source>Data file</source>
+        <comment>ResultsManager</comment>
         <translation>Donnée fichier</translation>
     </message>
     <message>
-        <location filename="modules/results.py" line="428"/>
+        <location filename="modules/results.py" line="429"/>
         <source>PostGIS table</source>
+        <comment>ResultsManager</comment>
         <translation>Table PostGIS</translation>
     </message>
     <message>
-        <location filename="modules/results.py" line="392"/>
+        <location filename="modules/results.py" line="393"/>
         <source>Can&apos;t be added</source>
+        <comment>ResultsManager</comment>
         <translation>Non ajoutable</translation>
     </message>
 </context>
