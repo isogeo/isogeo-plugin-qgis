@@ -207,7 +207,7 @@ class MetadataDisplayer(object):
                                                  md.get("validFrom", "NR")))
         self.complete_md.val_valid_end.setText(custom_tools.handle_date(
                                                md.get("validTo", "NR")))
-        self.complete_md.val_valid_comment.setTqtext(md.get("validityComment", "NR"))
+        self.complete_md.val_valid_comment.setText(md.get("validityComment", "NR"))
         # Collect information
         self.complete_md.val_method.setText(md.get("collectionMethod", "NR"))
         self.complete_md.val_context.setText(md.get("collectionContext", "NR"))
