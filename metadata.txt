@@ -10,8 +10,8 @@
 name=Isogeo
 qgisMinimumVersion=2.8
 description=Isogeo search engine within QGIS
-version=1.5.0-beta3
-author=Isogeo,Theo Sinatti,GeoJulien
+version=1.5.0-beta4
+author=Isogeo,GeoJulien,Theo Sinatti
 email=projects+qgis@isogeo.com
 
 about=This plugin helps finding geodata, searching within Isogeo catalogs. To use it, you can ask a free access sending a mail to projects+qgis@isogeo.com.
