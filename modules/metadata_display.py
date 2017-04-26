@@ -2,9 +2,6 @@
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 # Standard library
-from functools import partial
-from os import path
-import json
 import logging
 
 # PyQGIS
@@ -40,6 +37,7 @@ srv_url_bld = UrlBuilder()
 
 class MetadataDisplayer(object):
     """Basic class that holds utilitary methods for the plugin."""
+    url_edition = "https://app.isogeo.com"
 
     def __init__(self, ui_md_details):
         """Class constructor."""
@@ -54,6 +52,7 @@ class MetadataDisplayer(object):
                          "styles=&tileMatrixSet=EPSG:4326&"\
                          "url=http://suite.opengeo.org/geoserver/gwc/service/wmts?request%3DGetCapabilities"
         self.world_lyr = QgsRasterLayer(world_wmts_url, "Countries", 'wms')
+        self.complete_md.btn_md_edit.pressed.connect(lambda: custom_tools.open_webpage(link=self.url_edition))
 
     def show_complete_md(self, md, lang="EN"):
         """Open the pop up window that shows the metadata sheet details."""
@@ -336,11 +335,9 @@ class MetadataDisplayer(object):
                                                     md.get("_created")[:19]))
 
         # -- EDIT LINK -------------------------------------------------------
-        url_edition = "https://app.isogeo.com/groups/{}/resources/{}"\
-                      .format(wg_id, md.get("_id"))
-        self.complete_md.btn_md_edit.pressed.connect(
-                                             partial(custom_tools.open_webpage,
-                                                     link=url_edition))
+        self.url_edition = "https://app.isogeo.com/groups/{}/resources/{}"\
+                           .format(wg_id, md.get("_id"))
+
         # only if user declared himself as Isogeo editor in authentication form
         self.complete_md.btn_md_edit.setEnabled(qsettings
                                                 .value("isogeo/user/editor", 1))
