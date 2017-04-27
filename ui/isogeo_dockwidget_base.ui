@@ -13,7 +13,7 @@
   <property name="minimumSize">
    <size>
     <width>623</width>
-    <height>602</height>
+    <height>716</height>
    </size>
   </property>
   <property name="windowIcon">
@@ -60,12 +60,63 @@
         <string>Search</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
+        <item column="0" row="3">
+         <widget class="QTableWidget" name="tbl_result">
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="sortingEnabled">
+           <bool>false</bool>
+          </property>
+          <attribute name="horizontalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Title</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Modified</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Add</string>
+           </property>
+          </column>
+         </widget>
+        </item>
         <item column="0" row="0">
          <layout class="QHBoxLayout" name="horizontalLayout_14">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
              <widget class="QLineEdit" name="txt_input">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>25</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Enter your search terms</string>
+              </property>
+              <property name="autoFillBackground">
+               <bool>true</bool>
+              </property>
               <property name="inputMask">
                <string />
               </property>
@@ -93,12 +144,19 @@
                <x>1</x>
                <y>4</y>
                <width>261</width>
-               <height>63</height>
+               <height>64</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_11">
               <item>
-               <widget class="QComboBox" name="cbb_keywords" />
+               <widget class="QComboBox" name="cbb_keywords">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
+               </widget>
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_13">
@@ -170,6 +228,128 @@
              </layout>
             </widget>
            </widget>
+          </item>
+         </layout>
+        </item>
+        <item column="0" row="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_17">
+          <item>
+           <widget class="QPushButton" name="btn_show">
+            <property name="minimumSize">
+             <size>
+              <width>201</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Display the results list</string>
+            </property>
+            <property name="text">
+             <string>Show results</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/eye.svg</normaloff>:/plugins/Isogeo/resources/eye.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cbb_ob">
+            <property name="toolTip">
+             <string>Sorting method</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cbb_od">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>111</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Sorting direction</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item column="0" row="4">
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <item>
+           <spacer name="horizontalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>98</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_previous">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string notr="true" />
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/caret-left.svg</normaloff>:/plugins/Isogeo/resources/caret-left.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lbl_page">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Page x on x</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_next">
+            <property name="text">
+             <string />
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/caret-right.svg</normaloff>:/plugins/Isogeo/resources/caret-right.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>128</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
@@ -719,167 +899,6 @@
            </item>
           </layout>
          </widget>
-        </item>
-        <item column="0" row="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_17">
-          <item>
-           <widget class="QPushButton" name="btn_show">
-            <property name="minimumSize">
-             <size>
-              <width>201</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Display the results list</string>
-            </property>
-            <property name="text">
-             <string>Show results</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/eye.svg</normaloff>:/plugins/Isogeo/resources/eye.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cbb_ob">
-            <property name="toolTip">
-             <string>Sorting method</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cbb_od">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>111</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Sorting direction</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item column="0" row="3">
-         <widget class="QTableWidget" name="tbl_result">
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="sortingEnabled">
-           <bool>false</bool>
-          </property>
-          <attribute name="horizontalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <column>
-           <property name="text">
-            <string>Title</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Modified</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Type</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Add</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-        <item column="0" row="4">
-         <layout class="QHBoxLayout" name="horizontalLayout_12">
-          <item>
-           <spacer name="horizontalSpacer_7">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>98</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_previous">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string notr="true" />
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/caret-left.svg</normaloff>:/plugins/Isogeo/resources/caret-left.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="lbl_page">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Page x on x</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_next">
-            <property name="text">
-             <string />
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/caret-right.svg</normaloff>:/plugins/Isogeo/resources/caret-right.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>128</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
         </item>
        </layout>
        <zorder>grp_filters</zorder>

@@ -341,7 +341,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="md_general">
         <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -661,8 +661,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>122</width>
-                <height>122</height>
+                <width>118</width>
+                <height>118</height>
                </rect>
               </property>
               <property name="maximumSize">
@@ -821,8 +821,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>72</width>
-                 <height>172</height>
+                 <width>63</width>
+                 <height>168</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_16">
@@ -904,8 +904,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>72</width>
-                 <height>172</height>
+                 <width>63</width>
+                 <height>168</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_15">
@@ -1429,7 +1429,7 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="grp_collection">
+          <widget class="QGroupBox" name="grp_collect_context">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -1481,7 +1481,7 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_2">
+          <widget class="QGroupBox" name="grp_collect_method">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -1953,20 +1953,58 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
+          <widget class="QGroupBox" name="grp_quality">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
+           <property name="title">
+            <string>Quality</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
+           <layout class="QGridLayout" name="gridLayout_22">
+            <item column="2" row="0" rowspan="2">
+             <widget class="QLabel" name="val_topology">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+              <property name="openExternalLinks">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item column="2" row="2">
+             <widget class="Line" name="line_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item column="2" row="3">
+             <widget class="QLabel" name="val_specifications">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+              <property name="openExternalLinks">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </item>
          <item>
           <widget class="QGroupBox" name="grp_bbox">
@@ -1986,35 +2024,6 @@ QListWidget::item::selected {
             <bool>false</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout_18">
-            <item colspan="2" column="0" row="1">
-             <widget class="QgsMapCanvas" name="wid_bbox" native="true">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>200</height>
-               </size>
-              </property>
-              <property name="cursor">
-               <cursorShape>OpenHandCursor</cursorShape>
-              </property>
-             </widget>
-            </item>
-            <item column="1" row="0">
-             <widget class="QLabel" name="lbl_bbox">
-              <property name="text">
-               <string>Bounding box preview</string>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::NoTextInteraction</set>
-              </property>
-             </widget>
-            </item>
             <item column="0" row="0">
              <widget class="QLabel" name="ico_bbox">
               <property name="minimumSize">
@@ -2046,6 +2055,35 @@ QListWidget::item::selected {
               </property>
               <property name="textInteractionFlags">
                <set>Qt::NoTextInteraction</set>
+              </property>
+             </widget>
+            </item>
+            <item column="1" row="0">
+             <widget class="QLabel" name="lbl_bbox">
+              <property name="text">
+               <string>Bounding box preview</string>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::NoTextInteraction</set>
+              </property>
+             </widget>
+            </item>
+            <item colspan="2" column="0" row="1">
+             <widget class="QgsMapCanvas" name="wid_bbox" native="true">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>200</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>OpenHandCursor</cursorShape>
               </property>
              </widget>
             </item>
@@ -2181,8 +2219,8 @@ QListWidget::item::selected {
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>545</width>
-              <height>699</height>
+              <width>524</width>
+              <height>204</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
