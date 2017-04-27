@@ -3,6 +3,7 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 
 # Standard library
 import logging
+from datetime import datetime
 
 # PyQGIS
 from qgis.core import (QgsMapLayerRegistry, QgsMessageLog,
@@ -59,29 +60,6 @@ class MetadataDisplayer(object):
         logger.info("Displaying the whole metadata sheet.")
         tags = isogeo_api_mng.get_tags(md)
         isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])
-
-        # -- DISPLAY ---------------------------------------------------------
-        # adapt display according to metadata type
-        if md.get("type") == "vectorDataset":
-            print("vector dataset")
-
-        elif md.get("type") == "rasterDataset" and not md.get("series"):
-            print("raster dataset")
-            self.complete_md.val_feat_count.setHidden(1)
-            self.complete_md.val_geometry.setHidden(1)
-
-        elif md.get("type") == "rasterDataset" and md.get("series"):
-            print("datasets serie")
-
-        elif md.get("type") == "service":
-            print("web service")
-
-        elif md.get("type") == "resource":
-            print("resource")
-
-        else:
-            # should not exist
-            pass
 
         # clean map canvas
         vec_lyr = [i for i in self.complete_md.wid_bbox.layers() if i.type() == 0]
@@ -244,8 +222,35 @@ class MetadataDisplayer(object):
         # feature info
         self.complete_md.val_feat_count.setText(str(md.get("features", "/")))
         self.complete_md.val_geometry.setText(md.get("geometry", ""))
-        self.complete_md.val_resolution.setText(str(md.get("distance", "")))
-        self.complete_md.val_scale.setText(str(md.get("scale", "")))
+        self.complete_md.val_resolution.setText(str(md.get("distance", "")) + " m")
+        self.complete_md.val_scale.setText("1:" + str(md.get("scale", "")))
+
+        # Quality
+        self.complete_md.val_topology.setText(md.get("topologicalConsistency", ""))
+        # Specifications
+        specs_in = md.get("specifications", dict())
+        specs_out = []
+        for s_in in specs_in:
+            # translate specification conformity
+            if s_in.get("conformant"):
+                s_conformity = isogeo_tr.tr("quality", "isConform")
+            else:
+                s_conformity = isogeo_tr.tr("quality", "isNotConform")
+            # make data human readable
+            s_date = datetime.strptime(s_in.get("specification").get("published"),
+                                       "%Y-%m-%dT%H:%M:%S")
+            s_date = s_date.strftime("%Y-%m-%d")
+            # prepare text
+            spec_text = "<a href='{1}'><b>{0} ({2})</b></a>: {3}"\
+                        .format(s_in.get("specification").get("name", "NR"),
+                                s_in.get("specification").get("link", ""),
+                                s_date,
+                                s_conformity)
+            # store into the final list
+            specs_out.append(spec_text)
+        # write
+        self.complete_md.val_specifications.setText("<br><hr><br>".join(specs_out))
+
         # Geography
         if "envelope" in md:
             # display
@@ -347,7 +352,8 @@ class MetadataDisplayer(object):
         self.complete_md.btn_xml_dl.setHidden(1)
 
         # -- DISPLAY ---------------------------------------------------------
-        # Finally open the damn window
+        self.fields_displayer(md.get("type"), md.get("series"))
+        # Finally open the damned window
         self.complete_md.show()
         try:
             QgsMessageLog.logMessage("Detailed metadata displayed: {}"
@@ -393,3 +399,96 @@ class MetadataDisplayer(object):
             pass
         # method ending
         return md_lyr
+
+    def fields_displayer(self, md_type, series=0):
+        """Adapt display according to metadata type."""
+        menu_list = self.complete_md.li_menu
+        if md_type == "vectorDataset":
+            # general
+            self.complete_md.val_inspire_themes.setHidden(0)
+            self.complete_md.ico_inspire_themes.setHidden(0)
+            self.complete_md.ico_inspire_conformity.setHidden(0)
+            self.complete_md.val_feat_count.setHidden(0)
+            self.complete_md.val_geometry.setHidden(0)
+            # history
+            self.complete_md.grp_collect_context.setHidden(0)
+            self.complete_md.grp_collect_method.setHidden(0)
+            # menus
+            menu_list.item(1).setHidden(0)  # attributes
+            menu_list.item(4).setHidden(0)  # geography and technical
+            return
+
+        elif md_type == "rasterDataset" and not series:
+            # geography
+            self.complete_md.val_feat_count.setHidden(1)
+            self.complete_md.val_geometry.setHidden(1)
+            # menus
+            menu_list.item(1).setHidden(1)  # attributes
+            menu_list.item(4).setHidden(0)  # geography and technical
+            return
+
+        elif md_type == "rasterDataset" and series:
+            # geography
+            self.complete_md.ico_feat_count.setHidden(1)
+            self.complete_md.lbl_feat_count.setHidden(1)
+            self.complete_md.val_feat_count.setHidden(1)
+            self.complete_md.ico_geometry.setHidden(1)
+            self.complete_md.lbl_geometry.setHidden(1)
+            self.complete_md.val_geometry.setHidden(1)
+            # menus
+            menu_list.item(1).setHidden(1)  # attributes
+            menu_list.item(4).setHidden(0)  # geography and technical
+            return
+
+        elif md_type == "service":
+            # general
+            self.complete_md.val_inspire_themes.setHidden(1)
+            self.complete_md.ico_inspire_themes.setHidden(1)
+            self.complete_md.ico_inspire_conformity.setHidden(1)
+            # history
+            self.complete_md.lbl_frequency.setHidden(1)
+            self.complete_md.ico_frequency.setHidden(1)
+            self.complete_md.val_frequency.setHidden(1)
+            self.complete_md.lbl_valid_start.setHidden(1)
+            self.complete_md.ico_valid_start.setHidden(1)
+            self.complete_md.val_valid_start.setHidden(1)
+            self.complete_md.lbl_valid_end.setHidden(1)
+            self.complete_md.ico_valid_end.setHidden(1)
+            self.complete_md.val_valid_end.setHidden(1)
+            self.complete_md.lbl_valid_comment.setHidden(1)
+            self.complete_md.ico_valid_comment.setHidden(1)
+            self.complete_md.val_valid_comment.setHidden(1)
+            self.complete_md.grp_collect_context.setHidden(1)
+            self.complete_md.grp_collect_method.setHidden(1)
+            # geography
+            self.complete_md.grp_technic.setHidden(1)
+            # menus
+            menu_list.item(1).setHidden(1)  # attributes
+            menu_list.item(4).setHidden(0)  # geography and technical
+            return
+
+        elif md_type == "resource":
+            # history
+            self.complete_md.lbl_frequency.setHidden(1)
+            self.complete_md.ico_frequency.setHidden(1)
+            self.complete_md.val_frequency.setHidden(1)
+            self.complete_md.lbl_valid_start.setHidden(1)
+            self.complete_md.ico_valid_start.setHidden(1)
+            self.complete_md.val_valid_start.setHidden(1)
+            self.complete_md.lbl_valid_end.setHidden(1)
+            self.complete_md.ico_valid_end.setHidden(1)
+            self.complete_md.val_valid_end.setHidden(1)
+            self.complete_md.lbl_valid_comment.setHidden(1)
+            self.complete_md.ico_valid_comment.setHidden(1)
+            self.complete_md.val_valid_comment.setHidden(1)
+            self.complete_md.grp_collect_context.setHidden(1)
+            self.complete_md.grp_collect_method.setHidden(1)
+            # menus
+            menu_list.item(1).setHidden(1)  # attributes
+            menu_list.item(4).setHidden(1)  # geography and technical
+            return
+
+        else:
+            # should not exist
+            logger.error("Metadata type not recognized:", md_type)
+            return
