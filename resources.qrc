@@ -1,5 +1,15 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/cube_blue.svg</file>
+    <file>resources/users_blue.svg</file>
+    <file>resources/phone_orange.svg</file>
+    <file>resources/calendar_blue.svg</file>
+    <file>resources/calendar_orange.svg</file>
+    <file>resources/globe_orange.svg</file>
+    <file>resources/bookmark_orange.svg</file>
+    <file>resources/bookmark_blue.svg</file>
+    <file>resources/puzzle-piece.svg</file>
+    <file>resources/trophy.svg</file>
     <file>resources/user.svg</file>
     <file>resources/sign-in.svg</file>
     <file>resources/key.svg</file>
@@ -26,7 +36,6 @@
     <file>resources/gavel.svg</file>
     <file>resources/gplv3.png</file>
     <file>icon.png</file>
-    <file>resources/bookmark.svg</file>
     <file>resources/isogeo.png</file>
     <file>resources/sponsor_logo_ca_lorient.png</file>
     <file>resources/sponsor_logo_SMAVD.jpg</file>
@@ -47,7 +56,6 @@
     <file>resources/ban.svg</file>
     <file>resources/bolt.svg</file>
     <file>resources/bullhorn.svg</file>
-    <file>resources/calendar.svg</file>
     <file>resources/calendar-o.svg</file>
     <file>resources/caret-left.svg</file>
     <file>resources/caret-right.svg</file>
@@ -58,7 +66,6 @@
     <file>resources/info.svg</file>
     <file>resources/map.svg</file>
     <file>resources/pencil.svg</file>
-    <file>resources/phone.svg</file>
     <file>resources/play.svg</file>
     <file>resources/question.svg</file>
     <file>resources/save.svg</file>
