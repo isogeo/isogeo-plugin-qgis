@@ -85,16 +85,16 @@ srv_url_bld = UrlBuilder()
 # LOG FILE ##
 logger = logging.getLogger("IsogeoQgisPlugin")
 logging.captureWarnings(True)
-# logger.setLevel(logging.INFO)  # all errors will be get
-logger.setLevel(logging.DEBUG)  # switch on it only for dev works
+logger.setLevel(logging.INFO)  # all errors will be get
+# logger.setLevel(logging.DEBUG)  # switch on it only for dev works
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s || %(message)s")
 logfile = RotatingFileHandler(os.path.join(
                               os.path.dirname(os.path.realpath(__file__)),
                               "log_isogeo_plugin.log"),
                               "a", 5000000, 1)
-# logfile.setLevel(logging.INFO)
-logfile.setLevel(logging.DEBUG)  # switch on it only for dev works
+logfile.setLevel(logging.INFO)
+# logfile.setLevel(logging.DEBUG)  # switch on it only for dev works
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 

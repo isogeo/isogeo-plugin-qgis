@@ -856,7 +856,7 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/metadata/ui_md_details.ui" line="2675"/>
+        <location filename="ui/metadata/ui_md_details.ui" line="2733"/>
         <source>Language: </source>
         <translation type="unfinished"></translation>
     </message>

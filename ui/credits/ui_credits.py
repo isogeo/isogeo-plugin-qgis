@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\credits\ui_credits.ui'
 #
-# Created: Tue Mar 14 10:47:31 2017
+# Created: Fri Apr 28 17:50:57 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!

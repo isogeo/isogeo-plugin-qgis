@@ -880,7 +880,7 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <translation>Méthode de collecte</translation>
     </message>
     <message>
-        <location filename="ui/metadata/ui_md_details.ui" line="2675"/>
+        <location filename="ui/metadata/ui_md_details.ui" line="2733"/>
         <source>Language: </source>
         <translation>Langue:</translation>
     </message>
