@@ -307,7 +307,7 @@ class MetadataDisplayer(object):
             # INSPIRE precision
             if "directive" in l_in:
                 lim_text += "<br><u>INSPIRE</u><br>"\
-                            "<ul><li>{}</li><li>Tea</li></ul>"\
+                            "<ul><li>{}</li><li>{}</li></ul>"\
                             .format(l_in.get("directive").get("name"),
                                     l_in.get("directive").get("description"))
             else:
@@ -400,7 +400,7 @@ class MetadataDisplayer(object):
         # method ending
         return md_lyr
 
-    def fields_displayer(self, md_type, series=0):
+    def fields_displayer(self, md_type="vectorDataset", series=0):
         """Adapt display according to metadata type."""
         menu_list = self.complete_md.li_menu
         if md_type == "vectorDataset":
@@ -411,8 +411,28 @@ class MetadataDisplayer(object):
             self.complete_md.val_feat_count.setHidden(0)
             self.complete_md.val_geometry.setHidden(0)
             # history
+            self.complete_md.lbl_frequency.setHidden(0)
+            self.complete_md.ico_frequency.setHidden(0)
+            self.complete_md.val_frequency.setHidden(0)
+            self.complete_md.lbl_valid_start.setHidden(0)
+            self.complete_md.ico_valid_start.setHidden(0)
+            self.complete_md.val_valid_start.setHidden(0)
+            self.complete_md.lbl_valid_end.setHidden(0)
+            self.complete_md.ico_valid_end.setHidden(0)
+            self.complete_md.val_valid_end.setHidden(0)
+            self.complete_md.lbl_valid_comment.setHidden(0)
+            self.complete_md.ico_valid_comment.setHidden(0)
+            self.complete_md.val_valid_comment.setHidden(0)
             self.complete_md.grp_collect_context.setHidden(0)
             self.complete_md.grp_collect_method.setHidden(0)
+            # geography
+            self.complete_md.grp_technic.setHidden(0)
+            self.complete_md.ico_feat_count.setHidden(0)
+            self.complete_md.lbl_feat_count.setHidden(0)
+            self.complete_md.val_feat_count.setHidden(0)
+            self.complete_md.ico_geometry.setHidden(0)
+            self.complete_md.lbl_geometry.setHidden(0)
+            self.complete_md.val_geometry.setHidden(0)
             # menus
             menu_list.item(1).setHidden(0)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -422,6 +442,8 @@ class MetadataDisplayer(object):
             # geography
             self.complete_md.val_feat_count.setHidden(1)
             self.complete_md.val_geometry.setHidden(1)
+            # geography
+            self.complete_md.grp_technic.setHidden(0)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -435,6 +457,8 @@ class MetadataDisplayer(object):
             self.complete_md.ico_geometry.setHidden(1)
             self.complete_md.lbl_geometry.setHidden(1)
             self.complete_md.val_geometry.setHidden(1)
+            # geography
+            self.complete_md.grp_technic.setHidden(0)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -461,7 +485,7 @@ class MetadataDisplayer(object):
             self.complete_md.grp_collect_context.setHidden(1)
             self.complete_md.grp_collect_method.setHidden(1)
             # geography
-            self.complete_md.grp_technic.setHidden(1)
+            self.complete_md.grp_technic.setHidden(0)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
