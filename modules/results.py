@@ -167,7 +167,7 @@ class ResultsManager(object):
                     except IOError:
                         pass
                 # Same if the data is a raster
-                elif i.get('format') in rasterformat_list and 'path' in i:
+                elif i.get('format', "NR") in rasterformat_list and 'path' in i:
                     path = custom_tools.format_path(i.get('path'))
                     try:
                         open(path)

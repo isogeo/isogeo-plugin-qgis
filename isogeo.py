@@ -1029,29 +1029,39 @@ class Isogeo:
                         logger.info("Vector layer added: {}"
                                     .format(name.decode("latin1")))
                 else:
-                    logger.info("Layer not valid. path = {0}".format(path))
+                    logger.error("Invalid vector layer: {0}".format(path))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
-                        self.tr('The layer is not valid.'))
+                        self.tr('Vector layer is not valid.'))
             # If raster file
             elif layer_info[0] == "raster":
                 path = layer_info[1]
                 name = os.path.basename(path).split(".")[0]
-                layer = QgsRasterLayer(path, name)
+                layer = QgsRasterLayer(path, layer_info[2])
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
                     # fill QGIS metadata from Isogeo
                     lyr.setTitle(layer_info[2])
                     lyr.setAbstract(layer_info[3])
                     lyr.setKeywordList(",".join(layer_info[4]))
-                    logger.info("Raster datasource added: {0}".format(path))
+                    try:
+                        QgsMessageLog.logMessage("Data layer added: {}"
+                                                 .format(name),
+                                                 "Isogeo")
+                        logger.info("Raster layer added: {}".format(path))
+                    except UnicodeEncodeError:
+                        QgsMessageLog.logMessage(
+                            "Raster layer added:: {}".format(
+                                name.decode("latin1")), "Isogeo")
+                        logger.info("Raster layer added: {}"
+                                    .format(name.decode("latin1")))
                 else:
-                    logger.warning("Invalid datasource: {0}".format(path))
+                    logger.warning("Invalid raster layer: {0}".format(path))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
-                        self.tr('The layer is not valid.'))
+                        self.tr('Raster layer is not valid.'))
             # If WFS link
             elif layer_info[0] == 'WFS':
                 url = layer_info[2]
