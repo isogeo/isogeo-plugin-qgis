@@ -199,6 +199,7 @@ class Isogeo:
         We implement this ourselves since we do not inherit QObject.
         :param message: String for translation.
         :type message: str, QString
+        :context: str, QString
         :returns: Translated version of message.
         :rtype: QString
         """
@@ -293,8 +294,7 @@ class Isogeo:
         """Remove the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginWebMenu(
-                self.tr(u'&Isogeo'),
-                action)
+                self.tr(u'&Isogeo'), action)
             try:
                 self.iface.mainWindow().statusBar().removeWidget(self.bar)
             except:
