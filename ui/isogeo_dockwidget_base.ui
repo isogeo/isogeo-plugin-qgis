@@ -13,7 +13,7 @@
   <property name="minimumSize">
    <size>
     <width>623</width>
-    <height>716</height>
+    <height>759</height>
    </size>
   </property>
   <property name="windowIcon">
@@ -48,6 +48,9 @@
         <bold>true</bold>
        </font>
       </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -59,8 +62,64 @@
        <attribute name="title">
         <string>Search</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_3">
+       <layout class="QGridLayout" name="gridLayout_8">
         <item column="0" row="3">
+         <layout class="QHBoxLayout" name="horizontalLayout_17">
+          <item>
+           <widget class="QPushButton" name="btn_show">
+            <property name="minimumSize">
+             <size>
+              <width>201</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Display the results list</string>
+            </property>
+            <property name="text">
+             <string>Show results</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/eye.svg</normaloff>:/plugins/Isogeo/resources/eye.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cbb_ob">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Sorting method</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cbb_od">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>110</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Sorting direction</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item column="0" row="4">
          <widget class="QTableWidget" name="tbl_result">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -99,189 +158,7 @@
           </column>
          </widget>
         </item>
-        <item column="0" row="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_14">
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_6">
-            <item>
-             <widget class="QLineEdit" name="txt_input">
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="toolTip">
-               <string>Enter your search terms</string>
-              </property>
-              <property name="autoFillBackground">
-               <bool>true</bool>
-              </property>
-              <property name="inputMask">
-               <string />
-              </property>
-              <property name="text">
-               <string />
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="cbb_quicksearch" />
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QWidget" name="widget" native="true">
-            <property name="minimumSize">
-             <size>
-              <width>271</width>
-              <height>65</height>
-             </size>
-            </property>
-            <widget class="QWidget" name="layoutWidget">
-             <property name="geometry">
-              <rect>
-               <x>1</x>
-               <y>4</y>
-               <width>261</width>
-               <height>64</height>
-              </rect>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_11">
-              <item>
-               <widget class="QComboBox" name="cbb_keywords">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>25</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_13">
-                <item>
-                 <widget class="QPushButton" name="btn_save">
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>8</pointsize>
-                   </font>
-                  </property>
-                  <property name="toolTip">
-                   <string>Save research</string>
-                  </property>
-                  <property name="text">
-                   <string />
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../resources.qrc">
-                    <normaloff>:/plugins/Isogeo/resources/save.svg</normaloff>:/plugins/Isogeo/resources/save.svg</iconset>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>18</width>
-                    <height>18</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="btn_reinit">
-                  <property name="minimumSize">
-                   <size>
-                    <width>81</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="toolTip">
-                   <string>Reset all input fields</string>
-                  </property>
-                  <property name="text">
-                   <string />
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../resources.qrc">
-                    <normaloff>:/plugins/Isogeo/resources/undo.svg</normaloff>:/plugins/Isogeo/resources/undo.svg</iconset>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>18</width>
-                    <height>18</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item column="0" row="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_17">
-          <item>
-           <widget class="QPushButton" name="btn_show">
-            <property name="minimumSize">
-             <size>
-              <width>201</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Display the results list</string>
-            </property>
-            <property name="text">
-             <string>Show results</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/eye.svg</normaloff>:/plugins/Isogeo/resources/eye.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cbb_ob">
-            <property name="toolTip">
-             <string>Sorting method</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cbb_od">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>111</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Sorting direction</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item column="0" row="4">
+        <item column="0" row="5">
          <layout class="QHBoxLayout" name="horizontalLayout_12">
           <item>
            <spacer name="horizontalSpacer_7">
@@ -353,7 +230,160 @@
           </item>
          </layout>
         </item>
-        <item column="0" row="1">
+        <item column="0" row="0">
+         <layout class="QGridLayout" name="lyt_search">
+          <item column="2" row="0">
+           <widget class="QComboBox" name="cbb_quicksearch">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item column="0" row="1">
+           <widget class="QComboBox" name="cbb_keywords">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>25</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item column="0" row="0">
+           <widget class="QLineEdit" name="txt_input">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Enter your search terms</string>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="inputMask">
+             <string />
+            </property>
+            <property name="text">
+             <string />
+            </property>
+            <property name="placeholderText">
+             <string>roads, habitat, cadastral parcel, transport</string>
+            </property>
+           </widget>
+          </item>
+          <item column="1" row="0">
+           <widget class="QPushButton" name="btn_search_go">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="toolTip">
+             <string>Launch search</string>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string />
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/search.svg</normaloff>:/plugins/Isogeo/resources/search.svg</iconset>
+            </property>
+            <property name="autoDefault">
+             <bool>true</bool>
+            </property>
+            <property name="default">
+             <bool>true</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item colspan="3" column="1" row="1">
+           <widget class="QPushButton" name="btn_reinit">
+            <property name="minimumSize">
+             <size>
+              <width>81</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Reset all input fields</string>
+            </property>
+            <property name="text">
+             <string />
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/undo.svg</normaloff>:/plugins/Isogeo/resources/undo.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item column="3" row="0">
+           <widget class="QPushButton" name="btn_save">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Save research</string>
+            </property>
+            <property name="text">
+             <string />
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/save.svg</normaloff>:/plugins/Isogeo/resources/save.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item column="0" row="2">
          <widget class="QgsCollapsibleGroupBox" name="grp_filters">
           <property name="font">
            <font>
@@ -374,11 +404,11 @@
            <item column="0" row="0">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <layout class="QHBoxLayout" name="lyt_horiz_filters">
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_8">
+                <layout class="QVBoxLayout" name="lyt_vert_filters_left">
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout">
+                  <layout class="QVBoxLayout" name="lyt_vert_filter_geo">
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout">
                      <item>
@@ -402,6 +432,12 @@
                      </item>
                      <item>
                       <widget class="QLabel" name="lbl_geofilter">
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
                        <property name="text">
                         <string>Geographic filter</string>
                        </property>
@@ -428,7 +464,7 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_3">
+                  <layout class="QVBoxLayout" name="lyt_vert_filter_format">
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_3">
                      <item>
@@ -511,7 +547,7 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_4">
+                  <layout class="QVBoxLayout" name="lyt_vert_filter_inspire">
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_4">
                      <item>
@@ -593,12 +629,77 @@
                    </item>
                   </layout>
                  </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="lyt_vert_filter_contact">
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_15">
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="ico_contact">
+                       <property name="maximumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string />
+                       </property>
+                       <property name="pixmap">
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/phone_orange.svg</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="lbl_contact">
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Contact</string>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_17">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="cbb_contact" />
+                   </item>
+                  </layout>
+                 </item>
                 </layout>
                </item>
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_9">
+                <layout class="QVBoxLayout" name="lyt_vert_filters_right">
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_2">
+                  <layout class="QVBoxLayout" name="lyt_vert_filter_type">
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_2">
                      <item>
@@ -622,6 +723,12 @@
                      </item>
                      <item>
                       <widget class="QLabel" name="lbl_type">
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
                        <property name="text">
                         <string>Resource type</string>
                        </property>
@@ -648,7 +755,7 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_5">
+                  <layout class="QVBoxLayout" name="lyt_vert_filter_workgroup">
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_5">
                      <item>
@@ -731,7 +838,7 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <layout class="QVBoxLayout" name="lyt_vert_filter_srs">
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_6">
                      <item>
@@ -813,85 +920,63 @@
                    </item>
                   </layout>
                  </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="lyt_vert_filter_licence">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_8">
+                     <item>
+                      <widget class="QLabel" name="ico_license">
+                       <property name="maximumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string />
+                       </property>
+                       <property name="pixmap">
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/gavel.png</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="lbl_license">
+                       <property name="font">
+                        <font>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Licence</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_18">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="cbb_license" />
+                   </item>
+                  </layout>
+                 </item>
                 </layout>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <item>
-                <widget class="QLabel" name="ico_actions">
-                 <property name="maximumSize">
-                  <size>
-                   <width>18</width>
-                   <height>18</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string />
-                 </property>
-                 <property name="pixmap">
-                  <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/play.svg</pixmap>
-                 </property>
-                 <property name="scaledContents">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="lbl_actions">
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <italic>false</italic>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Associated resources</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_12">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>18</width>
-                   <height>17</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="chb_view">
-                 <property name="text">
-                  <string>View</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="chb_download">
-                 <property name="text">
-                  <string>Download</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="chb_other">
-                 <property name="text">
-                  <string>Other actions</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="chb_none">
-                 <property name="text">
-                  <string>None</string>
-                 </property>
-                </widget>
                </item>
               </layout>
              </item>
@@ -900,10 +985,19 @@
           </layout>
          </widget>
         </item>
+        <item column="0" row="1">
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
        </layout>
        <zorder>grp_filters</zorder>
        <zorder>tbl_result</zorder>
        <zorder />
+       <zorder>gridLayoutWidget</zorder>
+       <zorder>line</zorder>
       </widget>
       <widget class="QWidget" name="tab_settings">
        <attribute name="icon">
@@ -935,7 +1029,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>221</width>
-                   <height>20</height>
+                   <height>24</height>
                   </size>
                  </property>
                 </widget>
@@ -1110,7 +1204,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>176</width>
-                   <height>20</height>
+                   <height>24</height>
                   </size>
                  </property>
                 </widget>
@@ -1164,7 +1258,7 @@
                <property name="minimumSize">
                 <size>
                  <width>91</width>
-                 <height>0</height>
+                 <height>24</height>
                 </size>
                </property>
                <property name="text">
@@ -1222,7 +1316,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>91</width>
-                   <height>0</height>
+                   <height>24</height>
                   </size>
                  </property>
                  <property name="text">
@@ -1269,7 +1363,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>91</width>
-                   <height>0</height>
+                   <height>24</height>
                   </size>
                  </property>
                  <property name="text">
@@ -1316,7 +1410,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>91</width>
-                   <height>0</height>
+                   <height>24</height>
                   </size>
                  </property>
                  <property name="text">

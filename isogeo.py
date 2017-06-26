@@ -596,20 +596,16 @@ class Isogeo:
         cbb_geo_op = self.dockwidget.cbb_geo_op
         # Data type
         cbb_type = self.dockwidget.cbb_type
+        # License
+        cbb_licenses = self.dockwidget.cbb_license
+        # Contact
+        cbb_contact = self.dockwidget.cbb_contact
         # Sorting order
         cbb_ob = self.dockwidget.cbb_ob
         # Sorting direction
         cbb_od = self.dockwidget.cbb_od
         # Quick searches
         cbb_quicksearch = self.dockwidget.cbb_quicksearch
-        # Action : view
-        cb_view = self.dockwidget.chb_view
-        # Action : download
-        cb_dl = self.dockwidget.chb_download
-        # Action : other
-        cb_other = self.dockwidget.chb_other
-        # Action : None
-        cb_none = self.dockwidget.chb_none
         # Results table
         tbl_result = self.dockwidget.tbl_result
 
@@ -938,22 +934,6 @@ class Isogeo:
             model.insertRow(0, first_item)
             model.itemChanged.connect(self.search)
             self.dockwidget.cbb_keywords.setModel(model)
-        # Make th checkboxes unckeckable if needed
-        # View
-        if 'action:view' in tags.get('actions'):
-            cb_view.setEnabled(True)
-        else:
-            cb_view.setEnabled(False)
-        # Download
-        if 'action:download' in tags.get('actions'):
-            cb_dl.setEnabled(True)
-        else:
-            cb_dl.setEnabled(False)
-        # Other action
-        if 'action:other' in tags.get('actions'):
-            cb_other.setEnabled(True)
-        else:
-            cb_other.setEnabled(False)
         # Coloring the Show result button
         self.dockwidget.btn_show.setStyleSheet(
             "QPushButton "
@@ -1249,23 +1229,6 @@ class Isogeo:
             if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
                 key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
 
-        # Saving the checked checkboxes (useful for the search saving)
-        if self.dockwidget.chb_view.isChecked():
-            view_param = True
-        else:
-            view_param = False
-        if self.dockwidget.chb_download.isChecked():
-            download_param = True
-        else:
-            download_param = False
-        if self.dockwidget.chb_other.isChecked():
-            other_param = True
-        else:
-            other_param = False
-        if self.dockwidget.chb_none.isChecked():
-            noaction_param = True
-        else:
-            noaction_param = False
 
         params = {}
         params['owner'] = owner_param
@@ -1275,10 +1238,8 @@ class Isogeo:
         params['favorite'] = favorite_param
         params['keys'] = key_params
         params['geofilter'] = geofilter_param
-        params['view'] = view_param
-        params['download'] = download_param
-        params['other'] = other_param
-        params['noaction'] = noaction_param
+        params['license'] = geofilter_param
+        params['contact'] = geofilter_param
         params['text'] = text
         params['datatype'] = type_param
         params['operation'] = operation_param
@@ -1634,10 +1595,6 @@ class Isogeo:
         """
         logger.info("Reinitialize_search function called.")
         self.hardReset = True
-        self.dockwidget.chb_view.setCheckState(Qt.Unchecked)
-        self.dockwidget.chb_download.setCheckState(Qt.Unchecked)
-        self.dockwidget.chb_other.setCheckState(Qt.Unchecked)
-        self.dockwidget.chb_none.setCheckState(Qt.Unchecked)
         self.dockwidget.txt_input.clear()
         self.dockwidget.cbb_keywords.clear()
         self.dockwidget.cbb_type.clear()
@@ -1646,6 +1603,8 @@ class Isogeo:
         self.dockwidget.cbb_inspire.clear()
         self.dockwidget.cbb_format.clear()
         self.dockwidget.cbb_srs.clear()
+        self.dockwidget.cbb_license.clear()
+        self.dockwidget.cbb_contact.clear()
         self.dockwidget.cbb_geo_op.clear()
         self.dockwidget.cbb_ob.clear()
         self.dockwidget.cbb_od.clear()
@@ -1668,7 +1627,7 @@ class Isogeo:
             self.dockwidget.txt_input.setReadOnly(False)
             self.dockwidget.cbb_quicksearch.setEnabled(True)
             self.dockwidget.grp_filters.setEnabled(True)
-            self.dockwidget.widget.setEnabled(True)
+            self.dockwidget.lyt_search.setEnabled(True)
             self.dockwidget.btn_reinit.setEnabled(True)
             self.dockwidget.btn_save.setEnabled(True)
             self.dockwidget.btn_show.setEnabled(True)
@@ -1678,7 +1637,7 @@ class Isogeo:
             self.dockwidget.txt_input.setReadOnly(True)
             self.dockwidget.cbb_quicksearch.setEnabled(False)
             self.dockwidget.grp_filters.setEnabled(False)
-            self.dockwidget.widget.setEnabled(False)
+            self.dockwidget.lyt_search.setEnabled(False)
             self.dockwidget.btn_next.setEnabled(False)
             self.dockwidget.btn_previous.setEnabled(False)
             self.dockwidget.cbb_ob.setEnabled(False)
@@ -1845,11 +1804,6 @@ class Isogeo:
         self.dockwidget.cbb_type.activated.connect(self.search)
         # Connecting the text input to the search function
         self.dockwidget.txt_input.editingFinished.connect(self.edited_search)
-        # Connecting the checkboxes to the search function
-        self.dockwidget.chb_view.clicked.connect(self.search)
-        self.dockwidget.chb_download.clicked.connect(self.search)
-        self.dockwidget.chb_other.clicked.connect(self.search)
-        self.dockwidget.chb_none.clicked.connect(self.search)
         # Connecting the radio buttons
 
         # Connecting the previous and next page buttons to their functions
