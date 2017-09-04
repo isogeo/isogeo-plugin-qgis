@@ -8,9 +8,9 @@
 
 [general]
 name=Isogeo
-qgisMinimumVersion=2.8
+qgisMinimumVersion=2.14
 description=Isogeo search engine within QGIS
-version=1.5.0
+version=1.6.0-beta1
 author=Isogeo,GeoJulien,Theo Sinatti
 email=projects+qgis@isogeo.com
 
