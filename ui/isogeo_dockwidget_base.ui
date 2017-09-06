@@ -503,7 +503,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string>Format</string>
+                        <string>Format (source)</string>
                        </property>
                       </widget>
                      </item>
@@ -794,7 +794,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string>Owner</string>
+                        <string>Metadata owner</string>
                        </property>
                       </widget>
                      </item>
@@ -877,7 +877,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string>Coordinate system</string>
+                        <string>Coordinate system (source)</string>
                        </property>
                       </widget>
                      </item>
@@ -952,7 +952,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string>Licence</string>
+                        <string>License</string>
                        </property>
                       </widget>
                      </item>
@@ -996,7 +996,6 @@
        <zorder>grp_filters</zorder>
        <zorder>tbl_result</zorder>
        <zorder />
-       <zorder>gridLayoutWidget</zorder>
        <zorder>line</zorder>
       </widget>
       <widget class="QWidget" name="tab_settings">
