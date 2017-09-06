@@ -32,7 +32,7 @@ homepage=https://github.com/isogeo/isogeo-plugin-qgis
 category=Web
 icon=icon.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
