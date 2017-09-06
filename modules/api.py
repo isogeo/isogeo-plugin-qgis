@@ -2,9 +2,10 @@
 
 # Standard library
 import base64
-from functools import partial
 import json
 import logging
+from collections import defaultdict
+from functools import partial
 from urllib import urlencode
 
 # PyQT
@@ -200,6 +201,9 @@ class IsogeoApiManager(object):
             filters = params.get("text") + " "
         else:
             filters = ""
+        # Keywords
+        for keyword in params.get("keys"):
+            filters += keyword + " "
         # Owner
         if params.get('owner') is not None:
             filters += params.get('owner') + " "
@@ -215,21 +219,12 @@ class IsogeoApiManager(object):
         # Data type
         if params.get('datatype') is not None:
             filters += params.get('datatype') + " "
-        # Action : view
-        if params.get("view"):
-            filters += "action:view "
-        # Action : download
-        if params.get("download"):
-            filters += "action:download "
-        # Action : Other
-        if params.get("other"):
-            filters += "action:other "
-        # No actions
-        if params.get("noaction"):
-            filters += "has-no:action "
-        # Keywords
-        for keyword in params.get("keys"):
-            filters += keyword + " "
+        # Contact
+        if params.get('contact') is not None:
+            filters += params.get('contact') + " "
+        # License
+        if params.get('license') is not None:
+            filters += params.get('license') + " "
         # Formating the filters
         if filters != "":
             filters = "q=" + filters[:-1]
@@ -276,6 +271,8 @@ class IsogeoApiManager(object):
         formats = {}
         srs = {}
         actions = {}
+        contacts = defaultdict(str)
+        licenses = defaultdict(str)
         conformity = 0
         # loops that sort each tag in the corresponding dict, keeping the
         # same "key : value" structure.
@@ -295,6 +292,12 @@ class IsogeoApiManager(object):
             # coordinate systems
             elif tag.startswith('coordinate-system'):
                 srs[tag] = tags.get(tag)
+            # contacts
+            elif tag.startswith('contact'):
+                contacts[tag] = tags.get(tag)
+            # licenses
+            elif tag.startswith('license'):
+                licenses[tag] = tags.get(tag)
             # available actions (the last 2 are a bit specific as the value
             # field is empty and have to be filled manually)
             elif tag.startswith('action'):
@@ -332,6 +335,8 @@ class IsogeoApiManager(object):
         new_tags['srs'] = srs
         new_tags['actions'] = actions
         new_tags['inspire_conformity'] = conformity
+        new_tags['contacts'] = contacts
+        new_tags['licenses'] = licenses
 
         # log
         logger.info("Tags retrieved")

@@ -597,7 +597,7 @@ class Isogeo:
         # Data type
         cbb_type = self.dockwidget.cbb_type
         # License
-        cbb_licenses = self.dockwidget.cbb_license
+        cbb_license = self.dockwidget.cbb_license
         # Contact
         cbb_contact = self.dockwidget.cbb_contact
         # Sorting order
@@ -619,6 +619,8 @@ class Isogeo:
         cbb_srs.clear()
         cbb_geofilter.clear()
         cbb_type.clear()
+        cbb_contact.clear()
+        cbb_license.clear()
         # Filling the quick search combobox (also the one in settings tab)
         with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
@@ -647,6 +649,10 @@ class Isogeo:
         cbb_srs.addItem(icon, self.tr("None"), "has-no:coordinate-system")
         cbb_geofilter.addItem(" - ")
         cbb_type.addItem(self.tr("All types"))
+        cbb_contact.addItem(" - ")
+        cbb_contact.addItem(icon, self.tr("None"), "has-no:contact")
+        cbb_license.addItem(" - ")
+        cbb_license.addItem(icon, self.tr("None"), "has-no:license")
         # Initializing the cbb that dont't need to be actualised.
         if self.savedSearch == "_default" or self.hardReset is True:
             tbl_result.horizontalHeader().setResizeMode(1)
@@ -700,6 +706,14 @@ class Isogeo:
         ordered = sorted(tags.get('srs').items(), key=operator.itemgetter(1))
         for i in ordered:
             cbb_srs.addItem(i[1], i[0])
+        # Contacts
+        ordered = sorted(tags.get('contacts').items(), key=operator.itemgetter(1))
+        for i in ordered:
+            cbb_contact.addItem(i[1], i[0])
+        # Licenses
+        ordered = sorted(tags.get('licenses').items(), key=operator.itemgetter(1))
+        for i in ordered:
+            cbb_license.addItem(i[1], i[0])
         # Resource type
         ordered = sorted(tags.get('type').items(), key=operator.itemgetter(1))
         for i in ordered:
@@ -740,6 +754,12 @@ class Isogeo:
                 # Coordinate system
                 previous_index = cbb_srs.findData(params.get('srs'))
                 cbb_srs.setCurrentIndex(previous_index)
+                # Contact
+                previous_index = cbb_contact.findData(params.get('contact'))
+                cbb_contact.setCurrentIndex(previous_index)
+                # License
+                previous_index = cbb_license.findData(params.get('license'))
+                cbb_license.setCurrentIndex(previous_index)
                 # Sorting order
                 cbb_ob.setCurrentIndex(cbb_ob.findData(params.get('ob')))
                 # Sorting direction
@@ -863,6 +883,12 @@ class Isogeo:
                 # Coordinate systems
                 saved_index = cbb_srs.findData(search_params.get('srs'))
                 cbb_srs.setCurrentIndex(saved_index)
+                # Contact
+                saved_index = cbb_contact.findData(search_params.get('contact'))
+                cbb_contact.setCurrentIndex(saved_index)
+                # License
+                saved_index = cbb_license.findData(search_params.get('license'))
+                cbb_license.setCurrentIndex(saved_index)
                 # Geographical filter
                 value = search_params.get('geofilter')
                 saved_index = cbb_geofilter.findData(value)
@@ -884,18 +910,6 @@ class Isogeo:
                 if self.savedSearch != "_default":
                     saved_index = cbb_quicksearch.findData(self.savedSearch)
                     cbb_quicksearch.setCurrentIndex(saved_index)
-                # Action : view
-                if search_params.get('view'):
-                    cb_view.setCheckState(Qt.Checked)
-                # Action : download
-                if search_params.get('download'):
-                    cb_dl.setCheckState(Qt.Checked)
-                # Action : other
-                if search_params.get('other'):
-                    cb_other.setCheckState(Qt.Checked)
-                # Action : None
-                if search_params.get('noaction'):
-                    cb_none.setCheckState(Qt.Checked)
                 self.savedSearch = False
 
         # In case of a hard reset, we don't have to worry about widgets
@@ -1044,6 +1058,7 @@ class Isogeo:
                         self.tr('Raster layer is not valid.'))
             # If WFS link
             elif layer_info[0] == 'WFS':
+                print(layer_info)
                 url = layer_info[2]
                 name = layer_info[1]
                 layer = QgsVectorLayer(url, name, 'WFS')
@@ -1195,8 +1210,9 @@ class Isogeo:
         back to their previous state/index after they have been updated
         (cleared and filled again).
         """
-        # get the data of the item which index is (get the combobox current
-        # index)
+        # Getting the text in the search line
+        text = self.dockwidget.txt_input.text()
+        # get the data of the item which index is (comboboxes current index)
         owner_param = self.dockwidget.cbb_owner.itemData(
             self.dockwidget.cbb_owner.currentIndex())
         inspire_param = self.dockwidget.cbb_inspire.itemData(
@@ -1205,6 +1221,12 @@ class Isogeo:
             self.dockwidget.cbb_format.currentIndex())
         srs_param = self.dockwidget.cbb_srs.itemData(
             self.dockwidget.cbb_srs.currentIndex())
+        contact_param = self.dockwidget.cbb_contact.itemData(
+            self.dockwidget.cbb_contact.currentIndex())
+        license_param = self.dockwidget.cbb_license.itemData(
+            self.dockwidget.cbb_license.currentIndex())
+        type_param = self.dockwidget.cbb_type.itemData(
+            self.dockwidget.cbb_type.currentIndex())
         if self.dockwidget.cbb_geofilter.currentIndex() < 2:
             geofilter_param = self.dockwidget.cbb_geofilter.itemData(
                 self.dockwidget.cbb_geofilter.currentIndex())
@@ -1212,23 +1234,18 @@ class Isogeo:
             geofilter_param = self.dockwidget.cbb_geofilter.currentText()
         favorite_param = self.dockwidget.cbb_quicksearch.itemData(
             self.dockwidget.cbb_quicksearch.currentIndex())
-        type_param = self.dockwidget.cbb_type.itemData(
-            self.dockwidget.cbb_type.currentIndex())
         operation_param = self.dockwidget.cbb_geo_op.itemData(
             self.dockwidget.cbb_geo_op.currentIndex())
-        order_param = self.dockwidget.cbb_ob.itemData(
+        ob_param = self.dockwidget.cbb_ob.itemData(
             self.dockwidget.cbb_ob.currentIndex())
-        dir_param = self.dockwidget.cbb_od.itemData(
+        od_param = self.dockwidget.cbb_od.itemData(
             self.dockwidget.cbb_od.currentIndex())
-        # Getting the text in the search line
-        text = self.dockwidget.txt_input.text()
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
         for i in xrange(self.dockwidget.cbb_keywords.count()):
             if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
                 key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
-
 
         params = {}
         params['owner'] = owner_param
@@ -1238,13 +1255,13 @@ class Isogeo:
         params['favorite'] = favorite_param
         params['keys'] = key_params
         params['geofilter'] = geofilter_param
-        params['license'] = geofilter_param
-        params['contact'] = geofilter_param
+        params['license'] = license_param
+        params['contact'] = contact_param
         params['text'] = text
         params['datatype'] = type_param
         params['operation'] = operation_param
-        params['ob'] = order_param
-        params['od'] = dir_param
+        params['ob'] = ob_param
+        params['od'] = od_param
         # check geographic filter
         if params.get('geofilter') == "mapcanvas":
             e = iface.mapCanvas().extent()
@@ -1802,6 +1819,8 @@ class Isogeo:
         self.dockwidget.cbb_srs.activated.connect(self.search)
         self.dockwidget.cbb_geofilter.activated.connect(self.search)
         self.dockwidget.cbb_type.activated.connect(self.search)
+        self.dockwidget.cbb_contact.activated.connect(self.search)
+        self.dockwidget.cbb_license.activated.connect(self.search)
         # Connecting the text input to the search function
         self.dockwidget.txt_input.editingFinished.connect(self.edited_search)
         # Connecting the radio buttons
