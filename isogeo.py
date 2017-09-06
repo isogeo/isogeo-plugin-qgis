@@ -631,7 +631,8 @@ class Isogeo:
         cbb_quicksearch.clear()
         self.dockwidget.cbb_modify_sr.clear()
         icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
-        cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
+        # cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
+        cbb_quicksearch.addItem(icon, "")
         for i in search_list:
             cbb_quicksearch.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
@@ -795,6 +796,7 @@ class Isogeo:
                 i = 2
                 ordered = sorted(tags.get('keywords').items(),
                                  key=operator.itemgetter(1))
+                selected_kwd = []
                 for a in ordered:
                     item = QStandardItem(a[1])
                     item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
@@ -805,6 +807,7 @@ class Isogeo:
                     if item.data(32) in params.get('keys'):
                         item.setData(Qt.Checked, Qt.CheckStateRole)
                         model.insertRow(0, item)
+                        selected_kwd.append(a[1])
                     else:
                         item.setData(Qt.Unchecked, Qt.CheckStateRole)
                         model.setItem(i, 0, item)
@@ -818,6 +821,9 @@ class Isogeo:
                 model.insertRow(0, first_item)
                 model.itemChanged.connect(self.search)
                 self.dockwidget.cbb_keywords.setModel(model)
+                self.dockwidget.cbb_keywords.setToolTip(self.tr("Selected keywords:")
+                                                        + "\n"
+                                                        + "\n ".join(selected_kwd))
             # When it is a saved research, we have to look in the json, and
             # check the items accordingly (quite close to the previous case)
             else:
@@ -844,6 +850,7 @@ class Isogeo:
                 i = 2
                 ordered = sorted(tags.get('keywords').items(),
                                  key=operator.itemgetter(1))
+                selected_kwd = []
                 for a in ordered:
                     item = QStandardItem(a[1])
                     item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
@@ -854,18 +861,23 @@ class Isogeo:
                     if a[0] in keywords_list:
                         item.setData(Qt.Checked, Qt.CheckStateRole)
                         model.insertRow(0, item)
+                        selected_kwd.append(a[1])
                     else:
                         item.setData(Qt.Unchecked, Qt.CheckStateRole)
                         model.setItem(i, 0, item)
                     i += 1
                 # Banner item
-                first_item = QStandardItem(self.tr('---- Keywords ----'))
+                first_item = QStandardItem("---- {} ----"
+                                           .format(self.tr('Keywords')))
                 icon = QIcon(':/plugins/Isogeo/resources/tag.svg')
                 first_item.setIcon(icon)
                 first_item.setSelectable(False)
                 model.insertRow(0, first_item)
                 model.itemChanged.connect(self.search)
                 self.dockwidget.cbb_keywords.setModel(model)
+                self.dockwidget.cbb_keywords.setToolTip(self.tr("Selected keywords:")
+                                                        + "\n"
+                                                        + "\n ".join(selected_kwd))
                 # Putting widgets to their previous states according
                 # to the json content
                 # Line edit content
@@ -941,13 +953,15 @@ class Isogeo:
                 model.setItem(i, 0, item)
                 i += 1
             # Banner item
-            first_item = QStandardItem(self.tr('---- Keywords ----'))
+            first_item = QStandardItem("---- {} ----"
+                                       .format(self.tr('Keywords')))
             icon = QIcon(':/plugins/Isogeo/resources/tag.svg')
             first_item.setIcon(icon)
             first_item.setSelectable(False)
             model.insertRow(0, first_item)
             model.itemChanged.connect(self.search)
             self.dockwidget.cbb_keywords.setModel(model)
+            self.dockwidget.cbb_keywords.setToolTip(self.tr("No keyword selected"))
         # Coloring the Show result button
         self.dockwidget.btn_show.setStyleSheet(
             "QPushButton "
@@ -961,7 +975,7 @@ class Isogeo:
             cbb_ob.setEnabled(True)
             cbb_od.setEnabled(True)
             self.dockwidget.btn_show.setStyleSheet("")
-            # self.show_results(result)
+            # self.dockwidget.btn_show.setToolTip(self.tr("Display results"))
             self.results_mng.show_results(result,
                                           self.dockwidget.tbl_result,
                                           progress_bar=self.bar)
