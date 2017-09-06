@@ -867,7 +867,7 @@ class Isogeo:
                         model.setItem(i, 0, item)
                     i += 1
                 # Banner item
-                first_item = QStandardItem("---- {} ----"
+                first_item = QStandardItem(u"---- {} ----"
                                            .format(self.tr('Keywords')))
                 icon = QIcon(':/plugins/Isogeo/resources/tag.svg')
                 first_item.setIcon(icon)
@@ -953,7 +953,7 @@ class Isogeo:
                 model.setItem(i, 0, item)
                 i += 1
             # Banner item
-            first_item = QStandardItem("---- {} ----"
+            first_item = QStandardItem(u"---- {} ----"
                                        .format(self.tr('Keywords')))
             icon = QIcon(':/plugins/Isogeo/resources/tag.svg')
             first_item.setIcon(icon)
