@@ -1,9 +1,13 @@
 # Isogeo for QGIS
 
+![Isogeo plugin for QGIS - logo](https://github.com/isogeo/isogeo-plugin-qgis/blob/master/img/logo_complet_IsoQGIS.png?raw=true)
+
 QGIS plugin for [Isogeo](http://www.isogeo.com/), a SaaS software to give an easier access to geodata.
 Equivalent of [plugins for ArcGIS](http://www.isogeo.com/applications/).
 
 You can see and vote for [this plugin on the official QGIS extensions website](http://plugins.qgis.org/plugins/isogeo_search_engine/).
+
+[Online documentation is available here)(https://www.gitbook.com/book/isogeo/app-plugin-qgis/details).
 
 ## Purpose ##
 
@@ -57,7 +61,9 @@ See the documentation:
 
 ## Authors ##
 
-Internship of [Théo SINATTI](https://github.com/TheoSinatti) supervised by [Julien Moura](https://github.com/Guts), at Isogeo: http://www.isogeo.com.
+First version developed during the internship of [Théo SINATTI](https://github.com/TheoSinatti) supervised by [Julien Moura](https://github.com/Guts), at Isogeo: http://www.isogeo.com.
+
+Since version 1.2, it's developed by [Julien Moura](https://github.com/Guts) for Isogeo.
 
 ## Sponsors ##
 
