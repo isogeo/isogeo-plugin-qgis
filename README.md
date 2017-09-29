@@ -39,7 +39,7 @@ It's fully integrated with QGIS ecosystem:
 |:------------------:|:-----------------:|
 | ![Search widget with no filters](img/ui_tabs_main_search_empty_en.png) | ![Search widget with some filters](img/ui_tabs_main_search_filtered_en.png) |
 
-![Add data to the project](img/ui_tabs_main_add_dataset_file_annoted_en.png)
+![Add data to the project](img/ui_tabs_main_add_service_wms_en.png)
 
 ## Getting started ##
 
