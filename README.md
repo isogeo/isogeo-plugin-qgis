@@ -7,7 +7,7 @@ Equivalent of [plugins for ArcGIS](http://www.isogeo.com/applications/).
 
 You can see and vote for [this plugin on the official QGIS extensions website](http://plugins.qgis.org/plugins/isogeo_search_engine/).
 
-[Online documentation is available here)(https://www.gitbook.com/book/isogeo/app-plugin-qgis/details).
+[Online documentation is available here](https://www.gitbook.com/book/isogeo/app-plugin-qgis/details).
 
 ## Purpose ##
 
