@@ -28,7 +28,7 @@ repository=https://github.com/isogeo/isogeo-plugin-qgis
 # Tags are comma separated with spaces allowed
 tags=REST API,catalog,search,explore,webservices,metadata,open data,INSPIRE
 
-homepage=https://github.com/isogeo/isogeo-plugin-qgis
+homepage=https://isogeo.gitbooks.io/app-plugin-qgis/content
 category=Web
 icon=icon.png
 # experimental flag
