@@ -1850,7 +1850,7 @@ class Isogeo:
 
         self.dockwidget.btn_help.pressed.connect(
             partial(custom_tools.open_webpage,
-                    link="https://github.com/isogeo/isogeo-plugin-qgis/wiki"
+                    link="https://isogeo.gitbooks.io/app-plugin-qgis/content/"
                     ))
         # view credits
         self.dockwidget.btn_credits.pressed.connect(
