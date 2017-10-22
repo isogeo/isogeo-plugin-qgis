@@ -36,6 +36,7 @@ current_crs = str(iface.mapCanvas()
 # sample WFS
 wfs_url_in_v2_public_1 = "http://geoserv.weichand.de:8080/geoserver/wfs?request=GetCapabilities&service=WFS"
 wfs_url_in_v2_public_2 = "http://noisy.hq.isogeo.fr:6090/geoserver/ows?service=wfs&request=GetCapabilities"
+wfs_url_in_v2_public_3 = "http://magosm.magellium.com/geoserver/wfs?request=GetCapabilities"
 wfs_url_in_v1_public = "http://noisy.hq.isogeo.fr:6090/geoserver/ows?service=wfs&version=1.1.0&request=GetCapabilities"
 wfs_url_in_v2_auth_1 = "https://www.ppige-npdc.fr/geoserver/ayants-droits/wfs?request=GetCapabilities"
 wfs_url_in_v2_mix_2 = "https://www.ppige-npdc.fr/geoserver/wfs?request=GetCapabilities"
@@ -145,6 +146,9 @@ wfs_url_getcap = wfs_url_in_v1_public
 #wfs_url_final = wfs_lyr_url + unquote(urlencode(wfs_url_params))
 #print(wfs_url_final)
 #
+
+
+
 ## let's try to add it to the map canvas
 #qgis_wfs_lyr_auto = QgsVectorLayer(wfs_url_final, "Auto - " + layer_title, 'WFS')
 #if qgis_wfs_lyr_auto.isValid():
@@ -153,7 +157,25 @@ wfs_url_getcap = wfs_url_in_v1_public
 #else:
 #    print("WFS auto url build FAILED")
 #    print(qgis_wfs_lyr_auto.error().message())
-#
+
+## URI
+
+uri = QgsDataSourceURI()
+uri.setParam ("url", wfs_url_getcap)
+uri.setParam ( "typename", layer_id)
+uri.setParam ( "version", "auto")
+uri.setParam ( "srsname", srs")
+uri.setParam ( "restrictToRequestBBOX", "1")
+
+# let's try to add it to the map canvas
+qgis_wfs_lyr_auto = QgsVectorLayer(uri.uri(), "Auto - " + layer_title, 'WFS')
+if qgis_wfs_lyr_auto.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer(qgis_wfs_lyr_auto)
+    print("WFS auto url build with URI DataSource SUCCEED")
+else:
+    print("WFS auto url build FAILED")
+    print(qgis_wfs_lyr_auto.error().message())
+
 ## for comparison, manual URL
 #manual_lyr = "http://geoserv.weichand.de:8080/geoserver/wfs?request=GetFeature&service=WFS&srsname=EPSG:31468&typename=bvv:vg_ex&version=1.0.0"
 #qgis_wfs_lyr_manual = QgsVectorLayer(manual_lyr, "Manual - " + layer_title, 'WFS')
