@@ -13,8 +13,8 @@ from PyQt4.QtCore import QSettings, QUrl
 from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # QGIS
-from qgis.core import QgsNetworkAccessManager,\
-                      QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer
+from qgis.core import (QgsDataSourceURI, QgsNetworkAccessManager,
+                       QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer)
 
 # Custom modules
 from .tools import Tools
@@ -75,127 +75,12 @@ except ImportError as e:
 
 class UrlBuilder(object):
     """Basic class that holds utilitary methods for the plugin."""
+
     def __init__(self):
         """Class constructor."""
         self.cached_wfs = dict()
         self.cached_wms = dict()
         self.cached_wmts = dict()
-
-    def build_wfs_url(self, raw_url, rsc_type="service"):
-        """Reformat the input WFS url so it fits QGIS criterias.
-
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
-
-        rsc_type: possible values = "service" or "link"
-        """
-        logger.debug("WFS URL TYPE: " + rsc_type)
-        title = raw_url[0]
-        input_url = raw_url[1].split("?")[0] + "?"
-        try:
-            list_parameters = raw_url[1].split("?")[1].split('&')
-        except IndexError, e:
-            logger.error("Build WFS URL failed: {}".format(e))
-            return 0
-        valid = False
-        srs_defined = False
-        for i in list_parameters:
-            ilow = i.lower()
-            if "typename=" in ilow:
-                valid = True
-                name = i.split('=')[1]
-                typename = i
-            elif "layers=" in ilow or "layer=" in ilow:
-                valid = True
-                name = i.split('=')[1]
-                typename = "typename=" + name
-            elif "getcapabilities" in ilow:
-                valid = True
-                name = title
-                typename = "typename=" + name
-            elif "srsname=" in ilow:
-                srs_defined = True
-                srs = i
-
-        if valid is True:
-            output_url = input_url + typename
-
-            if srs_defined is True:
-                output_url += '&' + srs
-
-            output_url += '&service=WFS&version=1.0.0&request=GetFeature'
-
-            output = ["WFS", name, output_url]
-            return output
-
-        else:
-            return 0
-
-    def build_wms_url(self, raw_url, rsc_type="service"):
-        """Reformat the input WMS url so it fits QGIS criterias.
-
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
-        """
-        # METHOD
-        title = raw_url[0]
-        input_url = raw_url[1].split("?")[0] + "?"
-        try:
-            list_parameters = raw_url[1].split("?")[1].split('&')
-        except IndexError, e:
-            logger.error("Build WMS URL failed: {}".format(e))
-            return 0
-        valid = False
-        style_defined = False
-        srs_defined = False
-        format_defined = False
-        for i in list_parameters:
-            ilow = i.lower()
-            if "layers=" in ilow:
-                valid = True
-                name = i.split('=')[1]
-                layers = i
-            elif "layer=" in ilow:
-                valid = True
-                name = i.split('=')[1]
-                layers = "layers=" + name
-            elif "getcapabilities" in ilow:
-                valid = True
-                name = title
-                layers = "layers=" + title
-            elif "styles=" in ilow:
-                style_defined = True
-                style = i
-            elif "crs=" in ilow:
-                srs_defined = True
-                srs = i
-            elif "format=" in ilow:
-                format_defined = True
-                imgformat = i
-
-        if valid is True:
-            if input_url.lower().startswith('url='):
-                output_url = input_url + "&" + layers
-            else:
-                output_url = "url=" + input_url + "&" + layers
-
-            if style_defined is True:
-                output_url += '&' + style
-            else:
-                output_url += '&styles='
-
-            if format_defined is True:
-                output_url += '&' + imgformat
-            else:
-                output_url += '&format=image/png'
-
-            if srs_defined is True:
-                output_url += '&' + srs
-            output = ["WMS", name, output_url]
-            return output
-
-        else:
-            return 0
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connexions."""
@@ -252,9 +137,7 @@ class UrlBuilder(object):
                 pass
         return final_dict
 
-    # FIXING #90 -------------------------------------------------------------
-
-    def new_build_wfs_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
+    def build_wfs_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
         """Reformat the input WMS url so it fits QGIS criterias.
 
         Tests weither all the needed information is provided in the url, and
@@ -291,6 +174,14 @@ class UrlBuilder(object):
                               }
             wfs_url_quicky = wfs_url_base +\
                              unquote(urlencode(wfs_url_params, "utf8"))
+            # new way - see #131
+            uri = QgsDataSourceURI()
+            uri.setParam("url", wfs_url_base)
+            uri.setParam("typename", layer_name)
+            uri.setParam("version", "auto")
+            uri.setParam("srsname", srs_map)
+            uri.setParam("restrictToRequestBBOX", "1")
+            wfs_url_quicky = uri.uri()
             # prevent encoding errors (#102)
             try:
                 btn_lbl = "WFS : {}".format(layer_title)
@@ -426,11 +317,13 @@ class UrlBuilder(object):
                 wfs_url_final = wfs_lyr_url + unquote(urlencode(wfs_url_params))
             # method ending
             logger.debug(wfs_url_final)
+            # logger.debug(uri)
             return ["WFS", layer_title, wfs_url_final]
+            # return ["WFS", layer_title, uri.uri()]
         else:
             return None
 
-    def new_build_wms_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
+    def build_wms_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
         """Reformat the input WMS url so it fits QGIS criterias.
 
         Tests weither all the needed information is provided in the url, and
