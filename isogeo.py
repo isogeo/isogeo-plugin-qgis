@@ -573,7 +573,7 @@ class Isogeo:
                                  .format(result.get("query")),
                                  "Isogeo")
         # parsing
-        tags = isogeo_api_mng.get_tags(result)
+        tags = isogeo_api_mng.get_tags(result.get("tags"))
         self.old_text = self.dockwidget.txt_input.text()
         # Getting the index of selected items in each combobox
         params = self.save_params()
@@ -587,48 +587,34 @@ class Isogeo:
         self.dockwidget.lbl_page.setText(
             "page " + str(self.page_index) + self.tr(' on ') + self.nb_page)
 
-        # CREATING ALIASES FOR THE FREQUENTLY CALLED WIDGETS
-        # User text input
-        txt_input = self.dockwidget.txt_input
-        # Owners
-        cbb_owner = self.dockwidget.cbb_owner
-        # Inspire keywords
-        cbb_inspire = self.dockwidget.cbb_inspire
-        # Formats
-        cbb_format = self.dockwidget.cbb_format
-        # Coordinate systems
-        cbb_srs = self.dockwidget.cbb_srs
-        # Geographical filter
-        cbb_geofilter = self.dockwidget.cbb_geofilter
-        # Operator for the geographical filter
-        cbb_geo_op = self.dockwidget.cbb_geo_op
-        # Data type
-        cbb_type = self.dockwidget.cbb_type
-        # License
-        cbb_license = self.dockwidget.cbb_license
-        # Contact
-        cbb_contact = self.dockwidget.cbb_contact
-        # Sorting order
-        cbb_ob = self.dockwidget.cbb_ob
-        # Sorting direction
-        cbb_od = self.dockwidget.cbb_od
-        # Quick searches
-        cbb_quicksearch = self.dockwidget.cbb_quicksearch
-        # Results table
-        tbl_result = self.dockwidget.tbl_result
+        # ALIASES FOR FREQUENTLY CALLED WIDGETS
+        cbb_contact = self.dockwidget.cbb_contact  # contact
+        cbb_format = self.dockwidget.cbb_format  # formats
+        cbb_geofilter = self.dockwidget.cbb_geofilter  # geographic
+        cbb_geo_op = self.dockwidget.cbb_geo_op  # geometric operator
+        cbb_inspire = self.dockwidget.cbb_inspire  # INSPIRE themes
+        cbb_license = self.dockwidget.cbb_license  # license
+        cbb_ob = self.dockwidget.cbb_ob  # sort parameter
+        cbb_od = self.dockwidget.cbb_od  # sort direction
+        cbb_owner = self.dockwidget.cbb_owner  # owners
+        cbb_quicksearch = self.dockwidget.cbb_quicksearch  # quick searches
+        cbb_srs = self.dockwidget.cbb_srs  # coordinate systems
+        cbb_type = self.dockwidget.cbb_type  # metadata type
+        tbl_result = self.dockwidget.tbl_result  # results table
+        txt_input = self.dockwidget.txt_input  # search terms
 
-        # clearing the result table
+        # RESET WiDGETS
+        cbb_contact.clear()
+        cbb_format.clear()
+        cbb_geofilter.clear()
+        cbb_inspire.clear()
+        cbb_license.clear()
+        cbb_owner.clear()
+        cbb_srs.clear()
+        cbb_type.clear()
         tbl_result.clearContents()
         tbl_result.setRowCount(0)
-        # Clearing the user input comboboxes
-        cbb_inspire.clear()
-        cbb_owner.clear()
-        cbb_format.clear()
-        cbb_srs.clear()
-        cbb_geofilter.clear()
-        cbb_type.clear()
-        cbb_contact.clear()
-        cbb_license.clear()
+
         # Filling the quick search combobox (also the one in settings tab)
         with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
@@ -645,6 +631,8 @@ class Isogeo:
             cbb_quicksearch.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
 
+        width = cbb_quicksearch.view().sizeHintForColumn(0) + 5
+        cbb_quicksearch.view().setMinimumWidth(width)
         # Initiating the "nothing selected" and "None" items in each combobox
         cbb_inspire.addItem(" - ")
         cbb_inspire.addItem(ico_none,
@@ -693,45 +681,40 @@ class Isogeo:
             for key in dict_od.keys():
                 cbb_od.addItem(key, dict_od.get(key))
 
-        # Creating combobox items, with their displayed text, and their value
+        # Filling comboboxes
         # Owners
-        ordered = sorted(tags.get("owner").items(), key=operator.itemgetter(1))
-        for i in ordered:
-            cbb_owner.addItem(i[1], i[0])
-        # INSPIRE keywords
-        ordered = sorted(tags.get('themeinspire').items(),
-                         key=operator.itemgetter(1))
-        for i in ordered:
-            cbb_inspire.addItem(i[1], i[0])
-        width = cbb_inspire.view().sizeHintForColumn(0) + 10
+        md_owners = tags.get("owners")
+        for i in sorted(md_owners):
+            cbb_owner.addItem(i, md_owners.get(i))
+        # INSPIRE themes
+        inspire = tags.get("inspire")
+        for i in sorted(inspire):
+            cbb_inspire.addItem(i, inspire.get(i))
+        width = cbb_inspire.view().sizeHintForColumn(0) + 5
         cbb_inspire.view().setMinimumWidth(width)
         # Formats
-        ordered = sorted(tags.get('formats').items(),
-                         key=operator.itemgetter(1))
-        for i in ordered:
-            cbb_format.addItem(i[1], i[0])
+        formats = tags.get("formats")
+        for i in sorted(formats):
+            cbb_format.addItem(i, formats.get(i))
         # Coordinate system
-        ordered = sorted(tags.get('srs').items(), key=operator.itemgetter(1))
-        for i in ordered:
-            cbb_srs.addItem(i[1], i[0])
+        srs = tags.get("srs")
+        for i in sorted(srs):
+            cbb_srs.addItem(i, srs.get(i))
         # Contacts
-        ordered = sorted(tags.get('contacts').items(), key=operator.itemgetter(1))
-        for i in ordered:
-            cbb_contact.addItem(i[1], i[0])
+        contacts = tags.get("contacts")
+        for i in sorted(contacts):
+            cbb_contact.addItem(i, contacts.get(i))
         # Licenses
-        ordered = sorted(tags.get('licenses').items(), key=operator.itemgetter(1))
-        for i in ordered:
-            cbb_license.addItem(i[1], i[0])
+        licenses = tags.get("licenses")
+        for i in sorted(licenses):
+            cbb_license.addItem(i, licenses.get(i))
         # Resource type
-        ordered = sorted(tags.get('type').items(), key=operator.itemgetter(1))
-        for i in ordered:
-            cbb_type.addItem(i[1], i[0])
+        md_types = tags.get("types")
+        for i in md_types:
+            cbb_type.addItem(i, md_types.get(i))
         # Geographical filter
         cbb_geofilter.addItem(self.tr("Map canvas"), "mapcanvas")
         layers = QgsMapLayerRegistry.instance().mapLayers().values()
-        polycon = QIcon(':/plugins/Isogeo/resources/polygon.png')
-        linicon = QIcon(':/plugins/Isogeo/resources/line.png')
-        pointicon = QIcon(':/plugins/Isogeo/resources/point.png')
         for layer in layers:
             if layer.type() == 0:
                 if layer.geometryType() == 2:
@@ -801,20 +784,19 @@ class Isogeo:
                     model.insertRow(1, none_item)
                 # Filling the combobox with all the normal items
                 i = 2
-                ordered = sorted(tags.get('keywords').items(),
-                                 key=operator.itemgetter(1))
+                keywords = tags.get('keywords')
                 selected_kwd = []
-                for a in ordered:
-                    item = QStandardItem(a[1])
+                for j in sorted(keywords):
+                    item = QStandardItem(j)
                     item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                    item.setData(a[0], 32)
+                    item.setData(keywords.get(j), 32)
                     # As all items have been destroyed and generated again, we
                     # have to set the checkstate (checked/unchecked) according
                     # to what the user had chosen.
                     if item.data(32) in params.get('keys'):
                         item.setData(Qt.Checked, Qt.CheckStateRole)
                         model.insertRow(0, item)
-                        selected_kwd.append(a[1])
+                        selected_kwd.append(j)
                     else:
                         item.setData(Qt.Unchecked, Qt.CheckStateRole)
                         model.setItem(i, 0, item)
@@ -854,13 +836,12 @@ class Isogeo:
                     model.insertRow(1, none_item)
                 # Filling with the standard items
                 i = 2
-                ordered = sorted(tags.get('keywords').items(),
-                                 key=operator.itemgetter(1))
+                keywords = tags.get('keywords')
                 selected_kwd = []
-                for a in ordered:
-                    item = QStandardItem(a[1])
+                for j in sorted(keywords):
+                    item = QStandardItem(j)
                     item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                    item.setData(a[0], 32)
+                    item.setData(keywords.get(j), 32)
                     # As all items have been destroyed and generated again, we
                     # have to set the checkstate (checked/unchecked) according
                     # to what the user had chosen.
@@ -945,12 +926,11 @@ class Isogeo:
                 model.insertRow(1, none_item)
             # Standard items
             i = 2
-            ordered = sorted(tags.get('keywords').items(),
-                             key=operator.itemgetter(1))
-            for a in ordered:
-                item = QStandardItem(a[1])
+            keywords = tags.get('keywords')
+            for j in sorted(keywords):
+                item = QStandardItem(j)
                 item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                item.setData(a[0], 32)
+                item.setData(keywords.get(j), 32)
                 # As all items have been destroyed and generated again, we have
                 # to set the checkstate (checked/unchecked) according to what
                 # the user had chosen
@@ -1327,8 +1307,7 @@ class Isogeo:
             search_list.pop(search_list.index('_default'))
             search_list.pop(search_list.index('_current'))
             self.dockwidget.cbb_quicksearch.clear()
-            icon = QIcon(':/plugins/Isogeo/resources/bolt.png')
-            self.dockwidget.cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
+            self.dockwidget.cbb_quicksearch.addItem(ico_bolt, self.tr('Quick Search'))
             self.dockwidget.cbb_modify_sr.clear()
             for i in search_list:
                 self.dockwidget.cbb_quicksearch.addItem(i, i)
@@ -1512,8 +1491,7 @@ class Isogeo:
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_quicksearch.clear()
-        icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
-        self.dockwidget.cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch.addItem(ico_bolt, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
         for i in search_list:
             self.dockwidget.cbb_quicksearch.addItem(i, i)
@@ -1539,8 +1517,7 @@ class Isogeo:
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_quicksearch.clear()
-        icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
-        self.dockwidget.cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch.addItem(ico_bolt, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
         for i in search_list:
             self.dockwidget.cbb_quicksearch.addItem(i, i)
@@ -1568,8 +1545,7 @@ class Isogeo:
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_quicksearch.clear()
-        icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
-        self.dockwidget.cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch.addItem(ico_bolt, self.tr('Quick Search'))
         self.dockwidget.cbb_modify_sr.clear()
         for i in search_list:
             self.dockwidget.cbb_quicksearch.addItem(i, i)

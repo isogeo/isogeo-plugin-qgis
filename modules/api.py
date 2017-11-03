@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import (absolute_import, print_function, unicode_literals)
 # Standard library
 import base64
 import json
@@ -193,90 +194,97 @@ class IsogeoApiManager(object):
         # method ending
         return url
 
-    def get_tags(self, answer):
+    def get_tags(self, tags):
         """Return a tag dictionnary from the API answer.
 
         This parse the tags contained in API_answer[tags] and class them so
         they are more easy to handle in other function such as
         update_fields()
         """
-        # Initiating the dicts
-        tags = answer.get('tags')
-        resources_types = {}
-        owners = {}
-        keywords = {}
-        themeinspire = {}
-        formats = {}
-        srs = {}
+        # set dicts
         actions = {}
-        contacts = defaultdict(str)
-        licenses = defaultdict(str)
-        conformity = 0
-        # loops that sort each tag in the corresponding dict, keeping the
-        # same "key : value" structure.
-        for tag in tags.keys():
-            # owners
-            if tag.startswith('owner'):
-                owners[tag] = tags.get(tag)
-            # custom keywords
-            elif tag.startswith('keyword:isogeo'):
-                keywords[tag] = tags.get(tag)
-            # INSPIRE themes
-            elif tag.startswith('keyword:inspire-theme'):
-                themeinspire[tag] = tags.get(tag)
-            # formats
-            elif tag.startswith('format'):
-                formats[tag] = tags.get(tag)
-            # coordinate systems
-            elif tag.startswith('coordinate-system'):
-                srs[tag] = tags.get(tag)
+        contacts = {}
+        formats = {}
+        inspire = {}
+        keywords = {}
+        licenses = {}
+        md_types = {}
+        owners = {}
+        srs = {}
+        # unused = {}
+        # 0/1 values
+        compliance = 0
+        type_dataset = 0
+        # parsing tags
+        for tag in sorted(tags.keys()):
+            # actions
+            if tag.startswith("action"):
+                actions[tags.get(tag, tag)] = tag
+                continue
+            # compliance INSPIRE
+            elif tag.startswith("conformity"):
+                compliance = 1
+                continue
             # contacts
-            elif tag.startswith('contact'):
-                contacts[tag] = tags.get(tag)
+            elif tag.startswith("contact"):
+                contacts[tags.get(tag)] = tag
+                continue
+            # formats
+            elif tag.startswith("format"):
+                formats[tags.get(tag)] = tag
+                continue
+            # INSPIRE themes
+            elif tag.startswith("keyword:in"):
+                inspire[tags.get(tag)] = tag
+                continue
+            # keywords
+            elif tag.startswith("keyword:is"):
+                keywords[tags.get(tag)] = tag
+                continue
             # licenses
-            elif tag.startswith('license'):
-                licenses[tag] = tags.get(tag)
-            # available actions (the last 2 are a bit specific as the value
-            # field is empty and have to be filled manually)
-            elif tag.startswith('action'):
-                if tag.startswith('action:view'):
-                    actions[tag] = u'View'
-                elif tag.startswith('action:download'):
-                    actions[tag] = u'Download'
-                elif tag.startswith('action:other'):
-                    actions[tag] = u'Other action'
-                # Test : to be removed eventually
-                else:
-                    actions[tag] = u'fonction get_tag à revoir'
-                    self.dockwidget.txt_input.setText(tag)
-            # resources type
-            elif tag.startswith('type'):
-                if tag.startswith('type:vector'):
-                    resources_types[tag] = u'Vecteur'
-                elif tag.startswith('type:raster'):
-                    resources_types[tag] = u'Raster'
-                elif tag.startswith('type:resource'):
-                    resources_types[tag] = u'Ressource'
-                elif tag.startswith('type:service'):
-                    resources_types[tag] = u'Service géographique'
-            elif tag.startswith('conformity'):
-                conformity = 1
+            elif tag.startswith("license"):
+                licenses[tags.get(tag)] = tag
+                continue
+            # owners
+            elif tag.startswith("owner"):
+                owners[tags.get(tag)] = tag
+                continue
+            # SRS
+            elif tag.startswith("coordinate-system"):
+                srs[tags.get(tag)] = tag
+                # print(tag)
+                continue
+            # types
+            elif tag.startswith("type"):
+                md_types[tags.get(tag)] = tag
+                if tag in ("type:vector-dataset", "type:raster-dataset"):
+                    type_dataset += 1
+                continue
+            # ignored tags
+            else:
+                # unused[tags.get(tag, tag)] = tag
+                continue
 
-        # Creating the final object the function will return : a dictionary
-        # of dictionaries
-        new_tags = {}
-        new_tags['type'] = resources_types
-        new_tags['owner'] = owners
-        new_tags['keywords'] = keywords
-        new_tags['themeinspire'] = themeinspire
-        new_tags['formats'] = formats
-        new_tags['srs'] = srs
-        new_tags['actions'] = actions
-        new_tags['inspire_conformity'] = conformity
-        new_tags['contacts'] = contacts
-        new_tags['licenses'] = licenses
+        # override API tags to allow all datasets filter - see #
+        if type_dataset == 2:
+            md_types["Donnée"] = "type:dataset"
+        else:
+            pass
 
-        # log
-        logger.info("Tags retrieved")
+        # storing dicts
+        tags_parsed = {"actions": actions,
+                       "compliance": compliance,
+                       "contacts": contacts,
+                       "formats": formats,
+                       "inspire": inspire,
+                       "keywords": keywords,
+                       "licenses": licenses,
+                       "owners": owners,
+                       "srs": srs,
+                       "types": md_types,
+                       # "unused": unused
+                       }
+
         # method ending
-        return new_tags
+        logger.info("Tags retrieved")
+        return tags_parsed
