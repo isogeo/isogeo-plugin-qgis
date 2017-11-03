@@ -9,7 +9,8 @@ from functools import partial
 # PyQT
 # from QByteArray
 from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QIcon, QTableWidgetItem, QComboBox, QPushButton, QLabel, QPixmap, QProgressBar
+from PyQt4.QtGui import (QIcon, QTableWidgetItem, QComboBox, QPushButton,
+                         QLabel, QPixmap, QProgressBar)
 
 # PyQGIS
 from qgis.utils import iface
@@ -40,6 +41,15 @@ vectorformat_list = ('shp', 'dxf', 'dgn', 'filegdb', 'tab')
 rasterformat_list = ('esriasciigrid', 'geotiff',
                      'intergraphgdb', 'jpeg', 'png', 'xyz', 'ecw')
 
+
+# Qt icons
+lbl_polyg = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/polygon.png'))
+lbl_point = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/point.png'))
+lbl_line = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/line.png'))
+lbl_multi = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/multi.png'))
+lbl_rastr = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/raster.png'))
+lbl_nogeo = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/ban.png'))
+
 # ############################################################################
 # ########## Classes ###############
 # ##################################
@@ -47,6 +57,7 @@ rasterformat_list = ('esriasciigrid', 'geotiff',
 
 class ResultsManager(object):
     """Basic class that holds utilitary methods for the plugin."""
+
     def __init__(self, isogeo_plugin):
         """Class constructor."""
         self.isogeo_widget = isogeo_plugin.dockwidget
@@ -106,24 +117,16 @@ class ResultsManager(object):
             if ds_geometry:
                 # If the geometry type is point, insert point icon in column 3
                 if ds_geometry in point_list:
-                    pix = QPixmap(':/plugins/Isogeo/resources/point.png')
-                    label.setPixmap(pix)
-                    tbl_result.setCellWidget(count, 2, label)
+                    tbl_result.setCellWidget(count, 2, lbl_point)
                 # If the type is polygon, insert polygon icon in column 3
                 elif ds_geometry in polygon_list:
-                    pix = QPixmap(':/plugins/Isogeo/resources/polygon.png')
-                    label.setPixmap(pix)
-                    tbl_result.setCellWidget(count, 2, label)
+                    tbl_result.setCellWidget(count, 2, lbl_polyg)
                 # If the type is line, insert line icon in column 3
                 elif ds_geometry in line_list:
-                    pix = QPixmap(':/plugins/Isogeo/resources/line.png')
-                    label.setPixmap(pix)
-                    tbl_result.setCellWidget(count, 2, label)
+                    tbl_result.setCellWidget(count, 2, lbl_line)
                 # If the type is multi, insert multi icon in column 3
                 elif ds_geometry in multi_list:
-                    pix = QPixmap(':/plugins/Isogeo/resources/multi.png')
-                    label.setPixmap(pix)
-                    tbl_result.setCellWidget(count, 2, label)
+                    tbl_result.setCellWidget(count, 2, lbl_multi)
                 # If the type is TIN, insert TIN text in column 3
                 elif ds_geometry == "TIN":
                     tbl_result.setItem(
@@ -137,14 +140,10 @@ class ResultsManager(object):
             else:
                 # It may be a raster, then raster icon in column 3
                 if "rasterDataset" in i.get('type'):
-                    pix = QPixmap(':/plugins/Isogeo/resources/raster.png')
-                    label.setPixmap(pix)
-                    tbl_result.setCellWidget(count, 2, label)
+                    tbl_result.setCellWidget(count, 2, lbl_rastr)
                 # Or it isn't spatial, then "no geometry" icon in column 3
                 else:
-                    pix = QPixmap(':/plugins/Isogeo/resources/ban.png')
-                    label.setPixmap(pix)
-                    tbl_result.setCellWidget(count, 2, label)
+                    tbl_result.setCellWidget(count, 2, lbl_nogeo)
 
             # We are still looping inside the table lines. For a given line, we
             # have displayed title, date, and geometry type. Now we have to
