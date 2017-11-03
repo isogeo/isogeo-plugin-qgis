@@ -15,6 +15,7 @@ from PyQt4.QtGui import (QIcon, QTableWidgetItem, QComboBox, QPushButton,
 
 # PyQGIS
 from qgis.utils import iface
+from qgis.core import QgsDataSourceURI
 
 # Custom modules
 from .tools import Tools
@@ -38,18 +39,22 @@ line_list = ("CircularString", "CompoundCurve", "Curve",
 multi_list = ("Geometry", "GeometryCollection")
 
 # Isogeo formats
-vectorformat_list = ('shp', 'dxf', 'dgn', 'filegdb', 'tab')
-rasterformat_list = ('esriasciigrid', 'geotiff',
-                     'intergraphgdb', 'jpeg', 'png', 'xyz', 'ecw')
-
+li_formats_vect = ("shp", "dxf", "dgn", "filegdb", "tab")
+li_formats_rastr = ("esriasciigrid", "geotiff",
+                    "intergraphgdb", "jpeg", "png", "xyz", "ecw")
 
 # Qt icons
-lbl_polyg = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/polygon.png'))
-lbl_point = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/point.png'))
-lbl_line = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/line.png'))
-lbl_multi = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/multi.png'))
-lbl_rastr = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/raster.png'))
-lbl_nogeo = QLabel().setPixmap(QPixmap(':/plugins/Isogeo/resources/ban.png'))
+lbl_polyg = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/polygon.png"))
+lbl_point = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/point.png"))
+lbl_line = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/line.png"))
+lbl_multi = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/multi.png"))
+lbl_rastr = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/raster.png"))
+lbl_nogeo = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/ban.png"))
+ico_wfs = QIcon(":/plugins/Isogeo/resources/wfs.png")
+ico_wms = QIcon(":/plugins/Isogeo/resources/wms.png")
+ico_wmts = QIcon(":/plugins/Isogeo/resources/wms.png")
+ico_pgis = QIcon(":/plugins/Isogeo/resources/database.svg")
+ico_file = QIcon(":/plugins/Isogeo/resources/file.svg")
 
 # ############################################################################
 # ########## Classes ###############
@@ -66,8 +71,6 @@ class ResultsManager(object):
         self.send_details_request = isogeo_plugin.send_details_request
         self.tr = isogeo_plugin.tr
         self.pg_connections = srv_url_bld.build_postgis_dict(qsettings)
-        # cache system
-        self.cached_unreach_drives = []
         self.cached_unreach_paths = []
 
     def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
@@ -84,24 +87,25 @@ class ResultsManager(object):
             pg_connections = self.pg_connections
         else:
             pass
-        # Set rable rows
-        if api_results.get('total') >= 10:
+        # Set table rows
+        if api_results.get("total") >= 10:
             tbl_result.setRowCount(10)
         else:
-            tbl_result.setRowCount(api_results.get('total'))
+            tbl_result.setRowCount(api_results.get("total"))
 
         # Looping inside the table lines. For each of them, showing the title,
         # abstract, geometry type, and a button that allow to add the data
         # to the canvas.
         count = 0
-        for i in api_results.get('results'):
+        for i in api_results.get("results"):
             # get useful metadata
-            md_id = i.get('_id')
+            md_id = i.get("_id")
             md_keywords = [i.get("tags").get(k)
                            for k in i.get("tags", ["NR", ])
                            if k.startswith("keyword:isogeo")]
             md_title = i.get("title", "NR")
-            ds_geometry = i.get('geometry')
+            ds_geometry = i.get("geometry")
+
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
             btn_md_title = QPushButton(custom_tools.format_button_title(md_title))
@@ -116,7 +120,7 @@ class ResultsManager(object):
             # COLUMN 2 - Data last update
             tbl_result.setItem(
                 count, 1, QTableWidgetItem(
-                    custom_tools.handle_date(i.get('_modified'))))
+                    custom_tools.handle_date(i.get("_modified"))))
 
             # COLUMN 3 - Geometry type
             if ds_geometry:
@@ -130,25 +134,26 @@ class ResultsManager(object):
                     tbl_result.setCellWidget(count, 2, lbl_multi)
                 elif ds_geometry == "TIN":
                     tbl_result.setItem(
-                        count, 2, QTableWidgetItem(u'TIN'))
+                        count, 2, QTableWidgetItem(u"TIN"))
                 else:
                     tbl_result.setItem(
                         count, 2, QTableWidgetItem(
-                            self.tr('Unknown geometry', "ResultsManager")))
+                            self.tr("Unknown geometry", "ResultsManager")))
             else:
-                if "rasterDataset" in i.get('type'):
+                if "rasterDataset" in i.get("type"):
                     tbl_result.setCellWidget(count, 2, lbl_rastr)
                 else:
                     tbl_result.setCellWidget(count, 2, lbl_nogeo)
 
             # COLUMN 4 - Add options
-            link_dict = {}
+            dico_add_options = {}
 
-            if 'format' in i.keys():
+            # Files and PostGIS direct access
+            if "format" in i.keys():
                 # If the data is a vector and the path is available, store
                 # useful information in the dict
-                if i.get('format', "NR") in vectorformat_list and 'path' in i:
-                    filepath = custom_tools.format_path(i.get('path'))
+                if i.get("format", "NR") in li_formats_vect and "path" in i:
+                    filepath = custom_tools.format_path(i.get("path"))
                     dir_file = os.path.dirname(filepath)
                     if dir_file not in self.cached_unreach_paths:
                         try:
@@ -157,18 +162,17 @@ class ResultsManager(object):
                                       i.get("title", "NR"),
                                       i.get("abstract", "NR"),
                                       md_keywords]
-                            link_dict[self.tr('Data file', "ResultsManager")] = params
+                            dico_add_options[self.tr("Data file", "ResultsManager")] = params
                         except IOError:
-                            logger.debug(filepath)
                             self.cached_unreach_paths.append(dir_file)
-                            pass
+                            self.cached_unreach_paths = list(set(self.cached_unreach_paths))
                     else:
                         logger.debug("Path has been ignored because "
                                      "it's in the cached unreacheable dirs.")
                         pass
                 # Same if the data is a raster
-                elif i.get('format', "NR") in rasterformat_list and 'path' in i:
-                    filepath = custom_tools.format_path(i.get('path'))
+                elif i.get("format", "NR") in li_formats_rastr and "path" in i:
+                    filepath = custom_tools.format_path(i.get("path"))
                     dir_file = os.path.dirname(filepath)
                     if dir_file not in self.cached_unreach_paths:
                         try:
@@ -177,7 +181,7 @@ class ResultsManager(object):
                                       i.get("title", "NR"),
                                       i.get("abstract", "NR"),
                                       md_keywords]
-                            link_dict[self.tr('Data file', "ResultsManager")] = params
+                            dico_add_options[self.tr("Data file", "ResultsManager")] = params
                         except IOError:
                             self.cached_unreach_paths.append(dir_file)
                             pass
@@ -187,84 +191,58 @@ class ResultsManager(object):
                         pass
                 # If the data is a postGIS table and the connexion has
                 # been saved in QGIS.
-                elif i.get('format') == 'postgis':
+                elif i.get("format") == "postgis":
                     # Récupère le nom de la base de données
-                    base_name = i.get('path')
+                    base_name = i.get("path")
                     if base_name in pg_connections.keys():
                         params = {}
-                        params['base_name'] = base_name
-                        schema_table = i.get('name')
+                        params["base_name"] = base_name
+                        schema_table = i.get("name")
                         if schema_table is not None and "." in schema_table:
-                            params['schema'] = schema_table.split(".")[0]
-                            params['table'] = schema_table.split(".")[1]
-                            params['abstract'] = i.get("abstract", None)
-                            params['title'] = i.get("title", None)
-                            params['keywords'] = md_keywords
-                            link_dict[self.tr('PostGIS table', "ResultsManager")] = params
+                            params["schema"] = schema_table.split(".")[0]
+                            params["table"] = schema_table.split(".")[1]
+                            params["abstract"] = i.get("abstract", None)
+                            params["title"] = i.get("title", None)
+                            params["keywords"] = md_keywords
+                            dico_add_options[self.tr("PostGIS table", "ResultsManager")] = params
                         else:
                             pass
                     else:
                         pass
                 else:
                     pass
-            # This is the new association mode. The layer and service
-            # information are stored in the "serviceLayers" include, when
-            # associated with a vector or raster data.
-            d_type = i.get('type')
+            # Associated service layers
+            d_type = i.get("type")
             if d_type == "vectorDataset" or d_type == "rasterDataset":
-                for layer in i.get('serviceLayers'):
+                for layer in i.get("serviceLayers"):
                     service = layer.get("service")
                     if service is not None:
                         srv_details = {"path": service.get("path", "NR"),
                                        "formatVersion": service.get("formatVersion")}
                         # WFS
                         if service.get("format") == "wfs":
-                            try:
-                                url = "{0}?typeName={1}".format(service.get("path"),
-                                                                 layer.get("id"))
-                            except UnicodeEncodeError:
-                                logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
-                                             .format(i.get("_id"),
-                                                     layer.get("_id")))
-                                continue
-                            name_url = srv_url_bld.new_build_wfs_url(layer, srv_details,
-                                                                     rsc_type="ds_dyn_lyr_srv",
-                                                                     mode="quicky")
+                            name_url = srv_url_bld.build_wfs_url(layer, srv_details,
+                                                                 rsc_type="ds_dyn_lyr_srv",
+                                                                 mode="quicky")
                             if name_url[0] != 0:
-                                link_dict[name_url[5]] = name_url
+                                dico_add_options[name_url[5]] = name_url
                             else:
                                 pass
                         # WMS
                         elif service.get("format") == "wms":
-                            try:
-                                url = "{0}?layers={1}".format(service.get("path"),
-                                                               layer.get("id"))
-                            except UnicodeEncodeError:
-                                logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
-                                             .format(i.get("_id"),
-                                                     layer.get("_id")))
-                                continue
-                            name_url = srv_url_bld.new_build_wms_url(layer, srv_details,
-                                                                     rsc_type="ds_dyn_lyr_srv",
-                                                                     mode="quicky")
+                            name_url = srv_url_bld.build_wms_url(layer, srv_details,
+                                                                 rsc_type="ds_dyn_lyr_srv",
+                                                                 mode="quicky")
                             if name_url[0] != 0:
-                                link_dict[name_url[5]] = name_url
+                                dico_add_options[name_url[5]] = name_url
                             else:
                                 pass
                         # WMTS
                         elif service.get("format") == "wmts":
-                            # try:
-                            #     path = "{0}?layers={1}".format(service.get("path"),
-                            #                                    layer.get("id"))
-                            # except UnicodeEncodeError:
-                            #     logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
-                            #                  .format(i.get("_id"),
-                            #                          layer.get("_id")))
-                            #     continue
                             name_url = srv_url_bld.build_wmts_url(layer, srv_details,
                                                                   rsc_type="ds_dyn_lyr_srv")
                             if name_url[0] != 0:
-                                link_dict[u"WMTS : " + name_url[1]] = name_url
+                                dico_add_options[u"WMTS : " + name_url[1]] = name_url
                             else:
                                 pass
                         else:
@@ -273,65 +251,40 @@ class ResultsManager(object):
                         pass
             # New association mode. For services metadata sheet, the layers
             # are stored in the purposely named include: "layers".
-            elif i.get('type') == "service":
+            elif i.get("type") == "service":
                 if i.get("layers") is not None:
                     srv_details = {"path": i.get("path", "NR"),
                                    "formatVersion": i.get("formatVersion")}
                     # WFS
                     if i.get("format") == "wfs":
-                        for layer in i.get('layers'):
-                            try:
-                                url = "{0}?typeName={1}".format(srv_details.get("path"),
-                                                                 layer.get("id"))
-                            except UnicodeEncodeError:
-                                logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
-                                             .format(i.get("_id"),
-                                                     layer.get("_id")))
-                                continue
-                            name_url = srv_url_bld.new_build_wfs_url(layer, srv_details,
-                                                                     rsc_type="service",
-                                                                     mode="quicky")
+                        for layer in i.get("layers"):
+                            name_url = srv_url_bld.build_wfs_url(layer, srv_details,
+                                                                 rsc_type="service",
+                                                                 mode="quicky")
                             if name_url[0] != 0:
-                                link_dict[name_url[5]] = name_url
+                                dico_add_options[name_url[5]] = name_url
                             else:
                                 continue
                                 pass
                     # WMS
                     elif i.get("format") == "wms":
-                        for layer in i.get('layers'):
-                            try:
-                                url = "{0}?layers={1}".format(srv_details.get("path"),
-                                                               layer.get("id"))
-                            except UnicodeEncodeError:
-                                logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
-                                             .format(i.get("_id"),
-                                                     layer.get("_id")))
-                                continue
-                            name_url = srv_url_bld.new_build_wms_url(layer, srv_details,
-                                                                     rsc_type="service",
-                                                                     mode="quicky")
+                        for layer in i.get("layers"):
+                            name_url = srv_url_bld.build_wms_url(layer, srv_details,
+                                                                 rsc_type="service",
+                                                                 mode="quicky")
                             if name_url[0] != 0:
-                                link_dict[name_url[5]] = name_url
-                                # link_dict["WMS : " + name_url[1]] = name_url
+                                dico_add_options[name_url[5]] = name_url
                             else:
                                 continue
                                 pass
                     # WMTS
                     elif i.get("format") == "wmts":
-                        for layer in i.get('layers'):
-                            # try:
-                            #     path = "{0}?layers={1}".format(srv_details.get("path"),
-                            #                                    layer.get("id"))
-                            # except UnicodeEncodeError:
-                            #     logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
-                            #                  .format(i.get("_id"),
-                            #                          layer.get("_id")))
-                            #     continue
+                        for layer in i.get("layers"):
                             name_url = srv_url_bld.build_wmts_url(layer, srv_details,
                                                                   rsc_type="service")
                             if name_url[0] != 0:
                                 btn_label = "WMTS : {}".format(name_url[1])
-                                link_dict[btn_label] = name_url
+                                dico_add_options[btn_label] = name_url
                             else:
                                 continue
                                 pass
@@ -344,7 +297,7 @@ class ResultsManager(object):
             # added. The "Add" column has to be filled accordingly.
 
             # If the data can't be added, just insert "can't" text.
-            if link_dict == {}:
+            if dico_add_options == {}:
                 text = self.tr("Can't be added", "ResultsManager")
                 fake_button = QPushButton(text)
                 fake_button.setStyleSheet("text-align: left")
@@ -352,19 +305,19 @@ class ResultsManager(object):
                 tbl_result.setCellWidget(count, 3, fake_button)
             # If there is only one way for the data to be added, insert a
             # button.
-            elif len(link_dict) == 1:
-                text = link_dict.keys()[0]
-                params = link_dict.get(text)
-                if text.startswith("WMS"):
-                    icon = QIcon(':/plugins/Isogeo/resources/wms.png')
-                elif text.startswith("WFS"):
-                    icon = QIcon(':/plugins/Isogeo/resources/wfs.png')
+            elif len(dico_add_options) == 1:
+                text = dico_add_options.keys()[0]
+                params = dico_add_options.get(text)
+                if text.startswith("WFS"):
+                    icon = ico_wfs
+                elif text.startswith("WMS"):
+                    icon = ico_wms
                 elif text.startswith("WMTS"):
-                    icon = QIcon(':/plugins/Isogeo/resources/wms.png')
-                elif text.startswith(self.tr('PostGIS table', "ResultsManager")):
-                    icon = QIcon(':/plugins/Isogeo/resources/database.svg')
-                elif text.startswith(self.tr('Data file', "ResultsManager")):
-                    icon = QIcon(':/plugins/Isogeo/resources/file.svg')
+                    icon = ico_wmts
+                elif text.startswith(self.tr("PostGIS table", "ResultsManager")):
+                    icon = ico_pgis
+                elif text.startswith(self.tr("Data file", "ResultsManager")):
+                    icon = ico_file
                 add_button = QPushButton(icon, text)
                 add_button.setStyleSheet("text-align: left")
                 add_button.pressed.connect(partial(self.add_layer,
@@ -374,18 +327,18 @@ class ResultsManager(object):
             # Else, add a combobox, storing all possibilities.
             else:
                 combo = QComboBox()
-                for key in link_dict.keys():
-                    if key.startswith("WMS"):
-                        icon = QIcon(':/plugins/Isogeo/resources/wms.png')
-                    elif key.startswith("WFS"):
-                        icon = QIcon(':/plugins/Isogeo/resources/wfs.png')
+                for key in dico_add_options.keys():
+                    if key.startswith("WFS"):
+                        icon = ico_wfs
+                    elif key.startswith("WMS"):
+                        icon = ico_wms
                     elif key.startswith("WMTS"):
-                        icon = QIcon(':/plugins/Isogeo/resources/wms.png')
-                    elif key.startswith(self.tr('PostGIS table', "ResultsManager")):
-                        icon = QIcon(':/plugins/Isogeo/resources/database.svg')
-                    elif key.startswith(self.tr('Data file', "ResultsManager")):
-                        icon = QIcon(':/plugins/Isogeo/resources/file.svg')
-                    combo.addItem(icon, key, link_dict[key])
+                        icon = ico_wmts
+                    elif key.startswith(self.tr("PostGIS table", "ResultsManager")):
+                        icon = ico_pgis
+                    elif key.startswith(self.tr("Data file", "ResultsManager")):
+                        icon = ico_file
+                    combo.addItem(icon, key, dico_add_options[key])
                 combo.activated.connect(partial(self.add_layer,
                                                 layer_info=["index", count]))
                 tbl_result.setCellWidget(count, 3, combo)
