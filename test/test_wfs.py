@@ -161,11 +161,11 @@ wfs_url_getcap = wfs_url_in_v1_public
 ## URI
 
 uri = QgsDataSourceURI()
-uri.setParam ("url", wfs_url_getcap)
-uri.setParam ( "typename", layer_id)
-uri.setParam ( "version", "auto")
-uri.setParam ( "srsname", srs")
-uri.setParam ( "restrictToRequestBBOX", "1")
+uri.setParam("url", wfs_url_getcap)
+uri.setParam("typename", layer_id)
+uri.setParam("version", "auto")
+uri.setParam("srsname", srs)
+uri.setParam("restrictToRequestBBOX", "1")
 
 # let's try to add it to the map canvas
 qgis_wfs_lyr_auto = QgsVectorLayer(uri.uri(), "Auto - " + layer_title, 'WFS')
