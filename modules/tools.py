@@ -69,14 +69,15 @@ class Tools(object):
 
     def format_path(self, string):
         """Reformat windows path for them to be understood by QGIS."""
-        new_string = ""
-        for character in string:
-            if character == '\\':
-                new_string += "/"
-            else:
-                new_string += character
-        # method ending
-        return new_string
+        # new_string = ""
+        # for character in string:
+        #     if character == '\\':
+        #         new_string += "/"
+        #     else:
+        #         new_string += character
+        # # method ending
+        # # return new_string
+        return path.realpath(string)
 
     def get_map_crs(self):
         """Get QGIS map canvas current EPSG code."""

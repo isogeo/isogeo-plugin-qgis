@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division,
 # Standard library
 import logging
 from functools import partial
+import os
 
 # PyQT
 # from QByteArray
@@ -65,6 +66,9 @@ class ResultsManager(object):
         self.send_details_request = isogeo_plugin.send_details_request
         self.tr = isogeo_plugin.tr
         self.pg_connections = srv_url_bld.build_postgis_dict(qsettings)
+        # cache system
+        self.cached_unreach_drives = []
+        self.cached_unreach_paths = []
 
     def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
         """Display the results in a table ."""
@@ -98,84 +102,88 @@ class ResultsManager(object):
                            if k.startswith("keyword:isogeo")]
             md_title = i.get("title", "NR")
             ds_geometry = i.get('geometry')
+            # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
             btn_md_title = QPushButton(custom_tools.format_button_title(md_title))
             # Connecting the button to the full metadata popup
             btn_md_title.pressed.connect(partial(
                 self.send_details_request, md_id=md_id))
             # Putting the abstract as a tooltip on this button
-            btn_md_title.setToolTip(i.get('abstract', "")[:300])
+            btn_md_title.setToolTip(i.get("abstract", "")[:300])
             # Insert it in column 1
-            tbl_result.setCellWidget(
-                count, 0, btn_md_title)
-            # Insert the modification date in column 2
+            tbl_result.setCellWidget(count, 0, btn_md_title)
+
+            # COLUMN 2 - Data last update
             tbl_result.setItem(
                 count, 1, QTableWidgetItem(
                     custom_tools.handle_date(i.get('_modified'))))
-            # Getting the geometry
-            label = QLabel()
+
+            # COLUMN 3 - Geometry type
             if ds_geometry:
-                # If the geometry type is point, insert point icon in column 3
                 if ds_geometry in point_list:
                     tbl_result.setCellWidget(count, 2, lbl_point)
-                # If the type is polygon, insert polygon icon in column 3
                 elif ds_geometry in polygon_list:
                     tbl_result.setCellWidget(count, 2, lbl_polyg)
-                # If the type is line, insert line icon in column 3
                 elif ds_geometry in line_list:
                     tbl_result.setCellWidget(count, 2, lbl_line)
-                # If the type is multi, insert multi icon in column 3
                 elif ds_geometry in multi_list:
                     tbl_result.setCellWidget(count, 2, lbl_multi)
-                # If the type is TIN, insert TIN text in column 3
                 elif ds_geometry == "TIN":
                     tbl_result.setItem(
                         count, 2, QTableWidgetItem(u'TIN'))
-                # If the type isn't any of the above, unknown(shouldn't happen)
                 else:
                     tbl_result.setItem(
                         count, 2, QTableWidgetItem(
                             self.tr('Unknown geometry', "ResultsManager")))
-            # If the data doesn't have a geometry type
             else:
-                # It may be a raster, then raster icon in column 3
                 if "rasterDataset" in i.get('type'):
                     tbl_result.setCellWidget(count, 2, lbl_rastr)
-                # Or it isn't spatial, then "no geometry" icon in column 3
                 else:
                     tbl_result.setCellWidget(count, 2, lbl_nogeo)
 
-            # We are still looping inside the table lines. For a given line, we
-            # have displayed title, date, and geometry type. Now we have to
-            # deal with the "add data" column. We need to see if the data can
-            # be added directly, and/or using a geographical service.
+            # COLUMN 4 - Add options
             link_dict = {}
 
             if 'format' in i.keys():
                 # If the data is a vector and the path is available, store
                 # useful information in the dict
                 if i.get('format', "NR") in vectorformat_list and 'path' in i:
-                    path = custom_tools.format_path(i.get('path'))
-                    try:
-                        open(path)
-                        params = ["vector", path,
-                                  i.get("title", "NR"),
-                                  i.get("abstract", "NR"),
-                                  md_keywords]
-                        link_dict[self.tr('Data file', "ResultsManager")] = params
-                    except IOError:
+                    filepath = custom_tools.format_path(i.get('path'))
+                    dir_file = os.path.dirname(filepath)
+                    if dir_file not in self.cached_unreach_paths:
+                        try:
+                            open(filepath)
+                            params = ["vector", filepath,
+                                      i.get("title", "NR"),
+                                      i.get("abstract", "NR"),
+                                      md_keywords]
+                            link_dict[self.tr('Data file', "ResultsManager")] = params
+                        except IOError:
+                            logger.debug(filepath)
+                            self.cached_unreach_paths.append(dir_file)
+                            pass
+                    else:
+                        logger.debug("Path has been ignored because "
+                                     "it's in the cached unreacheable dirs.")
                         pass
                 # Same if the data is a raster
                 elif i.get('format', "NR") in rasterformat_list and 'path' in i:
-                    path = custom_tools.format_path(i.get('path'))
-                    try:
-                        open(path)
-                        params = ["raster", path,
-                                  i.get("title", "NR"),
-                                  i.get("abstract", "NR"),
-                                  md_keywords]
-                        link_dict[self.tr('Data file', "ResultsManager")] = params
-                    except IOError:
+                    filepath = custom_tools.format_path(i.get('path'))
+                    dir_file = os.path.dirname(filepath)
+                    if dir_file not in self.cached_unreach_paths:
+                        try:
+                            open(filepath)
+                            params = ["raster", filepath,
+                                      i.get("title", "NR"),
+                                      i.get("abstract", "NR"),
+                                      md_keywords]
+                            link_dict[self.tr('Data file', "ResultsManager")] = params
+                        except IOError:
+                            self.cached_unreach_paths.append(dir_file)
+                            pass
+                    else:
+                        logger.debug("Path has been ignored because "
+                                     "it's in the cached unreacheable dirs: ")
                         pass
                 # If the data is a postGIS table and the connexion has
                 # been saved in QGIS.
@@ -263,7 +271,7 @@ class ResultsManager(object):
                         # WFS
                         if service.get("format") == "wfs":
                             try:
-                                path = "{0}?typeName={1}".format(service.get("path"),
+                                url = "{0}?typeName={1}".format(service.get("path"),
                                                                  layer.get("id"))
                             except UnicodeEncodeError:
                                 logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
@@ -280,7 +288,7 @@ class ResultsManager(object):
                         # WMS
                         elif service.get("format") == "wms":
                             try:
-                                path = "{0}?layers={1}".format(service.get("path"),
+                                url = "{0}?layers={1}".format(service.get("path"),
                                                                layer.get("id"))
                             except UnicodeEncodeError:
                                 logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
@@ -324,7 +332,7 @@ class ResultsManager(object):
                     if i.get("format") == "wfs":
                         for layer in i.get('layers'):
                             try:
-                                path = "{0}?typeName={1}".format(srv_details.get("path"),
+                                url = "{0}?typeName={1}".format(srv_details.get("path"),
                                                                  layer.get("id"))
                             except UnicodeEncodeError:
                                 logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
@@ -343,7 +351,7 @@ class ResultsManager(object):
                     elif i.get("format") == "wms":
                         for layer in i.get('layers'):
                             try:
-                                path = "{0}?layers={1}".format(srv_details.get("path"),
+                                url = "{0}?layers={1}".format(srv_details.get("path"),
                                                                layer.get("id"))
                             except UnicodeEncodeError:
                                 logger.error("Encoding error in service layer name (UID). Metadata: {0} | service layer: {1}"
