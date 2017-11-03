@@ -207,57 +207,6 @@ class ResultsManager(object):
                         pass
                 else:
                     pass
-            # We are now testing the WMS and WFS links that may be associated
-            # to the metadata sheet
-
-            # First, we look in "links". This is the old deprecated syntax.
-            # At some point, all services should be associated using the new
-            # one and this part of the code should be removed.
-            for link in i.get('links'):
-                # If the link is a WMS
-                if link.get('kind') == 'wms':
-                    # Test if all the needed information is in the url.
-                    url = [link.get('title'), link.get('url')]
-                    name_url = srv_url_bld.build_wms_url(url, rsc_type="link")
-                    # In which case, store it in the dict.
-                    if name_url != 0:
-                        link_dict[u"WMS : " + name_url[1]] = name_url
-                    else:
-                        pass
-                # If the link is a WFS
-                elif link.get('kind') == 'wfs':
-                    url = [link.get('title'), link.get('url')]
-                    name_url = srv_url_bld.build_wfs_url(url, rsc_type="link")
-                    if name_url != 0:
-                        link_dict[u"WFS : " + name_url[1]] = name_url
-                    else:
-                        pass
-                # If the link is a second level association
-                elif link.get('type') == 'link':
-                    _link = link.get('link')
-                    if 'kind' in _link:
-                        # WMS
-                        if _link.get('kind') == 'wms':
-                            url = [link.get('title'), link.get('url')]
-                            name_url = srv_url_bld.build_wms_url(url, rsc_type="link")
-                            if name_url != 0:
-                                link_dict[u"WMS : " + name_url[1]] = name_url
-                            else:
-                                pass
-                        # WFS
-                        elif _link.get('kind') == 'wfs':
-                            url = [link.get('title'), link.get('url')]
-                            name_url = srv_url_bld.build_wfs_url(url, rsc_type="link")
-                            if name_url != 0:
-                                link_dict[u"WFS : " + name_url[1]] = name_url
-                            else:
-                                pass
-                        else:
-                            pass
-                    else:
-                        pass
-                else:
-                    pass
             # This is the new association mode. The layer and service
             # information are stored in the "serviceLayers" include, when
             # associated with a vector or raster data.
