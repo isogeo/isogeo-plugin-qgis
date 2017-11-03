@@ -9,11 +9,13 @@ from functools import partial
 from urllib import urlencode
 
 # PyQT
-from PyQt4.QtCore import QByteArray, QFile, QIODevice, QSettings, QUrl
-from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
+from PyQt4.QtCore import QByteArray, QSettings, QUrl
+from PyQt4.QtGui import QMessageBox
+from PyQt4.QtNetwork import QNetworkRequest
 
 # PyQGIS
 from qgis.core import QgsMessageLog
+from qgis.utils import iface
 
 # ############################################################################
 # ########## Globals ###############
@@ -60,7 +62,7 @@ class IsogeoApiManager(object):
         data = urlencode({"grant_type": "client_credentials"})
         databyte = QByteArray()
         databyte.append(data)
-        url = QUrl('https://id.api.isogeo.com/oauth/token')
+        url = QUrl("https://id.api.isogeo.com/oauth/token")
         request = QNetworkRequest(url)
         request.setRawHeader("Authorization", headervalue)
         if self.request_status_clear:
@@ -83,95 +85,31 @@ class IsogeoApiManager(object):
         bytarray = answer.readAll()
         content = str(bytarray)
         parsed_content = json.loads(content)
-        if 'access_token' in parsed_content:
+        if "access_token" in parsed_content:
             logger.info("The API reply is an access token : "
-                         "the request worked as expected.")
+                        "the request worked as expected.")
             # TO DO : Appeler la fonction d'initialisation
-            self.token = "Bearer " + parsed_content['access_token']
+            self.token = "Bearer " + parsed_content["access_token"]
             if self.savedSearch == "first":
                 self.requestStatusClear = True
                 self.set_widget_status()
             else:
                 self.requestStatusClear = True
                 self.send_request_to_isogeo_api(self.token)
-        # TO DO : Distinguer plusieurs cas d'erreur
-        elif 'error' in parsed_content:
+        # TO DO : Distinguer plusieurs cas d"erreur
+        elif "error" in parsed_content:
             logger.error("The API reply is an error. Id and secret must be "
-                          "invalid. Asking for them again.")
+                         "invalid. Asking for them again.")
             QMessageBox.information(
-                iface.mainWindow(), self.tr("Error"), parsed_content['error'])
+                iface.mainWindow(), self.tr("Error"), parsed_content["error"])
             self.requestStatusClear = True
             self.auth_prompt_form.show()
         else:
             self.requestStatusClear = True
             logger.error("The API reply has an unexpected form : "
-                          "{0}".format(parsed_content))
+                         "{0}".format(parsed_content))
             QMessageBox.information(
                 iface.mainWindow(), self.tr("Error"), self.tr("Unknown error"))
-
-    # def handle_api_reply(self, answer):
-    #     """Handle the different possible Isogeo API answer.
-
-    #     This is called when the answer from the API is finished. If it's
-    #     content, it calls update_fields(). If it isn't, it means the token has
-    #     expired, and it calls ask_for_token()
-    #     """
-    #     logger.info("Request sent to API and reply received.")
-    #     bytarray = answer.readAll()
-    #     content = str(bytarray)
-    #     if answer.error() == 0 and content != "":
-    #         logger.info("Reply is a result json.")
-    #         if self.showDetails is False and self.settingsRequest is False:
-    #             self.loopCount = 0
-    #             parsed_content = json.loads(content)
-    #             self.requestStatusClear = True
-    #             self.update_fields(parsed_content)
-    #         elif self.showDetails is True:
-    #             self.showDetails = False
-    #             self.loopCount = 0
-    #             parsed_content = json.loads(content)
-    #             self.requestStatusClear = True
-    #             self.show_complete_md(parsed_content)
-    #         elif self.settingsRequest is True:
-    #             self.settingsRequest = False
-    #             self.loopCount = 0
-    #             parsed_content = json.loads(content)
-    #             self.requestStatusClear = True
-    #             self.write_shares_info(parsed_content)
-
-    #     elif answer.error() == 204:
-    #         logger.info("Token expired. Renewing it.")
-    #         self.loopCount = 0
-    #         self.requestStatusClear = True
-    #         self.ask_for_token(self.user_id, self.user_secret,
-    #                            self.requestStatusClear)
-    #     elif content == "":
-    #         logger.info("Empty reply. Weither no catalog is shared with the "
-    #                     "plugin, or there is a problem (2 requests sent "
-    #                     "together)")
-    #         if self.loopCount < 3:
-    #             self.loopCount += 1
-    #             answer.abort()
-    #             del answer
-    #             self.requestStatusClear = True
-    #             self.ask_for_token(self.user_id, self.user_secret,
-    #                                self.requestStatusClear)
-    #         else:
-    #             self.requestStatusClear = True
-    #             msgBar.pushMessage(
-    #                 self.tr("The script is looping. Make sure you shared a "
-    #                         "catalog with the plugin. If so, please report "
-    #                         "this on the bug tracker."))
-    #     else:
-    #         self.requestStatusClear = True
-    #         QMessageBox.information(iface.mainWindow(),
-    #                                 self.tr("Error"),
-    #                                 self.tr("You are facing an unknown error. "
-    #                                         "Code: ") +
-    #                                 str(answer.error()) +
-    #                                 "\nPlease report tis on the bug tracker.")
-    #     # method end
-    #     return
 
     def send_request_to_isogeo_api(self, token, limit=10):
         """Send a content url to the Isogeo API.
@@ -195,7 +133,7 @@ class IsogeoApiManager(object):
     def build_request_url(self, params):
         """Build the request url according to the widgets."""
         # Base url for a request to Isogeo API
-        url = 'https://v1.api.isogeo.com/resources/search?'
+        url = "https://v1.api.isogeo.com/resources/search?"
         # Build the url according to the params
         if params.get("text") != "":
             filters = params.get("text") + " "
@@ -205,26 +143,26 @@ class IsogeoApiManager(object):
         for keyword in params.get("keys"):
             filters += keyword + " "
         # Owner
-        if params.get('owner') is not None:
-            filters += params.get('owner') + " "
+        if params.get("owner") is not None:
+            filters += params.get("owner") + " "
         # SRS
-        if params.get('srs') is not None:
-            filters += params.get('srs') + " "
+        if params.get("srs") is not None:
+            filters += params.get("srs") + " "
         # INSPIRE keywords
-        if params.get('inspire') is not None:
-            filters += params.get('inspire') + " "
+        if params.get("inspire") is not None:
+            filters += params.get("inspire") + " "
         # Format
-        if params.get('format') is not None:
-            filters += params.get('format') + " "
+        if params.get("format") is not None:
+            filters += params.get("format") + " "
         # Data type
-        if params.get('datatype') is not None:
-            filters += params.get('datatype') + " "
+        if params.get("datatype") is not None:
+            filters += params.get("datatype") + " "
         # Contact
-        if params.get('contact') is not None:
-            filters += params.get('contact') + " "
+        if params.get("contact") is not None:
+            filters += params.get("contact") + " "
         # License
-        if params.get('license') is not None:
-            filters += params.get('license') + " "
+        if params.get("license") is not None:
+            filters += params.get("license") + " "
         # Formating the filters
         if filters != "":
             filters = "q=" + filters[:-1]
