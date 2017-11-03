@@ -710,7 +710,7 @@ class Isogeo:
             cbb_license.addItem(i, licenses.get(i))
         # Resource type
         md_types = tags.get("types")
-        for i in md_types:
+        for i in sorted(md_types):
             cbb_type.addItem(i, md_types.get(i))
         # Geographical filter
         cbb_geofilter.addItem(self.tr("Map canvas"), "mapcanvas")
