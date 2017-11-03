@@ -1056,7 +1056,6 @@ class Isogeo:
                         self.tr('Raster layer is not valid.'))
             # If WFS link
             elif layer_info[0] == 'WFS':
-                print(layer_info)
                 url = layer_info[2]
                 name = layer_info[1]
                 layer = QgsVectorLayer(url, name, 'WFS')
@@ -1065,9 +1064,9 @@ class Isogeo:
                     logger.info("WFS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
-                    name_url = srv_url_bld.new_build_wfs_url(layer_info[3],
-                                                             layer_info[4],
-                                                             mode="complete")
+                    name_url = srv_url_bld.build_wfs_url(layer_info[3],
+                                                         layer_info[4],
+                                                         mode="complete")
                     if name_url[0] != 0:
                         layer = QgsVectorLayer(name_url[2], name_url[1], 'WFS')
                         if layer.isValid():
@@ -1093,9 +1092,9 @@ class Isogeo:
                     logger.info("WMS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
-                    name_url = srv_url_bld.new_build_wms_url(layer_info[3],
-                                                             layer_info[4],
-                                                             mode="complete")
+                    name_url = srv_url_bld.build_wms_url(layer_info[3],
+                                                         layer_info[4],
+                                                         mode="complete")
                     if name_url[0] != 0:
                         layer = QgsRasterLayer(name_url[2], name_url[1], 'wms')
                         if layer.isValid():
