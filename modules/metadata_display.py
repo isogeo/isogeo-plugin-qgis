@@ -58,7 +58,7 @@ class MetadataDisplayer(object):
     def show_complete_md(self, md, lang="EN"):
         """Open the pop up window that shows the metadata sheet details."""
         logger.info("Displaying the whole metadata sheet.")
-        tags = isogeo_api_mng.get_tags(md)
+        tags = isogeo_api_mng.get_tags(md.get("tags"))
         isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])
 
         # clean map canvas
