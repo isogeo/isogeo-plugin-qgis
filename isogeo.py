@@ -98,6 +98,14 @@ logfile.setLevel(logging.INFO)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 
+# icons
+ico_bolt = QIcon(':/plugins/Isogeo/resources/bolt.svg')
+ico_keyw = QIcon(':/plugins/Isogeo/resources/tag.svg')
+ico_line = QIcon(':/plugins/Isogeo/resources/line.png')
+ico_none = QIcon(':/plugins/Isogeo/resources/none.svg')
+ico_poly = QIcon(':/plugins/Isogeo/resources/polygon.png')
+ico_poin = QIcon(':/plugins/Isogeo/resources/point.png')
+
 # ############################################################################
 # ########## Classes ###############
 # ##################################
@@ -206,7 +214,7 @@ class Isogeo:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate(context, message)
 
-    def add_action(self, icon_path, text, callback, enabled_flag=True, add_to_menu=True, add_to_toolbar=True, status_tip=None, whats_this=None, parent=None):
+    def add_action(self, ico_path, text, callback, enabled_flag=True, add_to_menu=True, add_to_toolbar=True, status_tip=None, whats_this=None, parent=None):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -236,8 +244,8 @@ class Isogeo:
             added to self.actions list.
         :rtype: QAction
         """
-        icon = QIcon(icon_path)
-        action = QAction(icon, text, parent)
+        ico = QIcon(ico_path)
+        action = QAction(ico, text, parent)
         action.triggered.connect(callback)
         action.setEnabled(enabled_flag)
 
@@ -261,9 +269,9 @@ class Isogeo:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        icon_path = ':/plugins/Isogeo/icon.png'
+        ico_path = ':/plugins/Isogeo/icon.png'
         self.add_action(
-            icon_path,
+            ico_path,
             text=self.tr(u'Search within Isogeo catalogs'),
             callback=self.run,
             parent=self.iface.mainWindow())
@@ -630,31 +638,30 @@ class Isogeo:
             search_list.pop(search_list.index('_current'))
         cbb_quicksearch.clear()
         self.dockwidget.cbb_modify_sr.clear()
-        icon = QIcon(':/plugins/Isogeo/resources/bolt.svg')
+
         # cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
-        cbb_quicksearch.addItem(icon, "")
+        cbb_quicksearch.addItem(ico_bolt, "")
         for i in search_list:
             cbb_quicksearch.addItem(i, i)
             self.dockwidget.cbb_modify_sr.addItem(i, i)
 
         # Initiating the "nothing selected" and "None" items in each combobox
         cbb_inspire.addItem(" - ")
-        icon = QIcon(':/plugins/Isogeo/resources/none.svg')
-        cbb_inspire.addItem(icon,
+        cbb_inspire.addItem(ico_none,
                             self.tr("None"),
                             "has-no:keyword:inspire-theme")
         cbb_owner.addItem(" - ")
         cbb_format.addItem(" - ")
-        cbb_format.addItem(icon, self.tr("None"), "has-no:format")
+        cbb_format.addItem(ico_none, self.tr("None"), "has-no:format")
         cbb_srs.addItem(" - ")
-        cbb_srs.addItem(icon, self.tr("None"), "has-no:coordinate-system")
+        cbb_srs.addItem(ico_none, self.tr("None"), "has-no:coordinate-system")
         cbb_geofilter.addItem(" - ")
         cbb_type.addItem(self.tr("All types"))
         cbb_contact.addItem(" - ")
-        cbb_contact.addItem(icon, self.tr("None"), "has-no:contact")
+        cbb_contact.addItem(ico_none, self.tr("None"), "has-no:contact")
         cbb_license.addItem(" - ")
-        cbb_license.addItem(icon, self.tr("None"), "has-no:license")
-        # Initializing the cbb that dont't need to be actualised.
+        cbb_license.addItem(ico_none, self.tr("None"), "has-no:license")
+        # Initializing the cbb that dont't need to be updated
         if self.savedSearch == "_default" or self.hardReset is True:
             tbl_result.horizontalHeader().setResizeMode(1)
             tbl_result.horizontalHeader().setResizeMode(1, 0)
@@ -728,11 +735,11 @@ class Isogeo:
         for layer in layers:
             if layer.type() == 0:
                 if layer.geometryType() == 2:
-                    cbb_geofilter.addItem(polycon, layer.name(), layer)
+                    cbb_geofilter.addItem(ico_poly, layer.name(), layer)
                 elif layer.geometryType() == 1:
-                    cbb_geofilter.addItem(linicon, layer.name(), layer)
+                    cbb_geofilter.addItem(ico_line, layer.name(), layer)
                 elif layer.geometryType() == 0:
-                    cbb_geofilter.addItem(pointicon, layer.name(), layer)
+                    cbb_geofilter.addItem(ico_poin, layer.name(), layer)
 
         # Putting all the comboboxes selected index to their previous
         # location. Necessary as all comboboxes items have been removed and
@@ -815,8 +822,7 @@ class Isogeo:
                 # Creating the first item, that is just a banner for
                 # the combobox.
                 first_item = QStandardItem(self.tr('---- Keywords ----'))
-                icon = QIcon(':/plugins/Isogeo/resources/tag.svg')
-                first_item.setIcon(icon)
+                first_item.setIcon(ico_keyw)
                 first_item.setSelectable(False)
                 model.insertRow(0, first_item)
                 model.itemChanged.connect(self.search)
@@ -869,8 +875,7 @@ class Isogeo:
                 # Banner item
                 first_item = QStandardItem(u"---- {} ----"
                                            .format(self.tr('Keywords')))
-                icon = QIcon(':/plugins/Isogeo/resources/tag.svg')
-                first_item.setIcon(icon)
+                first_item.setIcon(ico_keyw)
                 first_item.setSelectable(False)
                 model.insertRow(0, first_item)
                 model.itemChanged.connect(self.search)
@@ -955,8 +960,7 @@ class Isogeo:
             # Banner item
             first_item = QStandardItem(u"---- {} ----"
                                        .format(self.tr('Keywords')))
-            icon = QIcon(':/plugins/Isogeo/resources/tag.svg')
-            first_item.setIcon(icon)
+            first_item.setIcon(ico_keyw)
             first_item.setSelectable(False)
             model.insertRow(0, first_item)
             model.itemChanged.connect(self.search)
