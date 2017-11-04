@@ -137,6 +137,46 @@ class UrlBuilder(object):
                 pass
         return final_dict
 
+    def build_efs_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
+        """Reformat the input Esri Feature Service url so it fits QGIS criterias.
+
+        Tests weither all the needed information is provided in the url, and
+        then build the url in the syntax understood by QGIS.
+        """
+        srs_map = custom_tools.get_map_crs()
+        layer_name = api_layer.get("id")
+        efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
+        efs_lyr_url = "{}/{}".format(srv_details.get("path"), layer_name)
+
+        efs_uri = QgsDataSourceURI()
+        efs_uri.setParam("url", efs_lyr_url)
+        efs_uri.setParam("crs", srs_map)
+        efs_uri.setParam("restrictToRequestBBOX", "1")
+
+        btn_lbl = "EFS : {}".format(efs_lyr_title)
+        return ["arcgisfeatureserver", efs_lyr_title, efs_uri.uri(),
+                api_layer, srv_details, btn_lbl]
+
+    def build_ems_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
+        """Reformat the input Esri Map Service url so it fits QGIS criterias.
+
+        Tests weither all the needed information is provided in the url, and
+        then build the url in the syntax understood by QGIS.
+        """
+        srs_map = custom_tools.get_map_crs()
+        layer_name = api_layer.get("id")
+        ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
+        ems_lyr_url = "{}/{}".format(srv_details.get("path"), layer_name)
+
+        ems_uri = QgsDataSourceURI()
+        ems_uri.setParam("url", ems_lyr_url)
+        ems_uri.setParam("crs", srs_map)
+        ems_uri.setParam("restrictToRequestBBOX", "1")
+
+        btn_lbl = "EMS : {}".format(ems_lyr_title)
+        return ["arcgismapserver", ems_lyr_title, ems_uri.uri(),
+                api_layer, srv_details, btn_lbl]
+
     def build_wfs_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
         """Reformat the input WMS url so it fits QGIS criterias.
 

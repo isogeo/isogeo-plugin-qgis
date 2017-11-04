@@ -50,6 +50,8 @@ lbl_line = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/line.png"))
 lbl_multi = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/multi.png"))
 lbl_rastr = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/raster.png"))
 lbl_nogeo = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/ban.png"))
+ico_efs = QIcon(":/plugins/Isogeo/resources/efs.svg")
+ico_ems = QIcon(":/plugins/Isogeo/resources/ems.svg")
 ico_wfs = QIcon(":/plugins/Isogeo/resources/wfs.png")
 ico_wms = QIcon(":/plugins/Isogeo/resources/wms.png")
 ico_wmts = QIcon(":/plugins/Isogeo/resources/wms.png")
@@ -167,8 +169,7 @@ class ResultsManager(object):
                             self.cached_unreach_paths.append(dir_file)
                             self.cached_unreach_paths = list(set(self.cached_unreach_paths))
                     else:
-                        logger.debug("Path has been ignored because "
-                                     "it's in the cached unreacheable dirs.")
+                        logger.debug("Path has been ignored because it's cached.")
                         pass
                 # Same if the data is a raster
                 elif i.get("format", "NR") in li_formats_rastr and "path" in i:
@@ -186,8 +187,7 @@ class ResultsManager(object):
                             self.cached_unreach_paths.append(dir_file)
                             pass
                     else:
-                        logger.debug("Path has been ignored because "
-                                     "it's in the cached unreacheable dirs: ")
+                        logger.debug("Path has been ignored because it's cached.")
                         pass
                 # If the data is a postGIS table and the connexion has
                 # been saved in QGIS.
@@ -219,6 +219,24 @@ class ResultsManager(object):
                     if service is not None:
                         srv_details = {"path": service.get("path", "NR"),
                                        "formatVersion": service.get("formatVersion")}
+                        # EFS
+                        if service.get("format") == "efs":
+                            name_url = srv_url_bld.build_efs_url(layer, srv_details,
+                                                                 rsc_type="ds_dyn_lyr_srv",
+                                                                 mode="quicky")
+                            if name_url[0] != 0:
+                                dico_add_options[name_url[5]] = name_url
+                            else:
+                                pass
+                        # EMS
+                        if service.get("format") == "ems":
+                            name_url = srv_url_bld.build_ems_url(layer, srv_details,
+                                                                 rsc_type="ds_dyn_lyr_srv",
+                                                                 mode="quicky")
+                            if name_url[0] != 0:
+                                dico_add_options[name_url[5]] = name_url
+                            else:
+                                pass
                         # WFS
                         if service.get("format") == "wfs":
                             name_url = srv_url_bld.build_wfs_url(layer, srv_details,
@@ -314,6 +332,10 @@ class ResultsManager(object):
                     icon = ico_wms
                 elif text.startswith("WMTS"):
                     icon = ico_wmts
+                elif text.startswith("EFS"):
+                    icon = ico_efs
+                elif text.startswith("EMS"):
+                    icon = ico_ems
                 elif text.startswith(self.tr("PostGIS table", "ResultsManager")):
                     icon = ico_pgis
                 elif text.startswith(self.tr("Data file", "ResultsManager")):
@@ -327,18 +349,22 @@ class ResultsManager(object):
             # Else, add a combobox, storing all possibilities.
             else:
                 combo = QComboBox()
-                for key in dico_add_options.keys():
-                    if key.startswith("WFS"):
+                for i in dico_add_options:
+                    if i.startswith("WFS"):
                         icon = ico_wfs
-                    elif key.startswith("WMS"):
+                    elif i.startswith("WMS"):
                         icon = ico_wms
-                    elif key.startswith("WMTS"):
+                    elif i.startswith("WMTS"):
                         icon = ico_wmts
-                    elif key.startswith(self.tr("PostGIS table", "ResultsManager")):
+                    elif i.startswith("EFS"):
+                        icon = ico_efs
+                    elif i.startswith("EMS"):
+                        icon = ico_ems
+                    elif i.startswith(self.tr("PostGIS table", "ResultsManager")):
                         icon = ico_pgis
-                    elif key.startswith(self.tr("Data file", "ResultsManager")):
+                    elif i.startswith(self.tr("Data file", "ResultsManager")):
                         icon = ico_file
-                    combo.addItem(icon, key, dico_add_options[key])
+                    combo.addItem(icon, i, dico_add_options.get(i))
                 combo.activated.connect(partial(self.add_layer,
                                                 layer_info=["index", count]))
                 tbl_result.setCellWidget(count, 3, combo)

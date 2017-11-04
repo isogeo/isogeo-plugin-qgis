@@ -85,16 +85,17 @@ srv_url_bld = UrlBuilder()
 # LOG FILE ##
 logger = logging.getLogger("IsogeoQgisPlugin")
 logging.captureWarnings(True)
-logger.setLevel(logging.INFO)  # all errors will be get
-# logger.setLevel(logging.DEBUG)  # switch on it only for dev works
+# logger.setLevel(logging.INFO)  # all errors will be get
+logger.setLevel(logging.DEBUG)  # switch on it only for dev works
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
-                             "|| %(module)s || %(message)s")
+                             "|| %(module)s - %(lineno)d ||"
+                             "%(funcName)s || %(message)s")
 logfile = RotatingFileHandler(os.path.join(
                               os.path.dirname(os.path.realpath(__file__)),
                               "log_isogeo_plugin.log"),
                               "a", 5000000, 1)
-logfile.setLevel(logging.INFO)
-# logfile.setLevel(logging.DEBUG)  # switch on it only for dev works
+# logfile.setLevel(logging.INFO)
+logfile.setLevel(logging.DEBUG)  # switch on it only for dev works
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 
@@ -289,14 +290,14 @@ class Isogeo:
         # when closing the docked window:
         # self.dockwidget = None
         self.pluginIsActive = False
-        try:
-            reloadPlugin("isogeo_search_engine")
-        except TypeError:
-            pass
-        try:
-            reloadPlugin("isogeo_search_engine_dev")
-        except TypeError:
-            pass
+        # try:
+        #     reloadPlugin("isogeo_search_engine")
+        # except TypeError:
+        #     pass
+        # try:
+        #     reloadPlugin("isogeo_search_engine_dev")
+        # except TypeError:
+        #     pass
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -984,9 +985,9 @@ class Isogeo:
     def add_layer(self, layer_info):
         """Add a layer to QGIS map canvas.
 
-        This take as an argument the index of the layer. From this index,
-        search the information needed to add it in the temporary dictionnary
-        constructed in the show_results function. It then adds it.
+        Take layer index, search the required information to add it in
+        the temporary dictionnary constructed in the show_results function.
+        It then adds it.
         """
         logger.info("add_layer method called.")
         if layer_info[0] == "index":
@@ -1054,6 +1055,42 @@ class Isogeo:
                         iface.mainWindow(),
                         self.tr('Error'),
                         self.tr('Raster layer is not valid.'))
+            # If EFS link
+            elif layer_info[0] == 'arcgisfeatureserver':
+                name = layer_info[1]
+                uri = layer_info[2]
+                layer = QgsVectorLayer(uri,
+                                       name,
+                                       'arcgisfeatureserver')
+                if layer.isValid():
+                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    logger.info("EFS layer added: {0}".format(uri))
+                else:
+                    error_msg = layer.error().message()
+                    logger.warning("Invalid service: {0}"
+                                   .format(uri, error_msg.encode("latin1")))
+                    QMessageBox.information(iface.mainWindow(),
+                                            self.tr('Error'),
+                                            self.tr("EFS not valid. QGIS says: {}")
+                                            .format(error_msg))
+            # If EMS link
+            elif layer_info[0] == 'arcgismapserver':
+                name = layer_info[1]
+                uri = layer_info[2]
+                layer = QgsRasterLayer(uri,
+                                       name,
+                                       "arcgismapserver")
+                if layer.isValid():
+                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    logger.info("EMS layer added: {0}".format(uri))
+                else:
+                    error_msg = layer.error().message()
+                    logger.warning("Invalid service: {0}"
+                                   .format(uri, error_msg.encode("latin1")))
+                    QMessageBox.information(iface.mainWindow(),
+                                            self.tr('Error'),
+                                            self.tr("EMS not valid. QGIS says: {}")
+                                            .format(error_msg))
             # If WFS link
             elif layer_info[0] == 'WFS':
                 url = layer_info[2]
@@ -1061,7 +1098,7 @@ class Isogeo:
                 layer = QgsVectorLayer(url, name, 'WFS')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logger.info("WFS service layer added: {0}".format(url))
+                    logger.info("WFS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
                     name_url = srv_url_bld.build_wfs_url(layer_info[3],
@@ -1071,7 +1108,7 @@ class Isogeo:
                         layer = QgsVectorLayer(name_url[2], name_url[1], 'WFS')
                         if layer.isValid():
                             QgsMapLayerRegistry.instance().addMapLayer(layer)
-                            logger.info("WFS service layer added: {0}".format(url))
+                            logger.info("WFS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
                             logger.warning("Invalid service: {0}"
@@ -1080,7 +1117,7 @@ class Isogeo:
                         QMessageBox.information(
                             iface.mainWindow(),
                             self.tr('Error'),
-                            self.tr("The linked WFS is not valid. QGIS says: {}")
+                            self.tr("WFS is not valid. QGIS says: {}")
                                 .format(error_msg))
             # If WMS link
             elif layer_info[0] == 'WMS':
@@ -1089,7 +1126,7 @@ class Isogeo:
                 layer = QgsRasterLayer(url, name, 'wms', 1)
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logger.info("WMS service layer added: {0}".format(url))
+                    logger.info("WMS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
                     name_url = srv_url_bld.build_wms_url(layer_info[3],
@@ -1099,7 +1136,7 @@ class Isogeo:
                         layer = QgsRasterLayer(name_url[2], name_url[1], 'wms')
                         if layer.isValid():
                             QgsMapLayerRegistry.instance().addMapLayer(layer)
-                            logger.info("WMS service layer added: {0}".format(url))
+                            logger.info("WMS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
                             logger.warning("Invalid service: {0}"
@@ -1108,7 +1145,7 @@ class Isogeo:
                         QMessageBox.information(
                             iface.mainWindow(),
                             self.tr('Error'),
-                            self.tr("The linked WMS is not valid. QGIS says: {}")
+                            self.tr("WMS is not valid. QGIS says: {}")
                                 .format(error_msg))
             # If WMTS link
             elif layer_info[0] == 'WMTS':
@@ -1125,7 +1162,7 @@ class Isogeo:
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
-                        self.tr("The linked WMTS is not valid. QGIS says: {} {}")
+                        self.tr("WMTS is not valid. QGIS says: {} {}")
                             .format(error_msg))
             else:
                 pass
@@ -1885,4 +1922,5 @@ class Isogeo:
         """ --- Actions when the plugin is launched --- """
         custom_tools.test_proxy_configuration()
         self.user_authentication()
+        isogeo_api_mng.tr = self.tr
         self.dockwidget.txt_input.setFocus()
