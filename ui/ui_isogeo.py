@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\isogeo_dockwidget_base.ui'
 #
-# Created: Wed Sep 06 18:13:42 2017
+# Created: Sat Nov 04 18:08:22 2017
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -58,18 +58,19 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_17.setObjectName(_fromUtf8("horizontalLayout_17"))
         self.btn_show = QtGui.QPushButton(self.tab_search)
         self.btn_show.setMinimumSize(QtCore.QSize(201, 0))
+        self.btn_show.setMaximumSize(QtCore.QSize(16777215, 30))
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/eye.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_show.setIcon(icon1)
         self.btn_show.setObjectName(_fromUtf8("btn_show"))
         self.horizontalLayout_17.addWidget(self.btn_show)
         self.cbb_ob = QtGui.QComboBox(self.tab_search)
-        self.cbb_ob.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.cbb_ob.setMaximumSize(QtCore.QSize(100, 30))
         self.cbb_ob.setObjectName(_fromUtf8("cbb_ob"))
         self.horizontalLayout_17.addWidget(self.cbb_ob)
         self.cbb_od = QtGui.QComboBox(self.tab_search)
         self.cbb_od.setMinimumSize(QtCore.QSize(0, 0))
-        self.cbb_od.setMaximumSize(QtCore.QSize(110, 16777215))
+        self.cbb_od.setMaximumSize(QtCore.QSize(80, 30))
         self.cbb_od.setObjectName(_fromUtf8("cbb_od"))
         self.horizontalLayout_17.addWidget(self.cbb_od)
         self.gridLayout_8.addLayout(self.horizontalLayout_17, 3, 0, 1, 1)

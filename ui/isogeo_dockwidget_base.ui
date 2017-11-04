@@ -73,6 +73,12 @@
               <height>0</height>
              </size>
             </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
             <property name="toolTip">
              <string>Display the results list</string>
             </property>
@@ -89,8 +95,8 @@
            <widget class="QComboBox" name="cbb_ob">
             <property name="maximumSize">
              <size>
-              <width>150</width>
-              <height>16777215</height>
+              <width>100</width>
+              <height>30</height>
              </size>
             </property>
             <property name="toolTip">
@@ -108,8 +114,8 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>110</width>
-              <height>16777215</height>
+              <width>80</width>
+              <height>30</height>
              </size>
             </property>
             <property name="toolTip">
