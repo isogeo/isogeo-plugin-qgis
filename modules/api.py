@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import (absolute_import, print_function, unicode_literals)
 # Standard library
 import base64
 import json
 import logging
-from collections import defaultdict
 from functools import partial
 from urllib import urlencode
 
@@ -39,6 +37,7 @@ class IsogeoApiManager(object):
         self.api_secret = qsettings.value("isogeo-plugin/user-auth/secret", 0)
         self.currentUrl = ""
         self.request_status_clear = 1
+        self.tr = object
 
     # API COMMUNICATION ------------------------------------------------------
 
@@ -267,7 +266,7 @@ class IsogeoApiManager(object):
 
         # override API tags to allow all datasets filter - see #
         if type_dataset == 2:
-            md_types["Donnée"] = "type:dataset"
+            md_types[self.tr("Dataset", "IsogeoApiManager")] = "type:dataset"
         else:
             pass
 
