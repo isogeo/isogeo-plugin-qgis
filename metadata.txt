@@ -10,7 +10,7 @@
 name=Isogeo
 qgisMinimumVersion=2.14
 description=Isogeo search engine within QGIS
-version=1.6.0-beta1
+version=1.6.0-beta2
 author=Isogeo,GeoJulien,Theo Sinatti
 email=projects+qgis@isogeo.com
 
@@ -23,7 +23,8 @@ repository=https://github.com/isogeo/isogeo-plugin-qgis
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-# changelog=
+changelog=version 1.6:remove deprecated manual service URL handling 
+    - handling Esri Feature and Map services
 
 # Tags are comma separated with spaces allowed
 tags=REST API,catalog,search,explore,webservices,metadata,open data,INSPIRE
