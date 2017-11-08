@@ -1743,6 +1743,11 @@ class Isogeo:
                 pass
             if self.dockwidget.txt_input.text() == "Ici c'est Isogeo !":
                 custom_tools.special_search("isogeo")
+                self.dockwidget.txt_input.clear()
+                return
+            elif self.dockwidget.txt_input.text() == "Picasa":
+                custom_tools.special_search("picasa")
+                self.dockwidget.txt_input.clear()
                 return
             else:
                 pass
