@@ -1281,21 +1281,21 @@ class Isogeo:
             if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
                 key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
 
-        params = {}
-        params['owner'] = owner_param
-        params['inspire'] = inspire_param
-        params['format'] = format_param
-        params['srs'] = srs_param
-        params['favorite'] = favorite_param
-        params['keys'] = key_params
-        params['geofilter'] = geofilter_param
-        params['license'] = license_param
-        params['contact'] = contact_param
-        params['text'] = text
-        params['datatype'] = type_param
-        params['operation'] = operation_param
-        params['ob'] = ob_param
-        params['od'] = od_param
+        params = {"owner": owner_param,
+                  "inspire": inspire_param,
+                  "format": format_param,
+                  "srs": srs_param,
+                  "favorite": favorite_param,
+                  "keys": key_params,
+                  "geofilter": geofilter_param,
+                  "license": license_param,
+                  "contact": contact_param,
+                  "text": text,
+                  "datatype": type_param,
+                  "operation": operation_param,
+                  "ob": ob_param,
+                  "od": od_param,
+                  }
         # check geographic filter
         if params.get('geofilter') == "mapcanvas":
             e = iface.mapCanvas().extent()
