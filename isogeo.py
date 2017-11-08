@@ -1777,7 +1777,7 @@ class Isogeo:
         app = content[0].get("applications")[0]
         text += self.tr(u"<p>This plugin is authenticated as "
                         u"<a href='{}'>{}</a> and ")\
-                    .format(app.get("url", "https://github.com/isogeo/isogeo-plugin-qgis/wiki"),
+                    .format(app.get("url", "https://isogeo.gitbooks.io/app-plugin-qgis/content"),
                             app.get("name", "Isogeo plugin for QGIS"))
         # shares feeding the application
         if len(content) == 1:
