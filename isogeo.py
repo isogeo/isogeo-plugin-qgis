@@ -288,7 +288,7 @@ class Isogeo:
         # for reuse if plugin is reopened
         # Commented next statement since it causes QGIS crashe
         # when closing the docked window:
-        # self.dockwidget = None
+        self.dockwidget = None
         self.pluginIsActive = False
         # try:
         #     reloadPlugin("isogeo_search_engine")
@@ -309,6 +309,7 @@ class Isogeo:
             except:
                 pass
             self.iface.removeToolBarIcon(action)
+            self.dockwidget = None
             logger.handlers = []
         # remove the toolbar
         del self.toolbar

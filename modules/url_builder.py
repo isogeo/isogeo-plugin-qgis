@@ -201,20 +201,6 @@ class UrlBuilder(object):
             # let's try a quick & dirty url build
             srs_map = custom_tools.get_map_crs()
             wfs_url_base = srv_details.get("path")
-            if "?" not in wfs_url_base:
-                wfs_url_base = wfs_url_base + "?"
-            else:
-                pass
-            wfs_url_params = {"SERVICE": "WFS",
-                              "VERSION": "1.0.0",
-                              "typename": layer_name,
-                              "srsname": srs_map,
-                              "REQUEST": "GetFeature",
-                              "namespace": namespace,
-                              }
-            wfs_url_quicky = wfs_url_base +\
-                             unquote(urlencode(wfs_url_params, "utf8"))
-            # new way - see #131
             uri = QgsDataSourceURI()
             uri.setParam("url", wfs_url_base)
             uri.setParam("typename", layer_name)
@@ -222,17 +208,10 @@ class UrlBuilder(object):
             uri.setParam("srsname", srs_map)
             uri.setParam("restrictToRequestBBOX", "1")
             wfs_url_quicky = uri.uri()
-            # prevent encoding errors (#102)
-            try:
-                btn_lbl = "WFS : {}".format(layer_title)
-                return ["WFS", layer_title, wfs_url_quicky,
-                        api_layer, srv_details, btn_lbl]
-            except UnicodeEncodeError as e:
-                btn_lbl = "WFS : {}".format(layer_name)
-                logger.debug(e)
-                return ["WFS", layer_title, wfs_url_quicky,
-                        api_layer, srv_details, btn_lbl]
 
+            btn_lbl = "WFS : {}".format(layer_title)
+            return ["WFS", layer_title, wfs_url_quicky,
+                    api_layer, srv_details, btn_lbl]
         elif mode == "complete":
             # Clean, complete but slower way - OWSLib -------------------------
             if srv_details.get("path") == self.cached_wfs.get("srv_path"):

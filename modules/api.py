@@ -251,7 +251,6 @@ class IsogeoApiManager(object):
             # SRS
             elif tag.startswith("coordinate-system"):
                 srs[tags.get(tag)] = tag
-                # print(tag)
                 continue
             # types
             elif tag.startswith("type"):
