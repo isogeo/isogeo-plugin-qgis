@@ -161,14 +161,19 @@ wfs_url_getcap = wfs_url_in_v1_public
 ## URI
 
 uri = QgsDataSourceURI()
-uri.setParam("url", wfs_url_getcap)
-uri.setParam("typename", layer_id)
-uri.setParam("version", "auto")
-uri.setParam("srsname", srs)
-uri.setParam("restrictToRequestBBOX", "1")
+uri.setParam("url", "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/wfs?")
+#uri.setParam("port", "6090")
+uri.setParam("service", "wfs")
+uri.setParam("version", "1.1.0")
+uri.setParam("typename", "Isogeo:isogeo_logo")
+uri.setParam("srsname", "EPSG:3857")
+uri.setParam("restrictToRequestBBOX", "0")
+
+print(uri.uri())
+# srsname='EPSG:2154' typename='opendata:unesco_bassin_minier_bien_inscrit' url='https://www.ppige-npdc.fr/geoserver/opendata/ows?' version='auto' table="" sql=
 
 # let's try to add it to the map canvas
-qgis_wfs_lyr_auto = QgsVectorLayer(uri.uri(), "Auto - " + layer_title, 'WFS')
+qgis_wfs_lyr_auto = QgsVectorLayer(uri.uri(), "Auto - " + "HOHOH", 'WFS')
 if qgis_wfs_lyr_auto.isValid():
     QgsMapLayerRegistry.instance().addMapLayer(qgis_wfs_lyr_auto)
     print("WFS auto url build with URI DataSource SUCCEED")
@@ -196,7 +201,7 @@ else:
 
 print("Using GDAL (ogr)")
 
-QgsMapLayerRegistry.instance().removeAllMapLayers()
+#QgsMapLayerRegistry.instance().removeAllMapLayers()
 
 # Open the service
 try:

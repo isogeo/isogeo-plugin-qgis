@@ -133,17 +133,33 @@ wms_url_params = {"service": "WMS",
                            "styles": lyr_style,
                            "url": wms_lyr_url,
                             }
+                            
+
+
 wms_url_final = unquote(urlencode(wms_url_params))
-print(wms_url_final)
+#print(wms_url_final)
+
+
+wms_uri = QgsDataSourceURI()
+wms_uri.setParam("url", "http://geobretagne.fr/geoserver/lorientagglo/wms")
+wms_uri.setParam("service", "WMS")
+wms_uri.setParam("version", "1.1.0")
+wms_uri.setParam("layers", "prescription_pct")
+wms_uri.setParam("crs", "EPSG:4326")
+wms_uri.setParam("format", "image/png")
+wms_uri.setParam("styles", "")
+wms_uri.setParam("request", "GetMap")
+#wms_uri.setParam("restrictToRequestBBOX", "0")
+
 
 # let's try to add it to the map canvas
-qgis_wms_lyr_manual = QgsRasterLayer(wms_url_final, "Auto - " + layer_title, 'wms')
+qgis_wms_lyr_manual = QgsRasterLayer(wms_uri.uri(), "Auto - ", 'wms')
 if qgis_wms_lyr_manual.isValid():
     QgsMapLayerRegistry.instance().addMapLayer(qgis_wms_lyr_manual)
 else:
     print(qgis_wms_lyr_manual.error().message())
 
-manual_lyr = "layers=prescription_pct&crs=EPSG:4326&version=1.1.0&url=http://geobretagne.fr/geoserver/lorientagglo/wms?SERVICE=WMS&service=WMS&format=image/png&styles=&request=GetMap"
+manual_lyr = "layers=prescription_pct&crs=EPSG:4326&version=1.1.0&url=http://geobretagne.fr/geoserver/lorientagglo/wms?SERVICE=WMS&format=image/png&styles=&request=GetMap"
 qgis_wms_lyr = QgsRasterLayer(manual_lyr, "Manual - " + layer_title, 'wms')
 if qgis_wms_lyr.isValid():
     QgsMapLayerRegistry.instance().addMapLayer(qgis_wms_lyr)
