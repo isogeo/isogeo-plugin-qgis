@@ -8,9 +8,9 @@ from functools import partial
 from urllib import urlencode
 
 # PyQT
-from PyQt4.QtCore import QByteArray, QSettings, QUrl
-from PyQt4.QtGui import QMessageBox
-from PyQt4.QtNetwork import QNetworkRequest
+from qgis.PyQt.QtCore import QByteArray, QSettings, QUrl
+from qgis.PyQt.QtGui import QMessageBox
+from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # PyQGIS
 from qgis.core import QgsMessageLog

@@ -31,15 +31,13 @@ from logging.handlers import RotatingFileHandler
 import platform  # about operating systems
 from collections import OrderedDict
 from functools import partial
-import operator
 
 # PyQT
-# from QByteArray
-from PyQt4.QtCore import (QByteArray, QCoreApplication, QSettings,
-                          Qt, QTranslator, QUrl, qVersion)
-from PyQt4.QtGui import (QAction, QIcon, QMessageBox, QStandardItemModel,
-                         QStandardItem, QProgressBar)
-from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
+from qgis.PyQt.QtCore import (QByteArray, QCoreApplication, QSettings,
+                              Qt, QTranslator, QUrl, qVersion)
+from qgis.PyQt.QtGui import (QAction, QIcon, QMessageBox, QStandardItemModel,
+                             QStandardItem, QProgressBar)
+from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # PyQGIS
 import db_manager.db_plugins.postgis.connector as con
