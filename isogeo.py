@@ -41,7 +41,7 @@ from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # PyQGIS
 import db_manager.db_plugins.postgis.connector as con
-from qgis.utils import iface, plugin_times, QGis, reloadPlugin
+from qgis.utils import iface, plugin_times, QGis
 from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
                        QgsCoordinateReferenceSystem, QgsCoordinateTransform,
                        QgsDataSourceURI,
@@ -50,7 +50,7 @@ from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
                        QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer)
 
 # Initialize Qt resources from file resources.py
-import resources
+# import resources
 
 # UI classes
 from ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
@@ -304,7 +304,8 @@ class Isogeo:
                 self.tr(u'&Isogeo'), action)
             try:
                 self.iface.mainWindow().statusBar().removeWidget(self.bar)
-            except:
+            except Exception as e:
+                logger.error(e)
                 pass
             self.iface.removeToolBarIcon(action)
             self.dockwidget = None
@@ -338,11 +339,10 @@ class Isogeo:
         it stores the values in the file, then call the
         user_authentification function to test them.
         """
-        logging.info("Authentication window accepted. Writting"
+        logging.info("Authentication window accepted. Writing"
                      " id/secret in QSettings.")
         app_id = self.auth_prompt_form.ent_app_id.text()
-        app_secret = self.auth_prompt_form.\
-            ent_app_secret.text()
+        app_secret = self.auth_prompt_form.ent_app_secret.text()
         user_editor = self.auth_prompt_form.chb_isogeo_editor.isChecked()
         # old name maintained for compatibility reasons
         qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
