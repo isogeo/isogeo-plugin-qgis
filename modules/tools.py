@@ -3,7 +3,6 @@
 # Standard library
 import datetime
 import logging
-from functools import partial
 from os import path
 from urllib import getproxies, unquote, urlencode
 import webbrowser
@@ -14,8 +13,8 @@ from qgis.core import (QgsDataSourceURI, QgsProject,
 from qgis.utils import iface
 
 # PyQT
-from PyQt4.QtCore import QSettings, QUrl
-from PyQt4.QtGui import QMessageBox
+from PyQt5.QtCore import QSettings, QUrl
+from PyQt5.QtGui import QMessageBox
 
 # ############################################################################
 # ########## Globals ###############

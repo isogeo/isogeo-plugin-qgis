@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, print_function, unicode_literals)
+
 # Standard library
 import base64
 import json
@@ -8,9 +8,9 @@ from functools import partial
 from urllib import urlencode
 
 # PyQT
-from PyQt4.QtCore import QByteArray, QSettings, QUrl
-from PyQt4.QtGui import QMessageBox
-from PyQt4.QtNetwork import QNetworkRequest
+from PyQt5.QtCore import QByteArray, QSettings, QUrl
+from PyQt5.QtGui import QMessageBox
+from PyQt5.QtNetwork import QNetworkRequest
 
 # PyQGIS
 from qgis.core import QgsMessageLog
