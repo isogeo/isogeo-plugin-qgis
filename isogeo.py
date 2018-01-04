@@ -37,8 +37,10 @@ import operator
 # from QByteArray
 from PyQt4.QtCore import (QByteArray, QCoreApplication, QSettings,
                           Qt, QTranslator, QUrl, qVersion)
+
 from PyQt4.QtGui import (QAction, QIcon, QMessageBox, QStandardItemModel,
                          QStandardItem, QProgressBar)
+
 from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # PyQGIS
@@ -193,6 +195,7 @@ class Isogeo:
         self.settingsRequest = False
         self.PostGISdict = srv_url_bld.build_postgis_dict(qsettings)
 
+        self.currentUrl = ""
         # self.currentUrl = "https://v1.api.isogeo.com/resources/search?
         # _limit=10&_include=links&_lang={0}".format(self.lang)
 
@@ -315,7 +318,7 @@ class Isogeo:
         del self.toolbar
 
     # --------------------------------------------------------------------------
-
+   
     def user_authentication(self):
         """Test the validity of the user id and secret.
         This is the first major function the plugin calls when executed. It
@@ -334,6 +337,25 @@ class Isogeo:
                          "is showing the auth window.")
             self.auth_prompt_form.show()
 
+    def control_authentication(self):
+        """Disable plugins functionnalities if authentication's parametres are modified"""
+        
+        #Disable buttons save and cancel
+        self.auth_prompt_form.btn_ok_cancel.setEnabled(False)
+        #Disable all plugin's widgets
+        self.switch_widgets_on_and_off(0)
+        app_id = self.auth_prompt_form.ent_app_id.text()
+        app_secret = self.auth_prompt_form.ent_app_secret.text()
+        user_editor = self.auth_prompt_form.chb_isogeo_editor.isChecked()
+        # old name maintained for compatibility reasons
+        qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
+        qsettings.setValue("isogeo-plugin/user-auth/secret", app_secret)
+
+        # new name to anticipate on future migration
+        qsettings.setValue("isogeo/api_auth/id", app_id)
+        qsettings.setValue("isogeo/api_auth/secret", app_secret)
+        qsettings.setValue("isogeo/user/editor", int(user_editor))
+
     def write_ids_and_test(self):
         """Store the id & secret and launch the test function.
         Called when the authentification window is closed,
@@ -343,8 +365,7 @@ class Isogeo:
         logging.info("Authentication window accepted. Writting"
                      " id/secret in QSettings.")
         app_id = self.auth_prompt_form.ent_app_id.text()
-        app_secret = self.auth_prompt_form.\
-            ent_app_secret.text()
+        app_secret = self.auth_prompt_form.ent_app_secret.text()
         user_editor = self.auth_prompt_form.chb_isogeo_editor.isChecked()
         # old name maintained for compatibility reasons
         qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
@@ -455,6 +476,14 @@ class Isogeo:
         if 'access_token' in parsed_content:
             logging.info("The API reply is an access token : "
                          "the request worked as expected.")
+
+            # QMessageBox.information(
+            #     iface.mainWindow(), self.tr("Success"), parsed_content['access_token'])
+
+            # Enable buttons "save and cancel"
+            self.auth_prompt_form.btn_ok_cancel.setEnabled(True)
+            self.dockwidget.setEnabled(True)
+
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content.get('access_token')
             if self.savedSearch == "first":
@@ -467,13 +496,20 @@ class Isogeo:
         elif 'error' in parsed_content:
             logging.error("The API reply is an error. Id and secret must be "
                           "invalid. Asking for them again.")
+
+            # Disable buttons "save and cancel"
+            self.auth_prompt_form.btn_ok_cancel.setEnabled(False)
+
             QMessageBox.information(
                 iface.mainWindow(), self.tr("Error"), parsed_content['error'])
-            self.requestStatusClear = True
+
             # displaying auth form
             self.auth_prompt_form.ent_app_id.setText(self.user_id)
             self.auth_prompt_form.ent_app_secret.setText(self.user_secret)
             self.auth_prompt_form.show()
+
+            self.requestStatusClear = True
+            
         else:
             self.requestStatusClear = True
             logging.error("The API reply has an unexpected form : "
@@ -1694,6 +1730,7 @@ class Isogeo:
             self.dockwidget.btn_save.setEnabled(False)
             self.dockwidget.btn_show.setEnabled(False)
             self.dockwidget.tbl_result.setEnabled(False)
+            self.dockwidget.cbb_keywords.setEnabled(False)
 
     def show_popup(self, popup):
         """Open the pop up window that asks a name to save the search."""
@@ -1847,7 +1884,15 @@ class Isogeo:
         """ --- CONNECTING FUNCTIONS --- """
         # Write in the config file when the user accept the authentification
         # window
-        self.auth_prompt_form.accepted.connect(self.write_ids_and_test)
+        # self.auth_prompt_form.accepted.connect(self.write_ids_and_test)
+        self.auth_prompt_form.btn_check_auth.pressed.connect(self.write_ids_and_test)
+
+        # If user changes his id or his secret in parameters, buttons save and cancel are disabled
+        # The user has to verify before by clicking on button check
+        self.auth_prompt_form.ent_app_id.textEdited.connect(self.control_authentication)
+        self.auth_prompt_form.ent_app_secret.textEdited.connect(self.control_authentication)
+        
+
         # Connecting the comboboxes to the search function
         self.dockwidget.cbb_owner.activated.connect(self.search)
         self.dockwidget.cbb_inspire.activated.connect(self.search)
