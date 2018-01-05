@@ -347,14 +347,16 @@ class Isogeo:
         app_id = self.auth_prompt_form.ent_app_id.text()
         app_secret = self.auth_prompt_form.ent_app_secret.text()
         user_editor = self.auth_prompt_form.chb_isogeo_editor.isChecked()
-        # old name maintained for compatibility reasons
-        qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
-        qsettings.setValue("isogeo-plugin/user-auth/secret", app_secret)
+        
+        if app_id and app_secret:
+            # old name maintained for compatibility reasons
+            qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
+            qsettings.setValue("isogeo-plugin/user-auth/secret", app_secret)
 
-        # new name to anticipate on future migration
-        qsettings.setValue("isogeo/api_auth/id", app_id)
-        qsettings.setValue("isogeo/api_auth/secret", app_secret)
-        qsettings.setValue("isogeo/user/editor", int(user_editor))
+            # new name to anticipate on future migration
+            qsettings.setValue("isogeo/api_auth/id", app_id)
+            qsettings.setValue("isogeo/api_auth/secret", app_secret)
+            qsettings.setValue("isogeo/user/editor", int(user_editor))
 
     def write_ids_and_test(self):
         """Store the id & secret and launch the test function.
@@ -367,6 +369,7 @@ class Isogeo:
         app_id = self.auth_prompt_form.ent_app_id.text()
         app_secret = self.auth_prompt_form.ent_app_secret.text()
         user_editor = self.auth_prompt_form.chb_isogeo_editor.isChecked()
+
         # old name maintained for compatibility reasons
         qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
         qsettings.setValue("isogeo-plugin/user-auth/secret", app_secret)
@@ -1716,6 +1719,7 @@ class Isogeo:
             self.dockwidget.btn_save.setEnabled(True)
             self.dockwidget.btn_show.setEnabled(True)
             self.dockwidget.tbl_result.setEnabled(True)
+            self.dockwidget.cbb_keywords.setEnabled(True)
 
         else:
             self.dockwidget.txt_input.setReadOnly(True)
