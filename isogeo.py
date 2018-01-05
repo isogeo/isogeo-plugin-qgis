@@ -23,6 +23,7 @@
 
 # Standard library
 import os.path
+import platform
 import json
 import base64
 import urllib
@@ -157,6 +158,7 @@ class Isogeo:
                 pass
         else:
             pass
+
 
         if locale == "fr":
             self.lang = "fr"
@@ -318,7 +320,30 @@ class Isogeo:
         del self.toolbar
 
     # --------------------------------------------------------------------------
-   
+    def test_qgis_style (self):
+        """ Modification of Qgis style (theme) in order to display check box for keywords 
+        if this one is not adapted """
+
+        style_qgis = qsettings.value(u'qgis/style')
+        if ((u'macintosh' in style_qgis) or (u'cleanlooks' in style_qgis)):
+
+            logging.info(str(style_qgis) + "style for Qgis is not adapted with combobox."
+                          "Isogeo plugin changes it automatically to style Plastique. So Keywords function is disabled.")
+
+            qsettings.setValue(u"qgis/style", u'Plastique')
+            self.dockwidget.cbb_keywords.setEnabled(False)
+
+            msgBar.pushMessage(
+                    self.tr(str(style_qgis) + " style for Qgis is not adapted with combobox. "
+                            "Style has been changed. Please restart QGIS if you want to use keywords!"),
+                            duration=0, level=msgBar.WARNING)
+        else:
+            
+            self.dockwidget.cbb_keywords.setEnabled(True)
+
+    
+
+
     def user_authentication(self):
         """Test the validity of the user id and secret.
         This is the first major function the plugin calls when executed. It
@@ -1979,3 +2004,5 @@ class Isogeo:
         self.user_authentication()
         isogeo_api_mng.tr = self.tr
         self.dockwidget.txt_input.setFocus()
+        #Change Qgis Style if needed and block plugin
+        self.test_qgis_style()
