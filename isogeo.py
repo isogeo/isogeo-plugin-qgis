@@ -32,21 +32,18 @@ from logging.handlers import RotatingFileHandler
 import platform  # about operating systems
 from collections import OrderedDict
 from functools import partial
-import operator
 
 # PyQT
-# from QByteArray
-from PyQt4.QtCore import (QByteArray, QCoreApplication, QSettings,
-                          Qt, QTranslator, QUrl, qVersion)
+from qgis.PyQt.QtCore import (QByteArray, QCoreApplication, QSettings,
+                              Qt, QTranslator, QUrl, qVersion)
+from qgis.PyQt.QtGui import (QAction, QIcon, QMessageBox, QStandardItemModel,
+                             QStandardItem, QProgressBar)
+from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
-from PyQt4.QtGui import (QAction, QIcon, QMessageBox, QStandardItemModel,
-                         QStandardItem, QProgressBar)
-
-from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # PyQGIS
 import db_manager.db_plugins.postgis.connector as con
-from qgis.utils import iface, plugin_times, QGis, reloadPlugin
+from qgis.utils import iface, plugin_times, QGis
 from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
                        QgsCoordinateReferenceSystem, QgsCoordinateTransform,
                        QgsDataSourceURI,
@@ -55,7 +52,7 @@ from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
                        QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer)
 
 # Initialize Qt resources from file resources.py
-import resources
+# import resources
 
 # UI classes
 from ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
@@ -311,7 +308,8 @@ class Isogeo:
                 self.tr(u'&Isogeo'), action)
             try:
                 self.iface.mainWindow().statusBar().removeWidget(self.bar)
-            except:
+            except Exception as e:
+                logger.error(e)
                 pass
             self.iface.removeToolBarIcon(action)
             self.dockwidget = None
@@ -389,7 +387,7 @@ class Isogeo:
         it stores the values in the file, then call the
         user_authentification function to test them.
         """
-        logging.info("Authentication window accepted. Writting"
+        logging.info("Authentication window accepted. Writing"
                      " id/secret in QSettings.")
         app_id = self.auth_prompt_form.ent_app_id.text()
         app_secret = self.auth_prompt_form.ent_app_secret.text()

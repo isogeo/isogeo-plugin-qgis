@@ -9,13 +9,12 @@ import os
 
 # PyQT
 # from QByteArray
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import (QIcon, QTableWidgetItem, QComboBox, QPushButton,
-                         QLabel, QPixmap, QProgressBar)
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtGui import (QIcon, QTableWidgetItem, QComboBox, QPushButton,
+                             QLabel, QPixmap, QProgressBar, QHeaderView)
 
 # PyQGIS
 from qgis.utils import iface
-from qgis.core import QgsDataSourceURI
 
 # Custom modules
 from .tools import Tools
@@ -44,19 +43,21 @@ li_formats_rastr = ("esriasciigrid", "geotiff",
                     "intergraphgdb", "jpeg", "png", "xyz", "ecw")
 
 # Qt icons
-lbl_polyg = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/polygon.png"))
-lbl_point = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/point.png"))
-lbl_line = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/line.png"))
-lbl_multi = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/multi.png"))
-lbl_rastr = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/raster.png"))
-lbl_nogeo = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/ban.png"))
-ico_efs = QIcon(":/plugins/Isogeo/resources/efs.svg")
-ico_ems = QIcon(":/plugins/Isogeo/resources/ems.svg")
-ico_wfs = QIcon(":/plugins/Isogeo/resources/wfs.png")
-ico_wms = QIcon(":/plugins/Isogeo/resources/wms.png")
-ico_wmts = QIcon(":/plugins/Isogeo/resources/wms.png")
-ico_pgis = QIcon(":/plugins/Isogeo/resources/database.svg")
-ico_file = QIcon(":/plugins/Isogeo/resources/file.svg")
+# see https://github.com/qgis/QGIS/blob/master/images/images.qrc
+pix_point = QPixmap(":/images/themes/default/mIconPointLayer.svg")
+pix_polyg = QPixmap(":/images/themes/default/mIconPolygonLayer.svg")
+pix_line = QPixmap(":/images/themes/default/mIconLineLayer.svg")
+pix_multi = QPixmap(":/plugins/Isogeo/resources/multi.svg").scaledToWidth(20)
+pix_rastr = QPixmap(":/images/themes/default/mIconRaster.svg")
+pix_serv = QPixmap(":/plugins/Isogeo/resources/cloud.svg").scaledToWidth(20)
+pix_nogeo = QPixmap(":/plugins/Isogeo/resources/ban.svg").scaledToWidth(20)
+ico_efs = QIcon(":/images/themes/default/mIconAfs.svg")
+ico_ems = QIcon(":/images/themes/default/mIconAms.svg")
+ico_wfs = QIcon(":/images/themes/default/mIconWfs.svg")
+ico_wms = QIcon(":/images/themes/default/mIconWms.svg")
+ico_wmts = QIcon(":/images/themes/default/mIconWcs.svg")
+ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
+ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 
 # ############################################################################
 # ########## Classes ###############
@@ -125,15 +126,20 @@ class ResultsManager(object):
                     custom_tools.handle_date(i.get("_modified"))))
 
             # COLUMN 3 - Geometry type
+            lbl_geom = QLabel(tbl_result)
             if ds_geometry:
                 if ds_geometry in point_list:
-                    tbl_result.setCellWidget(count, 2, lbl_point)
+                    lbl_geom.setPixmap(pix_point)
+                    lbl_geom.setToolTip(self.tr("Point", "ResultsManager"))
                 elif ds_geometry in polygon_list:
-                    tbl_result.setCellWidget(count, 2, lbl_polyg)
+                    lbl_geom.setPixmap(pix_polyg)
+                    lbl_geom.setToolTip(self.tr("Polygon", "ResultsManager"))
                 elif ds_geometry in line_list:
-                    tbl_result.setCellWidget(count, 2, lbl_line)
+                    lbl_geom.setPixmap(pix_line)
+                    lbl_geom.setToolTip(self.tr("Line", "ResultsManager"))
                 elif ds_geometry in multi_list:
-                    tbl_result.setCellWidget(count, 2, lbl_multi)
+                    lbl_geom.setPixmap(pix_multi)
+                    lbl_geom.setToolTip(self.tr("MultiPolygon", "ResultsManager"))
                 elif ds_geometry == "TIN":
                     tbl_result.setItem(
                         count, 2, QTableWidgetItem(u"TIN"))
@@ -143,9 +149,16 @@ class ResultsManager(object):
                             self.tr("Unknown geometry", "ResultsManager")))
             else:
                 if "rasterDataset" in i.get("type"):
-                    tbl_result.setCellWidget(count, 2, lbl_rastr)
+                    lbl_geom.setPixmap(pix_rastr)
+                    lbl_geom.setToolTip(self.tr("Raster", "ResultsManager"))
+                elif "service" in i.get("type"):
+                    lbl_geom.setPixmap(pix_serv)
+                    lbl_geom.setToolTip(self.tr("Service", "ResultsManager"))
                 else:
-                    tbl_result.setCellWidget(count, 2, lbl_nogeo)
+                    lbl_geom.setPixmap(pix_nogeo)
+                    lbl_geom.setToolTip(self.tr("Unknown geometry", "ResultsManager"))
+
+            tbl_result.setCellWidget(count, 2, lbl_geom)
 
             # COLUMN 4 - Add options
             dico_add_options = {}
@@ -370,6 +383,11 @@ class ResultsManager(object):
                 tbl_result.setCellWidget(count, 3, combo)
 
             count += 1
+        # dimensions
+        header = tbl_result.horizontalHeader()
+        header.setResizeMode(0, QHeaderView.Stretch)
+        header.setResizeMode(1, QHeaderView.ResizeToContents)
+        header.setResizeMode(2, QHeaderView.ResizeToContents)
         # Remove the "loading" bar
         iface.mainWindow().statusBar().removeWidget(progress_bar)
         # method ending

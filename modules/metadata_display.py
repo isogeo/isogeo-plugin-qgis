@@ -12,8 +12,8 @@ from qgis.core import (QgsMapLayerRegistry, QgsMessageLog,
 from qgis.gui import QgsMapCanvasLayer
 
 # PyQT
-from PyQt4.QtCore import QSettings, Qt
-from PyQt4.QtGui import QTableWidgetItem
+from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtGui import QTableWidgetItem
 
 # Custom modules
 from .api import IsogeoApiManager

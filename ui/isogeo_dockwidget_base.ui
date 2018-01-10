@@ -121,6 +121,16 @@
             <property name="toolTip">
              <string>Sorting direction</string>
             </property>
+            <item>
+             <property name="text">
+              <string>Ascendant</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Descendant</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
@@ -246,6 +256,30 @@
               <height>30</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Quick searches</string>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="insertPolicy">
+             <enum>QComboBox::InsertAlphabetically</enum>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string />
+             </property>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/plugins/Isogeo/resources/bolt.svg</normaloff>:/plugins/Isogeo/resources/bolt.svg</iconset>
+             </property>
+            </item>
            </widget>
           </item>
           <item column="0" row="1">
@@ -942,7 +976,7 @@
                         <string />
                        </property>
                        <property name="pixmap">
-                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/gavel.png</pixmap>
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/gavel.svg</pixmap>
                        </property>
                        <property name="scaledContents">
                         <bool>true</bool>
