@@ -157,7 +157,6 @@ class Isogeo:
         else:
             pass
 
-
         if locale == "fr":
             self.lang = "fr"
         else:
@@ -337,16 +336,17 @@ class Isogeo:
             self.auth_prompt_form.show()
 
     def control_authentication(self):
-        """Disable plugins functionnalities if authentication's parametres are modified"""
-        
-        #Disable buttons save and cancel
+        """Disable plugins features if authentication's parameters changed."""
+
+        # Disable buttons save and cancel
         self.auth_prompt_form.btn_ok_cancel.setEnabled(False)
-        #Disable all plugin's widgets
+
+        # Disable all plugin's widgets
         self.switch_widgets_on_and_off(0)
         app_id = self.auth_prompt_form.ent_app_id.text()
         app_secret = self.auth_prompt_form.ent_app_secret.text()
         user_editor = self.auth_prompt_form.chb_isogeo_editor.isChecked()
-        
+
         if app_id and app_secret:
             # old name maintained for compatibility reasons
             qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
@@ -458,30 +458,19 @@ class Isogeo:
             parsed_content = json.loads(content)
         except ValueError as e:
             if "No JSON object could be decoded" in e:
-                msgBar.pushMessage(self.tr("Request to Isogeo failed: please check your Internet connection."),
+                msgBar.pushMessage(self.tr("Request to Isogeo failed: please "
+                                           "check your Internet connection."),
                                    duration=10,
                                    level=msgBar.WARNING)
                 logger.error("Internet connection failed")
                 self.pluginIsActive = False
-        # try:
-        #     reloadPlugin("isogeo_search_engine")
-        # except TypeError:
-        #     pass
-        # try:
-        #     reloadPlugin("isogeo_search_engine_dev")
-        # except TypeError:
-        #     pass
             else:
                 pass
             return
 
         if 'access_token' in parsed_content:
-            logging.info("The API reply is an access token : "
-                         "the request worked as expected.")
-
-            # QMessageBox.information(
-            #     iface.mainWindow(), self.tr("Success"), parsed_content['access_token'])
-
+            logging.debug("The API reply is an access token : "
+                          "the request worked as expected.")
             # Enable buttons "save and cancel"
             self.auth_prompt_form.btn_ok_cancel.setEnabled(True)
             self.dockwidget.setEnabled(True)
@@ -496,28 +485,30 @@ class Isogeo:
                 self.send_request_to_isogeo_api(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
-            logging.error("The API reply is an error. Id and secret must be "
+            logging.error("The API reply is an error. ID and SECRET must be "
                           "invalid. Asking for them again.")
-
-            # Disable buttons "save and cancel"
-            self.auth_prompt_form.btn_ok_cancel.setEnabled(False)
-
-            QMessageBox.information(
-                iface.mainWindow(), self.tr("Error"), parsed_content['error'])
-
             # displaying auth form
             self.auth_prompt_form.ent_app_id.setText(self.user_id)
             self.auth_prompt_form.ent_app_secret.setText(self.user_secret)
+            self.auth_prompt_form.btn_ok_cancel.setEnabled(False)
             self.auth_prompt_form.show()
-
+            msgBar.pushMessage("Isogeo",
+                               self.tr("API authentication failed."
+                                       "Isogeo API answered: {}")
+                                       .format(parsed_content.get('error')),
+                               duration=10,
+                               level=msgBar.WARNING)
             self.requestStatusClear = True
-            
         else:
+            logging.debug("The API reply has an unexpected form: {}"
+                          .format(parsed_content))
+            msgBar.pushMessage("Isogeo",
+                               self.tr("API authentication failed."
+                                       "Isogeo API answered: {}")
+                                       .format(parsed_content.get('error')),
+                               duration=10,
+                               level=msgBar.CRITICAL)
             self.requestStatusClear = True
-            logging.error("The API reply has an unexpected form : "
-                          "{0}".format(parsed_content))
-            QMessageBox.information(
-                iface.mainWindow(), self.tr("Error"), self.tr("Unknown error"))
 
     def send_request_to_isogeo_api(self, token, limit=10):
         """Send a content url to the Isogeo API.
@@ -2002,5 +1993,4 @@ class Isogeo:
         self.user_authentication()
         isogeo_api_mng.tr = self.tr
         self.dockwidget.txt_input.setFocus()
-        #Change Qgis Style if needed and block plugin
         self.test_qgis_style()
