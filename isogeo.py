@@ -1795,16 +1795,15 @@ class Isogeo:
         if style_qgis in ("macintosh", "cleanlooks"):
             qsettings.setValue(u"qgis/style", u'Plastique')
             self.dockwidget.cbb_keywords.setEnabled(False)
-            msgBar.pushMessage(self.tr("The '{}' style for Qgis is not "
+            msgBar.pushMessage(self.tr("The '{}' QGIS style is not "
                                        "compatible with combobox. It has "
-                                       "been changed. Please restart QGIS"
-                                       " to use keywords!. Please restart QGIS")
+                                       "been changed. Please restart QGIS.")
                                        .format(style_qgis),
                                duration=0,
                                level=msgBar.WARNING)
             logging.info("The '{}' QGIS style is not compatible with combobox."
                          " Isogeo plugin changed it to 'Plastique'."
-                         "Please restart QGIS"
+                         "Please restart QGIS."
                          .format(style_qgis))
         else:
             self.dockwidget.cbb_keywords.setEnabled(True)
