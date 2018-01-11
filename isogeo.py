@@ -318,30 +318,6 @@ class Isogeo:
         del self.toolbar
 
     # --------------------------------------------------------------------------
-    def test_qgis_style (self):
-        """ Modification of Qgis style (theme) in order to display check box for keywords 
-        if this one is not adapted """
-
-        style_qgis = qsettings.value(u'qgis/style')
-        if ((u'macintosh' in style_qgis) or (u'cleanlooks' in style_qgis)):
-
-            logging.info(str(style_qgis) + "style for Qgis is not adapted with combobox."
-                          "Isogeo plugin changes it automatically to style Plastique. So Keywords function is disabled.")
-
-            qsettings.setValue(u"qgis/style", u'Plastique')
-            self.dockwidget.cbb_keywords.setEnabled(False)
-
-            msgBar.pushMessage(
-                    self.tr(str(style_qgis) + " style for Qgis is not adapted with combobox. "
-                            "Style has been changed. Please restart QGIS if you want to use keywords!"),
-                            duration=0, level=msgBar.WARNING)
-        else:
-            
-            self.dockwidget.cbb_keywords.setEnabled(True)
-
-    
-
-
     def user_authentication(self):
         """Test the validity of the user id and secret.
         This is the first major function the plugin calls when executed. It
@@ -1817,6 +1793,30 @@ class Isogeo:
             else:
                 pass
             self.search()
+
+    def test_qgis_style(self):
+        """
+            Check QGIS style applied to ensure compatibility with comboboxes.
+            Avert the user and force change if the selected is not adapted.
+            See: https://github.com/isogeo/isogeo-plugin-qgis/issues/137.
+        """
+        style_qgis = qsettings.value('qgis/style', "Default")
+        if style_qgis in ("macintosh", "cleanlooks"):
+            qsettings.setValue(u"qgis/style", u'Plastique')
+            self.dockwidget.cbb_keywords.setEnabled(False)
+            msgBar.pushMessage(self.tr("The '{}' style for Qgis is not "
+                                       "compatible with combobox. It has "
+                                       "been changed. Please restart QGIS"
+                                       " to use keywords!. Please restart QGIS")
+                                       .format(style_qgis),
+                               duration=0,
+                               level=msgBar.WARNING)
+            logging.info("The '{}' QGIS style is not compatible with combobox."
+                         " Isogeo plugin changed it to 'Plastique'."
+                         "Please restart QGIS"
+                         .format(style_qgis))
+        else:
+            self.dockwidget.cbb_keywords.setEnabled(True)
 
     # ------------ SETTINGS - Shares -----------------------------------------
 
