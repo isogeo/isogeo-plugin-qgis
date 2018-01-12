@@ -29,10 +29,8 @@ import base64
 import urllib
 import logging
 from logging.handlers import RotatingFileHandler
-import platform  # about operating systems
 from collections import OrderedDict
 from functools import partial
-import operator
 
 # PyQT
 # from QByteArray
@@ -44,7 +42,7 @@ from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # PyQGIS
 import db_manager.db_plugins.postgis.connector as con
-from qgis.utils import iface, plugin_times, QGis, reloadPlugin
+from qgis.utils import iface, plugin_times, QGis
 from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
                        QgsCoordinateReferenceSystem, QgsCoordinateTransform,
                        QgsDataSourceURI,
@@ -53,7 +51,7 @@ from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
                        QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer)
 
 # Initialize Qt resources from file resources.py
-import resources
+# import resources
 
 # UI classes
 from ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
@@ -613,7 +611,6 @@ class Isogeo:
         self.dockwidget.btn_show.setText(
             str(self.results_count) + self.tr(" results"))
         # Setting the number of rows in the result table
-
         self.nb_page = str(custom_tools.results_pages_counter(self.results_count))
         self.dockwidget.lbl_page.setText(
             "page " + str(self.page_index) + self.tr(' on ') + self.nb_page)
@@ -1908,7 +1905,6 @@ class Isogeo:
         # The user has to verify before by clicking on button check
         self.auth_prompt_form.ent_app_id.textEdited.connect(self.control_authentication)
         self.auth_prompt_form.ent_app_secret.textEdited.connect(self.control_authentication)
-        
 
         # Connecting the comboboxes to the search function
         self.dockwidget.cbb_owner.activated.connect(self.search)
