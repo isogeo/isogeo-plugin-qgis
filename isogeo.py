@@ -51,7 +51,7 @@ from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
                        QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer)
 
 # Initialize Qt resources from file resources.py
-# import resources
+import resources
 
 # UI classes
 from ui.isogeo_dockwidget import IsogeoDockWidget  # main widget

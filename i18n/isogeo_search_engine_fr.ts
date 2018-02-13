@@ -1,240 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="fr_FR">
+<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="isogeo.py" line="307"/>
+        <location filename="isogeo.py" line="305"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="276"/>
+        <location filename="isogeo.py" line="274"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1262"/>
+        <location filename="isogeo.py" line="1259"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="578"/>
+        <location filename="isogeo.py" line="576"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin. If so, please report this on the bug tracker.</source>
         <translation>Le script tourne en rond. Assurez-vous d&apos;avoir partagéau moins  un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème sur le bug tracker.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="584"/>
+        <location filename="isogeo.py" line="582"/>
         <source>You are facing an unknown error. Code: </source>
         <translation>Vous rencontrez une erreur inconnue. Code : </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="618"/>
+        <location filename="isogeo.py" line="615"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="837"/>
+        <location filename="isogeo.py" line="834"/>
         <source>---- Keywords ----</source>
         <translation>---- Mot clés ----</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="692"/>
+        <location filename="isogeo.py" line="689"/>
         <source>Intersects</source>
         <translation>Intersecte</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="692"/>
+        <location filename="isogeo.py" line="689"/>
         <source>within</source>
         <translation>Est contenu</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="692"/>
+        <location filename="isogeo.py" line="689"/>
         <source>contains</source>
         <translation>Contient</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="678"/>
+        <location filename="isogeo.py" line="675"/>
         <source>All types</source>
         <translation>Tous</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="699"/>
+        <location filename="isogeo.py" line="696"/>
         <source>Relevance</source>
         <translation>Pertinence</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="699"/>
+        <location filename="isogeo.py" line="696"/>
         <source>Alphabetical order</source>
         <translation>Ordre alphabétique</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="699"/>
+        <location filename="isogeo.py" line="696"/>
         <source>Data modified</source>
         <translation>Donnée modifiée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="699"/>
+        <location filename="isogeo.py" line="696"/>
         <source>Data created</source>
         <translation>Donnée créée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="699"/>
+        <location filename="isogeo.py" line="696"/>
         <source>Metadata modified</source>
         <translation>Métadonnée modifiée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="699"/>
+        <location filename="isogeo.py" line="696"/>
         <source>Metadata created</source>
         <translation>Métadonnée créée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="709"/>
+        <location filename="isogeo.py" line="706"/>
         <source>Descending</source>
         <translation>Descendant</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="709"/>
+        <location filename="isogeo.py" line="706"/>
         <source>Ascendant</source>
         <translation>Ascendant</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="747"/>
+        <location filename="isogeo.py" line="744"/>
         <source>Map canvas</source>
         <translation>Emprise de la carte</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1614"/>
+        <location filename="isogeo.py" line="1611"/>
         <source>Quick Search</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1367"/>
+        <location filename="isogeo.py" line="1364"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="949"/>
+        <location filename="isogeo.py" line="946"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="613"/>
+        <location filename="isogeo.py" line="611"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1930"/>
+        <location filename="isogeo.py" line="1926"/>
         <source>https://github.com/isogeo/isogeo-plugin-qgis/issues</source>
         <translation>https://github.com/isogeo/isogeo-plugin-qgis/issues</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1262"/>
+        <location filename="isogeo.py" line="1259"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation>La table ou la vue PostGIS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1499"/>
+        <location filename="isogeo.py" line="1496"/>
         <source>{} successfully saved: {}</source>
         <translation>{} sauvegardée correctement : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1596"/>
+        <location filename="isogeo.py" line="1593"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation>Recherche rapide renommée de {} à {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1624"/>
+        <location filename="isogeo.py" line="1621"/>
         <source>Quicksearch removed: {}</source>
         <translation>Recherche rapide supprimée : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1844"/>
+        <location filename="isogeo.py" line="1841"/>
         <source> powered by 1 share:&lt;/p&gt;&lt;/br&gt;</source>
         <translation>alimenté par 1 seul partage :&lt;/p&gt;&lt;/br&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1846"/>
+        <location filename="isogeo.py" line="1843"/>
         <source> powered by {0} shares:&lt;/p&gt;&lt;/br&gt;</source>
         <translation>alimenté par {0} partages :&lt;/p&gt;&lt;/br&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1860"/>
+        <location filename="isogeo.py" line="1857"/>
         <source>&lt;p&gt;Updated: {}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Dernière mise à jour : {}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1862"/>
+        <location filename="isogeo.py" line="1859"/>
         <source>&lt;p&gt;Contact: {} - {}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Groupe de travail propriétaire : {} - {}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1838"/>
+        <location filename="isogeo.py" line="1835"/>
         <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
         <translation>&lt;p&gt;Ce plugin est authentifié en tant que &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; et </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="461"/>
+        <location filename="isogeo.py" line="459"/>
         <source>Request to Isogeo failed: please check your Internet connection.</source>
         <translation>La requête à l&apos;API Isogeo a échoué. Merci de vérifier la connexion Internet et de réessayer.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1056"/>
+        <location filename="isogeo.py" line="1053"/>
         <source>Vector layer is not valid.</source>
         <translation>La couche vecteur n&apos;est pas valide.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1084"/>
+        <location filename="isogeo.py" line="1081"/>
         <source>Raster layer is not valid.</source>
         <translation>Le raster n&apos;est pas valide.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="895"/>
+        <location filename="isogeo.py" line="892"/>
         <source>Selected keywords:</source>
         <translation>Mots-clés sélectionnés :</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="972"/>
+        <location filename="isogeo.py" line="969"/>
         <source>Keywords</source>
         <translation>Mots-clés</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="979"/>
+        <location filename="isogeo.py" line="976"/>
         <source>No keyword selected</source>
         <translation>Aucun mot-clé sélectionné</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1102"/>
+        <location filename="isogeo.py" line="1099"/>
         <source>EFS not valid. QGIS says: {}</source>
         <translation>Le service Esri Feature semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1120"/>
+        <location filename="isogeo.py" line="1117"/>
         <source>EMS not valid. QGIS says: {}</source>
         <translation>Le service Esri Map semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1147"/>
+        <location filename="isogeo.py" line="1144"/>
         <source>WFS is not valid. QGIS says: {}</source>
         <translation>La couche WFS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1175"/>
+        <location filename="isogeo.py" line="1172"/>
         <source>WMS is not valid. QGIS says: {}</source>
         <translation>La couche WMS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1192"/>
+        <location filename="isogeo.py" line="1189"/>
         <source>WMTS is not valid. QGIS says: {} {}</source>
         <translation>La couche WMTS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="505"/>
+        <location filename="isogeo.py" line="503"/>
         <source>API authentication failed.Isogeo API answered: {}</source>
         <translation>L&apos;authentification a échoué. Réponse de l&apos;API Isogeo : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1798"/>
+        <location filename="isogeo.py" line="1795"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation>Le {} style de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</translation>
     </message>
@@ -557,7 +556,7 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     </message>
     <message>
         <location filename="ui/credits/ui_credits.py" line="190"/>
-        <source>Developed by ThÃ©o Sinatti, internship supervised by Julien Moura for Isogeo.</source>
+        <source>Developed by Th&#xc3;&#xa9;o Sinatti, internship supervised by Julien Moura for Isogeo.</source>
         <translation>Développé par Théo Sinatti, stagiaire encadré par Julien Moura pour Isogeo.</translation>
     </message>
     <message>
@@ -630,9 +629,9 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -643,9 +642,9 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -671,9 +670,9 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
