@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Standard library
+import ConfigParser
 import datetime
 import logging
 from os import path
@@ -31,6 +32,15 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 class Tools(object):
     """Basic class that holds utilitary methods for the Isogeo plugin."""
     last_error = None
+
+
+    def plugin_version(self, base_path=path.dirname(__file__)):
+        config = ConfigParser.ConfigParser()
+        if path.isfile(path.join(base_path,'metadata.txt')):
+            config.read(path.join(base_path,'metadata.txt'))
+            return config.get('general', 'version')
+        else:
+            logger.error(path.dirname(__file__))
 
     def error_catcher(self, msg, tag, level):
         """Catch QGIS error messages for introspection."""

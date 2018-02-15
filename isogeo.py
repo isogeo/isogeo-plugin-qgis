@@ -112,15 +112,16 @@ ico_poin = QIcon(':/plugins/Isogeo/resources/point.png')
 
 
 class Isogeo:
-    """QGIS Plugin Implementation."""
+    """Isogeo plugin for QGIS LTR."""
+
+    # attributes
+    plg_basepath = os.path.dirname(os.path.realpath(__file__))
+    plg_version = custom_tools.plugin_version(base_path=plg_basepath)
 
     logger.info('\n\n\t========== Isogeo Search Engine for QGIS ==========')
     logger.info('OS: {0}'.format(platform.platform()))
-    try:
-        logger.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
-    except UnicodeEncodeError:
-        qgis_version = QGis.QGIS_VERSION.decode("latin1")
-        logger.info('QGIS Version: {0}'.format(qgis_version))
+    logger.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
+    logger.info('Plugin version: {0}'.format(plg_version))
 
     def __init__(self, iface):
         """Constructor.
@@ -198,8 +199,8 @@ class Isogeo:
 
         self.old_text = ""
         self.page_index = 1
-        basepath = os.path.dirname(os.path.realpath(__file__))
-        self.json_path = basepath + '/user_settings/saved_searches.json'
+        self.json_path = os.path.realpath(os.path.join(self.plg_basepath,
+                                                       "user_settings/saved_searches.json"))
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message, context="Isogeo"):
@@ -1341,7 +1342,6 @@ class Isogeo:
             pass
         # saving params in QSettings
         qsettings.setValue("isogeo/settings/georelation", operation_param)
-
         logger.info(params)
         return params
 
@@ -1966,8 +1966,7 @@ class Isogeo:
         self.dockwidget.btn_delete_sr.pressed.connect(self.quicksearch_remove)
         # Connect the activation of the "saved search" combobox with the
         # set_widget_status function
-        self.dockwidget.cbb_quicksearch.activated.connect(
-            self.set_widget_status)
+        self.dockwidget.cbb_quicksearch.activated.connect(self.set_widget_status)
         # G default
         self.dockwidget.btn_default.pressed.connect(
             partial(self.write_search_params, '_default', "Default"))
@@ -1984,6 +1983,7 @@ class Isogeo:
         QgsMessageLog.instance().messageReceived.connect(custom_tools.error_catcher)
 
         """ --- Actions when the plugin is launched --- """
+        self.dockwidget.setWindowTitle("Isogeo - {}".format(self.plg_version))
         custom_tools.test_proxy_configuration()
         self.user_authentication()
         isogeo_api_mng.tr = self.tr
