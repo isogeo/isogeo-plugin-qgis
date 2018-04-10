@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>dlg_credits</class>
  <widget class="QDialog" name="dlg_credits">
@@ -33,7 +33,7 @@
    <double>0.900000000000000</double>
   </property>
   <property name="locale">
-   <locale country="UnitedStates" language="English" />
+   <locale language="English" country="UnitedStates"/>
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
@@ -74,7 +74,7 @@
        <item>
         <widget class="QLabel" name="lbl_development">
          <property name="text">
-          <string>Developed by Théo Sinatti, internship supervised by Julien Moura for Isogeo.</string>
+          <string>Mainly developed by Julien Moura at Isogeo, helped by Théo Sinatti (internship).</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -98,7 +98,7 @@
             </size>
            </property>
            <property name="text">
-            <string notr="true" />
+            <string notr="true"/>
            </property>
            <property name="pixmap">
             <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/isogeo.png</pixmap>
@@ -125,7 +125,7 @@
             </font>
            </property>
            <property name="text">
-            <string>&lt;a href="http://www.isogeo.com" style="color:#6480A7;text-decoration:none;"&gt;Easy access to geodata!&lt;/a&gt;</string>
+            <string>&lt;a href=&quot;http://www.isogeo.com&quot; style=&quot;color:#6480A7;text-decoration:none;&quot;&gt;Easy access to geodata!&lt;/a&gt;</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -158,10 +158,10 @@
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
         <layout class="QGridLayout" name="gridLayout_5">
-         <item column="0" row="0">
+         <item row="0" column="0">
           <widget class="QLabel" name="lbl_smavd_url">
            <property name="text">
-            <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align="center"&gt;&lt;a href="http://www.smavd.org/"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;Syndicat Mixte d&amp;apos;Am&amp;eacute;nagement&lt;br/&gt;de la Durance (SMAVD)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.smavd.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Syndicat Mixte d&amp;apos;Am&amp;eacute;nagement&lt;br/&gt;de la Durance (SMAVD)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>
@@ -171,10 +171,10 @@
            </property>
           </widget>
          </item>
-         <item column="2" row="0">
+         <item row="0" column="2">
           <widget class="QLabel" name="lbl_smavd_logo">
            <property name="text">
-            <string notr="true" />
+            <string notr="true"/>
            </property>
            <property name="pixmap">
             <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/sponsor_logo_SMAVD.jpg</pixmap>
@@ -190,7 +190,7 @@
            </property>
           </widget>
          </item>
-         <item column="1" row="0">
+         <item row="0" column="1">
           <widget class="Line" name="line_2">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -208,7 +208,7 @@
        </item>
        <item>
         <layout class="QGridLayout" name="gridLayout_6">
-         <item column="2" row="1">
+         <item row="1" column="2">
           <widget class="QLabel" name="lbl_lorient_logo">
            <property name="maximumSize">
             <size>
@@ -217,7 +217,7 @@
             </size>
            </property>
            <property name="text">
-            <string notr="true" />
+            <string notr="true"/>
            </property>
            <property name="pixmap">
             <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/sponsor_logo_ca_lorient.png</pixmap>
@@ -236,14 +236,14 @@
            </property>
           </widget>
          </item>
-         <item column="0" row="1">
+         <item row="1" column="0">
           <widget class="QLabel" name="lbl_lorient_url">
            <property name="text">
-            <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align="center"&gt;&lt;a href="https://www.lorient-agglo.fr/"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;Communaut&amp;eacute; d&amp;apos;agglom&amp;eacute;ration de&lt;br/&gt;Lorient (Lorient Agglom&amp;eacute;ration)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://www.lorient-agglo.fr/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Communaut&amp;eacute; d&amp;apos;agglom&amp;eacute;ration de&lt;br/&gt;Lorient (Lorient Agglom&amp;eacute;ration)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
-         <item column="1" row="1">
+         <item row="1" column="1">
           <widget class="Line" name="line_3">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -277,10 +277,10 @@
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
         <layout class="QGridLayout" name="gridLayout_4">
-         <item column="2" row="0">
+         <item row="0" column="2">
           <widget class="QLabel" name="lbl_license_logo_gpl3">
            <property name="text">
-            <string notr="true" />
+            <string notr="true"/>
            </property>
            <property name="pixmap">
             <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/gplv3.png</pixmap>
@@ -293,14 +293,14 @@
            </property>
           </widget>
          </item>
-         <item column="0" row="0">
+         <item row="0" column="0">
           <widget class="QLabel" name="lbl_source_repository">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href="https://github.com/isogeo/isogeo-plugin-qgis"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;https://github.com/isogeo/isogeo-plugin-qgis&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/isogeo/isogeo-plugin-qgis&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
-         <item column="1" row="0">
+         <item row="0" column="1">
           <widget class="Line" name="line_4">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -321,7 +321,7 @@
        <bool>false</bool>
       </property>
       <property name="locale">
-       <locale country="UnitedStates" language="English" />
+       <locale language="English" country="UnitedStates"/>
       </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -337,6 +337,9 @@
    </layout>
   </widget>
  </widget>
+ <resources>
+  <include location="../../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>btn_ok_close</sender>
