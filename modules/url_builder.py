@@ -82,6 +82,7 @@ class UrlBuilder(object):
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connexions."""
+        # input_dict.beginGroup("PostgreSQL/connections")
         final_dict = {}
         for k in sorted(input_dict.allKeys()):
             if k.startswith("PostgreSQL/connections/")\
@@ -169,7 +170,7 @@ class UrlBuilder(object):
         ems_uri = QgsDataSourceURI()
         ems_uri.setParam("url", ems_lyr_url)
         ems_uri.setParam("crs", srs_map)
-        ems_uri.setParam("restrictToRequestBBOX", "1")
+        # ems_uri.setParam("restrictToRequestBBOX", "1")
 
         btn_lbl = "EMS : {}".format(ems_lyr_title)
         return ["arcgismapserver", ems_lyr_title, ems_uri.uri(),
