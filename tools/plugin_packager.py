@@ -1,41 +1,54 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
-"""This script packages files into a zip ready to be uploaded to QGIS plugins
-repository.
 
-How to use: open a command prompt and launch 'python tools\plugin_packager.py'
-from inside the Isogeo plugin qgis repository.
+"""
+    This script packages files into a zip ready to be uploaded to QGIS plugins
+    repository.
 
-See: http://www.qgis.org/pyqgis-cookbook/releasing.html
-        Authors: J. Moura
-        Python: 2.7.x
-        Created: 20/07/2016
-        Licence: GPL 3
+    How to use on Windows:
+        1. Launch OSGeo4W Shell inside th Isogeo QGIS Plugin repository
+        2. Run:
+            ```bash
+            python tools\plugin_packager.py
+            ```
+
+    See: https://docs.qgis.org/testing/en/docs/pyqgis_developer_cookbook/releasing.html
+
+    Authors: J. Moura (Isogeo)
+    Python: 2.7.x
+    Created: 20/07/2016
+    License: GPL 3
 """
 
-# ------------ Imports --------------------------------------------
-from os import getcwd, listdir, makedirs, path, remove, walk
+# ------------ Imports -------------------------------------------------------
+from __future__ import (absolute_import, print_function, unicode_literals)
+#from __future__ import (absolute_import, print_function)
+from os import listdir, makedirs, path, remove, walk
 import json
 import xml.etree.ElementTree as ET
 import zipfile
 
-# ------------ UI files check --------------------------------------------
+# ------------ Globals -------------------------------------------------------
+
+BASE_DIR_REL = path.dirname(path.dirname(path.abspath(__file__)))
+BASE_DIR_ABS = path.normpath(BASE_DIR_REL)
+
+# ------------ UI files check -----------------------------------------------
 
 # see: http://gis.stackexchange.com/a/155599/19817
-ui_dir = path.abspath(getcwd())
-for dirpath, dirs, files in walk(ui_dir):
-    for file in files:
-        if (file.endswith(".ui")):
-            with open(path.join(dirpath, file), 'r') as ui_file:
+for dirpath, dirs, files in walk(BASE_DIR_ABS):
+    for f in files:
+        if f.endswith(".ui"):
+            with open(path.join(dirpath, f), 'r') as ui_file:
                 ui_xml = ET.parse(ui_file)
                 root = ui_xml.getroot()
                 for rsrc in root.iter('resources'):
                     if len(rsrc) > 0:
                         print("WARNING - resources tag spotted in: {}"\
-                              .format(file))
+                              .format(f))
                         # AUTO REMOVE ##
                         root.remove(rsrc)
-                        ui_xml.write(path.join(dirpath, file),
+                        ui_xml.write(path.join(dirpath, f),
                                      encoding='utf-8',
                                      xml_declaration='version="1.0"',
                                      method='xml')
@@ -47,155 +60,163 @@ for dirpath, dirs, files in walk(ui_dir):
                     # print(header, dir(header), header.text)
                     if header.text != "qgis.gui":
                         header.text = header.text.replace(header.text, 'qgis.gui')
-                        ui_xml.write(path.join(dirpath, file),
+                        ui_xml.write(path.join(dirpath, f),
                                      encoding='utf-8',
                                      xml_declaration='version="1.0"',
                                      method='xml')
                         print("INFO - Custom widget header fixed.")
                     else:
                         continue
-        elif (file.endswith(".pyc")):
-            remove(path.join(dirpath, file))
-
+        elif f.endswith(".pyc"):
+            remove(path.join(dirpath, f))
         else:
             continue
 
 # ------------ Destination folder --------------------------------------------
 # folder name
-plg_dir = "isogeo_search_engine"
+PLG_DIRNAME = "isogeo_search_engine"
 
 # where to store the zip files
-dest_folder = path.abspath(r"build\latest")
+DEST_DIR = path.join(BASE_DIR_ABS, "build/latest")
 
-if not path.isdir(dest_folder):    # test if folder already exists
-    makedirs(dest_folder, 0777)
+if not path.isdir(DEST_DIR):    # test if folder already exists
+    makedirs(DEST_DIR, 0777)
 else:
     pass
 
 # ------------ Led Zipping -------------------------------------------
-final_zip = zipfile.ZipFile(path.join(dest_folder, plg_dir + ".zip"), "w")
+RELEASE_ZIP = zipfile.ZipFile(path.join(DEST_DIR, PLG_DIRNAME + ".zip"), "w")
 
 # QGIS Plugin requirements
-final_zip.write(r"LICENSE", plg_dir + r"\LICENSE")
-final_zip.write(r"metadata.txt", plg_dir + r"\metadata.txt")
-final_zip.write(r"README.md", plg_dir + r"\README")
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "LICENSE"),
+                  "{}/{}".format(PLG_DIRNAME, "LICENSE"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "metadata.txt"),
+                  "{}/{}".format(PLG_DIRNAME, "metadata.txt"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "README.md"),
+                  "{}/{}".format(PLG_DIRNAME, "README"))
 
 # Python base code
-final_zip.write(r"__init__.py", plg_dir + r"\__init__.py")
-final_zip.write(r"isogeo.py", plg_dir + r"\isogeo.py")
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "__init__.py"),
+                  "{}/{}".format(PLG_DIRNAME, "__init__.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "isogeo.py"),
+                  "{}/{}".format(PLG_DIRNAME, "isogeo.py"))
 
 # Modules
-final_zip.write(r"modules\__init__.py", plg_dir + r"\modules\__init__.py")
-final_zip.write(r"modules\api.py", plg_dir + r"\modules\api.py")
-final_zip.write(r"modules\metadata_display.py", plg_dir + r"\modules\metadata_display.py")
-final_zip.write(r"modules\results.py", plg_dir + r"\modules\results.py")
-final_zip.write(r"modules\tools.py", plg_dir + r"\modules\tools.py")
-final_zip.write(r"modules\translator.py", plg_dir + r"\modules\translator.py")
-final_zip.write(r"modules\url_builder.py", plg_dir + r"\modules\url_builder.py")
-final_zip.write(r"modules\isogeo.qml", plg_dir + r"\modules\isogeo.qml")
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "__init__.py"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "__init__.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "api.py"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "api.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "metadata_display.py"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "metadata_display.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "results.py"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "results.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "tools.py"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "tools.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "translator.py"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "translator.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "url_builder.py"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "url_builder.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "isogeo.qml"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "isogeo.qml"))
 
 # Resources (media files)
-resources_files = [path.relpath(f) for f in listdir(r"resources")
-                   if path.isfile(path.join(path.realpath(r"resources"), f))]
+resources_files = [path.relpath(f) for f in listdir("resources")
+                   if path.isfile(path.join(path.realpath("resources"), f))]
 
 for resource in resources_files:
-    final_zip.write(r"resources\\" + resource,
-                    plg_dir + r"\resources\\" + resource)
+    RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "resources", resource),
+                      "{}/{}/{}".format(PLG_DIRNAME, "resources", resource))
 
 # Translations
-final_zip.write(r"i18n\isogeo_search_engine_fr.qm",
-                plg_dir + r"\i18n\isogeo_search_engine_fr.qm")
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "i18n", "isogeo_search_engine_fr.qm"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "i18n", "isogeo_search_engine_fr.qm"))
 
 # UI - Base
-final_zip.write(r"icon.png",
-                plg_dir + r"\icon.png")
-final_zip.write(r"ui\__init__.py",
-                plg_dir + r"\ui\__init__.py")
-final_zip.write(r"ui\isogeo_dockwidget_base.ui",
-                plg_dir + r"\ui\isogeo_dockwidget_base.ui")
-final_zip.write(r"ui\isogeo_dockwidget.py",
-                plg_dir + r"\ui\isogeo_dockwidget.py")
-final_zip.write(r"ui\ui_isogeo.py",
-                plg_dir + r"\ui\ui_isogeo.py")
-final_zip.write(r"resources.py",
-                plg_dir + r"\resources.py")
-final_zip.write(r"resources.qrc",
-                plg_dir + r"\resources.qrc")
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "icon.png"),
+                  "{}/{}".format(PLG_DIRNAME, "icon.png"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "resources.py"),
+                  "{}/{}".format(PLG_DIRNAME, "resources.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "resources.qrc"),
+                  "{}/{}".format(PLG_DIRNAME, "resources.qrc"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "__init__.py"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "ui", "__init__.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "isogeo_dockwidget_base.ui"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "ui", "isogeo_dockwidget_base.ui"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "isogeo_dockwidget.py"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "ui", "isogeo_dockwidget.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "ui_isogeo.py"),
+                  "{}/{}/{}".format(PLG_DIRNAME, "ui", "ui_isogeo.py"))
 
 # UI - Auth
-final_zip.write(r"ui\auth\__init__.py",
-                plg_dir + r"\ui\auth\__init__.py")
-final_zip.write(r"ui\auth\ui_authentication.ui",
-                plg_dir + r"\ui\auth\ui_authentication.ui")
-final_zip.write(r"ui\auth\ui_authentication.py",
-                plg_dir + r"\ui\auth\ui_authentication.py")
-final_zip.write(r"ui\auth\dlg_authentication.py",
-                plg_dir + r"\ui\auth\dlg_authentication.py")
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "auth", "__init__.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "auth", "__init__.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "auth", "ui_authentication.ui"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "auth", "ui_authentication.ui"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "auth", "ui_authentication.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "auth", "ui_authentication.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "auth", "dlg_authentication.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "auth", "dlg_authentication.py"))
 
 # UI - Credits
-final_zip.write(r"ui\credits\__init__.py",
-                plg_dir + r"\ui\credits\__init__.py")
-final_zip.write(r"ui\credits\ui_credits.ui",
-                plg_dir + r"\ui\credits\ui_credits.ui")
-final_zip.write(r"ui\credits\ui_credits.py",
-                plg_dir + r"\ui\credits\ui_credits.py")
-final_zip.write(r"ui\credits\dlg_credits.py",
-                plg_dir + r"\ui\credits\dlg_credits.py")
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "credits", "__init__.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "credits", "__init__.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "credits", "ui_credits.ui"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "credits", "ui_credits.ui"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "credits", "ui_credits.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "credits", "ui_credits.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "credits", "dlg_credits.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "credits", "dlg_credits.py"))
 
 # UI - MdDetails
-final_zip.write(r"ui\metadata\__init__.py",
-                plg_dir + r"\ui\metadata\__init__.py")
-final_zip.write(r"ui\metadata\ui_md_details.ui",
-                plg_dir + r"\ui\metadata\ui_md_details.ui")
-final_zip.write(r"ui\metadata\ui_md_details.py",
-                plg_dir + r"\ui\metadata\ui_md_details.py")
-final_zip.write(r"ui\metadata\dlg_md_details.py",
-                plg_dir + r"\ui\metadata\dlg_md_details.py")
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "metadata", "__init__.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "metadata", "__init__.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "metadata", "ui_md_details.ui"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "metadata", "ui_md_details.ui"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "metadata", "ui_md_details.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "metadata", "ui_md_details.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "metadata", "dlg_md_details.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "metadata", "dlg_md_details.py"))
 
 # UI - Quicksearch - name
-final_zip.write(r"ui\quicksearch\__init__.py",
-                plg_dir + r"\ui\quicksearch\__init__.py")
-final_zip.write(r"ui\quicksearch\ui_quicksearch_new.py",
-                plg_dir + r"\ui\quicksearch\ui_quicksearch_new.py")
-final_zip.write(r"ui\quicksearch\ui_quicksearch_new.ui",
-                plg_dir + r"\ui\quicksearch\ui_quicksearch_new.ui")
-final_zip.write(r"ui\quicksearch\dlg_quicksearch_new.py",
-                plg_dir + r"\ui\quicksearch\dlg_quicksearch_new.py")
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "quicksearch", "__init__.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "__init__.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "quicksearch", "ui_quicksearch_new.ui"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "ui_quicksearch_new.ui"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "quicksearch", "ui_quicksearch_new.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "ui_quicksearch_new.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "quicksearch", "dlg_quicksearch_new.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "dlg_quicksearch_new.py"))
 
 # UI - Quicksearch - rename
-final_zip.write(r"ui\quicksearch\ui_quicksearch_rename.py",
-                plg_dir + r"\ui\quicksearch\ui_quicksearch_rename.py")
-final_zip.write(r"ui\quicksearch\ui_quicksearch_rename.ui",
-                plg_dir + r"\ui\quicksearch\ui_quicksearch_rename.ui")
-final_zip.write(r"ui\quicksearch\dlg_quicksearch_rename.py",
-                plg_dir + r"\ui\quicksearch\dlg_quicksearch_rename.py")
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "quicksearch", "ui_quicksearch_rename.ui"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "ui_quicksearch_rename.ui"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "quicksearch", "ui_quicksearch_rename.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "ui_quicksearch_rename.py"))
+RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "quicksearch", "dlg_quicksearch_rename.py"),
+                  "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "dlg_quicksearch_rename.py"))
 
 # -- User settings ----------------------------------------------------------
 
-quicksearches = {"_default": {"inspire": None,
-                              "format": None,
+QUICKSEARCHES = {"_default": {"contact": None,
                               "datatype": None,
-                              "text": "",
-                              "od": "desc",
                               "favorite": None,
-                              "ob": "relevance",
-                              "noaction": 0,
-                              "srs": None,
-                              "other": 0,
-                              "url": "https://v1.api.isogeo.com/resources/search?&_limit=0&_offset=0&_lang=fr",
-                              "owner": None,
-                              "download": 0,
+                              "format": None,
                               "geofilter": None,
+                              "inspire": None,
+                              "license": None,
+                              "ob": "relevance",
+                              "od": "desc",
                               "operation": "intersects",
-                              "view": 0,
+                              "owner": None,
+                              "srs": None,
+                              "text": "",
+                              "url": "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0",
                               },
-                 }
+                }
 
+quicksearch_json = path.join(BASE_DIR_ABS, "user_settings", "saved_searches.json")
+with open(quicksearch_json, "w") as qs:
+    json.dump(QUICKSEARCHES, qs, sort_keys=True, indent=4)
 
-with open(r"user_settings\saved_searches.json", "w") as qs:
-    json.dump(quicksearches, qs, sort_keys=True, indent=4)
-
-final_zip.write(r"user_settings\saved_searches.json",
-                plg_dir + r"\user_settings\saved_searches.json")
-
-# ----------------------------------------------------------------------------
+RELEASE_ZIP.write(quicksearch_json,
+                  "{}/{}/{}".format(PLG_DIRNAME, "user_settings", "saved_searches.json"))
