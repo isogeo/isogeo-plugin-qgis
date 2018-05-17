@@ -76,9 +76,9 @@ class MetadataDisplayer(object):
         kwords = tags.get("keywords", {"none": "NR"})
         self.complete_md.val_keywords.setText(" ; ".join(kwords.keys()))
         # INSPIRE themes and conformity
-        themes = tags.get("themeinspire", {"none": "NR"})
+        themes = tags.get("inspire", {"none": "NR"})
         self.complete_md.val_inspire_themes.setText(" ; ".join(themes.values()))
-        if tags.get("inspire_conformity"):
+        if tags.get("compliance"):
             self.complete_md.ico_inspire_conformity.setEnabled(1)
             self.complete_md.ico_inspire_conformity.setToolTip(
                                                     isogeo_tr.tr("quality",
