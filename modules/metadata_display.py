@@ -74,7 +74,7 @@ class MetadataDisplayer(object):
                                              .get("name", "NR"))
         # Keywords
         kwords = tags.get("keywords", {"none": "NR"})
-        self.complete_md.val_keywords.setText(" ; ".join(kwords.values()))
+        self.complete_md.val_keywords.setText(" ; ".join(kwords.keys()))
         # INSPIRE themes and conformity
         themes = tags.get("themeinspire", {"none": "NR"})
         self.complete_md.val_inspire_themes.setText(" ; ".join(themes.values()))
