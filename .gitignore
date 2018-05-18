@@ -100,3 +100,4 @@ help/
 .coverage
 .noseids
 *.log
+user_settings/*
