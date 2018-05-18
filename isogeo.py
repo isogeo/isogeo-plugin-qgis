@@ -200,7 +200,7 @@ class Isogeo:
         self.old_text = ""
         self.page_index = 1
         self.json_path = os.path.realpath(os.path.join(self.plg_basepath,
-                                                       "user_settings/saved_searches.json"))
+                                                       "user_settings/quicksearches.json"))
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message, context="Isogeo"):
@@ -1095,7 +1095,7 @@ class Isogeo:
                     logger.info("EFS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
-                    logger.warning("Invalid service: {0}"
+                    logger.warning("Invalid service: {0}. QGIS says: {}"
                                    .format(uri, error_msg.encode("latin1")))
                     QMessageBox.information(iface.mainWindow(),
                                             self.tr('Error'),
@@ -1113,7 +1113,7 @@ class Isogeo:
                     logger.info("EMS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
-                    logger.warning("Invalid service: {0}"
+                    logger.warning("Invalid service: {0}. QGIS says: {}"
                                    .format(uri, error_msg.encode("latin1")))
                     QMessageBox.information(iface.mainWindow(),
                                             self.tr('Error'),
@@ -1139,7 +1139,7 @@ class Isogeo:
                             logger.info("WFS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
-                            logger.warning("Invalid service: {0}"
+                            logger.warning("Invalid service: {0}. QGIS says: {}"
                                            .format(url, error_msg.encode("latin1")))
                     else:
                         QMessageBox.information(
@@ -1167,14 +1167,14 @@ class Isogeo:
                             logger.info("WMS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
-                            logger.warning("Invalid service: {0}"
+                            logger.warning("Invalid service: {0}. QGIS says: {}"
                                            .format(url, error_msg.encode("latin1")))
                     else:
                         QMessageBox.information(
                             iface.mainWindow(),
                             self.tr('Error'),
                             self.tr("WMS is not valid. QGIS says: {}")
-                                .format(error_msg))
+                                    .format(error_msg))
             # If WMTS link
             elif layer_info[0] == 'WMTS':
                 url = layer_info[2]
@@ -1185,12 +1185,12 @@ class Isogeo:
                     logger.info("WMTS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
-                    logger.warning("Invalid service: {0}"
+                    logger.warning("Invalid service: {0}. QGIS says: {}"
                                    .format(url, error_msg.encode("latin1")))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
-                        self.tr("WMTS is not valid. QGIS says: {} {}")
+                        self.tr("WMTS is not valid. QGIS says: {}")
                             .format(error_msg))
             else:
                 pass
@@ -1988,4 +1988,5 @@ class Isogeo:
         self.user_authentication()
         isogeo_api_mng.tr = self.tr
         self.dockwidget.txt_input.setFocus()
-        self.test_qgis_style()
+        self.test_qgis_style()  # see #137
+        

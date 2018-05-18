@@ -22,7 +22,6 @@
 
 # ------------ Imports -------------------------------------------------------
 from __future__ import (absolute_import, print_function, unicode_literals)
-#from __future__ import (absolute_import, print_function)
 from os import listdir, makedirs, path, remove, walk
 import json
 import xml.etree.ElementTree as ET
@@ -120,10 +119,10 @@ RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "isogeo.qml"),
                   "{}/{}/{}".format(PLG_DIRNAME, "modules", "isogeo.qml"))
 
 # Resources (media files)
-resources_files = [path.relpath(f) for f in listdir("resources")
+RESOURCES_FILES = [path.relpath(f) for f in listdir("resources")
                    if path.isfile(path.join(path.realpath("resources"), f))]
 
-for resource in resources_files:
+for resource in RESOURCES_FILES:
     RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "resources", resource),
                       "{}/{}/{}".format(PLG_DIRNAME, "resources", resource))
 
@@ -214,9 +213,9 @@ QUICKSEARCHES = {"_default": {"contact": None,
                               },
                 }
 
-quicksearch_json = path.join(BASE_DIR_ABS, "user_settings", "saved_searches.json")
-with open(quicksearch_json, "w") as qs:
+QUICKSEARCHES_JSON = path.join(DEST_DIR, "..", "quicksearches.json")
+with open(QUICKSEARCHES_JSON, "w") as qs:
     json.dump(QUICKSEARCHES, qs, sort_keys=True, indent=4)
 
-RELEASE_ZIP.write(quicksearch_json,
-                  "{}/{}/{}".format(PLG_DIRNAME, "user_settings", "saved_searches.json"))
+RELEASE_ZIP.write(QUICKSEARCHES_JSON,
+                  "{}/{}/{}".format(PLG_DIRNAME, "user_settings", "quicksearches.json"))
