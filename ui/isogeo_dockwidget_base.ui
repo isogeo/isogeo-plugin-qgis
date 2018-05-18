@@ -6,14 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>623</width>
-    <height>808</height>
+    <width>800</width>
+    <height>1132</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>623</width>
     <height>759</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>800</width>
+    <height>1792</height>
    </size>
   </property>
   <property name="windowIcon">
@@ -27,6 +33,12 @@
    <string notr="true">Isogeo</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
+   <property name="maximumSize">
+    <size>
+     <width>900</width>
+     <height>1792</height>
+    </size>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
     <item column="0" row="0">
      <widget class="QTabWidget" name="tabWidget">
@@ -123,12 +135,20 @@
             </property>
             <item>
              <property name="text">
-              <string>Ascendant</string>
+              <string>Asc.</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/plugins/Isogeo/resources/results/sort-alpha-asc.svg</normaloff>:/plugins/Isogeo/resources/results/sort-alpha-asc.svg</iconset>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Descendant</string>
+              <string>Des.</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/plugins/Isogeo/resources/results/sort-alpha-desc.svg</normaloff>:/plugins/Isogeo/resources/results/sort-alpha-desc.svg</iconset>
              </property>
             </item>
            </widget>
@@ -425,6 +445,18 @@
         </item>
         <item column="0" row="2">
          <widget class="QgsCollapsibleGroupBox" name="grp_filters">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>800</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <weight>75</weight>

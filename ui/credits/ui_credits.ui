@@ -74,7 +74,7 @@
        <item>
         <widget class="QLabel" name="lbl_development">
          <property name="text">
-          <string>Mainly developed by Julien Moura at Isogeo, helped by Théo Sinatti (internship).</string>
+          <string>Developed by Isogeo</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>

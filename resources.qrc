@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/results/sort.svg</file>
+    <file>resources/results/sort-alpha-asc.svg</file>
+    <file>resources/results/sort-alpha-desc.svg</file>
     <file>resources/cube_blue.svg</file>
     <file>resources/users_blue.svg</file>
     <file>resources/phone_orange.svg</file>
@@ -59,7 +62,6 @@
     <file>resources/info.svg</file>
     <file>resources/map.svg</file>
     <file>resources/pencil.svg</file>
-    <file>resources/play.svg</file>
     <file>resources/question.svg</file>
     <file>resources/save.svg</file>
     <file>resources/tag.svg</file>
