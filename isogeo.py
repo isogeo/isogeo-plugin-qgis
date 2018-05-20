@@ -379,12 +379,12 @@ class Isogeo:
 
         # anticipating on QGIS Auth Management
         if qgis_auth_mng.authenticationDbPath():
-            logger.info("TRACKING - AUTH: new QGIS system already initialized")
+            logger.debug("TRACKING - AUTH: new QGIS system already initialized")
             auth_isogeo_id = qsettings.value("isogeo/app_auth/qgis_auth_id")
             # already initialised => we are inside a QGIS app.
             if (qgis_auth_mng.masterPasswordIsSet() and
                auth_isogeo_id in qgis_auth_mng.availableAuthMethodConfigs()):
-                logger.info("TRACKING - AUTH: master password has been set"
+                logger.debug("TRACKING - AUTH: master password has been set"
                             " and Isogeo auth config already exists."
                             " Let's update it if needed.")
                 # get existing Isogeo auth id
@@ -400,7 +400,7 @@ class Isogeo:
                     logger.error("AUTH - Fail to create and store configuration")
             elif (qgis_auth_mng.masterPasswordIsSet() and
                   auth_isogeo_id not in qgis_auth_mng.availableAuthMethodConfigs()):
-                logger.info("TRACKING - AUTH: master password has been set"
+                logger.debug("TRACKING - AUTH: master password has been set"
                             " and Isogeo auth config doesn't exist yet")
                 auth_isogeo_cfg = QgsAuthMethodConfig()
                 auth_isogeo_cfg.setName("Isogeo")
@@ -597,7 +597,7 @@ class Isogeo:
         shown only when a specific button is pressed.
         """
         # logs
-        logger.info("Update_fields function called on the API reply. reset = "
+        logger.debug("Update_fields function called on the API reply. reset = "
                     "{0}".format(self.hardReset))
         QgsMessageLog.logMessage("Query sent & received: {}"
                                  .format(result.get("query")),
@@ -1017,7 +1017,7 @@ class Isogeo:
         the temporary dictionnary constructed in the show_results function.
         It then adds it.
         """
-        logger.info("add_layer method called.")
+        logger.debug("add_layer method called.")
         if layer_info[0] == "index":
             combobox = self.dockwidget.tbl_result.cellWidget(layer_info[1], 3)
             layer_info = combobox.itemData(combobox.currentIndex())
@@ -1042,12 +1042,12 @@ class Isogeo:
                         QgsMessageLog.logMessage("Data layer added: {}"
                                                  .format(name),
                                                  "Isogeo")
-                        logger.info("Vector layer added: {}".format(path))
+                        logger.debug("Vector layer added: {}".format(path))
                     except UnicodeEncodeError:
                         QgsMessageLog.logMessage(
                             "Vector layer added:: {}".format(
                                 name.decode("latin1")), "Isogeo")
-                        logger.info("Vector layer added: {}"
+                        logger.debug("Vector layer added: {}"
                                     .format(name.decode("latin1")))
                 else:
                     logger.error("Invalid vector layer: {0}".format(path))
@@ -1070,12 +1070,12 @@ class Isogeo:
                         QgsMessageLog.logMessage("Data layer added: {}"
                                                  .format(name),
                                                  "Isogeo")
-                        logger.info("Raster layer added: {}".format(path))
+                        logger.debug("Raster layer added: {}".format(path))
                     except UnicodeEncodeError:
                         QgsMessageLog.logMessage(
                             "Raster layer added:: {}".format(
                                 name.decode("latin1")), "Isogeo")
-                        logger.info("Raster layer added: {}"
+                        logger.debug("Raster layer added: {}"
                                     .format(name.decode("latin1")))
                 else:
                     logger.warning("Invalid raster layer: {0}".format(path))
@@ -1092,7 +1092,7 @@ class Isogeo:
                                        'arcgisfeatureserver')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logger.info("EFS layer added: {0}".format(uri))
+                    logger.debug("EFS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
                     logger.warning("Invalid service: {0}. QGIS says: {}"
@@ -1110,7 +1110,7 @@ class Isogeo:
                                        "arcgismapserver")
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logger.info("EMS layer added: {0}".format(uri))
+                    logger.debug("EMS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
                     logger.warning("Invalid service: {0}. QGIS says: {}"
@@ -1126,7 +1126,7 @@ class Isogeo:
                 layer = QgsVectorLayer(url, name, 'WFS')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logger.info("WFS layer added: {0}".format(url))
+                    logger.debug("WFS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
                     name_url = srv_url_bld.build_wfs_url(layer_info[3],
@@ -1136,7 +1136,7 @@ class Isogeo:
                         layer = QgsVectorLayer(name_url[2], name_url[1], 'WFS')
                         if layer.isValid():
                             QgsMapLayerRegistry.instance().addMapLayer(layer)
-                            logger.info("WFS layer added: {0}".format(url))
+                            logger.debug("WFS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
                             logger.warning("Invalid service: {0}. QGIS says: {}"
@@ -1154,7 +1154,7 @@ class Isogeo:
                 layer = QgsRasterLayer(url, name, 'wms', 1)
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logger.info("WMS layer added: {0}".format(url))
+                    logger.debug("WMS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
                     name_url = srv_url_bld.build_wms_url(layer_info[3],
@@ -1164,7 +1164,7 @@ class Isogeo:
                         layer = QgsRasterLayer(name_url[2], name_url[1], 'wms')
                         if layer.isValid():
                             QgsMapLayerRegistry.instance().addMapLayer(layer)
-                            logger.info("WMS layer added: {0}".format(url))
+                            logger.debug("WMS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
                             logger.warning("Invalid service: {0}. QGIS says: {}"
@@ -1182,7 +1182,7 @@ class Isogeo:
                 layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
-                    logger.info("WMTS service layer added: {0}".format(url))
+                    logger.debug("WMTS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
                     logger.warning("Invalid service: {0}. QGIS says: {}"
@@ -1196,7 +1196,7 @@ class Isogeo:
                 pass
         # If the data is a PostGIS table
         elif type(layer_info) == dict:
-            logger.info("Data type: PostGIS")
+            logger.debug("Data type: PostGIS")
             # Give aliases to the data passed as arguement
             base_name = layer_info.get("base_name", "")
             schema = layer_info.get("schema", "")
@@ -1229,11 +1229,11 @@ class Isogeo:
                 lyr.setTitle(layer_info.get("title", "notitle"))
                 lyr.setAbstract(layer_info.get("abstract", ""))
                 lyr.setKeywordList(",".join(layer_info.get("keywords", ())))
-                logger.info("Data added: {}".format(table))
+                logger.debug("Data added: {}".format(table))
             elif not layer.isValid() and\
                 custom_tools.last_error[0] == "postgis" and\
                 "prim" in custom_tools.last_error[1]:
-                logger.info("PostGIS layer may be a view, "
+                logger.debug("PostGIS layer may be a view, "
                             "so key column is missing. "
                             "Trying to automatically set one...")
                 # get layer fields to set as key column
@@ -1250,13 +1250,13 @@ class Isogeo:
                         lyr.setTitle(layer_info.get("title", "notitle"))
                         lyr.setAbstract(layer_info.get("abstract", ""))
                         lyr.setKeywordList(",".join(layer_info.get("keywords", ())))
-                        logger.info("PostGIS view layer added with [{}] as key column"
+                        logger.debug("PostGIS view layer added with [{}] as key column"
                                     .format(field))
                         return 1
                     else:
                         continue
             else:
-                logger.info("Layer not valid. table = {0}".format(table))
+                logger.debug("Layer not valid. table = {0}".format(table))
                 QMessageBox.information(
                     iface.mainWindow(),
                     self.tr("Error"),
@@ -1342,7 +1342,7 @@ class Isogeo:
             pass
         # saving params in QSettings
         qsettings.setValue("isogeo/settings/georelation", operation_param)
-        logger.info(params)
+        logger.debug(params)
         return params
 
     def search(self):
@@ -1351,7 +1351,7 @@ class Isogeo:
         This builds the url, retrieving the parameters from the widgets. When
         the final url is built, it calls send_request_to_isogeo_api
         """
-        logger.info("Search function called. Building the "
+        logger.debug("Search function called. Building the "
                     "url that is to be sent to the API")
         # Disabling all user inputs during the search function is running
         self.switch_widgets_on_and_off(0)
@@ -1398,7 +1398,7 @@ class Isogeo:
         params['lang'] = self.lang
         # URL BUILDING FUNCTION CALLED.
         self.currentUrl = isogeo_api_mng.build_request_url(params)
-        logger.info(self.currentUrl)
+        logger.debug(self.currentUrl)
         # Sending the request to Isogeo API
         if self.requestStatusClear is True:
             self.send_request_to_isogeo_api(self.token)
@@ -1414,7 +1414,7 @@ class Isogeo:
         Close to the search() function (lot of code in common) but
         triggered on the click on the change page button.
         """
-        logger.info("next_page function called.")
+        logger.debug("next_page function called.")
         # Testing if the user is asking for a unexisting page (ex : page 6 out
         # of 5)
         if self.page_index >= custom_tools.results_pages_counter(self.results_count):
@@ -1445,7 +1445,7 @@ class Isogeo:
         Close to the search() function (lot of code in common) but
         triggered on the click on the change page button.
         """
-        logger.info("previous_page function called.")
+        logger.debug("previous_page function called.")
         # testing if the user is asking for something impossible : page 0
         if self.page_index < 2:
             return False
@@ -1490,7 +1490,7 @@ class Isogeo:
             json.dump(saved_searches, outfile,
                       sort_keys=True, indent=4)
         # Log and messages
-        logger.info("{} search stored: {}. Parameters: {}"
+        logger.debug("{} search stored: {}. Parameters: {}"
                     .format(search_kind, search_name, params))
         if search_kind != "Current":
             msgBar.pushMessage(self.tr("{} successfully saved: {}")
@@ -1504,7 +1504,7 @@ class Isogeo:
         """Set a few variable and send the request to Isogeo API."""
         selected_search = self.dockwidget.cbb_quicksearch.currentText()
         if selected_search != self.tr('Quick Search'):
-            logger.info("Set_widget_status function called. "
+            logger.debug("Set_widget_status function called. "
                         "User is executing a saved search.")
             self.switch_widgets_on_and_off(0)
             selected_search = self.dockwidget.cbb_quicksearch.currentText()
@@ -1657,7 +1657,7 @@ class Isogeo:
                 minimum[0], minimum[1], maximum[0], maximum[1])
             return coord
         else:
-            logger.info('Wrong EPSG')
+            logger.debug('Wrong EPSG')
             return False
 
     def reinitialize_search(self):
@@ -1667,7 +1667,7 @@ class Isogeo:
         the fields : send_request() calls handle_reply(), which calls
         update_fields())
         """
-        logger.info("Reinitialize_search function called.")
+        logger.debug("Reinitialize_search function called.")
         self.hardReset = True
         self.dockwidget.txt_input.clear()
         self.dockwidget.cbb_keywords.clear()
@@ -1735,8 +1735,11 @@ class Isogeo:
             pass
 
     def send_details_request(self, md_id):
-        """Send a request for aditionnal info about one data."""
-        logger.info("Full metatada sheet asked. Building the url.")
+        """Send a request for aditionnal info about one data.
+        
+        :param str md_id: UUID of metadata to retrieve
+        """
+        logger.debug("Full metatada sheet asked. Building the url.")
         self.currentUrl = "https://v1.api.isogeo.com/resources/{}{}"\
                           .format(md_id,
                                   "?_include=conditions,contacts,"
@@ -1752,12 +1755,12 @@ class Isogeo:
     def edited_search(self):
         """On the Qline edited signal, decide weither a search has to be launched."""
         try:
-            logger.info("Editing finished signal sent.")
+            logger.debug("Editing finished signal sent.")
         except AttributeError:
             pass
         if self.dockwidget.txt_input.text() == self.old_text:
             try:
-                logger.info("The lineEdit text hasn't changed."
+                logger.debug("The lineEdit text hasn't changed."
                             " So pass without sending a request.")
             except AttributeError as e:
                 logger.error(e)
@@ -1765,7 +1768,7 @@ class Isogeo:
             pass
         else:
             try:
-                logger.info("The line Edit text changed."
+                logger.debug("The line Edit text changed."
                             " Calls the search function.")
             except AttributeError as e:
                 logger.error(e)
@@ -1878,7 +1881,7 @@ class Isogeo:
             if self.dockwidget is None:
                 # Create the dockwidget (after translation) and keep reference
                 self.dockwidget = IsogeoDockWidget()
-                logger.info("Plugin load time: {}"
+                logger.debug("Plugin load time: {}"
                             .format(plugin_times.get("isogeo_search_engine",
                                                      "NR")))
 
