@@ -22,6 +22,7 @@
 
 # ------------ Imports -------------------------------------------------------
 from __future__ import (absolute_import, print_function, unicode_literals)
+import ConfigParser
 from os import listdir, makedirs, path, remove, walk
 import json
 import xml.etree.ElementTree as ET
@@ -32,8 +33,22 @@ import zipfile
 BASE_DIR_REL = path.dirname(path.dirname(path.abspath(__file__)))
 BASE_DIR_ABS = path.normpath(BASE_DIR_REL)
 
-# ------------ UI files check -----------------------------------------------
+# ------------ Functions -----------------------------------------------
+def plugin_version(base_path=path.dirname(__file__)):
+    config = ConfigParser.ConfigParser()
+    if path.isfile(path.join(BASE_DIR_ABS,'metadata.txt')):
+        config.read(path.join(BASE_DIR_ABS,'metadata.txt'))
+        return (config.get('general', 'version'),
+                config.get('general', 'qgisMinimumVersion'),
+                config.get('general', 'qgisMaximumVersion'))
+    else:
+        raise IOError("Metadata text not found")
 
+version = plugin_version()
+print("Packaging the version {} of the Isogeo plugin for QGIS version {} to {})"
+      .format(*version))
+
+# ------------ UI files check -----------------------------------------------
 # see: http://gis.stackexchange.com/a/155599/19817
 for dirpath, dirs, files in walk(BASE_DIR_ABS):
     for f in files:
