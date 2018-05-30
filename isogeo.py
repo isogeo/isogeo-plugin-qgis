@@ -72,6 +72,8 @@ from modules.url_builder import UrlBuilder
 # ########## Globals ###############
 # ##################################
 
+# plugin directory path
+plg_basepath = os.path.dirname(os.path.realpath(__file__))
 # useful submodules and shortcuts
 qgis_auth_mng = QgsAuthManager.instance()
 custom_tools = Tools()
@@ -81,7 +83,8 @@ network_mng = QNetworkAccessManager()
 qsettings = QSettings()
 srv_url_bld = UrlBuilder()
 
-# LOG FILE ##
+# -- LOG FILE --------------------------------------------------------
+plg_logdir = os.path.join(plg_basepath, "_logs")
 logger = logging.getLogger("IsogeoQgisPlugin")
 logging.captureWarnings(True)
 # logger.setLevel(logging.INFO)  # all errors will be get
@@ -89,9 +92,8 @@ logger.setLevel(logging.DEBUG)  # switch on it only for dev works
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s - %(lineno)d ||"
                              "%(funcName)s || %(message)s")
-logfile = RotatingFileHandler(os.path.join(
-                              os.path.dirname(os.path.realpath(__file__)),
-                              "log_isogeo_plugin.log"),
+logfile = RotatingFileHandler(os.path.join(plg_logdir,
+                                           "log_isogeo_plugin.log"),
                               "a", 5000000, 1)
 # logfile.setLevel(logging.INFO)
 logfile.setLevel(logging.DEBUG)  # switch on it only for dev works
@@ -115,7 +117,6 @@ class Isogeo:
     """Isogeo plugin for QGIS LTR."""
 
     # attributes
-    plg_basepath = os.path.dirname(os.path.realpath(__file__))
     plg_version = custom_tools.plugin_version(base_path=plg_basepath)
 
     logger.info('\n\n\t========== Isogeo Search Engine for QGIS ==========')
@@ -199,7 +200,7 @@ class Isogeo:
 
         self.old_text = ""
         self.page_index = 1
-        self.json_path = os.path.realpath(os.path.join(self.plg_basepath,
+        self.json_path = os.path.realpath(os.path.join(plg_basepath,
                                                        "user_settings/quicksearches.json"))
 
     # noinspection PyMethodMayBeStatic
@@ -1982,8 +1983,15 @@ class Isogeo:
         self.dockwidget.txt_shares.setOpenLinks(False)
         self.dockwidget.txt_shares.anchorClicked.connect(custom_tools.open_webpage)
 
+        # -- LOG -------------------------------------------------------------
         # catch QGIS log messages
         QgsMessageLog.instance().messageReceived.connect(custom_tools.error_catcher)
+        # log button
+        ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
+        self.dockwidget.btn_log_dir.setIcon(ico_log)
+        self.dockwidget.btn_log_dir.pressed.connect(partial(custom_tools.open_dir_file,
+                                                            target=plg_logdir)
+        )
 
         """ --- Actions when the plugin is launched --- """
         self.dockwidget.setWindowTitle("Isogeo - {}".format(self.plg_version))

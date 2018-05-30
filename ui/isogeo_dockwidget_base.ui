@@ -64,7 +64,7 @@
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_search">
        <attribute name="icon">
@@ -1079,6 +1079,19 @@
         <string>Settings</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
+        <item column="0" row="3">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>105</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item column="0" row="0">
          <widget class="QGroupBox" name="groupBox_2">
           <property name="minimumSize">
@@ -1383,12 +1396,56 @@
                 </spacer>
                </item>
                <item>
+                <widget class="QPushButton" name="btn_log_dir">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="toolTip">
+                  <string>Get the log file: "log_isogeo_plugin.log"</string>
+                 </property>
+                 <property name="autoFillBackground">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string>LOG File</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../resources.qrc">
+                   <normaloff>:/plugins/Isogeo/resources/settings/folder-open-o.svg</normaloff>:/plugins/Isogeo/resources/settings/folder-open-o.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QPushButton" name="btn_report">
                  <property name="minimumSize">
                   <size>
-                   <width>91</width>
-                   <height>24</height>
+                   <width>80</width>
+                   <height>25</height>
                   </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="autoFillBackground">
+                  <bool>true</bool>
                  </property>
                  <property name="text">
                   <string />
@@ -1433,9 +1490,24 @@
                 <widget class="QPushButton" name="btn_help">
                  <property name="minimumSize">
                   <size>
-                   <width>91</width>
-                   <height>24</height>
+                   <width>80</width>
+                   <height>25</height>
                   </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="toolTip">
+                  <string>Open online help in default browser</string>
+                 </property>
+                 <property name="autoFillBackground">
+                  <bool>true</bool>
                  </property>
                  <property name="text">
                   <string />
@@ -1480,9 +1552,21 @@
                 <widget class="QPushButton" name="btn_credits">
                  <property name="minimumSize">
                   <size>
-                   <width>91</width>
-                   <height>24</height>
+                   <width>80</width>
+                   <height>25</height>
                   </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="toolTip">
+                  <string>Open credits popup</string>
                  </property>
                  <property name="text">
                   <string />
@@ -1499,19 +1583,6 @@
            </item>
           </layout>
          </widget>
-        </item>
-        <item column="0" row="3">
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>105</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </widget>

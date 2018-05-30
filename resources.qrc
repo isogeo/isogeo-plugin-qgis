@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/settings/folder-open-o.svg</file>
     <file>resources/results/sort.svg</file>
     <file>resources/results/sort-alpha-asc.svg</file>
     <file>resources/results/sort-alpha-desc.svg</file>

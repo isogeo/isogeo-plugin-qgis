@@ -86,6 +86,10 @@ else:
 # ------------ Led Zipping -------------------------------------------
 RELEASE_ZIP = zipfile.ZipFile(path.join(DEST_DIR, PLG_DIRNAME + ".zip"), "w")
 
+# LOG folder
+log_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_logs/"))
+RELEASE_ZIP.writestr(log_folder, "")
+
 # QGIS Plugin requirements
 RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "LICENSE"),
                   "{}/{}".format(PLG_DIRNAME, "LICENSE"))
