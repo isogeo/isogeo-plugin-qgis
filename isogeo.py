@@ -31,6 +31,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 from collections import OrderedDict
 from functools import partial
+import sys
 
 # PyQT
 # from QByteArray
@@ -74,6 +75,11 @@ from modules.url_builder import UrlBuilder
 
 # plugin directory path
 plg_basepath = os.path.dirname(os.path.realpath(__file__))
+
+# force encoding
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 # useful submodules and shortcuts
 qgis_auth_mng = QgsAuthManager.instance()
 custom_tools = Tools()
@@ -1186,8 +1192,8 @@ class Isogeo:
                     logger.debug("WMTS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
-                    logger.warning("Invalid service: {0}. QGIS says: {}"
-                                   .format(url, error_msg.encode("latin1")))
+                    logger.warning("Invalid service: {}. QGIS says: {}"
+                                   .format(url, error_msg))
                     QMessageBox.information(
                         iface.mainWindow(),
                         self.tr('Error'),
@@ -2000,4 +2006,3 @@ class Isogeo:
         isogeo_api_mng.tr = self.tr
         self.dockwidget.txt_input.setFocus()
         self.test_qgis_style()  # see #137
-        

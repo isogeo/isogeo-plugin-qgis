@@ -625,17 +625,8 @@ class UrlBuilder(object):
                            "tileMatrixSet": tile_matrix_set,
                            "url": wmts_lyr_url,
                            }
-        wmts_url_final = unquote(urlencode(wmts_url_params))
+        wmts_url_final = unquote(urlencode(wmts_url_params, "utf8"))
         logger.debug(wmts_url_final)
-        # prevent encoding errors (#102)
-        # try:
-        #     layer_title = str(layer_title)
-        # except UnicodeEncodeError as e:
-        #     layer_title = layer_title.encode("latin1")
-        #     logger.debug(e)
-        # except UnicodeDecodeError as e:
-        #     layer_title = layer_title.decode("latin1")
-        #     logger.debug(e)
 
         # method ending
         return ["WMTS", layer_title, wmts_url_final]

@@ -361,7 +361,7 @@ class MetadataDisplayer(object):
                                      "Isogeo")
         except UnicodeEncodeError:
             QgsMessageLog.logMessage("Detailed metadata displayed: {}"
-                                     .format(title.encode("latin1")),
+                                     .format(title),
                                      "Isogeo")
 
     def envelope2layer(self, envelope):
