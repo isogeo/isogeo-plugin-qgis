@@ -64,12 +64,12 @@
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_search">
        <attribute name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/plugins/Isogeo/resources/search.svg</normaloff>:/plugins/Isogeo/resources/search.svg</iconset>
+         <normaloff>:/plugins/Isogeo/resources/search/search.svg</normaloff>:/plugins/Isogeo/resources/search/search.svg</iconset>
        </attribute>
        <attribute name="title">
         <string>Search</string>
@@ -99,7 +99,7 @@
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/eye.svg</normaloff>:/plugins/Isogeo/resources/eye.svg</iconset>
+              <normaloff>:/plugins/Isogeo/resources/search/eye.svg</normaloff>:/plugins/Isogeo/resources/search/eye.svg</iconset>
             </property>
            </widget>
           </item>
@@ -221,7 +221,7 @@
              <string notr="true" />
             </property>
             <property name="icon">
-             <iconset resource="../resources.qrc">
+             <iconset>
               <normaloff>:/plugins/Isogeo/resources/caret-left.svg</normaloff>:/plugins/Isogeo/resources/caret-left.svg</iconset>
             </property>
            </widget>
@@ -246,7 +246,7 @@
              <string />
             </property>
             <property name="icon">
-             <iconset resource="../resources.qrc">
+             <iconset>
               <normaloff>:/plugins/Isogeo/resources/caret-right.svg</normaloff>:/plugins/Isogeo/resources/caret-right.svg</iconset>
             </property>
            </widget>
@@ -297,7 +297,7 @@
              </property>
              <property name="icon">
               <iconset resource="../resources.qrc">
-               <normaloff>:/plugins/Isogeo/resources/bolt.svg</normaloff>:/plugins/Isogeo/resources/bolt.svg</iconset>
+               <normaloff>:/plugins/Isogeo/resources/search/bolt.svg</normaloff>:/plugins/Isogeo/resources/search/bolt.svg</iconset>
              </property>
             </item>
            </widget>
@@ -365,7 +365,7 @@
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/search.svg</normaloff>:/plugins/Isogeo/resources/search.svg</iconset>
+              <normaloff>:/plugins/Isogeo/resources/search/search.svg</normaloff>:/plugins/Isogeo/resources/search/search.svg</iconset>
             </property>
             <property name="autoDefault">
              <bool>true</bool>
@@ -558,7 +558,7 @@
                         <string />
                        </property>
                        <property name="pixmap">
-                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/cube.svg</pixmap>
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/cube.svg</pixmap>
                        </property>
                        <property name="scaledContents">
                         <bool>true</bool>
@@ -723,7 +723,7 @@
                         <string />
                        </property>
                        <property name="pixmap">
-                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/phone_orange.svg</pixmap>
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/phone_blue.svg</pixmap>
                        </property>
                        <property name="scaledContents">
                         <bool>true</bool>
@@ -786,7 +786,7 @@
                         <string />
                        </property>
                        <property name="pixmap">
-                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/asterisk.svg</pixmap>
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/asterisk.svg</pixmap>
                        </property>
                        <property name="scaledContents">
                         <bool>true</bool>
@@ -932,7 +932,7 @@
                         <string />
                        </property>
                        <property name="pixmap">
-                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/globe.svg</pixmap>
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/globe.svg</pixmap>
                        </property>
                        <property name="scaledContents">
                         <bool>true</bool>
@@ -1073,7 +1073,7 @@
       <widget class="QWidget" name="tab_settings">
        <attribute name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/plugins/Isogeo/resources/gear.svg</normaloff>:/plugins/Isogeo/resources/gear.svg</iconset>
+         <normaloff>:/plugins/Isogeo/resources/settings/gear.svg</normaloff>:/plugins/Isogeo/resources/settings/gear.svg</iconset>
        </attribute>
        <attribute name="title">
         <string>Settings</string>
@@ -1350,7 +1350,7 @@
                </property>
                <property name="icon">
                 <iconset resource="../resources.qrc">
-                 <normaloff>:/plugins/Isogeo/resources/key.svg</normaloff>:/plugins/Isogeo/resources/key.svg</iconset>
+                 <normaloff>:/plugins/Isogeo/resources/settings/key.svg</normaloff>:/plugins/Isogeo/resources/settings/key.svg</iconset>
                </property>
               </widget>
              </item>
@@ -1452,7 +1452,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/bullhorn.svg</normaloff>:/plugins/Isogeo/resources/bullhorn.svg</iconset>
+                   <normaloff>:/plugins/Isogeo/resources/settings/bullhorn.svg</normaloff>:/plugins/Isogeo/resources/settings/bullhorn.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -1514,7 +1514,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/question.svg</normaloff>:/plugins/Isogeo/resources/question.svg</iconset>
+                   <normaloff>:/plugins/Isogeo/resources/settings/question.svg</normaloff>:/plugins/Isogeo/resources/settings/question.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -1573,7 +1573,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/info.svg</normaloff>:/plugins/Isogeo/resources/info.svg</iconset>
+                   <normaloff>:/plugins/Isogeo/resources/settings/info.svg</normaloff>:/plugins/Isogeo/resources/settings/info.svg</iconset>
                  </property>
                 </widget>
                </item>
