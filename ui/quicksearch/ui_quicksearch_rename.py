@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\quicksearch\ui_quicksearch_rename.ui'
 #
-# Created: Fri Apr 28 17:51:09 2017
+# Created: Thu May 31 19:44:28 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,8 +29,9 @@ class Ui_dlg_quicksearch_rename(object):
         dlg_quicksearch_rename.resize(498, 100)
         dlg_quicksearch_rename.setMinimumSize(QtCore.QSize(340, 100))
         dlg_quicksearch_rename.setMaximumSize(QtCore.QSize(700, 116))
+        dlg_quicksearch_rename.setFocusPolicy(QtCore.Qt.StrongFocus)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/bolt.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/search/bolt.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         dlg_quicksearch_rename.setWindowIcon(icon)
         dlg_quicksearch_rename.setWindowOpacity(0.9)
         dlg_quicksearch_rename.setAutoFillBackground(True)
@@ -53,14 +54,12 @@ class Ui_dlg_quicksearch_rename(object):
         self.txt_quicksearch_rename.setMinimumSize(QtCore.QSize(50, 25))
         self.txt_quicksearch_rename.setObjectName(_fromUtf8("txt_quicksearch_rename"))
         self.gridLayout.addWidget(self.txt_quicksearch_rename, 0, 2, 1, 1)
-        spacerItem = QtGui.QSpacerItem(20, 62, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem, 2, 0, 1, 2)
         self.btn_save_cancel = QtGui.QDialogButtonBox(dlg_quicksearch_rename)
         self.btn_save_cancel.setOrientation(QtCore.Qt.Horizontal)
         self.btn_save_cancel.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
         self.btn_save_cancel.setCenterButtons(True)
         self.btn_save_cancel.setObjectName(_fromUtf8("btn_save_cancel"))
-        self.gridLayout.addWidget(self.btn_save_cancel, 3, 0, 1, 3)
+        self.gridLayout.addWidget(self.btn_save_cancel, 2, 0, 1, 3)
 
         self.retranslateUi(dlg_quicksearch_rename)
         QtCore.QObject.connect(self.btn_save_cancel, QtCore.SIGNAL(_fromUtf8("accepted()")), dlg_quicksearch_rename.accept)

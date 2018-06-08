@@ -107,12 +107,13 @@ logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 
 # icons
-ico_bolt = QIcon(':/plugins/Isogeo/resources/bolt.svg')
+ico_bolt = QIcon(':/plugins/Isogeo/resources/search/bolt.svg')
 ico_keyw = QIcon(':/plugins/Isogeo/resources/tag.svg')
-ico_line = QIcon(':/plugins/Isogeo/resources/line.png')
 ico_none = QIcon(':/plugins/Isogeo/resources/none.svg')
-ico_poly = QIcon(':/plugins/Isogeo/resources/polygon.png')
-ico_poin = QIcon(':/plugins/Isogeo/resources/point.png')
+ico_line = QIcon(':/images/themes/default/mIconLineLayer.svg')
+ico_poin = QIcon(':/images/themes/default/mIconPointLayer.svg')
+ico_poly = QIcon(':/images/themes/default/mIconPolygonLayer.svg')
+
 
 # ############################################################################
 # ########## Classes ###############

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\quicksearch\ui_quicksearch_new.ui'
 #
-# Created: Fri Apr 28 17:51:14 2017
+# Created: Thu May 31 19:44:32 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -35,9 +35,10 @@ class Ui_dlg_quicksearch_new(object):
         dlg_quicksearch_new.setSizePolicy(sizePolicy)
         dlg_quicksearch_new.setMinimumSize(QtCore.QSize(340, 100))
         dlg_quicksearch_new.setMaximumSize(QtCore.QSize(700, 110))
+        dlg_quicksearch_new.setFocusPolicy(QtCore.Qt.StrongFocus)
         dlg_quicksearch_new.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/bolt.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/search/bolt.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         dlg_quicksearch_new.setWindowIcon(icon)
         dlg_quicksearch_new.setWindowOpacity(0.9)
         dlg_quicksearch_new.setAutoFillBackground(True)
@@ -46,8 +47,6 @@ class Ui_dlg_quicksearch_new(object):
         dlg_quicksearch_new.setModal(True)
         self.gridLayout = QtGui.QGridLayout(dlg_quicksearch_new)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        spacerItem = QtGui.QSpacerItem(20, 62, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem, 1, 0, 1, 3)
         self.lbl_title = QtGui.QLabel(dlg_quicksearch_new)
         self.lbl_title.setMinimumSize(QtCore.QSize(0, 25))
         font = QtGui.QFont()
@@ -60,16 +59,16 @@ class Ui_dlg_quicksearch_new(object):
         self.lbl_title.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.lbl_title.setObjectName(_fromUtf8("lbl_title"))
         self.gridLayout.addWidget(self.lbl_title, 0, 0, 1, 1)
+        self.txt_quicksearch_name = QtGui.QLineEdit(dlg_quicksearch_new)
+        self.txt_quicksearch_name.setMinimumSize(QtCore.QSize(50, 25))
+        self.txt_quicksearch_name.setObjectName(_fromUtf8("txt_quicksearch_name"))
+        self.gridLayout.addWidget(self.txt_quicksearch_name, 0, 1, 1, 2)
         self.btn_save_cancel = QtGui.QDialogButtonBox(dlg_quicksearch_new)
         self.btn_save_cancel.setOrientation(QtCore.Qt.Horizontal)
         self.btn_save_cancel.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
         self.btn_save_cancel.setCenterButtons(True)
         self.btn_save_cancel.setObjectName(_fromUtf8("btn_save_cancel"))
-        self.gridLayout.addWidget(self.btn_save_cancel, 2, 0, 1, 4)
-        self.txt_quicksearch_name = QtGui.QLineEdit(dlg_quicksearch_new)
-        self.txt_quicksearch_name.setMinimumSize(QtCore.QSize(50, 25))
-        self.txt_quicksearch_name.setObjectName(_fromUtf8("txt_quicksearch_name"))
-        self.gridLayout.addWidget(self.txt_quicksearch_name, 0, 1, 1, 3)
+        self.gridLayout.addWidget(self.btn_save_cancel, 1, 0, 1, 3)
 
         self.retranslateUi(dlg_quicksearch_new)
         QtCore.QObject.connect(self.btn_save_cancel, QtCore.SIGNAL(_fromUtf8("accepted()")), dlg_quicksearch_new.accept)

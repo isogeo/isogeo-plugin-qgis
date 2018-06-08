@@ -146,7 +146,7 @@ QListWidget::item::selected {
       </property>
       <property name="icon">
        <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/bookmark_orange.svg</normaloff>:/plugins/Isogeo/resources/bookmark_orange.svg</iconset>
+        <normaloff>:/plugins/Isogeo/resources/metadata/bookmark_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/bookmark_orange.svg</iconset>
       </property>
      </item>
      <item>
@@ -164,7 +164,7 @@ QListWidget::item::selected {
       </property>
       <property name="icon">
        <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/list-alt.svg</normaloff>:/plugins/Isogeo/resources/list-alt.svg</iconset>
+        <normaloff>:/plugins/Isogeo/resources/metadata/list-alt.svg</normaloff>:/plugins/Isogeo/resources/metadata/list-alt.svg</iconset>
       </property>
       <property name="flags">
        <set>ItemIsSelectable|ItemIsEnabled</set>
@@ -176,7 +176,7 @@ QListWidget::item::selected {
       </property>
       <property name="icon">
        <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/phone_orange.svg</normaloff>:/plugins/Isogeo/resources/phone_orange.svg</iconset>
+        <normaloff>:/plugins/Isogeo/resources/metadata/phone_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/phone_orange.svg</iconset>
       </property>
      </item>
      <item>
@@ -185,7 +185,7 @@ QListWidget::item::selected {
       </property>
       <property name="icon">
        <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/calendar_orange.svg</normaloff>:/plugins/Isogeo/resources/calendar_orange.svg</iconset>
+        <normaloff>:/plugins/Isogeo/resources/metadata/calendar_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/calendar_orange.svg</iconset>
       </property>
      </item>
      <item>
@@ -194,7 +194,7 @@ QListWidget::item::selected {
       </property>
       <property name="icon">
        <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/globe_orange.svg</normaloff>:/plugins/Isogeo/resources/globe_orange.svg</iconset>
+        <normaloff>:/plugins/Isogeo/resources/metadata/globe_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/globe_orange.svg</iconset>
       </property>
      </item>
      <item>
@@ -212,7 +212,7 @@ QListWidget::item::selected {
       </property>
       <property name="icon">
        <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/code.svg</normaloff>:/plugins/Isogeo/resources/code.svg</iconset>
+        <normaloff>:/plugins/Isogeo/resources/metadata/code.svg</normaloff>:/plugins/Isogeo/resources/metadata/code.svg</iconset>
       </property>
      </item>
     </widget>
@@ -341,7 +341,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="md_general">
         <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -493,7 +493,7 @@ QListWidget::item::selected {
               <string notr="true" />
              </property>
              <property name="pixmap">
-              <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/bookmark_blue.svg</pixmap>
+              <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/bookmark_blue.svg</pixmap>
              </property>
              <property name="scaledContents">
               <bool>true</bool>
@@ -555,7 +555,7 @@ QListWidget::item::selected {
               <string />
              </property>
              <property name="pixmap">
-              <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/inspire.png</pixmap>
+              <pixmap>:/plugins/Isogeo/resources/inspire.png</pixmap>
              </property>
              <property name="scaledContents">
               <bool>true</bool>
@@ -1280,7 +1280,7 @@ QListWidget::item::selected {
                    <string />
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/comment-o.svg</pixmap>
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/comment-o.svg</pixmap>
                   </property>
                   <property name="scaledContents">
                    <bool>true</bool>
@@ -1308,7 +1308,7 @@ QListWidget::item::selected {
                    <string />
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-times-o.svg</pixmap>
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/calendar-times-o.svg</pixmap>
                   </property>
                   <property name="scaledContents">
                    <bool>true</bool>
@@ -1657,7 +1657,7 @@ QListWidget::item::selected {
                  <string />
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/arrows-h.svg</pixmap>
+                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/arrows-h.svg</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -1692,7 +1692,7 @@ QListWidget::item::selected {
                  <string />
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/compass.svg</pixmap>
+                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/compass.svg</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -1782,7 +1782,7 @@ QListWidget::item::selected {
                  <string />
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/th.svg</pixmap>
+                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/th.svg</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -1854,7 +1854,7 @@ QListWidget::item::selected {
                  <string />
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/cube_blue.svg</pixmap>
+                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cube_blue.svg</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -1915,7 +1915,7 @@ QListWidget::item::selected {
                  <string />
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/cubes.svg</pixmap>
+                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cubes.svg</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -1989,7 +1989,7 @@ QListWidget::item::selected {
                  <string />
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/multi.png</pixmap>
+                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/multi.svg</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -2091,7 +2091,7 @@ QListWidget::item::selected {
                <string />
               </property>
               <property name="pixmap">
-               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/trophy.svg</pixmap>
+               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/trophy.svg</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -2122,7 +2122,7 @@ QListWidget::item::selected {
                <string />
               </property>
               <property name="pixmap">
-               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/puzzle-piece.svg</pixmap>
+               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/puzzle-piece.svg</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -2280,7 +2280,7 @@ QListWidget::item::selected {
             <string>Licenses</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_23">
-            <item column="0" row="0">
+            <item column="0" row="1">
              <widget class="QLabel" name="val_licenses">
               <property name="minimumSize">
                <size>
@@ -2330,6 +2330,9 @@ QListWidget::item::selected {
            </property>
            <property name="title">
             <string>Limitations</string>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout_24">
             <item column="0" row="0">
@@ -2399,8 +2402,8 @@ QListWidget::item::selected {
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>529</width>
-              <height>215</height>
+              <width>545</width>
+              <height>699</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
@@ -2424,7 +2427,7 @@ QListWidget::item::selected {
                </property>
                <property name="icon">
                 <iconset resource="../../resources.qrc">
-                 <normaloff>:/plugins/Isogeo/resources/download.svg</normaloff>:/plugins/Isogeo/resources/download.svg</iconset>
+                 <normaloff>:/plugins/Isogeo/resources/metadata/download.svg</normaloff>:/plugins/Isogeo/resources/metadata/download.svg</iconset>
                </property>
                <property name="default">
                 <bool>true</bool>
@@ -2476,6 +2479,12 @@ QListWidget::item::selected {
                 </item>
                 <item column="0" row="1">
                  <widget class="QLabel" name="val_owner_email">
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -2496,6 +2505,12 @@ QListWidget::item::selected {
                 </item>
                 <item column="0" row="3">
                  <widget class="QLabel" name="val_owner_address">
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -2509,6 +2524,12 @@ QListWidget::item::selected {
                 </item>
                 <item column="0" row="2">
                  <widget class="QLabel" name="val_owner_phone">
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -2535,6 +2556,12 @@ QListWidget::item::selected {
                 </item>
                 <item column="0" row="4">
                  <widget class="QLabel" name="val_owner_city">
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -2561,6 +2588,12 @@ QListWidget::item::selected {
                 </item>
                 <item column="0" row="5">
                  <widget class="QLabel" name="val_owner_country">
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -2613,6 +2646,18 @@ QListWidget::item::selected {
                 </item>
                 <item column="0" row="0">
                  <widget class="QLabel" name="val_owner_name">
+                  <property name="minimumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -2620,7 +2665,10 @@ QListWidget::item::selected {
                    </font>
                   </property>
                   <property name="text">
-                   <string>wg_name</string>
+                   <string>wg_owner</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -2668,7 +2716,7 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="lbl_md_date_update">
                   <property name="maximumSize">
                    <size>
-                    <width>200</width>
+                    <width>50</width>
                     <height>32</height>
                    </size>
                   </property>
@@ -2723,6 +2771,12 @@ QListWidget::item::selected {
                 </item>
                 <item column="1" row="0">
                  <widget class="QLabel" name="lbl_md_lang">
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -2758,7 +2812,7 @@ QListWidget::item::selected {
                    <string />
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/comment.svg</pixmap>
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/language.svg</pixmap>
                   </property>
                   <property name="scaledContents">
                    <bool>true</bool>
@@ -2863,6 +2917,12 @@ QListWidget::item::selected {
                 </item>
                 <item column="1" row="1">
                  <widget class="QLabel" name="lbl_md_date_crea">
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
