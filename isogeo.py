@@ -75,6 +75,7 @@ from modules.url_builder import UrlBuilder
 
 # plugin directory path
 plg_basepath = os.path.dirname(os.path.realpath(__file__))
+plg_reg_name = os.path.basename(plg_basepath)
 
 # force encoding
 reload(sys)
@@ -91,18 +92,25 @@ srv_url_bld = UrlBuilder()
 
 # -- LOG FILE --------------------------------------------------------
 plg_logdir = os.path.join(plg_basepath, "_logs")
+# log level depends on plugin directory name
+if plg_reg_name == custom_tools.plugin_metadata(base_path=plg_basepath, value="name"):
+    log_level = logging.WARNING
+elif "beta" in custom_tools.plugin_metadata(base_path=plg_basepath)\
+  or "dev" in custom_tools.plugin_metadata(base_path=plg_basepath, value="name"):
+    log_level = logging.DEBUG
+else:
+    log_level = logging.NOTSET
+
 logger = logging.getLogger("IsogeoQgisPlugin")
 logging.captureWarnings(True)
-# logger.setLevel(logging.INFO)  # all errors will be get
-logger.setLevel(logging.DEBUG)  # switch on it only for dev works
+logger.setLevel(log_level)
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s - %(lineno)d ||"
-                             "%(funcName)s || %(message)s")
+                             " %(funcName)s || %(message)s")
 logfile = RotatingFileHandler(os.path.join(plg_logdir,
                                            "log_isogeo_plugin.log"),
                               "a", 5000000, 1)
-# logfile.setLevel(logging.INFO)
-logfile.setLevel(logging.DEBUG)  # switch on it only for dev works
+logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 
@@ -124,12 +132,13 @@ class Isogeo:
     """Isogeo plugin for QGIS LTR."""
 
     # attributes
-    plg_version = custom_tools.plugin_version(base_path=plg_basepath)
+    plg_version = custom_tools.plugin_metadata(base_path=plg_basepath)
 
     logger.info('\n\n\t========== Isogeo Search Engine for QGIS ==========')
     logger.info('OS: {0}'.format(platform.platform()))
     logger.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
     logger.info('Plugin version: {0}'.format(plg_version))
+    logger.info('Log level: {0}'.format(log_level))
 
     def __init__(self, iface):
         """Constructor.
@@ -588,12 +597,12 @@ class Isogeo:
                             "this on the bug tracker."))
         else:
             self.requestStatusClear = True
-            QMessageBox.information(iface.mainWindow(),
+            QMessageBox.information(self.iface.mainWindow(),
                                     self.tr("Error"),
                                     self.tr("You are facing an unknown error. "
                                             "Code: ") +
                                     str(answer.error()) +
-                                    "\nPlease report tis on the bug tracker.")
+                                    "\nPlease report it on the bug tracker.")
         # method end
         return
 
@@ -620,9 +629,9 @@ class Isogeo:
         self.dockwidget.btn_show.setText(
             str(self.results_count) + self.tr(" results"))
         # Setting the number of rows in the result table
-        self.nb_page = str(custom_tools.results_pages_counter(self.results_count))
+        page_count = str(custom_tools.results_pages_counter(self.results_count))
         self.dockwidget.lbl_page.setText(
-            "page " + str(self.page_index) + self.tr(' on ') + self.nb_page)
+            "page " + str(self.page_index) + self.tr(' on ') + page_count)
 
         # ALIASES FOR FREQUENTLY CALLED WIDGETS
         cbb_contact = self.dockwidget.cbb_contact  # contact
@@ -1016,7 +1025,7 @@ class Isogeo:
         self.bar = QProgressBar()
         self.bar.setRange(0, 0)
         self.bar.setFixedWidth(120)
-        iface.mainWindow().statusBar().insertPermanentWidget(0, self.bar)
+        self.iface.mainWindow().statusBar().insertPermanentWidget(0, self.bar)
 
     def add_layer(self, layer_info):
         """Add a layer to QGIS map canvas.
@@ -1060,7 +1069,7 @@ class Isogeo:
                 else:
                     logger.error("Invalid vector layer: {0}".format(path))
                     QMessageBox.information(
-                        iface.mainWindow(),
+                        self.iface.mainWindow(),
                         self.tr('Error'),
                         self.tr('Vector layer is not valid.'))
             # If raster file
@@ -1088,7 +1097,7 @@ class Isogeo:
                 else:
                     logger.warning("Invalid raster layer: {0}".format(path))
                     QMessageBox.information(
-                        iface.mainWindow(),
+                        self.iface.mainWindow(),
                         self.tr('Error'),
                         self.tr('Raster layer is not valid.'))
             # If EFS link
@@ -1998,7 +2007,7 @@ class Isogeo:
         self.dockwidget.btn_log_dir.setIcon(ico_log)
         self.dockwidget.btn_log_dir.pressed.connect(partial(custom_tools.open_dir_file,
                                                             target=plg_logdir)
-        )
+                                                    )
 
         """ --- Actions when the plugin is launched --- """
         self.dockwidget.setWindowTitle("Isogeo - {}".format(self.plg_version))

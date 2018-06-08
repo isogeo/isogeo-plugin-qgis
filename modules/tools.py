@@ -3,6 +3,7 @@
 # Standard library
 import ConfigParser
 import datetime
+from functools import partial
 import logging
 from os import access, path, R_OK
 import subprocess
@@ -43,20 +44,33 @@ class Tools(object):
     last_error = None
 
 
-    def plugin_version(self, base_path=path.dirname(__file__)):
+    def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
+        """Plugin metadata.txt parser.
+        
+        :param path base_path: directory path whete the metadata txt is stored
+        :param str section: section of values. Until nom, there is only "general".
+        :param str value: value to get from the file. Available values:
+
+          * qgisMinimumVersion
+          * qgisMaximumVersion
+          * description
+          * version - [DEFAULT]
+          * author
+          * email
+          * about
+          * tracker
+          * repository
+        """
         config = ConfigParser.ConfigParser()
-        if path.isfile(path.join(base_path,'metadata.txt')):
-            config.read(path.join(base_path,'metadata.txt'))
-            return config.get('general', 'version')
+        if path.isfile(path.join(base_path, 'metadata.txt')):
+            config.read(path.join(base_path, 'metadata.txt'))
+            return config.get('general', value)
         else:
             logger.error(path.dirname(__file__))
 
     def error_catcher(self, msg, tag, level):
         """Catch QGIS error messages for introspection."""
-        # print(type(logger), dir(logger))
-        # print(msg, tag, level)
         if tag == 'WMS' and level != 0:
-            # logger.error("WMS error: {}".format(msg))
             self.last_error = "wms", msg
         elif tag == 'PostGIS' and level != 0:
             self.last_error = "postgis", msg
@@ -64,7 +78,10 @@ class Tools(object):
             pass
 
     def format_button_title(self, title):
-        """Format the title for it to fit the button."""
+        """Format the title to fit the button.
+        
+        :param str title: title to format
+        """
         words = title.split(' ')
         line_length = 0
         lines = []
@@ -86,18 +103,6 @@ class Tools(object):
         # method ending
         return final_text
 
-    def format_path(self, string):
-        """Reformat windows path for them to be understood by QGIS."""
-        # new_string = ""
-        # for character in string:
-        #     if character == '\\':
-        #         new_string += "/"
-        #     else:
-        #         new_string += character
-        # # method ending
-        # # return new_string
-        return path.realpath(string)
-
     def get_map_crs(self):
         """Get QGIS map canvas current EPSG code."""
         current_crs = str(iface.mapCanvas()
@@ -107,7 +112,10 @@ class Tools(object):
         return current_crs
 
     def handle_date(self, input_date):
-        """Create a date object with the string given as a date by the API."""
+        """Create a date object with the string given as a date by the API.
+        
+        :param str input_date: input date to format
+        """
         if input_date != "NR":
             date = input_date.split("T")[0]
             year = int(date.split('-')[0])
@@ -121,7 +129,10 @@ class Tools(object):
             pass
 
     def mail_to_isogeo(self, lang):
-        """Open the credentials request online form in web browser."""
+        """Open the credentials request online form in web browser.
+        
+        :param str lang: language code. If not fr (French), the English form is displayed.
+        """
         if lang == "fr":
             webbrowser.open('https://www.isogeo.com/fr/Plugin-QGIS/22',
                             new=0,
@@ -133,15 +144,13 @@ class Tools(object):
                             autoraise=True
                             )
         # method ending
-        logger.info("Bugtracker launched in the default web browser")
-        return
+        logger.debug("Bugtracker launched in the default web browser")
 
     def open_dir_file(self, target):
         """Open a file or a directory in the explorer of the operating system.
         
         :param str target: path to the file or folder to open.
         """
-        print("youplaboum")
         # check if the file or the directory exists
         if not path.exists(target):
             raise IOError('No such file: {0}'.format(target))
@@ -172,8 +181,11 @@ class Tools(object):
         return proc
 
     def open_webpage(self, link):
-        """Open the bugtracker on the user's default browser."""
-        if type(link) is QUrl:
+        """Open a link in the user's default web browser.
+        
+        :param str link: URL to open. Can be a QUrl object.
+        """
+        if isinstance(link, QUrl):
             link = link.toString()
 
         webbrowser.open(
@@ -184,17 +196,21 @@ class Tools(object):
         logger.info("Bugtracker launched in the default web browser")
         return
 
-    def results_pages_counter(self, nb_fiches):
-        """Calculate the number of pages for a given number of results."""
-        if nb_fiches <= 10:
-            nb_page = 1
+    def results_pages_counter(self, page_size=10, total=0):
+        """Calculate the number of pages for a given number of results.
+        
+        :param int total: count of metadata in a search request
+        :param int page_size: count of metadata to display in each page
+        """
+        if total <= page_size:
+            count_pages = 1
         else:
-            if (nb_fiches % 10) == 0:
-                nb_page = (nb_fiches / 10)
+            if (total % page_size) == 0:
+                count_pages = (total / page_size)
             else:
-                nb_page = (nb_fiches / 10) + 1
+                count_pages = (total / page_size) + 1
         # method ending
-        return nb_page
+        return count_pages
 
     def display_auth_form(self, ui_auth_form):
         """Show authentication form with prefilled fields."""
@@ -214,7 +230,13 @@ class Tools(object):
         ui_auth_form.show()
 
     def special_search(self, easter_code="isogeo"):
-        """Make some special actions in certains cases."""
+        """Make some special actions in certains cases.
+        
+        :param str easter_code: easter egg label. Available values:
+          
+          * isogeo: display Isogeo logo and zoom in our office location
+          * picasa: change QGS project title
+        """
         canvas = iface.mapCanvas()
         if easter_code == "isogeo":
             # WMS

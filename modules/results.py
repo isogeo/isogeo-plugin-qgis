@@ -168,7 +168,7 @@ class ResultsManager(object):
                 # If the data is a vector and the path is available, store
                 # useful information in the dict
                 if i.get("format", "NR") in li_formats_vect and "path" in i:
-                    filepath = custom_tools.format_path(i.get("path"))
+                    filepath = os.path.normpath(i.get("path"))
                     dir_file = os.path.dirname(filepath)
                     if dir_file not in self.cached_unreach_paths:
                         try:
@@ -186,7 +186,7 @@ class ResultsManager(object):
                         pass
                 # Same if the data is a raster
                 elif i.get("format", "NR") in li_formats_rastr and "path" in i:
-                    filepath = custom_tools.format_path(i.get("path"))
+                    filepath = os.path.normpath(i.get("path"))
                     dir_file = os.path.dirname(filepath)
                     if dir_file not in self.cached_unreach_paths:
                         try:
@@ -205,8 +205,7 @@ class ResultsManager(object):
                 # If the data is a postGIS table and the connexion has
                 # been saved in QGIS.
                 elif i.get("format") == "postgis":
-                    # Récupère le nom de la base de données
-                    base_name = i.get("path")
+                    base_name = i.get("path", "No path")
                     if base_name in pg_connections.keys():
                         params = {}
                         params["base_name"] = base_name

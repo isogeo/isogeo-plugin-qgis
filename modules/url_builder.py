@@ -40,25 +40,24 @@ try:
     from owslib.wmts import WebMapTileService
     from owslib.util import ServiceException
     import owslib
-    logger.info("Depencencies - owslib version: {}"
-                .format(owslib.__version__))
+    logging.info("Depencencies - owslib version: {}"
+                 .format(owslib.__version__))
 except ImportError as e:
-    logger.error("Depencencies - owslib is not present")
-    # raise e
+    logger.warning("Depencencies - owslib is not present")
 
 try:
     from owslib.wfs import WebFeatureService
 except ImportError as e:
-    logger.error("Depencencies - owslib WFS issue: {}"
-                 .format(e))
+    logger.warning("Depencencies - owslib WFS issue: {}"
+                   .format(e))
 
 try:
     from owslib.util import HTTPError
     logger.info("Depencencies - HTTPError within owslib")
 except ImportError as e:
     from urllib2 import HTTPError
-    logger.error("Depencencies - HTTPError not within owslib."
-                 "Directly imported from urllib2.")
+    logger.warning("Depencencies - HTTPError not within owslib."
+                   " Directly imported from urllib2.")
 try:
     import requests
     logger.info("Depencencies - Requests version: {}"
