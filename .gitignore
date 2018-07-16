@@ -91,6 +91,8 @@ ENV/
 
 ### CUSTOM
 
+desktop.ini
+
 *.pyc
 *.*~
 scripts/
