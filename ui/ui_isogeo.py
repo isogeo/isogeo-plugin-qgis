@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\isogeo_dockwidget_base.ui'
 #
-# Created: Thu May 31 19:44:08 2018
+# Created: Mon Jul 16 15:12:50 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -746,8 +746,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_credits.setToolTip(_translate("IsogeoDockWidgetBase", "Open credits popup", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_settings), _translate("IsogeoDockWidgetBase", "Settings", None))
 
-from qgscollapsiblegroupbox import QgsCollapsibleGroupBox
-import resources_rc
+from qgis.gui import QgsCollapsibleGroupBox
 
 if __name__ == "__main__":
     import sys
