@@ -119,6 +119,7 @@ ico_bolt = QIcon(':/plugins/Isogeo/resources/search/bolt.svg')
 ico_keyw = QIcon(':/plugins/Isogeo/resources/tag.svg')
 ico_none = QIcon(':/plugins/Isogeo/resources/none.svg')
 ico_line = QIcon(':/images/themes/default/mIconLineLayer.svg')
+ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
 ico_poin = QIcon(':/images/themes/default/mIconPointLayer.svg')
 ico_poly = QIcon(':/images/themes/default/mIconPolygonLayer.svg')
 
@@ -1899,8 +1900,8 @@ class Isogeo:
                 # Create the dockwidget (after translation) and keep reference
                 self.dockwidget = IsogeoDockWidget()
                 logger.debug("Plugin load time: {}"
-                            .format(plugin_times.get("isogeo_search_engine",
-                                                     "NR")))
+                             .format(plugin_times.get(plg_reg_name),
+                                                      "NR"))
 
             # connect to provide cleanup on closing of dockwidget
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
@@ -1945,8 +1946,12 @@ class Isogeo:
         # Connecting the bug tracker button to its function
         self.dockwidget.btn_report.pressed.connect(
             partial(custom_tools.open_webpage,
-                    link=self.tr(u'https://github.com/isogeo/isogeo-plugin-qgis/issues')
-                    ))
+                    link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - v{} QGIS {} ({})&labels=bug&milestone=4"
+                         .format(self.tr("TITLE ISSUE REPORTED"),
+                                 custom_tools.plugin_metadata(base_path=plg_basepath),
+                                 QGis.QGIS_VERSION,
+                                 platform.platform())
+                    )))
 
         self.dockwidget.btn_help.pressed.connect(
             partial(custom_tools.open_webpage,
