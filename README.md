@@ -7,7 +7,7 @@ Equivalent of [plugins for ArcGIS](http://www.isogeo.com/applications/).
 
 You can see and vote for [this plugin on the official QGIS extensions website](http://plugins.qgis.org/plugins/isogeo_search_engine/).
 
-[Online documentation is available here](https://www.gitbook.com/book/isogeo/app-plugin-qgis/details).
+[Online documentation is available here](https://isogeo.gitbooks.io/app-plugin-qgis/content/).
 
 ## Purpose ##
 
@@ -35,15 +35,14 @@ It's fully integrated with QGIS ecosystem:
 - [X] Add the related data directly to the map canvas throught raw data or web services
 - [X] Display full metadata information in a separated window
 - [X] Save search bookmarks
-- [ ] Customize and manage data lists
 
 ## Screen captures ##
 
 | Without any search | With some filters |
 |:------------------:|:-----------------:|
-| ![Search widget with no filters](img/ui_tabs_main_search_empty_en.png) | ![Search widget with some filters](img/ui_tabs_main_search_filtered_en.png) |
+| ![Search widget with no filters](img/en/ui_tabs_main_search_empty_en.png) | ![Search widget with some filters](img/en/ui_tabs_main_search_filtered_en.png) |
 
-![Add data to the project](img/ui_tabs_main_add_service_wms_en.png)
+![Add data to the project](img/en/ui_tabs_main_add_service_wms_en.png)
 
 ## Getting started ##
 
@@ -56,18 +55,12 @@ If you want a more advanced version, check the box allowing experimental extensi
 
 See the documentation:
 
-* en [français](doc/install_FR.md) ;
-* in [English](doc/install_EN.md).
+* en [français](https://isogeo.gitbooks.io/app-plugin-qgis/content/fr/) ;
+* in [English](https://isogeo.gitbooks.io/app-plugin-qgis/content/en/).
 
-## Authors ##
+## Development and sponsors ##
 
-First version developed during the internship of [Théo SINATTI](https://github.com/TheoSinatti) supervised by [Julien Moura](https://github.com/Guts), at Isogeo: http://www.isogeo.com.
-
-Since version 1.2, it's developed by [Julien Moura](https://github.com/Guts) for Isogeo.
-
-## Sponsors ##
-
-This plugin is made thanks to some Isogeo active clients:
+Developed with love by Isogeo and made thanks to some Isogeo active clients:
 
 ![Syndicat Mixte d'Aménagement de la Vallée de la Durance](img/sponsor_logo_SMAVD.jpg)
 
