@@ -196,7 +196,7 @@ class Tools(object):
         logger.info("Bugtracker launched in the default web browser")
         return
 
-    def results_pages_counter(self, page_size=10, total=0):
+    def results_pages_counter(self, total=0, page_size=10):
         """Calculate the number of pages for a given number of results.
         
         :param int total: count of metadata in a search request
