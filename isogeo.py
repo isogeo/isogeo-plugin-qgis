@@ -123,7 +123,6 @@ ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
 ico_poin = QIcon(':/images/themes/default/mIconPointLayer.svg')
 ico_poly = QIcon(':/images/themes/default/mIconPolygonLayer.svg')
 
-
 # ############################################################################
 # ########## Classes ###############
 # ##################################
@@ -144,10 +143,9 @@ class Isogeo:
     def __init__(self, iface):
         """Constructor.
 
-        :param iface: An interface instance that will be passed to this class
+        :param QgsInterface iface: An interface instance that will be passed to this class
             which provides the hook by which you can manipulate the QGIS
             application at run time.
-        :type iface: QgsInterface
         """
         # Save reference to the QGIS interface
         self.iface = iface
@@ -341,14 +339,14 @@ class Isogeo:
         their default value, it asks for them.
         If not, it tries to send a request.
         """
-        self.user_id = qsettings.value("isogeo-plugin/user-auth/id", 0)
-        self.user_secret = qsettings.value("isogeo-plugin/user-auth/secret", 0)
+        self.user_id = qsettings.value("isogeo/auth/id", 0)
+        self.user_secret = qsettings.value("isogeo/auth/secret", 0)
         if self.user_id != 0 and self.user_secret != 0:
-            logging.info("User_authentication function is trying "
+            logger.info("User_authentication function is trying "
                          "to get a token from the id/secret")
             self.ask_for_token(self.user_id, self.user_secret)
         else:
-            logging.info("No id/secret. User authentication function "
+            logger.info("No id/secret. User authentication function "
                          "is showing the auth window.")
             self.auth_prompt_form.show()
 
@@ -366,8 +364,8 @@ class Isogeo:
 
         if app_id and app_secret:
             # old name maintained for compatibility reasons
-            qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
-            qsettings.setValue("isogeo-plugin/user-auth/secret", app_secret)
+            qsettings.setValue("isogeo/auth/id", app_id)
+            qsettings.setValue("isogeo/auth/secret", app_secret)
 
             # new name to anticipate on future migration
             qsettings.setValue("isogeo/api_auth/id", app_id)
@@ -380,15 +378,15 @@ class Isogeo:
         it stores the values in the file, then call the
         user_authentification function to test them.
         """
-        logging.info("Authentication window accepted. Writting"
+        logger.info("Authentication window accepted. Writting"
                      " id/secret in QSettings.")
         app_id = self.auth_prompt_form.ent_app_id.text()
         app_secret = self.auth_prompt_form.ent_app_secret.text()
         user_editor = self.auth_prompt_form.chb_isogeo_editor.isChecked()
 
         # old name maintained for compatibility reasons
-        qsettings.setValue("isogeo-plugin/user-auth/id", app_id)
-        qsettings.setValue("isogeo-plugin/user-auth/secret", app_secret)
+        qsettings.setValue("isogeo/auth/id", app_id)
+        qsettings.setValue("isogeo/auth/secret", app_secret)
 
         # new name to anticipate on future migration
         qsettings.setValue("isogeo/api_auth/id", app_id)
@@ -467,8 +465,10 @@ class Isogeo:
         This handles the API answer. If it has sent an access token, it calls
         the initialization function. If not, it raises an error, and ask
         for new IDs
+
+        :param QNetworkReply answer: Isogeo ID API response
         """
-        logging.info("Asked a token and got a reply from the API.")
+        logger.info("Asked a token and got a reply from the API")
         bytarray = answer.readAll()
         content = str(bytarray)
         try:
@@ -486,7 +486,7 @@ class Isogeo:
             return
 
         if 'access_token' in parsed_content:
-            logging.debug("The API reply is an access token : "
+            logger.debug("The API reply is an access token : "
                           "the request worked as expected.")
             # Enable buttons "save and cancel"
             self.auth_prompt_form.btn_ok_cancel.setEnabled(True)
@@ -502,7 +502,7 @@ class Isogeo:
                 self.send_request_to_isogeo_api(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
-            logging.error("The API reply is an error. ID and SECRET must be "
+            logger.error("The API reply is an error. ID and SECRET must be "
                           "invalid. Asking for them again.")
             # displaying auth form
             self.auth_prompt_form.ent_app_id.setText(self.user_id)
@@ -517,7 +517,7 @@ class Isogeo:
                                level=msgBar.WARNING)
             self.requestStatusClear = True
         else:
-            logging.debug("The API reply has an unexpected form: {}"
+            logger.debug("The API reply has an unexpected form: {}"
                           .format(parsed_content))
             msgBar.pushMessage("Isogeo",
                                self.tr("API authentication failed."
@@ -527,10 +527,12 @@ class Isogeo:
                                level=msgBar.CRITICAL)
             self.requestStatusClear = True
 
-    def send_request_to_isogeo_api(self, token, limit=10):
+    def send_request_to_isogeo_api(self, token):
         """Send a content url to the Isogeo API.
         This takes the currentUrl variable and send a request to this url,
         using the token variable.
+
+        :param str token: Isogeo ID oAuth2 bearer
         """
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
@@ -548,12 +550,14 @@ class Isogeo:
         This is called when the answer from the API is finished. If it's
         content, it calls update_fields(). If it isn't, it means the token has
         expired, and it calls ask_for_token()
+
+        :param QNetworkReply answer: Isogeo API search response
         """
-        logging.info("Request sent to API and reply received.")
+        logger.info("Request sent to API and reply received.")
         bytarray = answer.readAll()
         content = str(bytarray)
         if answer.error() == 0 and content != "":
-            logging.info("Reply is a result json.")
+            logger.info("Reply is a result json.")
             if self.showDetails is False and self.settingsRequest is False:
                 self.loopCount = 0
                 parsed_content = json.loads(content)
@@ -576,12 +580,12 @@ class Isogeo:
                 del parsed_content
 
         elif answer.error() == 204:
-            logging.info("Token expired. Renewing it.")
+            logger.info("Token expired. Renewing it.")
             self.loopCount = 0
             self.requestStatusClear = True
             self.ask_for_token(self.user_id, self.user_secret)
         elif content == "":
-            logging.info("Empty reply. Weither no catalog is shared with the "
+            logger.info("Empty reply. Weither no catalog is shared with the "
                          "plugin, or there is a problem (2 requests sent "
                          "together)")
             if self.loopCount < 3:
@@ -630,7 +634,7 @@ class Isogeo:
         self.dockwidget.btn_show.setText(
             str(self.results_count) + self.tr(" results"))
         # Setting the number of rows in the result table
-        page_count = str(custom_tools.results_pages_counter(self.results_count))
+        page_count = str(custom_tools.results_pages_counter(total=self.results_count))
         self.dockwidget.lbl_page.setText(
             "page " + str(self.page_index) + self.tr(' on ') + page_count)
 
@@ -644,7 +648,7 @@ class Isogeo:
         cbb_ob = self.dockwidget.cbb_ob  # sort parameter
         cbb_od = self.dockwidget.cbb_od  # sort direction
         cbb_owner = self.dockwidget.cbb_owner  # owners
-        cbb_quicksearch = self.dockwidget.cbb_quicksearch  # quick searches
+        cbb_quicksearch = self.dockwidget.cbb_quicksearch_use  # quick searches
         cbb_srs = self.dockwidget.cbb_srs  # coordinate systems
         cbb_type = self.dockwidget.cbb_type  # metadata type
         tbl_result = self.dockwidget.tbl_result  # results table
@@ -670,13 +674,13 @@ class Isogeo:
         if '_current' in search_list:
             search_list.pop(search_list.index('_current'))
         cbb_quicksearch.clear()
-        self.dockwidget.cbb_modify_sr.clear()
+        self.dockwidget.cbb_quicksearch_edit.clear()
 
         # cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
         cbb_quicksearch.addItem(ico_bolt, "")
         for i in search_list:
             cbb_quicksearch.addItem(i, i)
-            self.dockwidget.cbb_modify_sr.addItem(i, i)
+            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
 
         width = cbb_quicksearch.view().sizeHintForColumn(0) + 5
         cbb_quicksearch.view().setMinimumWidth(width)
@@ -1312,8 +1316,8 @@ class Isogeo:
                 self.dockwidget.cbb_geofilter.currentIndex())
         else:
             geofilter_param = self.dockwidget.cbb_geofilter.currentText()
-        favorite_param = self.dockwidget.cbb_quicksearch.itemData(
-            self.dockwidget.cbb_quicksearch.currentIndex())
+        favorite_param = self.dockwidget.cbb_quicksearch_use.itemData(
+            self.dockwidget.cbb_quicksearch_use.currentIndex())
         operation_param = self.dockwidget.cbb_geo_op.itemData(
             self.dockwidget.cbb_geo_op.currentIndex())
         ob_param = self.dockwidget.cbb_ob.itemData(
@@ -1370,7 +1374,7 @@ class Isogeo:
         the final url is built, it calls send_request_to_isogeo_api
         """
         logger.debug("Search function called. Building the "
-                    "url that is to be sent to the API")
+                     "url that is to be sent to the API")
         # Disabling all user inputs during the search function is running
         self.switch_widgets_on_and_off(0)
         # STORING THE PREVIOUS SEARCH
@@ -1387,12 +1391,12 @@ class Isogeo:
             search_list = saved_searches.keys()
             search_list.pop(search_list.index('_default'))
             search_list.pop(search_list.index('_current'))
-            self.dockwidget.cbb_quicksearch.clear()
-            self.dockwidget.cbb_quicksearch.addItem(ico_bolt, self.tr('Quick Search'))
-            self.dockwidget.cbb_modify_sr.clear()
+            self.dockwidget.cbb_quicksearch_use.clear()
+            self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
+            self.dockwidget.cbb_quicksearch_edit.clear()
             for i in search_list:
-                self.dockwidget.cbb_quicksearch.addItem(i, i)
-                self.dockwidget.cbb_modify_sr.addItem(i, i)
+                self.dockwidget.cbb_quicksearch_use.addItem(i, i)
+                self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
             # Write modifications in the json
             with open(self.json_path, 'w') as outfile:
                 json.dump(saved_searches, outfile,
@@ -1435,7 +1439,7 @@ class Isogeo:
         logger.debug("next_page function called.")
         # Testing if the user is asking for a unexisting page (ex : page 6 out
         # of 5)
-        if self.page_index >= custom_tools.results_pages_counter(self.results_count):
+        if self.page_index >= custom_tools.results_pages_counter(total=self.results_count):
             return False
         else:
             # Adding the loading bar
@@ -1520,12 +1524,12 @@ class Isogeo:
 
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
-        selected_search = self.dockwidget.cbb_quicksearch.currentText()
+        selected_search = self.dockwidget.cbb_quicksearch_use.currentText()
         if selected_search != self.tr('Quick Search'):
             logger.debug("Set_widget_status function called. "
                         "User is executing a saved search.")
             self.switch_widgets_on_and_off(0)
-            selected_search = self.dockwidget.cbb_quicksearch.currentText()
+            selected_search = self.dockwidget.cbb_quicksearch_use.currentText()
             with open(self.json_path) as data_file:
                 saved_searches = json.load(data_file)
             if selected_search == "":
@@ -1571,12 +1575,12 @@ class Isogeo:
         search_list = saved_searches.keys()
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch.clear()
-        self.dockwidget.cbb_quicksearch.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_modify_sr.clear()
+        self.dockwidget.cbb_quicksearch_use.clear()
+        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch_edit.clear()
         for i in search_list:
-            self.dockwidget.cbb_quicksearch.addItem(i, i)
-            self.dockwidget.cbb_modify_sr.addItem(i, i)
+            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
+            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
         # inform user
         # msgBar.pushMessage("Isogeo",
         #                    self.tr("New quicksearch saved: {}")\
@@ -1588,7 +1592,7 @@ class Isogeo:
 
     def quicksearch_rename(self):
         """Modify the json file in order to rename a search."""
-        old_name = self.dockwidget.cbb_modify_sr.currentText()
+        old_name = self.dockwidget.cbb_quicksearch_edit.currentText()
         with open(self.json_path, "r") as saved_searches_file:
             saved_searches = json.load(saved_searches_file)
         new_name = self.quicksearch_rename_dialog.txt_quicksearch_rename.text()
@@ -1597,12 +1601,12 @@ class Isogeo:
         search_list = saved_searches.keys()
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch.clear()
-        self.dockwidget.cbb_quicksearch.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_modify_sr.clear()
+        self.dockwidget.cbb_quicksearch_use.clear()
+        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch_edit.clear()
         for i in search_list:
-            self.dockwidget.cbb_quicksearch.addItem(i, i)
-            self.dockwidget.cbb_modify_sr.addItem(i, i)
+            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
+            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
         # Update JSON file
         with open(self.json_path, 'w') as outfile:
             json.dump(saved_searches, outfile,
@@ -1618,19 +1622,19 @@ class Isogeo:
 
     def quicksearch_remove(self):
         """Modify the json file in order to delete a search."""
-        to_be_deleted = self.dockwidget.cbb_modify_sr.currentText()
+        to_be_deleted = self.dockwidget.cbb_quicksearch_edit.currentText()
         with open(self.json_path, "r") as saved_searches_file:
             saved_searches = json.load(saved_searches_file)
         saved_searches.pop(to_be_deleted)
         search_list = saved_searches.keys()
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch.clear()
-        self.dockwidget.cbb_quicksearch.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_modify_sr.clear()
+        self.dockwidget.cbb_quicksearch_use.clear()
+        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch_edit.clear()
         for i in search_list:
-            self.dockwidget.cbb_quicksearch.addItem(i, i)
-            self.dockwidget.cbb_modify_sr.addItem(i, i)
+            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
+            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
         # Update JSON file
         with open(self.json_path, 'w') as outfile:
             json.dump(saved_searches, outfile,
@@ -1717,18 +1721,18 @@ class Isogeo:
         """
         if mode:
             self.dockwidget.txt_input.setReadOnly(False)
-            self.dockwidget.cbb_quicksearch.setEnabled(True)
+            self.dockwidget.cbb_quicksearch_use.setEnabled(True)
             self.dockwidget.grp_filters.setEnabled(True)
             self.dockwidget.lyt_search.setEnabled(True)
             self.dockwidget.btn_reinit.setEnabled(True)
-            self.dockwidget.btn_save.setEnabled(True)
+            self.dockwidget.btn_quicksearch_save.setEnabled(True)
             self.dockwidget.btn_show.setEnabled(True)
             self.dockwidget.tbl_result.setEnabled(True)
             self.dockwidget.cbb_keywords.setEnabled(True)
 
         else:
             self.dockwidget.txt_input.setReadOnly(True)
-            self.dockwidget.cbb_quicksearch.setEnabled(False)
+            self.dockwidget.cbb_quicksearch_use.setEnabled(False)
             self.dockwidget.grp_filters.setEnabled(False)
             self.dockwidget.lyt_search.setEnabled(False)
             self.dockwidget.btn_next.setEnabled(False)
@@ -1736,7 +1740,7 @@ class Isogeo:
             self.dockwidget.cbb_ob.setEnabled(False)
             self.dockwidget.cbb_od.setEnabled(False)
             self.dockwidget.btn_reinit.setEnabled(False)
-            self.dockwidget.btn_save.setEnabled(False)
+            self.dockwidget.btn_quicksearch_save.setEnabled(False)
             self.dockwidget.btn_show.setEnabled(False)
             self.dockwidget.tbl_result.setEnabled(False)
             self.dockwidget.cbb_keywords.setEnabled(False)
@@ -1819,7 +1823,7 @@ class Isogeo:
                                        .format(style_qgis),
                                duration=0,
                                level=msgBar.WARNING)
-            logging.info("The '{}' QGIS style is not compatible with combobox."
+            logger.info("The '{}' QGIS style is not compatible with combobox."
                          " Isogeo plugin changed it to 'Plastique'."
                          "Please restart QGIS."
                          .format(style_qgis))
@@ -1848,7 +1852,11 @@ class Isogeo:
         return
 
     def write_shares_info(self, content):
-        """Write informations about the shares in the Settings pannel."""
+        """Write informations about the shares in the Settings pannel.
+        See: #87
+
+        :param content dict: share informations from Isogeo API
+        """
         self.currentUrl = self.oldUrl
         text = u"<html>"  # opening html content
         # Isogeo application authenticated in the plugin
@@ -1900,8 +1908,7 @@ class Isogeo:
                 # Create the dockwidget (after translation) and keep reference
                 self.dockwidget = IsogeoDockWidget()
                 logger.debug("Plugin load time: {}"
-                             .format(plugin_times.get(plg_reg_name),
-                                                      "NR"))
+                             .format(plugin_times.get(plg_reg_name, "NR")))
 
             # connect to provide cleanup on closing of dockwidget
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
@@ -1916,108 +1923,106 @@ class Isogeo:
         # http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
         # msgBar.widgetAdded.connect(msgBar.clearWidgets)
 
-        """ --- CONNECTING FUNCTIONS --- """
-        # Write in the config file when the user accept the authentification
-        # window
-        # self.auth_prompt_form.accepted.connect(self.write_ids_and_test)
-        self.auth_prompt_form.btn_check_auth.pressed.connect(self.write_ids_and_test)
-
-        # If user changes his id or his secret in parameters, buttons save and cancel are disabled
-        # The user has to verify before by clicking on button check
-        self.auth_prompt_form.ent_app_id.textEdited.connect(self.control_authentication)
-        self.auth_prompt_form.ent_app_secret.textEdited.connect(self.control_authentication)
-
-        # Connecting the comboboxes to the search function
-        self.dockwidget.cbb_owner.activated.connect(self.search)
-        self.dockwidget.cbb_inspire.activated.connect(self.search)
-        self.dockwidget.cbb_format.activated.connect(self.search)
-        self.dockwidget.cbb_srs.activated.connect(self.search)
-        self.dockwidget.cbb_geofilter.activated.connect(self.search)
-        self.dockwidget.cbb_type.activated.connect(self.search)
-        self.dockwidget.cbb_contact.activated.connect(self.search)
-        self.dockwidget.cbb_license.activated.connect(self.search)
-        # Connecting the text input to the search function
+        """ --- CONNECTING UI WIDGETS <-> FUNCTIONS --- """
+        # -- Search form ------------------------------------------------------
+        # search terms text input
         self.dockwidget.txt_input.editingFinished.connect(self.edited_search)
-        # Connecting the radio buttons
+        # reset search button
+        self.dockwidget.btn_reinit.pressed.connect(self.reinitialize_search)
+        # filters comboboxes
+        self.dockwidget.cbb_contact.activated.connect(self.search)
+        self.dockwidget.cbb_format.activated.connect(self.search)
+        self.dockwidget.cbb_geofilter.activated.connect(self.search)
+        self.dockwidget.cbb_inspire.activated.connect(self.search)
+        self.dockwidget.cbb_license.activated.connect(self.search)
+        self.dockwidget.cbb_owner.activated.connect(self.search)
+        self.dockwidget.cbb_srs.activated.connect(self.search)
+        self.dockwidget.cbb_type.activated.connect(self.search)
 
-        # Connecting the previous and next page buttons to their functions
+        # -- Results table ----------------------------------------------------
+        # show and order results
+        self.dockwidget.btn_show.pressed.connect(self.search_with_content)
+        self.dockwidget.cbb_ob.activated.connect(self.search_with_content)
+        self.dockwidget.cbb_od.activated.connect(self.search_with_content)
+        # pagination
         self.dockwidget.btn_next.pressed.connect(self.next_page)
         self.dockwidget.btn_previous.pressed.connect(self.previous_page)
-        # Connecting the bug tracker button to its function
+        
+        # -- Quicksearches ----------------------------------------------------
+        # select and use
+        self.dockwidget.cbb_quicksearch_use.activated.connect(self.set_widget_status)
+        self.dockwidget.btn_quicksearch_save.pressed.connect(partial(self.show_popup, popup='ask_name'))
+        # create and save
+        self.quicksearch_new_dialog.accepted.connect(self.quicksearch_save)
+        # rename
+        self.quicksearch_rename_dialog.accepted.connect(self.quicksearch_rename)
+
+        # -- Settings tab - Search --------------------------------------------
+        # quicksearches
+        self.dockwidget.btn_rename_sr.pressed.connect(partial(self.show_popup,  # rename
+                                                              popup='new_name'))
+        self.dockwidget.btn_delete_sr.pressed.connect(self.quicksearch_remove)  # delete
+
+        # default search
+        self.dockwidget.btn_default_save.pressed.connect(
+            partial(self.write_search_params, '_default', "Default"))
+
+        # -- Settings tab - Application authentication ------------------------
+        # Change user -> see below for authentication form
+        self.dockwidget.btn_change_user.pressed.connect(
+            partial(custom_tools.display_auth_form,
+                    ui_auth_form=self.auth_prompt_form))
+        # share text window
+        self.dockwidget.txt_shares.setOpenLinks(False)
+        self.dockwidget.txt_shares.anchorClicked.connect(custom_tools.open_webpage)
+
+        # -- Settings tab - Resources -----------------------------------------
+        # report and log - see #53 and  #139
+        self.dockwidget.btn_log_dir.setIcon(ico_log)
+        self.dockwidget.btn_log_dir.pressed.connect(partial(custom_tools.open_dir_file,
+                                                            target=plg_logdir))
         self.dockwidget.btn_report.pressed.connect(
             partial(custom_tools.open_webpage,
-                    link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - v{} QGIS {} ({})&labels=bug&milestone=4"
+                    link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4"
                          .format(self.tr("TITLE ISSUE REPORTED"),
                                  custom_tools.plugin_metadata(base_path=plg_basepath),
                                  QGis.QGIS_VERSION,
                                  platform.platform())
-                    )))
-
+                    ))
+        # help button
         self.dockwidget.btn_help.pressed.connect(
             partial(custom_tools.open_webpage,
                     link="https://isogeo.gitbooks.io/app-plugin-qgis/content/"
                     ))
-        # view credits
-        self.dockwidget.btn_credits.pressed.connect(
-            partial(self.show_popup, popup='credits'))
-        # Connecting the "reinitialize search button" to a search without
-        # filters
-        self.dockwidget.btn_reinit.pressed.connect(self.reinitialize_search)
-        # Change user
-        self.dockwidget.btn_change_user.pressed.connect(
-            partial(custom_tools.display_auth_form,
-                    ui_auth_form=self.auth_prompt_form))
+        # view credits - see: #52
+        self.dockwidget.btn_credits.pressed.connect(partial(self.show_popup, popup='credits'))
 
-        # show results
-        self.dockwidget.btn_show.pressed.connect(self.search_with_content)
-        self.dockwidget.cbb_ob.activated.connect(self.search_with_content)
-        self.dockwidget.cbb_od.activated.connect(self.search_with_content)
+        # -- Authentication form ----------------------------------------------
+        # credentials file browser -> loader - see #149
+        self.auth_prompt_form.btn_browse_credentials.fileChanged.connect(partial(custom_tools.credentials_reader,
+                                                                                 auth_form=self.auth_prompt_form))
+        # If user changes his id or his secret in parameters, buttons save and cancel are disabled
+        # The user has to verify before by clicking on button check - see #99
+        self.auth_prompt_form.btn_check_auth.pressed.connect(self.write_ids_and_test)
+        self.auth_prompt_form.ent_app_id.textEdited.connect(self.control_authentication)
+        self.auth_prompt_form.ent_app_secret.textEdited.connect(self.control_authentication)
+        # button to request an account by email
+        self.auth_prompt_form.btn_account_new.pressed.connect(partial(custom_tools.mail_to_isogeo, lang=self.lang))
 
-        # Button 'save favorite' connected to the opening of the pop up that
-        # asks for a name
-        self.dockwidget.btn_save.pressed.connect(
-            partial(self.show_popup, popup='ask_name'))
-        # Connect the accepted signal of the popup to the function that write
-        # the search name and parameter to the file, and update the combobox
-        self.quicksearch_new_dialog.accepted.connect(self.quicksearch_save)
-        # Button 'rename search' connected to the opening of the pop up that
-        # asks for a new name
-        self.dockwidget.btn_rename_sr.pressed.connect(
-            partial(self.show_popup, popup='new_name'))
-        # Connect the accepted signal of the popup to the function that rename
-        # a search.
-        self.quicksearch_rename_dialog.accepted.connect(self.quicksearch_rename)
-        # Connect the delete button to the delete function
-        self.dockwidget.btn_delete_sr.pressed.connect(self.quicksearch_remove)
-        # Connect the activation of the "saved search" combobox with the
-        # set_widget_status function
-        self.dockwidget.cbb_quicksearch.activated.connect(self.set_widget_status)
-        # G default
-        self.dockwidget.btn_default.pressed.connect(
-            partial(self.write_search_params, '_default', "Default"))
-
-        self.auth_prompt_form.btn_account_new.pressed.connect(partial(
-            custom_tools.mail_to_isogeo, lang=self.lang))
-
+        """ ------ CUSTOM CONNECTIONS ------------------------------------- """
+        # get shares only if user switch on tabs
         self.dockwidget.tabWidget.currentChanged.connect(self.ask_shares_info)
-
-        self.dockwidget.txt_shares.setOpenLinks(False)
-        self.dockwidget.txt_shares.anchorClicked.connect(custom_tools.open_webpage)
-
-        # -- LOG -------------------------------------------------------------
-        # catch QGIS log messages
+        # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
         QgsMessageLog.instance().messageReceived.connect(custom_tools.error_catcher)
-        # log button
-        ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
-        self.dockwidget.btn_log_dir.setIcon(ico_log)
-        self.dockwidget.btn_log_dir.pressed.connect(partial(custom_tools.open_dir_file,
-                                                            target=plg_logdir)
-                                                    )
 
-        """ --- Actions when the plugin is launched --- """
+        """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.dockwidget.setWindowTitle("Isogeo - {}".format(self.plg_version))
-        custom_tools.test_proxy_configuration()
-        self.user_authentication()
+        # add translator method in others modules
+        custom_tools.tr = self.tr
         isogeo_api_mng.tr = self.tr
-        self.dockwidget.txt_input.setFocus()
+        # checks
+        custom_tools.test_proxy_configuration() #22
         self.test_qgis_style()  # see #137
+        self.user_authentication()
+        # if everything is okay set focus on search bar
+        self.dockwidget.txt_input.setFocus()

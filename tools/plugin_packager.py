@@ -130,8 +130,6 @@ RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "results.py"),
                   "{}/{}/{}".format(PLG_DIRNAME, "modules", "results.py"))
 RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "tools.py"),
                   "{}/{}/{}".format(PLG_DIRNAME, "modules", "tools.py"))
-RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "translator.py"),
-                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "translator.py"))
 RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "url_builder.py"),
                   "{}/{}/{}".format(PLG_DIRNAME, "modules", "url_builder.py"))
 RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "isogeo.qml"),

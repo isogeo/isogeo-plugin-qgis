@@ -269,7 +269,7 @@
         <item column="0" row="0">
          <layout class="QGridLayout" name="lyt_search">
           <item column="2" row="0">
-           <widget class="QComboBox" name="cbb_quicksearch">
+           <widget class="QComboBox" name="cbb_quicksearch_use">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -411,7 +411,7 @@
            </widget>
           </item>
           <item column="3" row="0">
-           <widget class="QPushButton" name="btn_save">
+           <widget class="QPushButton" name="btn_quicksearch_save">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -1109,7 +1109,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
-                <widget class="QComboBox" name="cbb_modify_sr">
+                <widget class="QComboBox" name="cbb_quicksearch_edit">
                  <property name="minimumSize">
                   <size>
                    <width>221</width>
@@ -1214,7 +1214,7 @@
                 </spacer>
                </item>
                <item>
-                <widget class="QPushButton" name="btn_default">
+                <widget class="QPushButton" name="btn_default_save">
                  <property name="minimumSize">
                   <size>
                    <width>111</width>
@@ -1231,7 +1231,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="btn_reset_default">
+                <widget class="QPushButton" name="btn_default_reset">
                  <property name="minimumSize">
                   <size>
                    <width>61</width>

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function, unicode_literals)
+from __future__ import (division, print_function, unicode_literals)
 
 # Standard library
 import logging
@@ -18,8 +18,10 @@ from qgis.PyQt.QtGui import QTableWidgetItem
 # Custom modules
 from .api import IsogeoApiManager
 from .tools import Tools
-from .translator import IsogeoTranslator
 from .url_builder import UrlBuilder
+
+# 3rd party
+from isogeo_pysdk import IsogeoTranslator
 
 # ############################################################################
 # ########## Globals ###############
@@ -55,8 +57,11 @@ class MetadataDisplayer(object):
         self.world_lyr = QgsRasterLayer(world_wmts_url, "Countries", 'wms')
         self.complete_md.btn_md_edit.pressed.connect(lambda: custom_tools.open_webpage(link=self.url_edition))
 
-    def show_complete_md(self, md, lang="EN"):
-        """Open the pop up window that shows the metadata sheet details."""
+    def show_complete_md(self, md):
+        """Open the pop up window that shows the metadata sheet details.
+        
+        :param md dict: Isogeo metadata dict
+        """
         logger.info("Displaying the whole metadata sheet.")
         tags = isogeo_api_mng.get_tags(md.get("tags"))
         isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\metadata\ui_md_details.ui'
 #
-# Created: Thu May 31 19:44:23 2018
+# Created: Wed Jul 18 19:46:45 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -1322,9 +1322,7 @@ class Ui_dlg_metadata_details(object):
         self.val_md_date_crea.setText(_translate("dlg_metadata_details", "TextLabel", None))
         self.lbl_md_date_crea.setText(_translate("dlg_metadata_details", "Created:", None))
 
-from qgscollapsiblegroupbox import QgsCollapsibleGroupBox
-from qgis.gui import QgsMapCanvas
-import resources_rc
+from qgis.gui import QgsMapCanvas, QgsCollapsibleGroupBox
 
 if __name__ == "__main__":
     import sys
