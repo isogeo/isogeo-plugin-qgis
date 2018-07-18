@@ -29,18 +29,29 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 
 class IsogeoApiManager(object):
-    """Basic class that holds utilitary methods for the plugin."""
+    """Isogeo API manager."""
 
     def __init__(self):
-        """Construct."""
-        self.api_id = qsettings.value("isogeo-plugin/user-auth/id", 0)
-        self.api_secret = qsettings.value("isogeo-plugin/user-auth/secret", 0)
+        """Set attributes"""
+        self.api_id = qsettings.value("isogeo/auth/id",
+                                      "")
+        self.api_secret = qsettings.value("isogeo/auth/secret",
+                                          "")
+        self.api_url_base = qsettings.value("isogeo/auth/url",
+                                            "https://v1.api.isogeo.com/")
+        self.api_url_auth = qsettings.value("isogeo/auth/url",
+                                            "https://id.api.isogeo.com/oauth/authorize")
+        self.api_url_token = qsettings.value("isogeo/auth/url",
+                                             "https://id.api.isogeo.com/oauth/token")
+        self.api_url_redirect = qsettings.value("isogeo/auth/url",
+                                                "http://localhost:5000/callback")
+        
         self.currentUrl = ""
         self.request_status_clear = 1
         self.tr = object
+        super(IsogeoApiManager, self).__init__ ()
 
     # API COMMUNICATION ------------------------------------------------------
-
     def ask_for_token(self, c_id, c_secret):
         """Ask a token from Isogeo API authentification page.
 
@@ -80,8 +91,11 @@ class IsogeoApiManager(object):
         This handles the API answer. If it has sent an access token, it calls
         the initialization function. If not, it raises an error, and ask
         for new IDs
+
+        :param QNetworkReply answer: Isogeo API response
         """
         logger.info("Asked a token and got a reply from the API.")
+        logger.debug(type(answer))
         bytarray = answer.readAll()
         content = str(bytarray)
         parsed_content = json.loads(content)

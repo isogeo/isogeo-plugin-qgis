@@ -27,6 +27,9 @@ if opersys == 'win32':
 else:
     pass
 
+# 3rd party
+from isogeo_pysdk import IsogeoUtils
+
 # ############################################################################
 # ########## Globals ###############
 # ##################################
@@ -39,10 +42,31 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 # ##################################
 
 
-class Tools(object):
-    """Basic class that holds utilitary methods for the Isogeo plugin."""
+class Tools(IsogeoUtils):
+    """Inheritance from Isogeo Python SDK utils class. It adds some
+    specific tools for QGIS plugin."""
     last_error = None
+    tr = object
 
+    def credentials_reader(self, auth_form):
+        """Get file selected by the user and loads API credentials into plugin.
+        
+        :param PyQtUi auth_form: graphic class of plugin's authentication form
+        """
+        # test file structure
+        try:
+            api_credentials = self.credentials_loader(path.normpath(auth_form.btn_browse_credentials.filePath()))
+        except Exception as e:
+            logger.error(e)
+            QMessageBox.critical(auth_form,
+                                 self.tr("Alert", "Tools"),
+                                 self.tr("The selected credentials file is not correct.",
+                                         "Tools"))
+        # set form
+        auth_form.ent_app_id.setText(api_credentials.get("client_id"))
+        auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
+        auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
+        logger.debug(api_credentials.keys())
 
     def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
         """Plugin metadata.txt parser.
@@ -72,6 +96,8 @@ class Tools(object):
         """Catch QGIS error messages for introspection."""
         if tag == 'WMS' and level != 0:
             self.last_error = "wms", msg
+        elif tag == 'WFS' and level != 0:
+            self.last_error = "wfs", msg
         elif tag == 'PostGIS' and level != 0:
             self.last_error = "postgis", msg
         else:
@@ -126,7 +152,6 @@ class Tools(object):
             return new_date.strftime("%Y-%m-%d")
         else:
             return input_date
-            pass
 
     def mail_to_isogeo(self, lang):
         """Open the credentials request online form in web browser.
@@ -216,16 +241,13 @@ class Tools(object):
         """Show authentication form with prefilled fields."""
         # fillfull auth form fields from stored settings
         ui_auth_form.ent_app_id.setText(qsettings
-                                        .value("isogeo-plugin/user-auth/id", 0))
+                                        .value("isogeo/auth/id"))
         ui_auth_form.ent_app_secret.setText(qsettings
-                                            .value("isogeo-plugin/user-auth/secret", 0))
+                                            .value("isogeo/auth/secret"))
+        ui_auth_form.lbl_api_url_value.setText(qsettings
+                                               .value("isogeo/auth/uri_api_base"))
         ui_auth_form.chb_isogeo_editor.setChecked(qsettings
                                                   .value("isogeo/user/editor", 0))
-
-        # check auth validity
-        # connect check button
-        # ui_auth_form.btn_check_auth.connect(partial(print("check API authentication")))
-
         # display
         ui_auth_form.show()
 
@@ -319,14 +341,14 @@ class Tools(object):
                                 pass
                             else:
                                 QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'),
+                                ), self.tr("Alert", "Tools"),
                                     self.tr("Proxy issue : \nQGIS and your OS "
-                                            "have different proxy set up."))
+                                            "have different proxy set up.", "Tools"))
                         else:
                             QMessageBox.information(iface.mainWindow(
-                            ), self.tr('Alert'),
+                            ), self.tr("Alert", "Tools"),
                                 self.tr("Proxy issue : \nQGIS and your OS have"
-                                        " different proxy set ups."))
+                                        " different proxy set ups.", "Tools"))
                     elif len(elements) == 3 and elements[0] == 'http':
                         host_short = elements[1][2:]
                         host_long = elements[0] + ':' + elements[1]
@@ -343,21 +365,21 @@ class Tools(object):
                                 logger.error("OS and QGIS proxy ports do not "
                                              "match. => Proxy config: not OK")
                                 QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'),
+                                ), self.tr("Alert", "Tools"),
                                     self.tr("Proxy issue : \nQGIS and your OS"
-                                            " have different proxy set ups."))
+                                            " have different proxy set ups.", "Tools"))
                         else:
                             logger.error("OS and QGIS proxy hosts do not "
                                          "match. => Proxy config: not OK")
                             QMessageBox.information(iface.mainWindow(
-                            ), self.tr('Alert'),
+                            ), self.tr("Alert", "Tools"),
                                 self.tr("Proxy issue : \nQGIS and your OS have"
-                                        " different proxy set ups."))
+                                        " different proxy set ups.", "Tools"))
             else:
                 logger.error("OS uses a proxy but it isn't set up in QGIS."
                              " => Proxy config: not OK")
                 QMessageBox.information(iface.mainWindow(
-                ), self.tr('Alert'),
+                ), self.tr("Alert", "Tools"),
                     self.tr("Proxy issue : \nYou have a proxy set up on your"
                             " OS but none in QGIS.\nPlease set it up in "
-                            "'Preferences/Options/Network'."))
+                            "'Preferences/Options/Network'.", "Tools"))
