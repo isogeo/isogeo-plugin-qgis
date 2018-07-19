@@ -140,6 +140,17 @@ RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "url_builder.py"),
 RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "isogeo.qml"),
                   "{}/{}/{}".format(PLG_DIRNAME, "modules", "isogeo.qml"))
 
+# Isogeo PySDK - raw
+tp_isogeo_pysdk = ("__init__.py",
+                   "checker.py",
+                   "isogeo_sdk.py",
+                   "translator.py",
+                   "utils.py")
+
+for i in tp_isogeo_pysdk:
+    RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "isogeo_pysdk", i),
+                      "{}/{}/{}".format(PLG_DIRNAME, "modules/isogeo_pysdk", i))
+
 # Resources (media files)
 RESOURCES_FILES = [path.relpath(f) for f in listdir("resources")
                    if path.isfile(path.join(path.realpath("resources"), f))]
