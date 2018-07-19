@@ -5,10 +5,11 @@ import ConfigParser
 import datetime
 from functools import partial
 import logging
-from os import access, path, R_OK
+from os import access, rename, path, R_OK
 import subprocess
 from sys import platform as opersys
 from urllib import getproxies, unquote, urlencode
+import time # for timestamps
 import webbrowser
 
 # PyQGIS
@@ -48,8 +49,18 @@ class Tools(IsogeoUtils):
     last_error = None
     tr = object
 
+    def __init__(self, auth_folder=r"../_auth"):
+            """Check and manage authentication credentials."""
+            # authentication
+            self.auth_folder = auth_folder
+
+            # instanciate
+            super(Tools, self).__init__ ()
+
     def credentials_reader(self, auth_form):
         """Get file selected by the user and loads API credentials into plugin.
+        If the selected is compliant, credentials are loaded from then it's
+        moved inside plugin\_auth subfolder.
         
         :param PyQtUi auth_form: graphic class of plugin's authentication form
         """
@@ -62,6 +73,17 @@ class Tools(IsogeoUtils):
                                  self.tr("Alert", "Tools"),
                                  self.tr("The selected credentials file is not correct.",
                                          "Tools"))
+        # move credentials file into the plugin file structure
+        if path.isfile(path.join(self.auth_folder, "client_secrets.json")):
+            rename(path.join(self.auth_folder, "client_secrets.json"),
+                   path.join(self.auth_folder, "old_client_secrets_{}.json"
+                                               .format(int(time.time())))
+                   )
+        else:
+            pass
+        rename(path.normpath(auth_form.btn_browse_credentials.filePath()),
+               path.join(self.auth_folder, "client_secrets.json"))
+
         # set form
         auth_form.ent_app_id.setText(api_credentials.get("client_id"))
         auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))

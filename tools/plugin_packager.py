@@ -101,6 +101,10 @@ else:
 # ------------ Led Zipping -------------------------------------------
 RELEASE_ZIP = zipfile.ZipFile(path.join(DEST_DIR, PLG_DIRNAME + ".zip"), "w")
 
+# AUTH folder
+auth_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_auth/"))
+RELEASE_ZIP.writestr(auth_folder, "")
+
 # LOG folder
 log_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_logs/"))
 RELEASE_ZIP.writestr(log_folder, "")

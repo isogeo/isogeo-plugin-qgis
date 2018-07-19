@@ -83,8 +83,8 @@ sys.setdefaultencoding('utf-8')
 
 # useful submodules and shortcuts
 qgis_auth_mng = QgsAuthManager.instance()
-custom_tools = Tools()
-isogeo_api_mng = IsogeoApiManager()
+custom_tools = Tools(auth_folder=os.path.join(plg_basepath, "_auth"))
+isogeo_api_mng = IsogeoApiManager(auth_folder=os.path.join(plg_basepath, "_auth"))
 msgBar = iface.messageBar()
 network_mng = QNetworkAccessManager()
 qsettings = QSettings()
@@ -2023,6 +2023,7 @@ class Isogeo:
         # checks
         custom_tools.test_proxy_configuration() #22
         self.test_qgis_style()  # see #137
+        isogeo_api_mng.manage_api_initialization()
         self.user_authentication()
         # if everything is okay set focus on search bar
         self.dockwidget.txt_input.setFocus()
