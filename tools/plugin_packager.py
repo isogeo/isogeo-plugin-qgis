@@ -105,6 +105,11 @@ RELEASE_ZIP = zipfile.ZipFile(path.join(DEST_DIR, PLG_DIRNAME + ".zip"), "w")
 log_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_logs/"))
 RELEASE_ZIP.writestr(log_folder, "")
 
+
+# USER folder
+user_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_user/"))
+RELEASE_ZIP.writestr(user_folder, "")
+
 # QGIS Plugin requirements
 RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "LICENSE"),
                   "{}/{}".format(PLG_DIRNAME, "LICENSE"))
