@@ -91,7 +91,27 @@ ENV/
 
 ### CUSTOM
 
+# windaube
 desktop.ini
+
+# sphinx
+docs/_*
+env*/*
+
+# isogeo api
+client_secrets.json
+_auth/
+
+# logs
+_logs/
+*.log
+
+# tests fixtures
+test/fixtures
+
+# user settings
+_user/
+
 
 *.pyc
 *.*~
@@ -101,5 +121,3 @@ help/
 .idea
 .coverage
 .noseids
-*.log
-user_settings/*

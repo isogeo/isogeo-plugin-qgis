@@ -188,7 +188,6 @@ class Isogeo:
         # network manager included within QGIS
         self.manager = QgsNetworkAccessManager.instance()
         # self.manager = QNetworkAccessManager()
-        self.md_display = MetadataDisplayer(IsogeoMdDetails())
 
         # UI submodules
         self.auth_prompt_form = IsogeoAuthentication()
