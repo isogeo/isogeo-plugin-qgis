@@ -235,4 +235,4 @@ with open(QUICKSEARCHES_JSON, "w") as qs:
     json.dump(QUICKSEARCHES, qs, sort_keys=True, indent=4)
 
 RELEASE_ZIP.write(QUICKSEARCHES_JSON,
-                  "{}/{}/{}".format(PLG_DIRNAME, "user_settings", "quicksearches.json"))
+                  "{}/{}/{}".format(PLG_DIRNAME, "_user", "quicksearches.json"))

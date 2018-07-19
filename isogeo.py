@@ -216,7 +216,7 @@ class Isogeo:
         self.old_text = ""
         self.page_index = 1
         self.json_path = os.path.realpath(os.path.join(plg_basepath,
-                                                       "user_settings/quicksearches.json"))
+                                                       "_user/quicksearches.json"))
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message, context="Isogeo"):
