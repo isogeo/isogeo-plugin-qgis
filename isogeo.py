@@ -97,10 +97,10 @@ plg_url_bldr = UrlBuilder()
 # -- LOG FILE --------------------------------------------------------
 plg_logdir = os.path.join(plg_basepath, "_logs")
 # log level depends on plugin directory name
-if plg_reg_name == custom_tools.plugin_metadata(base_path=plg_basepath, value="name"):
+if plg_reg_name == plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
     log_level = logging.WARNING
-elif "beta" in custom_tools.plugin_metadata(base_path=plg_basepath)\
-  or "dev" in custom_tools.plugin_metadata(base_path=plg_basepath, value="name"):
+elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath)\
+  or "dev" in plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
     log_level = logging.DEBUG
 else:
     log_level = logging.NOTSET
@@ -136,7 +136,7 @@ class Isogeo:
     """Isogeo plugin for QGIS LTR."""
 
     # attributes
-    plg_version = custom_tools.plugin_metadata(base_path=plg_basepath)
+    plg_version = plg_tools.plugin_metadata(base_path=plg_basepath)
 
     logger.info('\n\n\t========== Isogeo Search Engine for QGIS ==========')
     logger.info('OS: {0}'.format(platform.platform()))
