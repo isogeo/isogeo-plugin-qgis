@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 # Standard library
 import ConfigParser
@@ -9,7 +11,8 @@ from os import access, rename, path, R_OK
 import subprocess
 from sys import platform as opersys
 from urllib import getproxies, unquote, urlencode
-import time # for timestamps
+from urlparse import urlparse
+import time  # for timestamps
 import webbrowser
 
 # PyQGIS
@@ -29,7 +32,7 @@ else:
     pass
 
 # 3rd party
-from isogeo_pysdk import IsogeoUtils
+from .isogeo_pysdk import IsogeoUtils
 
 # ############################################################################
 # ########## Globals ###############
@@ -43,7 +46,7 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 # ##################################
 
 
-class Tools(IsogeoUtils):
+class IsogeoPlgTools(IsogeoUtils):
     """Inheritance from Isogeo Python SDK utils class. It adds some
     specific tools for QGIS plugin."""
     last_error = None
@@ -55,40 +58,7 @@ class Tools(IsogeoUtils):
             self.auth_folder = auth_folder
 
             # instanciate
-            super(Tools, self).__init__ ()
-
-    def credentials_reader(self, auth_form):
-        """Get file selected by the user and loads API credentials into plugin.
-        If the selected is compliant, credentials are loaded from then it's
-        moved inside plugin\_auth subfolder.
-        
-        :param PyQtUi auth_form: graphic class of plugin's authentication form
-        """
-        # test file structure
-        try:
-            api_credentials = self.credentials_loader(path.normpath(auth_form.btn_browse_credentials.filePath()))
-        except Exception as e:
-            logger.error(e)
-            QMessageBox.critical(auth_form,
-                                 self.tr("Alert", "Tools"),
-                                 self.tr("The selected credentials file is not correct.",
-                                         "Tools"))
-        # move credentials file into the plugin file structure
-        if path.isfile(path.join(self.auth_folder, "client_secrets.json")):
-            rename(path.join(self.auth_folder, "client_secrets.json"),
-                   path.join(self.auth_folder, "old_client_secrets_{}.json"
-                                               .format(int(time.time())))
-                   )
-        else:
-            pass
-        rename(path.normpath(auth_form.btn_browse_credentials.filePath()),
-               path.join(self.auth_folder, "client_secrets.json"))
-
-        # set form
-        auth_form.ent_app_id.setText(api_credentials.get("client_id"))
-        auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
-        auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
-        logger.debug(api_credentials.keys())
+            super(IsogeoPlgTools, self).__init__ ()
 
     def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
         """Plugin metadata.txt parser.
@@ -257,21 +227,6 @@ class Tools(IsogeoUtils):
             else:
                 count_pages = (total / page_size) + 1
         # method ending
-        return count_pages
-
-    def display_auth_form(self, ui_auth_form):
-        """Show authentication form with prefilled fields."""
-        # fillfull auth form fields from stored settings
-        ui_auth_form.ent_app_id.setText(qsettings
-                                        .value("isogeo/auth/id"))
-        ui_auth_form.ent_app_secret.setText(qsettings
-                                            .value("isogeo/auth/secret"))
-        ui_auth_form.lbl_api_url_value.setText(qsettings
-                                               .value("isogeo/auth/uri_api_base"))
-        ui_auth_form.chb_isogeo_editor.setChecked(qsettings
-                                                  .value("isogeo/user/editor", 0))
-        # display
-        ui_auth_form.show()
         return int(count_pages)
 
     def special_search(self, easter_code="isogeo"):
@@ -406,3 +361,20 @@ class Tools(IsogeoUtils):
                     self.tr("Proxy issue : \nYou have a proxy set up on your"
                             " OS but none in QGIS.\nPlease set it up in "
                             "'Preferences/Options/Network'.", "Tools"))
+
+    def url_base_from_url_token(self, url_api_token="https://id.api.isogeo.com/oauth/token"):
+        """Returns the Isogeo API root URL from the token, which is always
+        stored within credentials file.
+        
+        :param url_api_token str: url to Isogeo API ID token generator
+        """
+        in_parsed = urlparse(url_api_token)
+        api_url_base = in_parsed._replace(path="",
+                                          netloc=in_parsed.netloc.replace("id.", ""))
+        return api_url_base.geturl()
+
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
+if __name__ == '__main__':
+    """Standalone execution."""
