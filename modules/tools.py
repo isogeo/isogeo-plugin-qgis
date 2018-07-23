@@ -272,6 +272,7 @@ class Tools(IsogeoUtils):
                                                   .value("isogeo/user/editor", 0))
         # display
         ui_auth_form.show()
+        return int(count_pages)
 
     def special_search(self, easter_code="isogeo"):
         """Make some special actions in certains cases.
