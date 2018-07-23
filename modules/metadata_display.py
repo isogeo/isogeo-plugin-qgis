@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import (division, print_function, unicode_literals)
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 # Standard library
 import logging
@@ -15,23 +16,24 @@ from qgis.gui import QgsMapCanvasLayer
 from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtGui import QTableWidgetItem
 
-# Custom modules
-from .api import IsogeoApiManager
-from .tools import Tools
-from .url_builder import UrlBuilder
-
 # 3rd party
-from isogeo_pysdk import IsogeoTranslator
+from .isogeo_pysdk import IsogeoTranslator
+
+# Plugin modules
+from .api import IsogeoPlgApiMngr
+from .url_builder import UrlBuilder
+from .tools import IsogeoPlgTools
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-custom_tools = Tools()
-isogeo_api_mng = IsogeoApiManager()
-logger = logging.getLogger("IsogeoQgisPlugin")
 qsettings = QSettings()
-srv_url_bld = UrlBuilder()
+logger = logging.getLogger("IsogeoQgisPlugin")
+
+plg_api_mngr = IsogeoPlgApiMngr()
+plg_tools = IsogeoPlgTools()
+plg_url_bldr = UrlBuilder()
 
 # ############################################################################
 # ########## Classes ###############
@@ -55,7 +57,7 @@ class MetadataDisplayer(object):
                          "styles=&tileMatrixSet=EPSG:4326&"\
                          "url=http://suite.opengeo.org/geoserver/gwc/service/wmts?request%3DGetCapabilities"
         self.world_lyr = QgsRasterLayer(world_wmts_url, "Countries", 'wms')
-        self.complete_md.btn_md_edit.pressed.connect(lambda: custom_tools.open_webpage(link=self.url_edition))
+        self.complete_md.btn_md_edit.pressed.connect(lambda: plg_tools.open_webpage(link=self.url_edition))
 
     def show_complete_md(self, md):
         """Open the pop up window that shows the metadata sheet details.
@@ -63,7 +65,7 @@ class MetadataDisplayer(object):
         :param md dict: Isogeo metadata dict
         """
         logger.info("Displaying the whole metadata sheet.")
-        tags = isogeo_api_mng.get_tags(md.get("tags"))
+        tags = plg_api_mngr.get_tags(md.get("tags"))
         isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])
 
         # clean map canvas
@@ -73,6 +75,7 @@ class MetadataDisplayer(object):
 
         # -- GENERAL ---------------------------------------------------------
         title = md.get("title", "NR")
+        logger.error("YOUPI")
         self.complete_md.lbl_title.setText(md.get("title", "NR"))
         self.complete_md.val_owner.setText(md.get("_creator")
                                              .get("contact")
@@ -169,9 +172,9 @@ class MetadataDisplayer(object):
 
         # -- HISTORY ---------------------------------------------------------
         # Data creation and last update dates
-        self.complete_md.val_data_crea.setText(custom_tools.handle_date(
+        self.complete_md.val_data_crea.setText(plg_tools.handle_date(
                                                md.get("_created", "NR")))
-        self.complete_md.val_data_update.setText(custom_tools.handle_date(
+        self.complete_md.val_data_update.setText(plg_tools.handle_date(
                                                  md.get("_modified", "NR")))
         # Update frequency information
         if md.get("updateFrequency", None):
@@ -185,9 +188,9 @@ class MetadataDisplayer(object):
         else:
             self.complete_md.val_frequency.setText("NR")
         # Validity
-        self.complete_md.val_valid_start.setText(custom_tools.handle_date(
+        self.complete_md.val_valid_start.setText(plg_tools.handle_date(
                                                  md.get("validFrom", "NR")))
-        self.complete_md.val_valid_end.setText(custom_tools.handle_date(
+        self.complete_md.val_valid_end.setText(plg_tools.handle_date(
                                                md.get("validTo", "NR")))
         self.complete_md.val_valid_comment.setText(md.get("validityComment", "NR"))
         # Collect information
@@ -201,7 +204,7 @@ class MetadataDisplayer(object):
         idx = 0
         for e in events:
             if e.get("kind") == "update":
-                tbl_events.setItem(idx, 0, QTableWidgetItem(custom_tools.handle_date(e.get("date", "NR"))))
+                tbl_events.setItem(idx, 0, QTableWidgetItem(plg_tools.handle_date(e.get("date", "NR"))))
                 tbl_events.setItem(idx, 1, QTableWidgetItem(e.get("description", "")))
                 idx += 1
             else:
@@ -339,14 +342,17 @@ class MetadataDisplayer(object):
 
         # Metadata
         self.complete_md.val_md_lang.setText(md.get("language", "NR"))
-        self.complete_md.val_md_date_crea.setText(custom_tools.handle_date(
+        self.complete_md.val_md_date_crea.setText(plg_tools.handle_date(
                                                   md.get("_modified")[:19]))
-        self.complete_md.val_md_date_update.setText(custom_tools.handle_date(
+        self.complete_md.val_md_date_update.setText(plg_tools.handle_date(
                                                     md.get("_created")[:19]))
 
         # -- EDIT LINK -------------------------------------------------------
-        self.url_edition = "https://app.isogeo.com/groups/{}/resources/{}"\
-                           .format(wg_id, md.get("_id"))
+        #self.url_edition = "https://app.isogeo.com/groups/{}/resources/{}"\
+        #                   .format(wg_id, md.get("_id"))
+        self.url_edition = plg_tools.get_edit_url(md_id=md.get("_id"),
+                                                  md_type=md.get("type"),
+                                                  owner_id=wg_id)
 
         # only if user declared himself as Isogeo editor in authentication form
         self.complete_md.btn_md_edit.setEnabled(qsettings
@@ -521,3 +527,9 @@ class MetadataDisplayer(object):
             # should not exist
             logger.error("Metadata type not recognized:", md_type)
             return
+
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
+if __name__ == '__main__':
+    """Standalone execution."""

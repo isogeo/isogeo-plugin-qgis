@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import (division,
+                        print_function, unicode_literals)
 
 """
 /***************************************************************************
@@ -62,12 +64,12 @@ from ui.metadata.dlg_md_details import IsogeoMdDetails
 from ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
 from ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
 
-# Custom modules
-from modules.api import IsogeoApiManager
-from modules.metadata_display import MetadataDisplayer
-from modules.results import ResultsManager
-from modules.tools import Tools
-from modules.url_builder import UrlBuilder
+# Plugin modules
+from modules import IsogeoPlgApiMngr
+from modules import MetadataDisplayer
+from modules import ResultsManager
+from modules import IsogeoPlgTools
+from modules import UrlBuilder
 
 # ############################################################################
 # ########## Globals ###############
@@ -81,14 +83,16 @@ plg_reg_name = os.path.basename(plg_basepath)
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-# useful submodules and shortcuts
-qgis_auth_mng = QgsAuthManager.instance()
-custom_tools = Tools(auth_folder=os.path.join(plg_basepath, "_auth"))
-isogeo_api_mng = IsogeoApiManager(auth_folder=os.path.join(plg_basepath, "_auth"))
+# QGIS useful tooling and shortcuts
 msgBar = iface.messageBar()
 network_mng = QNetworkAccessManager()
+qgs_auth_mngr = QgsAuthManager.instance()
 qsettings = QSettings()
-srv_url_bld = UrlBuilder()
+
+# plugin internal submodules
+plg_tools = IsogeoPlgTools(auth_folder=os.path.join(plg_basepath, "_auth"))
+plg_api_mngr = IsogeoPlgApiMngr(auth_folder=os.path.join(plg_basepath, "_auth"))
+plg_url_bldr = UrlBuilder()
 
 # -- LOG FILE --------------------------------------------------------
 plg_logdir = os.path.join(plg_basepath, "_logs")
@@ -197,6 +201,9 @@ class Isogeo:
         self.md_display = MetadataDisplayer(IsogeoMdDetails())
         self.results_mng = ResultsManager(self)
 
+        # link UI and submodules
+        plg_api_mngr.ui_auth_form = self.auth_prompt_form
+
         # start variables
         self.savedSearch = "first"
         self.requestStatusClear = True
@@ -206,7 +213,7 @@ class Isogeo:
         self.showDetails = False
         self.store = False
         self.settingsRequest = False
-        self.PostGISdict = srv_url_bld.build_postgis_dict(qsettings)
+        self.PostGISdict = plg_url_bldr.build_postgis_dict(qsettings)
 
         self.currentUrl = ""
         # self.currentUrl = "https://v1.api.isogeo.com/resources/search?
@@ -393,28 +400,28 @@ class Isogeo:
         qsettings.setValue("isogeo/user/editor", int(user_editor))
 
         # anticipating on QGIS Auth Management
-        if qgis_auth_mng.authenticationDbPath():
+        if qgs_auth_mngr.authenticationDbPath():
             logger.debug("TRACKING - AUTH: new QGIS system already initialized")
             auth_isogeo_id = qsettings.value("isogeo/app_auth/qgis_auth_id")
             # already initialised => we are inside a QGIS app.
-            if (qgis_auth_mng.masterPasswordIsSet() and
-               auth_isogeo_id in qgis_auth_mng.availableAuthMethodConfigs()):
+            if (qgs_auth_mngr.masterPasswordIsSet() and
+               auth_isogeo_id in qgs_auth_mngr.availableAuthMethodConfigs()):
                 logger.debug("TRACKING - AUTH: master password has been set"
                             " and Isogeo auth config already exists."
                             " Let's update it if needed.")
                 # get existing Isogeo auth id
-                auth_isogeo = qgis_auth_mng.availableAuthMethodConfigs()\
+                auth_isogeo = qgs_auth_mngr.availableAuthMethodConfigs()\
                                            .get(auth_isogeo_id)
                 # update values from form
                 auth_isogeo.setConfig("username", app_id)
                 auth_isogeo.setConfig("password", app_secret)
                 # check if method parameters are correctly set and store it
                 if auth_isogeo.isValid():
-                    qgis_auth_mng.updateAuthenticationConfig(auth_isogeo)
+                    qgs_auth_mngr.updateAuthenticationConfig(auth_isogeo)
                 else:
                     logger.error("AUTH - Fail to create and store configuration")
-            elif (qgis_auth_mng.masterPasswordIsSet() and
-                  auth_isogeo_id not in qgis_auth_mng.availableAuthMethodConfigs()):
+            elif (qgs_auth_mngr.masterPasswordIsSet() and
+                  auth_isogeo_id not in qgs_auth_mngr.availableAuthMethodConfigs()):
                 logger.debug("TRACKING - AUTH: master password has been set"
                             " and Isogeo auth config doesn't exist yet")
                 auth_isogeo_cfg = QgsAuthMethodConfig()
@@ -425,7 +432,7 @@ class Isogeo:
                 auth_isogeo_cfg.setConfig("password", app_secret)
                 # check if method parameters are correctly set and store it
                 if auth_isogeo_cfg.isValid():
-                    qgis_auth_mng.storeAuthenticationConfig(auth_isogeo_cfg)
+                    qgs_auth_mngr.storeAuthenticationConfig(auth_isogeo_cfg)
                     qsettings.setValue("isogeo/app_auth/qgis_auth_id",
                                        auth_isogeo_cfg.id())
                 else:
@@ -624,7 +631,7 @@ class Isogeo:
                                  .format(result.get("query")),
                                  "Isogeo")
         # parsing
-        tags = isogeo_api_mng.get_tags(result.get("tags"))
+        tags = plg_api_mngr.get_tags(result.get("tags"))
         self.old_text = self.dockwidget.txt_input.text()
         # Getting the index of selected items in each combobox
         params = self.save_params()
@@ -633,7 +640,7 @@ class Isogeo:
         self.dockwidget.btn_show.setText(
             str(self.results_count) + self.tr(" results"))
         # Setting the number of rows in the result table
-        page_count = str(custom_tools.results_pages_counter(total=self.results_count))
+        page_count = str(plg_tools.results_pages_counter(total=self.results_count))
         self.dockwidget.lbl_page.setText(
             "page " + str(self.page_index) + self.tr(' on ') + page_count)
 
@@ -1150,7 +1157,7 @@ class Isogeo:
                     logger.debug("WFS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
-                    name_url = srv_url_bld.build_wfs_url(layer_info[3],
+                    name_url = plg_url_bldr.build_wfs_url(layer_info[3],
                                                          layer_info[4],
                                                          mode="complete")
                     if name_url[0] != 0:
@@ -1178,7 +1185,7 @@ class Isogeo:
                     logger.debug("WMS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
-                    name_url = srv_url_bld.build_wms_url(layer_info[3],
+                    name_url = plg_url_bldr.build_wms_url(layer_info[3],
                                                          layer_info[4],
                                                          mode="complete")
                     if name_url[0] != 0:
@@ -1252,8 +1259,8 @@ class Isogeo:
                 lyr.setKeywordList(",".join(layer_info.get("keywords", ())))
                 logger.debug("Data added: {}".format(table))
             elif not layer.isValid() and\
-                custom_tools.last_error[0] == "postgis" and\
-                "prim" in custom_tools.last_error[1]:
+                plg_tools.last_error[0] == "postgis" and\
+                "prim" in plg_tools.last_error[1]:
                 logger.debug("PostGIS layer may be a view, "
                             "so key column is missing. "
                             "Trying to automatically set one...")
@@ -1282,7 +1289,7 @@ class Isogeo:
                     iface.mainWindow(),
                     self.tr("Error"),
                     self.tr("The PostGIS layer is not valid."
-                            " Reason: {}".format(custom_tools.last_error)))
+                            " Reason: {}".format(plg_tools.last_error)))
                 return 0
         return 1
 
@@ -1418,7 +1425,7 @@ class Isogeo:
         # Info for _lang parameter
         params['lang'] = self.lang
         # URL BUILDING FUNCTION CALLED.
-        self.currentUrl = isogeo_api_mng.build_request_url(params)
+        self.currentUrl = plg_api_mngr.build_request_url(params)
         logger.debug(self.currentUrl)
         # Sending the request to Isogeo API
         if self.requestStatusClear is True:
@@ -1438,7 +1445,7 @@ class Isogeo:
         logger.debug("next_page function called.")
         # Testing if the user is asking for a unexisting page (ex : page 6 out
         # of 5)
-        if self.page_index >= custom_tools.results_pages_counter(total=self.results_count):
+        if self.page_index >= plg_tools.results_pages_counter(total=self.results_count):
             return False
         else:
             # Adding the loading bar
@@ -1455,7 +1462,7 @@ class Isogeo:
             # Info for _lang parameter
             params['lang'] = self.lang
             # URL BUILDING FUNCTION CALLED.
-            self.currentUrl = isogeo_api_mng.build_request_url(params)
+            self.currentUrl = plg_api_mngr.build_request_url(params)
             # Sending the request
             if self.requestStatusClear is True:
                 self.send_request_to_isogeo_api(self.token)
@@ -1485,7 +1492,7 @@ class Isogeo:
             # Info for _lang parameter
             params['lang'] = self.lang
             # URL BUILDING FUNCTION CALLED.
-            self.currentUrl = isogeo_api_mng.build_request_url(params)
+            self.currentUrl = plg_api_mngr.build_request_url(params)
             # Sending the request
             if self.requestStatusClear is True:
                 self.send_request_to_isogeo_api(self.token)
@@ -1653,7 +1660,7 @@ class Isogeo:
         """Get the canvas coordinates in the right format and SRS (WGS84)."""
         if filter == 'canvas':
             e = iface.mapCanvas().extent()
-            current_epsg = custom_tools.get_map_crs()
+            current_epsg = plg_tools.get_map_crs()
         else:
             index = self.dockwidget.cbb_geofilter.findText(filter)
             layer = self.dockwidget.cbb_geofilter.itemData(index)
@@ -1795,11 +1802,11 @@ class Isogeo:
                 logger.error(e)
                 pass
             if self.dockwidget.txt_input.text() == "Ici c'est Isogeo !":
-                custom_tools.special_search("isogeo")
+                plg_tools.special_search("isogeo")
                 self.dockwidget.txt_input.clear()
                 return
             elif self.dockwidget.txt_input.text() == "Picasa":
-                custom_tools.special_search("picasa")
+                plg_tools.special_search("picasa")
                 self.dockwidget.txt_input.clear()
                 return
             else:
@@ -1883,7 +1890,7 @@ class Isogeo:
                     .format(share_url,
                             share.get("name"))
             text += self.tr(u"<p>Updated: {}</p>")\
-                        .format(custom_tools.handle_date(share.get("_modified")))
+                        .format(plg_tools.handle_date(share.get("_modified")))
             text += self.tr(u"<p>Contact: {} - {}</p>")\
                         .format(creator_name,
                                 creator_email)
@@ -1978,10 +1985,10 @@ class Isogeo:
         # -- Settings tab - Resources -----------------------------------------
         # report and log - see #53 and  #139
         self.dockwidget.btn_log_dir.setIcon(ico_log)
-        self.dockwidget.btn_log_dir.pressed.connect(partial(custom_tools.open_dir_file,
+        self.dockwidget.btn_log_dir.pressed.connect(partial(plg_tools.open_dir_file,
                                                             target=plg_logdir))
         self.dockwidget.btn_report.pressed.connect(
-            partial(custom_tools.open_webpage,
+            partial(plg_tools.open_webpage,
                     link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4"
                          .format(self.tr("TITLE ISSUE REPORTED"),
                                  custom_tools.plugin_metadata(base_path=plg_basepath),
@@ -1990,7 +1997,7 @@ class Isogeo:
                     ))
         # help button
         self.dockwidget.btn_help.pressed.connect(
-            partial(custom_tools.open_webpage,
+            partial(plg_tools.open_webpage,
                     link="https://isogeo.gitbooks.io/app-plugin-qgis/content/"
                     ))
         # view credits - see: #52
@@ -2006,23 +2013,29 @@ class Isogeo:
         self.auth_prompt_form.ent_app_id.textEdited.connect(self.control_authentication)
         self.auth_prompt_form.ent_app_secret.textEdited.connect(self.control_authentication)
         # button to request an account by email
-        self.auth_prompt_form.btn_account_new.pressed.connect(partial(custom_tools.mail_to_isogeo, lang=self.lang))
+        self.auth_prompt_form.btn_account_new.pressed.connect(partial(plg_tools.mail_to_isogeo, lang=self.lang))
 
         """ ------ CUSTOM CONNECTIONS ------------------------------------- """
         # get shares only if user switch on tabs
         self.dockwidget.tabWidget.currentChanged.connect(self.ask_shares_info)
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
-        QgsMessageLog.instance().messageReceived.connect(custom_tools.error_catcher)
+        QgsMessageLog.instance().messageReceived.connect(plg_tools.error_catcher)
 
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.dockwidget.setWindowTitle("Isogeo - {}".format(self.plg_version))
         # add translator method in others modules
-        custom_tools.tr = self.tr
-        isogeo_api_mng.tr = self.tr
+        plg_tools.tr = self.tr
+        plg_api_mngr.tr = self.tr
         # checks
-        custom_tools.test_proxy_configuration() #22
+        plg_tools.test_proxy_configuration() #22
         self.test_qgis_style()  # see #137
         isogeo_api_mng.manage_api_initialization()
         self.user_authentication()
         # if everything is okay set focus on search bar
         self.dockwidget.txt_input.setFocus()
+
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
+if __name__ == '__main__':
+    """Standalone execution."""

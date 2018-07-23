@@ -16,16 +16,17 @@ from qgis.PyQt.QtGui import (QIcon, QTableWidgetItem, QComboBox, QPushButton,
 # PyQGIS
 from qgis.utils import iface
 
-# Custom modules
-from .tools import Tools
+# Plugin modules
+from .tools import IsogeoPlgTools
 from .url_builder import UrlBuilder
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-custom_tools = Tools()
-srv_url_bld = UrlBuilder()
+plg_url_bldr = UrlBuilder()
+plg_tools = IsogeoPlgTools()
+
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
@@ -73,7 +74,7 @@ class ResultsManager(object):
         self.add_layer = isogeo_plugin.add_layer
         self.send_details_request = isogeo_plugin.send_details_request
         self.tr = isogeo_plugin.tr
-        self.pg_connections = srv_url_bld.build_postgis_dict(qsettings)
+        self.pg_connections = plg_url_bldr.build_postgis_dict(qsettings)
         self.cached_unreach_paths = []
 
     def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
@@ -111,7 +112,7 @@ class ResultsManager(object):
 
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
-            btn_md_title = QPushButton(custom_tools.format_button_title(md_title))
+            btn_md_title = QPushButton(plg_tools.format_button_title(md_title))
             # Connecting the button to the full metadata popup
             btn_md_title.pressed.connect(partial(
                 self.send_details_request, md_id=md_id))
@@ -123,7 +124,7 @@ class ResultsManager(object):
             # COLUMN 2 - Data last update
             tbl_result.setItem(
                 count, 1, QTableWidgetItem(
-                    custom_tools.handle_date(i.get("_modified"))))
+                    plg_tools.handle_date(i.get("_modified"))))
 
             # COLUMN 3 - Geometry type
             lbl_geom = QLabel(tbl_result)
@@ -222,6 +223,7 @@ class ResultsManager(object):
                     else:
                         pass
                 else:
+                    logger.info(md_id)
                     pass
             # Associated service layers
             d_type = i.get("type")
@@ -233,7 +235,7 @@ class ResultsManager(object):
                                        "formatVersion": service.get("formatVersion")}
                         # EFS
                         if service.get("format") == "efs":
-                            name_url = srv_url_bld.build_efs_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_efs_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -242,7 +244,7 @@ class ResultsManager(object):
                                 pass
                         # EMS
                         if service.get("format") == "ems":
-                            name_url = srv_url_bld.build_ems_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_ems_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -251,7 +253,7 @@ class ResultsManager(object):
                                 pass
                         # WFS
                         if service.get("format") == "wfs":
-                            name_url = srv_url_bld.build_wfs_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wfs_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -260,7 +262,7 @@ class ResultsManager(object):
                                 pass
                         # WMS
                         elif service.get("format") == "wms":
-                            name_url = srv_url_bld.build_wms_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wms_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -269,7 +271,7 @@ class ResultsManager(object):
                                 pass
                         # WMTS
                         elif service.get("format") == "wmts":
-                            name_url = srv_url_bld.build_wmts_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wmts_url(layer, srv_details,
                                                                   rsc_type="ds_dyn_lyr_srv")
                             if name_url[0] != 0:
                                 dico_add_options[u"WMTS : " + name_url[1]] = name_url
@@ -288,7 +290,7 @@ class ResultsManager(object):
                     # WFS
                     if i.get("format") == "wfs":
                         for layer in i.get("layers"):
-                            name_url = srv_url_bld.build_wfs_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wfs_url(layer, srv_details,
                                                                  rsc_type="service",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -299,7 +301,7 @@ class ResultsManager(object):
                     # WMS
                     elif i.get("format") == "wms":
                         for layer in i.get("layers"):
-                            name_url = srv_url_bld.build_wms_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wms_url(layer, srv_details,
                                                                  rsc_type="service",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -310,7 +312,7 @@ class ResultsManager(object):
                     # WMTS
                     elif i.get("format") == "wmts":
                         for layer in i.get("layers"):
-                            name_url = srv_url_bld.build_wmts_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wmts_url(layer, srv_details,
                                                                   rsc_type="service")
                             if name_url[0] != 0:
                                 btn_label = "WMTS : {}".format(name_url[1])
@@ -391,3 +393,9 @@ class ResultsManager(object):
         iface.mainWindow().statusBar().removeWidget(progress_bar)
         # method ending
         return None
+
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
+if __name__ == '__main__':
+    """Standalone execution."""

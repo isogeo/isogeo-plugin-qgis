@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, print_function, unicode_literals)
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 # Standard library
 import base64
 import json
@@ -16,12 +17,16 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.core import QgsMessageLog
 from qgis.utils import iface
 
+# Plugin modules
+from .tools import IsogeoPlgTools
+
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
+plg_tools = IsogeoPlgTools()
 
 # ############################################################################
 # ########## Classes ###############

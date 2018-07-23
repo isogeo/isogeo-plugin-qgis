@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function, unicode_literals)
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 # Standard library
 import logging
@@ -14,16 +15,16 @@ from qgis.PyQt.QtCore import QSettings
 from qgis.core import (QgsDataSourceURI, QgsNetworkAccessManager,
                        QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer)
 
-# Custom modules
-from .tools import Tools
+# Plugin modules
+from .tools import IsogeoPlgTools
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-custom_tools = Tools()
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
+plg_tools = IsogeoPlgTools()
 
 qgis_wms_formats = ('image/png', 'image/png8',
                     'image/jpeg',
@@ -75,6 +76,7 @@ class UrlBuilder(object):
 
     def __init__(self):
         """Class constructor."""
+        # cache
         self.cached_wfs = dict()
         self.cached_wms = dict()
         self.cached_wmts = dict()
@@ -141,7 +143,7 @@ class UrlBuilder(object):
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
-        srs_map = custom_tools.get_map_crs()
+        srs_map = plg_tools.get_map_crs()
         layer_name = api_layer.get("id")
         efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
         efs_lyr_url = "{}/{}".format(srv_details.get("path"), layer_name)
@@ -161,7 +163,7 @@ class UrlBuilder(object):
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
-        srs_map = custom_tools.get_map_crs()
+        srs_map = plg_tools.get_map_crs()
         layer_name = api_layer.get("id")
         ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
         ems_lyr_url = "{}/{}".format(srv_details.get("path"), layer_name)
@@ -197,7 +199,7 @@ class UrlBuilder(object):
 
         if mode == "quicky":
             # let's try a quick & dirty url build
-            srs_map = custom_tools.get_map_crs()
+            srs_map = plg_tools.get_map_crs()
             wfs_url_base = srv_details.get("path")
             uri = QgsDataSourceURI()
             uri.setParam("url", wfs_url_base)
@@ -267,7 +269,7 @@ class UrlBuilder(object):
                                 e)
 
             # SRS definition
-            srs_map = custom_tools.get_map_crs()
+            srs_map = plg_tools.get_map_crs()
             srs_lyr_new = qsettings.value("/Projections/defaultBehaviour")
             srs_lyr_crs = qsettings.value("/Projections/layerDefaultCrs")
             srs_qgs_new = qsettings.value("/Projections/projectDefaultCrs")
@@ -280,7 +282,7 @@ class UrlBuilder(object):
             #       "For new projects: " + srs_qgs_new,
             #       "OTF enabled: " + srs_qgs_otf_on,
             #       "OTF smart enabled: " + srs_qgs_otf_auto,
-            #       "Map canvas SRS:" + custom_tools.get_map_crs())
+            #       "Map canvas SRS:" + plg_tools.get_map_crs())
 
             wfs_lyr_crs_epsg = ["{}:{}".format(srs.authority, srs.code)
                                 for srs in wfs_lyr.crsOptions]
@@ -355,7 +357,7 @@ class UrlBuilder(object):
 
         if mode == "quicky":
             # let's try a quick & dirty url build
-            srs_map = custom_tools.get_map_crs()
+            srs_map = plg_tools.get_map_crs()
             wms_url_base = srv_details.get("path")
             if "?" not in wms_url_base:
                 wms_url_base = wms_url_base + "?"
@@ -429,7 +431,7 @@ class UrlBuilder(object):
                                 wms_url_getcap), e)
 
             # SRS definition
-            srs_map = custom_tools.get_map_crs()
+            srs_map = plg_tools.get_map_crs()
             srs_lyr_new = qsettings.value("/Projections/defaultBehaviour")
             srs_lyr_crs = qsettings.value("/Projections/layerDefaultCrs")
             srs_qgs_new = qsettings.value("/Projections/projectDefaultCrs")
@@ -442,7 +444,7 @@ class UrlBuilder(object):
             #       "For new projects: " + srs_qgs_new,
             #       "OTF enabled: " + srs_qgs_otf_on,
             #       "OTF smart enabled: " + srs_qgs_otf_auto,
-            #       "Map canvas SRS:" + custom_tools.get_map_crs())
+            #       "Map canvas SRS:" + plg_tools.get_map_crs())
             self.cached_wms["CRS"] = wms_lyr.crsOptions
             if srs_map in wms_lyr.crsOptions:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
@@ -568,7 +570,7 @@ class UrlBuilder(object):
                             wmts_url_getcap), e)
 
         # Tile Matrix Set & SRS
-        srs_map = custom_tools.get_map_crs()
+        srs_map = plg_tools.get_map_crs()
         def_tile_matrix_set = wmts_lyr.tilematrixsets[0]
         if srs_map in wmts_lyr.tilematrixsets:
             logger.debug("WMTS - It's a SRS match! With map canvas: " + srs_map)

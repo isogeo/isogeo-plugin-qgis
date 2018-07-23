@@ -31,5 +31,5 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgsInterface
     """
     #
-    from .isogeo import Isogeo
+    from isogeo import Isogeo
     return Isogeo(iface)
