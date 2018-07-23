@@ -60,30 +60,6 @@ class IsogeoPlgTools(IsogeoUtils):
             # instanciate
             super(IsogeoPlgTools, self).__init__ ()
 
-    def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
-        """Plugin metadata.txt parser.
-        
-        :param path base_path: directory path whete the metadata txt is stored
-        :param str section: section of values. Until nom, there is only "general".
-        :param str value: value to get from the file. Available values:
-
-          * qgisMinimumVersion
-          * qgisMaximumVersion
-          * description
-          * version - [DEFAULT]
-          * author
-          * email
-          * about
-          * tracker
-          * repository
-        """
-        config = ConfigParser.ConfigParser()
-        if path.isfile(path.join(base_path, 'metadata.txt')):
-            config.read(path.join(base_path, 'metadata.txt'))
-            return config.get('general', value)
-        else:
-            logger.error(path.dirname(__file__))
-
     def error_catcher(self, msg, tag, level):
         """Catch QGIS error messages for introspection."""
         if tag == 'WMS' and level != 0:
@@ -212,6 +188,30 @@ class IsogeoPlgTools(IsogeoUtils):
         # method ending
         logger.info("Bugtracker launched in the default web browser")
         return
+
+    def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
+        """Plugin metadata.txt parser.
+        
+        :param path base_path: directory path whete the metadata txt is stored
+        :param str section: section of values. Until nom, there is only "general".
+        :param str value: value to get from the file. Available values:
+
+          * qgisMinimumVersion
+          * qgisMaximumVersion
+          * description
+          * version - [DEFAULT]
+          * author
+          * email
+          * about
+          * tracker
+          * repository
+        """
+        config = ConfigParser.ConfigParser()
+        if path.isfile(path.join(base_path, 'metadata.txt')):
+            config.read(path.join(base_path, 'metadata.txt'))
+            return config.get('general', value)
+        else:
+            logger.error(path.dirname(__file__))
 
     def results_pages_counter(self, total=0, page_size=10):
         """Calculate the number of pages for a given number of results.
