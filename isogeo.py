@@ -338,23 +338,23 @@ class Isogeo:
         del self.toolbar
 
     # --------------------------------------------------------------------------
-    def user_authentication(self):
-        """Test the validity of the user id and secret.
-        This is the first major function the plugin calls when executed. It
-        retrieves the id and secret from the config file. If they are set to
-        their default value, it asks for them.
-        If not, it tries to send a request.
-        """
-        self.user_id = qsettings.value("isogeo/auth/id", 0)
-        self.user_secret = qsettings.value("isogeo/auth/secret", 0)
-        if self.user_id != 0 and self.user_secret != 0:
-            logger.info("User_authentication function is trying "
-                         "to get a token from the id/secret")
-            self.ask_for_token(self.user_id, self.user_secret)
-        else:
-            logger.info("No id/secret. User authentication function "
-                         "is showing the auth window.")
-            self.auth_prompt_form.show()
+    # def user_authentication(self):
+    #     """Test the validity of the user id and secret.
+    #     This is the first major function the plugin calls when executed. It
+    #     retrieves the id and secret from the config file. If they are set to
+    #     their default value, it asks for them.
+    #     If not, it tries to send a request.
+    #     """
+    #     self.user_id = qsettings.value("isogeo/auth/id", 0)
+    #     self.user_secret = qsettings.value("isogeo/auth/secret", 0)
+    #     if self.user_id != 0 and self.user_secret != 0:
+    #         logger.info("User_authentication function is trying "
+    #                      "to get a token from the id/secret")
+    #         self.ask_for_token(self.user_id, self.user_secret)
+    #     else:
+    #         logger.info("No id/secret. User authentication function "
+    #                      "is showing the auth window.")
+    #         self.auth_prompt_form.show()
 
     def control_authentication(self):
         """Disable plugins features if authentication's parameters changed."""
@@ -1976,11 +1976,10 @@ class Isogeo:
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
         self.dockwidget.btn_change_user.pressed.connect(
-            partial(custom_tools.display_auth_form,
-                    ui_auth_form=self.auth_prompt_form))
+            partial(plg_api_mngr.display_auth_form))
         # share text window
         self.dockwidget.txt_shares.setOpenLinks(False)
-        self.dockwidget.txt_shares.anchorClicked.connect(custom_tools.open_webpage)
+        self.dockwidget.txt_shares.anchorClicked.connect(plg_tools.open_webpage)
 
         # -- Settings tab - Resources -----------------------------------------
         # report and log - see #53 and  #139
@@ -1991,7 +1990,7 @@ class Isogeo:
             partial(plg_tools.open_webpage,
                     link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4"
                          .format(self.tr("TITLE ISSUE REPORTED"),
-                                 custom_tools.plugin_metadata(base_path=plg_basepath),
+                                 plg_tools.plugin_metadata(base_path=plg_basepath),
                                  QGis.QGIS_VERSION,
                                  platform.platform())
                     ))
@@ -2005,7 +2004,7 @@ class Isogeo:
 
         # -- Authentication form ----------------------------------------------
         # credentials file browser -> loader - see #149
-        self.auth_prompt_form.btn_browse_credentials.fileChanged.connect(partial(custom_tools.credentials_reader,
+        self.auth_prompt_form.btn_browse_credentials.fileChanged.connect(partial(plg_api_mngr.credentials_uploader,
                                                                                  auth_form=self.auth_prompt_form))
         # If user changes his id or his secret in parameters, buttons save and cancel are disabled
         # The user has to verify before by clicking on button check - see #99
@@ -2029,8 +2028,11 @@ class Isogeo:
         # checks
         plg_tools.test_proxy_configuration() #22
         self.test_qgis_style()  # see #137
-        isogeo_api_mng.manage_api_initialization()
-        self.user_authentication()
+        if not plg_api_mngr.manage_api_initialization():
+            self.onClosePlugin()
+        else:
+            logger.info("ALL LIGHTS ARE GREEN: plugin launched!")
+        #self.user_authentication()
         # if everything is okay set focus on search bar
         self.dockwidget.txt_input.setFocus()
 
