@@ -145,41 +145,6 @@ class IsogeoPlgApiMngr(object):
             logger.debug("No Isogeo credentials found within QGIS QSettings.")
             return False
 
-    def credentials_check_qauthmanager(self):
-        """Retrieve Isogeo API credentials within QGIS Authentication Manager."""
-        # check if AuthenticationManager has been already initialized
-        if not self.qgis_auth_mng.authenticationDbPath():
-            logger.debug("QGIS Authentication Manager isn't initialized: no qgis-auth.db.")
-            return False
-        else:
-            pass
-        # check if a master password has been set -> if user uses Auth Manager or not
-        if not self.qgis_auth_mng.masterPasswordIsSet():
-            logger.debug("Master password has still not been set for session.")
-            if not self.qgis_auth_mng.setMasterPassword(verify=True):
-                logger.debug("Master password still not correct after 3 attempts.")
-                return False
-            else:
-                pass
-        else:
-            pass
-        # check if an Isogeo auth ID already exists
-        if qsettings.value("isogeo/app_auth/qgis_auth_id"):
-            old_auth_isogeo_id = qsettings.value("isogeo/app_auth/qgis_auth_id")
-            self.qgis_auth_mng.removeAuthenticationConfig(old_auth_isogeo_id)
-            logger.warning("Old credentials found and removed in QGIS"
-                           " Authentication Manager: {}".format(old_auth_isogeo_id))
-            return False
-        elif qsettings.value("isogeo/auth/qgis_auth_id"):
-            self.qgs_auth_isogeo_id = qsettings.value("isogeo/auth/qgs_auth_id")
-            logger.debug("Isogeo auth_id found into QGIS AuthManager: {}"
-                         .format(self.qgs_auth_isogeo_id))
-        else:
-            logger.debug("Master password set but no Isogeo Auth ID found")
-            return False
-        
-        return True
-
     def credentials_check_file(self):
         """Retrieve Isogeo API credentials from a file stored inside the 
         plugin _auth subfolder.
