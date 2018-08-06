@@ -46,8 +46,7 @@ from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkRequest
 # PyQGIS
 import db_manager.db_plugins.postgis.connector as con
 from qgis.utils import iface, plugin_times, QGis
-from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
-                       QgsCoordinateReferenceSystem, QgsCoordinateTransform,
+from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
                        QgsDataSourceURI,
                        QgsMapLayerRegistry, QgsMessageLog,
                        QgsNetworkAccessManager,
@@ -86,7 +85,6 @@ sys.setdefaultencoding('utf-8')
 # QGIS useful tooling and shortcuts
 msgBar = iface.messageBar()
 network_mng = QNetworkAccessManager()
-qgs_auth_mngr = QgsAuthManager.instance()
 qsettings = QSettings()
 
 # plugin internal submodules
@@ -338,23 +336,23 @@ class Isogeo:
         del self.toolbar
 
     # --------------------------------------------------------------------------
-    # def user_authentication(self):
-    #     """Test the validity of the user id and secret.
-    #     This is the first major function the plugin calls when executed. It
-    #     retrieves the id and secret from the config file. If they are set to
-    #     their default value, it asks for them.
-    #     If not, it tries to send a request.
-    #     """
-    #     self.user_id = qsettings.value("isogeo/auth/id", 0)
-    #     self.user_secret = qsettings.value("isogeo/auth/secret", 0)
-    #     if self.user_id != 0 and self.user_secret != 0:
-    #         logger.info("User_authentication function is trying "
-    #                      "to get a token from the id/secret")
-    #         self.ask_for_token(self.user_id, self.user_secret)
-    #     else:
-    #         logger.info("No id/secret. User authentication function "
-    #                      "is showing the auth window.")
-    #         self.auth_prompt_form.show()
+    def user_authentication(self):
+        """Test the validity of the user id and secret.
+        This is the first major function the plugin calls when executed. It
+        retrieves the id and secret from the config file. If they are set to
+        their default value, it asks for them.
+        If not, it tries to send a request.
+        """
+        self.user_id = qsettings.value("isogeo/auth/id", 0)
+        self.user_secret = qsettings.value("isogeo/auth/secret", 0)
+        if self.user_id != 0 and self.user_secret != 0:
+            logger.info("User_authentication function is trying "
+                         "to get a token from the id/secret")
+            self.ask_for_token(self.user_id, self.user_secret)
+        else:
+            logger.info("No id/secret. User authentication function "
+                         "is showing the auth window.")
+            self.auth_prompt_form.show()
 
     def control_authentication(self):
         """Disable plugins features if authentication's parameters changed."""
@@ -398,50 +396,6 @@ class Isogeo:
         qsettings.setValue("isogeo/api_auth/id", app_id)
         qsettings.setValue("isogeo/api_auth/secret", app_secret)
         qsettings.setValue("isogeo/user/editor", int(user_editor))
-
-        # anticipating on QGIS Auth Management
-        if qgs_auth_mngr.authenticationDbPath():
-            logger.debug("TRACKING - AUTH: new QGIS system already initialized")
-            auth_isogeo_id = qsettings.value("isogeo/app_auth/qgis_auth_id")
-            # already initialised => we are inside a QGIS app.
-            if (qgs_auth_mngr.masterPasswordIsSet() and
-               auth_isogeo_id in qgs_auth_mngr.availableAuthMethodConfigs()):
-                logger.debug("TRACKING - AUTH: master password has been set"
-                            " and Isogeo auth config already exists."
-                            " Let's update it if needed.")
-                # get existing Isogeo auth id
-                auth_isogeo = qgs_auth_mngr.availableAuthMethodConfigs()\
-                                           .get(auth_isogeo_id)
-                # update values from form
-                auth_isogeo.setConfig("username", app_id)
-                auth_isogeo.setConfig("password", app_secret)
-                # check if method parameters are correctly set and store it
-                if auth_isogeo.isValid():
-                    qgs_auth_mngr.updateAuthenticationConfig(auth_isogeo)
-                else:
-                    logger.error("AUTH - Fail to create and store configuration")
-            elif (qgs_auth_mngr.masterPasswordIsSet() and
-                  auth_isogeo_id not in qgs_auth_mngr.availableAuthMethodConfigs()):
-                logger.debug("TRACKING - AUTH: master password has been set"
-                            " and Isogeo auth config doesn't exist yet")
-                auth_isogeo_cfg = QgsAuthMethodConfig()
-                auth_isogeo_cfg.setName("Isogeo")
-                auth_isogeo_cfg.setMethod("Basic")
-                auth_isogeo_cfg.setUri("https://v1.api.isogeo.com/about")
-                auth_isogeo_cfg.setConfig("username", app_id)
-                auth_isogeo_cfg.setConfig("password", app_secret)
-                # check if method parameters are correctly set and store it
-                if auth_isogeo_cfg.isValid():
-                    qgs_auth_mngr.storeAuthenticationConfig(auth_isogeo_cfg)
-                    qsettings.setValue("isogeo/app_auth/qgis_auth_id",
-                                       auth_isogeo_cfg.id())
-                else:
-                    logger.error("AUTH - Fail to create and store configuration")
-            else:
-                logger.debug("TRACKING - AUTH: master password is not set")
-                pass
-        else:
-            pass
 
         # launch authentication
         self.user_authentication()
@@ -2028,11 +1982,7 @@ class Isogeo:
         # checks
         plg_tools.test_proxy_configuration() #22
         self.test_qgis_style()  # see #137
-        if not plg_api_mngr.manage_api_initialization():
-            self.onClosePlugin()
-        else:
-            logger.info("ALL LIGHTS ARE GREEN: plugin launched!")
-        #self.user_authentication()
+        self.user_authentication()
         # if everything is okay set focus on search bar
         self.dockwidget.txt_input.setFocus()
 

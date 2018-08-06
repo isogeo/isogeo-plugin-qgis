@@ -15,8 +15,7 @@ from qgis.PyQt.QtGui import QMessageBox
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # PyQGIS
-from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
-                       QgsMessageLog, QgsNetworkAccessManager)
+from qgis.core import (QgsMessageLog, QgsNetworkAccessManager)
 from qgis.utils import iface
 
 # Plugin modules
@@ -50,7 +49,6 @@ class IsogeoPlgApiMngr(object):
 
     # plugin credentials storage parameters
     credentials_storage = {
-        "QgsAuthManager": 0,
         "QSettings": 0,
         "oAuth2_file": 0,
         }
@@ -82,7 +80,6 @@ class IsogeoPlgApiMngr(object):
 
         # authentication
         self.auth_folder = auth_folder
-        self.qgis_auth_mng = QgsAuthManager.instance()  #♪ QGIS Authentication Manager
 
         # connect
 
@@ -97,15 +94,12 @@ class IsogeoPlgApiMngr(object):
         2. check if credentials are valid requesting Isogeo API ID
         """
         # try to retrieve existing credentials from potential sources
-        self.credentials_storage["QgsAuthManager"] = self.credentials_check_qauthmanager()
         self.credentials_storage["QSettings"] = self.credentials_check_qsettings()
         self.credentials_storage["oAuth2_file"] = self.credentials_check_file()
 
         # update class attributes from credentials found
         self.credentials_storage["QSettings"] = 0   # FO EASIER DEV
-        if self.credentials_storage.get("QgsAuthManager"):
-            self.credentials_update("QgsAuthManager")
-        elif self.credentials_storage.get("QSettings"):
+        if self.credentials_storage.get("QSettings"):
             self.credentials_update("QSettings")
         elif self.credentials_storage.get("oAuth2_file"):
             self.credentials_update("oAuth2_file")
@@ -211,7 +205,6 @@ class IsogeoPlgApiMngr(object):
         
         :param store_location str: name of targetted store location. Options:
             - QSettings
-            - QgsAuthManager
         """
         if credentials_source == "QSettings":
             qsettings.setValue("isogeo/auth/app_id", self.api_app_id)
@@ -220,13 +213,6 @@ class IsogeoPlgApiMngr(object):
             qsettings.setValue("isogeo/auth/url_auth", self.api_url_auth)
             qsettings.setValue("isogeo/auth/url_token", self.api_url_token)
             qsettings.setValue("isogeo/auth/url_redirect", self.api_url_redirect)
-        elif credentials_source == "QgsAuthManager":
-            auth_isogeo_cfg = QgsAuthMethodConfig()
-            auth_isogeo_cfg.setName("IsogeoPlugin")
-            auth_isogeo_cfg.setMethod("Basic")
-            auth_isogeo_cfg.setUri(self.api_url_base)
-            auth_isogeo_cfg.setConfig("app_id", self.api_app_id)
-            auth_isogeo_cfg.setConfig("app_secret", self.api_app_secret)
         else:
             pass
         logger.debug("Credentials stored into: {}".format(store_location))
@@ -250,8 +236,6 @@ class IsogeoPlgApiMngr(object):
             self.api_url_auth = creds.get("uri_auth")
             self.api_url_token = creds.get("uri_token")
             self.api_url_redirect = creds.get("uri_redirect")
-        elif credentials_source == "QgsAuthManager":
-            pass
         else:
             pass
 
@@ -309,12 +293,6 @@ class IsogeoPlgApiMngr(object):
 
         # update class attributes from file
         self.credentials_update(credentials_source="oAuth2_file")
-
-        # store into QGIS Authentication Manager if activated
-        if self.credentials_storage.get("QgsAuthManager"):
-            self.credentials_storer(store_location="QgsAuthManager")
-        else:
-            pass
 
         # store into QSettings if existing
         if self.credentials_storage.get("QSettings"):
