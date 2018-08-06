@@ -41,7 +41,7 @@ except (ImportError, ValueError, SystemError):
 
 checker = checker.IsogeoChecker()
 utils = utils.IsogeoUtils()
-version = "2.20.1"
+version = "2.20.2"
 
 # #############################################################################
 # ########## Classes ###############

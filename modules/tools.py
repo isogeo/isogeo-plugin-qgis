@@ -362,17 +362,6 @@ class IsogeoPlgTools(IsogeoUtils):
                             " OS but none in QGIS.\nPlease set it up in "
                             "'Preferences/Options/Network'.", "Tools"))
 
-    def url_base_from_url_token(self, url_api_token="https://id.api.isogeo.com/oauth/token"):
-        """Returns the Isogeo API root URL from the token, which is always
-        stored within credentials file.
-        
-        :param url_api_token str: url to Isogeo API ID token generator
-        """
-        in_parsed = urlparse(url_api_token)
-        api_url_base = in_parsed._replace(path="",
-                                          netloc=in_parsed.netloc.replace("id.", ""))
-        return api_url_base.geturl()
-
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
