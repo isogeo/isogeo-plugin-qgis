@@ -112,27 +112,30 @@ class IsogeoPlgApiMngr(object):
             return False
         elif "isogeo" in qsettings.childGroups():
             # looking in child groups and clean a little if needed
-            #qsettings.beginGroup("isogeo")
-            if "isogeo/app_auth" in qsettings.childGroups():
+            qsettings.beginGroup("isogeo")
+            if "app_auth" in qsettings.childGroups():
                 qsettings.remove("isogeo/app_auth")
                 logger.debug("QSettings clean up - app_auth")
                 pass
-            if "isogeo/api_auth" in qsettings.childGroups():
+            if "api_auth" in qsettings.childGroups():
                 qsettings.remove("isogeo/api_auth")
                 logger.debug("QSettings clean up - api_auth")
                 pass
-            if "isogeo/auth" in qsettings.childGroups() \
-            and not qsettings.contains("isogeo/auth/app_id"):
+            if "auth" in qsettings.childGroups() \
+            and not qsettings.contains("auth/app_id"):
                 qsettings.remove("isogeo/auth")
                 logger.debug("QSettings clean up - bad formatted auth")
                 pass
-            if "isogeo/auth" in qsettings.childGroups() \
-            and qsettings.contains("isogeo/auth/app_id"):
+            if "auth" in qsettings.childGroups() \
+            and qsettings.contains("auth/app_id"):
                 logger.debug("Credentials found within QGIS QSettings: isogeo/")
-                return True
+                pass
+            qsettings.endGroup()
+            return True
         else:
-            logger.debug("No Isogeo credentials found within QGIS QSettings.")
-            return False
+            pass
+        logger.debug("No Isogeo credentials found within QGIS QSettings.")
+        return False
 
     def credentials_check_file(self):
         """Retrieve Isogeo API credentials from a file stored inside the 
