@@ -1,3 +1,18 @@
+"""
+
+
+
+    ```python
+    from qgis.PyQt.QtCore import QSettings
+    qsettings = QSettings()
+    # subgroups
+    qsettings.childGroups()
+    # get Isogeo
+    qsettings.beginGroup("isogeo")
+
+    ```
+"""
+
 # DB Manager
 
 DB_Manager/mainWindow/geometry
