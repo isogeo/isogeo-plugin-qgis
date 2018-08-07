@@ -14,15 +14,16 @@ branches:
   only:
     - master
 
-before_install:
-  - sudo apt-get install --y python-software-properties
+git:
+  depth: 20
 
 addons:
   apt:
     update: true
     sources:
-      - sourceline: "ppa:ubuntugis/ubuntugis-unstable"
+      - sourceline: 'deb https://qgis.org/ubuntu-ltr/ trusty main'
     packages:
+      - python-software-properties
       - qgis
       - python-qgis
       - pyqt4-dev-tools
