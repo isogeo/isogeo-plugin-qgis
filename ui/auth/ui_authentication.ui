@@ -27,7 +27,7 @@
    <string>Isogeo authentication settings</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../../resources.qrc">
     <normaloff>:/plugins/Isogeo/resources/users.svg</normaloff>:/plugins/Isogeo/resources/users.svg</iconset>
   </property>
   <property name="locale">
@@ -149,6 +149,9 @@
         <property name="echoMode">
          <enum>QLineEdit::PasswordEchoOnEdit</enum>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
         <property name="placeholderText">
          <string notr="true" />
         </property>
@@ -181,7 +184,7 @@
          <string>I've got edition rights on app.isogeo.com</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../resources.qrc">
           <normaloff>:/plugins/Isogeo/resources/authentication/user.svg</normaloff>:/plugins/Isogeo/resources/authentication/user.svg</iconset>
         </property>
         <property name="tristate">
@@ -223,6 +226,9 @@
         </property>
         <property name="maxLength">
          <number>100</number>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
         <property name="placeholderText">
          <string>plugin-qgis-org-a1b23c4d5f6g7h8i9j10kl11mn13op14</string>
@@ -352,7 +358,7 @@
          <string>Check</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../resources.qrc">
           <normaloff>:/plugins/Isogeo/resources/authentication/sign-in.svg</normaloff>:/plugins/Isogeo/resources/authentication/sign-in.svg</iconset>
         </property>
         <property name="default">
@@ -602,7 +608,7 @@
          <string>Request plugin access</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../resources.qrc">
           <normaloff>:/plugins/Isogeo/resources/authentication/send-o.svg</normaloff>:/plugins/Isogeo/resources/authentication/send-o.svg</iconset>
         </property>
         <property name="default">
@@ -656,7 +662,6 @@
    <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
- <resources />
  <connections>
   <connection>
    <sender>btn_ok_cancel</sender>

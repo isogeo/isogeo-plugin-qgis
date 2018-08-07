@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\auth\ui_authentication.ui'
 #
-# Created: Mon Jul 16 15:17:46 2018
+# Created: Tue Aug 07 16:16:09 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -83,6 +83,7 @@ class Ui_dlg_form_auth_prompt(object):
         self.ent_app_secret.setText(_fromUtf8(""))
         self.ent_app_secret.setMaxLength(64)
         self.ent_app_secret.setEchoMode(QtGui.QLineEdit.PasswordEchoOnEdit)
+        self.ent_app_secret.setReadOnly(True)
         self.ent_app_secret.setPlaceholderText(_fromUtf8(""))
         self.ent_app_secret.setObjectName(_fromUtf8("ent_app_secret"))
         self.gridLayout_2.addWidget(self.ent_app_secret, 3, 3, 1, 1)
@@ -115,6 +116,7 @@ class Ui_dlg_form_auth_prompt(object):
         self.ent_app_id.setAutoFillBackground(True)
         self.ent_app_id.setText(_fromUtf8(""))
         self.ent_app_id.setMaxLength(100)
+        self.ent_app_id.setReadOnly(True)
         self.ent_app_id.setCursorMoveStyle(QtCore.Qt.LogicalMoveStyle)
         self.ent_app_id.setObjectName(_fromUtf8("ent_app_id"))
         self.gridLayout_2.addWidget(self.ent_app_id, 2, 3, 1, 1)
@@ -310,7 +312,8 @@ class Ui_dlg_form_auth_prompt(object):
 "</html>\n"
 "", None))
 
-from qgis.gui import QgsFileWidget
+from qgsfilewidget import QgsFileWidget
+import resources_rc
 
 if __name__ == "__main__":
     import sys
