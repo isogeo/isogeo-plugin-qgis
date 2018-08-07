@@ -164,7 +164,8 @@ class IsogeoPlgApiMngr(object):
         :param store_location str: name of targetted store location. Options:
             - QSettings
         """
-        if credentials_source == "QSettings":
+        if store_location == "QSettings":
+            logger.debug("youhou")
             qsettings.setValue("isogeo/auth/app_id", self.api_app_id)
             qsettings.setValue("isogeo/auth/app_secret", self.api_app_secret)
             qsettings.setValue("isogeo/auth/url_base", self.api_url_base)
@@ -187,13 +188,14 @@ class IsogeoPlgApiMngr(object):
             self.api_url_redirect = qsettings.value("isogeo/auth/url_redirect", "http://localhost:5000/callback")
         elif credentials_source == "oAuth2_file":
             creds = plg_tools.credentials_loader(path.join(self.auth_folder,
-                                                                "client_secrets.json"))
+                                                           "client_secrets.json"))
             self.api_app_id = creds.get("client_id")
             self.api_app_secret = creds.get("client_secret")
             self.api_url_base = creds.get("uri_base")
             self.api_url_auth = creds.get("uri_auth")
             self.api_url_token = creds.get("uri_token")
             self.api_url_redirect = creds.get("uri_redirect")
+            #self.credentials_storer(store_location="QSettings")
         else:
             pass
 
