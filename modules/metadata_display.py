@@ -41,7 +41,7 @@ plg_url_bldr = UrlBuilder()
 
 
 class MetadataDisplayer(object):
-    """Basic class that holds utilitary methods for the plugin."""
+    """Manage metadata displaying in QGIS UI."""
     url_edition = "https://app.isogeo.com"
 
     def __init__(self, ui_md_details):
@@ -348,8 +348,6 @@ class MetadataDisplayer(object):
                                                     md.get("_created")[:19]))
 
         # -- EDIT LINK -------------------------------------------------------
-        #self.url_edition = "https://app.isogeo.com/groups/{}/resources/{}"\
-        #                   .format(wg_id, md.get("_id"))
         self.url_edition = plg_tools.get_edit_url(md_id=md.get("_id"),
                                                   md_type=md.get("type"),
                                                   owner_id=wg_id)
