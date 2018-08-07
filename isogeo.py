@@ -350,29 +350,6 @@ class Isogeo:
             self.ask_for_token(plg_api_mngr.api_app_id,
                                plg_api_mngr.api_app_secret)
 
- 
-    def control_authentication(self):
-        """Disable plugins features if authentication's parameters changed."""
-
-        # Disable buttons save and cancel
-        self.auth_prompt_form.btn_ok_cancel.setEnabled(False)
-
-        # Disable all plugin's widgets
-        self.switch_widgets_on_and_off(0)
-        app_id = self.auth_prompt_form.ent_app_id.text()
-        app_secret = self.auth_prompt_form.ent_app_secret.text()
-        user_editor = self.auth_prompt_form.chb_isogeo_editor.isChecked()
-
-        if app_id and app_secret:
-            # old name maintained for compatibility reasons
-            qsettings.setValue("isogeo/auth/id", app_id)
-            qsettings.setValue("isogeo/auth/secret", app_secret)
-
-            # new name to anticipate on future migration
-            qsettings.setValue("isogeo/api_auth/id", app_id)
-            qsettings.setValue("isogeo/api_auth/secret", app_secret)
-            qsettings.setValue("isogeo/user/editor", int(user_editor))
-
     def write_ids_and_test(self):
         """Store the id & secret and launch the test function.
         Called when the authentification window is closed,
@@ -1928,8 +1905,8 @@ class Isogeo:
         # If user changes his id or his secret in parameters, buttons save and cancel are disabled
         # The user has to verify before by clicking on button check - see #99
         self.auth_prompt_form.btn_check_auth.pressed.connect(self.write_ids_and_test)
-        self.auth_prompt_form.ent_app_id.textEdited.connect(self.control_authentication)
-        self.auth_prompt_form.ent_app_secret.textEdited.connect(self.control_authentication)
+        self.auth_prompt_form.chb_isogeo_editor.stateChanged.connect(lambda: qsettings.setValue("isogeo/user/editor",
+                                                                             int(self.auth_prompt_form.chb_isogeo_editor.isChecked())))
         # button to request an account by email
         self.auth_prompt_form.btn_account_new.pressed.connect(partial(plg_tools.mail_to_isogeo, lang=self.lang))
 
