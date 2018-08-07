@@ -346,9 +346,10 @@ class Isogeo:
         self.dockwidget.tab_search.setEnabled(False)
         if plg_api_mngr.manage_api_initialization():
             self.dockwidget.tab_search.setEnabled(True)
-            plg_api_mngr.req_status_isClear = False
+            plg_api_mngr.req_status_isClear = True
             self.ask_for_token(plg_api_mngr.api_app_id,
                                plg_api_mngr.api_app_secret)
+            #plg_api_mngr.auth_req_token_post()
 
     def write_ids_and_test(self):
         """Store the id & secret and launch the test function.

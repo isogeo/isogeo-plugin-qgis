@@ -101,7 +101,8 @@ class IsogeoPlgApiMngr(object):
             self.credentials_update("oAuth2_file")
         else:
             logger.info("No credentials found. ")
-            return self.display_auth_form()
+            self.display_auth_form()
+            return False
 
         return True
 
@@ -281,7 +282,7 @@ class IsogeoPlgApiMngr(object):
         if self.req_status_isClear:
             self.req_status_isClear = False
             request_response =  self.req_qgs_ntwk_mngr_auth.post(request, databyte)
-            self.req_qgs_ntwk_mngr_auth.finished.connect(self.auth_req_token_resp)
+            request_response.finished.connect(self.auth_req_token_resp)
             #hoho = req_token.finished.connect(partial(self.auth_req_token_resp,
             #                                          resp_auth_token=req_token))
             logger.debug("youpi")
