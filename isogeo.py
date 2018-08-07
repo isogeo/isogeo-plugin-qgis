@@ -343,9 +343,9 @@ class Isogeo:
         If not, it tries to send a request.
         """
         plg_api_mngr.req_status_isClear = False
-        self.dockwidget.setEnabled(False)
+        self.dockwidget.tab_search.setEnabled(False)
         if plg_api_mngr.manage_api_initialization():
-            self.dockwidget.setEnabled(True)
+            self.dockwidget.tab_search.setEnabled(True)
             plg_api_mngr.req_status_isClear = False
             self.ask_for_token(plg_api_mngr.api_app_id,
                                plg_api_mngr.api_app_secret)
@@ -1665,29 +1665,11 @@ class Isogeo:
         """
         if mode:
             self.dockwidget.txt_input.setReadOnly(False)
-            self.dockwidget.cbb_quicksearch_use.setEnabled(True)
-            self.dockwidget.grp_filters.setEnabled(True)
-            self.dockwidget.lyt_search.setEnabled(True)
-            self.dockwidget.btn_reinit.setEnabled(True)
-            self.dockwidget.btn_quicksearch_save.setEnabled(True)
-            self.dockwidget.btn_show.setEnabled(True)
-            self.dockwidget.tbl_result.setEnabled(True)
-            self.dockwidget.cbb_keywords.setEnabled(True)
+            self.dockwidget.tab_search.setEnabled(True)
 
         else:
             self.dockwidget.txt_input.setReadOnly(True)
-            self.dockwidget.cbb_quicksearch_use.setEnabled(False)
-            self.dockwidget.grp_filters.setEnabled(False)
-            self.dockwidget.lyt_search.setEnabled(False)
-            self.dockwidget.btn_next.setEnabled(False)
-            self.dockwidget.btn_previous.setEnabled(False)
-            self.dockwidget.cbb_ob.setEnabled(False)
-            self.dockwidget.cbb_od.setEnabled(False)
-            self.dockwidget.btn_reinit.setEnabled(False)
-            self.dockwidget.btn_quicksearch_save.setEnabled(False)
-            self.dockwidget.btn_show.setEnabled(False)
-            self.dockwidget.tbl_result.setEnabled(False)
-            self.dockwidget.cbb_keywords.setEnabled(False)
+            self.dockwidget.tab_search.setEnabled(False)
 
     def show_popup(self, popup):
         """Open the pop up window that asks a name to save the search."""
