@@ -1939,8 +1939,7 @@ class Isogeo:
 
         # -- Authentication form ----------------------------------------------
         # credentials file browser -> loader - see #149
-        self.auth_prompt_form.btn_browse_credentials.fileChanged.connect(partial(plg_api_mngr.credentials_uploader,
-                                                                                 auth_form=self.auth_prompt_form))
+        self.auth_prompt_form.btn_browse_credentials.fileChanged.connect(plg_api_mngr.credentials_uploader)
         # If user changes his id or his secret in parameters, buttons save and cancel are disabled
         # The user has to verify before by clicking on button check - see #99
         self.auth_prompt_form.btn_check_auth.pressed.connect(self.write_ids_and_test)
