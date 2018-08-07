@@ -88,8 +88,8 @@ network_mng = QNetworkAccessManager()
 qsettings = QSettings()
 
 # plugin internal submodules
-plg_tools = IsogeoPlgTools(auth_folder=os.path.join(plg_basepath, "_auth"))
 plg_api_mngr = IsogeoPlgApiMngr(auth_folder=os.path.join(plg_basepath, "_auth"))
+plg_tools = IsogeoPlgTools(auth_folder=os.path.join(plg_basepath, "_auth"))
 plg_url_bldr = UrlBuilder()
 
 # -- LOG FILE --------------------------------------------------------
@@ -343,16 +343,10 @@ class Isogeo:
         their default value, it asks for them.
         If not, it tries to send a request.
         """
-        self.user_id = qsettings.value("isogeo/auth/id", 0)
-        self.user_secret = qsettings.value("isogeo/auth/secret", 0)
-        if self.user_id != 0 and self.user_secret != 0:
-            logger.info("User_authentication function is trying "
-                         "to get a token from the id/secret")
-            self.ask_for_token(self.user_id, self.user_secret)
-        else:
-            logger.info("No id/secret. User authentication function "
-                         "is showing the auth window.")
-            self.auth_prompt_form.show()
+        plg_api_mngr.manage_api_initialization()
+        if plg_api_mngr.api_app_id and plg_api_mngr.api_app_secret:
+            self.ask_for_token(plg_api_mngr.api_app_id,
+                               plg_api_mngr.api_app_secret)
 
     def control_authentication(self):
         """Disable plugins features if authentication's parameters changed."""
@@ -382,20 +376,7 @@ class Isogeo:
         it stores the values in the file, then call the
         user_authentification function to test them.
         """
-        logger.info("Authentication window accepted. Writting"
-                     " id/secret in QSettings.")
-        app_id = self.auth_prompt_form.ent_app_id.text()
-        app_secret = self.auth_prompt_form.ent_app_secret.text()
-        user_editor = self.auth_prompt_form.chb_isogeo_editor.isChecked()
-
-        # old name maintained for compatibility reasons
-        qsettings.setValue("isogeo/auth/id", app_id)
-        qsettings.setValue("isogeo/auth/secret", app_secret)
-
-        # new name to anticipate on future migration
-        qsettings.setValue("isogeo/api_auth/id", app_id)
-        qsettings.setValue("isogeo/api_auth/secret", app_secret)
-        qsettings.setValue("isogeo/user/editor", int(user_editor))
+        plg_api_mngr.credentials_storer()
 
         # launch authentication
         self.user_authentication()
@@ -1982,9 +1963,8 @@ class Isogeo:
         # checks
         plg_tools.test_proxy_configuration() #22
         self.test_qgis_style()  # see #137
-        self.user_authentication()
-        # if everything is okay set focus on search bar
         self.dockwidget.txt_input.setFocus()
+        self.user_authentication()
 
 # #############################################################################
 # ##### Stand alone program ########
