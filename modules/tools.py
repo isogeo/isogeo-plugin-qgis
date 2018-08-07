@@ -40,6 +40,7 @@ from .isogeo_pysdk import IsogeoUtils
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
+msgBar = iface.messageBar()
 
 # ############################################################################
 # ########## Classes ###############
@@ -361,6 +362,30 @@ class IsogeoPlgTools(IsogeoUtils):
                     self.tr("Proxy issue : \nYou have a proxy set up on your"
                             " OS but none in QGIS.\nPlease set it up in "
                             "'Preferences/Options/Network'.", "Tools"))
+
+    def test_qgis_style(self):
+        """
+            Check QGIS style applied to ensure compatibility with comboboxes.
+            Avert the user and force change if the selected is not adapted.
+            See: https://github.com/isogeo/isogeo-plugin-qgis/issues/137.
+        """
+        style_qgis = qsettings.value("qgis/style", "Default")
+        if style_qgis in ("macintosh", "cleanlooks"):
+            qsettings.setValue("qgis/style", "Plastique")
+            msgBar.pushMessage(self.tr("The '{}' QGIS style is not "
+                                       "compatible with combobox. It has "
+                                       "been changed. Please restart QGIS.")
+                                       .format(style_qgis),
+                               duration=0,
+                               level=msgBar.WARNING)
+            logger.warning("The '{}' QGIS style is not compatible with combobox."
+                           " Isogeo plugin changed it to 'Plastique'."
+                           "Please restart QGIS."
+                           .format(style_qgis))
+            return False
+        else:
+            return True
+        
 
 # #############################################################################
 # ##### Stand alone program ########

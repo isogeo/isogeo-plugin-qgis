@@ -1710,29 +1710,6 @@ class Isogeo:
                 pass
             self.search()
 
-    def test_qgis_style(self):
-        """
-            Check QGIS style applied to ensure compatibility with comboboxes.
-            Avert the user and force change if the selected is not adapted.
-            See: https://github.com/isogeo/isogeo-plugin-qgis/issues/137.
-        """
-        style_qgis = qsettings.value('qgis/style', "Default")
-        if style_qgis in ("macintosh", "cleanlooks"):
-            qsettings.setValue(u"qgis/style", u'Plastique')
-            self.dockwidget.cbb_keywords.setEnabled(False)
-            msgBar.pushMessage(self.tr("The '{}' QGIS style is not "
-                                       "compatible with combobox. It has "
-                                       "been changed. Please restart QGIS.")
-                                       .format(style_qgis),
-                               duration=0,
-                               level=msgBar.WARNING)
-            logger.info("The '{}' QGIS style is not compatible with combobox."
-                         " Isogeo plugin changed it to 'Plastique'."
-                         "Please restart QGIS."
-                         .format(style_qgis))
-        else:
-            self.dockwidget.cbb_keywords.setEnabled(True)
-
     # ------------ SETTINGS - Shares -----------------------------------------
 
     def ask_shares_info(self, index):
@@ -1923,7 +1900,7 @@ class Isogeo:
         plg_api_mngr.tr = self.tr
         # checks
         plg_tools.test_proxy_configuration() #22
-        self.test_qgis_style()  # see #137
+        self.dockwidget.cbb_keywords.setEnabled(plg_tools.test_qgis_style())  # see #137
         self.dockwidget.txt_input.setFocus()
         self.user_authentication()
 
