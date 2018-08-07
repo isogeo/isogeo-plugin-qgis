@@ -6,8 +6,9 @@ import base64
 import json
 import logging
 from functools import partial
-from os import path
+from os import path, rename
 from urllib import urlencode
+import time
 
 # PyQT
 from qgis.PyQt.QtCore import QByteArray, QSettings, QUrl
@@ -72,7 +73,6 @@ class IsogeoPlgApiMngr(object):
 
         # API requests
         self.currentUrl = ""
-        self.request_status_clear = 1
 
         # translation
         self.tr = object
@@ -100,8 +100,10 @@ class IsogeoPlgApiMngr(object):
         elif self.credentials_storage.get("oAuth2_file"):
             self.credentials_update("oAuth2_file")
         else:
-            logger.info("No credentials found.")
-            self.display_auth_form()
+            logger.info("No credentials found. ")
+            return self.display_auth_form()
+
+        return True
 
     # CREDENTIALS LOCATORS ----------------------------------------------------
     def credentials_check_qsettings(self):
@@ -150,7 +152,7 @@ class IsogeoPlgApiMngr(object):
         # check file structure
         try:
             plg_tools.credentials_loader(credentials_filepath)
-            logger.debug("Credentials found in credentials_filepath")
+            logger.debug("Credentials found in {}".format(credentials_filepath))
         except Exception as e:
             logger.debug(e)
             return False
@@ -211,6 +213,7 @@ class IsogeoPlgApiMngr(object):
         self.ui_auth_form.lbl_api_url_value.setText(self.api_url_base)
         self.ui_auth_form.chb_isogeo_editor.setChecked(qsettings
                                                   .value("isogeo/user/editor", 0))
+        
         # display
         logger.debug("Authentication form filled and ready to be launched.")
         self.ui_auth_form.show()
@@ -221,9 +224,9 @@ class IsogeoPlgApiMngr(object):
         moved inside plugin\_auth subfolder.
         """
         # test file structure
-        logger.debug("YARK.")
         try:
-            api_credentials = plg_tools.credentials_loader(path.normpath(self.ui_auth_form.btn_browse_credentials.filePath()))
+            selected_file = path.normpath(self.ui_auth_form.btn_browse_credentials.filePath())
+            api_credentials = plg_tools.credentials_loader(selected_file)
         except Exception as e:
             logger.error(e)
             QMessageBox.critical(self.ui_auth_form,
@@ -240,7 +243,8 @@ class IsogeoPlgApiMngr(object):
                          "Previous file has been renamed.")
         else:
             pass
-        rename(path.normpath(self.ui_auth_form.btn_browse_credentials.filePath()),
+        logger.debug("YARK {}".format(path.join(self.auth_folder, "client_secrets.json")))
+        rename(selected_file,
                path.join(self.auth_folder, "client_secrets.json"))
         logger.debug("Selected credentials file has been moved into plugin"
                      "_auth subfolder")
@@ -249,16 +253,12 @@ class IsogeoPlgApiMngr(object):
         self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
         self.ui_auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
         self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
-        logger.debug(api_credentials.keys())
 
         # update class attributes from file
         self.credentials_update(credentials_source="oAuth2_file")
 
         # store into QSettings if existing
-        if self.credentials_storage.get("QSettings"):
-            self.credentials_storer(store_location="QSettings")
-        else:
-            pass
+        self.credentials_storer(store_location="QSettings")
 
     # API COMMUNICATION ------------------------------------------------------
     def auth_req_token_post(self):
