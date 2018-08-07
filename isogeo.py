@@ -204,7 +204,6 @@ class Isogeo:
 
         # start variables
         self.savedSearch = "first"
-        self.requestStatusClear = True
         self.loopCount = 0
         self.hardReset = False
         self.showResult = False
@@ -343,11 +342,15 @@ class Isogeo:
         their default value, it asks for them.
         If not, it tries to send a request.
         """
-        plg_api_mngr.manage_api_initialization()
-        if plg_api_mngr.api_app_id and plg_api_mngr.api_app_secret:
+        plg_api_mngr.req_status_isClear = False
+        self.dockwidget.setEnabled(False)
+        if plg_api_mngr.manage_api_initialization():
+            self.dockwidget.setEnabled(True)
+            plg_api_mngr.req_status_isClear = False
             self.ask_for_token(plg_api_mngr.api_app_id,
                                plg_api_mngr.api_app_secret)
 
+ 
     def control_authentication(self):
         """Disable plugins features if authentication's parameters changed."""
 
@@ -393,8 +396,8 @@ class Isogeo:
         url = QUrl('https://id.api.isogeo.com/oauth/token')
         request = QNetworkRequest(url)
         request.setRawHeader("Authorization", headervalue)
-        if self.requestStatusClear is True:
-            self.requestStatusClear = False
+        if plg_api_mngr.req_status_isClear is True:
+            plg_api_mngr.req_status_isClear = False
             token_reply = self.manager.post(request, databyte)
             token_reply.finished.connect(
                 partial(self.handle_token, answer=token_reply))
@@ -436,10 +439,10 @@ class Isogeo:
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content.get('access_token')
             if self.savedSearch == "first":
-                self.requestStatusClear = True
+                plg_api_mngr.req_status_isClear = True
                 self.set_widget_status()
             else:
-                self.requestStatusClear = True
+                plg_api_mngr.req_status_isClear = True
                 self.send_request_to_isogeo_api(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
@@ -456,7 +459,7 @@ class Isogeo:
                                        .format(parsed_content.get('error')),
                                duration=10,
                                level=msgBar.WARNING)
-            self.requestStatusClear = True
+            plg_api_mngr.req_status_isClear = True
         else:
             logger.debug("The API reply has an unexpected form: {}"
                           .format(parsed_content))
@@ -466,7 +469,7 @@ class Isogeo:
                                        .format(parsed_content.get('error')),
                                duration=10,
                                level=msgBar.CRITICAL)
-            self.requestStatusClear = True
+            plg_api_mngr.req_status_isClear = True
 
     def send_request_to_isogeo_api(self, token):
         """Send a content url to the Isogeo API.
@@ -478,8 +481,8 @@ class Isogeo:
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
         request.setRawHeader("Authorization", token)
-        if self.requestStatusClear is True:
-            self.requestStatusClear = False
+        if plg_api_mngr.req_status_isClear is True:
+            plg_api_mngr.req_status_isClear = False
             api_reply = self.manager.get(request)
             api_reply.finished.connect(
                 partial(self.handle_api_reply, answer=api_reply))
@@ -502,28 +505,28 @@ class Isogeo:
             if self.showDetails is False and self.settingsRequest is False:
                 self.loopCount = 0
                 parsed_content = json.loads(content)
-                self.requestStatusClear = True
+                plg_api_mngr.req_status_isClear = True
                 self.update_fields(parsed_content)
                 del parsed_content
             elif self.showDetails is True:
                 self.showDetails = False
                 self.loopCount = 0
                 parsed_content = json.loads(content)
-                self.requestStatusClear = True
+                plg_api_mngr.req_status_isClear = True
                 self.md_display.show_complete_md(parsed_content)
                 del parsed_content
             elif self.settingsRequest is True:
                 self.settingsRequest = False
                 self.loopCount = 0
                 parsed_content = json.loads(content)
-                self.requestStatusClear = True
+                plg_api_mngr.req_status_isClear = True
                 self.write_shares_info(parsed_content)
                 del parsed_content
 
         elif answer.error() == 204:
             logger.info("Token expired. Renewing it.")
             self.loopCount = 0
-            self.requestStatusClear = True
+            plg_api_mngr.req_status_isClear = True
             self.ask_for_token(self.user_id, self.user_secret)
         elif content == "":
             logger.info("Empty reply. Weither no catalog is shared with the "
@@ -533,16 +536,16 @@ class Isogeo:
                 self.loopCount += 1
                 answer.abort()
                 del answer
-                self.requestStatusClear = True
+                plg_api_mngr.req_status_isClear = True
                 self.ask_for_token(self.user_id, self.user_secret)
             else:
-                self.requestStatusClear = True
+                plg_api_mngr.req_status_isClear = True
                 msgBar.pushMessage(
                     self.tr("The script is looping. Make sure you shared a "
                             "catalog with the plugin. If so, please report "
                             "this on the bug tracker."))
         else:
-            self.requestStatusClear = True
+            plg_api_mngr.req_status_isClear = True
             QMessageBox.information(self.iface.mainWindow(),
                                     self.tr("Error"),
                                     self.tr("You are facing an unknown error. "
@@ -1363,7 +1366,7 @@ class Isogeo:
         self.currentUrl = plg_api_mngr.build_request_url(params)
         logger.debug(self.currentUrl)
         # Sending the request to Isogeo API
-        if self.requestStatusClear is True:
+        if plg_api_mngr.req_status_isClear is True:
             self.send_request_to_isogeo_api(self.token)
         else:
             pass
@@ -1399,7 +1402,7 @@ class Isogeo:
             # URL BUILDING FUNCTION CALLED.
             self.currentUrl = plg_api_mngr.build_request_url(params)
             # Sending the request
-            if self.requestStatusClear is True:
+            if plg_api_mngr.req_status_isClear is True:
                 self.send_request_to_isogeo_api(self.token)
 
     def previous_page(self):
@@ -1429,7 +1432,7 @@ class Isogeo:
             # URL BUILDING FUNCTION CALLED.
             self.currentUrl = plg_api_mngr.build_request_url(params)
             # Sending the request
-            if self.requestStatusClear is True:
+            if plg_api_mngr.req_status_isClear is True:
                 self.send_request_to_isogeo_api(self.token)
 
     def write_search_params(self, search_name, search_kind="Default"):
@@ -1500,7 +1503,7 @@ class Isogeo:
                     rect = QgsRectangle(e[0], e[1], e[2], e[3])
                     canvas.setExtent(rect)
                     canvas.refresh()
-            if self.requestStatusClear is True:
+            if plg_api_mngr.req_status_isClear is True:
                 self.send_request_to_isogeo_api(self.token)
 
     # ------------ Quicksearches ------------------------------------------
@@ -1710,7 +1713,7 @@ class Isogeo:
                                   "feature-attributes,limitations,"
                                   "keywords,specifications")
         self.showDetails = True
-        if self.requestStatusClear is True:
+        if plg_api_mngr.req_status_isClear is True:
             self.send_request_to_isogeo_api(self.token)
         else:
             pass
@@ -1724,7 +1727,7 @@ class Isogeo:
         if self.dockwidget.txt_input.text() == self.old_text:
             try:
                 logger.debug("The lineEdit text hasn't changed."
-                            " So pass without sending a request.")
+                             " So pass without sending a request.")
             except AttributeError as e:
                 logger.error(e)
                 pass
@@ -1777,7 +1780,7 @@ class Isogeo:
         """TODO : Only if not already done before."""
         if index == 0:
             pass
-        elif index == 1 and self.requestStatusClear is True:
+        elif index == 1 and plg_api_mngr.req_status_isClear is True:
             if self.dockwidget.txt_shares.toPlainText() == "":
                 self.settingsRequest = True
                 self.oldUrl = self.currentUrl
