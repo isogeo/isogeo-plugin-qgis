@@ -75,7 +75,6 @@ class MetadataDisplayer(object):
 
         # -- GENERAL ---------------------------------------------------------
         title = md.get("title", "NR")
-        logger.error("YOUPI")
         self.complete_md.lbl_title.setText(md.get("title", "NR"))
         self.complete_md.val_owner.setText(md.get("_creator")
                                              .get("contact")
@@ -180,7 +179,7 @@ class MetadataDisplayer(object):
         if md.get("updateFrequency", None):
             freq = md.get("updateFrequency")
             frequency_info = "{}{} {}"\
-                             .format(isogeo_tr.tr(None, "frequencyUpdateHelp"),
+                             .format(isogeo_tr.tr("frequencyTypes", "frequencyUpdateHelp"),
                                      ''.join(i for i in freq if i.isdigit()),
                                      isogeo_tr.tr("frequencyShortTypes",
                                                   freq[-1]))
