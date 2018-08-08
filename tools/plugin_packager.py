@@ -234,7 +234,7 @@ RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "ui", "quicksearch", "dlg_quicksearch_
 # -- User settings ----------------------------------------------------------
 
 QUICKSEARCHES = {"_default": {"contact": None,
-                              "datatype": None,
+                              "datatype": "type:dataset",
                               "favorite": None,
                               "format": None,
                               "geofilter": None,
