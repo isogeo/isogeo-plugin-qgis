@@ -206,7 +206,7 @@ class IsogeoTranslator(object):
 
         :param str lang: language code to apply. EN or FR.
         """
-        if lang == "FR":
+        if lang.upper() == "FR":
             self.translations = dict_md_fields_fr
         else:
             self.translations = dict_md_fields_en

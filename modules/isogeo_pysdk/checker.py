@@ -52,12 +52,12 @@ FILTER_PROVIDERS = ("manual",
                     "auto"
                     )
 
-FILTER_TYPES = ("dataset",
-                "raster-dataset",
-                "vector-dataset",
-                "resource",
-                "service"
-                )
+FILTER_TYPES = {"dataset": "dataset",
+                "raster-dataset": "rasterDataset",
+                "vector-dataset": "vectorDataset",
+                "resource": "resource",
+                "service": "service",
+                }
 
 GEORELATIONS = ("contains",
                 "disjoint",
@@ -327,10 +327,13 @@ class IsogeoChecker(object):
         else:
             pass
         if md_type not in FILTER_TYPES:
-            raise ValueError("'{}' isn't a valid metadata type. "
-                             "Available values: {}"
-                             .format(tab, " | ".join(FILTER_TYPES))
-                             )
+            if md_type in FILTER_TYPES.values():
+                md_type = self._convert_md_type(md_type)
+            else:
+                raise ValueError("'{}' isn't a valid metadata type. "
+                                 "Available values: {}"
+                                 .format(md_type, " | ".join(FILTER_TYPES))
+                                 )
         else:
             pass
         # check adequation tab/md_type
@@ -436,6 +439,22 @@ class IsogeoChecker(object):
         else:
             raise TypeError("'subresource' expects a str")
         return subresource
+
+    def _convert_md_type(self, type_to_convert):
+        """Metadata types are not consistent in Isogeo API. A vector dataset is
+         defined as vector-dataset in query filter but as vectorDataset in
+         resource (metadata) details.
+
+        see: https://github.com/isogeo/isogeo-api-py-minsdk/issues/29
+        """
+        if type_to_convert in FILTER_TYPES:
+            return FILTER_TYPES.get(type_to_convert)
+        elif type_to_convert in FILTER_TYPES.values():
+            return [k for k, v in FILTER_TYPES.items()
+                    if v == type_to_convert][0]
+        else:
+            raise ValueError("Incorrect metadata type to convert: {}"
+                             .format(type_to_convert))
 
 
 # ##############################################################################
