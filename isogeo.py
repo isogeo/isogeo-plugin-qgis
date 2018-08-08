@@ -347,8 +347,7 @@ class Isogeo:
         if plg_api_mngr.manage_api_initialization():
             self.dockwidget.tab_search.setEnabled(True)
             plg_api_mngr.req_status_isClear = True
-            self.ask_for_token(plg_api_mngr.api_app_id,
-                               plg_api_mngr.api_app_secret)
+            self.ask_for_token()
             #plg_api_mngr.auth_req_token_post()
 
     def write_ids_and_test(self):
@@ -362,16 +361,18 @@ class Isogeo:
         # launch authentication
         self.user_authentication()
 
-    def ask_for_token(self, c_id, c_secret):
+    def ask_for_token(self):
         """Ask a token from Isogeo API authentification page.
         This send a POST request to Isogeo API with the user id and secret in
         its header. The API should return an access token
         """
-        headervalue = "Basic " + base64.b64encode(c_id + ":" + c_secret)
+        headervalue = "Basic " + base64.b64encode("{}:{}"
+                                                  .format(plg_api_mngr.api_app_id,
+                                                          plg_api_mngr.api_app_secret))
         data = urllib.urlencode({"grant_type": "client_credentials"})
         databyte = QByteArray()
         databyte.append(data)
-        url = QUrl('https://id.api.isogeo.com/oauth/token')
+        url = QUrl(plg_api_mngr.api_url_token)
         request = QNetworkRequest(url)
         request.setRawHeader("Authorization", headervalue)
         if plg_api_mngr.req_status_isClear is True:
@@ -1308,7 +1309,8 @@ class Isogeo:
             name = self.tr("Last search")
             saved_searches[name] = saved_searches.get(
                 '_current',
-                "https://v1.api.isogeo.com/resources/search?&_limit=0")
+                "{}/resources/search?&_limit=0"
+                .format(plg_api_mngr.api_url_base))
             # Refresh the quick searches comboboxes content
             search_list = saved_searches.keys()
             search_list.pop(search_list.index('_default'))
@@ -1666,8 +1668,9 @@ class Isogeo:
         :param str md_id: UUID of metadata to retrieve
         """
         logger.debug("Full metatada sheet asked. Building the url.")
-        self.currentUrl = "https://v1.api.isogeo.com/resources/{}{}"\
-                          .format(md_id,
+        self.currentUrl = "{}/resources/{}{}"\
+                          .format(plg_api_mngr.api_url_base,
+                                  md_id,
                                   "?_include=conditions,contacts,"
                                   "coordinate-system,events,"
                                   "feature-attributes,limitations,"
@@ -1721,7 +1724,7 @@ class Isogeo:
             if self.dockwidget.txt_shares.toPlainText() == "":
                 self.settingsRequest = True
                 self.oldUrl = self.currentUrl
-                self.currentUrl = 'https://v1.api.isogeo.com/shares'
+                self.currentUrl = "{}/shares".format(plg_api_mngr.api_url_base)
                 self.send_request_to_isogeo_api(self.token)
             else:
                 pass
