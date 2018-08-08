@@ -35,6 +35,16 @@ plg_api_mngr = IsogeoPlgApiMngr()
 plg_tools = IsogeoPlgTools()
 plg_url_bldr = UrlBuilder()
 
+osm_lbls = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Labels&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
+osm_refs = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Features&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
+blue_marble = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/jpeg&layers=BlueMarble_ShadedRelief_Bathymetry&styles=default&tileMatrixSet=500m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
+
+li_lyrs_refs = [
+    QgsRasterLayer(osm_lbls, "Labels", 'wms'),
+    QgsRasterLayer(osm_refs, "Refs", 'wms'),
+    QgsRasterLayer(blue_marble, "Base", 'wms')
+]
+
 # ############################################################################
 # ########## Classes ###############
 # ##################################
@@ -52,11 +62,7 @@ class MetadataDisplayer(object):
         # some basic settings
         self.complete_md.wid_bbox.setCanvasColor(Qt.white)
         self.complete_md.wid_bbox.enableAntiAliasing(True)
-        world_wmts_url = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&"\
-                         "featureCount=10&format=image/jpeg&layers=opengeo:countries&"\
-                         "styles=&tileMatrixSet=EPSG:4326&"\
-                         "url=http://suite.opengeo.org/geoserver/gwc/service/wmts?request%3DGetCapabilities"
-        self.world_lyr = QgsRasterLayer(world_wmts_url, "Countries", 'wms')
+
         self.complete_md.btn_md_edit.pressed.connect(lambda: plg_tools.open_webpage(link=self.url_edition))
 
     def show_complete_md(self, md):
@@ -266,14 +272,20 @@ class MetadataDisplayer(object):
             md_lyr = self.envelope2layer(md.get("envelope"))
             # add layers
             QgsMapLayerRegistry.instance().addMapLayers([md_lyr,
-                                                         self.world_lyr],
+                                                         li_lyrs_refs[0],
+                                                         li_lyrs_refs[1],
+                                                         li_lyrs_refs[2]
+                                                         ],
                                                         0)
             map_canvas_layer_list = [QgsMapCanvasLayer(md_lyr),
-                                     QgsMapCanvasLayer(self.world_lyr)]
+                                     QgsMapCanvasLayer(li_lyrs_refs[0]),
+                                     QgsMapCanvasLayer(li_lyrs_refs[1]),
+                                     QgsMapCanvasLayer(li_lyrs_refs[2]),
+                                     ]
             self.complete_md.wid_bbox.setLayerSet(map_canvas_layer_list)
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())
+            self.complete_md.wid_bbox.zoomOut()
         else:
-            self.complete_md.wid_bbox.setExtent(self.world_lyr.extent())
             self.complete_md.grp_bbox.setDisabled(1)
 
         # -- CGUs ------------------------------------------------------------
