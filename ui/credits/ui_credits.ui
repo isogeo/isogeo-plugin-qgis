@@ -71,16 +71,6 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
-         <widget class="QLabel" name="lbl_development">
-          <property name="text">
-           <string>Developed by Isogeo</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
            <widget class="QLabel" name="lbl_isogeo_logo">
@@ -384,7 +374,7 @@
           <item column="2" row="1">
            <widget class="QLabel" name="lbl_license_logo_gpl3">
             <property name="text">
-             <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;LGPL v3 - Wikipédia&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;LGPL v3 - Wikipedia&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="scaledContents">
              <bool>true</bool>

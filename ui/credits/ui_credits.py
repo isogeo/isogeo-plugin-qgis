@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\credits\ui_credits.ui'
 #
-# Created: Thu May 31 19:44:18 2018
+# Created: Wed Aug 08 18:30:44 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -51,10 +51,6 @@ class Ui_dlg_credits(object):
         self.grp_realization.setObjectName(_fromUtf8("grp_realization"))
         self.verticalLayout_7 = QtGui.QVBoxLayout(self.grp_realization)
         self.verticalLayout_7.setObjectName(_fromUtf8("verticalLayout_7"))
-        self.lbl_development = QtGui.QLabel(self.grp_realization)
-        self.lbl_development.setWordWrap(True)
-        self.lbl_development.setObjectName(_fromUtf8("lbl_development"))
-        self.verticalLayout_7.addWidget(self.lbl_development)
         self.horizontalLayout_4 = QtGui.QHBoxLayout()
         self.horizontalLayout_4.setObjectName(_fromUtf8("horizontalLayout_4"))
         self.lbl_isogeo_logo = QtGui.QLabel(self.grp_realization)
@@ -184,7 +180,7 @@ class Ui_dlg_credits(object):
         self.ico_lgplv3.setObjectName(_fromUtf8("ico_lgplv3"))
         self.gridLayout_4.addWidget(self.ico_lgplv3, 0, 2, 1, 1)
         self.lbl_license_logo_gpl3 = QtGui.QLabel(self.grp_sources)
-        self.lbl_license_logo_gpl3.setText(_fromUtf8("<html><head/><body><p><a href=\"https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License\"><span style=\" text-decoration: underline; color:#0000ff;\">LGPL v3 - Wikipédia</span></a></p></body></html>"))
+        self.lbl_license_logo_gpl3.setText(_fromUtf8("<html><head/><body><p><a href=\"https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License\"><span style=\" text-decoration: underline; color:#0000ff;\">LGPL v3 - Wikipedia</span></a></p></body></html>"))
         self.lbl_license_logo_gpl3.setScaledContents(True)
         self.lbl_license_logo_gpl3.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl_license_logo_gpl3.setOpenExternalLinks(True)
@@ -212,12 +208,12 @@ class Ui_dlg_credits(object):
     def retranslateUi(self, dlg_credits):
         dlg_credits.setWindowTitle(_translate("dlg_credits", "Credits", None))
         self.grp_realization.setTitle(_translate("dlg_credits", "Realization", None))
-        self.lbl_development.setText(_translate("dlg_credits", "Developed by Isogeo", None))
         self.lbl_isogeo_punchline.setText(_translate("dlg_credits", "<a href=\"https://www.isogeo.com\" style=\"color:#6480A7;text-decoration:none;\">Easy access to geodata!</a>", None))
         self.grp_sponsors.setTitle(_translate("dlg_credits", "Sponsors", None))
         self.grp_sources.setTitle(_translate("dlg_credits", "Sources and license", None))
         self.lbl_source_repository.setText(_translate("dlg_credits", "<html><head/><body><p><a href=\"https://github.com/isogeo/isogeo-plugin-qgis\"><span style=\" text-decoration: underline; color:#0000ff;\">Code hosted on Github</span></a></p></body></html>", None))
 
+import resources_rc
 
 if __name__ == "__main__":
     import sys

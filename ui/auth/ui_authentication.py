@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\auth\ui_authentication.ui'
 #
-# Created: Tue Aug 07 16:16:09 2018
+# Created: Wed Aug 08 18:30:40 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -312,8 +312,7 @@ class Ui_dlg_form_auth_prompt(object):
 "</html>\n"
 "", None))
 
-from qgsfilewidget import QgsFileWidget
-import resources_rc
+from qgis.gui import QgsFileWidget
 
 if __name__ == "__main__":
     import sys
