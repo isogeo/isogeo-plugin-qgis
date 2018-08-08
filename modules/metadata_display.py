@@ -14,7 +14,7 @@ from qgis.gui import QgsMapCanvasLayer
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings, Qt
-from qgis.PyQt.QtGui import QTableWidgetItem
+from qgis.PyQt.QtGui import QColor, QTableWidgetItem
 
 # 3rd party
 from .isogeo_pysdk import IsogeoTranslator
@@ -391,6 +391,9 @@ class MetadataDisplayer(object):
                                 "Metadata envelope",
                                 "memory")
         md_lyr.setLayerTransparency(75)
+        symbols = md_lyr.rendererV2().symbols()
+        symbol = symbols[0]
+        symbol.setColor(QColor.fromRgb(255,20,147))
 
         if envelope.get("type") == "Polygon":
             # parse coordinates
