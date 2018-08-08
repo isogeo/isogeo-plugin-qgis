@@ -341,7 +341,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="md_general">
         <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -555,7 +555,7 @@ QListWidget::item::selected {
               <string />
              </property>
              <property name="pixmap">
-              <pixmap>:/plugins/Isogeo/resources/inspire.png</pixmap>
+              <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/inspire.png</pixmap>
              </property>
              <property name="scaledContents">
               <bool>true</bool>
@@ -661,8 +661,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>516</width>
-                <height>177</height>
+                <width>526</width>
+                <height>189</height>
                </rect>
               </property>
               <property name="maximumSize">
@@ -821,8 +821,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
-                 <height>188</height>
+                 <width>534</width>
+                 <height>199</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_16">
@@ -904,8 +904,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
-                 <height>188</height>
+                 <width>534</width>
+                 <height>198</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_15">
@@ -2402,8 +2402,8 @@ QListWidget::item::selected {
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>545</width>
-              <height>699</height>
+              <width>554</width>
+              <height>711</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
@@ -2458,27 +2458,20 @@ QListWidget::item::selected {
                 </font>
                </property>
                <property name="cursor">
-                <cursorShape>UpArrowCursor</cursorShape>
+                <cursorShape>IBeamCursor</cursorShape>
                </property>
                <property name="title">
                 <string>Metadata owner</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_8">
-                <item column="1" row="3">
-                 <spacer name="horiz_spacer_wg_address">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>89</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
                 <item column="0" row="1">
                  <widget class="QLabel" name="val_owner_email">
+                  <property name="minimumSize">
+                   <size>
+                    <width>225</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>50</width>
@@ -2505,6 +2498,12 @@ QListWidget::item::selected {
                 </item>
                 <item column="0" row="3">
                  <widget class="QLabel" name="val_owner_address">
+                  <property name="minimumSize">
+                   <size>
+                    <width>225</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>50</width>
@@ -2524,6 +2523,12 @@ QListWidget::item::selected {
                 </item>
                 <item column="0" row="2">
                  <widget class="QLabel" name="val_owner_phone">
+                  <property name="minimumSize">
+                   <size>
+                    <width>225</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>50</width>
@@ -2541,21 +2546,14 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="4">
-                 <spacer name="horiz_spacer_wg_city">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>57</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
                 <item column="0" row="4">
                  <widget class="QLabel" name="val_owner_city">
+                  <property name="minimumSize">
+                   <size>
+                    <width>225</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>50</width>
@@ -2573,21 +2571,14 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="2">
-                 <spacer name="horiz_spacer_wg_phone">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>470</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
                 <item column="0" row="5">
                  <widget class="QLabel" name="val_owner_country">
+                  <property name="minimumSize">
+                   <size>
+                    <width>225</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>50</width>
@@ -2605,50 +2596,11 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="5">
-                 <spacer name="horiz_spacer_wg_country">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item column="1" row="1">
-                 <spacer name="horiz_spacer_wg_email">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item column="1" row="0">
-                 <spacer name="horiz_spacer_wg_name">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>357</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
                 <item column="0" row="0">
                  <widget class="QLabel" name="val_owner_name">
                   <property name="minimumSize">
                    <size>
-                    <width>16</width>
+                    <width>225</width>
                     <height>16</height>
                    </size>
                   </property>
@@ -2672,7 +2624,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="6">
+                <item column="0" row="6">
                  <spacer name="verticalSpacer_8">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -2712,31 +2664,68 @@ QListWidget::item::selected {
                 <string>Metadata properties</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_10">
-                <item column="1" row="2">
-                 <widget class="QLabel" name="lbl_md_date_update">
+                <item column="1" row="1">
+                 <widget class="QLabel" name="lbl_md_date_crea">
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>50</width>
-                    <height>32</height>
+                    <height>16777215</height>
                    </size>
                   </property>
                   <property name="font">
                    <font>
-                    <pointsize>8</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
                   </property>
                   <property name="text">
-                   <string>Last update:</string>
-                  </property>
-                  <property name="scaledContents">
-                   <bool>true</bool>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>false</bool>
+                   <string>Created:</string>
                   </property>
                  </widget>
+                </item>
+                <item column="1" row="0">
+                 <widget class="QLabel" name="lbl_md_lang">
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Language: </string>
+                  </property>
+                 </widget>
+                </item>
+                <item column="2" row="1">
+                 <spacer name="horiz_spacer_val_md_date_crea">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                 <item column="0" row="2">
                  <widget class="QLabel" name="ico_md_date_update">
@@ -2769,12 +2758,18 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="0">
-                 <widget class="QLabel" name="lbl_md_lang">
+                <item column="0" row="1">
+                 <widget class="QLabel" name="ico_md_date_crea">
+                  <property name="minimumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
-                    <width>50</width>
-                    <height>16777215</height>
+                    <width>16</width>
+                    <height>16</height>
                    </size>
                   </property>
                   <property name="font">
@@ -2784,7 +2779,90 @@ QListWidget::item::selected {
                    </font>
                   </property>
                   <property name="text">
-                   <string>Language: </string>
+                   <string />
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-plus-o.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item column="2" row="2">
+                 <spacer name="horiz_spacer_val_md_date_update">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item column="2" row="0">
+                 <spacer name="horiz_spacer_val_md_lang">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>470</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item column="3" row="1">
+                 <widget class="QLabel" name="val_md_date_crea">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item column="1" row="2">
+                 <widget class="QLabel" name="lbl_md_date_update">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>32</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>8</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Last update:</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -2819,63 +2897,6 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="0">
-                 <widget class="QLabel" name="val_md_lang">
-                  <property name="font">
-                   <font>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>TextLabel</string>
-                  </property>
-                 </widget>
-                </item>
-                <item column="2" row="0">
-                 <spacer name="horiz_spacer_val_md_lang">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>470</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item column="0" row="1">
-                 <widget class="QLabel" name="ico_md_date_crea">
-                  <property name="minimumSize">
-                   <size>
-                    <width>16</width>
-                    <height>16</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16</width>
-                    <height>16</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string />
-                  </property>
-                  <property name="pixmap">
-                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-plus-o.svg</pixmap>
-                  </property>
-                  <property name="scaledContents">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
                 <item column="3" row="2">
                  <widget class="QLabel" name="val_md_date_update">
                   <property name="font">
@@ -2889,21 +2910,8 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="2">
-                 <spacer name="horiz_spacer_val_md_date_update">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item column="3" row="1">
-                 <widget class="QLabel" name="val_md_date_crea">
+                <item column="3" row="0">
+                 <widget class="QLabel" name="val_md_lang">
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -2915,39 +2923,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="1">
-                 <widget class="QLabel" name="lbl_md_date_crea">
-                  <property name="maximumSize">
-                   <size>
-                    <width>50</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Created:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item column="2" row="1">
-                 <spacer name="horiz_spacer_val_md_date_crea">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item column="1" row="3">
+                <item column="2" row="3">
                  <spacer name="vert_spacer_md_properties">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>

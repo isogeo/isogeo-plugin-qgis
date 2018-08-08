@@ -90,7 +90,7 @@ class MetadataDisplayer(object):
         self.complete_md.val_keywords.setText(" ; ".join(kwords.keys()))
         # INSPIRE themes and conformity
         themes = tags.get("inspire", {"none": "NR"})
-        self.complete_md.val_inspire_themes.setText(" ; ".join(themes.values()))
+        self.complete_md.val_inspire_themes.setText(" ; ".join(themes.keys()))
         if tags.get("compliance"):
             self.complete_md.ico_inspire_conformity.setEnabled(1)
             self.complete_md.ico_inspire_conformity.setToolTip(
