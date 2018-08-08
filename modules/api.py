@@ -430,7 +430,7 @@ class IsogeoPlgApiMngr(object):
     def build_request_url(self, params):
         """Build the request url according to the widgets."""
         # Base url for a request to Isogeo API
-        url = "https://v1.api.isogeo.com/resources/search?"
+        url = "{}/resources/search?".format(self.api_url_base)
         # Build the url according to the params
         if params.get("text") != "":
             filters = params.get("text") + " "
