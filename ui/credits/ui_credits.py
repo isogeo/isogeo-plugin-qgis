@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\credits\ui_credits.ui'
 #
-# Created: Wed Aug 08 18:30:44 2018
+# Created: Thu Aug 09 10:55:27 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -35,8 +35,8 @@ class Ui_dlg_credits(object):
         dlg_credits.setWindowOpacity(0.95)
         dlg_credits.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         dlg_credits.setSizeGripEnabled(False)
-        self.verticalLayout_3 = QtGui.QVBoxLayout(dlg_credits)
-        self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
+        self.gridLayout = QtGui.QGridLayout(dlg_credits)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(12)
         self.verticalLayout.setSizeConstraint(QtGui.QLayout.SetDefaultConstraint)
@@ -100,9 +100,9 @@ class Ui_dlg_credits(object):
         self.gridLayout_5.addWidget(self.lbl_smavd_logo, 0, 4, 1, 1)
         self.lbl_smavd_url = QtGui.QLabel(self.grp_sponsors)
         self.lbl_smavd_url.setMaximumSize(QtCore.QSize(217, 40))
-        self.lbl_smavd_url.setText(_fromUtf8("<html><head/><body><p align=\"center\"><a href=\"http://www.smavd.org/\"><span style=\" text-decoration: underline; color:#0000ff;\">Syndicat Mixte d&apos;Am&eacute;nagement<br/>de la Durance (SMAVD)</span></a></p></body></html>"))
+        self.lbl_smavd_url.setText(_fromUtf8("<html><head/><body><p align=\"center\"><a href=\"https://www.smavd.org/\"><span style=\" text-decoration: underline; color:#0000ff;\">Syndicat Mixte d&apos;Am&eacute;nagement<br/>de la Durance (SMAVD)</span></a></p></body></html>"))
         self.lbl_smavd_url.setWordWrap(True)
-        self.lbl_smavd_url.setOpenExternalLinks(False)
+        self.lbl_smavd_url.setOpenExternalLinks(True)
         self.lbl_smavd_url.setObjectName(_fromUtf8("lbl_smavd_url"))
         self.gridLayout_5.addWidget(self.lbl_smavd_url, 0, 0, 1, 1)
         self.line_2 = QtGui.QFrame(self.grp_sponsors)
@@ -120,7 +120,8 @@ class Ui_dlg_credits(object):
         self.gridLayout_6.setObjectName(_fromUtf8("gridLayout_6"))
         self.lbl_lorient_url = QtGui.QLabel(self.grp_sponsors)
         self.lbl_lorient_url.setMaximumSize(QtCore.QSize(217, 40))
-        self.lbl_lorient_url.setText(_fromUtf8("<html><head/><body><p align=\"center\"><a href=\"https://www.lorient-agglo.fr/\"><span style=\" text-decoration: underline; color:#0000ff;\">Communaut&eacute; d&apos;agglom&eacute;ration de<br/>Lorient (Lorient Agglom&eacute;ration)</span></a></p></body></html>"))
+        self.lbl_lorient_url.setText(_fromUtf8("<html><head/><body><p align=\"center\"><a href=\"https://www.lorient-agglo.bzh/\"><span style=\" text-decoration: underline; color:#0000ff;\">Communaut&eacute; d&apos;agglom&eacute;ration de<br/>Lorient (Lorient Agglom&eacute;ration)</span></a></p></body></html>"))
+        self.lbl_lorient_url.setOpenExternalLinks(True)
         self.lbl_lorient_url.setObjectName(_fromUtf8("lbl_lorient_url"))
         self.gridLayout_6.addWidget(self.lbl_lorient_url, 1, 0, 1, 1)
         self.line_3 = QtGui.QFrame(self.grp_sponsors)
@@ -149,15 +150,8 @@ class Ui_dlg_credits(object):
         self.grp_sources.setFlat(True)
         self.grp_sources.setCheckable(False)
         self.grp_sources.setObjectName(_fromUtf8("grp_sources"))
-        self.verticalLayout_8 = QtGui.QVBoxLayout(self.grp_sources)
-        self.verticalLayout_8.setObjectName(_fromUtf8("verticalLayout_8"))
-        self.gridLayout_4 = QtGui.QGridLayout()
-        self.gridLayout_4.setObjectName(_fromUtf8("gridLayout_4"))
-        self.lbl_source_repository = QtGui.QLabel(self.grp_sources)
-        self.lbl_source_repository.setScaledContents(True)
-        self.lbl_source_repository.setAlignment(QtCore.Qt.AlignCenter)
-        self.lbl_source_repository.setObjectName(_fromUtf8("lbl_source_repository"))
-        self.gridLayout_4.addWidget(self.lbl_source_repository, 1, 1, 1, 1)
+        self.gridLayout_2 = QtGui.QGridLayout(self.grp_sources)
+        self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.ico_github = QtGui.QLabel(self.grp_sources)
         self.ico_github.setMaximumSize(QtCore.QSize(100, 100))
         self.ico_github.setToolTip(_fromUtf8(""))
@@ -167,7 +161,7 @@ class Ui_dlg_credits(object):
         self.ico_github.setScaledContents(True)
         self.ico_github.setAlignment(QtCore.Qt.AlignCenter)
         self.ico_github.setObjectName(_fromUtf8("ico_github"))
-        self.gridLayout_4.addWidget(self.ico_github, 0, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.ico_github, 0, 0, 1, 1)
         self.ico_lgplv3 = QtGui.QLabel(self.grp_sources)
         self.ico_lgplv3.setMinimumSize(QtCore.QSize(32, 32))
         self.ico_lgplv3.setMaximumSize(QtCore.QSize(100, 16777215))
@@ -178,15 +172,20 @@ class Ui_dlg_credits(object):
         self.ico_lgplv3.setScaledContents(True)
         self.ico_lgplv3.setAlignment(QtCore.Qt.AlignCenter)
         self.ico_lgplv3.setObjectName(_fromUtf8("ico_lgplv3"))
-        self.gridLayout_4.addWidget(self.ico_lgplv3, 0, 2, 1, 1)
+        self.gridLayout_2.addWidget(self.ico_lgplv3, 0, 1, 1, 1)
+        self.lbl_source_repository = QtGui.QLabel(self.grp_sources)
+        self.lbl_source_repository.setScaledContents(True)
+        self.lbl_source_repository.setAlignment(QtCore.Qt.AlignCenter)
+        self.lbl_source_repository.setOpenExternalLinks(True)
+        self.lbl_source_repository.setObjectName(_fromUtf8("lbl_source_repository"))
+        self.gridLayout_2.addWidget(self.lbl_source_repository, 1, 0, 1, 1)
         self.lbl_license_logo_gpl3 = QtGui.QLabel(self.grp_sources)
         self.lbl_license_logo_gpl3.setText(_fromUtf8("<html><head/><body><p><a href=\"https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License\"><span style=\" text-decoration: underline; color:#0000ff;\">LGPL v3 - Wikipedia</span></a></p></body></html>"))
         self.lbl_license_logo_gpl3.setScaledContents(True)
         self.lbl_license_logo_gpl3.setAlignment(QtCore.Qt.AlignCenter)
         self.lbl_license_logo_gpl3.setOpenExternalLinks(True)
         self.lbl_license_logo_gpl3.setObjectName(_fromUtf8("lbl_license_logo_gpl3"))
-        self.gridLayout_4.addWidget(self.lbl_license_logo_gpl3, 1, 2, 1, 1)
-        self.verticalLayout_8.addLayout(self.gridLayout_4)
+        self.gridLayout_2.addWidget(self.lbl_license_logo_gpl3, 1, 1, 1, 1)
         self.verticalLayout.addWidget(self.grp_sources)
         self.btn_ok_close = QtGui.QDialogButtonBox(dlg_credits)
         self.btn_ok_close.setMaximumSize(QtCore.QSize(500, 16777215))
@@ -198,7 +197,7 @@ class Ui_dlg_credits(object):
         self.btn_ok_close.setCenterButtons(True)
         self.btn_ok_close.setObjectName(_fromUtf8("btn_ok_close"))
         self.verticalLayout.addWidget(self.btn_ok_close)
-        self.verticalLayout_3.addLayout(self.verticalLayout)
+        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
 
         self.retranslateUi(dlg_credits)
         QtCore.QObject.connect(self.btn_ok_close, QtCore.SIGNAL(_fromUtf8("accepted()")), dlg_credits.accept)
@@ -213,7 +212,6 @@ class Ui_dlg_credits(object):
         self.grp_sources.setTitle(_translate("dlg_credits", "Sources and license", None))
         self.lbl_source_repository.setText(_translate("dlg_credits", "<html><head/><body><p><a href=\"https://github.com/isogeo/isogeo-plugin-qgis\"><span style=\" text-decoration: underline; color:#0000ff;\">Code hosted on Github</span></a></p></body></html>", None))
 
-import resources_rc
 
 if __name__ == "__main__":
     import sys
