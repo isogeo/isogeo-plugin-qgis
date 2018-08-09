@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\isogeo_dockwidget_base.ui'
 #
-# Created: Wed Jul 18 19:46:22 2018
+# Created: Thu Aug 09 10:55:35 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -111,7 +111,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_previous.setSizePolicy(sizePolicy)
         self.btn_previous.setText(_fromUtf8(""))
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/caret-left.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/search/caret-left.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_previous.setIcon(icon4)
         self.btn_previous.setObjectName(_fromUtf8("btn_previous"))
         self.horizontalLayout_12.addWidget(self.btn_previous)
@@ -126,7 +126,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_next = QtGui.QPushButton(self.tab_search)
         self.btn_next.setText(_fromUtf8(""))
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/caret-right.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/Isogeo/resources/search/caret-right.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_next.setIcon(icon5)
         self.btn_next.setObjectName(_fromUtf8("btn_next"))
         self.horizontalLayout_12.addWidget(self.btn_next)

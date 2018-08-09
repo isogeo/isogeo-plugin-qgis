@@ -221,8 +221,8 @@
              <string notr="true" />
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>:/plugins/Isogeo/resources/caret-left.svg</normaloff>:/plugins/Isogeo/resources/caret-left.svg</iconset>
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/search/caret-left.svg</normaloff>:/plugins/Isogeo/resources/search/caret-left.svg</iconset>
             </property>
            </widget>
           </item>
@@ -246,8 +246,8 @@
              <string />
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>:/plugins/Isogeo/resources/caret-right.svg</normaloff>:/plugins/Isogeo/resources/caret-right.svg</iconset>
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/search/caret-right.svg</normaloff>:/plugins/Isogeo/resources/search/caret-right.svg</iconset>
             </property>
            </widget>
           </item>
