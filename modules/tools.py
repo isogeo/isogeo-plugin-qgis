@@ -187,7 +187,7 @@ class IsogeoPlgTools(IsogeoUtils):
             new=0,
             autoraise=True)
         # method ending
-        logger.info("Bugtracker launched in the default web browser")
+        logger.debug("Link launched in the default web browser: {}".format(link))
         return
 
     def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
@@ -386,6 +386,20 @@ class IsogeoPlgTools(IsogeoUtils):
         else:
             return True
         
+    def _to_raw_string(self, in_string):
+        """Basic converter for input string or unicode to raw string.
+        Useful to prevent escapign in Windows paths for example.
+
+        see: https://github.com/isogeo/isogeo-plugin-qgis/issues/129
+        """
+        if isinstance(in_string, str):
+            logger.debug(in_string)
+            return in_string.encode('string-escape')
+        elif isinstance(in_string, unicode):
+            logger.debug(in_string)
+            return in_string.encode('unicode-escape')
+        else:
+            raise TypeError
 
 # #############################################################################
 # ##### Stand alone program ########

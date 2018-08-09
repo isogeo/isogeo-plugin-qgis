@@ -169,39 +169,25 @@ class ResultsManager(object):
                 # If the data is a vector and the path is available, store
                 # useful information in the dict
                 if i.get("format", "NR") in li_formats_vect and "path" in i:
-                    filepath = os.path.normpath(i.get("path"))
-                    dir_file = os.path.dirname(filepath)
-                    if dir_file not in self.cached_unreach_paths:
-                        try:
-                            open(filepath)
-                            params = ["vector", filepath,
-                                      i.get("title", "NR"),
-                                      i.get("abstract", "NR"),
-                                      md_keywords]
-                            dico_add_options[self.tr("Data file", "ResultsManager")] = params
-                        except IOError:
-                            self.cached_unreach_paths.append(dir_file)
-                            self.cached_unreach_paths = list(set(self.cached_unreach_paths))
+                    add_path = self._filepath_builder(i.get("path"))
+                    if add_path:
+                        params = ["vector", add_path,
+                                  i.get("title", "NR"),
+                                  i.get("abstract", "NR"),
+                                  md_keywords]
+                        dico_add_options[self.tr("Data file", "ResultsManager")] = params
                     else:
-                        logger.debug("Path has been ignored because it's cached.")
                         pass
                 # Same if the data is a raster
                 elif i.get("format", "NR") in li_formats_rastr and "path" in i:
-                    filepath = os.path.normpath(i.get("path"))
-                    dir_file = os.path.dirname(filepath)
-                    if dir_file not in self.cached_unreach_paths:
-                        try:
-                            open(filepath)
-                            params = ["raster", filepath,
-                                      i.get("title", "NR"),
-                                      i.get("abstract", "NR"),
-                                      md_keywords]
-                            dico_add_options[self.tr("Data file", "ResultsManager")] = params
-                        except IOError:
-                            self.cached_unreach_paths.append(dir_file)
-                            pass
+                    add_path = self._filepath_builder(i.get("path"))
+                    if add_path:
+                        params = ["vector", add_path,
+                                  i.get("title", "NR"),
+                                  i.get("abstract", "NR"),
+                                  md_keywords]
+                        dico_add_options[self.tr("Data file", "ResultsManager")] = params
                     else:
-                        logger.debug("Path has been ignored because it's cached.")
                         pass
                 # If the data is a postGIS table and the connexion has
                 # been saved in QGIS.
@@ -223,7 +209,7 @@ class ResultsManager(object):
                     else:
                         pass
                 else:
-                    logger.info(md_id)
+                    logger.debug("Metadata {} has a format but it's not recognized or path is missing".format(md_id))
                     pass
             # Associated service layers
             d_type = i.get("type")
@@ -394,6 +380,47 @@ class ResultsManager(object):
         iface.mainWindow().statusBar().removeWidget(progress_bar)
         # method ending
         return None
+
+    # -- PRIVATE METHOD -------------------------------------------------------
+    def _filepath_builder(self, metadata_path, mode=1):
+        """Build filepath from metadata path handling various cases. See: #129.
+
+        :param dict metadata: path found in metadata
+        :param int mode: mode to apply. Options:
+          1 = only with standard path.normpath
+          2 = using raw string (useful for Windows systems)
+        """
+        # basic checks
+        if not isinstance(mode, int):
+            raise TypeError
+        # building
+        if mode == 1:
+            filepath = os.path.normpath(metadata_path)
+            dir_file = os.path.dirname(filepath)
+            if dir_file not in self.cached_unreach_paths:
+                try:
+                    with open(filepath) as f:
+                        return filepath
+                except IOError:
+                    logger.debug("Filepath is not reachable: {}".format(filepath))
+                    return self._filepath_builder(metadata_path, mode=2)
+            else:
+                logger.debug("Path has been ignored because it's cached.")
+                return False
+        elif mode == 2:
+            logger.debug("Using forced raw string")
+            filepath = plg_tools._to_raw_string(metadata_path)
+            dir_file = os.path.dirname(filepath)
+            try:
+                with open(filepath) as f:
+                    return filepath
+            except IOError:
+                self.cached_unreach_paths.append(dir_file)
+                logger.debug("Path is not reachable and has been cached:{}".format(dir_file))
+                return False
+        else:
+            logger.debug("Incorrect mode: {}".format(mode))
+            raise ValueError
 
 # #############################################################################
 # ##### Stand alone program ########
