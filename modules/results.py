@@ -381,6 +381,7 @@ class ResultsManager(object):
                     combo.addItem(icon, i, dico_add_options.get(i))
                 combo.activated.connect(partial(self.add_layer,
                                                 layer_info=["index", count]))
+                combo.model().sort(0)   # sort alphabetically on option prefix. see: #113
                 tbl_result.setCellWidget(count, 3, combo)
 
             count += 1
