@@ -608,21 +608,8 @@ class Isogeo:
         width = cbb_quicksearch.view().sizeHintForColumn(0) + 5
         cbb_quicksearch.view().setMinimumWidth(width)
         # Initiating the "nothing selected" and "None" items in each combobox
-        cbb_inspire.addItem(" - ")
-        cbb_inspire.addItem(ico_none,
-                            self.tr("None"),
-                            "has-no:keyword:inspire-theme")
-        cbb_owner.addItem(" - ")
-        cbb_format.addItem(" - ")
-        cbb_format.addItem(ico_none, self.tr("None"), "has-no:format")
-        cbb_srs.addItem(" - ")
-        cbb_srs.addItem(ico_none, self.tr("None"), "has-no:coordinate-system")
-        cbb_geofilter.addItem(" - ")
-        cbb_type.addItem(self.tr("All types"))
-        cbb_contact.addItem(" - ")
-        cbb_contact.addItem(ico_none, self.tr("None"), "has-no:contact")
-        cbb_license.addItem(" - ")
-        cbb_license.addItem(ico_none, self.tr("None"), "has-no:license")
+        for cbb in self.cbbs_search_advanced:
+            cbb.addItem(" - ")
         # Initializing the cbb that dont't need to be updated
         if self.savedSearch == "_default" or self.hardReset is True:
             tbl_result.horizontalHeader().setResizeMode(1)
