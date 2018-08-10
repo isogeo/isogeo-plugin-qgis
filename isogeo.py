@@ -417,8 +417,7 @@ class Isogeo:
             return
 
         if 'access_token' in parsed_content:
-            logger.debug("The API reply is an access token : "
-                          "the request worked as expected.")
+            logger.debug("Access token retrieved.")
             # Enable buttons "save and cancel"
             self.auth_prompt_form.btn_ok_cancel.setEnabled(True)
             self.dockwidget.setEnabled(True)
@@ -551,7 +550,7 @@ class Isogeo:
         """
         # logs
         logger.debug("Update_fields function called on the API reply. reset = "
-                    "{0}".format(self.hardReset))
+                     "{}".format(self.hardReset))
         QgsMessageLog.logMessage("Query sent & received: {}"
                                  .format(result.get("query")),
                                  "Isogeo")
@@ -564,7 +563,6 @@ class Isogeo:
         self.results_count = result.get('total')
         self.dockwidget.btn_show.setText(
             str(self.results_count) + self.tr(" results"))
-        # Setting the number of rows in the result table
         page_count = str(plg_tools.results_pages_counter(total=self.results_count))
         self.dockwidget.lbl_page.setText(
             "page " + str(self.page_index) + self.tr(' on ') + page_count)
@@ -612,10 +610,7 @@ class Isogeo:
         for i in search_list:
             cbb_quicksearch.addItem(i, i)
             self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-
-        width = cbb_quicksearch.view().sizeHintForColumn(0) + 5
-        cbb_quicksearch.view().setMinimumWidth(width)
-        # Initiating the "nothing selected" and "None" items in each combobox
+        # Initiating the "nothing selected"
         for cbb in self.cbbs_search_advanced:
             cbb.addItem(" - ")
         # Initializing the cbb that dont't need to be updated
@@ -1506,12 +1501,6 @@ class Isogeo:
         for i in search_list:
             self.dockwidget.cbb_quicksearch_use.addItem(i, i)
             self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-        # inform user
-        # msgBar.pushMessage("Isogeo",
-        #                    self.tr("New quicksearch saved: {}")\
-        #                            .format(search_name),
-        #                    level=msgBar.INFO,
-        #                    duration=3)
         # method ending
         return
 
