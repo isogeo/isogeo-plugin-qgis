@@ -386,7 +386,7 @@ class Isogeo:
             token_reply.finished.connect(
                 partial(self.handle_token, answer=token_reply))
         else:
-            logger.debug("Network is in use. Try again later.")
+            logger.debug("Network in use. Try again later.")
 
     def handle_token(self, answer):
         """Handle the API answer when asked for a token.
@@ -424,7 +424,7 @@ class Isogeo:
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content.get('access_token')
             if self.savedSearch == "first":
-                logger.debug("Firt search since plugin started.")
+                logger.debug("First search since plugin started.")
                 plg_api_mngr.req_status_isClear = True
                 self.set_widget_status()
             else:
@@ -487,21 +487,21 @@ class Isogeo:
         bytarray = answer.readAll()
         content = str(bytarray)
         if answer.error() == 0 and content != "":
-            logger.info("Reply is a result json.")
-            if self.showDetails is False and self.settingsRequest is False:
+            logger.debug("Reply is a result json.")
+            if not self.showDetails and not self.settingsRequest:
                 self.loopCount = 0
                 parsed_content = json.loads(content)
                 plg_api_mngr.req_status_isClear = True
                 self.update_fields(parsed_content)
                 del parsed_content
-            elif self.showDetails is True:
+            elif self.showDetails:
                 self.showDetails = False
                 self.loopCount = 0
                 parsed_content = json.loads(content)
                 plg_api_mngr.req_status_isClear = True
                 self.md_display.show_complete_md(parsed_content)
                 del parsed_content
-            elif self.settingsRequest is True:
+            elif self.settingsRequest:
                 self.settingsRequest = False
                 self.loopCount = 0
                 parsed_content = json.loads(content)
@@ -1439,15 +1439,19 @@ class Isogeo:
         selected_search = self.dockwidget.cbb_quicksearch_use.currentText()
         if selected_search != self.tr("Quicksearches"):
             logger.debug("Quicksearch selected: {}".format(selected_search))
-            self.switch_widgets_on_and_off(0)
+            self.switch_widgets_on_and_off(0)   # disable search form
+            # load quicksearches
             with open(self.json_path) as data_file:
                 saved_searches = json.load(data_file)
             if selected_search == "":
                 self.savedSearch = '_default'
                 search_params = saved_searches.get('_default')
             else:
-                self.savedSearch = selected_search
-                search_params = saved_searches[selected_search]
+                logger.error("Selected search ({}) and '_default' do not exist."
+                             .format(selected_search))
+                return
+            
+            # get stored URL
             self.currentUrl = search_params.get('url')
             if 'epsg' in search_params:
                 epsg = int(iface.mapCanvas().mapRenderer(
@@ -1593,7 +1597,7 @@ class Isogeo:
         the fields : send_request() calls handle_reply(), which calls
         update_fields())
         """
-        logger.debug("Reinitialize_search function called.")
+        logger.debug("Reset search function called.")
         self.hardReset = True
         self.dockwidget.txt_input.clear()
         self.dockwidget.cbb_keywords.clear()
