@@ -562,7 +562,7 @@ class IsogeoPlgApiMngr(object):
 
         # override API tags to allow all datasets filter - see #
         if type_dataset == 2:
-            md_types[self.tr("Dataset", "IsogeoApiManager")] = "type:dataset"
+            md_types[self.tr("Dataset", "IsogeoPlgApiMngr")] = "type:dataset"
         else:
             pass
 
