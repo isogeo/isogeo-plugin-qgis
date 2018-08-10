@@ -410,11 +410,11 @@ class IsogeoPlgTools(IsogeoUtils):
         :param str tweak_type: tweak to perform
         """
         if tweak_type == "comboboxes":
+            # see: https://github.com/isogeo/isogeo-plugin-qgis/issues/156
             for cbb in ui_widgets:
                 width = cbb.view().sizeHintForColumn(0) + 5
                 cbb.view().setMinimumWidth(width)
-            logger.debug("Comboboxes have been tweaked: the width of the QList"
-                         " view is automatically set on  items.")
+            logger.debug("Comboboxes have been tweaked: width set on values")
         else:
             logger.debug("Tweak type not recognized.")
             pass
