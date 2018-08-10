@@ -1445,11 +1445,9 @@ class Isogeo:
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
         selected_search = self.dockwidget.cbb_quicksearch_use.currentText()
-        if selected_search != self.tr('Quick Search'):
-            logger.debug("Set_widget_status function called. "
-                        "User is executing a saved search.")
+        if selected_search != self.tr("Quicksearches"):
+            logger.debug("Quicksearch selected: {}".format(selected_search))
             self.switch_widgets_on_and_off(0)
-            selected_search = self.dockwidget.cbb_quicksearch_use.currentText()
             with open(self.json_path) as data_file:
                 saved_searches = json.load(data_file)
             if selected_search == "":
