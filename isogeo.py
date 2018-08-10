@@ -744,16 +744,6 @@ class Isogeo:
                 # In the case where it isn't a saved research. So we have to
                 # check the items that were previously checked
                 model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-                # Creating the "None" option, always on top.
-                none_item = QStandardItem(self.tr('None'))
-                none_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                none_item.setData("has-no:keyword", 32)
-                if none_item.data(32) in params.get('keys'):
-                    none_item.setData(Qt.Checked, Qt.CheckStateRole)
-                    model.insertRow(1, none_item)
-                else:
-                    none_item.setData(Qt.Unchecked, Qt.CheckStateRole)
-                    model.insertRow(1, none_item)
                 # Filling the combobox with all the normal items
                 i = 2
                 keywords = tags.get('keywords')
@@ -876,18 +866,8 @@ class Isogeo:
         # previous state as they are to be reset
         else:
             model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-            # None item
-            none_item = QStandardItem(self.tr('None'))
-            none_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-            none_item.setData("has-no:keyword", 32)
-            if none_item.data(32) in params['keys']:
-                none_item.setData(Qt.Checked, Qt.CheckStateRole)
-                model.insertRow(1, none_item)
-            else:
-                none_item.setData(Qt.Unchecked, Qt.CheckStateRole)
-                model.insertRow(1, none_item)
             # Standard items
-            i = 2
+            i = 1
             keywords = tags.get('keywords')
             for j in sorted(keywords):
                 item = QStandardItem(j)
