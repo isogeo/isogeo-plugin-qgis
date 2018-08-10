@@ -648,33 +648,31 @@ class Isogeo:
         # Filling comboboxes
         # Owners
         md_owners = tags.get("owners")
-        for i in sorted(md_owners):
+        for i in md_owners:
             cbb_owner.addItem(i, md_owners.get(i))
         # INSPIRE themes
         inspire = tags.get("inspire")
-        for i in sorted(inspire):
+        for i in inspire:
             cbb_inspire.addItem(i, inspire.get(i))
-        width = cbb_inspire.view().sizeHintForColumn(0) + 5
-        cbb_inspire.view().setMinimumWidth(width)
         # Formats
         formats = tags.get("formats")
-        for i in sorted(formats):
+        for i in formats:
             cbb_format.addItem(i, formats.get(i))
         # Coordinate system
         srs = tags.get("srs")
-        for i in sorted(srs):
+        for i in srs:
             cbb_srs.addItem(i, srs.get(i))
         # Contacts
         contacts = tags.get("contacts")
-        for i in sorted(contacts):
+        for i in contacts:
             cbb_contact.addItem(i, contacts.get(i))
         # Licenses
         licenses = tags.get("licenses")
-        for i in sorted(licenses):
+        for i in licenses:
             cbb_license.addItem(i, licenses.get(i))
         # Resource type
         md_types = tags.get("types")
-        for i in sorted(md_types):
+        for i in md_types:
             cbb_type.addItem(i, md_types.get(i))
         # Geographical filter
         cbb_geofilter.addItem(self.tr("Map canvas"), "mapcanvas")
@@ -687,6 +685,14 @@ class Isogeo:
                     cbb_geofilter.addItem(ico_line, layer.name(), layer)
                 elif layer.geometryType() == 0:
                     cbb_geofilter.addItem(ico_poin, layer.name(), layer)
+
+        # sorting comboboxes
+        for cbb in self.cbbs_search_advanced:
+            cbb.model().sort(0)
+        
+        # tweaking
+        #plg_tools._ui_tweaker(ui_widgets=self.cbbs_search_advanced)
+        plg_tools._ui_tweaker(ui_widgets=self.dockwidget.tab_search.findChildren(QComboBox))
 
         # Putting all the comboboxes selected index to their previous
         # location. Necessary as all comboboxes items have been removed and
@@ -1798,6 +1804,8 @@ class Isogeo:
         # msgBar.widgetAdded.connect(msgBar.clearWidgets)
 
         """ --- CONNECTING UI WIDGETS <-> FUNCTIONS --- """
+        # shortcuts
+        self.cbbs_search_advanced = self.dockwidget.grp_filters.findChildren(QComboBox)
         # -- Search form ------------------------------------------------------
         # search terms text input
         self.dockwidget.txt_input.editingFinished.connect(self.edited_search)
