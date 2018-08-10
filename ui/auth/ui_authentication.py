@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\auth\ui_authentication.ui'
 #
-# Created: Wed Aug 08 18:30:40 2018
+# Created: Fri Aug 10 17:31:19 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -84,7 +84,7 @@ class Ui_dlg_form_auth_prompt(object):
         self.ent_app_secret.setMaxLength(64)
         self.ent_app_secret.setEchoMode(QtGui.QLineEdit.PasswordEchoOnEdit)
         self.ent_app_secret.setReadOnly(True)
-        self.ent_app_secret.setPlaceholderText(_fromUtf8(""))
+        self.ent_app_secret.setPlaceholderText(_fromUtf8("*******************************************"))
         self.ent_app_secret.setObjectName(_fromUtf8("ent_app_secret"))
         self.gridLayout_2.addWidget(self.ent_app_secret, 3, 3, 1, 1)
         self.chb_isogeo_editor = QtGui.QCheckBox(self.grb_connection_ready)
@@ -113,9 +113,11 @@ class Ui_dlg_form_auth_prompt(object):
         font.setBold(False)
         font.setWeight(50)
         self.ent_app_id.setFont(font)
+        self.ent_app_id.setToolTip(_fromUtf8(""))
         self.ent_app_id.setAutoFillBackground(True)
         self.ent_app_id.setText(_fromUtf8(""))
         self.ent_app_id.setMaxLength(100)
+        self.ent_app_id.setFrame(True)
         self.ent_app_id.setReadOnly(True)
         self.ent_app_id.setCursorMoveStyle(QtCore.Qt.LogicalMoveStyle)
         self.ent_app_id.setObjectName(_fromUtf8("ent_app_id"))
