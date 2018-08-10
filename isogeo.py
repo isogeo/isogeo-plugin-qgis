@@ -584,14 +584,8 @@ class Isogeo:
         txt_input = self.dockwidget.txt_input  # search terms
 
         # RESET WiDGETS
-        cbb_contact.clear()
-        cbb_format.clear()
-        cbb_geofilter.clear()
-        cbb_inspire.clear()
-        cbb_license.clear()
-        cbb_owner.clear()
-        cbb_srs.clear()
-        cbb_type.clear()
+        for cbb in self.cbbs_search_advanced:
+            cbb.clear()
         tbl_result.clearContents()
         tbl_result.setRowCount(0)
 
@@ -1589,19 +1583,12 @@ class Isogeo:
         """
         logger.debug("Reset search function called.")
         self.hardReset = True
-        self.dockwidget.txt_input.clear()
-        self.dockwidget.cbb_keywords.clear()
-        self.dockwidget.cbb_type.clear()
-        self.dockwidget.cbb_geofilter.clear()
-        self.dockwidget.cbb_owner.clear()
-        self.dockwidget.cbb_inspire.clear()
-        self.dockwidget.cbb_format.clear()
-        self.dockwidget.cbb_srs.clear()
-        self.dockwidget.cbb_license.clear()
-        self.dockwidget.cbb_contact.clear()
+        # clear widgets
+        for cbb in self.dockwidget.tab_search.findChildren(QComboBox):
+            cbb.clear()
         self.dockwidget.cbb_geo_op.clear()
-        self.dockwidget.cbb_ob.clear()
-        self.dockwidget.cbb_od.clear()
+        self.dockwidget.txt_input.clear()
+        # launch search
         self.search()
 
     def search_with_content(self):
