@@ -1421,7 +1421,14 @@ class Isogeo:
             # load quicksearches
             with open(self.json_path) as data_file:
                 saved_searches = json.load(data_file)
-            if selected_search == "":
+            logger.debug(saved_searches)
+            # check if selected search can be found
+            if selected_search in saved_searches:
+                self.savedSearch = selected_search
+                search_params = saved_searches.get(selected_search)
+            elif selected_search not in saved_searches and "_default" in saved_searches:
+                logger.warning("Selected search ({}) not found."
+                               "'_default' will be used instead.")
                 self.savedSearch = '_default'
                 search_params = saved_searches.get('_default')
             else:
@@ -1453,6 +1460,11 @@ class Isogeo:
                     canvas.refresh()
             if plg_api_mngr.req_status_isClear is True:
                 self.send_request_to_isogeo_api(self.token)
+        else:
+            logger.debug("No quicksearch selected. Launch '_default' search.")
+            self.savedSearch = "_default"
+            self.reinitialize_search()
+
 
     # ------------ Quicksearches ------------------------------------------
 
