@@ -391,6 +391,8 @@ class IsogeoPlgTools(IsogeoUtils):
         Useful to prevent escapign in Windows paths for example.
 
         see: https://github.com/isogeo/isogeo-plugin-qgis/issues/129
+
+        :param str in_string: string (str or unicode) to convert to raw
         """
         if isinstance(in_string, str):
             logger.debug(in_string)
@@ -400,6 +402,22 @@ class IsogeoPlgTools(IsogeoUtils):
             return in_string.encode('unicode-escape')
         else:
             raise TypeError
+
+    def _ui_tweaker(self, ui_widgets, tweak_type="comboboxes"):
+        """Set of tools to tweak PyQT UI widgets.
+
+        :param list ui_widgets: list of widgets on which apply tweaks
+        :param str tweak_type: tweak to perform
+        """
+        if tweak_type == "comboboxes":
+            for cbb in ui_widgets:
+                width = cbb.view().sizeHintForColumn(0) + 5
+                cbb.view().setMinimumWidth(width)
+            logger.debug("Comboboxes have been tweaked: the width of the QList"
+                         " view is automatically set on  items.")
+        else:
+            logger.debug("Tweak type not recognized.")
+            pass
 
 # #############################################################################
 # ##### Stand alone program ########
