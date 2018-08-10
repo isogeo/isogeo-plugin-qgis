@@ -39,8 +39,8 @@ import sys
 # from QByteArray
 from qgis.PyQt.QtCore import (QByteArray, QCoreApplication, QSettings,
                               Qt, QTranslator, QUrl, qVersion)
-from qgis.PyQt.QtGui import (QAction, QIcon, QMessageBox, QStandardItemModel,
-                             QStandardItem, QProgressBar)
+from qgis.PyQt.QtGui import (QAction, QComboBox, QIcon, QMessageBox,
+                             QStandardItemModel, QStandardItem, QProgressBar)
 from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # PyQGIS
