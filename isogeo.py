@@ -577,7 +577,7 @@ class Isogeo:
         cbb_ob = self.dockwidget.cbb_ob  # sort parameter
         cbb_od = self.dockwidget.cbb_od  # sort direction
         cbb_owner = self.dockwidget.cbb_owner  # owners
-        cbb_quicksearch = self.dockwidget.cbb_quicksearch_use  # quick searches
+        cbb_quicksearch_use = self.dockwidget.cbb_quicksearch_use  # quick searches
         cbb_srs = self.dockwidget.cbb_srs  # coordinate systems
         cbb_type = self.dockwidget.cbb_type  # metadata type
         tbl_result = self.dockwidget.tbl_result  # results table
@@ -602,13 +602,11 @@ class Isogeo:
         search_list.pop(search_list.index('_default'))
         if '_current' in search_list:
             search_list.pop(search_list.index('_current'))
-        cbb_quicksearch.clear()
+        cbb_quicksearch_use.clear()
         self.dockwidget.cbb_quicksearch_edit.clear()
-
-        # cbb_quicksearch.addItem(icon, self.tr('Quick Search'))
-        cbb_quicksearch.addItem(ico_bolt, "")
+        cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quicksearches'))
         for i in search_list:
-            cbb_quicksearch.addItem(i, i)
+            cbb_quicksearch_use.addItem(i, i)
             self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
         # Initiating the "nothing selected"
         for cbb in self.cbbs_search_advanced:
@@ -728,8 +726,8 @@ class Isogeo:
                 # Sorting direction
                 cbb_od.setCurrentIndex(cbb_od.findData(params.get('od')))
                 # Quick searches
-                previous_index = cbb_quicksearch.findData(params.get('favorite'))
-                cbb_quicksearch.setCurrentIndex(previous_index)
+                previous_index = cbb_quicksearch_use.findData(params.get('favorite'))
+                cbb_quicksearch_use.setCurrentIndex(previous_index)
                 # Operator for geographical filter
                 previous_index = cbb_geo_op.findData(params.get('operation'))
                 cbb_geo_op.setCurrentIndex(previous_index)
@@ -858,8 +856,8 @@ class Isogeo:
                 cbb_od.setCurrentIndex(saved_index)
                 # Quick searches
                 if self.savedSearch != "_default":
-                    saved_index = cbb_quicksearch.findData(self.savedSearch)
-                    cbb_quicksearch.setCurrentIndex(saved_index)
+                    saved_index = cbb_quicksearch_use.findData(self.savedSearch)
+                    cbb_quicksearch_use.setCurrentIndex(saved_index)
                 self.savedSearch = False
 
         # In case of a hard reset, we don't have to worry about widgets
