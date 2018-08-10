@@ -318,14 +318,6 @@ class Isogeo:
         # when closing the docked window:
         self.dockwidget = None
         self.pluginIsActive = False
-        # try:
-        #     reloadPlugin("isogeo_search_engine")
-        # except TypeError:
-        #     pass
-        # try:
-        #     reloadPlugin("isogeo_search_engine_dev")
-        # except TypeError:
-        #     pass
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -356,7 +348,6 @@ class Isogeo:
             self.dockwidget.tab_search.setEnabled(True)
             plg_api_mngr.req_status_isClear = True
             self.ask_for_token()
-            #plg_api_mngr.auth_req_token_post()
 
     def write_ids_and_test(self):
         """Store the id & secret and launch the test function.
@@ -372,24 +363,30 @@ class Isogeo:
     def ask_for_token(self):
         """Ask a token from Isogeo API authentification page.
         This send a POST request to Isogeo API with the user id and secret in
-        its header. The API should return an access token
+        its header. The API should return an access token.
+
+        It's the handle_token method which get the API response. See below.
         """
+        logger.debug("Use loaded credentials to authenticate the plugin.")
+        # build header with credentials
         headervalue = "Basic " + base64.b64encode("{}:{}"
                                                   .format(plg_api_mngr.api_app_id,
                                                           plg_api_mngr.api_app_secret))
         data = urllib.urlencode({"grant_type": "client_credentials"})
         databyte = QByteArray()
         databyte.append(data)
+        # build URL request
         url = QUrl(plg_api_mngr.api_url_token)
         request = QNetworkRequest(url)
         request.setRawHeader("Authorization", headervalue)
         if plg_api_mngr.req_status_isClear is True:
             plg_api_mngr.req_status_isClear = False
+            logger.debug("Token POST request sent to {}".format(request.url()))
             token_reply = self.manager.post(request, databyte)
             token_reply.finished.connect(
                 partial(self.handle_token, answer=token_reply))
-
-        QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
+        else:
+            logger.debug("Network is in use. Try again later.")
 
     def handle_token(self, answer):
         """Handle the API answer when asked for a token.
@@ -399,9 +396,10 @@ class Isogeo:
 
         :param QNetworkReply answer: Isogeo ID API response
         """
-        logger.info("Asked a token and got a reply from the API")
+        logger.debug("Asked a token and got a reply from the API: {}")
         bytarray = answer.readAll()
         content = str(bytarray)
+        # check API response structure
         try:
             parsed_content = json.loads(content)
         except ValueError as e:
@@ -416,15 +414,17 @@ class Isogeo:
                 pass
             return
 
+        # if structure is OK, parse and check response status
         if 'access_token' in parsed_content:
+            QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
             logger.debug("Access token retrieved.")
             # Enable buttons "save and cancel"
-            self.auth_prompt_form.btn_ok_cancel.setEnabled(True)
             self.dockwidget.setEnabled(True)
 
             # TO DO : Appeler la fonction d'initialisation
             self.token = "Bearer " + parsed_content.get('access_token')
             if self.savedSearch == "first":
+                logger.debug("Firt search since plugin started.")
                 plg_api_mngr.req_status_isClear = True
                 self.set_widget_status()
             else:
@@ -432,13 +432,11 @@ class Isogeo:
                 self.send_request_to_isogeo_api(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
-            logger.error("The API reply is an error. ID and SECRET must be "
-                          "invalid. Asking for them again.")
+            logger.error("The API reply is an error: {}. ID and SECRET must be "
+                         "invalid. Asking for them again."
+                         .format(parsed_content.get('error')))
             # displaying auth form
-            self.auth_prompt_form.ent_app_id.setText(self.user_id)
-            self.auth_prompt_form.ent_app_secret.setText(self.user_secret)
-            self.auth_prompt_form.btn_ok_cancel.setEnabled(False)
-            self.auth_prompt_form.show()
+            plg_api_mngr.display_auth_form()
             msgBar.pushMessage("Isogeo",
                                self.tr("API authentication failed."
                                        "Isogeo API answered: {}")
@@ -479,7 +477,9 @@ class Isogeo:
         """Handle the different possible Isogeo API answer.
         This is called when the answer from the API is finished. If it's
         content, it calls update_fields(). If it isn't, it means the token has
-        expired, and it calls ask_for_token()
+        expired, and it calls ask_for_token().
+
+        For support, see: https://gis.stackexchange.com/a/136427/19817
 
         :param QNetworkReply answer: Isogeo API search response
         """
@@ -510,12 +510,12 @@ class Isogeo:
                 del parsed_content
 
         elif answer.error() == 204:
-            logger.info("Token expired. Renewing it.")
+            logger.debug("Token expired. Renewing it.")
             self.loopCount = 0
             plg_api_mngr.req_status_isClear = True
-            self.ask_for_token(self.user_id, self.user_secret)
+            self.ask_for_token()
         elif content == "":
-            logger.info("Empty reply. Weither no catalog is shared with the "
+            logger.error("Empty reply. Weither no catalog is shared with the "
                          "plugin, or there is a problem (2 requests sent "
                          "together)")
             if self.loopCount < 3:
@@ -523,7 +523,7 @@ class Isogeo:
                 answer.abort()
                 del answer
                 plg_api_mngr.req_status_isClear = True
-                self.ask_for_token(self.user_id, self.user_secret)
+                self.ask_for_token()
             else:
                 plg_api_mngr.req_status_isClear = True
                 msgBar.pushMessage(
@@ -796,16 +796,6 @@ class Isogeo:
                     if a.startswith("keyword"):
                         keywords_list.append(search_params.get(a))
                 model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-                # None item, on top of the cbb
-                none_item = QStandardItem(self.tr('None'))
-                none_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                none_item.setData("has-no:keyword", 32)
-                if none_item.data(32) in keywords_list:
-                    none_item.setData(Qt.Checked, Qt.CheckStateRole)
-                    model.insertRow(1, none_item)
-                else:
-                    none_item.setData(Qt.Unchecked, Qt.CheckStateRole)
-                    model.insertRow(1, none_item)
                 # Filling with the standard items
                 i = 2
                 keywords = tags.get('keywords')
@@ -1636,7 +1626,6 @@ class Isogeo:
         if mode:
             self.dockwidget.txt_input.setReadOnly(False)
             self.dockwidget.tab_search.setEnabled(True)
-
         else:
             self.dockwidget.txt_input.setReadOnly(True)
             self.dockwidget.tab_search.setEnabled(False)
