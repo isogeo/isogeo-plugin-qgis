@@ -117,6 +117,8 @@ logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 
 # icons
+ico_od_asc = QIcon(':/plugins/Isogeo/resources/results/sort-alpha-asc.svg')
+ico_od_desc = QIcon(':/plugins/Isogeo/resources/results/sort-alpha-desc.svg')
 ico_bolt = QIcon(':/plugins/Isogeo/resources/search/bolt.svg')
 ico_keyw = QIcon(':/plugins/Isogeo/resources/tag.svg')
 ico_none = QIcon(':/plugins/Isogeo/resources/none.svg')
@@ -636,11 +638,12 @@ class Isogeo:
             for key in dict_ob.keys():
                 cbb_ob.addItem(key, dict_ob.get(key))
             # Order direction cbb
-            dict_od = OrderedDict([(self.tr("Descending"), "desc"),
-                                   (self.tr("Ascendant"), "asc")]
+            dict_od = OrderedDict([(self.tr("Descending"), (ico_od_desc, "desc")),
+                                   (self.tr("Ascending"), (ico_od_asc, "asc"))]
                                   )
-            for key in dict_od.keys():
-                cbb_od.addItem(key, dict_od.get(key))
+
+            for k, v in dict_od.items():
+                cbb_od.addItem(v[0], k, v[1])
 
         # Filling comboboxes
         # Owners
