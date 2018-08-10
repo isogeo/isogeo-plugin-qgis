@@ -119,6 +119,12 @@ logger.addHandler(logfile)
 # icons
 ico_od_asc = QIcon(':/plugins/Isogeo/resources/results/sort-alpha-asc.svg')
 ico_od_desc = QIcon(':/plugins/Isogeo/resources/results/sort-alpha-desc.svg')
+ico_ob_relev = QIcon(":/plugins/Isogeo/resources/search/search.svg")
+ico_ob_alpha = QIcon(':/plugins/Isogeo/resources/metadata/language.svg')
+ico_ob_dcrea = QIcon(':/plugins/Isogeo/resources/datacreated.svg')
+ico_ob_dupda = QIcon(':/plugins/Isogeo/resources/datamodified.svg')
+ico_ob_mcrea = QIcon(':/plugins/Isogeo/resources/calendar-plus-o.svg')
+ico_ob_mupda = QIcon(':/plugins/Isogeo/resources/calendar_blue.svg')
 ico_bolt = QIcon(':/plugins/Isogeo/resources/search/bolt.svg')
 ico_keyw = QIcon(':/plugins/Isogeo/resources/tag.svg')
 ico_none = QIcon(':/plugins/Isogeo/resources/none.svg')
@@ -628,15 +634,16 @@ class Isogeo:
             for key in dict_operation.keys():
                 cbb_geo_op.addItem(key, dict_operation.get(key))
             # Order by cbb
-            dict_ob = OrderedDict([(self.tr("Relevance"), "relevance"),
-                                   (self.tr("Alphabetical order"), "title"),
-                                   (self.tr("Data modified"), "modified"),
-                                   (self.tr("Data created"), "created"),
-                                   (self.tr("Metadata modified"), "_modified"),
-                                   (self.tr("Metadata created"), "_created")]
+            dict_ob = OrderedDict([(self.tr("Relevance"), (ico_ob_relev, "relevance")),
+                                   (self.tr("Alphabetical order"), (ico_ob_alpha, "title")),
+                                   (self.tr("Data modified"), (ico_ob_dupda, "modified")),
+                                   (self.tr("Data created"), (ico_ob_dcrea, "created")),
+                                   (self.tr("Metadata modified"), (ico_ob_mcrea, "_modified")),
+                                   (self.tr("Metadata created"), (ico_ob_mupda, "_created"))]
                                   )
-            for key in dict_ob.keys():
-                cbb_ob.addItem(key, dict_ob.get(key))
+            for k, v in dict_ob.items():
+                cbb_ob.addItem(v[0], k, v[1])
+
             # Order direction cbb
             dict_od = OrderedDict([(self.tr("Descending"), (ico_od_desc, "desc")),
                                    (self.tr("Ascending"), (ico_od_asc, "asc"))]
