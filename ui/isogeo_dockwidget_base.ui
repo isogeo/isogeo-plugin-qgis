@@ -182,8 +182,8 @@
            <widget class="QPushButton" name="btn_reinit">
             <property name="minimumSize">
              <size>
-              <width>81</width>
-              <height>0</height>
+              <width>30</width>
+              <height>25</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -212,6 +212,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="btn_quicksearch_save">
+            <property name="minimumSize">
+             <size>
+              <width>30</width>
+              <height>25</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>75</width>

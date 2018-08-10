@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui\isogeo_dockwidget_base.ui'
 #
-# Created: Fri Aug 10 21:27:44 2018
+# Created: Fri Aug 10 21:46:09 2018
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -91,7 +91,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.line_2.setObjectName(_fromUtf8("line_2"))
         self.horizontalLayout_17.addWidget(self.line_2)
         self.btn_reinit = QtGui.QPushButton(self.tab_search)
-        self.btn_reinit.setMinimumSize(QtCore.QSize(81, 0))
+        self.btn_reinit.setMinimumSize(QtCore.QSize(30, 25))
         self.btn_reinit.setMaximumSize(QtCore.QSize(75, 30))
         self.btn_reinit.setText(_fromUtf8(""))
         icon2 = QtGui.QIcon()
@@ -101,6 +101,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_reinit.setObjectName(_fromUtf8("btn_reinit"))
         self.horizontalLayout_17.addWidget(self.btn_reinit)
         self.btn_quicksearch_save = QtGui.QPushButton(self.tab_search)
+        self.btn_quicksearch_save.setMinimumSize(QtCore.QSize(30, 25))
         self.btn_quicksearch_save.setMaximumSize(QtCore.QSize(75, 30))
         font = QtGui.QFont()
         font.setPointSize(8)
