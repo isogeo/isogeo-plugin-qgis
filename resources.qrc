@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/plugins/Isogeo">
+    <file>resources/results/star.svg</file>
     <file>resources/search/caret-left.svg</file>
     <file>resources/search/caret-right.svg</file>
     <file>resources/credits/lgplv3.svg</file>

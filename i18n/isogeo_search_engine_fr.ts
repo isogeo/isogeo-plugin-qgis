@@ -3,7 +3,7 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="isogeo.py" line="333"/>
+        <location filename="isogeo.py" line="325"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
@@ -13,222 +13,217 @@
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1194"/>
+        <location filename="isogeo.py" line="1169"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="526"/>
+        <location filename="isogeo.py" line="529"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin. If so, please report this on the bug tracker.</source>
         <translation>Le script tourne en rond. Assurez-vous d&apos;avoir partagéau moins  un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème sur le bug tracker.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="532"/>
+        <location filename="isogeo.py" line="535"/>
         <source>You are facing an unknown error. Code: </source>
         <translation>Vous rencontrez une erreur inconnue. Code : </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="564"/>
+        <location filename="isogeo.py" line="567"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="769"/>
+        <location filename="isogeo.py" line="761"/>
         <source>---- Keywords ----</source>
         <translation>---- Mot clés ----</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="616"/>
+        <location filename="isogeo.py" line="617"/>
         <source>Intersects</source>
         <translation>Intersecte</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="616"/>
+        <location filename="isogeo.py" line="617"/>
         <source>within</source>
         <translation>Est contenu</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="616"/>
+        <location filename="isogeo.py" line="617"/>
         <source>contains</source>
         <translation>Contient</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="623"/>
+        <location filename="isogeo.py" line="624"/>
         <source>Relevance</source>
         <translation>Pertinence</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="623"/>
+        <location filename="isogeo.py" line="624"/>
         <source>Alphabetical order</source>
         <translation>Ordre alphabétique</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="623"/>
+        <location filename="isogeo.py" line="624"/>
         <source>Data modified</source>
         <translation>Donnée modifiée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="623"/>
+        <location filename="isogeo.py" line="624"/>
         <source>Data created</source>
         <translation>Donnée créée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="623"/>
+        <location filename="isogeo.py" line="624"/>
         <source>Metadata modified</source>
         <translation>Métadonnée modifiée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="623"/>
+        <location filename="isogeo.py" line="624"/>
         <source>Metadata created</source>
         <translation>Métadonnée créée</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="634"/>
+        <location filename="isogeo.py" line="635"/>
         <source>Descending</source>
         <translation>Descendant</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="671"/>
+        <location filename="isogeo.py" line="672"/>
         <source>Map canvas</source>
         <translation>Emprise de la carte</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1538"/>
+        <location filename="isogeo.py" line="1532"/>
         <source>Quick Search</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1298"/>
+        <location filename="isogeo.py" line="1274"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="881"/>
-        <source>None</source>
-        <translation>Aucun</translation>
-    </message>
-    <message>
-        <location filename="isogeo.py" line="561"/>
+        <location filename="isogeo.py" line="564"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1194"/>
+        <location filename="isogeo.py" line="1169"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation>La table ou la vue PostGIS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1431"/>
+        <location filename="isogeo.py" line="1407"/>
         <source>{} successfully saved: {}</source>
         <translation>{} sauvegardée correctement : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1520"/>
+        <location filename="isogeo.py" line="1514"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation>Recherche rapide renommée de {} à {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1548"/>
+        <location filename="isogeo.py" line="1542"/>
         <source>Quicksearch removed: {}</source>
         <translation>Recherche rapide supprimée : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1727"/>
+        <location filename="isogeo.py" line="1721"/>
         <source> powered by 1 share:&lt;/p&gt;&lt;/br&gt;</source>
         <translation>alimenté par 1 seul partage :&lt;/p&gt;&lt;/br&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1729"/>
+        <location filename="isogeo.py" line="1723"/>
         <source> powered by {0} shares:&lt;/p&gt;&lt;/br&gt;</source>
         <translation>alimenté par {0} partages :&lt;/p&gt;&lt;/br&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1743"/>
+        <location filename="isogeo.py" line="1737"/>
         <source>&lt;p&gt;Updated: {}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Dernière mise à jour : {}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1745"/>
+        <location filename="isogeo.py" line="1739"/>
         <source>&lt;p&gt;Contact: {} - {}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Groupe de travail propriétaire : {} - {}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1721"/>
+        <location filename="isogeo.py" line="1715"/>
         <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
         <translation>&lt;p&gt;Ce plugin est authentifié en tant que &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; et </translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="409"/>
+        <location filename="isogeo.py" line="407"/>
         <source>Request to Isogeo failed: please check your Internet connection.</source>
         <translation>La requête à l&apos;API Isogeo a échoué. Merci de vérifier la connexion Internet et de réessayer.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="988"/>
+        <location filename="isogeo.py" line="963"/>
         <source>Vector layer is not valid.</source>
         <translation>La couche vecteur n&apos;est pas valide.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1016"/>
+        <location filename="isogeo.py" line="991"/>
         <source>Raster layer is not valid.</source>
         <translation>Le raster n&apos;est pas valide.</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="827"/>
+        <location filename="isogeo.py" line="812"/>
         <source>Selected keywords:</source>
         <translation>Mots-clés sélectionnés :</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="904"/>
+        <location filename="isogeo.py" line="879"/>
         <source>Keywords</source>
         <translation>Mots-clés</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="911"/>
+        <location filename="isogeo.py" line="886"/>
         <source>No keyword selected</source>
         <translation>Aucun mot-clé sélectionné</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1034"/>
+        <location filename="isogeo.py" line="1009"/>
         <source>EFS not valid. QGIS says: {}</source>
         <translation>Le service Esri Feature semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1052"/>
+        <location filename="isogeo.py" line="1027"/>
         <source>EMS not valid. QGIS says: {}</source>
         <translation>Le service Esri Map semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1079"/>
+        <location filename="isogeo.py" line="1054"/>
         <source>WFS is not valid. QGIS says: {}</source>
         <translation>La couche WFS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1107"/>
+        <location filename="isogeo.py" line="1082"/>
         <source>WMS is not valid. QGIS says: {}</source>
         <translation>La couche WMS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="449"/>
+        <location filename="isogeo.py" line="450"/>
         <source>API authentication failed.Isogeo API answered: {}</source>
         <translation>L&apos;authentification a échoué. Réponse de l&apos;API Isogeo : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1124"/>
+        <location filename="isogeo.py" line="1099"/>
         <source>WMTS is not valid. QGIS says: {}</source>
         <translation>La couche WMST semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1842"/>
+        <location filename="isogeo.py" line="1836"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="634"/>
+        <location filename="isogeo.py" line="635"/>
         <source>Ascending</source>
         <translation>Ascendant</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1441"/>
+        <location filename="isogeo.py" line="1419"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
@@ -241,12 +236,12 @@
         <translation>Recherche</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="514"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="520"/>
         <source>Advanced search</source>
         <translation>Recherche avancée</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="733"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="739"/>
         <source>INSPIRE keywords</source>
         <translation>Thématiques INSPIRE</translation>
     </message>
@@ -256,52 +251,52 @@
         <translation>Voir les résultats</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="473"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="479"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="478"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="484"/>
         <source>Modified</source>
         <translation>Modifiée</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="483"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="489"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="488"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="494"/>
         <source>Add</source>
         <translation>Ajouter</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1288"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1294"/>
         <source>Rename</source>
         <translation>Renommer</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1520"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1526"/>
         <source>Report an issue on the bug tracker</source>
         <translation>Signaler un problème sur le bug tracker</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="221"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="227"/>
         <source>Save research</source>
         <translation>Enregistrer la recherche</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="190"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="196"/>
         <source>Reset all input fields</source>
         <translation>Réinitialiser la recherche</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="561"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="567"/>
         <source>Geographic filter</source>
         <translation>Filtre géographique</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="902"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="908"/>
         <source>Resource type</source>
         <translation>Type de ressource</translation>
     </message>
@@ -316,127 +311,127 @@
         <translation>Tri des résultats</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="149"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="155"/>
         <source>Sorting direction</source>
         <translation>Direction du tri</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1218"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1224"/>
         <source>Settings</source>
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1445"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1451"/>
         <source>Authentication settings</source>
         <translation>Paramètres d&apos;authentification</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1243"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1249"/>
         <source>Search settings</source>
         <translation>Paramètres de recherche</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1408"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1414"/>
         <source>Geographical operator applied to the filter</source>
         <translation>Opérateur géographique à appliquer au filtre</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1338"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1344"/>
         <source>Default search</source>
         <translation>Recherche par défaut</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1504"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1510"/>
         <source>Resources</source>
         <translation>Ressources</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1611"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1617"/>
         <source>Open online plugin help</source>
         <translation>Ouvrir l&apos;aide en ligne du plugin</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1673"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1679"/>
         <source>Open plugin credits</source>
         <translation>Ouvrir les crédits de l&apos;application</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="424"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="430"/>
         <source>Page x on x</source>
         <translation>Page x sur x</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1462"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1468"/>
         <source>Set plugin authentication:</source>
         <translation>Changer les paramètres d&apos;authentification du plugin :</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="364"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="370"/>
         <source>Enter your search terms</source>
         <translation>Termes de recherche</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="376"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="382"/>
         <source>roads, habitat, cadastral parcel, transport</source>
         <translation>routes, habitat, cadastre, transport, vélo</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="332"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="338"/>
         <source>Launch search</source>
         <translation>Lancer la recherche</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="644"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="650"/>
         <source>Format (source)</source>
         <translation>Format source</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="820"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="826"/>
         <source>Contact</source>
         <translation>Contact</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="985"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="991"/>
         <source>Metadata owner</source>
         <translation>Propriétaire de la métadonnée</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1074"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1080"/>
         <source>Coordinate system (source)</source>
         <translation>Système de coordonnées source</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1155"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1161"/>
         <source>License</source>
         <translation>Licence</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="263"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="269"/>
         <source>Quick searches</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1555"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1561"/>
         <source>Get the log file: &quot;log_isogeo_plugin.log&quot;</source>
         <translation>Trouver le fichier &quot;log_isogeo_plugin.log&quot;</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1561"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1567"/>
         <source>LOG File</source>
         <translation>Fichier LOG</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1646"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1652"/>
         <source>Open online help in default browser</source>
         <translation>Consulter l&apos;aide en ligne dans le navigateur par défaut</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="1708"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="1714"/>
         <source>Open credits popup</source>
         <translation>Ouvre la fenêtre des crédits</translation>
     </message>
     <message>
-        <location filename="ui/isogeo_dockwidget_base.ui" line="279"/>
+        <location filename="ui/isogeo_dockwidget_base.ui" line="285"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
@@ -616,42 +611,42 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
 <context>
     <name>dlg_form_auth_prompt</name>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="285"/>
+        <location filename="ui/auth/ui_authentication.py" line="287"/>
         <source>Isogeo authentication settings</source>
         <translation>Paramètres d&apos;authentification du plugin</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="300"/>
+        <location filename="ui/auth/ui_authentication.py" line="302"/>
         <source>Request plugin access</source>
         <translation>Demander un accès</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="291"/>
+        <location filename="ui/auth/ui_authentication.py" line="293"/>
         <source>Application ID:</source>
         <translation>ID :</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="287"/>
+        <location filename="ui/auth/ui_authentication.py" line="289"/>
         <source>Application SECRET:</source>
         <translation>Secret :</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="299"/>
+        <location filename="ui/auth/ui_authentication.py" line="301"/>
         <source>Don&apos;t have an account yet ?</source>
         <translation>Pas encore de compte ?</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="286"/>
+        <location filename="ui/auth/ui_authentication.py" line="288"/>
         <source>I already have Isogeo ID and SECRET for this application</source>
         <translation>Je dispose déjà des ID et Secret pour ce plugin</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="292"/>
+        <location filename="ui/auth/ui_authentication.py" line="294"/>
         <source>Check access validity</source>
         <translation>Vérifier la validité</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="293"/>
+        <location filename="ui/auth/ui_authentication.py" line="295"/>
         <source>Check</source>
         <translation>Vérifier</translation>
     </message>
@@ -684,7 +679,7 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
 &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="301"/>
+        <location filename="ui/auth/ui_authentication.py" line="303"/>
         <source>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;body&gt;
@@ -712,42 +707,42 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
 &lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="288"/>
+        <location filename="ui/auth/ui_authentication.py" line="290"/>
         <source>I&apos;ve got the power hey yeah heh!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="289"/>
+        <location filename="ui/auth/ui_authentication.py" line="291"/>
         <source>I&apos;ve got edition rights on app.isogeo.com</source>
         <translation>J&apos;ai accès aux fonctionnalités d&apos;édition sur app.isogeo.com</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="294"/>
+        <location filename="ui/auth/ui_authentication.py" line="296"/>
         <source>From a file:</source>
         <translation>Importer depuis un fichier :</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="290"/>
+        <location filename="ui/auth/ui_authentication.py" line="292"/>
         <source>plugin-qgis-org-a1b23c4d5f6g7h8i9j10kl11mn13op14</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="295"/>
+        <location filename="ui/auth/ui_authentication.py" line="297"/>
         <source>Pick your credentials file</source>
         <translation>Importer le fichier d&apos;authentification fourni par Isogeo ou votre administrateur</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="296"/>
+        <location filename="ui/auth/ui_authentication.py" line="298"/>
         <source>Locate the Isogeo API credentials file</source>
         <translation>Trouver le fichier &quot;client_secrets.json&quot;</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="297"/>
+        <location filename="ui/auth/ui_authentication.py" line="299"/>
         <source>Only for information, the Isogeo API base URL</source>
         <translation>Pour information, l&apos;URL de base de l&apos;API Isogeo</translation>
     </message>
     <message>
-        <location filename="ui/auth/ui_authentication.py" line="298"/>
+        <location filename="ui/auth/ui_authentication.py" line="300"/>
         <source>API location:</source>
         <translation>URL de l&apos;API :</translation>
     </message>

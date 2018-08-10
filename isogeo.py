@@ -119,7 +119,7 @@ logger.addHandler(logfile)
 # icons
 ico_od_asc = QIcon(':/plugins/Isogeo/resources/results/sort-alpha-asc.svg')
 ico_od_desc = QIcon(':/plugins/Isogeo/resources/results/sort-alpha-desc.svg')
-ico_ob_relev = QIcon(":/plugins/Isogeo/resources/search/search.svg")
+ico_ob_relev = QIcon(":/plugins/Isogeo/resources/results/star.svg")
 ico_ob_alpha = QIcon(':/plugins/Isogeo/resources/metadata/language.svg')
 ico_ob_dcrea = QIcon(':/plugins/Isogeo/resources/datacreated.svg')
 ico_ob_dupda = QIcon(':/plugins/Isogeo/resources/datamodified.svg')

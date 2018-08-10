@@ -87,13 +87,13 @@
            <widget class="QPushButton" name="btn_show">
             <property name="minimumSize">
              <size>
-              <width>201</width>
+              <width>250</width>
               <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>800</width>
+              <width>360</width>
               <height>30</height>
              </size>
             </property>
@@ -113,8 +113,8 @@
            <widget class="QComboBox" name="cbb_ob">
             <property name="minimumSize">
              <size>
-              <width>35</width>
-              <height>0</height>
+              <width>45</width>
+              <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -126,8 +126,14 @@
             <property name="toolTip">
              <string>Sorting method</string>
             </property>
+            <property name="maxCount">
+             <number>6</number>
+            </property>
             <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToContents</enum>
+             <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+            </property>
+            <property name="minimumContentsLength">
+             <number>20</number>
             </property>
            </widget>
           </item>
@@ -135,8 +141,8 @@
            <widget class="QComboBox" name="cbb_od">
             <property name="minimumSize">
              <size>
-              <width>35</width>
-              <height>0</height>
+              <width>40</width>
+              <height>20</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -161,7 +167,7 @@
              <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
             </property>
             <property name="minimumContentsLength">
-             <number>10</number>
+             <number>20</number>
             </property>
            </widget>
           </item>
@@ -501,7 +507,7 @@
           <property name="maximumSize">
            <size>
             <width>800</width>
-            <height>20</height>
+            <height>16777215</height>
            </size>
           </property>
           <property name="font">
@@ -514,7 +520,7 @@
            <string>Advanced search</string>
           </property>
           <property name="collapsed">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="scrollOnExpand">
            <bool>true</bool>
