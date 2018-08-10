@@ -539,7 +539,7 @@ class Isogeo:
                                     str(answer.error()) +
                                     "\nPlease report it on the bug tracker.")
         # method end
-        return
+        #return
 
     def update_fields(self, result):
         """Update the fields content.
