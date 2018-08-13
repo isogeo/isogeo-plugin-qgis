@@ -297,7 +297,7 @@ class Isogeo:
             callback=self.run,
             parent=self.iface.mainWindow())
 
-    # --------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed."""
@@ -326,7 +326,7 @@ class Isogeo:
         # remove the toolbar
         del self.toolbar
 
-    # --------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     def user_authentication(self):
         """Test the validity of the user id and secret.
         This is the first major function the plugin calls when executed. It
@@ -538,6 +538,7 @@ class Isogeo:
         # method end
         #return
 
+    # -- UI - UPDATE SEARCH FORM ----------------------------------------------
     def update_fields(self, result):
         """Update the fields content.
 
@@ -905,13 +906,438 @@ class Isogeo:
         self.hardReset = False
         self.showResult = False
 
-    def add_loading_bar(self):
-        """Display a "loading" bar."""
-        self.bar = QProgressBar()
-        self.bar.setRange(0, 0)
-        self.bar.setFixedWidth(120)
-        self.iface.mainWindow().statusBar().insertPermanentWidget(0, self.bar)
+    def save_params(self):
+        """Save the widgets state/index.
 
+        This save the current state/index of each user input so we can put them
+        back to their previous state/index after they have been updated
+        (cleared and filled again).
+        """
+        # Getting the text in the search line
+        text = self.dockwidget.txt_input.text()
+        # get the data of the item which index is (comboboxes current index)
+        owner_param = self.dockwidget.cbb_owner.itemData(
+            self.dockwidget.cbb_owner.currentIndex())
+        inspire_param = self.dockwidget.cbb_inspire.itemData(
+            self.dockwidget.cbb_inspire.currentIndex())
+        format_param = self.dockwidget.cbb_format.itemData(
+            self.dockwidget.cbb_format.currentIndex())
+        srs_param = self.dockwidget.cbb_srs.itemData(
+            self.dockwidget.cbb_srs.currentIndex())
+        contact_param = self.dockwidget.cbb_contact.itemData(
+            self.dockwidget.cbb_contact.currentIndex())
+        license_param = self.dockwidget.cbb_license.itemData(
+            self.dockwidget.cbb_license.currentIndex())
+        type_param = self.dockwidget.cbb_type.itemData(
+            self.dockwidget.cbb_type.currentIndex())
+        if self.dockwidget.cbb_geofilter.currentIndex() < 2:
+            geofilter_param = self.dockwidget.cbb_geofilter.itemData(
+                self.dockwidget.cbb_geofilter.currentIndex())
+        else:
+            geofilter_param = self.dockwidget.cbb_geofilter.currentText()
+        favorite_param = self.dockwidget.cbb_quicksearch_use.itemData(
+            self.dockwidget.cbb_quicksearch_use.currentIndex())
+        operation_param = self.dockwidget.cbb_geo_op.itemData(
+            self.dockwidget.cbb_geo_op.currentIndex())
+        ob_param = self.dockwidget.cbb_ob.itemData(
+            self.dockwidget.cbb_ob.currentIndex())
+        od_param = self.dockwidget.cbb_od.itemData(
+            self.dockwidget.cbb_od.currentIndex())
+        # Saving the keywords that are selected : if a keyword state is
+        # selected, he is added to the list
+        key_params = []
+        for i in xrange(self.dockwidget.cbb_keywords.count()):
+            if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
+                key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
+
+        params = {"owner": owner_param,
+                  "inspire": inspire_param,
+                  "format": format_param,
+                  "srs": srs_param,
+                  "favorite": favorite_param,
+                  "keys": key_params,
+                  "geofilter": geofilter_param,
+                  "license": license_param,
+                  "contact": contact_param,
+                  "text": text,
+                  "datatype": type_param,
+                  "operation": operation_param,
+                  "ob": ob_param,
+                  "od": od_param,
+                  }
+        # check geographic filter
+        if params.get('geofilter') == "mapcanvas":
+            e = iface.mapCanvas().extent()
+            extent = [e.xMinimum(),
+                      e.yMinimum(),
+                      e.xMaximum(),
+                      e.yMaximum()]
+            params['extent'] = extent
+            epsg = int(plg_tools.get_map_crs().split(':')[1])
+            params['epsg'] = epsg
+            params['coord'] = self.get_coords('canvas')
+        elif params.get('geofilter') in QgsMapLayerRegistry.instance().mapLayers().values():
+            params['coord'] = self.get_coords(params.get('geofilter'))
+        else:
+            pass
+        # saving params in QSettings
+        qsettings.setValue("isogeo/settings/georelation", operation_param)
+        logger.debug(params)
+        return params
+
+    def search(self):
+        """Build the request url to be sent to Isogeo API.
+
+        This builds the url, retrieving the parameters from the widgets. When
+        the final url is built, it calls api_get_requests
+        """
+        logger.debug("Search function called. Building the "
+                     "url that is to be sent to the API")
+        # Disabling all user inputs during the search function is running
+        self.switch_widgets_on_and_off(0)
+        # STORING THE PREVIOUS SEARCH
+        if self.store is True:
+            # Open json file
+            with open(self.json_path) as data_file:
+                saved_searches = json.load(data_file)
+            # Store the search
+            name = self.tr("Last search")
+            saved_searches[name] = saved_searches.get(
+                '_current',
+                "{}/resources/search?&_limit=0"
+                .format(plg_api_mngr.api_url_base))
+            # Refresh the quick searches comboboxes content
+            search_list = saved_searches.keys()
+            search_list.pop(search_list.index('_default'))
+            search_list.pop(search_list.index('_current'))
+            self.dockwidget.cbb_quicksearch_use.clear()
+            self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
+            self.dockwidget.cbb_quicksearch_edit.clear()
+            for i in search_list:
+                self.dockwidget.cbb_quicksearch_use.addItem(i, i)
+                self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
+            # Write modifications in the json
+            with open(self.json_path, 'w') as outfile:
+                json.dump(saved_searches, outfile,
+                          sort_keys=True, indent=4)
+            self.store = False
+        else:
+            pass
+
+        # STORING ALL THE INFORMATIONS NEEDED TO BUILD THE URL
+        # Widget position
+        params = self.save_params()
+        # Info for _offset parameter
+        self.page_index = 1
+        params['page'] = self.page_index
+        # Info for _limit parameter
+        if self.showResult is True:
+            params['show'] = True
+        else:
+            params['show'] = False
+        # Info for _lang parameter
+        params['lang'] = self.lang
+        # URL BUILDING FUNCTION CALLED.
+        self.currentUrl = plg_api_mngr.build_request_url(params)
+        logger.debug(self.currentUrl)
+        # Sending the request to Isogeo API
+        if plg_api_mngr.req_status_isClear is True:
+            self.api_get_requests(self.token)
+        else:
+            pass
+
+        # method end
+        return
+
+    def next_page(self):
+        """Add the _offset parameter to the current url to display next page.
+
+        Close to the search() function (lot of code in common) but
+        triggered on the click on the change page button.
+        """
+        logger.debug("next_page function called.")
+        # Testing if the user is asking for a unexisting page (ex : page 6 out
+        # of 5)
+        if self.page_index >= plg_tools.results_pages_counter(total=self.results_count):
+            return False
+        else:
+            # Adding the loading bar
+            self.add_loading_bar()
+            # Info about the widget status
+            params = self.save_params()
+            # Info for _limit parameter
+            self.showResult = True
+            params['show'] = True
+            self.switch_widgets_on_and_off(0)
+            # Building up the request
+            self.page_index += 1
+            params['page'] = self.page_index
+            # Info for _lang parameter
+            params['lang'] = self.lang
+            # URL BUILDING FUNCTION CALLED.
+            self.currentUrl = plg_api_mngr.build_request_url(params)
+            # Sending the request
+            if plg_api_mngr.req_status_isClear is True:
+                self.api_get_requests(self.token)
+
+    def previous_page(self):
+        """Add the _offset parameter to the url to display previous page.
+
+        Close to the search() function (lot of code in common) but
+        triggered on the click on the change page button.
+        """
+        logger.debug("previous_page function called.")
+        # testing if the user is asking for something impossible : page 0
+        if self.page_index < 2:
+            return False
+        else:
+            # Adding the loading bar
+            self.add_loading_bar()
+            # Info about the widget status
+            params = self.save_params()
+            # Info for _limit parameter
+            self.showResult = True
+            params['show'] = True
+            self.switch_widgets_on_and_off(0)
+            # Building up the request
+            self.page_index -= 1
+            params['page'] = self.page_index
+            # Info for _lang parameter
+            params['lang'] = self.lang
+            # URL BUILDING FUNCTION CALLED.
+            self.currentUrl = plg_api_mngr.build_request_url(params)
+            # Sending the request
+            if plg_api_mngr.req_status_isClear is True:
+                self.api_get_requests(self.token)
+
+    def write_search_params(self, search_name, search_kind="Default"):
+        """Write a new element in the json file when a search is saved."""
+        # Open the saved_search file as a dict. Each key is a search name,
+        # each value is a dict containing the parameters for this search name
+        with open(self.json_path) as data_file:
+            saved_searches = json.load(data_file)
+        # If the name already exists, ask for a new one. ================ TO DO
+
+        # Write the current parameters in a dict, and store it in the saved
+        # search dict
+        params = self.save_params()
+        params['url'] = self.currentUrl
+        for i in xrange(len(params.get('keys'))):
+            params['keyword_{0}'.format(i)] = params.get('keys')[i]
+        params.pop('keys', None)
+        saved_searches[search_name] = params
+        # writing file
+        with open(self.json_path, 'w') as outfile:
+            json.dump(saved_searches, outfile,
+                      sort_keys=True, indent=4)
+        # Log and messages
+        logger.debug("{} search stored: {}. Parameters: {}"
+                    .format(search_kind, search_name, params))
+        if search_kind != "Current":
+            msgBar.pushMessage(self.tr("{} successfully saved: {}")
+                                       .format(search_kind, search_name),
+                               duration=3)
+        else:
+            pass
+        return
+
+    def set_widget_status(self):
+        """Set a few variable and send the request to Isogeo API."""
+        selected_search = self.dockwidget.cbb_quicksearch_use.currentText()
+        logger.debug("Quicksearch selected: {}".format(selected_search))
+        if selected_search != self.tr("Quicksearches"):
+            self.switch_widgets_on_and_off(0)   # disable search form
+            # load quicksearches
+            with open(self.json_path) as data_file:
+                saved_searches = json.load(data_file)
+            logger.debug(saved_searches.keys())
+            # check if selected search can be found
+            if selected_search in saved_searches:
+                self.savedSearch = selected_search
+                search_params = saved_searches.get(selected_search)
+                logger.debug("Quicksearch found in saved searches and"
+                             " related search params have just been loaded from.")
+            elif selected_search not in saved_searches and "_default" in saved_searches:
+                logger.warning("Selected search ({}) not found."
+                               "'_default' will be used instead.")
+                self.savedSearch = '_default'
+                search_params = saved_searches.get('_default')
+            else:
+                logger.error("Selected search ({}) and '_default' do not exist."
+                             .format(selected_search))
+                return
+
+            # Check projection settings in loaded search params
+            if 'epsg' in search_params:
+                logger.debug("Specific SRS found in search params: {}"
+                             .format(epsg))
+                epsg = int(plg_tools.get_map_crs().split(':')[1])
+                if epsg == search_params.get('epsg'):
+                    canvas = iface.mapCanvas()
+                    e = search_params.get('extent')
+                    rect = QgsRectangle(e[0], e[1], e[2], e[3])
+                    canvas.setExtent(rect)
+                    canvas.refresh()
+                else:
+                    canvas = iface.mapCanvas()
+                    canvas.mapRenderer().setProjectionsEnabled(True)
+                    canvas.mapRenderer().setDestinationCrs(
+                        QgsCoordinateReferenceSystem(
+                            search_params.get('epsg'),
+                            QgsCoordinateReferenceSystem.EpsgCrsId))
+                    e = search_params.get('extent')
+                    rect = QgsRectangle(e[0], e[1], e[2], e[3])
+                    canvas.setExtent(rect)
+                    canvas.refresh()
+            # load request
+            self.currentUrl = search_params.get('url')
+            if plg_api_mngr.req_status_isClear is True:
+                self.api_get_requests(self.token)
+            else:
+                logger.info("A request to the API is already running."
+                            "Please wait and try again later.")
+        else:
+            logger.debug("No quicksearch selected. Launch '_default' search.")
+            self.savedSearch = "_default"
+            self.reinitialize_search()
+
+    # -- SEARCH --------------------------------------------------------------
+    def edited_search(self):
+        """On the Qline edited signal, decide weither a search has to be launched."""
+        try:
+            logger.debug("Editing finished signal sent.")
+        except AttributeError:
+            pass
+        if self.dockwidget.txt_input.text() == self.old_text:
+            try:
+                logger.debug("The lineEdit text hasn't changed."
+                             " So pass without sending a request.")
+            except AttributeError as e:
+                logger.error(e)
+                pass
+            pass
+        else:
+            try:
+                logger.debug("The line Edit text changed."
+                            " Calls the search function.")
+            except AttributeError as e:
+                logger.error(e)
+                pass
+            if self.dockwidget.txt_input.text() == "Ici c'est Isogeo !":
+                plg_tools.special_search("isogeo")
+                self.dockwidget.txt_input.clear()
+                return
+            elif self.dockwidget.txt_input.text() == "Picasa":
+                plg_tools.special_search("picasa")
+                self.dockwidget.txt_input.clear()
+                return
+            else:
+                pass
+            self.search()
+
+    def reinitialize_search(self):
+        """Clear all widget, putting them all back to their default value.
+
+        Clear all widget and send a request to the API (which ends up updating
+        the fields : send_request() calls handle_reply(), which calls
+        update_fields())
+        """
+        logger.debug("Reset search function called.")
+        self.hardReset = True
+        # clear widgets
+        for cbb in self.dockwidget.tab_search.findChildren(QComboBox):
+            cbb.clear()
+        self.dockwidget.cbb_geo_op.clear()
+        self.dockwidget.txt_input.clear()
+        # launch search
+        self.search()
+
+    def search_with_content(self):
+        """Launch a search request that will end up in showing the results."""
+        self.add_loading_bar()
+        self.showResult = True
+        self.search()
+
+    # -- QUICKSEARCHES  -------------------------------------------------------
+    def quicksearch_save(self):
+        """Call the write_search() function and refresh the combobox."""
+        # retrieve quicksearch given name and store it
+        search_name = self.quicksearch_new_dialog.txt_quicksearch_name.text()
+        self.write_search_params(search_name, search_kind="Quicksearch")
+        # load all saved quicksearches and populate drop-down (combobox)
+        with open(self.json_path, "r") as saved_searches_file:
+            saved_searches = json.load(saved_searches_file)
+        search_list = saved_searches.keys()
+        search_list.pop(search_list.index('_default'))
+        search_list.pop(search_list.index('_current'))
+        self.dockwidget.cbb_quicksearch_use.clear()
+        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch_edit.clear()
+        for i in search_list:
+            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
+            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
+        # method ending
+        return
+
+    def quicksearch_rename(self):
+        """Modify the json file in order to rename a search."""
+        old_name = self.dockwidget.cbb_quicksearch_edit.currentText()
+        with open(self.json_path, "r") as saved_searches_file:
+            saved_searches = json.load(saved_searches_file)
+        new_name = self.quicksearch_rename_dialog.txt_quicksearch_rename.text()
+        saved_searches[new_name] = saved_searches[old_name]
+        saved_searches.pop(old_name)
+        search_list = saved_searches.keys()
+        search_list.pop(search_list.index('_default'))
+        search_list.pop(search_list.index('_current'))
+        self.dockwidget.cbb_quicksearch_use.clear()
+        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch_edit.clear()
+        for i in search_list:
+            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
+            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
+        # Update JSON file
+        with open(self.json_path, 'w') as outfile:
+            json.dump(saved_searches, outfile,
+                      sort_keys=True, indent=4)
+        # inform user
+        msgBar.pushMessage("Isogeo",
+                           self.tr("Quicksearch renamed: from {} to {}")
+                                   .format(old_name, new_name),
+                           level=msgBar.INFO,
+                           duration=3)
+        # method ending
+        return
+
+    def quicksearch_remove(self):
+        """Modify the json file in order to delete a search."""
+        to_be_deleted = self.dockwidget.cbb_quicksearch_edit.currentText()
+        with open(self.json_path, "r") as saved_searches_file:
+            saved_searches = json.load(saved_searches_file)
+        saved_searches.pop(to_be_deleted)
+        search_list = saved_searches.keys()
+        search_list.pop(search_list.index('_default'))
+        search_list.pop(search_list.index('_current'))
+        self.dockwidget.cbb_quicksearch_use.clear()
+        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
+        self.dockwidget.cbb_quicksearch_edit.clear()
+        for i in search_list:
+            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
+            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
+        # Update JSON file
+        with open(self.json_path, 'w') as outfile:
+            json.dump(saved_searches, outfile,
+                      sort_keys=True, indent=4)
+        # inform user
+        msgBar.pushMessage("Isogeo",
+                           self.tr("Quicksearch removed: {}")
+                                   .format(to_be_deleted),
+                           level=msgBar.INFO,
+                           duration=3)
+        # method ending
+        return
+
+    # RESULTS to MAP ----------------------------------------------------------
     def add_layer(self, layer_info):
         """Add a layer to QGIS map canvas.
 
@@ -1167,382 +1593,14 @@ class Isogeo:
                 return 0
         return 1
 
-    def save_params(self):
-        """Save the widgets state/index.
 
-        This save the current state/index of each user input so we can put them
-        back to their previous state/index after they have been updated
-        (cleared and filled again).
-        """
-        # Getting the text in the search line
-        text = self.dockwidget.txt_input.text()
-        # get the data of the item which index is (comboboxes current index)
-        owner_param = self.dockwidget.cbb_owner.itemData(
-            self.dockwidget.cbb_owner.currentIndex())
-        inspire_param = self.dockwidget.cbb_inspire.itemData(
-            self.dockwidget.cbb_inspire.currentIndex())
-        format_param = self.dockwidget.cbb_format.itemData(
-            self.dockwidget.cbb_format.currentIndex())
-        srs_param = self.dockwidget.cbb_srs.itemData(
-            self.dockwidget.cbb_srs.currentIndex())
-        contact_param = self.dockwidget.cbb_contact.itemData(
-            self.dockwidget.cbb_contact.currentIndex())
-        license_param = self.dockwidget.cbb_license.itemData(
-            self.dockwidget.cbb_license.currentIndex())
-        type_param = self.dockwidget.cbb_type.itemData(
-            self.dockwidget.cbb_type.currentIndex())
-        if self.dockwidget.cbb_geofilter.currentIndex() < 2:
-            geofilter_param = self.dockwidget.cbb_geofilter.itemData(
-                self.dockwidget.cbb_geofilter.currentIndex())
-        else:
-            geofilter_param = self.dockwidget.cbb_geofilter.currentText()
-        favorite_param = self.dockwidget.cbb_quicksearch_use.itemData(
-            self.dockwidget.cbb_quicksearch_use.currentIndex())
-        operation_param = self.dockwidget.cbb_geo_op.itemData(
-            self.dockwidget.cbb_geo_op.currentIndex())
-        ob_param = self.dockwidget.cbb_ob.itemData(
-            self.dockwidget.cbb_ob.currentIndex())
-        od_param = self.dockwidget.cbb_od.itemData(
-            self.dockwidget.cbb_od.currentIndex())
-        # Saving the keywords that are selected : if a keyword state is
-        # selected, he is added to the list
-        key_params = []
-        for i in xrange(self.dockwidget.cbb_keywords.count()):
-            if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
-                key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
-
-        params = {"owner": owner_param,
-                  "inspire": inspire_param,
-                  "format": format_param,
-                  "srs": srs_param,
-                  "favorite": favorite_param,
-                  "keys": key_params,
-                  "geofilter": geofilter_param,
-                  "license": license_param,
-                  "contact": contact_param,
-                  "text": text,
-                  "datatype": type_param,
-                  "operation": operation_param,
-                  "ob": ob_param,
-                  "od": od_param,
-                  }
-        # check geographic filter
-        if params.get('geofilter') == "mapcanvas":
-            e = iface.mapCanvas().extent()
-            extent = [e.xMinimum(),
-                      e.yMinimum(),
-                      e.xMaximum(),
-                      e.yMaximum()]
-            params['extent'] = extent
-            epsg = int(plg_tools.get_map_crs().split(':')[1])
-            params['epsg'] = epsg
-            params['coord'] = self.get_coords('canvas')
-        elif params.get('geofilter') in QgsMapLayerRegistry.instance().mapLayers().values():
-            params['coord'] = self.get_coords(params.get('geofilter'))
-        else:
-            pass
-        # saving params in QSettings
-        qsettings.setValue("isogeo/settings/georelation", operation_param)
-        logger.debug(params)
-        return params
-
-    def search(self):
-        """Build the request url to be sent to Isogeo API.
-
-        This builds the url, retrieving the parameters from the widgets. When
-        the final url is built, it calls api_get_requests
-        """
-        logger.debug("Search function called. Building the "
-                     "url that is to be sent to the API")
-        # Disabling all user inputs during the search function is running
-        self.switch_widgets_on_and_off(0)
-        # STORING THE PREVIOUS SEARCH
-        if self.store is True:
-            # Open json file
-            with open(self.json_path) as data_file:
-                saved_searches = json.load(data_file)
-            # Store the search
-            name = self.tr("Last search")
-            saved_searches[name] = saved_searches.get(
-                '_current',
-                "{}/resources/search?&_limit=0"
-                .format(plg_api_mngr.api_url_base))
-            # Refresh the quick searches comboboxes content
-            search_list = saved_searches.keys()
-            search_list.pop(search_list.index('_default'))
-            search_list.pop(search_list.index('_current'))
-            self.dockwidget.cbb_quicksearch_use.clear()
-            self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
-            self.dockwidget.cbb_quicksearch_edit.clear()
-            for i in search_list:
-                self.dockwidget.cbb_quicksearch_use.addItem(i, i)
-                self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-            # Write modifications in the json
-            with open(self.json_path, 'w') as outfile:
-                json.dump(saved_searches, outfile,
-                          sort_keys=True, indent=4)
-            self.store = False
-        else:
-            pass
-
-        # STORING ALL THE INFORMATIONS NEEDED TO BUILD THE URL
-        # Widget position
-        params = self.save_params()
-        # Info for _offset parameter
-        self.page_index = 1
-        params['page'] = self.page_index
-        # Info for _limit parameter
-        if self.showResult is True:
-            params['show'] = True
-        else:
-            params['show'] = False
-        # Info for _lang parameter
-        params['lang'] = self.lang
-        # URL BUILDING FUNCTION CALLED.
-        self.currentUrl = plg_api_mngr.build_request_url(params)
-        logger.debug(self.currentUrl)
-        # Sending the request to Isogeo API
-        if plg_api_mngr.req_status_isClear is True:
-            self.api_get_requests(self.token)
-        else:
-            pass
-
-        # method end
-        return
-
-    def next_page(self):
-        """Add the _offset parameter to the current url to display next page.
-
-        Close to the search() function (lot of code in common) but
-        triggered on the click on the change page button.
-        """
-        logger.debug("next_page function called.")
-        # Testing if the user is asking for a unexisting page (ex : page 6 out
-        # of 5)
-        if self.page_index >= plg_tools.results_pages_counter(total=self.results_count):
-            return False
-        else:
-            # Adding the loading bar
-            self.add_loading_bar()
-            # Info about the widget status
-            params = self.save_params()
-            # Info for _limit parameter
-            self.showResult = True
-            params['show'] = True
-            self.switch_widgets_on_and_off(0)
-            # Building up the request
-            self.page_index += 1
-            params['page'] = self.page_index
-            # Info for _lang parameter
-            params['lang'] = self.lang
-            # URL BUILDING FUNCTION CALLED.
-            self.currentUrl = plg_api_mngr.build_request_url(params)
-            # Sending the request
-            if plg_api_mngr.req_status_isClear is True:
-                self.api_get_requests(self.token)
-
-    def previous_page(self):
-        """Add the _offset parameter to the url to display previous page.
-
-        Close to the search() function (lot of code in common) but
-        triggered on the click on the change page button.
-        """
-        logger.debug("previous_page function called.")
-        # testing if the user is asking for something impossible : page 0
-        if self.page_index < 2:
-            return False
-        else:
-            # Adding the loading bar
-            self.add_loading_bar()
-            # Info about the widget status
-            params = self.save_params()
-            # Info for _limit parameter
-            self.showResult = True
-            params['show'] = True
-            self.switch_widgets_on_and_off(0)
-            # Building up the request
-            self.page_index -= 1
-            params['page'] = self.page_index
-            # Info for _lang parameter
-            params['lang'] = self.lang
-            # URL BUILDING FUNCTION CALLED.
-            self.currentUrl = plg_api_mngr.build_request_url(params)
-            # Sending the request
-            if plg_api_mngr.req_status_isClear is True:
-                self.api_get_requests(self.token)
-
-    def write_search_params(self, search_name, search_kind="Default"):
-        """Write a new element in the json file when a search is saved."""
-        # Open the saved_search file as a dict. Each key is a search name,
-        # each value is a dict containing the parameters for this search name
-        with open(self.json_path) as data_file:
-            saved_searches = json.load(data_file)
-        # If the name already exists, ask for a new one. ================ TO DO
-
-        # Write the current parameters in a dict, and store it in the saved
-        # search dict
-        params = self.save_params()
-        params['url'] = self.currentUrl
-        for i in xrange(len(params.get('keys'))):
-            params['keyword_{0}'.format(i)] = params.get('keys')[i]
-        params.pop('keys', None)
-        saved_searches[search_name] = params
-        # writing file
-        with open(self.json_path, 'w') as outfile:
-            json.dump(saved_searches, outfile,
-                      sort_keys=True, indent=4)
-        # Log and messages
-        logger.debug("{} search stored: {}. Parameters: {}"
-                    .format(search_kind, search_name, params))
-        if search_kind != "Current":
-            msgBar.pushMessage(self.tr("{} successfully saved: {}")
-                                       .format(search_kind, search_name),
-                               duration=3)
-        else:
-            pass
-        return
-
-    def set_widget_status(self):
-        """Set a few variable and send the request to Isogeo API."""
-        selected_search = self.dockwidget.cbb_quicksearch_use.currentText()
-        if selected_search != self.tr("Quicksearches"):
-            logger.debug("Quicksearch selected: {}".format(selected_search))
-            self.switch_widgets_on_and_off(0)   # disable search form
-            # load quicksearches
-            with open(self.json_path) as data_file:
-                saved_searches = json.load(data_file)
-            logger.debug(saved_searches)
-            # check if selected search can be found
-            if selected_search in saved_searches:
-                self.savedSearch = selected_search
-                search_params = saved_searches.get(selected_search)
-            elif selected_search not in saved_searches and "_default" in saved_searches:
-                logger.warning("Selected search ({}) not found."
-                               "'_default' will be used instead.")
-                self.savedSearch = '_default'
-                search_params = saved_searches.get('_default')
-            else:
-                logger.error("Selected search ({}) and '_default' do not exist."
-                             .format(selected_search))
-                return
-            
-            # get stored URL
-            self.currentUrl = search_params.get('url')
-            if 'epsg' in search_params:
-                logger.debug("Specific SRS found in search params: {}"
-                             .format(epsg))
-                epsg = int(plg_tools.get_map_crs().split(':')[1])
-                if epsg == search_params.get('epsg'):
-                    canvas = iface.mapCanvas()
-                    e = search_params.get('extent')
-                    rect = QgsRectangle(e[0], e[1], e[2], e[3])
-                    canvas.setExtent(rect)
-                    canvas.refresh()
-                else:
-                    canvas = iface.mapCanvas()
-                    canvas.mapRenderer().setProjectionsEnabled(True)
-                    canvas.mapRenderer().setDestinationCrs(
-                        QgsCoordinateReferenceSystem(
-                            search_params.get('epsg'),
-                            QgsCoordinateReferenceSystem.EpsgCrsId))
-                    e = search_params.get('extent')
-                    rect = QgsRectangle(e[0], e[1], e[2], e[3])
-                    canvas.setExtent(rect)
-                    canvas.refresh()
-            # load request
-            self.currentUrl = search_params.get('url')
-            if plg_api_mngr.req_status_isClear is True:
-                self.api_get_requests(self.token)
-            else:
-                logger.info("A request to the API is already running."
-                            "Please wait and try again later.")
-        else:
-            logger.debug("No quicksearch selected. Launch '_default' search.")
-            self.savedSearch = "_default"
-            self.reinitialize_search()
-
-
-    # ------------ Quicksearches ------------------------------------------
-
-    def quicksearch_save(self):
-        """Call the write_search() function and refresh the combobox."""
-        # retrieve quicksearch given name and store it
-        search_name = self.quicksearch_new_dialog.txt_quicksearch_name.text()
-        self.write_search_params(search_name, search_kind="Quicksearch")
-        # load all saved quicksearches and populate drop-down (combobox)
-        with open(self.json_path, "r") as saved_searches_file:
-            saved_searches = json.load(saved_searches_file)
-        search_list = saved_searches.keys()
-        search_list.pop(search_list.index('_default'))
-        search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch_use.clear()
-        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_quicksearch_edit.clear()
-        for i in search_list:
-            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
-            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-        # method ending
-        return
-
-    def quicksearch_rename(self):
-        """Modify the json file in order to rename a search."""
-        old_name = self.dockwidget.cbb_quicksearch_edit.currentText()
-        with open(self.json_path, "r") as saved_searches_file:
-            saved_searches = json.load(saved_searches_file)
-        new_name = self.quicksearch_rename_dialog.txt_quicksearch_rename.text()
-        saved_searches[new_name] = saved_searches[old_name]
-        saved_searches.pop(old_name)
-        search_list = saved_searches.keys()
-        search_list.pop(search_list.index('_default'))
-        search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch_use.clear()
-        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_quicksearch_edit.clear()
-        for i in search_list:
-            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
-            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-        # Update JSON file
-        with open(self.json_path, 'w') as outfile:
-            json.dump(saved_searches, outfile,
-                      sort_keys=True, indent=4)
-        # inform user
-        msgBar.pushMessage("Isogeo",
-                           self.tr("Quicksearch renamed: from {} to {}")
-                                   .format(old_name, new_name),
-                           level=msgBar.INFO,
-                           duration=3)
-        # method ending
-        return
-
-    def quicksearch_remove(self):
-        """Modify the json file in order to delete a search."""
-        to_be_deleted = self.dockwidget.cbb_quicksearch_edit.currentText()
-        with open(self.json_path, "r") as saved_searches_file:
-            saved_searches = json.load(saved_searches_file)
-        saved_searches.pop(to_be_deleted)
-        search_list = saved_searches.keys()
-        search_list.pop(search_list.index('_default'))
-        search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch_use.clear()
-        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_quicksearch_edit.clear()
-        for i in search_list:
-            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
-            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-        # Update JSON file
-        with open(self.json_path, 'w') as outfile:
-            json.dump(saved_searches, outfile,
-                      sort_keys=True, indent=4)
-        # inform user
-        msgBar.pushMessage("Isogeo",
-                           self.tr("Quicksearch removed: {}")
-                                   .format(to_be_deleted),
-                           level=msgBar.INFO,
-                           duration=3)
-        # method ending
-        return
-
-    # ----------------------------------------------------------------
+    # -- UTILS ----------------------------------------------------------------
+    def add_loading_bar(self):
+        """Display a progress bar."""
+        self.bar = QProgressBar()
+        self.bar.setRange(0, 0)
+        self.bar.setFixedWidth(120)
+        self.iface.mainWindow().statusBar().insertPermanentWidget(0, self.bar)
 
     def get_coords(self, filter):
         """Get the canvas coordinates in the right format and SRS (WGS84)."""
@@ -1575,29 +1633,6 @@ class Isogeo:
         else:
             logger.debug('Wrong EPSG')
             return False
-
-    def reinitialize_search(self):
-        """Clear all widget, putting them all back to their default value.
-
-        Clear all widget and send a request to the API (which ends up updating
-        the fields : send_request() calls handle_reply(), which calls
-        update_fields())
-        """
-        logger.debug("Reset search function called.")
-        self.hardReset = True
-        # clear widgets
-        for cbb in self.dockwidget.tab_search.findChildren(QComboBox):
-            cbb.clear()
-        self.dockwidget.cbb_geo_op.clear()
-        self.dockwidget.txt_input.clear()
-        # launch search
-        self.search()
-
-    def search_with_content(self):
-        """Launch a search request that will end up in showing the results."""
-        self.add_loading_bar()
-        self.showResult = True
-        self.search()
 
     def switch_widgets_on_and_off(self, mode=1):
         """Disable all the UI widgets when a request is being sent.
@@ -1643,41 +1678,7 @@ class Isogeo:
         else:
             pass
 
-    def edited_search(self):
-        """On the Qline edited signal, decide weither a search has to be launched."""
-        try:
-            logger.debug("Editing finished signal sent.")
-        except AttributeError:
-            pass
-        if self.dockwidget.txt_input.text() == self.old_text:
-            try:
-                logger.debug("The lineEdit text hasn't changed."
-                             " So pass without sending a request.")
-            except AttributeError as e:
-                logger.error(e)
-                pass
-            pass
-        else:
-            try:
-                logger.debug("The line Edit text changed."
-                            " Calls the search function.")
-            except AttributeError as e:
-                logger.error(e)
-                pass
-            if self.dockwidget.txt_input.text() == "Ici c'est Isogeo !":
-                plg_tools.special_search("isogeo")
-                self.dockwidget.txt_input.clear()
-                return
-            elif self.dockwidget.txt_input.text() == "Picasa":
-                plg_tools.special_search("picasa")
-                self.dockwidget.txt_input.clear()
-                return
-            else:
-                pass
-            self.search()
-
-    # ------------ SETTINGS - Shares -----------------------------------------
-
+    # -- SETTINGS - Shares ----------------------------------------------------
     def ask_shares_info(self, index):
         """TODO : Only if not already done before."""
         if index == 0:
@@ -1740,8 +1741,7 @@ class Isogeo:
         # method ending
         return
 
-    # --------------------------------------------------------------------------
-
+    # -- LAUNCH PAD------------------------------------------------------------
     # This function is launched when the plugin is activated.
     def run(self):
         """Run method that loads and starts the plugin."""
