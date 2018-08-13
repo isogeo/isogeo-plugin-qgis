@@ -9,11 +9,9 @@ from urllib import unquote, urlencode
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings
-# from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # QGIS
-from qgis.core import (QgsDataSourceURI, QgsNetworkAccessManager,
-                       QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer)
+from qgis.core import QgsDataSourceURI
 
 # Plugin modules
 from .tools import IsogeoPlgTools

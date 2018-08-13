@@ -5,14 +5,12 @@ from __future__ import (absolute_import, division,
 # Standard library
 import ConfigParser
 import datetime
-from functools import partial
 import logging
-from os import access, rename, path, R_OK
+from os import access, path, R_OK
 import subprocess
 from sys import platform as opersys
 from urllib import getproxies, unquote, urlencode
 from urlparse import urlparse
-import time  # for timestamps
 import webbrowser
 
 # PyQGIS

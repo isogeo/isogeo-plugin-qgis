@@ -2,22 +2,14 @@
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 # Standard library
-import base64
 import json
 import logging
-from functools import partial
 from os import path, rename
-from urllib import urlencode
 import time
 
 # PyQT
-from qgis.PyQt.QtCore import QByteArray, QSettings, QUrl
+from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QMessageBox
-from qgis.PyQt.QtNetwork import QNetworkRequest
-
-# PyQGIS
-from qgis.core import (QgsMessageLog, QgsNetworkAccessManager)
-from qgis.utils import iface
 
 # Plugin modules
 from .tools import IsogeoPlgTools
@@ -57,10 +49,6 @@ class IsogeoPlgApiMngr(object):
 
     # requests stuff
     req_status_isClear = True
-    req_qgs_ntwk_mngr_auth = QgsNetworkAccessManager.instance()
-    req_qgs_ntwk_mngr_md = QgsNetworkAccessManager.instance()
-    req_qgs_ntwk_mngr_search = QgsNetworkAccessManager.instance()
-    #req_qgs_ntwk_mngr.finished.connect(urlCallFinished)
 
     def __init__(self, auth_folder=r"../_auth"):
         """Check and manage authentication credentials."""
@@ -260,171 +248,6 @@ class IsogeoPlgApiMngr(object):
 
         # store into QSettings if existing
         self.credentials_storer(store_location="QSettings")
-
-    # API COMMUNICATION ------------------------------------------------------
-    def auth_req_token_post(self):
-        """Send a POST request to the API ID token generator.
-
-        This send a POST request to Isogeo API with the user id and secret in
-        its header. The API should return an access token
-        """
-        # API URL token
-        url = QUrl(self.api_url_token)
-        # encode oAuth2 authentication into the header
-        head_autoriz = "Basic " + base64.b64encode("{}:{}".format(self.api_app_id,
-                                                                  self.api_app_secret))
-        data = urlencode({"grant_type": "client_credentials"})
-        databyte = QByteArray()
-        databyte.append(data)
-        # prepare request
-        request = QNetworkRequest(url)
-        request.setRawHeader("Authorization", head_autoriz)
-        if self.req_status_isClear:
-            self.req_status_isClear = False
-            request_response =  self.req_qgs_ntwk_mngr_auth.post(request, databyte)
-            request_response.finished.connect(self.auth_req_token_resp)
-            #hoho = req_token.finished.connect(partial(self.auth_req_token_resp,
-            #                                          resp_auth_token=req_token))
-            logger.debug("youpi")
-            logger.debug(type(request_response))
-        else:
-            logger.info("A request is already being processed")
-
-        # 
-        #logger.debug("Oh YEAH")
-        #QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
-        #return True
-
-    def auth_req_token_resp(self, resp_auth_token):
-        """Handle the API answer when asked for a token.
-        This handles the API answer. If it has sent an access token, it calls
-        the initialization function. If not, it raises an error, and ask
-        for new IDs
-
-        :param QNetworkReply resp_auth_token: Isogeo ID API response
-        """
-        logger.debug("Asked a token and got a reply from the API")
-        logger.debug(type(resp_auth_token))
-        bytarray = resp_auth_token.readAll()
-        content = str(bytarray)
-        try:
-            parsed_content = json.loads(content)
-            logger.debug("TOKENIZE")
-        except ValueError as e:
-            if "No JSON object could be decoded" in e:
-                #msgBar.pushMessage(self.tr("Request to Isogeo failed: please "
-                #                           "check your Internet connection."),
-                #                   duration=10,
-                #                   level=msgBar.WARNING)
-                logger.error("Internet connection failed")
-                #self.pluginIsActive = False
-            else:
-                pass
-            return False
-
-        if 'access_token' in parsed_content:
-            logger.debug("The API reply is an access token : "
-                          "the request worked as expected.")
-            # Enable buttons "save and cancel"
-            self.auth_prompt_form.btn_ok_cancel.setEnabled(True)
-            self.dockwidget.setEnabled(True)
-
-            # TO DO : Appeler la fonction d'initialisation
-            self.token = "Bearer " + parsed_content.get('access_token')
-            if self.savedSearch == "first":
-                self.requestStatusClear = True
-                self.set_widget_status()
-            else:
-                self.requestStatusClear = True
-                self.send_request_to_isogeo_api(self.token)
-        # TO DO : Distinguer plusieurs cas d'erreur
-        elif 'error' in parsed_content:
-            logger.error("The API reply is an error. ID and SECRET must be "
-                          "invalid. Asking for them again.")
-            # displaying auth form
-            self.auth_prompt_form.ent_app_id.setText(self.user_id)
-            self.auth_prompt_form.ent_app_secret.setText(self.user_secret)
-            self.auth_prompt_form.btn_ok_cancel.setEnabled(False)
-            self.auth_prompt_form.show()
-            msgBar.pushMessage("Isogeo",
-                               self.tr("API authentication failed."
-                                       "Isogeo API answered: {}")
-                                       .format(parsed_content.get('error')),
-                               duration=10,
-                               level=msgBar.WARNING)
-            self.requestStatusClear = True
-        else:
-            logger.debug("The API reply has an unexpected form: {}"
-                          .format(parsed_content))
-            msgBar.pushMessage("Isogeo",
-                               self.tr("API authentication failed."
-                                       "Isogeo API answered: {}")
-                                       .format(parsed_content.get('error')),
-                               duration=10,
-                               level=msgBar.CRITICAL)
-            self.requestStatusClear = True
-
-
-    def handle_token(self, answer):
-        """Handle the API answer when asked for a token.
-
-        This handles the API answer. If it has sent an access token, it calls
-        the initialization function. If not, it raises an error, and ask
-        for new IDs
-
-        :param QNetworkReply answer: Isogeo API response
-        """
-        logger.info("Asked a token and got a reply from the API.")
-        logger.debug(type(answer))
-        bytarray = answer.readAll()
-        content = str(bytarray)
-        parsed_content = json.loads(content)
-        if "access_token" in parsed_content:
-            logger.info("The API reply is an access token : "
-                        "the request worked as expected.")
-            # TO DO : Appeler la fonction d'initialisation
-            self.token = "Bearer " + parsed_content["access_token"]
-            if self.savedSearch == "first":
-                self.req_status_isClear = True
-                self.set_widget_status()
-            else:
-                self.req_status_isClear = True
-                self.send_request_to_isogeo_api(self.token)
-        # TO DO : Distinguer plusieurs cas d"erreur
-        elif "error" in parsed_content:
-            logger.error("The API reply is an error. Id and secret must be "
-                         "invalid. Asking for them again.")
-            QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", "IsogeoPlgApiMngr"),
-                        parsed_content["error"])
-            self.req_status_isClear = True
-            self.auth_prompt_form.show()
-        else:
-            self.req_status_isClear = True
-            logger.error("The API reply has an unexpected form : "
-                         "{0}".format(parsed_content))
-            QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", "IsogeoPlgApiMngr"),
-                        self.tr("Unknown error", "IsogeoPlgApiMngr"))
-
-    def send_request_to_isogeo_api(self, token, limit=10):
-        """Send a content url to the Isogeo API.
-
-        This takes the currentUrl variable and send a request to this url,
-        using the token variable.
-        """
-        myurl = QUrl(self.currentUrl)
-        request = QNetworkRequest(myurl)
-        request.setRawHeader("Authorization", token)
-        if self.req_status_isClear is True:
-            self.req_status_isClear = False
-            api_reply = self.manager.get(request)
-            api_reply.finished.connect(
-                partial(self.handle_api_reply, answer=api_reply))
-        else:
-            pass
 
     # REQUEST and RESULTS ----------------------------------------------------
     def build_request_url(self, params):
