@@ -41,10 +41,10 @@ from qgis.PyQt.QtCore import (QByteArray, QCoreApplication, QSettings,
                               Qt, QTranslator, QUrl, qVersion)
 from qgis.PyQt.QtGui import (QAction, QComboBox, QIcon, QMessageBox,
                              QStandardItemModel, QStandardItem, QProgressBar)
-from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkRequest
+from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # PyQGIS
-import db_manager.db_plugins.postgis.connector as con
+import db_manager.db_plugins.postgis.connector as pgis_con
 from qgis.utils import iface, plugin_times, QGis
 from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
                        QgsDataSourceURI,
@@ -1110,7 +1110,7 @@ class Isogeo:
             uri.setConnection(host, port, base_name, user, password)
             # Get the geometry column name from the database connexion & table
             # name.
-            c = con.PostGisDBConnector(uri)
+            c = pgis_con.PostGisDBConnector(uri)
             dico = c.getTables()
             for i in dico:
                 if i[0 == 1] and i[1] == table:
