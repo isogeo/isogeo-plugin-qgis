@@ -1231,8 +1231,7 @@ class Isogeo:
                       e.xMaximum(),
                       e.yMaximum()]
             params['extent'] = extent
-            epsg = int(iface.mapCanvas().mapRenderer(
-            ).destinationCrs().authid().split(':')[1])
+            epsg = int(plg_tools.get_map_crs().split(':')[1])
             params['epsg'] = epsg
             params['coord'] = self.get_coords('canvas')
         elif params.get('geofilter') in QgsMapLayerRegistry.instance().mapLayers().values():
@@ -1427,8 +1426,9 @@ class Isogeo:
             # get stored URL
             self.currentUrl = search_params.get('url')
             if 'epsg' in search_params:
-                epsg = int(iface.mapCanvas().mapRenderer(
-                ).destinationCrs().authid().split(':')[1])
+                logger.debug("Specific SRS found in search params: {}"
+                             .format(epsg))
+                epsg = int(plg_tools.get_map_crs().split(':')[1])
                 if epsg == search_params.get('epsg'):
                     canvas = iface.mapCanvas()
                     e = search_params.get('extent')
