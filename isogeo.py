@@ -540,7 +540,7 @@ class Isogeo:
 
     # -- UI - UPDATE SEARCH FORM ----------------------------------------------
     def update_fields(self, result):
-        """Update the fields content.
+        """Update search form fields from search tags and previous search.
 
         This takes an API answer and update the fields accordingly. It also
         calls show_results in the end. This may change, so results would be
@@ -552,11 +552,12 @@ class Isogeo:
         QgsMessageLog.logMessage("Query sent & received: {}"
                                  .format(result.get("query")),
                                  "Isogeo")
-        # parsing
+        # getting and parsing tags
         tags = plg_api_mngr.get_tags(result.get("tags"))
+        # save entered text and filters in search form
         self.old_text = self.dockwidget.txt_input.text()
-        # Getting the index of selected items in each combobox
         params = self.save_params()
+
         # Show how many results there are
         self.results_count = result.get('total')
         self.dockwidget.btn_show.setText(
@@ -587,7 +588,7 @@ class Isogeo:
         tbl_result.clearContents()
         tbl_result.setRowCount(0)
 
-        # Filling the quick search combobox (also the one in settings tab)
+        # Quicksearches combobox (also the one in settings tab)
         with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
         search_list = saved_searches.keys()
@@ -600,11 +601,14 @@ class Isogeo:
         for i in search_list:
             cbb_quicksearch_use.addItem(i, i)
             self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
+
+        # Advanced search comboboxes (filters others than keywords)
         # Initiating the "nothing selected"
         for cbb in self.cbbs_search_advanced:
             cbb.addItem(" - ")
         # Initializing the cbb that dont't need to be updated
         if self.savedSearch == "_default" or self.hardReset is True:
+            logger.debug("Default search or reset.")
             tbl_result.horizontalHeader().setResizeMode(1)
             tbl_result.horizontalHeader().setResizeMode(1, 0)
             tbl_result.horizontalHeader().setResizeMode(2, 0)
@@ -618,6 +622,7 @@ class Isogeo:
                 (self.tr('contains'), "contains")])
             for key in dict_operation.keys():
                 cbb_geo_op.addItem(key, dict_operation.get(key))
+
             # Order by cbb
             dict_ob = OrderedDict([(self.tr("Relevance"), (ico_ob_relev, "relevance")),
                                    (self.tr("Alphabetical order"), (ico_ob_alpha, "title")),
@@ -636,8 +641,11 @@ class Isogeo:
 
             for k, v in dict_od.items():
                 cbb_od.addItem(v[0], k, v[1])
+        else:
+            logger.debug("Not default search nor reset.")
+            pass
 
-        # Filling comboboxes
+        # Filling comboboxes from tags
         # Owners
         md_owners = tags.get("owners")
         for i in md_owners:
@@ -681,17 +689,15 @@ class Isogeo:
         # sorting comboboxes
         for cbb in self.cbbs_search_advanced:
             cbb.model().sort(0)
-        
-        # tweaking
-        #plg_tools._ui_tweaker(ui_widgets=self.cbbs_search_advanced)
-        plg_tools._ui_tweaker(ui_widgets=self.dockwidget.tab_search.findChildren(QComboBox))
-
+     
         # Putting all the comboboxes selected index to their previous
         # location. Necessary as all comboboxes items have been removed and
         # put back in place. We do not want each combobox to go back to their
         # default selected item
         if self.hardReset is False:
+            logger.debug("Classical search or quicksearch (no reset search)")
             if self.savedSearch is False:
+                logger.debug("Classic search case (not quicksearch)")
                 # Owners
                 previous_index = cbb_owner.findData(params.get('owner'))
                 cbb_owner.setCurrentIndex(previous_index)
@@ -733,79 +739,20 @@ class Isogeo:
                 # Filling the keywords special combobox (items checkable)
                 # In the case where it isn't a saved research. So we have to
                 # check the items that were previously checked
-                model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-                # Filling the combobox with all the normal items
-                i = 2
-                keywords = tags.get('keywords')
-                selected_kwd = []
-                for j in sorted(keywords):
-                    item = QStandardItem(j)
-                    item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                    item.setData(keywords.get(j), 32)
-                    # As all items have been destroyed and generated again, we
-                    # have to set the checkstate (checked/unchecked) according
-                    # to what the user had chosen.
-                    if item.data(32) in params.get('keys'):
-                        item.setData(Qt.Checked, Qt.CheckStateRole)
-                        model.insertRow(0, item)
-                        selected_kwd.append(j)
-                    else:
-                        item.setData(Qt.Unchecked, Qt.CheckStateRole)
-                        model.setItem(i, 0, item)
-                    i += 1
-                # Creating the first item, that is just a banner for
-                # the combobox.
-                first_item = QStandardItem(self.tr('---- Keywords ----'))
-                first_item.setIcon(ico_keyw)
-                first_item.setSelectable(False)
-                model.insertRow(0, first_item)
-                model.itemChanged.connect(self.search)
-                self.dockwidget.cbb_keywords.setModel(model)
-                self.dockwidget.cbb_keywords.setToolTip(self.tr("Selected keywords:")
-                                                        + "\n"
-                                                        + "\n ".join(selected_kwd))
+                self.update_cbb_keywords(tags_keywords=tags.get('keywords'),
+                                         selected_keywords=params.get('keys'))
             # When it is a saved research, we have to look in the json, and
             # check the items accordingly (quite close to the previous case)
             else:
-                # Opening the json and getting the keywords
+                logger.debug("Quicksearch case: {}".format(self.savedSearch))
+                # Opening the json to get keywords
                 with open(self.json_path) as data_file:
                     saved_searches = json.load(data_file)
                 search_params = saved_searches.get(self.savedSearch)
-                keywords_list = []
-                for a in search_params.keys():
-                    if a.startswith("keyword"):
-                        keywords_list.append(search_params.get(a))
-                model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-                # Filling with the standard items
-                i = 2
-                keywords = tags.get('keywords')
-                selected_kwd = []
-                for j in sorted(keywords):
-                    item = QStandardItem(j)
-                    item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                    item.setData(keywords.get(j), 32)
-                    # As all items have been destroyed and generated again, we
-                    # have to set the checkstate (checked/unchecked) according
-                    # to what the user had chosen.
-                    if a[0] in keywords_list:
-                        item.setData(Qt.Checked, Qt.CheckStateRole)
-                        model.insertRow(0, item)
-                        selected_kwd.append(a[1])
-                    else:
-                        item.setData(Qt.Unchecked, Qt.CheckStateRole)
-                        model.setItem(i, 0, item)
-                    i += 1
-                # Banner item
-                first_item = QStandardItem(u"---- {} ----"
-                                           .format(self.tr('Keywords')))
-                first_item.setIcon(ico_keyw)
-                first_item.setSelectable(False)
-                model.insertRow(0, first_item)
-                model.itemChanged.connect(self.search)
-                self.dockwidget.cbb_keywords.setModel(model)
-                self.dockwidget.cbb_keywords.setToolTip(self.tr("Selected keywords:")
-                                                        + "\n"
-                                                        + "\n ".join(selected_kwd))
+                keywords_list = [v for k,v in search_params.items()\
+                                 if k.startswith("keyword")]
+                self.update_cbb_keywords(tags_keywords=tags.get('keywords'),
+                                         selected_keywords=keywords_list)
                 # Putting widgets to their previous states according
                 # to the json content
                 # Line edit content
@@ -855,29 +802,12 @@ class Isogeo:
         # In case of a hard reset, we don't have to worry about widgets
         # previous state as they are to be reset
         else:
-            model = QStandardItemModel(5, 1)  # 5 rows, 1 col
-            # Standard items
-            i = 1
-            keywords = tags.get('keywords')
-            for j in sorted(keywords):
-                item = QStandardItem(j)
-                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                item.setData(keywords.get(j), 32)
-                # As all items have been destroyed and generated again, we have
-                # to set the checkstate (checked/unchecked) according to what
-                # the user had chosen
-                item.setData(Qt.Unchecked, Qt.CheckStateRole)
-                model.setItem(i, 0, item)
-                i += 1
-            # Banner item
-            first_item = QStandardItem(u"---- {} ----"
-                                       .format(self.tr('Keywords')))
-            first_item.setIcon(ico_keyw)
-            first_item.setSelectable(False)
-            model.insertRow(0, first_item)
-            model.itemChanged.connect(self.search)
-            self.dockwidget.cbb_keywords.setModel(model)
-            self.dockwidget.cbb_keywords.setToolTip(self.tr("No keyword selected"))
+            logger.debug("Reset search")
+            self.update_cbb_keywords(tags_keywords=tags.get('keywords'))
+
+        # tweaking
+        plg_tools._ui_tweaker(ui_widgets=self.dockwidget.tab_search.findChildren(QComboBox))
+
         # Coloring the Show result button
         self.dockwidget.btn_show.setStyleSheet(
             "QPushButton "
@@ -905,6 +835,57 @@ class Isogeo:
         # hard reset
         self.hardReset = False
         self.showResult = False
+
+    def update_cbb_keywords(self, tags_keywords={}, selected_keywords=[]):
+        """Keywords combobox is specific because items are checkable.
+        See: https://github.com/isogeo/isogeo-plugin-qgis/issues/159
+
+        :param dict tags_keywords: keywords found in search tags
+        :param list selected_keywords: keywords (codes) already checked
+        """
+        logger.debug("Updating keywords combobox with {} items."
+                     .format(len(tags_keywords)))
+        model = QStandardItemModel(5, 1)  # 5 rows, 1 col
+        logger.debug(type(selected_keywords))
+        logger.debug(selected_keywords)
+        # parse keywords and check selected
+        i = 0   # row index
+        selected_keywords_lbls = []   # for tooltip
+        for tag_label, tag_code in sorted(tags_keywords.items()):
+            i += 1
+            item = QStandardItem(tag_label)
+            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setData(tag_code, 32)
+            if not selected_keywords or self.hardReset or tag_code not in selected_keywords:
+                item.setData(Qt.Unchecked, Qt.CheckStateRole)
+                model.setItem(i, 0, item)
+            elif tag_code in selected_keywords:
+                item.setData(Qt.Checked, Qt.CheckStateRole)
+                model.insertRow(0, item)
+                selected_keywords_lbls.append(tag_label)
+            else:
+                pass
+
+        # first item = label for the combobox.
+        first_item = QStandardItem("---- {} ----"
+                                   .format(self.tr('Keywords')))
+        first_item.setIcon(ico_keyw)
+        first_item.setSelectable(False)
+        model.insertRow(0, first_item)
+
+        # connect keyword selected -> launch search
+        model.itemChanged.connect(self.search)
+
+        # add the built model to the combobox
+        self.dockwidget.cbb_keywords.setModel(model)
+
+        # add tooltip with selected keywords. see: #107#issuecomment-341742142
+        if selected_keywords:
+            tooltip = "{}\n - {}".format(self.tr("Selected keywords:"),
+                                         "\n - ".join(selected_keywords_lbls))
+        else:
+            tooltip =  self.tr("No keyword selected")
+        self.dockwidget.cbb_keywords.setToolTip(tooltip)
 
     def save_params(self):
         """Save the widgets state/index.
@@ -1337,7 +1318,7 @@ class Isogeo:
         # method ending
         return
 
-    # RESULTS to MAP ----------------------------------------------------------
+    # -- RESULTS to MAP ----------------------------------------------------------
     def add_layer(self, layer_info):
         """Add a layer to QGIS map canvas.
 
