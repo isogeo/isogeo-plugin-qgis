@@ -207,6 +207,9 @@ class Isogeo:
 
         # link UI and submodules
         plg_api_mngr.ui_auth_form = self.auth_prompt_form
+        self.results_mng.paths_cache = os.path.realpath(os.path.join(plg_basepath,
+                                                                     "_user",
+                                                                     "paths_cache.json"))
 
         # start variables
         self.savedSearch = "first"
@@ -301,6 +304,8 @@ class Isogeo:
 
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed."""
+        # save cache
+        self.results_mng._cache_dumper()
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
 

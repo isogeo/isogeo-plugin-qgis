@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division,
 # Standard library
 import logging
 from functools import partial
+import json
 import os
 
 # PyQT
@@ -67,6 +68,7 @@ ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 
 class ResultsManager(object):
     """Basic class that holds utilitary methods for the plugin."""
+    paths_cache = ""
 
     def __init__(self, isogeo_plugin):
         """Class constructor."""
@@ -409,8 +411,8 @@ class ResultsManager(object):
                 return False
         elif mode == 2:
             logger.debug("Using forced raw string")
+            dir_file = os.path.dirname(metadata_path)
             filepath = plg_tools._to_raw_string(metadata_path)
-            dir_file = os.path.dirname(filepath)
             try:
                 with open(filepath) as f:
                     return filepath
@@ -421,6 +423,21 @@ class ResultsManager(object):
         else:
             logger.debug("Incorrect mode: {}".format(mode))
             raise ValueError
+
+    def _cache_dumper(self):
+        """Dumps paths ignored into a JSON file."""
+        with open(self.paths_cache, 'w') as cached_path_file:
+            json.dump(self.cached_unreach_paths, cached_path_file,
+                      sort_keys=True, indent=4)
+        logger.debug("Paths cache has been dumped")
+
+    def _cache_loader(self):
+        """Loads paths ignored into a JSON file."""
+        if log_level == logging.DEBUG:
+            with open(self.paths_cache, 'r') as cached_path_file:
+                previous_paths = json.load(cached_path_file)
+            logger.debug("Paths cache has been loaded")
+            logger.debug(previous_paths)
 
 # #############################################################################
 # ##### Stand alone program ########
