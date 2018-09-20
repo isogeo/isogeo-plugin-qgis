@@ -86,13 +86,23 @@ sys.setdefaultencoding('utf-8')
 msgBar = iface.messageBar()
 qsettings = QSettings()
 
+# required subfolders
+plg_logdir = os.path.join(plg_basepath, "_logs")
+
+if not os.path.exists(os.path.join(plg_basepath, "_auth")):
+    os.mkdir(os.path.join(plg_basepath, "_auth"))
+if not os.path.exists(plg_logdir):
+    os.mkdir(plg_logdir)
+if not os.path.exists(os.path.join(plg_basepath, "_user")):
+    os.mkdir(os.path.join(plg_basepath, "_user"))
+
+
 # plugin internal submodules
 plg_api_mngr = IsogeoPlgApiMngr(auth_folder=os.path.join(plg_basepath, "_auth"))
 plg_tools = IsogeoPlgTools(auth_folder=os.path.join(plg_basepath, "_auth"))
 plg_url_bldr = UrlBuilder()
 
 # -- LOG FILE --------------------------------------------------------
-plg_logdir = os.path.join(plg_basepath, "_logs")
 # log level depends on plugin directory name
 if plg_reg_name == plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
     log_level = logging.WARNING
