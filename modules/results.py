@@ -305,7 +305,6 @@ class ResultsManager(object):
                                 dico_add_options[name_url[5]] = name_url
                             else:
                                 continue
-                                pass
                     # WMS
                     elif i.get("format") == "wms":
                         for layer in i.get("layers"):
@@ -316,7 +315,6 @@ class ResultsManager(object):
                                 dico_add_options[name_url[5]] = name_url
                             else:
                                 continue
-                                pass
                     # WMTS
                     elif i.get("format") == "wmts":
                         for layer in i.get("layers"):
@@ -327,7 +325,6 @@ class ResultsManager(object):
                                 dico_add_options[btn_label] = name_url
                             else:
                                 continue
-                                pass
                     else:
                         pass
             else:
