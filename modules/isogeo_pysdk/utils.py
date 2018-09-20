@@ -302,11 +302,12 @@ class IsogeoUtils(object):
         return api_url_base.geturl()
 
     # -- SEARCH  --------------------------------------------------------------
-    def tags_to_dict(self, tags=dict, duplicated="rename"):
+    def tags_to_dict(self, tags=dict, prev_query=dict, duplicated="rename"):
         """Reverse search tags dictionary to values as keys.
         Useful to populate filters comboboxes for example.
 
         :param dict tags: tags dictionary from a search request
+        :param dict prev_query: query parameters returned after a search request
         :param str duplicated: what to do about duplicated tags label. Values:
 
           * ignore [default] - last tag parsed survives
@@ -343,7 +344,9 @@ class IsogeoUtils(object):
             else:
                 pass
             return
-        # tags dicts
+
+        # -- SEARCH TAGS -------------
+        # output dicts structure
         tags_as_dicts = {"actions": {},
                          "catalogs": {},
                          "contacts": {},
@@ -426,8 +429,103 @@ class IsogeoUtils(object):
                 logging.debug("A tag has been ignored during parsing: {}"
                               .format(k))
 
+        # -- QUERY TAGS -------------
+        # handle share case
+        if prev_query.get("_shares"):
+            prev_query.get("_tags").append("share:{}"
+                                           .format(prev_query.get("_shares")[0]))
+        else:
+            pass
+        # output dict struture
+        logging.debug(prev_query)
+        query_as_dicts = {"_tags": {"actions": {},
+                                    "catalogs": {},
+                                    "contacts": {},
+                                    "data-sources": {},
+                                    "formats": {},
+                                    "inspires": {},
+                                    "keywords": {},
+                                    "licenses": {},
+                                    "owners": {},
+                                    "providers": {},
+                                    "shares": {},
+                                    "srs": {},
+                                    "types": {},
+                                    },
+                          "_shares": prev_query.get("_shares"),
+                          "_terms": prev_query.get("_terms"),
+                          }
+
+        # parsing and matching tags
+        query_tags = query_as_dicts.get("_tags")
+        for t in prev_query.get("_tags"):
+            if t.startswith("action"):
+                query_tags.get("actions")[tags.get(t)] = t
+                continue
+            elif t.startswith("catalog"):
+                if v in query_tags.get("catalogs") and duplicated != "ignore":
+                    _duplicate_mng(query_tags.get("catalogs"), (v, k))
+                else:
+                    logging.info("Duplicated catalog name: {}. Last catalog is retained."
+                                 .format(v))
+                    query_tags.get("catalogs")[tags.get(t)] = t
+                continue
+            elif t.startswith("contact"):
+                if v in query_tags.get("contacts") and duplicated != "ignore":
+                    _duplicate_mng(query_tags.get("contacts"), (v, k))
+                else:
+                    logging.info("Duplicated contact name: {}. Last contact is retained."
+                                 .format(v))
+                    query_tags.get("contacts")[tags.get(t)] = t
+                continue
+            elif t.startswith("coordinate-system"):
+                query_tags.get("srs")[tags.get(t)] = t
+                continue
+            elif t.startswith("data-source"):
+                if v in query_tags.get("data-sources") and duplicated != "ignore":
+                    _duplicate_mng(query_tags.get("data-sources"), (v, k))
+                else:
+                    logging.info("Duplicated data-source name: {}. Last data-source is retained."
+                                 .format(v))
+                    query_tags.get("data-sources")[tags.get(t)] = t
+                continue
+            elif t.startswith("format"):
+                query_tags.get("formats")[tags.get(t)] = t
+                continue
+            elif t.startswith("keyword:in"):
+                query_tags.get("inspires")[tags.get(t)] = t
+                continue
+            elif t.startswith("keyword:is"):
+                query_tags.get("keywords")[tags.get(t)] = t
+                continue
+            elif t.startswith("license"):
+                if v in query_tags.get("licenses") and duplicated != "ignore":
+                    _duplicate_mng(query_tags.get("licenses"), (v, k))
+                else:
+                    logging.info("Duplicated license name: {}. Last license is retained."
+                                 .format(v))
+                    query_tags.get("licenses")[tags.get(t)] = t
+                continue
+            elif t.startswith("owner"):
+                query_tags.get("owners")[tags.get(t)] = t
+                continue
+            elif t.startswith("provider"):
+                # providers are particular bcause its value is always null.
+                query_tags.get("providers")[k.split(":")[1]] = k
+                continue
+            elif t.startswith("share"):
+                query_tags.get("shares")[tags.get(t)] = t
+                continue
+            elif t.startswith("type"):
+                query_tags.get("types")[tags.get(t)] = t
+                continue
+            # ignored tags
+            else:
+                logging.debug("A query tag has been ignored during parsing: {}"
+                              .format(t))
+
         # return the output
-        return tags_as_dicts
+        return tags_as_dicts, query_as_dicts
 
     # -- SHARES MANAGEMENT ----------------------------------------------------
     def share_extender(self, share, results_filtered):
@@ -532,7 +630,7 @@ class IsogeoUtils(object):
         return out_auth
 
 
-# ##############################################################################
+# #############################################################################
 # ##### Stand alone program ########
 # ##################################
 if __name__ == '__main__':

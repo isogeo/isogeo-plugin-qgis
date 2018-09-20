@@ -243,11 +243,14 @@ class IsogeoChecker(object):
             elif i.startswith("provider"):
                 dico_query["provider"].append(i.split(":")[1:][0])
                 continue
+            elif i.startswith("share"):
+                dico_query["share"].append(i.split(":")[1:][0])
+                continue
             elif i.startswith("type"):
                 dico_query["type"].append(i.split(":")[1:][0])
                 continue
             else:
-                logging.debug(i.split(":")[1], i.split(":")[1].isdigit())
+                #logging.debug(i.split(":")[1], i.split(":")[1].isdigit())
                 dico_query["text"].append(i)
                 continue
 
