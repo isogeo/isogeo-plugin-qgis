@@ -275,6 +275,26 @@ class ResultsManager(object):
                 if i.get("layers") is not None:
                     srv_details = {"path": i.get("path", "NR"),
                                    "formatVersion": i.get("formatVersion")}
+                    # EFS
+                    if i.get("format") == "efs":
+                        for layer in i.get("layers"):
+                            name_url = plg_url_bldr.build_efs_url(layer, srv_details,
+                                                                  rsc_type="service",
+                                                                  mode="quicky")
+                            if name_url[0] != 0:
+                                dico_add_options[name_url[5]] = name_url
+                            else:
+                                continue
+                    # EMS
+                    if i.get("format") == "ems":
+                        for layer in i.get("layers"):
+                            name_url = plg_url_bldr.build_ems_url(layer, srv_details,
+                                                                  rsc_type="service",
+                                                                  mode="quicky")
+                            if name_url[0] != 0:
+                                dico_add_options[name_url[5]] = name_url
+                            else:
+                                continue
                     # WFS
                     if i.get("format") == "wfs":
                         for layer in i.get("layers"):
