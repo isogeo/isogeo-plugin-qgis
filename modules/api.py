@@ -156,7 +156,6 @@ class IsogeoPlgApiMngr(object):
             - QSettings
         """
         if store_location == "QSettings":
-            logger.debug("youhou")
             qsettings.setValue("isogeo/auth/app_id", self.api_app_id)
             qsettings.setValue("isogeo/auth/app_secret", self.api_app_secret)
             qsettings.setValue("isogeo/auth/url_base", self.api_url_base)
@@ -232,7 +231,6 @@ class IsogeoPlgApiMngr(object):
                          "Previous file has been renamed.")
         else:
             pass
-        logger.debug("YARK {}".format(path.join(self.auth_folder, "client_secrets.json")))
         rename(selected_file,
                path.join(self.auth_folder, "client_secrets.json"))
         logger.debug("Selected credentials file has been moved into plugin"
