@@ -36,7 +36,7 @@ homepage=https://isogeo.gitbooks.io/app-plugin-qgis/content
 category=Web
 icon=icon.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
