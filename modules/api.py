@@ -209,7 +209,7 @@ class IsogeoPlgApiMngr(object):
     def credentials_uploader(self):
         """Get file selected by the user and loads API credentials into plugin.
         If the selected is compliant, credentials are loaded from then it's
-        moved inside plugin\_auth subfolder.
+        moved inside plugin/_auth subfolder.
         """
         # test file structure
         try:
