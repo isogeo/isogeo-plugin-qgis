@@ -110,7 +110,7 @@ elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath)\
   or "dev" in plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
     log_level = logging.DEBUG
 else:
-    log_level = logging.NOTSET
+    log_level = logging.DEBUG
 
 logger = logging.getLogger("IsogeoQgisPlugin")
 logging.captureWarnings(True)
