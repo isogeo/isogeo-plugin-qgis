@@ -847,6 +847,8 @@ class Isogeo:
         self.switch_widgets_on_and_off()
         if self.results_count == 0:
             self.dockwidget.btn_show.setEnabled(False)
+        else:
+            self.dockwidget.btn_show.setEnabled(True)
         # hard reset
         self.hardReset = False
         self.showResult = False
