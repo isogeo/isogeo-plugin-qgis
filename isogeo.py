@@ -220,6 +220,7 @@ class Isogeo:
         self.results_mng.paths_cache = os.path.realpath(os.path.join(plg_basepath,
                                                                      "_user",
                                                                      "paths_cache.json"))
+        self.results_mng._cache_loader()
 
         # start variables
         self.savedSearch = "first"
@@ -1812,6 +1813,8 @@ class Isogeo:
         # default search
         self.dockwidget.btn_default_save.pressed.connect(
             partial(self.write_search_params, '_default', "Default"))
+        # button to empty the cache of filepaths #135
+        self.dockwidget.btn_cache_trash.pressed.connect(partial(self.results_mng._cache_cleaner))
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form

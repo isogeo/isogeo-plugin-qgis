@@ -40,7 +40,7 @@
     </size>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item column="0" row="0">
+    <item column="1" row="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -327,13 +327,13 @@
            <widget class="QPushButton" name="btn_search_go">
             <property name="minimumSize">
              <size>
-              <width>0</width>
+              <width>30</width>
               <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>16777215</width>
+              <width>200</width>
               <height>30</height>
              </size>
             </property>
@@ -525,10 +525,10 @@
           <property name="title">
            <string>Advanced search</string>
           </property>
-          <property name="collapsed">
+          <property name="collapsed" stdset="0">
            <bool>false</bool>
           </property>
-          <property name="scrollOnExpand">
+          <property name="scrollOnExpand" stdset="0">
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -1230,7 +1230,7 @@
         <string>Settings</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
-        <item column="0" row="3">
+        <item column="0" row="7">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -1267,6 +1267,9 @@
                    <height>24</height>
                   </size>
                  </property>
+                 <property name="toolTip">
+                  <string>Edit quicksearch</string>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -1287,7 +1290,13 @@
                  <property name="minimumSize">
                   <size>
                    <width>111</width>
-                   <height>24</height>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>115</width>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="font">
@@ -1309,14 +1318,14 @@
                 <widget class="QPushButton" name="btn_delete_sr">
                  <property name="minimumSize">
                   <size>
-                   <width>61</width>
-                   <height>24</height>
+                   <width>60</width>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>61</width>
-                   <height>16777215</height>
+                   <width>60</width>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="font">
@@ -1369,7 +1378,13 @@
                  <property name="minimumSize">
                   <size>
                    <width>111</width>
-                   <height>24</height>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>115</width>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="text">
@@ -1385,14 +1400,14 @@
                 <widget class="QPushButton" name="btn_default_reset">
                  <property name="minimumSize">
                   <size>
-                   <width>61</width>
-                   <height>24</height>
+                   <width>60</width>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>61</width>
-                   <height>16777215</height>
+                   <width>60</width>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="text">
@@ -1439,8 +1454,79 @@
                  <property name="minimumSize">
                   <size>
                    <width>176</width>
-                   <height>24</height>
+                   <height>25</height>
                   </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>250</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_13">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetDefaultConstraint</enum>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="lbl_cache">
+                 <property name="font">
+                  <font>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Paths cache</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_19">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_cache_trash">
+                 <property name="minimumSize">
+                  <size>
+                   <width>60</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>60</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Empty the paths cached</string>
+                 </property>
+                 <property name="autoFillBackground">
+                  <bool>true</bool>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../resources.qrc">
+                   <normaloff>:/plugins/Isogeo/resources/trash.svg</normaloff>:/plugins/Isogeo/resources/trash.svg</iconset>
+                 </property>
+                 <property name="flat">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
@@ -1451,7 +1537,7 @@
           </layout>
          </widget>
         </item>
-        <item column="0" row="1">
+        <item column="0" row="5">
          <widget class="QGroupBox" name="groupBox">
           <property name="title">
            <string>Authentication settings</string>
@@ -1510,7 +1596,7 @@
           </layout>
          </widget>
         </item>
-        <item column="0" row="2">
+        <item column="0" row="6">
          <widget class="QGroupBox" name="groupBox_4">
           <property name="title">
            <string>Resources</string>

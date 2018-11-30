@@ -442,19 +442,29 @@ class ResultsManager(object):
             raise ValueError
 
     def _cache_dumper(self):
-        """Dumps paths ignored into a JSON file."""
+        """Dumps paths ignored into a JSON file. See: #135"""
+        cached_filepaths_unique = set(self.cached_unreach_paths)
         with open(self.paths_cache, 'w') as cached_path_file:
-            json.dump(self.cached_unreach_paths, cached_path_file,
+            json.dump(list(cached_filepaths_unique), cached_path_file,
                       sort_keys=True, indent=4)
         logger.debug("Paths cache has been dumped")
 
     def _cache_loader(self):
         """Loads paths ignored into a JSON file."""
-        if log_level == logging.DEBUG:
+        try:
             with open(self.paths_cache, 'r') as cached_path_file:
-                previous_paths = json.load(cached_path_file)
+                self.cached_unreach_paths = json.load(cached_path_file)
             logger.debug("Paths cache has been loaded")
-            logger.debug(previous_paths)
+        except ValueError as e:
+            logger.error("Path JSON corrupted")
+            self.cached_unreach_paths = []
+
+    def _cache_cleaner(self):
+        """Clean cached paths."""
+        self.cached_unreach_paths = []
+        self._cache_dumper()
+        logger.debug("Cache has been cleaned")
+
 
 # #############################################################################
 # ##### Stand alone program ########
