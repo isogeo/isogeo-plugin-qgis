@@ -1,12 +1,9 @@
 {
-    "python.jediEnabled": false,
-    "python.envFile": "${workspaceFolder}/.vscode/pyqgis2.env",
-    "python.pythonPath": "C:/OSGeo4W64/bin/python.exe",
-    "python.autoComplete.extraPaths": [
-        "C:/OSGeo4W64/apps/qgis-ltr/python"
-    ],
+    "python.jediEnabled": true,
     "pyqt-integration.qtdesigner.path": "C:/OSGeo4W64/bin//designer.exe",
     "pyqt-integration.pyuic.cmd": "pyuic4",
     "pyqt-integration.pyrcc.cmd": "pyrcc4",
-    "pyqt-integration.pyrcc.compile.filepath": "${workspace}/${qrc_name}.py"
+    "pyqt-integration.pyrcc.compile.filepath": "${workspace}/${qrc_name}.py",
+    "python.linting.enabled": true,
+    "python.pythonPath": "C:\\Users\\julien.moura\\.virtualenvs\\isogeo_search_engine_dev-d762mfF6\\Scripts\\python.exe"
 }
