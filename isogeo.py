@@ -1377,11 +1377,14 @@ class Isogeo:
                         logger.debug("Vector layer added: {}"
                                     .format(name.decode("latin1")))
                 else:
-                    logger.error("Invalid vector layer: {0}".format(path))
-                    QMessageBox.information(
-                        self.iface.mainWindow(),
-                        self.tr('Error'),
-                        self.tr('Vector layer is not valid.'))
+                    error_msg = layer.error().message()
+                    logger.warning("Invalid vector layer: {}. QGIS says: {}"
+                                   .format(path,
+                                           error_msg))
+                    QMessageBox.information(iface.mainWindow(),
+                                            self.tr('Error'),
+                                            self.tr("Vector not valid {}. QGIS says: {}")
+                                            .format(path, error_msg))
             # If raster file
             elif layer_info[0] == "raster":
                 path = layer_info[1]
@@ -1405,11 +1408,14 @@ class Isogeo:
                         logger.debug("Raster layer added: {}"
                                     .format(name.decode("latin1")))
                 else:
-                    logger.warning("Invalid raster layer: {0}".format(path))
-                    QMessageBox.information(
-                        self.iface.mainWindow(),
-                        self.tr('Error'),
-                        self.tr('Raster layer is not valid.'))
+                    error_msg = layer.error().message()
+                    logger.warning("Invalid raster layer: {}. QGIS says: {}"
+                                   .format(path,
+                                           error_msg))
+                    QMessageBox.information(iface.mainWindow(),
+                                            self.tr('Error'),
+                                            self.tr("Raster not valid {}. QGIS says: {}")
+                                            .format(path, error_msg))
             # If EFS link
             elif layer_info[0] == 'arcgisfeatureserver':
                 name = layer_info[1]
