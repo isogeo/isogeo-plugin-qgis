@@ -1,5 +1,7 @@
 # Isogeo for QGIS
 
+[![Build Status](https://travis-ci.org/isogeo/isogeo-plugin-qgis.svg?branch=master)](https://travis-ci.org/isogeo/isogeo-plugin-qgis)
+
 ![Isogeo plugin for QGIS - logo](https://github.com/isogeo/isogeo-plugin-qgis/blob/master/img/logo_complet_IsoQGIS.png?raw=true)
 
 QGIS plugin for [Isogeo](http://www.isogeo.com/), a SaaS software to give an easier access to geodata.
