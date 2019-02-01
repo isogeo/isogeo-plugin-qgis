@@ -48,3 +48,11 @@ script:
   - pyuic4 -x "ui/quicksearch/ui_quicksearch_new.ui" -o "ui/quicksearch/ui_quicksearch_new.py"
   # packaging
   - python tools/plugin_packager.py
+
+deploy:
+  provider: releases
+  api_key: ${GITHUB_API_KEY_TOKEN}
+  file: "build/latest/isogeo_search_engine.zip"
+  skip_cleanup: true
+  on:
+    tags: true
