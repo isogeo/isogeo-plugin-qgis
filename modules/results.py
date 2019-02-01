@@ -184,7 +184,7 @@ class ResultsManager(object):
                 elif i.get("format", "NR") in li_formats_rastr and "path" in i:
                     add_path = self._filepath_builder(i.get("path"))
                     if add_path:
-                        params = ["vector", add_path,
+                        params = ["raster", add_path,
                                   i.get("title", "NR"),
                                   i.get("abstract", "NR"),
                                   md_keywords]
