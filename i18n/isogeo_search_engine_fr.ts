@@ -14,7 +14,7 @@
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1587"/>
+        <location filename="isogeo.py" line="1593"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
@@ -104,7 +104,7 @@
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1587"/>
+        <location filename="isogeo.py" line="1593"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation>La table ou la vue PostGIS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
@@ -124,27 +124,27 @@
         <translation>Recherche rapide supprimée : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1716"/>
+        <location filename="isogeo.py" line="1722"/>
         <source> powered by 1 share:&lt;/p&gt;&lt;/br&gt;</source>
         <translation>alimenté par 1 seul partage :&lt;/p&gt;&lt;/br&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1718"/>
+        <location filename="isogeo.py" line="1724"/>
         <source> powered by {0} shares:&lt;/p&gt;&lt;/br&gt;</source>
         <translation>alimenté par {0} partages :&lt;/p&gt;&lt;/br&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1732"/>
+        <location filename="isogeo.py" line="1738"/>
         <source>&lt;p&gt;Updated: {}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Dernière mise à jour : {}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1734"/>
+        <location filename="isogeo.py" line="1740"/>
         <source>&lt;p&gt;Contact: {} - {}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Groupe de travail propriétaire : {} - {}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1710"/>
+        <location filename="isogeo.py" line="1716"/>
         <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
         <translation>&lt;p&gt;Ce plugin est authentifié en tant que &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; et </translation>
     </message>
@@ -152,16 +152,6 @@
         <location filename="isogeo.py" line="416"/>
         <source>Request to Isogeo failed: please check your Internet connection.</source>
         <translation>La requête à l&apos;API Isogeo a échoué. Merci de vérifier la connexion Internet et de réessayer.</translation>
-    </message>
-    <message>
-        <location filename="isogeo.py" line="1381"/>
-        <source>Vector layer is not valid.</source>
-        <translation>La couche vecteur n&apos;est pas valide.</translation>
-    </message>
-    <message>
-        <location filename="isogeo.py" line="1409"/>
-        <source>Raster layer is not valid.</source>
-        <translation>Le raster n&apos;est pas valide.</translation>
     </message>
     <message>
         <location filename="isogeo.py" line="902"/>
@@ -179,22 +169,22 @@
         <translation>Aucun mot-clé sélectionné</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1427"/>
+        <location filename="isogeo.py" line="1433"/>
         <source>EFS not valid. QGIS says: {}</source>
         <translation>Le service Esri Feature semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1445"/>
+        <location filename="isogeo.py" line="1451"/>
         <source>EMS not valid. QGIS says: {}</source>
         <translation>Le service Esri Map semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1472"/>
+        <location filename="isogeo.py" line="1478"/>
         <source>WFS is not valid. QGIS says: {}</source>
         <translation>La couche WFS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1500"/>
+        <location filename="isogeo.py" line="1506"/>
         <source>WMS is not valid. QGIS says: {}</source>
         <translation>La couche WMS semble ne pas être valide. QGIS indique : {}</translation>
     </message>
@@ -204,12 +194,12 @@
         <translation>L&apos;authentification a échoué. Réponse de l&apos;API Isogeo : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1517"/>
+        <location filename="isogeo.py" line="1523"/>
         <source>WMTS is not valid. QGIS says: {}</source>
         <translation>La couche WMST semble ne pas être valide. QGIS indique : {}</translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1830"/>
+        <location filename="isogeo.py" line="1838"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
@@ -222,6 +212,16 @@
         <location filename="isogeo.py" line="1147"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="1384"/>
+        <source>Vector not valid {}. QGIS says: {}</source>
+        <translation>La couche vecteur semble ne pas être valide. QGIS indique : {}</translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="1415"/>
+        <source>Raster not valid {}. QGIS says: {}</source>
+        <translation>La couche raster semble ne pas être valide. QGIS indique : {}</translation>
     </message>
 </context>
 <context>

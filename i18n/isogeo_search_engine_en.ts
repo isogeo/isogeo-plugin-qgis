@@ -13,7 +13,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1587"/>
+        <location filename="isogeo.py" line="1593"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -103,7 +103,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1587"/>
+        <location filename="isogeo.py" line="1593"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -123,43 +123,33 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1716"/>
+        <location filename="isogeo.py" line="1722"/>
         <source> powered by 1 share:&lt;/p&gt;&lt;/br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1718"/>
+        <location filename="isogeo.py" line="1724"/>
         <source> powered by {0} shares:&lt;/p&gt;&lt;/br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1732"/>
+        <location filename="isogeo.py" line="1738"/>
         <source>&lt;p&gt;Updated: {}&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1734"/>
+        <location filename="isogeo.py" line="1740"/>
         <source>&lt;p&gt;Contact: {} - {}&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1710"/>
+        <location filename="isogeo.py" line="1716"/>
         <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="isogeo.py" line="416"/>
         <source>Request to Isogeo failed: please check your Internet connection.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="isogeo.py" line="1381"/>
-        <source>Vector layer is not valid.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="isogeo.py" line="1409"/>
-        <source>Raster layer is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -178,22 +168,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1427"/>
+        <location filename="isogeo.py" line="1433"/>
         <source>EFS not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1445"/>
+        <location filename="isogeo.py" line="1451"/>
         <source>EMS not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1472"/>
+        <location filename="isogeo.py" line="1478"/>
         <source>WFS is not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1500"/>
+        <location filename="isogeo.py" line="1506"/>
         <source>WMS is not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -203,12 +193,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1517"/>
+        <location filename="isogeo.py" line="1523"/>
         <source>WMTS is not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="isogeo.py" line="1830"/>
+        <location filename="isogeo.py" line="1838"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
@@ -220,6 +210,16 @@
     <message>
         <location filename="isogeo.py" line="1147"/>
         <source>Quicksearches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="1384"/>
+        <source>Vector not valid {}. QGIS says: {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="isogeo.py" line="1415"/>
+        <source>Raster not valid {}. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
