@@ -458,6 +458,9 @@ class ResultsManager(object):
         except ValueError as e:
             logger.error("Path JSON corrupted")
             self.cached_unreach_paths = []
+        except IOError:
+        	logger.debug("Paths cache file not found. Maybe because of first launch.")
+        	self._cache_dumper()
 
     def _cache_cleaner(self):
         """Clean cached paths."""
