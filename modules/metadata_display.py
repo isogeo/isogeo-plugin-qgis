@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import (absolute_import, division, print_function, unicode_literals)
+
 # Standard library
 import logging
 from datetime import datetime
@@ -10,8 +12,8 @@ from qgis.core import (QgsMapLayerRegistry, QgsMessageLog,
 from qgis.gui import QgsMapCanvasLayer
 
 # PyQT
-from PyQt5.QtCore import QSettings, Qt
-from PyQt5.QtGui import QTableWidgetItem
+from PyQt4.QtCore import QSettings, Qt
+from PyQt4.QtGui import QTableWidgetItem
 
 # Custom modules
 from .api import IsogeoApiManager

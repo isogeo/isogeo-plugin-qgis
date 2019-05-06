@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
+from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 # Standard library
+from datetime import datetime
 import logging
 import re
 from urllib import unquote, urlencode
+from urlparse import urlparse
 
 # PyQT
-from PyQt5.QtCore import QSettings
+from PyQt4.QtCore import QSettings, QUrl
+from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # QGIS
-from qgis.core import QgsDataSourceURI
+from qgis.core import (QgsDataSourceURI, QgsNetworkAccessManager,
+                       QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer)
 
 # Custom modules
 from .tools import Tools

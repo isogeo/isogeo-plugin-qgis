@@ -31,19 +31,19 @@ from logging.handlers import RotatingFileHandler
 import platform  # about operating systems
 from collections import OrderedDict
 from functools import partial
+import operator
 
 # PyQT
 # from QByteArray
-from PyQt5.QtCore import (QByteArray, QCoreApplication, QSettings,
+from PyQt4.QtCore import (QByteArray, QCoreApplication, QSettings,
                           Qt, QTranslator, QUrl, qVersion)
-from PyQt5.QtGui import (QIcon, QMessageBox, QStandardItemModel,
+from PyQt4.QtGui import (QAction, QIcon, QMessageBox, QStandardItemModel,
                          QStandardItem, QProgressBar)
-from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest
-from PyQt5.QtWidgets import QAction
+from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 
 # PyQGIS
 import db_manager.db_plugins.postgis.connector as con
-from qgis.utils import iface, plugin_times, QGis
+from qgis.utils import iface, plugin_times, QGis, reloadPlugin
 from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
                        QgsCoordinateReferenceSystem, QgsCoordinateTransform,
                        QgsDataSourceURI,
@@ -52,7 +52,7 @@ from qgis.core import (QgsAuthManager, QgsAuthMethodConfig,
                        QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer)
 
 # Initialize Qt resources from file resources.py
-# import resources
+import resources
 
 # UI classes
 from ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
