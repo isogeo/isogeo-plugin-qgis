@@ -18,7 +18,7 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>490</width>
+    <width>500</width>
     <height>560</height>
    </size>
   </property>
@@ -30,7 +30,7 @@
     <normaloff>:/plugins/Isogeo/resources/gavel.svg</normaloff>:/plugins/Isogeo/resources/gavel.svg</iconset>
   </property>
   <property name="windowOpacity">
-   <double>0.900000000000000</double>
+   <double>0.950000000000000</double>
   </property>
   <property name="locale">
    <locale country="UnitedStates" language="English" />
@@ -38,304 +38,393 @@
   <property name="sizeGripEnabled">
    <bool>false</bool>
   </property>
-  <widget class="QWidget" name="verticalLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>481</width>
-     <height>556</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="spacing">
-     <number>12</number>
-    </property>
-    <property name="sizeConstraint">
-     <enum>QLayout::SetMaximumSize</enum>
-    </property>
-    <property name="margin">
-     <number>5</number>
-    </property>
-    <item>
-     <widget class="QGroupBox" name="grp_realization">
-      <property name="font">
-       <font>
-        <pointsize>9</pointsize>
-       </font>
-      </property>
-      <property name="title">
-       <string>Realization</string>
-      </property>
-      <property name="flat">
-       <bool>true</bool>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
-        <widget class="QLabel" name="lbl_development">
-         <property name="text">
-          <string>Developed by Théo Sinatti, internship supervised by Julien Moura for Isogeo.</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QLabel" name="lbl_isogeo_logo">
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string notr="true" />
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/isogeo.png</pixmap>
-           </property>
-           <property name="scaledContents">
-            <bool>false</bool>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="openExternalLinks">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="lbl_isogeo_punchline">
-           <property name="font">
-            <font>
-             <pointsize>13</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-             <underline>true</underline>
-            </font>
-           </property>
-           <property name="text">
-            <string>&lt;a href="http://www.isogeo.com" style="color:#6480A7;text-decoration:none;"&gt;Easy access to geodata!&lt;/a&gt;</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="openExternalLinks">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="grp_sponsors">
-      <property name="font">
-       <font>
-        <pointsize>9</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="title">
-       <string>Sponsors</string>
-      </property>
-      <property name="flat">
-       <bool>true</bool>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_9">
-       <item>
-        <layout class="QGridLayout" name="gridLayout_5">
-         <item column="0" row="0">
-          <widget class="QLabel" name="lbl_smavd_url">
-           <property name="text">
-            <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align="center"&gt;&lt;a href="http://www.smavd.org/"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;Syndicat Mixte d&amp;apos;Am&amp;eacute;nagement&lt;br/&gt;de la Durance (SMAVD)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-           <property name="openExternalLinks">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item column="2" row="0">
-          <widget class="QLabel" name="lbl_smavd_logo">
-           <property name="text">
-            <string notr="true" />
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/sponsor_logo_SMAVD.jpg</pixmap>
-           </property>
-           <property name="scaledContents">
-            <bool>false</bool>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="openExternalLinks">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item column="1" row="0">
-          <widget class="Line" name="line_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QGridLayout" name="gridLayout_6">
-         <item column="2" row="1">
-          <widget class="QLabel" name="lbl_lorient_logo">
-           <property name="maximumSize">
-            <size>
-             <width>800</width>
-             <height>3000</height>
-            </size>
-           </property>
-           <property name="text">
-            <string notr="true" />
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/sponsor_logo_ca_lorient.png</pixmap>
-           </property>
-           <property name="scaledContents">
-            <bool>false</bool>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
-           <property name="openExternalLinks">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item column="0" row="1">
-          <widget class="QLabel" name="lbl_lorient_url">
-           <property name="text">
-            <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align="center"&gt;&lt;a href="https://www.lorient-agglo.fr/"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;Communaut&amp;eacute; d&amp;apos;agglom&amp;eacute;ration de&lt;br/&gt;Lorient (Lorient Agglom&amp;eacute;ration)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item column="1" row="1">
-          <widget class="Line" name="line_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="grp_sources">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>9</pointsize>
-       </font>
-      </property>
-      <property name="title">
-       <string>Sources and license</string>
-      </property>
-      <property name="flat">
-       <bool>true</bool>
-      </property>
-      <property name="checkable">
-       <bool>false</bool>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_8">
-       <item>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item column="2" row="0">
-          <widget class="QLabel" name="lbl_license_logo_gpl3">
-           <property name="text">
-            <string notr="true" />
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/gplv3.png</pixmap>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="openExternalLinks">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item column="0" row="0">
-          <widget class="QLabel" name="lbl_source_repository">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href="https://github.com/isogeo/isogeo-plugin-qgis"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;https://github.com/isogeo/isogeo-plugin-qgis&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item column="1" row="0">
-          <widget class="Line" name="line_4">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QDialogButtonBox" name="btn_ok_close">
-      <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="locale">
-       <locale country="UnitedStates" language="English" />
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
-      </property>
-      <property name="centerButtons">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item column="0" row="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>12</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <property name="margin">
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="grp_realization">
+       <property name="maximumSize">
+        <size>
+         <width>500</width>
+         <height>175</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="title">
+        <string>Realization</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QLabel" name="lbl_isogeo_logo">
+            <property name="minimumSize">
+             <size>
+              <width>222</width>
+              <height>102</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>222</width>
+              <height>102</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true" />
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/credits/isogeo.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>false</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lbl_isogeo_punchline">
+            <property name="font">
+             <font>
+              <pointsize>13</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+              <underline>true</underline>
+             </font>
+            </property>
+            <property name="text">
+             <string>&lt;a href="https://www.isogeo.com" style="color:#6480A7;text-decoration:none;"&gt;Easy access to geodata!&lt;/a&gt;</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="grp_sponsors">
+       <property name="maximumSize">
+        <size>
+         <width>500</width>
+         <height>150</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="title">
+        <string>Sponsors</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_9">
+        <item>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item column="4" row="0">
+           <widget class="QLabel" name="lbl_smavd_logo">
+            <property name="maximumSize">
+             <size>
+              <width>217</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true" />
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/credits/sponsor_logo_SMAVD.jpg</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>false</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item column="0" row="0">
+           <widget class="QLabel" name="lbl_smavd_url">
+            <property name="maximumSize">
+             <size>
+              <width>217</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align="center"&gt;&lt;a href="https://www.smavd.org/"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;Syndicat Mixte d&amp;apos;Am&amp;eacute;nagement&lt;br/&gt;de la Durance (SMAVD)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item column="1" row="0">
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item column="0" row="1">
+           <widget class="QLabel" name="lbl_lorient_url">
+            <property name="maximumSize">
+             <size>
+              <width>217</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align="center"&gt;&lt;a href="https://www.lorient-agglo.bzh/"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;Communaut&amp;eacute; d&amp;apos;agglom&amp;eacute;ration de&lt;br/&gt;Lorient (Lorient Agglom&amp;eacute;ration)&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item column="1" row="1">
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item column="2" row="1">
+           <widget class="QLabel" name="lbl_lorient_logo">
+            <property name="maximumSize">
+             <size>
+              <width>217</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true" />
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/credits/sponsor_logo_ca_lorient.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>false</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="grp_sources">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>500</width>
+         <height>150</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="title">
+        <string>Sources and license</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item column="0" row="0">
+         <widget class="QLabel" name="ico_github">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string notr="true" />
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string notr="true" />
+          </property>
+          <property name="pixmap">
+           <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/credits/github.svg</pixmap>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item column="1" row="0">
+         <widget class="QLabel" name="ico_lgplv3">
+          <property name="minimumSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string notr="true" />
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string notr="true" />
+          </property>
+          <property name="pixmap">
+           <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/credits/lgplv3.svg</pixmap>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item column="0" row="1">
+         <widget class="QLabel" name="lbl_source_repository">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href="https://github.com/isogeo/isogeo-plugin-qgis"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item column="1" row="1">
+         <widget class="QLabel" name="lbl_license_logo_gpl3">
+          <property name="text">
+           <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href="https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;LGPL v3 - Wikipedia&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="btn_ok_close">
+       <property name="maximumSize">
+        <size>
+         <width>500</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="locale">
+        <locale country="UnitedStates" language="English" />
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close</set>
+       </property>
+       <property name="centerButtons">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <connections>
   <connection>

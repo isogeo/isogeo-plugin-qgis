@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 # Standard library
+import ConfigParser
 import datetime
 import logging
-from functools import partial
-from os import path
+from os import access, path, R_OK
+import subprocess
+from sys import platform as opersys
 from urllib import getproxies, unquote, urlencode
+from urlparse import urlparse
 import webbrowser
 
 # PyQGIS
@@ -14,8 +19,18 @@ from qgis.core import (QgsDataSourceURI, QgsProject,
 from qgis.utils import iface
 
 # PyQT
-from PyQt4.QtCore import QSettings, QUrl
-from PyQt4.QtGui import QMessageBox
+from qgis.PyQt.QtCore import QSettings, QUrl
+from qgis.PyQt.QtGui import QMessageBox
+
+# Depending on operating system
+if opersys == 'win32':
+    """ windows """
+    from os import startfile        # to open a folder/file
+else:
+    pass
+
+# 3rd party
+from .isogeo_pysdk import IsogeoUtils
 
 # ############################################################################
 # ########## Globals ###############
@@ -23,30 +38,43 @@ from PyQt4.QtGui import QMessageBox
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
+msgBar = iface.messageBar()
 
 # ############################################################################
 # ########## Classes ###############
 # ##################################
 
 
-class Tools(object):
-    """Basic class that holds utilitary methods for the Isogeo plugin."""
+class IsogeoPlgTools(IsogeoUtils):
+    """Inheritance from Isogeo Python SDK utils class. It adds some
+    specific tools for QGIS plugin."""
     last_error = None
+    tr = object
+
+    def __init__(self, auth_folder=r"../_auth"):
+            """Check and manage authentication credentials."""
+            # authentication
+            self.auth_folder = auth_folder
+
+            # instanciate
+            super(IsogeoPlgTools, self).__init__ ()
 
     def error_catcher(self, msg, tag, level):
         """Catch QGIS error messages for introspection."""
-        # print(type(logger), dir(logger))
-        # print(msg, tag, level)
         if tag == 'WMS' and level != 0:
-            # logger.error("WMS error: {}".format(msg))
             self.last_error = "wms", msg
+        elif tag == 'WFS' and level != 0:
+            self.last_error = "wfs", msg
         elif tag == 'PostGIS' and level != 0:
             self.last_error = "postgis", msg
         else:
             pass
 
     def format_button_title(self, title):
-        """Format the title for it to fit the button."""
+        """Format the title to fit the button.
+        
+        :param str title: title to format
+        """
         words = title.split(' ')
         line_length = 0
         lines = []
@@ -68,18 +96,6 @@ class Tools(object):
         # method ending
         return final_text
 
-    def format_path(self, string):
-        """Reformat windows path for them to be understood by QGIS."""
-        # new_string = ""
-        # for character in string:
-        #     if character == '\\':
-        #         new_string += "/"
-        #     else:
-        #         new_string += character
-        # # method ending
-        # # return new_string
-        return path.realpath(string)
-
     def get_map_crs(self):
         """Get QGIS map canvas current EPSG code."""
         current_crs = str(iface.mapCanvas()
@@ -89,7 +105,10 @@ class Tools(object):
         return current_crs
 
     def handle_date(self, input_date):
-        """Create a date object with the string given as a date by the API."""
+        """Create a date object with the string given as a date by the API.
+        
+        :param str input_date: input date to format
+        """
         if input_date != "NR":
             date = input_date.split("T")[0]
             year = int(date.split('-')[0])
@@ -100,27 +119,65 @@ class Tools(object):
             return new_date.strftime("%Y-%m-%d")
         else:
             return input_date
-            pass
 
     def mail_to_isogeo(self, lang):
-        """Open the credentials request online form in web browser."""
+        """Open the credentials request online form in web browser.
+        
+        :param str lang: language code. If not fr (French), the English form is displayed.
+        """
         if lang == "fr":
-            webbrowser.open('http://www.isogeo.com/fr/Plugin-QGIS/22',
+            webbrowser.open('https://www.isogeo.com/fr/Plugin-QGIS/22',
                             new=0,
                             autoraise=True
                             )
         else:
-            webbrowser.open('http://www.isogeo.com/en/QGIS-Plugin/22',
+            webbrowser.open('https://www.isogeo.com/en/QGIS-Plugin/22',
                             new=0,
                             autoraise=True
                             )
         # method ending
-        logger.info("Bugtracker launched in the default web browser")
-        return
+        logger.debug("Bugtracker launched in the default web browser")
+
+    def open_dir_file(self, target):
+        """Open a file or a directory in the explorer of the operating system.
+        
+        :param str target: path to the file or folder to open.
+        """
+        # check if the file or the directory exists
+        if not path.exists(target):
+            raise IOError('No such file: {0}'.format(target))
+
+        # check the read permission
+        if not access(target, R_OK):
+            raise IOError('Cannot access file: {0}'.format(target))
+
+        # open the directory or the file according to the os
+        if opersys == 'win32':  # Windows
+            proc = startfile(path.realpath(target))
+
+        elif opersys.startswith('linux'):  # Linux:
+            proc = subprocess.Popen(['xdg-open', target],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+
+        elif opersys == 'darwin':  # Mac:
+            proc = subprocess.Popen(['open', '--', target],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+
+        else:
+            raise NotImplementedError(
+                "Your `%s` isn't a supported operating system`." % opersys)
+
+        # end of function
+        return proc
 
     def open_webpage(self, link):
-        """Open the bugtracker on the user's default browser."""
-        if type(link) is QUrl:
+        """Open a link in the user's default web browser.
+        
+        :param str link: URL to open. Can be a QUrl object.
+        """
+        if isinstance(link, QUrl):
             link = link.toString()
 
         webbrowser.open(
@@ -128,40 +185,57 @@ class Tools(object):
             new=0,
             autoraise=True)
         # method ending
-        logger.info("Bugtracker launched in the default web browser")
+        logger.debug("Link launched in the default web browser: {}".format(link))
         return
 
-    def results_pages_counter(self, nb_fiches):
-        """Calculate the number of pages for a given number of results."""
-        if nb_fiches <= 10:
-            nb_page = 1
+    def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
+        """Plugin metadata.txt parser.
+        
+        :param path base_path: directory path whete the metadata txt is stored
+        :param str section: section of values. Until nom, there is only "general".
+        :param str value: value to get from the file. Available values:
+
+          * qgisMinimumVersion
+          * qgisMaximumVersion
+          * description
+          * version - [DEFAULT]
+          * author
+          * email
+          * about
+          * tracker
+          * repository
+        """
+        config = ConfigParser.ConfigParser()
+        if path.isfile(path.join(base_path, 'metadata.txt')):
+            config.read(path.join(base_path, 'metadata.txt'))
+            return config.get('general', value)
         else:
-            if (nb_fiches % 10) == 0:
-                nb_page = (nb_fiches / 10)
+            logger.error(path.dirname(__file__))
+
+    def results_pages_counter(self, total=0, page_size=10):
+        """Calculate the number of pages for a given number of results.
+        
+        :param int total: count of metadata in a search request
+        :param int page_size: count of metadata to display in each page
+        """
+        if total <= page_size:
+            count_pages = 1
+        else:
+            if (total % page_size) == 0:
+                count_pages = (total / page_size)
             else:
-                nb_page = (nb_fiches / 10) + 1
+                count_pages = (total / page_size) + 1
         # method ending
-        return nb_page
-
-    def display_auth_form(self, ui_auth_form):
-        """Show authentication form with prefilled fields."""
-        # fillfull auth form fields from stored settings
-        ui_auth_form.ent_app_id.setText(qsettings
-                                        .value("isogeo-plugin/user-auth/id", 0))
-        ui_auth_form.ent_app_secret.setText(qsettings
-                                            .value("isogeo-plugin/user-auth/secret", 0))
-        ui_auth_form.chb_isogeo_editor.setChecked(qsettings
-                                                  .value("isogeo/user/editor", 0))
-
-        # check auth validity
-        # connect check button
-        # ui_auth_form.btn_check_auth.connect(partial(print("check API authentication")))
-
-        # display
-        ui_auth_form.show()
+        return int(count_pages)
 
     def special_search(self, easter_code="isogeo"):
-        """Make some special actions in certains cases."""
+        """Make some special actions in certains cases.
+        
+        :param str easter_code: easter egg label. Available values:
+          
+          * isogeo: display Isogeo logo and zoom in our office location
+          * picasa: change QGS project title
+        """
         canvas = iface.mapCanvas()
         if easter_code == "isogeo":
             # WMS
@@ -244,14 +318,14 @@ class Tools(object):
                                 pass
                             else:
                                 QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'),
+                                ), self.tr("Alert", "Tools"),
                                     self.tr("Proxy issue : \nQGIS and your OS "
-                                            "have different proxy set up."))
+                                            "have different proxy set up.", "Tools"))
                         else:
                             QMessageBox.information(iface.mainWindow(
-                            ), self.tr('Alert'),
+                            ), self.tr("Alert", "Tools"),
                                 self.tr("Proxy issue : \nQGIS and your OS have"
-                                        " different proxy set ups."))
+                                        " different proxy set ups.", "Tools"))
                     elif len(elements) == 3 and elements[0] == 'http':
                         host_short = elements[1][2:]
                         host_long = elements[0] + ':' + elements[1]
@@ -268,21 +342,83 @@ class Tools(object):
                                 logger.error("OS and QGIS proxy ports do not "
                                              "match. => Proxy config: not OK")
                                 QMessageBox.information(iface.mainWindow(
-                                ), self.tr('Alert'),
+                                ), self.tr("Alert", "Tools"),
                                     self.tr("Proxy issue : \nQGIS and your OS"
-                                            " have different proxy set ups."))
+                                            " have different proxy set ups.", "Tools"))
                         else:
                             logger.error("OS and QGIS proxy hosts do not "
                                          "match. => Proxy config: not OK")
                             QMessageBox.information(iface.mainWindow(
-                            ), self.tr('Alert'),
+                            ), self.tr("Alert", "Tools"),
                                 self.tr("Proxy issue : \nQGIS and your OS have"
-                                        " different proxy set ups."))
+                                        " different proxy set ups.", "Tools"))
             else:
                 logger.error("OS uses a proxy but it isn't set up in QGIS."
                              " => Proxy config: not OK")
                 QMessageBox.information(iface.mainWindow(
-                ), self.tr('Alert'),
+                ), self.tr("Alert", "Tools"),
                     self.tr("Proxy issue : \nYou have a proxy set up on your"
                             " OS but none in QGIS.\nPlease set it up in "
-                            "'Preferences/Options/Network'."))
+                            "'Preferences/Options/Network'.", "Tools"))
+
+    def test_qgis_style(self):
+        """
+            Check QGIS style applied to ensure compatibility with comboboxes.
+            Avert the user and force change if the selected is not adapted.
+            See: https://github.com/isogeo/isogeo-plugin-qgis/issues/137.
+        """
+        style_qgis = qsettings.value("qgis/style", "Default")
+        if style_qgis in ("macintosh", "cleanlooks"):
+            qsettings.setValue("qgis/style", "Plastique")
+            msgBar.pushMessage(self.tr("The '{}' QGIS style is not "
+                                       "compatible with combobox. It has "
+                                       "been changed. Please restart QGIS.")
+                                       .format(style_qgis),
+                               duration=0,
+                               level=msgBar.WARNING)
+            logger.warning("The '{}' QGIS style is not compatible with combobox."
+                           " Isogeo plugin changed it to 'Plastique'."
+                           "Please restart QGIS."
+                           .format(style_qgis))
+            return False
+        else:
+            return True
+        
+    def _to_raw_string(self, in_string):
+        """Basic converter for input string or unicode to raw string.
+        Useful to prevent escapign in Windows paths for example.
+
+        see: https://github.com/isogeo/isogeo-plugin-qgis/issues/129
+
+        :param str in_string: string (str or unicode) to convert to raw
+        """
+        if isinstance(in_string, str):
+            logger.debug(in_string)
+            return in_string.encode('string-escape')
+        elif isinstance(in_string, unicode):
+            logger.debug(in_string)
+            return in_string.encode('unicode-escape')
+        else:
+            raise TypeError
+
+    def _ui_tweaker(self, ui_widgets, tweak_type="comboboxes"):
+        """Set of tools to tweak PyQT UI widgets.
+
+        :param list ui_widgets: list of widgets on which apply tweaks
+        :param str tweak_type: tweak to perform
+        """
+        if tweak_type == "comboboxes":
+            # see: https://github.com/isogeo/isogeo-plugin-qgis/issues/156
+            for cbb in ui_widgets:
+                width = cbb.view().sizeHintForColumn(0) + 5
+                cbb.view().setMinimumWidth(width)
+            logger.debug("Comboboxes have been tweaked: width set on values")
+        else:
+            logger.debug("Tweak type not recognized.")
+            pass
+
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
+if __name__ == '__main__':
+    """Standalone execution."""

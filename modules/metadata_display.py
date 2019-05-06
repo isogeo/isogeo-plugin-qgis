@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function, unicode_literals)
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 # Standard library
 import logging
@@ -12,24 +13,37 @@ from qgis.core import (QgsMapLayerRegistry, QgsMessageLog,
 from qgis.gui import QgsMapCanvasLayer
 
 # PyQT
-from PyQt4.QtCore import QSettings, Qt
-from PyQt4.QtGui import QTableWidgetItem
+from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtGui import QColor, QTableWidgetItem
 
-# Custom modules
-from .api import IsogeoApiManager
-from .tools import Tools
-from .translator import IsogeoTranslator
+# 3rd party
+from .isogeo_pysdk import IsogeoTranslator
+
+# Plugin modules
+from .api import IsogeoPlgApiMngr
 from .url_builder import UrlBuilder
+from .tools import IsogeoPlgTools
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-custom_tools = Tools()
-isogeo_api_mng = IsogeoApiManager()
-logger = logging.getLogger("IsogeoQgisPlugin")
 qsettings = QSettings()
-srv_url_bld = UrlBuilder()
+logger = logging.getLogger("IsogeoQgisPlugin")
+
+plg_api_mngr = IsogeoPlgApiMngr()
+plg_tools = IsogeoPlgTools()
+plg_url_bldr = UrlBuilder()
+
+osm_lbls = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Labels&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
+osm_refs = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Features&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
+blue_marble = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/jpeg&layers=BlueMarble_ShadedRelief_Bathymetry&styles=default&tileMatrixSet=500m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
+
+li_lyrs_refs = [
+    QgsRasterLayer(osm_lbls, "Labels", 'wms'),
+    QgsRasterLayer(osm_refs, "Refs", 'wms'),
+    QgsRasterLayer(blue_marble, "Base", 'wms')
+]
 
 # ############################################################################
 # ########## Classes ###############
@@ -37,7 +51,7 @@ srv_url_bld = UrlBuilder()
 
 
 class MetadataDisplayer(object):
-    """Basic class that holds utilitary methods for the plugin."""
+    """Manage metadata displaying in QGIS UI."""
     url_edition = "https://app.isogeo.com"
 
     def __init__(self, ui_md_details):
@@ -48,17 +62,16 @@ class MetadataDisplayer(object):
         # some basic settings
         self.complete_md.wid_bbox.setCanvasColor(Qt.white)
         self.complete_md.wid_bbox.enableAntiAliasing(True)
-        world_wmts_url = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&"\
-                         "featureCount=10&format=image/jpeg&layers=opengeo:countries&"\
-                         "styles=&tileMatrixSet=EPSG:4326&"\
-                         "url=http://suite.opengeo.org/geoserver/gwc/service/wmts?request%3DGetCapabilities"
-        self.world_lyr = QgsRasterLayer(world_wmts_url, "Countries", 'wms')
-        self.complete_md.btn_md_edit.pressed.connect(lambda: custom_tools.open_webpage(link=self.url_edition))
 
-    def show_complete_md(self, md, lang="EN"):
-        """Open the pop up window that shows the metadata sheet details."""
+        self.complete_md.btn_md_edit.pressed.connect(lambda: plg_tools.open_webpage(link=self.url_edition))
+
+    def show_complete_md(self, md):
+        """Open the pop up window that shows the metadata sheet details.
+        
+        :param md dict: Isogeo metadata dict
+        """
         logger.info("Displaying the whole metadata sheet.")
-        tags = isogeo_api_mng.get_tags(md.get("tags"))
+        tags = plg_api_mngr.get_tags(md.get("tags"))
         isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])
 
         # clean map canvas
@@ -74,11 +87,11 @@ class MetadataDisplayer(object):
                                              .get("name", "NR"))
         # Keywords
         kwords = tags.get("keywords", {"none": "NR"})
-        self.complete_md.val_keywords.setText(" ; ".join(kwords.values()))
+        self.complete_md.val_keywords.setText(" ; ".join(kwords.keys()))
         # INSPIRE themes and conformity
-        themes = tags.get("themeinspire", {"none": "NR"})
-        self.complete_md.val_inspire_themes.setText(" ; ".join(themes.values()))
-        if tags.get("inspire_conformity"):
+        themes = tags.get("inspire", {"none": "NR"})
+        self.complete_md.val_inspire_themes.setText(" ; ".join(themes.keys()))
+        if tags.get("compliance"):
             self.complete_md.ico_inspire_conformity.setEnabled(1)
             self.complete_md.ico_inspire_conformity.setToolTip(
                                                     isogeo_tr.tr("quality",
@@ -164,15 +177,15 @@ class MetadataDisplayer(object):
 
         # -- HISTORY ---------------------------------------------------------
         # Data creation and last update dates
-        self.complete_md.val_data_crea.setText(custom_tools.handle_date(
+        self.complete_md.val_data_crea.setText(plg_tools.handle_date(
                                                md.get("_created", "NR")))
-        self.complete_md.val_data_update.setText(custom_tools.handle_date(
+        self.complete_md.val_data_update.setText(plg_tools.handle_date(
                                                  md.get("_modified", "NR")))
         # Update frequency information
         if md.get("updateFrequency", None):
             freq = md.get("updateFrequency")
             frequency_info = "{}{} {}"\
-                             .format(isogeo_tr.tr(None, "frequencyUpdateHelp"),
+                             .format(isogeo_tr.tr("frequencyTypes", "frequencyUpdateHelp"),
                                      ''.join(i for i in freq if i.isdigit()),
                                      isogeo_tr.tr("frequencyShortTypes",
                                                   freq[-1]))
@@ -180,9 +193,9 @@ class MetadataDisplayer(object):
         else:
             self.complete_md.val_frequency.setText("NR")
         # Validity
-        self.complete_md.val_valid_start.setText(custom_tools.handle_date(
+        self.complete_md.val_valid_start.setText(plg_tools.handle_date(
                                                  md.get("validFrom", "NR")))
-        self.complete_md.val_valid_end.setText(custom_tools.handle_date(
+        self.complete_md.val_valid_end.setText(plg_tools.handle_date(
                                                md.get("validTo", "NR")))
         self.complete_md.val_valid_comment.setText(md.get("validityComment", "NR"))
         # Collect information
@@ -196,7 +209,7 @@ class MetadataDisplayer(object):
         idx = 0
         for e in events:
             if e.get("kind") == "update":
-                tbl_events.setItem(idx, 0, QTableWidgetItem(custom_tools.handle_date(e.get("date", "NR"))))
+                tbl_events.setItem(idx, 0, QTableWidgetItem(plg_tools.handle_date(e.get("date", "NR"))))
                 tbl_events.setItem(idx, 1, QTableWidgetItem(e.get("description", "")))
                 idx += 1
             else:
@@ -259,14 +272,20 @@ class MetadataDisplayer(object):
             md_lyr = self.envelope2layer(md.get("envelope"))
             # add layers
             QgsMapLayerRegistry.instance().addMapLayers([md_lyr,
-                                                         self.world_lyr],
+                                                         li_lyrs_refs[0],
+                                                         li_lyrs_refs[1],
+                                                         li_lyrs_refs[2]
+                                                         ],
                                                         0)
             map_canvas_layer_list = [QgsMapCanvasLayer(md_lyr),
-                                     QgsMapCanvasLayer(self.world_lyr)]
+                                     QgsMapCanvasLayer(li_lyrs_refs[0]),
+                                     QgsMapCanvasLayer(li_lyrs_refs[1]),
+                                     QgsMapCanvasLayer(li_lyrs_refs[2]),
+                                     ]
             self.complete_md.wid_bbox.setLayerSet(map_canvas_layer_list)
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())
+            self.complete_md.wid_bbox.zoomOut()
         else:
-            self.complete_md.wid_bbox.setExtent(self.world_lyr.extent())
             self.complete_md.grp_bbox.setDisabled(1)
 
         # -- CGUs ------------------------------------------------------------
@@ -334,14 +353,15 @@ class MetadataDisplayer(object):
 
         # Metadata
         self.complete_md.val_md_lang.setText(md.get("language", "NR"))
-        self.complete_md.val_md_date_crea.setText(custom_tools.handle_date(
+        self.complete_md.val_md_date_crea.setText(plg_tools.handle_date(
                                                   md.get("_modified")[:19]))
-        self.complete_md.val_md_date_update.setText(custom_tools.handle_date(
+        self.complete_md.val_md_date_update.setText(plg_tools.handle_date(
                                                     md.get("_created")[:19]))
 
         # -- EDIT LINK -------------------------------------------------------
-        self.url_edition = "https://app.isogeo.com/groups/{}/resources/{}"\
-                           .format(wg_id, md.get("_id"))
+        self.url_edition = plg_tools.get_edit_url(md_id=md.get("_id"),
+                                                  md_type=md.get("type"),
+                                                  owner_id=wg_id)
 
         # only if user declared himself as Isogeo editor in authentication form
         self.complete_md.btn_md_edit.setEnabled(qsettings
@@ -361,7 +381,7 @@ class MetadataDisplayer(object):
                                      "Isogeo")
         except UnicodeEncodeError:
             QgsMessageLog.logMessage("Detailed metadata displayed: {}"
-                                     .format(title.encode("latin1")),
+                                     .format(title),
                                      "Isogeo")
 
     def envelope2layer(self, envelope):
@@ -371,6 +391,9 @@ class MetadataDisplayer(object):
                                 "Metadata envelope",
                                 "memory")
         md_lyr.setLayerTransparency(75)
+        symbols = md_lyr.rendererV2().symbols()
+        symbol = symbols[0]
+        symbol.setColor(QColor.fromRgb(255,20,147))
 
         if envelope.get("type") == "Polygon":
             # parse coordinates
@@ -516,3 +539,9 @@ class MetadataDisplayer(object):
             # should not exist
             logger.error("Metadata type not recognized:", md_type)
             return
+
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
+if __name__ == '__main__':
+    """Standalone execution."""

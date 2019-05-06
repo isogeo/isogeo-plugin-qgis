@@ -22,12 +22,15 @@
     <height>116</height>
    </size>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Isogeo - Rename quicksearch</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../resources.qrc">
-    <normaloff>:/plugins/Isogeo/resources/bolt.svg</normaloff>:/plugins/Isogeo/resources/bolt.svg</iconset>
+    <normaloff>:/plugins/Isogeo/resources/search/bolt.svg</normaloff>:/plugins/Isogeo/resources/search/bolt.svg</iconset>
   </property>
   <property name="windowOpacity">
    <double>0.900000000000000</double>
@@ -75,20 +78,7 @@
      </property>
     </widget>
    </item>
-   <item colspan="2" column="0" row="2">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>62</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item colspan="3" column="0" row="3">
+   <item colspan="3" column="0" row="2">
     <widget class="QDialogButtonBox" name="btn_save_cancel">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

@@ -5,28 +5,29 @@ from __future__ import (absolute_import, division,
 # Standard library
 import logging
 from functools import partial
+import json
 import os
 
 # PyQT
 # from QByteArray
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import (QIcon, QTableWidgetItem, QComboBox, QPushButton,
-                         QLabel, QPixmap, QProgressBar)
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtGui import (QIcon, QTableWidgetItem, QComboBox, QPushButton,
+                             QLabel, QPixmap, QProgressBar, QHeaderView)
 
 # PyQGIS
 from qgis.utils import iface
-from qgis.core import QgsDataSourceURI
 
-# Custom modules
-from .tools import Tools
+# Plugin modules
+from .tools import IsogeoPlgTools
 from .url_builder import UrlBuilder
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-custom_tools = Tools()
-srv_url_bld = UrlBuilder()
+plg_url_bldr = UrlBuilder()
+plg_tools = IsogeoPlgTools()
+
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
@@ -44,19 +45,21 @@ li_formats_rastr = ("esriasciigrid", "geotiff",
                     "intergraphgdb", "jpeg", "png", "xyz", "ecw")
 
 # Qt icons
-lbl_polyg = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/polygon.png"))
-lbl_point = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/point.png"))
-lbl_line = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/line.png"))
-lbl_multi = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/multi.png"))
-lbl_rastr = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/raster.png"))
-lbl_nogeo = QLabel().setPixmap(QPixmap(":/plugins/Isogeo/resources/ban.png"))
-ico_efs = QIcon(":/plugins/Isogeo/resources/efs.svg")
-ico_ems = QIcon(":/plugins/Isogeo/resources/ems.svg")
-ico_wfs = QIcon(":/plugins/Isogeo/resources/wfs.png")
-ico_wms = QIcon(":/plugins/Isogeo/resources/wms.png")
-ico_wmts = QIcon(":/plugins/Isogeo/resources/wms.png")
-ico_pgis = QIcon(":/plugins/Isogeo/resources/database.svg")
-ico_file = QIcon(":/plugins/Isogeo/resources/file.svg")
+# see https://github.com/qgis/QGIS/blob/master/images/images.qrc
+pix_point = QPixmap(":/images/themes/default/mIconPointLayer.svg")
+pix_polyg = QPixmap(":/images/themes/default/mIconPolygonLayer.svg")
+pix_line = QPixmap(":/images/themes/default/mIconLineLayer.svg")
+pix_rastr = QPixmap(":/images/themes/default/mIconRaster.svg")
+pix_multi = QPixmap(":/plugins/Isogeo/resources/multi.svg").scaledToWidth(20)
+pix_nogeo = QPixmap(":/plugins/Isogeo/resources/none.svg").scaledToWidth(20)
+pix_serv = QPixmap(":/plugins/Isogeo/resources/results/cloud.svg").scaledToWidth(20)
+ico_efs = QIcon(":/images/themes/default/mIconAfs.svg")
+ico_ems = QIcon(":/images/themes/default/mIconAms.svg")
+ico_wfs = QIcon(":/images/themes/default/mIconWfs.svg")
+ico_wms = QIcon(":/images/themes/default/mIconWms.svg")
+ico_wmts = QIcon(":/images/themes/default/mIconWcs.svg")
+ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
+ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 
 # ############################################################################
 # ########## Classes ###############
@@ -65,6 +68,7 @@ ico_file = QIcon(":/plugins/Isogeo/resources/file.svg")
 
 class ResultsManager(object):
     """Basic class that holds utilitary methods for the plugin."""
+    paths_cache = ""
 
     def __init__(self, isogeo_plugin):
         """Class constructor."""
@@ -72,7 +76,7 @@ class ResultsManager(object):
         self.add_layer = isogeo_plugin.add_layer
         self.send_details_request = isogeo_plugin.send_details_request
         self.tr = isogeo_plugin.tr
-        self.pg_connections = srv_url_bld.build_postgis_dict(qsettings)
+        self.pg_connections = plg_url_bldr.build_postgis_dict(qsettings)
         self.cached_unreach_paths = []
 
     def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
@@ -110,7 +114,7 @@ class ResultsManager(object):
 
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
-            btn_md_title = QPushButton(custom_tools.format_button_title(md_title))
+            btn_md_title = QPushButton(plg_tools.format_button_title(md_title))
             # Connecting the button to the full metadata popup
             btn_md_title.pressed.connect(partial(
                 self.send_details_request, md_id=md_id))
@@ -122,18 +126,23 @@ class ResultsManager(object):
             # COLUMN 2 - Data last update
             tbl_result.setItem(
                 count, 1, QTableWidgetItem(
-                    custom_tools.handle_date(i.get("_modified"))))
+                    plg_tools.handle_date(i.get("_modified"))))
 
             # COLUMN 3 - Geometry type
+            lbl_geom = QLabel(tbl_result)
             if ds_geometry:
                 if ds_geometry in point_list:
-                    tbl_result.setCellWidget(count, 2, lbl_point)
+                    lbl_geom.setPixmap(pix_point)
+                    lbl_geom.setToolTip(self.tr("Point", "ResultsManager"))
                 elif ds_geometry in polygon_list:
-                    tbl_result.setCellWidget(count, 2, lbl_polyg)
+                    lbl_geom.setPixmap(pix_polyg)
+                    lbl_geom.setToolTip(self.tr("Polygon", "ResultsManager"))
                 elif ds_geometry in line_list:
-                    tbl_result.setCellWidget(count, 2, lbl_line)
+                    lbl_geom.setPixmap(pix_line)
+                    lbl_geom.setToolTip(self.tr("Line", "ResultsManager"))
                 elif ds_geometry in multi_list:
-                    tbl_result.setCellWidget(count, 2, lbl_multi)
+                    lbl_geom.setPixmap(pix_multi)
+                    lbl_geom.setToolTip(self.tr("MultiPolygon", "ResultsManager"))
                 elif ds_geometry == "TIN":
                     tbl_result.setItem(
                         count, 2, QTableWidgetItem(u"TIN"))
@@ -143,9 +152,16 @@ class ResultsManager(object):
                             self.tr("Unknown geometry", "ResultsManager")))
             else:
                 if "rasterDataset" in i.get("type"):
-                    tbl_result.setCellWidget(count, 2, lbl_rastr)
+                    lbl_geom.setPixmap(pix_rastr)
+                    lbl_geom.setToolTip(self.tr("Raster", "ResultsManager"))
+                elif "service" in i.get("type"):
+                    lbl_geom.setPixmap(pix_serv)
+                    lbl_geom.setToolTip(self.tr("Service", "ResultsManager"))
                 else:
-                    tbl_result.setCellWidget(count, 2, lbl_nogeo)
+                    lbl_geom.setPixmap(pix_nogeo)
+                    lbl_geom.setToolTip(self.tr("Unknown geometry", "ResultsManager"))
+
+            tbl_result.setCellWidget(count, 2, lbl_geom)
 
             # COLUMN 4 - Add options
             dico_add_options = {}
@@ -155,45 +171,30 @@ class ResultsManager(object):
                 # If the data is a vector and the path is available, store
                 # useful information in the dict
                 if i.get("format", "NR") in li_formats_vect and "path" in i:
-                    filepath = custom_tools.format_path(i.get("path"))
-                    dir_file = os.path.dirname(filepath)
-                    if dir_file not in self.cached_unreach_paths:
-                        try:
-                            open(filepath)
-                            params = ["vector", filepath,
-                                      i.get("title", "NR"),
-                                      i.get("abstract", "NR"),
-                                      md_keywords]
-                            dico_add_options[self.tr("Data file", "ResultsManager")] = params
-                        except IOError:
-                            self.cached_unreach_paths.append(dir_file)
-                            self.cached_unreach_paths = list(set(self.cached_unreach_paths))
+                    add_path = self._filepath_builder(i.get("path"))
+                    if add_path:
+                        params = ["vector", add_path,
+                                  i.get("title", "NR"),
+                                  i.get("abstract", "NR"),
+                                  md_keywords]
+                        dico_add_options[self.tr("Data file", "ResultsManager")] = params
                     else:
-                        logger.debug("Path has been ignored because it's cached.")
                         pass
                 # Same if the data is a raster
                 elif i.get("format", "NR") in li_formats_rastr and "path" in i:
-                    filepath = custom_tools.format_path(i.get("path"))
-                    dir_file = os.path.dirname(filepath)
-                    if dir_file not in self.cached_unreach_paths:
-                        try:
-                            open(filepath)
-                            params = ["raster", filepath,
-                                      i.get("title", "NR"),
-                                      i.get("abstract", "NR"),
-                                      md_keywords]
-                            dico_add_options[self.tr("Data file", "ResultsManager")] = params
-                        except IOError:
-                            self.cached_unreach_paths.append(dir_file)
-                            pass
+                    add_path = self._filepath_builder(i.get("path"))
+                    if add_path:
+                        params = ["raster", add_path,
+                                  i.get("title", "NR"),
+                                  i.get("abstract", "NR"),
+                                  md_keywords]
+                        dico_add_options[self.tr("Data file", "ResultsManager")] = params
                     else:
-                        logger.debug("Path has been ignored because it's cached.")
                         pass
                 # If the data is a postGIS table and the connexion has
                 # been saved in QGIS.
                 elif i.get("format") == "postgis":
-                    # Récupère le nom de la base de données
-                    base_name = i.get("path")
+                    base_name = i.get("path", "No path")
                     if base_name in pg_connections.keys():
                         params = {}
                         params["base_name"] = base_name
@@ -210,6 +211,7 @@ class ResultsManager(object):
                     else:
                         pass
                 else:
+                    logger.debug("Metadata {} has a format but it's not recognized or path is missing".format(md_id))
                     pass
             # Associated service layers
             d_type = i.get("type")
@@ -221,7 +223,7 @@ class ResultsManager(object):
                                        "formatVersion": service.get("formatVersion")}
                         # EFS
                         if service.get("format") == "efs":
-                            name_url = srv_url_bld.build_efs_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_efs_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -230,7 +232,7 @@ class ResultsManager(object):
                                 pass
                         # EMS
                         if service.get("format") == "ems":
-                            name_url = srv_url_bld.build_ems_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_ems_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -239,7 +241,7 @@ class ResultsManager(object):
                                 pass
                         # WFS
                         if service.get("format") == "wfs":
-                            name_url = srv_url_bld.build_wfs_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wfs_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -248,7 +250,7 @@ class ResultsManager(object):
                                 pass
                         # WMS
                         elif service.get("format") == "wms":
-                            name_url = srv_url_bld.build_wms_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wms_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -257,7 +259,7 @@ class ResultsManager(object):
                                 pass
                         # WMTS
                         elif service.get("format") == "wmts":
-                            name_url = srv_url_bld.build_wmts_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wmts_url(layer, srv_details,
                                                                   rsc_type="ds_dyn_lyr_srv")
                             if name_url[0] != 0:
                                 dico_add_options[u"WMTS : " + name_url[1]] = name_url
@@ -273,39 +275,56 @@ class ResultsManager(object):
                 if i.get("layers") is not None:
                     srv_details = {"path": i.get("path", "NR"),
                                    "formatVersion": i.get("formatVersion")}
+                    # EFS
+                    if i.get("format") == "efs":
+                        for layer in i.get("layers"):
+                            name_url = plg_url_bldr.build_efs_url(layer, srv_details,
+                                                                  rsc_type="service",
+                                                                  mode="quicky")
+                            if name_url[0] != 0:
+                                dico_add_options[name_url[5]] = name_url
+                            else:
+                                continue
+                    # EMS
+                    if i.get("format") == "ems":
+                        for layer in i.get("layers"):
+                            name_url = plg_url_bldr.build_ems_url(layer, srv_details,
+                                                                  rsc_type="service",
+                                                                  mode="quicky")
+                            if name_url[0] != 0:
+                                dico_add_options[name_url[5]] = name_url
+                            else:
+                                continue
                     # WFS
                     if i.get("format") == "wfs":
                         for layer in i.get("layers"):
-                            name_url = srv_url_bld.build_wfs_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wfs_url(layer, srv_details,
                                                                  rsc_type="service",
                                                                  mode="quicky")
                             if name_url[0] != 0:
                                 dico_add_options[name_url[5]] = name_url
                             else:
                                 continue
-                                pass
                     # WMS
                     elif i.get("format") == "wms":
                         for layer in i.get("layers"):
-                            name_url = srv_url_bld.build_wms_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wms_url(layer, srv_details,
                                                                  rsc_type="service",
                                                                  mode="quicky")
                             if name_url[0] != 0:
                                 dico_add_options[name_url[5]] = name_url
                             else:
                                 continue
-                                pass
                     # WMTS
                     elif i.get("format") == "wmts":
                         for layer in i.get("layers"):
-                            name_url = srv_url_bld.build_wmts_url(layer, srv_details,
+                            name_url = plg_url_bldr.build_wmts_url(layer, srv_details,
                                                                   rsc_type="service")
                             if name_url[0] != 0:
                                 btn_label = "WMTS : {}".format(name_url[1])
                                 dico_add_options[btn_label] = name_url
                             else:
                                 continue
-                                pass
                     else:
                         pass
             else:
@@ -367,10 +386,91 @@ class ResultsManager(object):
                     combo.addItem(icon, i, dico_add_options.get(i))
                 combo.activated.connect(partial(self.add_layer,
                                                 layer_info=["index", count]))
+                combo.model().sort(0)   # sort alphabetically on option prefix. see: #113
                 tbl_result.setCellWidget(count, 3, combo)
 
             count += 1
+        # dimensions
+        header = tbl_result.horizontalHeader()
+        header.setResizeMode(0, QHeaderView.Stretch)
+        header.setResizeMode(1, QHeaderView.ResizeToContents)
+        header.setResizeMode(2, QHeaderView.ResizeToContents)
         # Remove the "loading" bar
         iface.mainWindow().statusBar().removeWidget(progress_bar)
         # method ending
         return None
+
+    # -- PRIVATE METHOD -------------------------------------------------------
+    def _filepath_builder(self, metadata_path, mode=1):
+        """Build filepath from metadata path handling various cases. See: #129.
+
+        :param dict metadata: path found in metadata
+        :param int mode: mode to apply. Options:
+          1 = only with standard path.normpath
+          2 = using raw string (useful for Windows systems)
+        """
+        # basic checks
+        if not isinstance(mode, int):
+            raise TypeError
+        # building
+        if mode == 1:
+            filepath = os.path.normpath(metadata_path)
+            dir_file = os.path.dirname(filepath)
+            if dir_file not in self.cached_unreach_paths:
+                try:
+                    with open(filepath) as f:
+                        return filepath
+                except IOError:
+                    logger.debug("Filepath is not reachable: {}".format(filepath))
+                    return self._filepath_builder(metadata_path, mode=2)
+            else:
+                logger.debug("Path has been ignored because it's cached.")
+                return False
+        elif mode == 2:
+            logger.debug("Using forced raw string")
+            dir_file = os.path.dirname(metadata_path)
+            filepath = plg_tools._to_raw_string(metadata_path)
+            try:
+                with open(filepath) as f:
+                    return filepath
+            except IOError:
+                self.cached_unreach_paths.append(dir_file)
+                logger.debug("Path is not reachable and has been cached:{}".format(dir_file))
+                return False
+        else:
+            logger.debug("Incorrect mode: {}".format(mode))
+            raise ValueError
+
+    def _cache_dumper(self):
+        """Dumps paths ignored into a JSON file. See: #135"""
+        cached_filepaths_unique = set(self.cached_unreach_paths)
+        with open(self.paths_cache, 'w') as cached_path_file:
+            json.dump(list(cached_filepaths_unique), cached_path_file,
+                      sort_keys=True, indent=4)
+        logger.debug("Paths cache has been dumped")
+
+    def _cache_loader(self):
+        """Loads paths ignored into a JSON file."""
+        try:
+            with open(self.paths_cache, 'r') as cached_path_file:
+                self.cached_unreach_paths = json.load(cached_path_file)
+            logger.debug("Paths cache has been loaded")
+        except ValueError as e:
+            logger.error("Path JSON corrupted")
+            self.cached_unreach_paths = []
+        except IOError:
+        	logger.debug("Paths cache file not found. Maybe because of first launch.")
+        	self._cache_dumper()
+
+    def _cache_cleaner(self):
+        """Clean cached paths."""
+        self.cached_unreach_paths = []
+        self._cache_dumper()
+        logger.debug("Cache has been cleaned")
+
+
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
+if __name__ == '__main__':
+    """Standalone execution."""
