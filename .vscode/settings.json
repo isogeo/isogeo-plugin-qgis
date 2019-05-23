@@ -6,7 +6,8 @@
     "python.linting.enabled": true,
     "python.envFile": "${workspaceFolder}/dev.env",
     // Set Python interpreter
-    "python.pythonPath": "${workspaceFolder}/.venv_tests/Scripts/python.exe",
+    //"python.pythonPath": "${workspaceFolder}/.venv_tests/Scripts/python.exe",
+    "python.pythonPath": "C:/OSGeo4W64/bin/python-qgis-ltr.bat",
     // Replicate the QGIS environment
     "terminal.integrated.env.windows": {
         // Path
