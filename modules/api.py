@@ -9,7 +9,7 @@ import time
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings
-from qgis.PyQt.QtGui import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 # Plugin modules
 from .tools import IsogeoPlgTools

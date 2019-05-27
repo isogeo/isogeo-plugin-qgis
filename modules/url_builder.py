@@ -5,13 +5,14 @@ from __future__ import (absolute_import, division,
 # Standard library
 import logging
 import re
-from urllib import unquote, urlencode
+from urllib.request import unquote
+from urllib.parse import urlencode
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings
 
 # QGIS
-from qgis.core import QgsDataSourceURI
+from qgis.core import QgsDataSourceUri
 
 # Plugin modules
 from .tools import IsogeoPlgTools
@@ -54,9 +55,9 @@ try:
     from owslib.util import HTTPError
     logger.info("Depencencies - HTTPError within owslib")
 except ImportError as e:
-    from urllib2 import HTTPError
+    from urllib.error import HTTPError
     logger.warning("Depencencies - HTTPError not within owslib."
-                   " Directly imported from urllib2.")
+                   " Directly imported from urllib.error")
 try:
     import requests
     logger.info("Depencencies - Requests version: {}"

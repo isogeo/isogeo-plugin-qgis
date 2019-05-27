@@ -11,9 +11,9 @@ import os
 # PyQT
 # from QByteArray
 from qgis.PyQt.QtCore import QSettings
-from qgis.PyQt.QtGui import (QIcon, QTableWidgetItem, QComboBox, QPushButton,
-                             QLabel, QPixmap, QProgressBar, QHeaderView)
-
+from qgis.PyQt.QtGui import QIcon, QPixmap
+from qgis.PyQt.QtWidgets import (QTableWidgetItem, QComboBox, QPushButton, QLabel, 
+                                QProgressBar, QHeaderView)
 # PyQGIS
 from qgis.utils import iface
 

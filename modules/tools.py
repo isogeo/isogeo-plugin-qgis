@@ -3,24 +3,23 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 # Standard library
-import ConfigParser
+import configparser
 import datetime
 import logging
 from os import access, path, R_OK
 import subprocess
 from sys import platform as opersys
-from urllib import getproxies, unquote, urlencode
-from urlparse import urlparse
+from urllib.request import getproxies, unquote
+from urllib.parse import urlencode, urlparse
 import webbrowser
 
 # PyQGIS
-from qgis.core import (QgsDataSourceURI, QgsProject,
-                       QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer)
+from qgis.core import (QgsDataSourceUri, QgsProject, QgsVectorLayer, QgsProject, QgsRasterLayer)
 from qgis.utils import iface
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings, QUrl
-from qgis.PyQt.QtGui import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 # Depending on operating system
 if opersys == 'win32':
@@ -205,7 +204,7 @@ class IsogeoPlgTools(IsogeoUtils):
           * tracker
           * repository
         """
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         if path.isfile(path.join(base_path, 'metadata.txt')):
             config.read(path.join(base_path, 'metadata.txt'))
             return config.get('general', value)

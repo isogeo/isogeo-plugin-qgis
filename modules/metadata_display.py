@@ -7,14 +7,14 @@ import logging
 from datetime import datetime
 
 # PyQGIS
-from qgis.core import (QgsMapLayerRegistry, QgsMessageLog,
-                       QgsVectorLayer, QgsPoint, QgsRectangle, QgsFeature,
-                       QgsGeometry, QgsRasterLayer)
-from qgis.gui import QgsMapCanvasLayer
+from qgis.core import (QgsProject, QgsMessageLog, QgsVectorLayer, QgsPoint, 
+                        QgsRectangle, QgsFeature, QgsGeometry, QgsRasterLayer)
+
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings, Qt
-from qgis.PyQt.QtGui import QColor, QTableWidgetItem
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import QTableWidgetItem
 
 # 3rd party
 from .isogeo_pysdk import IsogeoTranslator
