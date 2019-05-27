@@ -33,42 +33,47 @@ import logging
 from logging.handlers import RotatingFileHandler
 from collections import OrderedDict
 from functools import partial
-import sys
 
 # PyQT
 # from QByteArray
-from qgis.PyQt.QtCore import (QByteArray, QCoreApplication, QSettings,
-                              Qt, QTranslator, QUrl, qVersion)
-from qgis.PyQt.QtGui import (QAction, QComboBox, QIcon, QMessageBox,
-                             QStandardItemModel, QStandardItem, QProgressBar)
+from qgis.PyQt.QtCore import (
+    QByteArray, QCoreApplication, QSettings, Qt, QTranslator, QUrl, qVersion)
+
+from qgis.PyQt.QtWidgets import QAction, QComboBox, QMessageBox, QProgressBar
+from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
+
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # PyQGIS
 import db_manager.db_plugins.postgis.connector as pgis_con
-from qgis.utils import iface, plugin_times, QGis
-from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform,
-                       QgsDataSourceURI,
-                       QgsMapLayerRegistry, QgsMessageLog,
-                       QgsNetworkAccessManager,
-                       QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer)
+
+from qgis.utils import iface, plugin_times
+
+from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsDataSourceUri, QgsMessageLog,
+                       QgsNetworkAccessManager, QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer, QgsProject)
+
+try:
+    from qgis.core import Qgis
+except ImportError:
+    from qgis.core import QGis as Qgis
 
 # Initialize Qt resources from file resources.py
-import resources
+from . import resources
 
 # UI classes
-from ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
-from ui.auth.dlg_authentication import IsogeoAuthentication
-from ui.credits.dlg_credits import IsogeoCredits
-from ui.metadata.dlg_md_details import IsogeoMdDetails
-from ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
-from ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
+from .ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
+from .ui.auth.dlg_authentication import IsogeoAuthentication
+from .ui.credits.dlg_credits import IsogeoCredits
+from .ui.metadata.dlg_md_details import IsogeoMdDetails
+from .ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
+from .ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
 
 # Plugin modules
-from modules import IsogeoPlgApiMngr
-from modules import MetadataDisplayer
-from modules import ResultsManager
-from modules import IsogeoPlgTools
-from modules import UrlBuilder
+from .modules import IsogeoPlgApiMngr
+from .modules import MetadataDisplayer
+from .modules import ResultsManager
+from .modules import IsogeoPlgTools
+from .modules import UrlBuilder
 
 # ############################################################################
 # ########## Globals ###############
@@ -77,10 +82,6 @@ from modules import UrlBuilder
 # plugin directory path
 plg_basepath = os.path.dirname(os.path.realpath(__file__))
 plg_reg_name = os.path.basename(plg_basepath)
-
-# force encoding
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 # QGIS useful tooling and shortcuts
 msgBar = iface.messageBar()
@@ -106,11 +107,10 @@ plg_url_bldr = UrlBuilder()
 # log level depends on plugin directory name
 if plg_reg_name == plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
     log_level = logging.WARNING
-elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath)\
-  or "dev" in plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
+elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath) or "dev" in plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
     log_level = logging.DEBUG
 else:
-    log_level = logging.DEBUG
+    log_level = logging.INFO
 
 logger = logging.getLogger("IsogeoQgisPlugin")
 logging.captureWarnings(True)
@@ -155,7 +155,7 @@ class Isogeo:
 
     logger.info('\n\n\t========== Isogeo Search Engine for QGIS ==========')
     logger.info('OS: {0}'.format(platform.platform()))
-    logger.info('QGIS Version: {0}'.format(QGis.QGIS_VERSION))
+    logger.info('QGIS Version: {0}'.format(Qgis.QGIS_VERSION))
     logger.info('Plugin version: {0}'.format(plg_version))
     logger.info('Log level: {0}'.format(log_level))
 
@@ -765,8 +765,7 @@ class Isogeo:
                 with open(self.json_path) as data_file:
                     saved_searches = json.load(data_file)
                 search_params = saved_searches.get(self.savedSearch)
-                keywords_list = [v for k,v in search_params.items()\
-                                 if k.startswith("keyword")]
+                keywords_list = [v for k,v in search_params.items() if k.startswith("keyword")]
                 self.update_cbb_keywords(tags_keywords=tags.get('keywords'),
                                          selected_keywords=keywords_list)
                 # Putting widgets to their previous states according
@@ -1563,9 +1562,7 @@ class Isogeo:
                 lyr.setAbstract(layer_info.get("abstract", ""))
                 lyr.setKeywordList(",".join(layer_info.get("keywords", ())))
                 logger.debug("Data added: {}".format(table))
-            elif not layer.isValid() and\
-                plg_tools.last_error[0] == "postgis" and\
-                "prim" in plg_tools.last_error[1]:
+            elif not layer.isValid() and plg_tools.last_error[0] == "postgis" and "prim" in plg_tools.last_error[1]:
                 logger.debug("PostGIS layer may be a view, "
                             "so key column is missing. "
                             "Trying to automatically set one...")
@@ -1670,8 +1667,7 @@ class Isogeo:
         :param str md_id: UUID of metadata to retrieve
         """
         logger.debug("Full metatada sheet asked. Building the url.")
-        self.currentUrl = "{}/resources/{}{}"\
-                          .format(plg_api_mngr.api_url_base,
+        self.currentUrl = "{}/resources/{}{}".format(plg_api_mngr.api_url_base,
                                   md_id,
                                   "?_include=conditions,contacts,"
                                   "coordinate-system,events,"
@@ -1714,32 +1710,25 @@ class Isogeo:
         # Isogeo application authenticated in the plugin
         app = content[0].get("applications")[0]
         text += self.tr(u"<p>This plugin is authenticated as "
-                        u"<a href='{}'>{}</a> and ")\
-                    .format(app.get("url", "https://isogeo.gitbooks.io/app-plugin-qgis/content"),
+                        u"<a href='{}'>{}</a> and ").format(app.get("url", "https://isogeo.gitbooks.io/app-plugin-qgis/content"),
                             app.get("name", "Isogeo plugin for QGIS"))
         # shares feeding the application
         if len(content) == 1:
             text += self.tr(u" powered by 1 share:</p></br>")
         else:
-            text += self.tr(u" powered by {0} shares:</p></br>")\
-                        .format(len(content))
+            text += self.tr(u" powered by {0} shares:</p></br>").format(len(content))
         # shares details
         for share in sorted(content):
             # share variables
             creator_name = share.get("_creator").get("contact").get("name")
             creator_email = share.get("_creator").get("contact").get("email")
             creator_id = share.get("_creator").get("_tag")[6:]
-            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}"\
-                        .format(creator_id, share.get("_id"))
+            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}".format(creator_id, share.get("_id"))
             # formatting text
-            text += u"<p><a href='{}'><b>{}</b></a></p>"\
-                    .format(share_url,
+            text += u"<p><a href='{}'><b>{}</b></a></p>".format(share_url,
                             share.get("name"))
-            text += self.tr(u"<p>Updated: {}</p>")\
-                        .format(plg_tools.handle_date(share.get("_modified")))
-            text += self.tr(u"<p>Contact: {} - {}</p>")\
-                        .format(creator_name,
-                                creator_email)
+            text += self.tr(u"<p>Updated: {}</p>").format(plg_tools.handle_date(share.get("_modified")))
+            text += self.tr(u"<p>Contact: {} - {}</p>").format(creator_name, creator_email)
             text += u"<p><hr></p>"
         text += u"</html>"
         self.dockwidget.txt_shares.setText(text)
@@ -1840,7 +1829,7 @@ class Isogeo:
                     link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4"
                          .format(self.tr("TITLE ISSUE REPORTED"),
                                  plg_tools.plugin_metadata(base_path=plg_basepath),
-                                 QGis.QGIS_VERSION,
+                                 Qgis.QGIS_VERSION,
                                  platform.platform())
                     ))
         # help button
