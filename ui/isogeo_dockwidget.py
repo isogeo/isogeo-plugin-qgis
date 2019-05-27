@@ -23,14 +23,15 @@
 
 import os
 
-from PyQt4 import QtGui, uic
-from PyQt4.QtCore import pyqtSignal
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QDockWidget
+from qgis.PyQt.QtCore import pyqtSignal
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'isogeo_dockwidget_base.ui'))
 
 
-class IsogeoDockWidget(QtGui.QDockWidget, FORM_CLASS):
+class IsogeoDockWidget(QDockWidget, FORM_CLASS):
 
     closingPlugin = pyqtSignal()
 
