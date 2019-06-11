@@ -24,18 +24,19 @@ from __future__ import (division,
 """
 
 # Standard library
+import requests
 import os.path
 import platform
 import json
 import base64
 import urllib
+from urllib.parse import urlencode
 import logging
 from logging.handlers import RotatingFileHandler
 from collections import OrderedDict
 from functools import partial
 
 # PyQT
-# from QByteArray
 from qgis.PyQt.QtCore import (
     QByteArray, QCoreApplication, QSettings, Qt, QTranslator, QUrl, qVersion)
 
@@ -50,7 +51,8 @@ import db_manager.db_plugins.postgis.connector as pgis_con
 from qgis.utils import iface, plugin_times
 
 from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsDataSourceUri, QgsMessageLog,
-                       QgsNetworkAccessManager, QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer, QgsProject)
+                       QgsNetworkAccessManager, QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer, QgsProject,
+                       QgsApplication)
 
 try:
     from qgis.core import Qgis
@@ -110,7 +112,7 @@ if plg_reg_name == plg_tools.plugin_metadata(base_path=plg_basepath, value="name
 elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath) or "dev" in plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
     log_level = logging.DEBUG
 else:
-    log_level = logging.INFO
+    log_level = logging.DEBUG
 
 logger = logging.getLogger("IsogeoQgisPlugin")
 logging.captureWarnings(True)
@@ -355,7 +357,18 @@ class Isogeo:
         if plg_api_mngr.manage_api_initialization():
             self.dockwidget.tab_search.setEnabled(True)
             plg_api_mngr.req_status_isClear = True
-            self.api_auth_post_get_token()
+            
+            # /*****/ NEW WAY
+            self.api_request_token_temp()
+            logger.debug("/*****/ AUTHENTICATED")
+            return
+            # /*****/ OLD WAY
+            # self.api_auth_post_get_token()
+        # /*****/ NEW
+        else:
+            logger.debug("/*****/ need to provide credentials")
+            plg_api_mngr.display_auth_form()
+            pass
 
     def write_ids_and_test(self):
         """Store the id & secret and launch the test function.
@@ -369,6 +382,56 @@ class Isogeo:
         self.user_authentication()
 
     # -- API - AUTHENTICATION -------------------------------------------------
+    # /*****/ NEW WAY
+    def api_request_token_temp(self):
+        dict_data = {"grant_type": "client_credentials"}
+
+        header_value = "Basic " + base64.b64encode(("{}:{}".format(plg_api_mngr.api_app_id, plg_api_mngr.api_app_secret)).encode()).decode()
+
+        dict_headers = {"Authorization" : header_value}
+
+        if plg_api_mngr.req_status_isClear is True:
+            plg_api_mngr.req_status_isClear = False
+
+            r_token = requests.post(plg_api_mngr.api_url_token, data = dict_data, headers = dict_headers)
+            self.api_handle_token_temp(answer = r_token)
+        else:
+            pass
+
+    # /*****/ NEW WAY
+    def api_handle_token_temp(self, answer):
+        logger.debug(
+            "Asked a token and got a reply from the API: {}".format(answer.text))
+
+        dict_token = json.loads(answer.text)
+
+        # if structure is OK, parse and check response status
+        if 'access_token' in dict_token.keys():
+            QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
+            logger.debug("Access token retrieved.")
+            # Enable buttons "save and cancel"
+            self.dockwidget.setEnabled(True)
+
+            # TO DO : Appeler la fonction d'initialisation
+            self.token = "Bearer " + dict_token.get('access_token')
+            if self.savedSearch == "first":
+                logger.debug("First search since plugin started.")
+                plg_api_mngr.req_status_isClear = True
+                self.set_widget_status()
+            else:
+                plg_api_mngr.req_status_isClear = True
+                # /*****/ OLD WAY
+                # self.api_get_requests(self.token)
+
+                # /*****/ NEW WAY
+                self.api_get_requests_temp(self.token)
+        # TO DO : Distinguer plusieurs cas d'erreur
+        else:
+            logger.debug("/*****/ YA UN PROUUUBLEME : {}"
+                         .format(answer.text))
+            plg_api_mngr.req_status_isClear = True
+
+    # /*****/ OLD WAY
     def api_auth_post_get_token(self):
         """Ask a token from Isogeo API authentification page.
         This send a POST request to Isogeo API with the user id and secret in
@@ -377,26 +440,45 @@ class Isogeo:
         That's the api_auth_handle_token method which get the API response. See below.
         """
         logger.debug("Use loaded credentials to authenticate the plugin.")
-        # build header with credentials
-        headervalue = "Basic " + base64.b64encode("{}:{}"
-                                                  .format(plg_api_mngr.api_app_id,
-                                                          plg_api_mngr.api_app_secret))
-        data = urllib.urlencode({"grant_type": "client_credentials"})
+        header_value = QByteArray()
+        header_value.append("Basic ")
+        header_value.append(base64.b64encode("{}:{}".format(plg_api_mngr.api_app_id, plg_api_mngr.api_app_secret).encode()))
+        logger.debug(
+            "/*****/ HEADER_VALUE : {}".format(header_value.data().decode()))
+        # header_cred = bytes(("{}:{}".format(plg_api_mngr.api_app_id, plg_api_mngr.api_app_secret)), "utf-8")
+        # header_value = "Basic " + str(base64.b64encode(header_cred))
+        # header_value = QByteArray(header_value)
+        data = urlencode({"grant_type": "client_credentials"})
         databyte = QByteArray()
         databyte.append(data)
+        logger.debug("/*****/ DATABYTE : {}".format(databyte)) ########################
         # build URL request
         url = QUrl(plg_api_mngr.api_url_token)
         request = QNetworkRequest(url)
-        request.setRawHeader("Authorization", headervalue)
+
+        header_name = QByteArray()
+        header_name.append("Authorization")
+        logger.debug("/*****/ HEADER NAME : {}".format(header_name))
+        
+        request.setRawHeader(header_name, header_value)
+        logger.debug(
+            "/*****/ RAWHEADER : {}".format(request.rawHeader(header_name)))
+        
         if plg_api_mngr.req_status_isClear is True:
             plg_api_mngr.req_status_isClear = False
             logger.debug("Token POST request sent to {}".format(request.url()))
+
+
             token_reply = self.qgs_ntwk_mngr.post(request, databyte)
-            token_reply.finished.connect(
-                partial(self.api_auth_handle_token, answer=token_reply))
+            token_reply.finished.connect(partial(self.api_auth_handle_token, token_reply))
+
+            logger.debug(
+                "/*****/ TOKEN_REPLY : {}".format(self.token_reply))
+
         else:
             logger.debug("Network in use. Try again later.")
-
+            
+    # /*****/ OLD WAY
     def api_auth_handle_token(self, answer):
         """Handle the API answer when asked for a token.
         This handles the API answer. If it has sent an access token, it calls
@@ -405,9 +487,12 @@ class Isogeo:
 
         :param QNetworkReply answer: Isogeo ID API response
         """
-        logger.debug("Asked a token and got a reply from the API: {}")
+        logger.debug("Asked a token and got a reply from the API: {}".format(answer))
         bytarray = answer.readAll()
+
+        logger.debug("/*****/ BYTARRAY : {}".format(bytarray)) ##############################
         content = str(bytarray)
+        logger.debug("/*****/ CONTENT : {}".format(content)) ################################
         # check API response structure
         try:
             parsed_content = json.loads(content)
@@ -438,7 +523,11 @@ class Isogeo:
                 self.set_widget_status()
             else:
                 plg_api_mngr.req_status_isClear = True
-                self.api_get_requests(self.token)
+                # /*****/ OLD WAY
+                # self.api_get_requests(self.token)
+
+                # /*****/ NEW WAY
+                self.api_get_requests_temp(self.token)
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
             logger.error("The API reply is an error: {}. ID and SECRET must be "
@@ -465,6 +554,58 @@ class Isogeo:
             plg_api_mngr.req_status_isClear = True
 
     # -- API - REQUEST --------------------------------------------------------
+    # /*****/ NEW WAY
+    def api_get_requests_temp(self, token):
+        dict_headers = {"Authorization" : token}
+
+        if plg_api_mngr.req_status_isClear is True:
+            plg_api_mngr.req_status_isClear = False
+
+            r_requests = requests.get(self.currentUrl, headers = dict_headers)
+            self.api_requests_handle_reply_temp(answer = r_requests)
+        
+        else:
+            pass
+
+    # /*****/ NEW WAY
+    def api_requests_handle_reply_temp(self, answer):
+
+        logger.info("Request sent to API and reply received.")
+
+        dict_request = json.loads(answer.text)
+        if answer.status_code == 200 :
+            logger.debug("/*****/ succés de la requête")
+            logger.debug("Reply is a result json.")
+            if not self.showDetails and not self.settingsRequest:
+                self.loopCount = 0
+                plg_api_mngr.req_status_isClear = True
+                self.update_fields(dict_request)
+                del dict_request
+            elif self.showDetails:
+                self.showDetails = False
+                self.loopCount = 0
+                plg_api_mngr.req_status_isClear = True
+                self.md_display.show_complete_md(dict_request)
+                del dict_request
+            elif self.settingsRequest:
+                self.settingsRequest = False
+                self.loopCount = 0
+                plg_api_mngr.req_status_isClear = True
+                self.write_shares_info(dict_request)
+                del dict_request
+
+        elif answer.status_code == 204:
+            logger.debug("Token expired. Renewing it.")
+            self.loopCount = 0
+            plg_api_mngr.req_status_isClear = True
+            self.api_request_token_temp()
+        else:
+            plg_api_mngr.req_status_isClear = True
+            logger.debug("/*****/ YA UN PROUUUBLEME : {}"
+                         .format(answer.text))
+        return
+
+    # /*****/ OLD WAY
     def api_get_requests(self, token):
         """Send a content url to the Isogeo API.
         This takes the currentUrl variable and send a request to this url,
@@ -476,7 +617,7 @@ class Isogeo:
                      .format(self.currentUrl))
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
-        request.setRawHeader("Authorization", token)
+        request.setRawHeader(b"Authorization", token.encode())
         if plg_api_mngr.req_status_isClear is True:
             plg_api_mngr.req_status_isClear = False
             logger.debug("Search request sent to {}".format(request.url()))
@@ -486,6 +627,7 @@ class Isogeo:
         else:
             pass
 
+    # /*****/ OLD WAY
     def api_requests_handle_reply(self, answer):
         """Handle the different possible Isogeo API answer.
         This is called when the answer from the API is finished. If it's
@@ -526,7 +668,10 @@ class Isogeo:
             logger.debug("Token expired. Renewing it.")
             self.loopCount = 0
             plg_api_mngr.req_status_isClear = True
-            self.api_auth_post_get_token()
+            # /*****/ NEW WAY
+            self.api_request_token_temp()
+            # /*****/ OLD WAY
+            # self.api_auth_post_get_token()
         elif content == "":
             logger.error("Empty reply. Weither no catalog is shared with the "
                          "plugin, or there is a problem (2 requests sent "
@@ -536,7 +681,10 @@ class Isogeo:
                 answer.abort()
                 del answer
                 plg_api_mngr.req_status_isClear = True
-                self.api_auth_post_get_token()
+                # /*****/ NEW WAY
+                self.api_request_token_temp()
+                # /*****/ OLD WAY
+                # self.api_auth_post_get_token()
             else:
                 plg_api_mngr.req_status_isClear = True
                 msgBar.pushMessage(
@@ -552,7 +700,7 @@ class Isogeo:
                                     str(answer.error()) +
                                     "\nPlease report it on the bug tracker.")
         # method end
-        #return
+        return
 
     # -- UI - UPDATE SEARCH FORM ----------------------------------------------
     def update_fields(self, result):
@@ -607,7 +755,8 @@ class Isogeo:
         # Quicksearches combobox (also the one in settings tab)
         with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
-        search_list = saved_searches.keys()
+        search_list = list(saved_searches.keys())
+        logger.debug("/*****/ SEARCH_LIST ({}): {}".format(type(search_list) ,search_list))
         search_list.pop(search_list.index('_default'))
         if '_current' in search_list:
             search_list.pop(search_list.index('_current'))
@@ -625,12 +774,12 @@ class Isogeo:
         # Initializing the cbb that dont't need to be updated
         if self.savedSearch == "_default" or self.hardReset is True:
             logger.debug("Default search or reset.")
-            tbl_result.horizontalHeader().setResizeMode(1)
-            tbl_result.horizontalHeader().setResizeMode(1, 0)
-            tbl_result.horizontalHeader().setResizeMode(2, 0)
+            tbl_result.horizontalHeader().setSectionResizeMode(1)
+            tbl_result.horizontalHeader().setSectionResizeMode(1, 0)
+            tbl_result.horizontalHeader().setSectionResizeMode(2, 0)
             tbl_result.horizontalHeader().resizeSection(1, 80)
             tbl_result.horizontalHeader().resizeSection(2, 50)
-            tbl_result.verticalHeader().setResizeMode(3)
+            tbl_result.verticalHeader().setSectionResizeMode(3)
             # Geographical operator cbb
             dict_operation = OrderedDict([(self.tr(
                 'Intersects'), "intersects"),
@@ -692,7 +841,7 @@ class Isogeo:
             cbb_type.addItem(i, md_types.get(i))
         # Geographical filter
         cbb_geofilter.addItem(self.tr("Map canvas"), "mapcanvas")
-        layers = QgsMapLayerRegistry.instance().mapLayers().values()
+        layers = QgsProject.instance().mapLayers().values()
         for layer in layers:
             if layer.type() == 0:
                 if layer.geometryType() == 2:
@@ -821,6 +970,7 @@ class Isogeo:
             self.update_cbb_keywords(tags_keywords=tags.get('keywords'))
 
         # tweaking
+        logger.debug("/*****/ TWEAKING COMBOBOXES")
         plg_tools._ui_tweaker(ui_widgets=self.dockwidget.tab_search.findChildren(QComboBox))
 
         # Coloring the Show result button
@@ -844,7 +994,9 @@ class Isogeo:
             self.store = True
         # Re enable all user input fields now the search function is
         # finished.
+        logger.debug("/*****/ SWITCHING WIDGETS")
         self.switch_widgets_on_and_off()
+
         if self.results_count == 0:
             self.dockwidget.btn_show.setEnabled(False)
         else:
@@ -944,7 +1096,7 @@ class Isogeo:
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
-        for i in xrange(self.dockwidget.cbb_keywords.count()):
+        for i in range(self.dockwidget.cbb_keywords.count()):
             if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
                 key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
 
@@ -974,11 +1126,12 @@ class Isogeo:
             epsg = int(plg_tools.get_map_crs().split(':')[1])
             params['epsg'] = epsg
             params['coord'] = self.get_coords('canvas')
-        elif params.get('geofilter') in QgsMapLayerRegistry.instance().mapLayers().values():
+        elif params.get('geofilter') in QgsProject.instance().mapLayers().values():
             params['coord'] = self.get_coords(params.get('geofilter'))
         else:
             pass
         # saving params in QSettings
+        logger.debug("/*****/ LISTE DES LAYER : {}".format(QgsProject.instance().mapLayers().values()))
         qsettings.setValue("isogeo/settings/georelation", operation_param)
         logger.debug(params)
         return params
@@ -1040,7 +1193,11 @@ class Isogeo:
         logger.debug(self.currentUrl)
         # Sending the request to Isogeo API
         if plg_api_mngr.req_status_isClear is True:
-            self.api_get_requests(self.token)
+            # /*****/ OLD WAY
+            # self.api_get_requests(self.token)
+
+            # /*****/ NEW WAY
+            self.api_get_requests_temp(self.token)
         else:
             pass
 
@@ -1076,7 +1233,11 @@ class Isogeo:
             self.currentUrl = plg_api_mngr.build_request_url(params)
             # Sending the request
             if plg_api_mngr.req_status_isClear is True:
-                self.api_get_requests(self.token)
+                # /*****/ OLD WAY
+                # self.api_get_requests(self.token)
+
+                # /*****/ NEW WAY
+                self.api_get_requests_temp(self.token)
 
     def previous_page(self):
         """Add the _offset parameter to the url to display previous page.
@@ -1106,7 +1267,11 @@ class Isogeo:
             self.currentUrl = plg_api_mngr.build_request_url(params)
             # Sending the request
             if plg_api_mngr.req_status_isClear is True:
-                self.api_get_requests(self.token)
+                # /*****/ OLD WAY
+                # self.api_get_requests(self.token)
+
+                # /*****/ NEW WAY
+                self.api_get_requests_temp(self.token)
 
     def write_search_params(self, search_name, search_kind="Default"):
         """Write a new element in the json file when a search is saved."""
@@ -1190,7 +1355,12 @@ class Isogeo:
             # load request
             self.currentUrl = search_params.get('url')
             if plg_api_mngr.req_status_isClear is True:
-                self.api_get_requests(self.token)
+                # /*****/ OLD WAY
+                # self.api_get_requests(self.token)
+
+                # /*****/ NEW WAY
+                self.api_get_requests_temp(self.token)
+
             else:
                 logger.info("A request to the API is already running."
                             "Please wait and try again later.")
@@ -1644,9 +1814,11 @@ class Isogeo:
         time, making the plugin crash.
         """
         if mode:
+            logger.debug("/*****/ SWITCH ON")
             self.dockwidget.txt_input.setReadOnly(False)
             self.dockwidget.tab_search.setEnabled(True)
         else:
+            logger.debug("/*****/ SWITCH OFF")
             self.dockwidget.txt_input.setReadOnly(True)
             self.dockwidget.tab_search.setEnabled(False)
 
@@ -1675,7 +1847,11 @@ class Isogeo:
                                   "keywords,specifications")
         self.showDetails = True
         if plg_api_mngr.req_status_isClear is True:
-            self.api_get_requests(self.token)
+            # /*****/ OLD WAY
+            # self.api_get_requests(self.token)
+
+            # /*****/ NEW WAY
+            self.api_get_requests_temp(self.token)
         else:
             pass
 
@@ -1689,7 +1865,11 @@ class Isogeo:
                 self.settingsRequest = True
                 self.oldUrl = self.currentUrl
                 self.currentUrl = "{}/shares".format(plg_api_mngr.api_url_base)
-                self.api_get_requests(self.token)
+                # /*****/ OLD WAY
+                # self.api_get_requests(self.token)
+
+                # /*****/ NEW WAY
+                self.api_get_requests_temp(self.token)
             else:
                 pass
         else:
@@ -1855,7 +2035,8 @@ class Isogeo:
         # get shares only if user switch on tabs
         self.dockwidget.tabWidget.currentChanged.connect(self.ask_shares_info)
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
-        QgsMessageLog.instance().messageReceived.connect(plg_tools.error_catcher)
+        QgsApp = QgsApplication([], False)
+        QgsApp.messageLog().messageReceived.connect(plg_tools.error_catcher)
 
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.dockwidget.setWindowTitle("Isogeo - {}".format(self.plg_version))
@@ -1866,7 +2047,9 @@ class Isogeo:
         plg_tools.test_proxy_configuration() #22
         self.dockwidget.cbb_keywords.setEnabled(plg_tools.test_qgis_style())  # see #137
         self.dockwidget.txt_input.setFocus()
+        logger.debug("/*****/ USER AUTHENTICATION")
         self.user_authentication()
+        logger.debug("/*****/ USER AUTHENTICATED")
 
 # #############################################################################
 # ##### Stand alone program ########
