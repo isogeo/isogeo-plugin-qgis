@@ -431,9 +431,9 @@ class Isogeo:
         logger.debug("Asked a token and got a reply from the API: {}".format(answer))
         bytarray = answer.readAll()
 
-        logger.debug("=*****= BYTARRAY : {}".format(bytarray)) ##############################
+        logger.debug("=*****= BYTARRAY : {}".format(bytarray))
         content = str(bytarray)
-        logger.debug("=*****= CONTENT : {}".format(content)) ################################
+        logger.debug("=*****= CONTENT : {}".format(content))
         # check API response structure
         try:
             parsed_content = json.loads(content)
