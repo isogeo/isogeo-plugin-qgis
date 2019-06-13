@@ -4,7 +4,7 @@
                               -------------------
         begin                : 2019-06-12
         git sha              : $Format:%H$
-        copyright            : (C) 2019 by Isogeo, Simon Sampere, GeoJulien
+        copyright            : (C) 2019 by Isogeo, Simon Sampere
         email                : projects+qgis@isogeo.com
  ***************************************************************************/
 /***************************************************************************
@@ -134,9 +134,6 @@ class ApiConnection():
 
         ct_header_value = QByteArray()
         ct_header_value.append("application/json")
-        
-        ct_header_name = QByteArray()
-        ct_header_name.append("Content-Type ")
 
         # creating request
         token_rqst = QNetworkRequest(QUrl(self.token_url))
@@ -185,7 +182,7 @@ class ApiConnection():
     def api_get_request(self):
         logger.debug("\n------------------ Sending request ------------------")
 
-        # creating crd header
+        # creating credentials header
         logger.debug("Creating credentials header")
 
         crd_header_value = QByteArray()
@@ -198,7 +195,7 @@ class ApiConnection():
         rqst = QNetworkRequest(QUrl(self.request_url))
         logger.debug("Creating request : {}".format(rqst.url()))
         
-        # setting crd header
+        # setting credentials header
         rqst.setRawHeader(crd_header_name, crd_header_value)
         logger.debug("Setting credentials header : {}".format(rqst.rawHeader(crd_header_name)))
 
@@ -239,5 +236,4 @@ class ApiConnection():
 # ##################################
 
 if __name__ == "__main__":
-
     Api = ApiConnection("client_secrets.json")
