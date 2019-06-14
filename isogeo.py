@@ -76,6 +76,7 @@ from .modules import MetadataDisplayer
 from .modules import ResultsManager
 from .modules import IsogeoPlgTools
 from .modules import UrlBuilder
+from.modules.isogeo_pysdk import IsogeoUtils, Isogeo #=*****=
 
 # ############################################################################
 # ########## Globals ###############
@@ -147,7 +148,6 @@ ico_poly = QIcon(':/images/themes/default/mIconPolygonLayer.svg')
 # ############################################################################
 # ########## Classes ###############
 # ##################################
-
 
 class Isogeo:
     """Isogeo plugin for QGIS LTR."""
@@ -357,7 +357,6 @@ class Isogeo:
         if plg_api_mngr.manage_api_initialization():
             self.dockwidget.tab_search.setEnabled(True)
             plg_api_mngr.req_status_isClear = True
-            
             self.api_auth_post_get_token()
 
 
@@ -382,44 +381,42 @@ class Isogeo:
         That's the api_auth_handle_token method which get the API response. See below.
         """
         logger.debug("Use loaded credentials to authenticate the plugin.")
+
+        # creating credentials header
         header_value = QByteArray()
         header_value.append("Basic ")
         header_value.append(base64.b64encode("{}:{}".format(plg_api_mngr.api_app_id, plg_api_mngr.api_app_secret).encode()))
-        logger.debug(
-            "=*****= HEADER_VALUE : {}".format(header_value.data().decode()))
-        # header_cred = bytes(("{}:{}".format(plg_api_mngr.api_app_id, plg_api_mngr.api_app_secret)), "utf-8")
-        # header_value = "Basic " + str(base64.b64encode(header_cred))
-        # header_value = QByteArray(header_value)
-        data = urlencode({"grant_type": "client_credentials"})
-        databyte = QByteArray()
-        databyte.append(data)
-        logger.debug("=*****= DATABYTE : {}".format(databyte)) ########################
-        # build URL request
-        url = QUrl(plg_api_mngr.api_url_token)
-        request = QNetworkRequest(url)
 
         header_name = QByteArray()
         header_name.append("Authorization")
-        logger.debug("=*****= HEADER NAME : {}".format(header_name))
         
+        # creating Content-Type header
+        ct_header_value = QByteArray()
+        ct_header_value.append("application/json")
+
+        #creating data
+        databyte = QByteArray()
+        databyte.append(urlencode({"grant_type": "client_credentials"}))
+
+        # build URL request
+        url = QUrl(plg_api_mngr.api_url_token)
+        request = QNetworkRequest(url)
+        
+        # setting headers
         request.setRawHeader(header_name, header_value)
-        logger.debug(
-            "=*****= RAWHEADER : {}".format(request.rawHeader(header_name)))
+        request.setHeader(request.ContentTypeHeader, ct_header_value)
         
         if plg_api_mngr.req_status_isClear is True:
             plg_api_mngr.req_status_isClear = False
             logger.debug("Token POST request sent to {}".format(request.url()))
 
-
             token_reply = self.qgs_ntwk_mngr.post(request, databyte)
-            token_reply.finished.connect(partial(self.api_auth_handle_token, token_reply))
-
-            logger.debug(
-                "=*****= TOKEN_REPLY : {}".format(token_reply))
+            token_reply.finished.connect(partial(self.api_auth_handle_token, answer = token_reply))
 
         else:
             logger.debug("Network in use. Try again later.")
-            
+    
+
     def api_auth_handle_token(self, answer):
         """Handle the API answer when asked for a token.
         This handles the API answer. If it has sent an access token, it calls
@@ -430,10 +427,7 @@ class Isogeo:
         """
         logger.debug("Asked a token and got a reply from the API: {}".format(answer))
         bytarray = answer.readAll()
-
-        logger.debug("=*****= BYTARRAY : {}".format(bytarray)) ##############################
-        content = str(bytarray)
-        logger.debug("=*****= CONTENT : {}".format(content)) ################################
+        content = bytarray.data().decode("utf8")
         # check API response structure
         try:
             parsed_content = json.loads(content)
@@ -503,15 +497,21 @@ class Isogeo:
         """
         logger.debug("Send a request to the 'currentURL' set: {}."
                      .format(self.currentUrl))
+        
+        # creating credentials header
+        header_value = QByteArray()
+        header_value.append(token)
+        header_name = QByteArray()
+        header_name.append("Authorization")
+        
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
-        request.setRawHeader(b"Authorization", token.encode())
+        request.setRawHeader(header_name, header_value)
         if plg_api_mngr.req_status_isClear is True:
             plg_api_mngr.req_status_isClear = False
-            logger.debug("Search request sent to {}".format(request.url()))
+            # logger.debug("Search request sent to {}".format(request.url()))
             api_reply = self.qgs_ntwk_mngr.get(request)
-            api_reply.finished.connect(
-                partial(self.api_requests_handle_reply, answer=api_reply))
+            api_reply.finished.connect(partial(self.api_requests_handle_reply, answer=api_reply))
         else:
             pass
 
@@ -527,7 +527,7 @@ class Isogeo:
         """
         logger.info("Request sent to API and reply received.")
         bytarray = answer.readAll()
-        content = str(bytarray)
+        content = bytarray.data().decode("utf8")
         if answer.error() == 0 and content != "":
             logger.debug("Reply is a result json.")
             if not self.showDetails and not self.settingsRequest:
@@ -1155,7 +1155,7 @@ class Isogeo:
         # search dict
         params = self.save_params()
         params['url'] = self.currentUrl
-        for i in xrange(len(params.get('keys'))):
+        for i in range(len(params.get('keys'))):
             params['keyword_{0}'.format(i)] = params.get('keys')[i]
         params.pop('keys', None)
         saved_searches[search_name] = params
@@ -1850,12 +1850,11 @@ class Isogeo:
         self.dockwidget.btn_default_save.pressed.connect(
             partial(self.write_search_params, '_default', "Default"))
         # button to empty the cache of filepaths #135
-        self.dockwidget.btn_cache_trash.pressed.connect(partial(self.results_mng._cache_cleaner))
+        self.dockwidget.btn_cache_trash.pressed.connect(self.results_mng._cache_cleaner)
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
-        self.dockwidget.btn_change_user.pressed.connect(
-            partial(plg_api_mngr.display_auth_form))
+        self.dockwidget.btn_change_user.pressed.connect(plg_api_mngr.display_auth_form)
         # share text window
         self.dockwidget.txt_shares.setOpenLinks(False)
         self.dockwidget.txt_shares.anchorClicked.connect(plg_tools.open_webpage)
@@ -1865,13 +1864,11 @@ class Isogeo:
         self.dockwidget.btn_log_dir.setIcon(ico_log)
         self.dockwidget.btn_log_dir.pressed.connect(partial(plg_tools.open_dir_file,
                                                             target=plg_logdir))
-        self.dockwidget.btn_report.pressed.connect(
-            partial(plg_tools.open_webpage,
-                    link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4"
-                         .format(self.tr("TITLE ISSUE REPORTED"),
-                                 plg_tools.plugin_metadata(base_path=plg_basepath),
-                                 Qgis.QGIS_VERSION,
-                                 platform.platform())
+        self.dockwidget.btn_report.pressed.connect(partial(plg_tools.open_webpage,
+                    link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4".format(self.tr("TITLE ISSUE REPORTED"),
+                    plg_tools.plugin_metadata(base_path=plg_basepath),
+                    Qgis.QGIS_VERSION,
+                    platform.platform())
                     ))
         # help button
         self.dockwidget.btn_help.pressed.connect(
@@ -1896,8 +1893,7 @@ class Isogeo:
         # get shares only if user switch on tabs
         self.dockwidget.tabWidget.currentChanged.connect(self.ask_shares_info)
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
-        QgsApp = QgsApplication([], False)
-        QgsApp.messageLog().messageReceived.connect(plg_tools.error_catcher)
+        QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
 
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.dockwidget.setWindowTitle("Isogeo - {}".format(self.plg_version))
@@ -1910,7 +1906,6 @@ class Isogeo:
         self.dockwidget.txt_input.setFocus()
         logger.debug("=*****= USER AUTHENTICATION")
         self.user_authentication()
-        logger.debug("=*****= USER AUTHENTICATED")
 
 # #############################################################################
 # ##### Stand alone program ########
