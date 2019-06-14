@@ -382,7 +382,7 @@ class IsogeoPlgTools(IsogeoUtils):
         
     def _to_raw_string(self, in_string):
         """Basic converter for input string or unicode to raw string.
-        Useful to prevent escapign in Windows paths for example.
+        Useful to prevent escaping in Windows paths for example.
 
         see: https://github.com/isogeo/isogeo-plugin-qgis/issues/129
 
