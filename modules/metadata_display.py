@@ -126,7 +126,7 @@ class MetadataDisplayer(object):
 
             # adapt size
             tbl_attr.horizontalHeader().setStretchLastSection(True)
-            tbl_attr.verticalHeader().setResizeMode(3)
+            tbl_attr.verticalHeader().setSectionResizeMode(3)
         else:
             menu_list = self.complete_md.li_menu
             item = menu_list.item(1)
@@ -217,7 +217,7 @@ class MetadataDisplayer(object):
 
         # adapt size
         tbl_events.horizontalHeader().setStretchLastSection(True)
-        tbl_events.verticalHeader().setResizeMode(3)
+        tbl_events.verticalHeader().setSectionResizeMode(3)
 
         # -- TECHNICAL -------------------------------------------------------
         # SRS

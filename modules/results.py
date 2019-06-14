@@ -392,9 +392,9 @@ class ResultsManager(object):
             count += 1
         # dimensions
         header = tbl_result.horizontalHeader()
-        header.setResizeMode(0, QHeaderView.Stretch)
-        header.setResizeMode(1, QHeaderView.ResizeToContents)
-        header.setResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
         # Remove the "loading" bar
         iface.mainWindow().statusBar().removeWidget(progress_bar)
         # method ending
