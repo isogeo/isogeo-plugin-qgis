@@ -97,10 +97,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def get_map_crs(self):
         """Get QGIS map canvas current EPSG code."""
-        current_crs = str(iface.mapCanvas()
-                               .mapRenderer()
-                               .destinationCrs()
-                               .authid())
+        current_crs = str(iface.mapCanvas().mapSettings().destinationCrs().authid())
         return current_crs
 
     def handle_date(self, input_date):
