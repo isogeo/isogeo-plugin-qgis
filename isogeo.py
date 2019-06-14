@@ -1039,7 +1039,7 @@ class Isogeo:
                 "{}/resources/search?&_limit=0"
                 .format(plg_api_mngr.api_url_base))
             # Refresh the quick searches comboboxes content
-            search_list = saved_searches.keys()
+            search_list = list(saved_searches.keys())
             search_list.pop(search_list.index('_default'))
             search_list.pop(search_list.index('_current'))
             self.dockwidget.cbb_quicksearch_use.clear()
@@ -1302,7 +1302,7 @@ class Isogeo:
         # load all saved quicksearches and populate drop-down (combobox)
         with open(self.json_path, "r") as saved_searches_file:
             saved_searches = json.load(saved_searches_file)
-        search_list = saved_searches.keys()
+        search_list = list(saved_searches.keys())
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_quicksearch_use.clear()
@@ -1322,7 +1322,7 @@ class Isogeo:
         new_name = self.quicksearch_rename_dialog.txt_quicksearch_rename.text()
         saved_searches[new_name] = saved_searches[old_name]
         saved_searches.pop(old_name)
-        search_list = saved_searches.keys()
+        search_list = list(saved_searches.keys())
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_quicksearch_use.clear()
@@ -1350,7 +1350,7 @@ class Isogeo:
         with open(self.json_path, "r") as saved_searches_file:
             saved_searches = json.load(saved_searches_file)
         saved_searches.pop(to_be_deleted)
-        search_list = saved_searches.keys()
+        search_list = list(saved_searches.keys())
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_quicksearch_use.clear()
