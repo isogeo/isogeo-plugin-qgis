@@ -388,12 +388,12 @@ class IsogeoPlgTools(IsogeoUtils):
 
         :param str in_string: string (str or unicode) to convert to raw
         """
-        if isinstance(in_string, str):
-            logger.debug(in_string)
-            return in_string.encode('string-escape')
-        elif isinstance(in_string, unicode):
+        if isinstance(in_string, str) or isinstance(in_string, unicode):
             logger.debug(in_string)
             return in_string.encode('unicode-escape')
+        # elif isinstance(in_string, unicode):
+        #     logger.debug(in_string)
+        #     return in_string.encode('unicode-escape')
         else:
             raise TypeError
 
