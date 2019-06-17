@@ -1474,9 +1474,7 @@ class Isogeo:
             elif layer_info[0] == 'arcgismapserver':
                 name = layer_info[1]
                 uri = layer_info[2]
-                layer = QgsRasterLayer(uri,
-                                       name,
-                                       "arcgismapserver")
+                layer = QgsRasterLayer(uri,name,"arcgismapserver")
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
                     logger.debug("EMS layer added: {0}".format(uri))
@@ -1520,7 +1518,7 @@ class Isogeo:
             elif layer_info[0] == 'WMS':
                 url = layer_info[2]
                 name = layer_info[1]
-                layer = QgsRasterLayer(url, name, 'wms', 1)
+                layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
                     QgsMapLayerRegistry.instance().addMapLayer(layer)
                     logger.debug("WMS layer added: {0}".format(url))
