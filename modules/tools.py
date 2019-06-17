@@ -14,7 +14,7 @@ from urllib.parse import urlencode, urlparse
 import webbrowser
 
 # PyQGIS
-from qgis.core import (QgsDataSourceUri, QgsProject, QgsVectorLayer, QgsProject, QgsRasterLayer)
+from qgis.core import (QgsDataSourceUri, QgsProject, QgsVectorLayer, QgsRasterLayer)
 from qgis.utils import iface
 
 # PyQT
@@ -247,7 +247,7 @@ class IsogeoPlgTools(IsogeoUtils):
             wms_uri = unquote(urlencode(wms_params))
             wms_lyr = QgsRasterLayer(wms_uri, u"Ici c'est Isogeo !", "wms")
             if wms_lyr.isValid:
-                QgsMapLayerRegistry.instance().addMapLayer(wms_lyr)
+                QgsProject.instance().addMapLayer(wms_lyr)
                 logger.info("Isogeo easter egg used and WMS displayed!")
             else:
                 logger.error("WMS layer failed: {}"
@@ -267,7 +267,7 @@ class IsogeoPlgTools(IsogeoUtils):
                 wfs_style = path.join(path.dirname(path.realpath(__file__)),
                                       "isogeo.qml")
                 wfs_lyr.loadNamedStyle(wfs_style)
-                QgsMapLayerRegistry.instance().addMapLayer(wfs_lyr)
+                QgsProject.instance().addMapLayer(wfs_lyr)
                 canvas.setExtent(wfs_lyr.extent())
                 logger.debug("Isogeo easter egg used")
             else:

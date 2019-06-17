@@ -1396,7 +1396,7 @@ class Isogeo:
                 name = os.path.basename(path).split(".")[0]
                 layer = QgsVectorLayer(path, layer_info[2], 'ogr')
                 if layer.isValid():
-                    lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    lyr = QgsProject.instance().addMapLayer(layer)
                     # fill QGIS metadata from Isogeo
                     lyr.setTitle(layer_info[2])
                     lyr.setAbstract(layer_info[3])
@@ -1427,7 +1427,7 @@ class Isogeo:
                 name = os.path.basename(path).split(".")[0]
                 layer = QgsRasterLayer(path, layer_info[2])
                 if layer.isValid():
-                    lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    lyr = QgsProject.instance().addMapLayer(layer)
                     # fill QGIS metadata from Isogeo
                     lyr.setTitle(layer_info[2])
                     lyr.setAbstract(layer_info[3])
@@ -1460,7 +1460,7 @@ class Isogeo:
                                        name,
                                        'arcgisfeatureserver')
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    QgsProject.instance().addMapLayer(layer)
                     logger.debug("EFS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
@@ -1476,7 +1476,7 @@ class Isogeo:
                 uri = layer_info[2]
                 layer = QgsRasterLayer(uri,name,"arcgismapserver")
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    QgsProject.instance().addMapLayer(layer)
                     logger.debug("EMS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
@@ -1492,7 +1492,7 @@ class Isogeo:
                 name = layer_info[1]
                 layer = QgsVectorLayer(url, name, 'WFS')
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    QgsProject.instance().addMapLayer(layer)
                     logger.debug("WFS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -1502,7 +1502,7 @@ class Isogeo:
                     if name_url[0] != 0:
                         layer = QgsVectorLayer(name_url[2], name_url[1], 'WFS')
                         if layer.isValid():
-                            QgsMapLayerRegistry.instance().addMapLayer(layer)
+                            QgsProject.instance().addMapLayer(layer)
                             logger.debug("WFS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
@@ -1520,7 +1520,7 @@ class Isogeo:
                 name = layer_info[1]
                 layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    QgsProject.instance().addMapLayer(layer)
                     logger.debug("WMS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -1530,7 +1530,7 @@ class Isogeo:
                     if name_url[0] != 0:
                         layer = QgsRasterLayer(name_url[2], name_url[1], 'wms')
                         if layer.isValid():
-                            QgsMapLayerRegistry.instance().addMapLayer(layer)
+                            QgsProject.instance().addMapLayer(layer)
                             logger.debug("WMS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
@@ -1548,7 +1548,7 @@ class Isogeo:
                 name = layer_info[1]
                 layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    QgsProject.instance().addMapLayer(layer)
                     logger.debug("WMTS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -1591,7 +1591,7 @@ class Isogeo:
             # layer.setAbstract(layer_info.get("abstract", ""))
             # layer.setKeywordList(",".join(layer_info.get("keywords", ())))
             if layer.isValid():
-                lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                lyr = QgsProject.instance().addMapLayer(layer)
                 # fill QGIS metadata from Isogeo
                 lyr.setTitle(layer_info.get("title", "notitle"))
                 lyr.setAbstract(layer_info.get("abstract", ""))
@@ -1610,7 +1610,7 @@ class Isogeo:
                     uri.setKeyColumn(field)
                     layer = QgsVectorLayer(uri.uri(True), table, "postgres")
                     if layer.isValid():
-                        lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                        lyr = QgsProject.instance().addMapLayer(layer)
                         # fill QGIS metadata from Isogeo
                         lyr.setTitle(layer_info.get("title", "notitle"))
                         lyr.setAbstract(layer_info.get("abstract", ""))
