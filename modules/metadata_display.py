@@ -7,8 +7,8 @@ import logging
 from datetime import datetime
 
 # PyQGIS
-from qgis.core import (QgsProject, QgsMessageLog, QgsVectorLayer, QgsPoint, 
-                        QgsRectangle, QgsFeature, QgsGeometry, QgsRasterLayer)
+from qgis.core import (QgsProject, QgsMessageLog, QgsVectorLayer, QgsPointXY, 
+                        QgsRectangle, QgsFeature, QgsGeometry, QgsRasterLayer, QgsRenderContext)
 
 
 # PyQT
@@ -390,20 +390,20 @@ class MetadataDisplayer(object):
         md_lyr = QgsVectorLayer("Polygon?crs=epsg:4326",
                                 "Metadata envelope",
                                 "memory")
-        md_lyr.setLayerTransparency(75)
-        symbols = md_lyr.rendererV2().symbols()
+        symbols = md_lyr.renderer().symbols(QgsRenderContext())
         symbol = symbols[0]
         symbol.setColor(QColor.fromRgb(255,20,147))
+        symbol.setOpacity(0.25)
 
         if envelope.get("type") == "Polygon":
             # parse coordinates
             coords = envelope.get("coordinates")[0]
-            poly_pts = [QgsPoint(round(i[0], 3),
+            poly_pts = [QgsPointXY(round(i[0], 3),
                                  round(i[1], 3))
                         for i in coords]
             # add geometry to layer
             poly = QgsFeature()
-            poly.setGeometry(QgsGeometry.fromPolygon([poly_pts]))
+            poly.setGeometry(QgsGeometry.fromPolygonXY([poly_pts]))
             md_lyr.dataProvider().addFeatures([poly])
             md_lyr.updateExtents()
         elif envelope.get("type") == "MultiPolygon":
