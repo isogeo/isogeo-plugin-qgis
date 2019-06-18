@@ -75,10 +75,10 @@ class MetadataDisplayer(object):
         isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])
 
         # clean map canvas
-        vec_lyr = [i for i in self.complete_md.wid_bbox.layers() if i.type() == 0]
-        QgsMapLayerRegistry.instance().removeMapLayers(vec_lyr)
+        vec_lyr = [i.id() for i in self.complete_md.wid_bbox.layers() if i.type() == 0]
+        QgsProject.instance().removeMapLayers(vec_lyr)
         self.complete_md.wid_bbox.refresh()
-
+    
         # -- GENERAL ---------------------------------------------------------
         title = md.get("title", "NR")
         self.complete_md.lbl_title.setText(md.get("title", "NR"))
