@@ -271,18 +271,16 @@ class MetadataDisplayer(object):
             # get convex hull coordinates and create the polygon
             md_lyr = self.envelope2layer(md.get("envelope"))
             # add layers
-            QgsMapLayerRegistry.instance().addMapLayers([md_lyr,
-                                                         li_lyrs_refs[0],
-                                                         li_lyrs_refs[1],
-                                                         li_lyrs_refs[2]
-                                                         ],
-                                                        0)
-            map_canvas_layer_list = [QgsMapCanvasLayer(md_lyr),
-                                     QgsMapCanvasLayer(li_lyrs_refs[0]),
-                                     QgsMapCanvasLayer(li_lyrs_refs[1]),
-                                     QgsMapCanvasLayer(li_lyrs_refs[2]),
-                                     ]
-            self.complete_md.wid_bbox.setLayerSet(map_canvas_layer_list)
+            QgsProject.instance().addMapLayers([md_lyr, li_lyrs_refs[0], li_lyrs_refs[1], li_lyrs_refs[2]], 0)
+
+            layers = QgsProject.instance().mapLayers()
+            map_canvas_layer_list = [list(layers.values())[2], list(layers.values())[1], list(layers.values())[3], list(layers.values())[0]]
+
+            logger.info("*=====* map_canvas_layer_list : {}".format(map_canvas_layer_list))
+            
+            self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
+            logger.info(
+                "*=====* liste des layers set : {}".format(self.complete_md.wid_bbox.layers()))
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())
             self.complete_md.wid_bbox.zoomOut()
         else:
