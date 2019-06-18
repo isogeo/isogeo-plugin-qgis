@@ -228,7 +228,7 @@ class MetadataDisplayer(object):
         # Set the data format
         if tags.get('formats') != {}:
             self.complete_md.val_format.setText(
-                tags.get('formats').values()[0])
+                list(tags.get('formats').values())[0])
         else:
             self.complete_md.val_format.setText('NR')
 
