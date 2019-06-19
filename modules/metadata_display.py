@@ -151,8 +151,7 @@ class MetadataDisplayer(object):
                                    ctact.get("contact").get("addressLine2", ""),
                                    ctact.get("contact").get("zipCode", ""),
                                    ctact.get("contact").get("city", ""),
-                                   ctact.get("contact").get("country", ""))\
-                           for ctact in sorted(contacts) if ctact.get("role", "NR") == "pointOfContact"]
+                                   ctact.get("contact").get("country", "")) for ctact in sorted(contacts) if ctact.get("role", "NR") == "pointOfContact"]
         contacts_other_cct = ["<b>{0} - {1}</b> ({2})"
                               "<br><a href='mailto:{3}' target='_blank'>{3}</a>"
                               "<br>{4}"
@@ -168,8 +167,7 @@ class MetadataDisplayer(object):
                                       ctact.get("contact").get("addressLine2", ""),
                                       ctact.get("contact").get("zipCode", ""),
                                       ctact.get("contact").get("city", ""),
-                                      ctact.get("contact").get("country", ""),)
-                              for ctact in sorted(contacts) if ctact.get("role") != "pointOfContact"]
+                                      ctact.get("contact").get("country", "")) for ctact in sorted(contacts) if ctact.get("role") != "pointOfContact"]
 
         # write
         self.complete_md.val_ct_pointof.setText("<br><hr><br>".join(contacts_pt_cct))
