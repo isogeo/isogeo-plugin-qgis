@@ -113,11 +113,11 @@ class Ui_IsogeoDockWidgetBase(object):
         icon4.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/search/bolt.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.cbb_quicksearch_use.addItem(icon4, "")
         self.lyt_search.addWidget(self.cbb_quicksearch_use, 1, 2, 1, 3)
-        self.cbb_keywords = QtWidgets.QComboBox(self.tab_search)
-        self.cbb_keywords.setMinimumSize(QtCore.QSize(250, 25))
-        self.cbb_keywords.setAutoFillBackground(True)
-        self.cbb_keywords.setObjectName("cbb_keywords")
-        self.lyt_search.addWidget(self.cbb_keywords, 1, 0, 1, 1)
+        self.cbb_chck_kw = QgsCheckableComboBox(self.tab_search)
+        self.cbb_chck_kw.setMinimumSize(QtCore.QSize(250, 25))
+        self.cbb_chck_kw.setAutoFillBackground(True)
+        self.cbb_chck_kw.setObjectName("cbb_chck_kw")
+        self.lyt_search.addWidget(self.cbb_chck_kw, 1, 0, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.lyt_search.addItem(spacerItem, 1, 1, 1, 1)
         self.btn_search_go = QtWidgets.QPushButton(self.tab_search)
@@ -795,6 +795,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_settings), _translate("IsogeoDockWidgetBase", "Settings"))
 
 from qgis.gui import QgsCollapsibleGroupBox
+from qgscheckablecombobox import QgsCheckableComboBox
 
 if __name__ == "__main__":
     import sys

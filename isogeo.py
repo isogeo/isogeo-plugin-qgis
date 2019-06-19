@@ -38,7 +38,7 @@ from functools import partial
 
 # PyQT
 from qgis.PyQt.QtCore import (
-    QByteArray, QCoreApplication, QSettings, Qt, QTranslator, QUrl, qVersion)
+    QByteArray, QCoreApplication, QSettings, Qt, QTranslator, QUrl, qVersion, QSize)
 
 from qgis.PyQt.QtWidgets import QAction, QComboBox, QMessageBox, QProgressBar
 from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
@@ -927,7 +927,7 @@ class Isogeo:
         model.itemChanged.connect(self.search)
 
         # add the built model to the combobox
-        self.dockwidget.cbb_keywords.setModel(model)
+        self.dockwidget.cbb_chck_kw.setModel(model)
 
         # add tooltip with selected keywords. see: #107#issuecomment-341742142
         if selected_keywords:
@@ -935,7 +935,7 @@ class Isogeo:
                                          "\n - ".join(selected_keywords_lbls))
         else:
             tooltip =  self.tr("No keyword selected")
-        self.dockwidget.cbb_keywords.setToolTip(tooltip)
+        self.dockwidget.cbb_chck_kw.setToolTip(tooltip)
 
     def save_params(self):
         """Save the widgets state/index.
@@ -977,9 +977,9 @@ class Isogeo:
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
-        for i in range(self.dockwidget.cbb_keywords.count()):
-            if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
-                key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
+        for i in range(self.dockwidget.cbb_chck_kw.count()):
+            if self.dockwidget.cbb_chck_kw.itemData(i, 10) == 2:
+                key_params.append(self.dockwidget.cbb_chck_kw.itemData(i, 32))
 
         params = {"owner": owner_param,
                   "inspire": inspire_param,
@@ -1900,7 +1900,8 @@ class Isogeo:
         plg_api_mngr.tr = self.tr
         # checks
         plg_tools.test_proxy_configuration() #22
-        self.dockwidget.cbb_keywords.setEnabled(plg_tools.test_qgis_style())  # see #137
+        self.dockwidget.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
+        self.dockwidget.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.dockwidget.txt_input.setFocus()
         logger.debug("=*****= USER AUTHENTICATION")
         self.user_authentication()
