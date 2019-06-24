@@ -76,7 +76,7 @@ from .modules import MetadataDisplayer
 from .modules import ResultsManager
 from .modules import IsogeoPlgTools
 from .modules import UrlBuilder
-from.modules.isogeo_pysdk import IsogeoUtils, Isogeo #=*****=
+from.modules.isogeo_pysdk import IsogeoUtils, Isogeo #*=====*
 
 # ############################################################################
 # ########## Globals ###############
@@ -637,7 +637,7 @@ class Isogeo:
         with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
         search_list = list(saved_searches.keys())
-        logger.debug("=*****= SEARCH_LIST ({}): {}".format(type(search_list) ,search_list))
+        logger.debug("*=====* SEARCH_LIST ({}): {}".format(type(search_list) ,search_list))
         search_list.pop(search_list.index('_default'))
         if '_current' in search_list:
             search_list.pop(search_list.index('_current'))
@@ -796,6 +796,7 @@ class Isogeo:
                     saved_searches = json.load(data_file)
                 search_params = saved_searches.get(self.savedSearch)
                 keywords_list = [v for k,v in search_params.items() if k.startswith("keyword")]
+                logger.debug("*=====* keywords_lists: {}".format(keywords_list))
                 self.update_cbb_keywords(tags_keywords=tags.get('keywords'),
                                          selected_keywords=keywords_list)
                 # Putting widgets to their previous states according
@@ -851,7 +852,7 @@ class Isogeo:
             self.update_cbb_keywords(tags_keywords=tags.get('keywords'))
 
         # tweaking
-        logger.debug("=*****= TWEAKING COMBOBOXES")
+        logger.debug("*=====* TWEAKING COMBOBOXES")
         plg_tools._ui_tweaker(ui_widgets=self.dockwidget.tab_search.findChildren(QComboBox))
 
         # Coloring the Show result button
@@ -875,7 +876,7 @@ class Isogeo:
             self.store = True
         # Re enable all user input fields now the search function is
         # finished.
-        logger.debug("=*****= SWITCHING WIDGETS")
+        logger.debug("*=====* SWITCHING WIDGETS")
         self.switch_widgets_on_and_off()
 
         if self.results_count == 0:
@@ -895,12 +896,16 @@ class Isogeo:
         """
         logger.debug("Updating keywords combobox with {} items."
                      .format(len(tags_keywords)))
+
+        selected_keywords_lbls = self.dockwidget.cbb_chck_kw.checkedItems()  # for tooltip
+        logger.debug("*=====* selected kw : {}".format(selected_keywords))
+        logger.debug("*=====* selected_keywords_lbls : {}".format(self.dockwidget.cbb_chck_kw.checkedItems()))
+
         model = QStandardItemModel(5, 1)  # 5 rows, 1 col
         logger.debug(type(selected_keywords))
         logger.debug(selected_keywords)
         # parse keywords and check selected
         i = 0   # row index
-        selected_keywords_lbls = []   # for tooltip
         for tag_label, tag_code in sorted(tags_keywords.items()):
             i += 1
             item = QStandardItem(tag_label)
@@ -912,10 +917,8 @@ class Isogeo:
             elif tag_code in selected_keywords:
                 item.setData(Qt.Checked, Qt.CheckStateRole)
                 model.insertRow(0, item)
-                selected_keywords_lbls.append(tag_label)
             else:
                 pass
-
         # first item = label for the combobox.
         first_item = QStandardItem("---- {} ----"
                                    .format(self.tr('Keywords')))
@@ -931,8 +934,7 @@ class Isogeo:
 
         # add tooltip with selected keywords. see: #107#issuecomment-341742142
         if selected_keywords:
-            tooltip = "{}\n - {}".format(self.tr("Selected keywords:"),
-                                         "\n - ".join(selected_keywords_lbls))
+            tooltip = "{}\n - {}".format(self.tr("Selected keywords:"), "\n - ".join(selected_keywords_lbls))
         else:
             tooltip =  self.tr("No keyword selected")
         self.dockwidget.cbb_chck_kw.setToolTip(tooltip)
@@ -977,9 +979,10 @@ class Isogeo:
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
-        for i in range(self.dockwidget.cbb_chck_kw.count()):
-            if self.dockwidget.cbb_chck_kw.itemData(i, 10) == 2:
-                key_params.append(self.dockwidget.cbb_chck_kw.itemData(i, 32))
+        for txt in self.dockwidget.cbb_chck_kw.checkedItems():
+            item_index = self.dockwidget.cbb_chck_kw.findText(txt, Qt.MatchFixedString)
+            key_params.append(self.dockwidget.cbb_chck_kw.itemData(item_index, 32))
+            logger.debug("*=====* key_params : {}".format(key_params))
 
         params = {"owner": owner_param,
                   "inspire": inspire_param,
@@ -996,6 +999,7 @@ class Isogeo:
                   "ob": ob_param,
                   "od": od_param,
                   }
+        logger.debug("*=====* params.get('keys') : {}".format(params.get("keys")))
         # check geographic filter
         if params.get('geofilter') == "mapcanvas":
             e = iface.mapCanvas().extent()
@@ -1012,7 +1016,7 @@ class Isogeo:
         else:
             pass
         # saving params in QSettings
-        logger.debug("=*****= LISTE DES LAYER : {}".format(QgsProject.instance().mapLayers().values()))
+        logger.debug("*=====* LISTE DES LAYER : {}".format(QgsProject.instance().mapLayers().values()))
         qsettings.setValue("isogeo/settings/georelation", operation_param)
         logger.debug(params)
         return params
@@ -1025,6 +1029,7 @@ class Isogeo:
         """
         logger.debug("Search function called. Building the "
                      "url that is to be sent to the API")
+        logger.debug("self.savedSearch = {}".format(self.savedSearch))
         # Disabling all user inputs during the search function is running
         self.switch_widgets_on_and_off(0)
         # STORING THE PREVIOUS SEARCH
@@ -1679,11 +1684,11 @@ class Isogeo:
         time, making the plugin crash.
         """
         if mode:
-            logger.debug("=*****= SWITCH ON")
+            logger.debug("*=====* SWITCH ON")
             self.dockwidget.txt_input.setReadOnly(False)
             self.dockwidget.tab_search.setEnabled(True)
         else:
-            logger.debug("=*****= SWITCH OFF")
+            logger.debug("*=====* SWITCH OFF")
             self.dockwidget.txt_input.setReadOnly(True)
             self.dockwidget.tab_search.setEnabled(False)
 
@@ -1901,9 +1906,9 @@ class Isogeo:
         # checks
         plg_tools.test_proxy_configuration() #22
         self.dockwidget.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
-        self.dockwidget.cbb_chck_kw.setMaximumSize(QSize(250, 25))
+        # self.dockwidget.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.dockwidget.txt_input.setFocus()
-        logger.debug("=*****= USER AUTHENTICATION")
+        logger.debug("*=====* USER AUTHENTICATION")
         self.user_authentication()
 
 # #############################################################################
