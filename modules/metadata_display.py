@@ -135,39 +135,43 @@ class MetadataDisplayer(object):
 
         # -- CONTACTS --------------------------------------------------------
         contacts = md.get("contacts", dict())
-        contacts_pt_cct = ["<b>{1}</b> ({2})"
-                           "<br><a href='mailto:{3}' target='_top'>{3}</a>"
-                           "<br>{4}"
-                           "<br>{5} {6}"
-                           "<br>{7} {8}"
-                           "<br>{8}"
-                           "<br>{9}"
-                           .format(isogeo_tr.tr("roles", ctact.get("role")),
-                                   ctact.get("contact").get("name", "NR"),
-                                   ctact.get("contact").get("organization", "NR"),
-                                   ctact.get("contact").get("email", "NR"),
-                                   ctact.get("contact").get("phone", "NR"),
-                                   ctact.get("contact").get("addressLine1", ""),
-                                   ctact.get("contact").get("addressLine2", ""),
-                                   ctact.get("contact").get("zipCode", ""),
-                                   ctact.get("contact").get("city", ""),
-                                   ctact.get("contact").get("country", "")) for ctact in sorted(contacts) if ctact.get("role", "NR") == "pointOfContact"]
-        contacts_other_cct = ["<b>{0} - {1}</b> ({2})"
-                              "<br><a href='mailto:{3}' target='_blank'>{3}</a>"
-                              "<br>{4}"
-                              "<br>{5} {6}"
-                              "<br>{7} {8}"
-                              "<br>{9}"
-                              .format(isogeo_tr.tr("roles", ctact.get("role")),
-                                      ctact.get("contact").get("name", "NR"),
-                                      ctact.get("contact").get("organization", "NR"),
-                                      ctact.get("contact").get("email", "NR"),
-                                      ctact.get("contact").get("phone", ""),
-                                      ctact.get("contact").get("addressLine1", ""),
-                                      ctact.get("contact").get("addressLine2", ""),
-                                      ctact.get("contact").get("zipCode", ""),
-                                      ctact.get("contact").get("city", ""),
-                                      ctact.get("contact").get("country", "")) for ctact in sorted(contacts) if ctact.get("role") != "pointOfContact"]
+        contacts_pt_cct = []
+        contacts_other_cct = []
+
+        for ctact in sorted(contacts, key = lambda i: i.get("contact").get("name")):
+            item = ctact.get("contact")
+
+            if ctact.get("role", "NR") == "pointOfContact":
+                content = "<b>{1}</b> ({2})<br><a href='mailto:{3}' target='_top'>{3}</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{8}<br>{9}"\
+                        .format(
+                            isogeo_tr.tr("roles", ctact.get("role")),
+                            item.get("name", "NR"),
+                            item.get("organization", "NR"),
+                            item.get("email", "NR"),
+                            item.get("phone", "NR"),
+                            item.get("addressLine1", ""),
+                            item.get("addressLine2", ""),
+                            item.get("zipCode", ""),
+                            item.get("city", ""),
+                            item.get("country", "")
+                        )
+                contacts_pt_cct.append(content)
+
+            else:
+                content = "<b>{0} - {1}</b> ({2})<br><a href='mailto:{3}' target='_blank'>{3}</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{9}"\
+                        .format(
+                            isogeo_tr.tr("roles", ctact.get("role")),
+                            item.get("name", "NR"),
+                            item.get("organization", "NR"),
+                            item.get("email", "NR"),
+                            item.get("phone", ""),
+                            item.get("addressLine1", ""),
+                            item.get("addressLine2", ""),
+                            item.get("zipCode", ""),
+                            item.get("city", ""),
+                            item.get("country", "")
+                        )
+                contacts_other_cct.append(content)
 
         # write
         self.complete_md.val_ct_pointof.setText("<br><hr><br>".join(contacts_pt_cct))
@@ -264,21 +268,23 @@ class MetadataDisplayer(object):
 
         # Geography
         if "envelope" in md:
+            qgs_prj = QgsProject.instance()
             # display
             self.complete_md.wid_bbox.setDisabled(0)
             # get convex hull coordinates and create the polygon
             md_lyr = self.envelope2layer(md.get("envelope"))
             # add layers
-            QgsProject.instance().addMapLayers([md_lyr, li_lyrs_refs[0], li_lyrs_refs[1], li_lyrs_refs[2]], 0)
+            qgs_prj.addMapLayers([md_lyr, li_lyrs_refs[0], li_lyrs_refs[1], li_lyrs_refs[2]], 0)
 
-            layers = QgsProject.instance().mapLayers()
-            map_canvas_layer_list = [list(layers.values())[2], list(layers.values())[1], list(layers.values())[3], list(layers.values())[0]]
-
-            logger.info("*=====* map_canvas_layer_list : {}".format(map_canvas_layer_list))
+            map_canvas_layer_list = [qgs_prj.mapLayer(md_lyr.id()),
+                                     qgs_prj.mapLayer(li_lyrs_refs[0].id()),
+                                     qgs_prj.mapLayer(li_lyrs_refs[1].id()),
+                                     qgs_prj.mapLayer(li_lyrs_refs[2].id())]
             
+            logger.debug("*=====* type de map_canvas_layer_list[] : {} / {}".format(map_canvas_layer_list[0], map_canvas_layer_list[1]))
+            logger.debug("*=====* map_canvas_layer_list : {}".format(map_canvas_layer_list))
+
             self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
-            logger.info(
-                "*=====* liste des layers set : {}".format(self.complete_md.wid_bbox.layers()))
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())
             self.complete_md.wid_bbox.zoomOut()
         else:
@@ -290,15 +296,12 @@ class MetadataDisplayer(object):
         cgus_out = []
         for c_in in cgus_in:
             if "license" in c_in:
-                cgu_text = "<a href='{1}'><b>{0}</b></a>"\
-                           "<br>{2}"\
-                           "<br>{3}".format(c_in.get("license").get("name", "NR"),
+                cgu_text = "<a href='{1}'><b>{0}</b></a><br>{2}<br>{3}".format(c_in.get("license").get("name", "NR"),
                                             c_in.get("license").get("link", ""),
                                             c_in.get("description", ""),
                                             c_in.get("license").get("content", ""))
             else:
-                cgu_text = "<b>{0}</b>"\
-                           "<br>{1}".format(isogeo_tr.tr("conditions", "noLicense"),
+                cgu_text = "<b>{0}</b><br>{1}".format(isogeo_tr.tr("conditions", "noLicense"),
                                             c_in.get("description", ""))
 
             # store into the final list
@@ -311,8 +314,7 @@ class MetadataDisplayer(object):
         lims_in = md.get("limitations", dict())
         lims_out = []
         for l_in in lims_in:
-            lim_text = "<b>{0}</b>"\
-                       "<br>{1}".format(isogeo_tr.tr("limitations", l_in.get("type")),
+            lim_text = "<b>{0}</b><br>{1}".format(isogeo_tr.tr("limitations", l_in.get("type")),
                                         l_in.get("description", ""))
             # legal type
             if l_in.get("type") == "legal":
@@ -321,10 +323,8 @@ class MetadataDisplayer(object):
                 pass
             # INSPIRE precision
             if "directive" in l_in:
-                lim_text += "<br><u>INSPIRE</u><br>"\
-                            "<ul><li>{}</li><li>{}</li></ul>"\
-                            .format(l_in.get("directive").get("name"),
-                                    l_in.get("directive").get("description"))
+                lim_text += "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(l_in.get("directive").get("name"),
+                l_in.get("directive").get("description"))
             else:
                 pass
 
