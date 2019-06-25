@@ -110,10 +110,10 @@ plg_url_bldr = UrlBuilder()
 # log level depends on plugin directory name
 if plg_reg_name == plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
     log_level = logging.WARNING
-elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath) or "dev" in plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
+elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath) or "dev" in plg_reg_name:
     log_level = logging.DEBUG
 else:
-    log_level = logging.DEBUG
+    log_level = logging.INFO
 
 logger = logging.getLogger("IsogeoQgisPlugin")
 logging.captureWarnings(True)
