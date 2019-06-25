@@ -75,6 +75,12 @@ class IsogeoPlgTools(IsogeoUtils):
         :param str title: title to format
         """
         words = title.split(' ')
+        if len(words) == 1 and len(words[0])>33:
+            final_text = "\n" + words[0][:30] + "..."
+            return final_text
+        else: 
+            pass
+
         line_length = 0
         lines = []
         string = ""
