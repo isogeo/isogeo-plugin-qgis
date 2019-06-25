@@ -436,7 +436,7 @@ class Isogeo:
                 msgBar.pushMessage(self.tr("Request to Isogeo failed: please "
                                            "check your Internet connection."),
                                    duration=10,
-                                   level=msgBar.WARNING)
+                                   level=1)
                 logger.error("Internet connection failed")
                 self.pluginIsActive = False
             else:
@@ -473,7 +473,7 @@ class Isogeo:
                                        "Isogeo API answered: {}")
                                        .format(parsed_content.get('error')),
                                duration=10,
-                               level=msgBar.WARNING)
+                               level=1)
             plg_api_mngr.req_status_isClear = True
         else:
             logger.debug("The API reply has an unexpected form: {}"
@@ -483,7 +483,7 @@ class Isogeo:
                                        "Isogeo API answered: {}")
                                        .format(parsed_content.get('error')),
                                duration=10,
-                               level=msgBar.CRITICAL)
+                               level=2)
             plg_api_mngr.req_status_isClear = True
 
     # -- API - REQUEST --------------------------------------------------------
@@ -1344,7 +1344,7 @@ class Isogeo:
         msgBar.pushMessage("Isogeo",
                            self.tr("Quicksearch renamed: from {} to {}")
                                    .format(old_name, new_name),
-                           level=msgBar.INFO,
+                           level=0,
                            duration=3)
         # method ending
         return
@@ -1372,7 +1372,7 @@ class Isogeo:
         msgBar.pushMessage("Isogeo",
                            self.tr("Quicksearch removed: {}")
                                    .format(to_be_deleted),
-                           level=msgBar.INFO,
+                           level=0,
                            duration=3)
         # method ending
         return
