@@ -726,11 +726,11 @@ class Isogeo:
         for layer in layers:
             if layer.type() == 0:
                 if layer.geometryType() == 2:
-                    cbb_geofilter.addItem(ico_poly, layer.name(), layer)
+                    cbb_geofilter.addItem(ico_poly, layer.name())
                 elif layer.geometryType() == 1:
-                    cbb_geofilter.addItem(ico_line, layer.name(), layer)
+                    cbb_geofilter.addItem(ico_line, layer.name())
                 elif layer.geometryType() == 0:
-                    cbb_geofilter.addItem(ico_poin, layer.name(), layer)
+                    cbb_geofilter.addItem(ico_poin, layer.name())
 
         # sorting comboboxes
         for cbb in self.cbbs_search_advanced:
@@ -970,6 +970,7 @@ class Isogeo:
             geofilter_param = self.dockwidget.cbb_geofilter.currentText()
         favorite_param = self.dockwidget.cbb_quicksearch_use.itemData(
             self.dockwidget.cbb_quicksearch_use.currentIndex())
+            
         operation_param = self.dockwidget.cbb_geo_op.itemData(
             self.dockwidget.cbb_geo_op.currentIndex())
         ob_param = self.dockwidget.cbb_ob.itemData(
@@ -999,19 +1000,17 @@ class Isogeo:
                   "ob": ob_param,
                   "od": od_param,
                   }
-        logger.debug("*=====* params.get('keys') : {}".format(params.get("keys")))
         # check geographic filter
+        logger.debug("*=====*layers list : {}".format(QgsProject.instance().mapLayers().keys()))
+        logger.debug("*=====*params.get('geofilter') : {}".format(params.get('geofilter')))
         if params.get('geofilter') == "mapcanvas":
             e = iface.mapCanvas().extent()
-            extent = [e.xMinimum(),
-                      e.yMinimum(),
-                      e.xMaximum(),
-                      e.yMaximum()]
+            extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
             params['extent'] = extent
             epsg = int(plg_tools.get_map_crs().split(':')[1])
             params['epsg'] = epsg
             params['coord'] = self.get_coords('canvas')
-        elif params.get('geofilter') in QgsProject.instance().mapLayers().values():
+        elif params.get('geofilter') in [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]:
             params['coord'] = self.get_coords(params.get('geofilter'))
         else:
             pass
@@ -1650,8 +1649,9 @@ class Isogeo:
             e = iface.mapCanvas().extent()
             current_epsg = plg_tools.get_map_crs()
         else:
-            index = self.dockwidget.cbb_geofilter.findText(filter)
-            layer = self.dockwidget.cbb_geofilter.itemData(index)
+            logger.debug("*=====* filter : {}".format(filter))
+            layer = QgsProject.instance().mapLayersByName(filter)[0]
+            logger.debug("*=====* layer : {}".format(layer.name()))
             e = layer.extent()
             current_epsg = layer.crs().authid()
         # epsg code as integer
