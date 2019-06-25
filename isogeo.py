@@ -1762,7 +1762,8 @@ class Isogeo:
         else:
             text += self.tr(u" powered by {0} shares:</p></br>").format(len(content))
         # shares details
-        for share in sorted(content):
+        logger.debug("*=====* content : {}".format(content))
+        for share in content:
             # share variables
             creator_name = share.get("_creator").get("contact").get("name")
             creator_email = share.get("_creator").get("contact").get("email")
