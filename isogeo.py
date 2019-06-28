@@ -51,7 +51,7 @@ import db_manager.db_plugins.postgis.connector as pgis_con
 from qgis.utils import iface, plugin_times
 
 from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsDataSourceUri, QgsMessageLog,
-                       QgsNetworkAccessManager, QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer, QgsProject,
+                       QgsNetworkAccessManager, QgsPointXY, QgsRectangle, QgsRasterLayer, QgsVectorLayer, QgsProject,
                        QgsApplication)
 
 try:
@@ -432,7 +432,7 @@ class Isogeo:
         try:
             parsed_content = json.loads(content)
         except ValueError as e:
-            if "No JSON object could be decoded" in e:
+            if "No JSON object could be decoded" in str(e):
                 msgBar.pushMessage(self.tr("Request to Isogeo failed: please "
                                            "check your Internet connection."),
                                    duration=10,
@@ -1653,9 +1653,9 @@ class Isogeo:
                 current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId)
             wgs = QgsCoordinateReferenceSystem(
                 4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-            xform = QgsCoordinateTransform(current_srs, wgs)
-            minimum = xform.transform(QgsPoint(e.xMinimum(), e.yMinimum()))
-            maximum = xform.transform(QgsPoint(e.xMaximum(), e.yMaximum()))
+            xform = QgsCoordinateTransform(current_srs, wgs, QgsProject.instance())
+            minimum = xform.transform(QgsPointXY(e.xMinimum(), e.yMinimum()))
+            maximum = xform.transform(QgsPointXY(e.xMaximum(), e.yMaximum()))
             coord = "{0},{1},{2},{3}".format(
                 minimum[0], minimum[1], maximum[0], maximum[1])
             return coord
