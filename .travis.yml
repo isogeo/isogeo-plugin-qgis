@@ -1,58 +1,46 @@
+services:
+    - docker
+
+sudo: false
+
+env:
+  global:
+    - IMAGE=qgis/qgis
+
+  matrix:
+    - QGIS_VERSION_TAG=release-3_4
+    # - QGIS_VERSION_TAG=release-3_8
+    #- QGIS_VERSION_TAG=latest
+
+
 language: python
-dist: trusty
-
-python:
-  - "2.7"
-
-virtualenv:
-  system_site_packages: true
 
 cache:
-  apt: true
-  pip: true
+  directories:
+    - $HOME/.cache/pip
 
-branches:
-  only:
-    - master
+python:
+  - "3.6"
 
-git:
-  depth: 20
+# branches:
+#   only:
+#     - master
 
 addons:
   apt:
-    update: true
-    sources:
-      - sourceline: 'deb https://qgis.org/ubuntu-ltr/ trusty main'
     packages:
+      - git
       - python-software-properties
-      - qgis
-      - python-qgis
-      - pyqt4-dev-tools
 
-before_script:
-  - echo "Build starting on " `date`
-  - export QGIS_PREFIX_PATH=/usr
-  - export PYTHONPATH=${QGIS_PREFIX_PATH}/share/qgis/python/:${QGIS_PREFIX_PATH}/share/qgis/python/plugins:`pwd`
-  - echo "PYTHONPATH:" $PYTHONPATH
-  - export LD_LIBRARY_PATH=${QGIS_PREFIX_PATH}/lib
+before_install:
+  - docker pull ${IMAGE}:${QGIS_VERSION_TAG}
+
+install:
+  - python -m pip install -U pip setuptools wheel black
+  - pip install --upgrade pep257
+  - pip install --upgrade flake8
+  - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/isogeo-plugin-qgis -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
+  - sleep 10
 
 script:
-  # translations
-  - pylupdate4 -noobsolete -verbose isogeo_search_engine.pro
-  # ui compile
-  - pyuic4 -x "ui/isogeo_dockwidget_base.ui" -o "ui/.ui_isogeo.py"
-  - pyuic4 -x "ui/auth/ui_authentication.ui" -o "ui/auth/ui_authentication.py"
-  - pyuic4 -x "ui/credits/ui_credits.ui" -o "ui/credits/ui_credits.py"
-  - pyuic4 -x "ui/metadata/ui_md_details.ui" -o "ui/metadata/ui_md_details.py"
-  - pyuic4 -x "ui/quicksearch/ui_quicksearch_rename.ui" -o "ui/quicksearch/ui_quicksearch_rename.py"
-  - pyuic4 -x "ui/quicksearch/ui_quicksearch_new.ui" -o "ui/quicksearch/ui_quicksearch_new.py"
-  # packaging
-  - python tools/plugin_packager.py
-
-deploy:
-  provider: releases
-  api_key: ${GITHUB_API_KEY_TOKEN}
-  file: "build/latest/isogeo_search_engine.zip"
-  skip_cleanup: true
-  on:
-    tags: true
+  - python -m black --target-version=py37 /isogeo-plugin-qgis/
