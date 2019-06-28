@@ -12,7 +12,7 @@ env:
     # - QGIS_VERSION_TAG=release-3_8
     #- QGIS_VERSION_TAG=latest
 
-
+dist: xenial
 language: python
 
 cache:
