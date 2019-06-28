@@ -7,4 +7,4 @@ pool:
 container: qgis/qgis:release-3_4
 
 steps:
-- script: printenv
+- script: python -m tools/plugin_packager.py
