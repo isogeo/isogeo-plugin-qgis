@@ -20,7 +20,7 @@ cache:
     - $HOME/.cache/pip
 
 python:
-  - "3.6"
+  - "3.7"
 
 # branches:
 #   only:
@@ -37,10 +37,8 @@ before_install:
 
 install:
   - python -m pip install -U pip setuptools wheel black
-  - pip install --upgrade pep257
-  - pip install --upgrade flake8
   - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/isogeo-plugin-qgis -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
   - sleep 10
 
 script:
-  - python -m black --target-version=py37 /isogeo-plugin-qgis/
+  - python -m black --target-version=py37 /isogeo-plugin-qgis
