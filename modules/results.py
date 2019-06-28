@@ -343,7 +343,7 @@ class ResultsManager(object):
             # If there is only one way for the data to be added, insert a
             # button.
             elif len(dico_add_options) == 1:
-                text = dico_add_options.keys()[0]
+                text = list(dico_add_options.keys())[0]
                 params = dico_add_options.get(text)
                 if text.startswith("WFS"):
                     icon = ico_wfs
@@ -392,9 +392,9 @@ class ResultsManager(object):
             count += 1
         # dimensions
         header = tbl_result.horizontalHeader()
-        header.setResizeMode(0, QHeaderView.Stretch)
-        header.setResizeMode(1, QHeaderView.ResizeToContents)
-        header.setResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
         # Remove the "loading" bar
         iface.mainWindow().statusBar().removeWidget(progress_bar)
         # method ending
@@ -416,6 +416,8 @@ class ResultsManager(object):
         if mode == 1:
             filepath = os.path.normpath(metadata_path)
             dir_file = os.path.dirname(filepath)
+            logger.debug("*======* METADATA_PATH : {}".format(metadata_path))
+            logger.debug("*======* FILEPATH : {}".format(filepath))
             if dir_file not in self.cached_unreach_paths:
                 try:
                     with open(filepath) as f:

@@ -7,8 +7,8 @@ import logging
 from datetime import datetime
 
 # PyQGIS
-from qgis.core import (QgsProject, QgsMessageLog, QgsVectorLayer, QgsPoint, 
-                        QgsRectangle, QgsFeature, QgsGeometry, QgsRasterLayer)
+from qgis.core import (QgsProject, QgsMessageLog, QgsVectorLayer, QgsPointXY, 
+                        QgsRectangle, QgsFeature, QgsGeometry, QgsRasterLayer, QgsRenderContext)
 
 
 # PyQT
@@ -75,10 +75,10 @@ class MetadataDisplayer(object):
         isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])
 
         # clean map canvas
-        vec_lyr = [i for i in self.complete_md.wid_bbox.layers() if i.type() == 0]
-        QgsMapLayerRegistry.instance().removeMapLayers(vec_lyr)
+        vec_lyr = [i.id() for i in self.complete_md.wid_bbox.layers() if i.type() == 0]
+        QgsProject.instance().removeMapLayers(vec_lyr)
         self.complete_md.wid_bbox.refresh()
-
+    
         # -- GENERAL ---------------------------------------------------------
         title = md.get("title", "NR")
         self.complete_md.lbl_title.setText(md.get("title", "NR"))
@@ -126,7 +126,7 @@ class MetadataDisplayer(object):
 
             # adapt size
             tbl_attr.horizontalHeader().setStretchLastSection(True)
-            tbl_attr.verticalHeader().setResizeMode(3)
+            tbl_attr.verticalHeader().setSectionResizeMode(3)
         else:
             menu_list = self.complete_md.li_menu
             item = menu_list.item(1)
@@ -135,41 +135,43 @@ class MetadataDisplayer(object):
 
         # -- CONTACTS --------------------------------------------------------
         contacts = md.get("contacts", dict())
-        contacts_pt_cct = ["<b>{1}</b> ({2})"
-                           "<br><a href='mailto:{3}' target='_top'>{3}</a>"
-                           "<br>{4}"
-                           "<br>{5} {6}"
-                           "<br>{7} {8}"
-                           "<br>{8}"
-                           "<br>{9}"
-                           .format(isogeo_tr.tr("roles", ctact.get("role")),
-                                   ctact.get("contact").get("name", "NR"),
-                                   ctact.get("contact").get("organization", "NR"),
-                                   ctact.get("contact").get("email", "NR"),
-                                   ctact.get("contact").get("phone", "NR"),
-                                   ctact.get("contact").get("addressLine1", ""),
-                                   ctact.get("contact").get("addressLine2", ""),
-                                   ctact.get("contact").get("zipCode", ""),
-                                   ctact.get("contact").get("city", ""),
-                                   ctact.get("contact").get("country", ""))\
-                           for ctact in sorted(contacts) if ctact.get("role", "NR") == "pointOfContact"]
-        contacts_other_cct = ["<b>{0} - {1}</b> ({2})"
-                              "<br><a href='mailto:{3}' target='_blank'>{3}</a>"
-                              "<br>{4}"
-                              "<br>{5} {6}"
-                              "<br>{7} {8}"
-                              "<br>{9}"
-                              .format(isogeo_tr.tr("roles", ctact.get("role")),
-                                      ctact.get("contact").get("name", "NR"),
-                                      ctact.get("contact").get("organization", "NR"),
-                                      ctact.get("contact").get("email", "NR"),
-                                      ctact.get("contact").get("phone", ""),
-                                      ctact.get("contact").get("addressLine1", ""),
-                                      ctact.get("contact").get("addressLine2", ""),
-                                      ctact.get("contact").get("zipCode", ""),
-                                      ctact.get("contact").get("city", ""),
-                                      ctact.get("contact").get("country", ""),)
-                              for ctact in sorted(contacts) if ctact.get("role") != "pointOfContact"]
+        contacts_pt_cct = []
+        contacts_other_cct = []
+
+        for ctact in sorted(contacts, key = lambda i: i.get("contact").get("name")):
+            item = ctact.get("contact")
+
+            if ctact.get("role", "NR") == "pointOfContact":
+                content = "<b>{1}</b> ({2})<br><a href='mailto:{3}' target='_top'>{3}</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{8}<br>{9}"\
+                        .format(
+                            isogeo_tr.tr("roles", ctact.get("role")),
+                            item.get("name", "NR"),
+                            item.get("organization", "NR"),
+                            item.get("email", "NR"),
+                            item.get("phone", "NR"),
+                            item.get("addressLine1", ""),
+                            item.get("addressLine2", ""),
+                            item.get("zipCode", ""),
+                            item.get("city", ""),
+                            item.get("country", "")
+                        )
+                contacts_pt_cct.append(content)
+
+            else:
+                content = "<b>{0} - {1}</b> ({2})<br><a href='mailto:{3}' target='_blank'>{3}</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{9}"\
+                        .format(
+                            isogeo_tr.tr("roles", ctact.get("role")),
+                            item.get("name", "NR"),
+                            item.get("organization", "NR"),
+                            item.get("email", "NR"),
+                            item.get("phone", ""),
+                            item.get("addressLine1", ""),
+                            item.get("addressLine2", ""),
+                            item.get("zipCode", ""),
+                            item.get("city", ""),
+                            item.get("country", "")
+                        )
+                contacts_other_cct.append(content)
 
         # write
         self.complete_md.val_ct_pointof.setText("<br><hr><br>".join(contacts_pt_cct))
@@ -217,7 +219,7 @@ class MetadataDisplayer(object):
 
         # adapt size
         tbl_events.horizontalHeader().setStretchLastSection(True)
-        tbl_events.verticalHeader().setResizeMode(3)
+        tbl_events.verticalHeader().setSectionResizeMode(3)
 
         # -- TECHNICAL -------------------------------------------------------
         # SRS
@@ -228,7 +230,7 @@ class MetadataDisplayer(object):
         # Set the data format
         if tags.get('formats') != {}:
             self.complete_md.val_format.setText(
-                tags.get('formats').values()[0])
+                list(tags.get('formats').values())[0])
         else:
             self.complete_md.val_format.setText('NR')
 
@@ -266,23 +268,23 @@ class MetadataDisplayer(object):
 
         # Geography
         if "envelope" in md:
+            qgs_prj = QgsProject.instance()
             # display
             self.complete_md.wid_bbox.setDisabled(0)
             # get convex hull coordinates and create the polygon
             md_lyr = self.envelope2layer(md.get("envelope"))
             # add layers
-            QgsMapLayerRegistry.instance().addMapLayers([md_lyr,
-                                                         li_lyrs_refs[0],
-                                                         li_lyrs_refs[1],
-                                                         li_lyrs_refs[2]
-                                                         ],
-                                                        0)
-            map_canvas_layer_list = [QgsMapCanvasLayer(md_lyr),
-                                     QgsMapCanvasLayer(li_lyrs_refs[0]),
-                                     QgsMapCanvasLayer(li_lyrs_refs[1]),
-                                     QgsMapCanvasLayer(li_lyrs_refs[2]),
-                                     ]
-            self.complete_md.wid_bbox.setLayerSet(map_canvas_layer_list)
+            qgs_prj.addMapLayers([md_lyr, li_lyrs_refs[0], li_lyrs_refs[1], li_lyrs_refs[2]], 0)
+
+            map_canvas_layer_list = [qgs_prj.mapLayer(md_lyr.id()),
+                                     qgs_prj.mapLayer(li_lyrs_refs[0].id()),
+                                     qgs_prj.mapLayer(li_lyrs_refs[1].id()),
+                                     qgs_prj.mapLayer(li_lyrs_refs[2].id())]
+            
+            logger.debug("*=====* type de map_canvas_layer_list[] : {} / {}".format(map_canvas_layer_list[0], map_canvas_layer_list[1]))
+            logger.debug("*=====* map_canvas_layer_list : {}".format(map_canvas_layer_list))
+
+            self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())
             self.complete_md.wid_bbox.zoomOut()
         else:
@@ -294,15 +296,12 @@ class MetadataDisplayer(object):
         cgus_out = []
         for c_in in cgus_in:
             if "license" in c_in:
-                cgu_text = "<a href='{1}'><b>{0}</b></a>"\
-                           "<br>{2}"\
-                           "<br>{3}".format(c_in.get("license").get("name", "NR"),
+                cgu_text = "<a href='{1}'><b>{0}</b></a><br>{2}<br>{3}".format(c_in.get("license").get("name", "NR"),
                                             c_in.get("license").get("link", ""),
                                             c_in.get("description", ""),
                                             c_in.get("license").get("content", ""))
             else:
-                cgu_text = "<b>{0}</b>"\
-                           "<br>{1}".format(isogeo_tr.tr("conditions", "noLicense"),
+                cgu_text = "<b>{0}</b><br>{1}".format(isogeo_tr.tr("conditions", "noLicense"),
                                             c_in.get("description", ""))
 
             # store into the final list
@@ -315,8 +314,7 @@ class MetadataDisplayer(object):
         lims_in = md.get("limitations", dict())
         lims_out = []
         for l_in in lims_in:
-            lim_text = "<b>{0}</b>"\
-                       "<br>{1}".format(isogeo_tr.tr("limitations", l_in.get("type")),
+            lim_text = "<b>{0}</b><br>{1}".format(isogeo_tr.tr("limitations", l_in.get("type")),
                                         l_in.get("description", ""))
             # legal type
             if l_in.get("type") == "legal":
@@ -325,10 +323,8 @@ class MetadataDisplayer(object):
                 pass
             # INSPIRE precision
             if "directive" in l_in:
-                lim_text += "<br><u>INSPIRE</u><br>"\
-                            "<ul><li>{}</li><li>{}</li></ul>"\
-                            .format(l_in.get("directive").get("name"),
-                                    l_in.get("directive").get("description"))
+                lim_text += "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(l_in.get("directive").get("name"),
+                l_in.get("directive").get("description"))
             else:
                 pass
 
@@ -390,20 +386,20 @@ class MetadataDisplayer(object):
         md_lyr = QgsVectorLayer("Polygon?crs=epsg:4326",
                                 "Metadata envelope",
                                 "memory")
-        md_lyr.setLayerTransparency(75)
-        symbols = md_lyr.rendererV2().symbols()
+        symbols = md_lyr.renderer().symbols(QgsRenderContext())
         symbol = symbols[0]
         symbol.setColor(QColor.fromRgb(255,20,147))
+        symbol.setOpacity(0.25)
 
         if envelope.get("type") == "Polygon":
             # parse coordinates
             coords = envelope.get("coordinates")[0]
-            poly_pts = [QgsPoint(round(i[0], 3),
+            poly_pts = [QgsPointXY(round(i[0], 3),
                                  round(i[1], 3))
                         for i in coords]
             # add geometry to layer
             poly = QgsFeature()
-            poly.setGeometry(QgsGeometry.fromPolygon([poly_pts]))
+            poly.setGeometry(QgsGeometry.fromPolygonXY([poly_pts]))
             md_lyr.dataProvider().addFeatures([poly])
             md_lyr.updateExtents()
         elif envelope.get("type") == "MultiPolygon":

@@ -298,12 +298,18 @@
            </widget>
           </item>
           <item column="0" row="1">
-           <widget class="QComboBox" name="cbb_keywords">
+           <widget class="QgsCheckableComboBox" name="cbb_chck_kw">
             <property name="minimumSize">
              <size>
               <width>250</width>
               <height>25</height>
              </size>
+            </property>
+            <property name="maximumSize">
+              <size>
+                <width>250</width>
+                <height>25</height>
+              </size>
             </property>
             <property name="autoFillBackground">
              <bool>true</bool>
@@ -1834,6 +1840,11 @@
    <extends>QGroupBox</extends>
    <header>qgis.gui</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+    <class>QgsCheckableComboBox</class>
+    <extends>QComboBox</extends>
+    <header>qgscheckablecombobox.h</header>
   </customwidget>
  </customwidgets>
  <connections />
