@@ -147,7 +147,7 @@ class UrlBuilder(object):
         efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
         efs_lyr_url = "{}/{}".format(srv_details.get("path"), layer_name)
 
-        efs_uri = QgsDataSourceURI()
+        efs_uri = QgsDataSourceUri()
         efs_uri.setParam("url", efs_lyr_url)
         efs_uri.setParam("crs", srs_map)
         efs_uri.setParam("restrictToRequestBBOX", "1")
@@ -167,7 +167,7 @@ class UrlBuilder(object):
         ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
         ems_lyr_url = "{}/{}".format(srv_details.get("path"), layer_name)
 
-        ems_uri = QgsDataSourceURI()
+        ems_uri = QgsDataSourceUri()
         ems_uri.setParam("url", ems_lyr_url)
         ems_uri.setParam("crs", srs_map)
         # ems_uri.setParam("restrictToRequestBBOX", "1")
@@ -200,7 +200,7 @@ class UrlBuilder(object):
             # let's try a quick & dirty url build
             srs_map = plg_tools.get_map_crs()
             wfs_url_base = srv_details.get("path")
-            uri = QgsDataSourceURI()
+            uri = QgsDataSourceUri()
             uri.setParam("url", wfs_url_base)
             uri.setParam("typename", layer_name)
             uri.setParam("version", "auto")

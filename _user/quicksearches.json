@@ -1,18 +1,18 @@
 {
     "_default": {
-        "contact": null, 
-        "datatype": "type:dataset", 
-        "favorite": null, 
-        "format": null, 
-        "geofilter": null, 
-        "inspire": null, 
-        "license": null, 
-        "ob": "relevance", 
-        "od": "desc", 
-        "operation": "intersects", 
-        "owner": null, 
-        "srs": null, 
-        "text": "", 
+        "contact": null,
+        "datatype": "type:dataset",
+        "favorite": null,
+        "format": null,
+        "geofilter": null,
+        "inspire": null,
+        "license": null,
+        "ob": "relevance",
+        "od": "desc",
+        "operation": "intersects",
+        "owner": null,
+        "srs": null,
+        "text": "",
         "url": "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
     }
 }

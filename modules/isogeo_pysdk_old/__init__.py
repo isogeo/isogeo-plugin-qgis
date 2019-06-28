@@ -3,7 +3,7 @@
 
 """
     This module is an abstraction calls about the Isogeo REST API.
-    https://www.isogeo.com/
+    http://www.isogeo.com/
 """
 
 from .isogeo_sdk import Isogeo, version

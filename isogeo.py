@@ -24,20 +24,21 @@ from __future__ import (division,
 """
 
 # Standard library
+import requests
 import os.path
 import platform
 import json
 import base64
 import urllib
+from urllib.parse import urlencode
 import logging
 from logging.handlers import RotatingFileHandler
 from collections import OrderedDict
 from functools import partial
 
 # PyQT
-# from QByteArray
 from qgis.PyQt.QtCore import (
-    QByteArray, QCoreApplication, QSettings, Qt, QTranslator, QUrl, qVersion)
+    QByteArray, QCoreApplication, QSettings, Qt, QTranslator, QUrl, qVersion, QSize)
 
 from qgis.PyQt.QtWidgets import QAction, QComboBox, QMessageBox, QProgressBar
 from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
@@ -50,7 +51,8 @@ import db_manager.db_plugins.postgis.connector as pgis_con
 from qgis.utils import iface, plugin_times
 
 from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsDataSourceUri, QgsMessageLog,
-                       QgsNetworkAccessManager, QgsPoint, QgsRectangle, QgsRasterLayer, QgsVectorLayer, QgsProject)
+                       QgsNetworkAccessManager, QgsPointXY, QgsRectangle, QgsRasterLayer, QgsVectorLayer, QgsProject,
+                       QgsApplication)
 
 try:
     from qgis.core import Qgis
@@ -74,6 +76,7 @@ from .modules import MetadataDisplayer
 from .modules import ResultsManager
 from .modules import IsogeoPlgTools
 from .modules import UrlBuilder
+from.modules.isogeo_pysdk import IsogeoUtils
 
 # ############################################################################
 # ########## Globals ###############
@@ -107,7 +110,7 @@ plg_url_bldr = UrlBuilder()
 # log level depends on plugin directory name
 if plg_reg_name == plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
     log_level = logging.WARNING
-elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath) or "dev" in plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
+elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath) or "dev" in plg_reg_name:
     log_level = logging.DEBUG
 else:
     log_level = logging.INFO
@@ -145,7 +148,6 @@ ico_poly = QIcon(':/images/themes/default/mIconPolygonLayer.svg')
 # ############################################################################
 # ########## Classes ###############
 # ##################################
-
 
 class Isogeo:
     """Isogeo plugin for QGIS LTR."""
@@ -357,6 +359,7 @@ class Isogeo:
             plg_api_mngr.req_status_isClear = True
             self.api_auth_post_get_token()
 
+
     def write_ids_and_test(self):
         """Store the id & secret and launch the test function.
         Called when the authentification window is closed,
@@ -369,6 +372,7 @@ class Isogeo:
         self.user_authentication()
 
     # -- API - AUTHENTICATION -------------------------------------------------
+
     def api_auth_post_get_token(self):
         """Ask a token from Isogeo API authentification page.
         This send a POST request to Isogeo API with the user id and secret in
@@ -377,25 +381,41 @@ class Isogeo:
         That's the api_auth_handle_token method which get the API response. See below.
         """
         logger.debug("Use loaded credentials to authenticate the plugin.")
-        # build header with credentials
-        headervalue = "Basic " + base64.b64encode("{}:{}"
-                                                  .format(plg_api_mngr.api_app_id,
-                                                          plg_api_mngr.api_app_secret))
-        data = urllib.urlencode({"grant_type": "client_credentials"})
+
+        # creating credentials header
+        header_value = QByteArray()
+        header_value.append("Basic ")
+        header_value.append(base64.b64encode("{}:{}".format(plg_api_mngr.api_app_id, plg_api_mngr.api_app_secret).encode()))
+
+        header_name = QByteArray()
+        header_name.append("Authorization")
+        
+        # creating Content-Type header
+        ct_header_value = QByteArray()
+        ct_header_value.append("application/json")
+
+        #creating data
         databyte = QByteArray()
-        databyte.append(data)
+        databyte.append(urlencode({"grant_type": "client_credentials"}))
+
         # build URL request
         url = QUrl(plg_api_mngr.api_url_token)
         request = QNetworkRequest(url)
-        request.setRawHeader("Authorization", headervalue)
+        
+        # setting headers
+        request.setRawHeader(header_name, header_value)
+        request.setHeader(request.ContentTypeHeader, ct_header_value)
+        
         if plg_api_mngr.req_status_isClear is True:
             plg_api_mngr.req_status_isClear = False
             logger.debug("Token POST request sent to {}".format(request.url()))
+
             token_reply = self.qgs_ntwk_mngr.post(request, databyte)
-            token_reply.finished.connect(
-                partial(self.api_auth_handle_token, answer=token_reply))
+            token_reply.finished.connect(partial(self.api_auth_handle_token, answer = token_reply))
+
         else:
             logger.debug("Network in use. Try again later.")
+    
 
     def api_auth_handle_token(self, answer):
         """Handle the API answer when asked for a token.
@@ -405,18 +425,18 @@ class Isogeo:
 
         :param QNetworkReply answer: Isogeo ID API response
         """
-        logger.debug("Asked a token and got a reply from the API: {}")
+        logger.debug("Asked a token and got a reply from the API: {}".format(answer))
         bytarray = answer.readAll()
-        content = str(bytarray)
+        content = bytarray.data().decode("utf8")
         # check API response structure
         try:
             parsed_content = json.loads(content)
         except ValueError as e:
-            if "No JSON object could be decoded" in e:
+            if "No JSON object could be decoded" in str(e):
                 msgBar.pushMessage(self.tr("Request to Isogeo failed: please "
                                            "check your Internet connection."),
                                    duration=10,
-                                   level=msgBar.WARNING)
+                                   level=1)
                 logger.error("Internet connection failed")
                 self.pluginIsActive = False
             else:
@@ -438,7 +458,9 @@ class Isogeo:
                 self.set_widget_status()
             else:
                 plg_api_mngr.req_status_isClear = True
+                
                 self.api_get_requests(self.token)
+
         # TO DO : Distinguer plusieurs cas d'erreur
         elif 'error' in parsed_content:
             logger.error("The API reply is an error: {}. ID and SECRET must be "
@@ -451,7 +473,7 @@ class Isogeo:
                                        "Isogeo API answered: {}")
                                        .format(parsed_content.get('error')),
                                duration=10,
-                               level=msgBar.WARNING)
+                               level=1)
             plg_api_mngr.req_status_isClear = True
         else:
             logger.debug("The API reply has an unexpected form: {}"
@@ -461,10 +483,11 @@ class Isogeo:
                                        "Isogeo API answered: {}")
                                        .format(parsed_content.get('error')),
                                duration=10,
-                               level=msgBar.CRITICAL)
+                               level=2)
             plg_api_mngr.req_status_isClear = True
 
     # -- API - REQUEST --------------------------------------------------------
+
     def api_get_requests(self, token):
         """Send a content url to the Isogeo API.
         This takes the currentUrl variable and send a request to this url,
@@ -474,15 +497,21 @@ class Isogeo:
         """
         logger.debug("Send a request to the 'currentURL' set: {}."
                      .format(self.currentUrl))
+        
+        # creating credentials header
+        header_value = QByteArray()
+        header_value.append(token)
+        header_name = QByteArray()
+        header_name.append("Authorization")
+        
         myurl = QUrl(self.currentUrl)
         request = QNetworkRequest(myurl)
-        request.setRawHeader("Authorization", token)
+        request.setRawHeader(header_name, header_value)
         if plg_api_mngr.req_status_isClear is True:
             plg_api_mngr.req_status_isClear = False
-            logger.debug("Search request sent to {}".format(request.url()))
+            # logger.debug("Search request sent to {}".format(request.url()))
             api_reply = self.qgs_ntwk_mngr.get(request)
-            api_reply.finished.connect(
-                partial(self.api_requests_handle_reply, answer=api_reply))
+            api_reply.finished.connect(partial(self.api_requests_handle_reply, answer=api_reply))
         else:
             pass
 
@@ -498,7 +527,7 @@ class Isogeo:
         """
         logger.info("Request sent to API and reply received.")
         bytarray = answer.readAll()
-        content = str(bytarray)
+        content = bytarray.data().decode("utf8")
         if answer.error() == 0 and content != "":
             logger.debug("Reply is a result json.")
             if not self.showDetails and not self.settingsRequest:
@@ -552,7 +581,7 @@ class Isogeo:
                                     str(answer.error()) +
                                     "\nPlease report it on the bug tracker.")
         # method end
-        #return
+        return
 
     # -- UI - UPDATE SEARCH FORM ----------------------------------------------
     def update_fields(self, result):
@@ -607,7 +636,7 @@ class Isogeo:
         # Quicksearches combobox (also the one in settings tab)
         with open(self.json_path) as data_file:
             saved_searches = json.load(data_file)
-        search_list = saved_searches.keys()
+        search_list = list(saved_searches.keys())
         search_list.pop(search_list.index('_default'))
         if '_current' in search_list:
             search_list.pop(search_list.index('_current'))
@@ -625,12 +654,12 @@ class Isogeo:
         # Initializing the cbb that dont't need to be updated
         if self.savedSearch == "_default" or self.hardReset is True:
             logger.debug("Default search or reset.")
-            tbl_result.horizontalHeader().setResizeMode(1)
-            tbl_result.horizontalHeader().setResizeMode(1, 0)
-            tbl_result.horizontalHeader().setResizeMode(2, 0)
+            tbl_result.horizontalHeader().setSectionResizeMode(1)
+            tbl_result.horizontalHeader().setSectionResizeMode(1, 0)
+            tbl_result.horizontalHeader().setSectionResizeMode(2, 0)
             tbl_result.horizontalHeader().resizeSection(1, 80)
             tbl_result.horizontalHeader().resizeSection(2, 50)
-            tbl_result.verticalHeader().setResizeMode(3)
+            tbl_result.verticalHeader().setSectionResizeMode(3)
             # Geographical operator cbb
             dict_operation = OrderedDict([(self.tr(
                 'Intersects'), "intersects"),
@@ -692,15 +721,15 @@ class Isogeo:
             cbb_type.addItem(i, md_types.get(i))
         # Geographical filter
         cbb_geofilter.addItem(self.tr("Map canvas"), "mapcanvas")
-        layers = QgsMapLayerRegistry.instance().mapLayers().values()
+        layers = QgsProject.instance().mapLayers().values()
         for layer in layers:
             if layer.type() == 0:
                 if layer.geometryType() == 2:
-                    cbb_geofilter.addItem(ico_poly, layer.name(), layer)
+                    cbb_geofilter.addItem(ico_poly, layer.name())
                 elif layer.geometryType() == 1:
-                    cbb_geofilter.addItem(ico_line, layer.name(), layer)
+                    cbb_geofilter.addItem(ico_line, layer.name())
                 elif layer.geometryType() == 0:
-                    cbb_geofilter.addItem(ico_poin, layer.name(), layer)
+                    cbb_geofilter.addItem(ico_poin, layer.name())
 
         # sorting comboboxes
         for cbb in self.cbbs_search_advanced:
@@ -845,6 +874,7 @@ class Isogeo:
         # Re enable all user input fields now the search function is
         # finished.
         self.switch_widgets_on_and_off()
+
         if self.results_count == 0:
             self.dockwidget.btn_show.setEnabled(False)
         else:
@@ -862,12 +892,13 @@ class Isogeo:
         """
         logger.debug("Updating keywords combobox with {} items."
                      .format(len(tags_keywords)))
+
+        selected_keywords_lbls = self.dockwidget.cbb_chck_kw.checkedItems()  # for tooltip
         model = QStandardItemModel(5, 1)  # 5 rows, 1 col
         logger.debug(type(selected_keywords))
         logger.debug(selected_keywords)
         # parse keywords and check selected
         i = 0   # row index
-        selected_keywords_lbls = []   # for tooltip
         for tag_label, tag_code in sorted(tags_keywords.items()):
             i += 1
             item = QStandardItem(tag_label)
@@ -879,10 +910,8 @@ class Isogeo:
             elif tag_code in selected_keywords:
                 item.setData(Qt.Checked, Qt.CheckStateRole)
                 model.insertRow(0, item)
-                selected_keywords_lbls.append(tag_label)
             else:
                 pass
-
         # first item = label for the combobox.
         first_item = QStandardItem("---- {} ----"
                                    .format(self.tr('Keywords')))
@@ -894,15 +923,14 @@ class Isogeo:
         model.itemChanged.connect(self.search)
 
         # add the built model to the combobox
-        self.dockwidget.cbb_keywords.setModel(model)
+        self.dockwidget.cbb_chck_kw.setModel(model)
 
         # add tooltip with selected keywords. see: #107#issuecomment-341742142
         if selected_keywords:
-            tooltip = "{}\n - {}".format(self.tr("Selected keywords:"),
-                                         "\n - ".join(selected_keywords_lbls))
+            tooltip = "{}\n - {}".format(self.tr("Selected keywords:"), "\n - ".join(selected_keywords_lbls))
         else:
             tooltip =  self.tr("No keyword selected")
-        self.dockwidget.cbb_keywords.setToolTip(tooltip)
+        self.dockwidget.cbb_chck_kw.setToolTip(tooltip)
 
     def save_params(self):
         """Save the widgets state/index.
@@ -935,6 +963,7 @@ class Isogeo:
             geofilter_param = self.dockwidget.cbb_geofilter.currentText()
         favorite_param = self.dockwidget.cbb_quicksearch_use.itemData(
             self.dockwidget.cbb_quicksearch_use.currentIndex())
+            
         operation_param = self.dockwidget.cbb_geo_op.itemData(
             self.dockwidget.cbb_geo_op.currentIndex())
         ob_param = self.dockwidget.cbb_ob.itemData(
@@ -944,9 +973,9 @@ class Isogeo:
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
-        for i in xrange(self.dockwidget.cbb_keywords.count()):
-            if self.dockwidget.cbb_keywords.itemData(i, 10) == 2:
-                key_params.append(self.dockwidget.cbb_keywords.itemData(i, 32))
+        for txt in self.dockwidget.cbb_chck_kw.checkedItems():
+            item_index = self.dockwidget.cbb_chck_kw.findText(txt, Qt.MatchFixedString)
+            key_params.append(self.dockwidget.cbb_chck_kw.itemData(item_index, 32))
 
         params = {"owner": owner_param,
                   "inspire": inspire_param,
@@ -966,15 +995,12 @@ class Isogeo:
         # check geographic filter
         if params.get('geofilter') == "mapcanvas":
             e = iface.mapCanvas().extent()
-            extent = [e.xMinimum(),
-                      e.yMinimum(),
-                      e.xMaximum(),
-                      e.yMaximum()]
+            extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
             params['extent'] = extent
             epsg = int(plg_tools.get_map_crs().split(':')[1])
             params['epsg'] = epsg
             params['coord'] = self.get_coords('canvas')
-        elif params.get('geofilter') in QgsMapLayerRegistry.instance().mapLayers().values():
+        elif params.get('geofilter') in [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]:
             params['coord'] = self.get_coords(params.get('geofilter'))
         else:
             pass
@@ -991,6 +1017,7 @@ class Isogeo:
         """
         logger.debug("Search function called. Building the "
                      "url that is to be sent to the API")
+        logger.debug("self.savedSearch = {}".format(self.savedSearch))
         # Disabling all user inputs during the search function is running
         self.switch_widgets_on_and_off(0)
         # STORING THE PREVIOUS SEARCH
@@ -1005,7 +1032,7 @@ class Isogeo:
                 "{}/resources/search?&_limit=0"
                 .format(plg_api_mngr.api_url_base))
             # Refresh the quick searches comboboxes content
-            search_list = saved_searches.keys()
+            search_list = list(saved_searches.keys())
             search_list.pop(search_list.index('_default'))
             search_list.pop(search_list.index('_current'))
             self.dockwidget.cbb_quicksearch_use.clear()
@@ -1108,6 +1135,7 @@ class Isogeo:
             if plg_api_mngr.req_status_isClear is True:
                 self.api_get_requests(self.token)
 
+
     def write_search_params(self, search_name, search_kind="Default"):
         """Write a new element in the json file when a search is saved."""
         # Open the saved_search file as a dict. Each key is a search name,
@@ -1120,7 +1148,7 @@ class Isogeo:
         # search dict
         params = self.save_params()
         params['url'] = self.currentUrl
-        for i in xrange(len(params.get('keys'))):
+        for i in range(len(params.get('keys'))):
             params['keyword_{0}'.format(i)] = params.get('keys')[i]
         params.pop('keys', None)
         saved_searches[search_name] = params
@@ -1191,6 +1219,8 @@ class Isogeo:
             self.currentUrl = search_params.get('url')
             if plg_api_mngr.req_status_isClear is True:
                 self.api_get_requests(self.token)
+
+
             else:
                 logger.info("A request to the API is already running."
                             "Please wait and try again later.")
@@ -1265,7 +1295,7 @@ class Isogeo:
         # load all saved quicksearches and populate drop-down (combobox)
         with open(self.json_path, "r") as saved_searches_file:
             saved_searches = json.load(saved_searches_file)
-        search_list = saved_searches.keys()
+        search_list = list(saved_searches.keys())
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_quicksearch_use.clear()
@@ -1285,7 +1315,7 @@ class Isogeo:
         new_name = self.quicksearch_rename_dialog.txt_quicksearch_rename.text()
         saved_searches[new_name] = saved_searches[old_name]
         saved_searches.pop(old_name)
-        search_list = saved_searches.keys()
+        search_list = list(saved_searches.keys())
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_quicksearch_use.clear()
@@ -1302,7 +1332,7 @@ class Isogeo:
         msgBar.pushMessage("Isogeo",
                            self.tr("Quicksearch renamed: from {} to {}")
                                    .format(old_name, new_name),
-                           level=msgBar.INFO,
+                           level=0,
                            duration=3)
         # method ending
         return
@@ -1313,7 +1343,7 @@ class Isogeo:
         with open(self.json_path, "r") as saved_searches_file:
             saved_searches = json.load(saved_searches_file)
         saved_searches.pop(to_be_deleted)
-        search_list = saved_searches.keys()
+        search_list = list(saved_searches.keys())
         search_list.pop(search_list.index('_default'))
         search_list.pop(search_list.index('_current'))
         self.dockwidget.cbb_quicksearch_use.clear()
@@ -1330,7 +1360,7 @@ class Isogeo:
         msgBar.pushMessage("Isogeo",
                            self.tr("Quicksearch removed: {}")
                                    .format(to_be_deleted),
-                           level=msgBar.INFO,
+                           level=0,
                            duration=3)
         # method ending
         return
@@ -1359,7 +1389,7 @@ class Isogeo:
                 name = os.path.basename(path).split(".")[0]
                 layer = QgsVectorLayer(path, layer_info[2], 'ogr')
                 if layer.isValid():
-                    lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    lyr = QgsProject.instance().addMapLayer(layer)
                     # fill QGIS metadata from Isogeo
                     lyr.setTitle(layer_info[2])
                     lyr.setAbstract(layer_info[3])
@@ -1390,7 +1420,7 @@ class Isogeo:
                 name = os.path.basename(path).split(".")[0]
                 layer = QgsRasterLayer(path, layer_info[2])
                 if layer.isValid():
-                    lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    lyr = QgsProject.instance().addMapLayer(layer)
                     # fill QGIS metadata from Isogeo
                     lyr.setTitle(layer_info[2])
                     lyr.setAbstract(layer_info[3])
@@ -1423,7 +1453,7 @@ class Isogeo:
                                        name,
                                        'arcgisfeatureserver')
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    QgsProject.instance().addMapLayer(layer)
                     logger.debug("EFS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
@@ -1437,11 +1467,9 @@ class Isogeo:
             elif layer_info[0] == 'arcgismapserver':
                 name = layer_info[1]
                 uri = layer_info[2]
-                layer = QgsRasterLayer(uri,
-                                       name,
-                                       "arcgismapserver")
+                layer = QgsRasterLayer(uri,name,"arcgismapserver")
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    QgsProject.instance().addMapLayer(layer)
                     logger.debug("EMS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
@@ -1457,7 +1485,7 @@ class Isogeo:
                 name = layer_info[1]
                 layer = QgsVectorLayer(url, name, 'WFS')
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    QgsProject.instance().addMapLayer(layer)
                     logger.debug("WFS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -1467,7 +1495,7 @@ class Isogeo:
                     if name_url[0] != 0:
                         layer = QgsVectorLayer(name_url[2], name_url[1], 'WFS')
                         if layer.isValid():
-                            QgsMapLayerRegistry.instance().addMapLayer(layer)
+                            QgsProject.instance().addMapLayer(layer)
                             logger.debug("WFS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
@@ -1483,9 +1511,9 @@ class Isogeo:
             elif layer_info[0] == 'WMS':
                 url = layer_info[2]
                 name = layer_info[1]
-                layer = QgsRasterLayer(url, name, 'wms', 1)
+                layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    QgsProject.instance().addMapLayer(layer)
                     logger.debug("WMS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -1495,7 +1523,7 @@ class Isogeo:
                     if name_url[0] != 0:
                         layer = QgsRasterLayer(name_url[2], name_url[1], 'wms')
                         if layer.isValid():
-                            QgsMapLayerRegistry.instance().addMapLayer(layer)
+                            QgsProject.instance().addMapLayer(layer)
                             logger.debug("WMS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
@@ -1513,7 +1541,7 @@ class Isogeo:
                 name = layer_info[1]
                 layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    QgsProject.instance().addMapLayer(layer)
                     logger.debug("WMTS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -1556,7 +1584,7 @@ class Isogeo:
             # layer.setAbstract(layer_info.get("abstract", ""))
             # layer.setKeywordList(",".join(layer_info.get("keywords", ())))
             if layer.isValid():
-                lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                lyr = QgsProject.instance().addMapLayer(layer)
                 # fill QGIS metadata from Isogeo
                 lyr.setTitle(layer_info.get("title", "notitle"))
                 lyr.setAbstract(layer_info.get("abstract", ""))
@@ -1575,7 +1603,7 @@ class Isogeo:
                     uri.setKeyColumn(field)
                     layer = QgsVectorLayer(uri.uri(True), table, "postgres")
                     if layer.isValid():
-                        lyr = QgsMapLayerRegistry.instance().addMapLayer(layer)
+                        lyr = QgsProject.instance().addMapLayer(layer)
                         # fill QGIS metadata from Isogeo
                         lyr.setTitle(layer_info.get("title", "notitle"))
                         lyr.setAbstract(layer_info.get("abstract", ""))
@@ -1610,8 +1638,7 @@ class Isogeo:
             e = iface.mapCanvas().extent()
             current_epsg = plg_tools.get_map_crs()
         else:
-            index = self.dockwidget.cbb_geofilter.findText(filter)
-            layer = self.dockwidget.cbb_geofilter.itemData(index)
+            layer = QgsProject.instance().mapLayersByName(filter)[0]
             e = layer.extent()
             current_epsg = layer.crs().authid()
         # epsg code as integer
@@ -1626,9 +1653,9 @@ class Isogeo:
                 current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId)
             wgs = QgsCoordinateReferenceSystem(
                 4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-            xform = QgsCoordinateTransform(current_srs, wgs)
-            minimum = xform.transform(QgsPoint(e.xMinimum(), e.yMinimum()))
-            maximum = xform.transform(QgsPoint(e.xMaximum(), e.yMaximum()))
+            xform = QgsCoordinateTransform(current_srs, wgs, QgsProject.instance())
+            minimum = xform.transform(QgsPointXY(e.xMinimum(), e.yMinimum()))
+            maximum = xform.transform(QgsPointXY(e.xMaximum(), e.yMaximum()))
             coord = "{0},{1},{2},{3}".format(
                 minimum[0], minimum[1], maximum[0], maximum[1])
             return coord
@@ -1676,6 +1703,7 @@ class Isogeo:
         self.showDetails = True
         if plg_api_mngr.req_status_isClear is True:
             self.api_get_requests(self.token)
+
         else:
             pass
 
@@ -1690,6 +1718,7 @@ class Isogeo:
                 self.oldUrl = self.currentUrl
                 self.currentUrl = "{}/shares".format(plg_api_mngr.api_url_base)
                 self.api_get_requests(self.token)
+
             else:
                 pass
         else:
@@ -1718,7 +1747,7 @@ class Isogeo:
         else:
             text += self.tr(u" powered by {0} shares:</p></br>").format(len(content))
         # shares details
-        for share in sorted(content):
+        for share in content:
             # share variables
             creator_name = share.get("_creator").get("contact").get("name")
             creator_email = share.get("_creator").get("contact").get("email")
@@ -1809,12 +1838,11 @@ class Isogeo:
         self.dockwidget.btn_default_save.pressed.connect(
             partial(self.write_search_params, '_default', "Default"))
         # button to empty the cache of filepaths #135
-        self.dockwidget.btn_cache_trash.pressed.connect(partial(self.results_mng._cache_cleaner))
+        self.dockwidget.btn_cache_trash.pressed.connect(self.results_mng._cache_cleaner)
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
-        self.dockwidget.btn_change_user.pressed.connect(
-            partial(plg_api_mngr.display_auth_form))
+        self.dockwidget.btn_change_user.pressed.connect(plg_api_mngr.display_auth_form)
         # share text window
         self.dockwidget.txt_shares.setOpenLinks(False)
         self.dockwidget.txt_shares.anchorClicked.connect(plg_tools.open_webpage)
@@ -1824,13 +1852,11 @@ class Isogeo:
         self.dockwidget.btn_log_dir.setIcon(ico_log)
         self.dockwidget.btn_log_dir.pressed.connect(partial(plg_tools.open_dir_file,
                                                             target=plg_logdir))
-        self.dockwidget.btn_report.pressed.connect(
-            partial(plg_tools.open_webpage,
-                    link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4"
-                         .format(self.tr("TITLE ISSUE REPORTED"),
-                                 plg_tools.plugin_metadata(base_path=plg_basepath),
-                                 Qgis.QGIS_VERSION,
-                                 platform.platform())
+        self.dockwidget.btn_report.pressed.connect(partial(plg_tools.open_webpage,
+                    link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4".format(self.tr("TITLE ISSUE REPORTED"),
+                    plg_tools.plugin_metadata(base_path=plg_basepath),
+                    Qgis.QGIS_VERSION,
+                    platform.platform())
                     ))
         # help button
         self.dockwidget.btn_help.pressed.connect(
@@ -1855,7 +1881,7 @@ class Isogeo:
         # get shares only if user switch on tabs
         self.dockwidget.tabWidget.currentChanged.connect(self.ask_shares_info)
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
-        QgsMessageLog.instance().messageReceived.connect(plg_tools.error_catcher)
+        QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
 
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.dockwidget.setWindowTitle("Isogeo - {}".format(self.plg_version))
@@ -1864,7 +1890,8 @@ class Isogeo:
         plg_api_mngr.tr = self.tr
         # checks
         plg_tools.test_proxy_configuration() #22
-        self.dockwidget.cbb_keywords.setEnabled(plg_tools.test_qgis_style())  # see #137
+        self.dockwidget.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
+        # self.dockwidget.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.dockwidget.txt_input.setFocus()
         self.user_authentication()
 
