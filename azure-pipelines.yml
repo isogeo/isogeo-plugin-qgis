@@ -1,0 +1,10 @@
+# Lint, test and package a plugin for QGIS
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops&tabs=yaml
+
+pool:
+  vmImage: 'ubuntu-16.04'
+
+container: qgis/qgis:release-3_4
+
+steps:
+- script: printenv
