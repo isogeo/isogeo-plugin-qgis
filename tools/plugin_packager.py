@@ -21,23 +21,31 @@
 """
 
 # ------------ Imports -------------------------------------------------------
-from __future__ import (absolute_import, print_function, unicode_literals)
-import ConfigParser
+from configparser import ConfigParser
 from os import listdir, makedirs, path, remove, walk
 import json
 import xml.etree.ElementTree as ET
 import zipfile
 
+from pathlib import Path
+
 # ------------ Globals -------------------------------------------------------
 
-BASE_DIR_REL = path.dirname(path.dirname(path.abspath(__file__)))
-BASE_DIR_ABS = path.normpath(BASE_DIR_REL)
+# Paths
+DIR_PLUGIN_ROOT = Path(__file__).parent.parent
+DIR_OUTPUT = DIR_PLUGIN_ROOT.resolve() / "build/latest"
+DIR_OUTPUT.mkdir(exist_ok=True, parents=True)
+
+BASE_DIR_ABS = DIR_PLUGIN_ROOT.resolve()
+
+PLG_DIRNAME = "isogeo_search_engine"
+PLG_METADATA_FILE = DIR_PLUGIN_ROOT.resolve() / "metadata.txt"
 
 # ------------ Functions -----------------------------------------------
-def plugin_version(base_path=path.dirname(__file__)):
-    config = ConfigParser.ConfigParser()
-    if path.isfile(path.join(BASE_DIR_ABS,'metadata.txt')):
-        config.read(path.join(BASE_DIR_ABS,'metadata.txt'))
+def plugin_version():
+    config = ConfigParser()
+    if PLG_METADATA_FILE.is_file():
+        config.read(PLG_METADATA_FILE.resolve())
         return (config.get('general', 'version'),
                 config.get('general', 'qgisMinimumVersion'),
                 config.get('general', 'qgisMaximumVersion'))
@@ -86,20 +94,8 @@ for dirpath, dirs, files in walk(BASE_DIR_ABS):
         else:
             continue
 
-# ------------ Destination folder --------------------------------------------
-# folder name
-PLG_DIRNAME = "isogeo_search_engine"
-
-# where to store the zip files
-DEST_DIR = path.join(BASE_DIR_ABS, "build/latest")
-
-if not path.isdir(DEST_DIR):    # test if folder already exists
-    makedirs(DEST_DIR, 0777)
-else:
-    pass
-
 # ------------ Led Zipping -------------------------------------------
-RELEASE_ZIP = zipfile.ZipFile(path.join(DEST_DIR, PLG_DIRNAME + ".zip"), "w")
+RELEASE_ZIP = zipfile.ZipFile(path.join(DIR_OUTPUT.resolve(), PLG_DIRNAME + ".zip"), "w")
 
 # AUTH folder
 auth_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_auth/"))
@@ -250,7 +246,7 @@ QUICKSEARCHES = {"_default": {"contact": None,
                               },
                 }
 
-QUICKSEARCHES_JSON = path.join(DEST_DIR, "..", "quicksearches.json")
+QUICKSEARCHES_JSON = path.join(DIR_OUTPUT.resolve(), "..", "quicksearches.json")
 with open(QUICKSEARCHES_JSON, "w") as qs:
     json.dump(QUICKSEARCHES, qs, sort_keys=True, indent=4)
 

@@ -24,7 +24,8 @@ repository=https://github.com/isogeo/isogeo-plugin-qgis
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-changelog=- version 1.6.2: minor bugs fixed and improved cache
+changelog=2.0.0-alpha1: first version meant to be compatible with QGIS
+- version 1.6.2: minor bugs fixed and improved cache
 - version 1.6.1: https://github.com/isogeo/isogeo-plugin-qgis/milestone/7?closed=1
 - version 1.6.0: https://github.com/isogeo/isogeo-plugin-qgis/milestone/6?closed=1
 
@@ -36,7 +37,7 @@ homepage=https://isogeo.gitbooks.io/app-plugin-qgis/content
 category=Web
 icon=icon.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
