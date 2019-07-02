@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
-#!/usr/bin/env python
-from __future__ import (absolute_import, unicode_literals)
+#! python3
+
 # ----------------------------------------------------------------------------
 
 """
@@ -15,94 +15,83 @@ from __future__ import (absolute_import, unicode_literals)
 # ##################################
 
 # Standard library
-from collections import Counter
 import logging
-from six import string_types
 import socket
-from uuid import UUID
 import warnings
+from collections import Counter
+from datetime import datetime
+from uuid import UUID
 
 # ##############################################################################
 # ########## Globals ###############
 # ##################################
 
-FILTER_KEYS = {"action": [],
-               "catalog": [],
-               "contact:group": [],
-               "contact:isogeo": [],
-               "coordinate-system": [],
-               "data-source": [],
-               "format": [],
-               "has-no": [],
-               "keyword:isogeo": [],
-               "keyword:inspire-theme": [],
-               "license:group": [],
-               "license:isogeo": [],
-               "owner": [],
-               "provider": [],
-               "text": [],
-               "type": []}
+FILTER_KEYS = {
+    "action": [],
+    "catalog": [],
+    "contact:group": [],
+    "contact:isogeo": [],
+    "coordinate-system": [],
+    "data-source": [],
+    "format": [],
+    "has-no": [],
+    "keyword:isogeo": [],
+    "keyword:inspire-theme": [],
+    "license:group": [],
+    "license:isogeo": [],
+    "owner": [],
+    "provider": [],
+    "text": [],
+    "type": [],
+}
 
-FILTER_ACTIONS = ("download",
-                  "other",
-                  "view"
-                  )
+FILTER_ACTIONS = ("download", "other", "view")
 
-FILTER_PROVIDERS = ("manual",
-                    "auto"
-                    )
+FILTER_PROVIDERS = ("manual", "auto")
 
-FILTER_TYPES = {"dataset": "dataset",
-                "raster-dataset": "rasterDataset",
-                "vector-dataset": "vectorDataset",
-                "resource": "resource",
-                "service": "service",
-                }
+FILTER_TYPES = {
+    "dataset": "dataset",
+    "raster-dataset": "rasterDataset",
+    "vector-dataset": "vectorDataset",
+    "resource": "resource",
+    "service": "service",
+}
 
-GEORELATIONS = ("contains",
-                "disjoint",
-                "equal",
-                "intersects",
-                "overlaps",
-                "within"
-                )
+GEORELATIONS = ("contains", "disjoint", "equal", "intersects", "overlaps", "within")
 
-WG_KEYWORDS_CASING = ("capitalized",
-                      "lowercase",
-                      "mixedCase",
-                      "uppercase",
-                      )
+WG_KEYWORDS_CASING = ("capitalized", "lowercase", "mixedCase", "uppercase")
 
-EDIT_TABS = {"identification": ",".join(FILTER_TYPES),
-             "history": ",".join(FILTER_TYPES),
-             "geography": "dataset, raster-dataset, vector-dataset, service",
-             "quality": "dataset, raster-dataset, vector-dataset, service",
-             "attributes": "vector-dataset, series",
-             "constraints": ",".join(FILTER_TYPES),
-             "resources": ",".join(FILTER_TYPES),
-             "contacts": ",".join(FILTER_TYPES),
-             "advanced": ",".join(FILTER_TYPES),
-             "metadata": ",".join(FILTER_TYPES),
-             }
+EDIT_TABS = {
+    "identification": ",".join(FILTER_TYPES),
+    "history": ",".join(FILTER_TYPES),
+    "geography": "dataset, raster-dataset, vector-dataset, service",
+    "quality": "dataset, raster-dataset, vector-dataset, service",
+    "attributes": "vector-dataset, series",
+    "constraints": ",".join(FILTER_TYPES),
+    "resources": ",".join(FILTER_TYPES),
+    "contacts": ",".join(FILTER_TYPES),
+    "advanced": ",".join(FILTER_TYPES),
+    "metadata": ",".join(FILTER_TYPES),
+}
 
-_SUBRESOURCES_MD = ("_creator",
-                    "conditions",
-                    "contacts",
-                    "coordinate-system",
-                    "events",
-                    "feature-attributes",
-                    "keywords",
-                    "layers",
-                    "limitations",
-                    "links",
-                    "operations",
-                    "serviceLayers",
-                    "specifications",
-                    "tags",
-                    )
+_SUBRESOURCES_MD = (
+    "_creator",
+    "conditions",
+    "contacts",
+    "coordinate-system",
+    "events",
+    "feature-attributes",
+    "keywords",
+    "layers",
+    "limitations",
+    "links",
+    "operations",
+    "serviceLayers",
+    "specifications",
+    "tags",
+)
 
-_SUBRESOURCES_KW = ("count",
-                    )
+_SUBRESOURCES_KW = ("_abilities", "count", "thesaurus")
 
 # ##############################################################################
 # ########## Classes ###############
@@ -117,7 +106,7 @@ class IsogeoChecker(object):
     def __init__(self):
         super(IsogeoChecker, self).__init__()
 
-    def check_internet_connection(self, remote_server="www.isogeo.com"):
+    def check_internet_connection(self, remote_server: str = "api.isogeo.com") -> bool:
         """Test if an internet connection is operational.
         Src: http://stackoverflow.com/a/20913928/2556577.
 
@@ -135,7 +124,7 @@ class IsogeoChecker(object):
             logging.error(e)
             return False
 
-    def check_bearer_validity(self, token, connect_mtd):
+    def check_bearer_validity(self, token: dict, connect_mtd) -> dict:
         """Check API Bearer token validity.
 
         Isogeo ID delivers authentication bearers which are valid during
@@ -150,7 +139,11 @@ class IsogeoChecker(object):
         :param isogeo_pysdk.connect connect_mtd: method herited
          from Isogeo PySDK to get new bearer
         """
-        if token[1] < 60:
+        warnings.warn(
+            "Method is now executed as a decorator within the main SDK class. Will be removed in future versions.",
+            DeprecationWarning,
+        )
+        if datetime.now() < token.get("expires_at"):
             token = connect_mtd
             logging.debug("Token was about to expire, so has been renewed.")
         else:
@@ -169,14 +162,17 @@ class IsogeoChecker(object):
         if response.status_code == 200:
             return True
         elif response.status_code >= 400:
-            logging.error("{}: {} - {} - URL: {}"
-                          .format(response.status_code,
-                                  response.reason,
-                                  response.json().get("error"),
-                                  response.request.url))
+            logging.error(
+                "{}: {} - {} - URL: {}".format(
+                    response.status_code,
+                    response.reason,
+                    response.json().get("error"),
+                    response.request.url,
+                )
+            )
             return False, response.status_code
 
-    def check_request_parameters(self, parameters=dict):
+    def check_request_parameters(self, parameters: dict = dict):
         """Check parameters passed to avoid errors and help debug.
 
         :param dict response: search request parameters
@@ -188,15 +184,13 @@ class IsogeoChecker(object):
         # Unicity
         li_filters = [i.split(":")[0] for i in li_args]
         filters_count = Counter(li_filters)
-        li_filters_must_be_unique = ("coordinate-system",
-                                     "format",
-                                     "owner",
-                                     "type")
+        li_filters_must_be_unique = ("coordinate-system", "format", "owner", "type")
         for i in filters_count:
             if i in li_filters_must_be_unique and filters_count.get(i) > 1:
-                raise ValueError("This query filter must be unique: {}"
-                                 " and it occured {} times."
-                                 .format(i, filters_count.get(i)))
+                raise ValueError(
+                    "This query filter must be unique: {}"
+                    " and it occured {} times.".format(i, filters_count.get(i))
+                )
 
         # dict
         dico_query = FILTER_KEYS.copy()
@@ -250,21 +244,26 @@ class IsogeoChecker(object):
                 dico_query["type"].append(i.split(":")[1:][0])
                 continue
             else:
-                #logging.debug(i.split(":")[1], i.split(":")[1].isdigit())
+                # logging.debug(i.split(":")[1], i.split(":")[1].isdigit())
                 dico_query["text"].append(i)
                 continue
 
         # Values
         dico_filters = {i.split(":")[0]: i.split(":")[1:] for i in li_args}
         if dico_filters.get("type", ("dataset",))[0].lower() not in FILTER_TYPES:
-            raise ValueError("type value must be one of: {}"
-                             .format(" | ".join(FILTER_TYPES)))
+            raise ValueError(
+                "type value must be one of: {}".format(" | ".join(FILTER_TYPES))
+            )
         elif dico_filters.get("action", ("download",))[0].lower() not in FILTER_ACTIONS:
-            raise ValueError("action value must be one of: {}"
-                             .format(" | ".join(FILTER_ACTIONS)))
-        elif dico_filters.get("provider", ("manual",))[0].lower() not in FILTER_PROVIDERS:
-            raise ValueError("provider value must be one of: {}"
-                             .format(" | ".join(FILTER_PROVIDERS)))
+            raise ValueError(
+                "action value must be one of: {}".format(" | ".join(FILTER_ACTIONS))
+            )
+        elif (
+            dico_filters.get("provider", ("manual",))[0].lower() not in FILTER_PROVIDERS
+        ):
+            raise ValueError(
+                "provider value must be one of: {}".format(" | ".join(FILTER_PROVIDERS))
+            )
         else:
             logging.debug(dico_filters)
 
@@ -276,17 +275,18 @@ class IsogeoChecker(object):
         if in_rel and in_box is None and in_geo is None:
             raise ValueError("'rel' should'nt be used without box or geo.")
         elif in_rel not in GEORELATIONS and in_rel is not None:
-            raise ValueError("{} is not a correct value for 'georel'."
-                             " Must be one of: {}."
-                             .format(in_rel, " | ".join(GEORELATIONS)))
+            raise ValueError(
+                "{} is not a correct value for 'georel'."
+                " Must be one of: {}.".format(in_rel, " | ".join(GEORELATIONS))
+            )
 
-    def check_is_uuid(self, uuid_str):
+    def check_is_uuid(self, uuid_str: str):
         """Check if it's an Isogeo UUID handling specific form.
 
         :param str uuid_str: UUID string to check
         """
         # check uuid type
-        if not isinstance(uuid_str, string_types):
+        if not isinstance(uuid_str, str):
             raise TypeError("'uuid_str' expected a str value.")
         else:
             pass
@@ -298,14 +298,14 @@ class IsogeoChecker(object):
         # test it
         try:
             uid = UUID(uuid_str)
-            return uid.hex == uuid_str.replace('-', '')\
-                                      .replace('urn:uuid:', '')
+            return uid.hex == uuid_str.replace("-", "").replace("urn:uuid:", "")
         except ValueError as e:
-            logging.error("uuid ValueError. {} ({})  -- {}"
-                          .format(type(uuid_str), uuid_str, e))
+            logging.error(
+                "uuid ValueError. {} ({})  -- {}".format(type(uuid_str), uuid_str, e)
+            )
             return False
 
-    def check_edit_tab(self, tab, md_type):
+    def check_edit_tab(self, tab: str, md_type: str):
         """Check if asked tab is part of Isogeo web form and reliable
         with metadata type.
 
@@ -313,43 +313,43 @@ class IsogeoChecker(object):
         :param str md_type: metadata type. Must be one one of FILTER_TYPES
         """
         # check parameters types
-        if not isinstance(tab, string_types):
+        if not isinstance(tab, str):
             raise TypeError("'tab' expected a str value.")
         else:
             pass
-        if not isinstance(md_type, string_types):
+        if not isinstance(md_type, str):
             raise TypeError("'md_type' expected a str value.")
         else:
             pass
         # check parameters values
         if tab not in EDIT_TABS:
-            raise ValueError("'{}' isn't a valid edition tab. "
-                             "Available values: {}"
-                             .format(tab, " | ".join(EDIT_TABS))
-                             )
+            raise ValueError(
+                "'{}' isn't a valid edition tab. "
+                "Available values: {}".format(tab, " | ".join(EDIT_TABS))
+            )
         else:
             pass
         if md_type not in FILTER_TYPES:
             if md_type in FILTER_TYPES.values():
                 md_type = self._convert_md_type(md_type)
             else:
-                raise ValueError("'{}' isn't a valid metadata type. "
-                                 "Available values: {}"
-                                 .format(md_type, " | ".join(FILTER_TYPES))
-                                 )
+                raise ValueError(
+                    "'{}' isn't a valid metadata type. "
+                    "Available values: {}".format(md_type, " | ".join(FILTER_TYPES))
+                )
         else:
             pass
         # check adequation tab/md_type
         if md_type not in EDIT_TABS.get(tab):
-            raise ValueError("'{}'  isn't a valid tab for a '{}'' metadata."
-                             " Only for these types: {}."
-                             .format(tab, md_type, EDIT_TABS.get(tab))
-                             )
+            raise ValueError(
+                "'{}'  isn't a valid tab for a '{}'' metadata."
+                " Only for these types: {}.".format(tab, md_type, EDIT_TABS.get(tab))
+            )
         else:
             return True
 
     # -- FILTERS -------------------------------------------------------------
-    def _check_filter_specific_md(self, specific_md):
+    def _check_filter_specific_md(self, specific_md: list):
         """Check if specific_md parameter is valid.
 
         :param list specific_md: list of specific metadata UUID to check
@@ -360,8 +360,7 @@ class IsogeoChecker(object):
                 for md in specific_md:
                     if not self.check_is_uuid(md):
                         specific_md.remove(md)
-                        logging.error("Metadata UUID is not correct: {}"
-                                      .format(md))
+                        logging.error("Metadata UUID is not correct: {}".format(md))
                 # joining survivors
                 specific_md = ",".join(specific_md)
             else:
@@ -370,7 +369,7 @@ class IsogeoChecker(object):
             raise TypeError("'specific_md' expects a list")
         return specific_md
 
-    def _check_filter_specific_tag(self, specific_tag):
+    def _check_filter_specific_tag(self, specific_tag: list):
         """Check if specific_tag parameter is valid.
 
         :param list specific_tag: list of specific tag to check
@@ -384,7 +383,7 @@ class IsogeoChecker(object):
             raise TypeError("'specific_tag' expects a list")
         return specific_tag
 
-    def _check_filter_includes(self, includes, resource="metadata"):
+    def _check_filter_includes(self, includes: list, resource: str = "metadata"):
         """Check if specific_resources parameter is valid.
 
         :param list includes: sub resources to check
@@ -400,8 +399,7 @@ class IsogeoChecker(object):
             raise ValueError("Must be one of: metadata | keyword.")
 
         # sub resources manager
-        if isinstance(includes, string_types)\
-           and includes.lower() == "all":
+        if isinstance(includes, str) and includes.lower() == "all":
             includes = ",".join(ref_subresources)
         elif isinstance(includes, list):
             if len(includes) > 0:
@@ -412,38 +410,56 @@ class IsogeoChecker(object):
             raise TypeError("'includes' expect a list or a str='all'")
         return includes
 
-    def _check_subresource(self, subresource):
+    def _check_subresource(self, subresource: str):
         """Check if specific_resources parameter is valid.
 
         :param str resource: subresource to check.
         """
-        warnings.warn("subresource in URL is deprecated."
-                      " Use _include mecanism instead.", DeprecationWarning)
-        l_subresources = ("conditions", "contacts", "coordinate-system",
-                          "events", "feature-attributes", "keywords",
-                          "layers", "limitations", "links", "operations",
-                          "specifications")
-        if isinstance(subresource, string_types):
+        warnings.warn(
+            "subresource in URL is deprecated." " Use _include mecanism instead.",
+            DeprecationWarning,
+        )
+        l_subresources = (
+            "conditions",
+            "contacts",
+            "coordinate-system",
+            "events",
+            "feature-attributes",
+            "keywords",
+            "layers",
+            "limitations",
+            "links",
+            "operations",
+            "specifications",
+        )
+        if isinstance(subresource, str):
             if subresource in l_subresources:
                 subresource = subresource
             elif subresource == "tags":
                 subresource = "keywords"
-                logging.debug("'tags' is an include not a subresource."
-                              " Don't worry, it has be automatically renamed "
-                              "into 'keywords' which is the correct subresource.")
+                logging.debug(
+                    "'tags' is an include not a subresource."
+                    " Don't worry, it has be automatically renamed "
+                    "into 'keywords' which is the correct subresource."
+                )
             elif subresource == "serviceLayers":
                 subresource = "layers"
-                logging.debug("'serviceLayers' is an include not a subresource."
-                              " Don't worry, it has be automatically renamed "
-                              "into 'layers' which is the correct subresource.")
+                logging.debug(
+                    "'serviceLayers' is an include not a subresource."
+                    " Don't worry, it has be automatically renamed "
+                    "into 'layers' which is the correct subresource."
+                )
             else:
-                raise ValueError("Invalid subresource. Must be one of: {}"
-                                 .format("|".join(l_subresources)))
+                raise ValueError(
+                    "Invalid subresource. Must be one of: {}".format(
+                        "|".join(l_subresources)
+                    )
+                )
         else:
             raise TypeError("'subresource' expects a str")
         return subresource
 
-    def _convert_md_type(self, type_to_convert):
+    def _convert_md_type(self, type_to_convert: str):
         """Metadata types are not consistent in Isogeo API. A vector dataset is
          defined as vector-dataset in query filter but as vectorDataset in
          resource (metadata) details.
@@ -453,16 +469,16 @@ class IsogeoChecker(object):
         if type_to_convert in FILTER_TYPES:
             return FILTER_TYPES.get(type_to_convert)
         elif type_to_convert in FILTER_TYPES.values():
-            return [k for k, v in FILTER_TYPES.items()
-                    if v == type_to_convert][0]
+            return [k for k, v in FILTER_TYPES.items() if v == type_to_convert][0]
         else:
-            raise ValueError("Incorrect metadata type to convert: {}"
-                             .format(type_to_convert))
+            raise ValueError(
+                "Incorrect metadata type to convert: {}".format(type_to_convert)
+            )
 
 
 # ##############################################################################
 # ##### Stand alone program ########
 # ##################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Standalone execution."""
     checker = IsogeoChecker()

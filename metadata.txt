@@ -8,10 +8,10 @@
 
 [general]
 name=Isogeo
-qgisMinimumVersion=2.18
-qgisMaximumVersion=2.99
+qgisMinimumVersion=3.0
+qgisMaximumVersion=3.99
 description=Isogeo search engine within QGIS
-version=1.6.3
+version=2.0.0-alpha1
 author=Isogeo
 email=projects+qgis@isogeo.com
 
@@ -24,7 +24,8 @@ repository=https://github.com/isogeo/isogeo-plugin-qgis
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-changelog=- version 1.6.2: minor bugs fixed and improved cache
+changelog=2.0.0-alpha1: first version meant to be compatible with QGIS
+- version 1.6.2: minor bugs fixed and improved cache
 - version 1.6.1: https://github.com/isogeo/isogeo-plugin-qgis/milestone/7?closed=1
 - version 1.6.0: https://github.com/isogeo/isogeo-plugin-qgis/milestone/6?closed=1
 
@@ -36,7 +37,7 @@ homepage=https://isogeo.gitbooks.io/app-plugin-qgis/content
 category=Web
 icon=icon.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False

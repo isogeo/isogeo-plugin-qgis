@@ -3,24 +3,23 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 # Standard library
-import ConfigParser
+import configparser
 import datetime
 import logging
 from os import access, path, R_OK
 import subprocess
 from sys import platform as opersys
-from urllib import getproxies, unquote, urlencode
-from urlparse import urlparse
+from urllib.request import getproxies, unquote
+from urllib.parse import urlencode, urlparse
 import webbrowser
 
 # PyQGIS
-from qgis.core import (QgsDataSourceURI, QgsProject,
-                       QgsVectorLayer, QgsMapLayerRegistry, QgsRasterLayer)
+from qgis.core import (QgsDataSourceUri, QgsProject, QgsVectorLayer, QgsRasterLayer)
 from qgis.utils import iface
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings, QUrl
-from qgis.PyQt.QtGui import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 # Depending on operating system
 if opersys == 'win32':
@@ -76,6 +75,12 @@ class IsogeoPlgTools(IsogeoUtils):
         :param str title: title to format
         """
         words = title.split(' ')
+        if len(words) == 1 and len(words[0])>33:
+            final_text = "\n" + words[0][:30] + "..."
+            return final_text
+        else: 
+            pass
+
         line_length = 0
         lines = []
         string = ""
@@ -98,10 +103,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def get_map_crs(self):
         """Get QGIS map canvas current EPSG code."""
-        current_crs = str(iface.mapCanvas()
-                               .mapRenderer()
-                               .destinationCrs()
-                               .authid())
+        current_crs = str(iface.mapCanvas().mapSettings().destinationCrs().authid())
         return current_crs
 
     def handle_date(self, input_date):
@@ -205,7 +207,7 @@ class IsogeoPlgTools(IsogeoUtils):
           * tracker
           * repository
         """
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         if path.isfile(path.join(base_path, 'metadata.txt')):
             config.read(path.join(base_path, 'metadata.txt'))
             return config.get('general', value)
@@ -251,7 +253,7 @@ class IsogeoPlgTools(IsogeoUtils):
             wms_uri = unquote(urlencode(wms_params))
             wms_lyr = QgsRasterLayer(wms_uri, u"Ici c'est Isogeo !", "wms")
             if wms_lyr.isValid:
-                QgsMapLayerRegistry.instance().addMapLayer(wms_lyr)
+                QgsProject.instance().addMapLayer(wms_lyr)
                 logger.info("Isogeo easter egg used and WMS displayed!")
             else:
                 logger.error("WMS layer failed: {}"
@@ -271,7 +273,7 @@ class IsogeoPlgTools(IsogeoUtils):
                 wfs_style = path.join(path.dirname(path.realpath(__file__)),
                                       "isogeo.qml")
                 wfs_lyr.loadNamedStyle(wfs_style)
-                QgsMapLayerRegistry.instance().addMapLayer(wfs_lyr)
+                QgsProject.instance().addMapLayer(wfs_lyr)
                 canvas.setExtent(wfs_lyr.extent())
                 logger.debug("Isogeo easter egg used")
             else:
@@ -386,18 +388,18 @@ class IsogeoPlgTools(IsogeoUtils):
         
     def _to_raw_string(self, in_string):
         """Basic converter for input string or unicode to raw string.
-        Useful to prevent escapign in Windows paths for example.
+        Useful to prevent escaping in Windows paths for example.
 
         see: https://github.com/isogeo/isogeo-plugin-qgis/issues/129
 
         :param str in_string: string (str or unicode) to convert to raw
         """
-        if isinstance(in_string, str):
-            logger.debug(in_string)
-            return in_string.encode('string-escape')
-        elif isinstance(in_string, unicode):
+        if isinstance(in_string, str) or isinstance(in_string, unicode):
             logger.debug(in_string)
             return in_string.encode('unicode-escape')
+        # elif isinstance(in_string, unicode):
+        #     logger.debug(in_string)
+        #     return in_string.encode('unicode-escape')
         else:
             raise TypeError
 

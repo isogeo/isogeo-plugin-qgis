@@ -5,13 +5,14 @@ from __future__ import (absolute_import, division,
 # Standard library
 import logging
 import re
-from urllib import unquote, urlencode
+from urllib.request import unquote
+from urllib.parse import urlencode
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings
 
 # QGIS
-from qgis.core import QgsDataSourceURI
+from qgis.core import QgsDataSourceUri
 
 # Plugin modules
 from .tools import IsogeoPlgTools
@@ -54,9 +55,9 @@ try:
     from owslib.util import HTTPError
     logger.info("Depencencies - HTTPError within owslib")
 except ImportError as e:
-    from urllib2 import HTTPError
+    from urllib.error import HTTPError
     logger.warning("Depencencies - HTTPError not within owslib."
-                   " Directly imported from urllib2.")
+                   " Directly imported from urllib.error")
 try:
     import requests
     logger.info("Depencencies - Requests version: {}"
@@ -146,7 +147,7 @@ class UrlBuilder(object):
         efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
         efs_lyr_url = "{}/{}".format(srv_details.get("path"), layer_name)
 
-        efs_uri = QgsDataSourceURI()
+        efs_uri = QgsDataSourceUri()
         efs_uri.setParam("url", efs_lyr_url)
         efs_uri.setParam("crs", srs_map)
         efs_uri.setParam("restrictToRequestBBOX", "1")
@@ -166,7 +167,7 @@ class UrlBuilder(object):
         ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
         ems_lyr_url = "{}/{}".format(srv_details.get("path"), layer_name)
 
-        ems_uri = QgsDataSourceURI()
+        ems_uri = QgsDataSourceUri()
         ems_uri.setParam("url", ems_lyr_url)
         ems_uri.setParam("crs", srs_map)
         # ems_uri.setParam("restrictToRequestBBOX", "1")
@@ -199,7 +200,7 @@ class UrlBuilder(object):
             # let's try a quick & dirty url build
             srs_map = plg_tools.get_map_crs()
             wfs_url_base = srv_details.get("path")
-            uri = QgsDataSourceURI()
+            uri = QgsDataSourceUri()
             uri.setParam("url", wfs_url_base)
             uri.setParam("typename", layer_name)
             uri.setParam("version", "auto")
