@@ -52,4 +52,5 @@ install:
 script:
   # - docker exec -it qgis-testing-environment sh -c "cd /${PLUGIN_NAME} && qgis_testrunner.sh tests.test_Plugin"
   - docker exec -it qgis-testing-environment sh -c "cd /${PLUGIN_NAME} && ls -a"
+  - docker exec -it qgis-testing-environment sh -c "cd /${PLUGIN_NAME} && python3 tools/plugin_packager.py"
 

@@ -1,10 +1,47 @@
 # Lint, test and package a plugin for QGIS
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops&tabs=yaml
 
-pool:
-  vmImage: 'ubuntu-16.04'
+variables:
+  QGIS_VERSION_TAG: release-3_4
+  QGIS_IMAGE: qgis/qgis
+  PLUGIN_NAME: Isogeo
 
-container: qgis/qgis:release-3_4
 
-steps:
-- script: docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/${PLUGIN_NAME} -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
+jobs:
+
+# LINT AND FORMATTING CODE
+- job: 'Lint'
+  dependsOn: 'Test'
+  pool:
+    vmImage: "vs2017-win2016"
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.7'
+      architecture: 'x64'
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip
+      python -m pip install -U black
+    displayName: 'Install black'
+
+  - script: python -m black --target-version=py37 .\modules
+    displayName: 'Apply black code formatting'
+
+
+# UNIT TESTS
+- job: 'Test'
+  dependsOn: 'Lint'
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  container:
+    image: qgis/qgis:release-3_4
+    options: --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/${PLUGIN_NAME} -e DISPLAY=:99
+
+  steps:
+  - script: sh -c "qgis_setup.sh ${PLUGIN_NAME}"
+
+  displayName: 'Install plugin'
