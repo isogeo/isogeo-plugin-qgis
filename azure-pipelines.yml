@@ -7,4 +7,4 @@ pool:
 container: qgis/qgis:release-3_4
 
 steps:
-- script: python -m tools/plugin_packager.py
+- script: docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/${PLUGIN_NAME} -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
