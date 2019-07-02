@@ -38,7 +38,7 @@ jobs:
 
   container:
     image: qgis/qgis:release-3_4
-    options: --name qgis-testing-environment -v ${Build.BuildNumber}:/${PLUGIN_NAME} -e DISPLAY=:99
+    options: --name qgis-testing-environment -v QGIS:/${PLUGIN_NAME} -e DISPLAY=:99
 
   steps:
   - script: sh -c "qgis_setup.sh ${PLUGIN_NAME}"
