@@ -14,7 +14,7 @@ __copyright__ = 'Copyright 2016, Isogeo, Theo Sinatti, GeoJulien'
 
 import unittest
 
-from PyQt4.QtGui import QDockWidget
+from qgis.PyQt.QtGui import QDockWidget
 
 from isogeo_dockwidget import IsogeoDockWidget
 

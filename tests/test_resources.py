@@ -11,10 +11,9 @@
 __author__ = 'projets+qgis@isogeo.fr'
 __date__ = '2016-07-22'
 __copyright__ = 'Copyright 2016, Isogeo, Theo Sinatti, GeoJulien'
-
 import unittest
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 
 
@@ -39,6 +38,5 @@ if __name__ == "__main__":
     suite = unittest.makeSuite(IsogeoResourcesTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
-
 
 
