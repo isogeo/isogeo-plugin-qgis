@@ -5,7 +5,7 @@ It uses the `PyQt` library to authenticate itself to the Isogeo API using an app
 
 ## How to use it
 
-1. Put the `client_secrets.json` authentication file in the `/dev` folder.
+1. Put the `client_secrets.json` authentication file in the `test/dev` folder.
 
 2. Create and activate a virtual environment in the same folder :
 
