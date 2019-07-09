@@ -14,9 +14,9 @@ __copyright__ = 'Copyright 2016, Isogeo, Theo Sinatti, GeoJulien'
 
 import unittest
 
-from qgis.PyQt.QtGui import QDockWidget
+from qgis.PyQt.QtWidgets import QDockWidget
 
-from isogeo_dockwidget import IsogeoDockWidget
+import ui
 
 from utilities import get_qgis_app
 
@@ -28,7 +28,7 @@ class IsogeoDockWidgetTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
-        self.dockwidget = IsogeoDockWidget(None)
+        self.dockwidget = ui.IsogeoDockWidget(None)
 
     def tearDown(self):
         """Runs after each test."""
@@ -39,7 +39,7 @@ class IsogeoDockWidgetTest(unittest.TestCase):
         pass
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(IsogeoDialogTest)
+    suite = unittest.makeSuite(IsogeoDockWidgetTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
 
