@@ -254,7 +254,7 @@ class KeyWordsSelection():
         # filling the combobox with checkable items
         self.ui.kw_cbbox.addItem("-- Keywords --")
         first_item = self.ui.kw_cbbox.model().item(0, 0)
-        first_item.setSelectable(False)
+        first_item.setEnabled(False)
         i = 1
         for kw_code, kw_lbl in self.kw_found.items() :
             self.ui.kw_cbbox.addItem(kw_lbl)
