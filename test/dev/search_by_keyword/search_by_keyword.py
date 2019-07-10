@@ -31,6 +31,7 @@ import json
 from functools import partial
 import logging
 from logging.handlers import RotatingFileHandler
+import sys
 
 # PyQT
 from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkRequest
@@ -95,7 +96,7 @@ class KeyWordsSelection():
 
         # for ui (launch and display):
         logger.debug("Processing and displaying UI")
-        self.app = QApplication([])
+        self.app = QApplication(sys.argv)
         self.ui = AuthWidget()
         self.ui.resize(400 , 100)
         self.pysdk_checking()
@@ -125,9 +126,9 @@ class KeyWordsSelection():
 
         self.tags_expected = result.get("tags")
         self.kw_expected_nb = len(self.tags_expected.get("keywords"))
-        self.ui.lbl_expected.setText("Expected : {} ressources and {} keywords".format(result.get("total") ,self.kw_expected_nb))
+        self.ui.lbl_expected.setText("Expected : {} resources and {} keywords".format(result.get("total") ,self.kw_expected_nb))
         logger.debug(
-            "isogeo-pysdk validates the authentication file, {} accessible ressources".format(result.get("total")))
+            "isogeo-pysdk validates the authentication file, {} accessible resources".format(result.get("total")))
 
     def api_authentification(self):
         logger.debug("\n------------------ Authentication ------------------")
@@ -235,7 +236,7 @@ class KeyWordsSelection():
             # filling keywords checkable combo box
             self.pop_kw_cbbox()
 
-        elif self.search_type == "kw":
+        elif self.search_type != "init":
             logger.debug("token expired, renewing it")
             self.api_authentification()
 
@@ -248,7 +249,7 @@ class KeyWordsSelection():
         
         # to prepare the filling
         self.ui.kw_cbbox.clear()
-        if self.search_type == "kw":
+        if self.search_type != "init":
             self.ui.kw_cbbox.activated.disconnect(self.get_checked_kw)
 
         # filling the combobox with checkable items
@@ -257,14 +258,16 @@ class KeyWordsSelection():
         first_item.setEnabled(False)
         i = 1
         for kw_code, kw_lbl in self.kw_found.items() :
-            self.ui.kw_cbbox.addItem(kw_lbl)
-            item = self.ui.kw_cbbox.model().item(i, 0)
-            item.setData(kw_code, 32)
-            if self.search_type == "kw" and kw_code in list(self.checked_kw.keys()):
+            
+            if self.search_type == "kw" and kw_code in self.checked_kw.keys():
+                self.ui.kw_cbbox.insertItem(1, kw_lbl)
+                item = self.ui.kw_cbbox.model().item(1, 0)
                 item.setCheckState(Qt.Checked)
             else : 
+                self.ui.kw_cbbox.addItem(kw_lbl)
+                item = self.ui.kw_cbbox.model().item(i, 0)
                 item.setCheckState(Qt.Unchecked)
-                item.setCheckable(True)
+            item.setData(kw_code, 32)
             i += 1
         logger.debug("Keywords Combobox filled")
 
@@ -283,7 +286,6 @@ class KeyWordsSelection():
         # testing if the user checked or unchecked it :
         # removing the selected keyword from the dict if it is already in        
         if self.ui.kw_cbbox.itemData(index, 32) in self.checked_kw.keys():
-            logger.debug("unchecking")
             del self.checked_kw[self.ui.kw_cbbox.itemData(index, 32)]
         # adding the selected keyword to the dict if it is not already in
         else:
@@ -317,13 +319,13 @@ class KeyWordsSelection():
     
     def reset(self):
         logger.debug("----------------- RESET -------------------")
-        self.search_type = "init"
+        self.search_type = "reset"
         self.checked_kw = {}
         self.request_url = "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
         self.ui.lbl_selection.setText("")
         self.ui.kw_cbbox.setToolTip("")
         self.pysdk_checking()
-        self.api_authentification()
+        self.api_get_request()
 
 # #############################################################################
 # ##### Stand alone program ########
