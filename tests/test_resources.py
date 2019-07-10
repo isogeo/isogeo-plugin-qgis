@@ -9,15 +9,14 @@
 """
 
 __author__ = 'projets+qgis@isogeo.fr'
-__date__ = '2016-07-22'
-__copyright__ = 'Copyright 2016, Isogeo, Theo Sinatti, GeoJulien'
+__date__ = '2019-07-10'
+__copyright__ = 'Copyright 2016, Isogeo, Simon Sampere, GeoJulien'
 import unittest
 
 from qgis.PyQt.QtGui import QIcon
 
 
-
-class IsogeoDialogTest(unittest.TestCase):
+class IsogeoResourcesTest(unittest.TestCase):
     """Test rerources work."""
 
     def setUp(self):

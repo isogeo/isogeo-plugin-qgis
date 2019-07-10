@@ -7,7 +7,7 @@
      (at your option) any later version.
 
 """
-from .utilities import get_qgis_app
+from utilities import get_qgis_app
 
 __author__ = 'ismailsunni@yahoo.co.id'
 __date__ = '12/10/2011'
@@ -39,13 +39,13 @@ class SafeTranslationsTest(unittest.TestCase):
         parent_path = os.path.join(__file__, os.path.pardir, os.path.pardir)
         dir_path = os.path.abspath(parent_path)
         file_path = os.path.join(
-            dir_path, 'i18n', 'af.qm')
+            dir_path, 'i18n', 'isogeo_search_engine_fr.qm')
         translator = QTranslator()
         translator.load(file_path)
         QCoreApplication.installTranslator(translator)
 
-        expected_message = 'Goeie more'
-        real_message = QCoreApplication.translate("@default", 'Good morning')
+        expected_message = 'Recherches rapides'
+        real_message = QCoreApplication.translate("Isogeo", 'Quicksearches')
         self.assertEqual(real_message, expected_message)
 
 
