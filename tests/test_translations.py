@@ -45,7 +45,7 @@ class SafeTranslationsTest(unittest.TestCase):
         QCoreApplication.installTranslator(translator)
 
         expected_message = 'Recherches rapides'
-        real_message = QCoreApplication.translate("Isogeo", 'Quicksearches')
+        real_message = QCoreApplication.translate('Isogeo', 'Quicksearches')
         self.assertEqual(real_message, expected_message)
 
 

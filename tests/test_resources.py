@@ -12,12 +12,13 @@ __author__ = 'projets+qgis@isogeo.fr'
 __date__ = '2019-07-10'
 __copyright__ = 'Copyright 2016, Isogeo, Simon Sampere, GeoJulien'
 import unittest
+import os
 
 from qgis.PyQt.QtGui import QIcon
 
 
 class IsogeoResourcesTest(unittest.TestCase):
-    """Test rerources work."""
+    """Test resources work."""
 
     def setUp(self):
         """Runs before each test."""
@@ -28,8 +29,9 @@ class IsogeoResourcesTest(unittest.TestCase):
         pass
 
     def test_icon_png(self):
-        """Test we can click OK."""
-        path = ':/plugins/Isogeo/icon.png'
+        """Test plugin icon file validity."""
+        basepath = os.path.dirname(os.path.realpath(__file__))
+        path = os.path.join(basepath, "icon.png")
         icon = QIcon(path)
         self.assertFalse(icon.isNull())
 
