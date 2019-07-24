@@ -46,7 +46,6 @@ from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # PyQGIS
-import db_manager.db_plugins.postgis.connector as pgis_con
 
 from qgis.utils import iface, plugin_times
 
@@ -75,7 +74,6 @@ from .modules import IsogeoPlgApiMngr
 from .modules import MetadataDisplayer
 from .modules import ResultsManager
 from .modules import IsogeoPlgTools
-from .modules import UrlBuilder
 from.modules.isogeo_pysdk import IsogeoUtils
 
 # ############################################################################
@@ -104,7 +102,6 @@ if not os.path.exists(os.path.join(plg_basepath, "_user")):
 # plugin internal submodules
 plg_api_mngr = IsogeoPlgApiMngr(auth_folder=os.path.join(plg_basepath, "_auth"))
 plg_tools = IsogeoPlgTools(auth_folder=os.path.join(plg_basepath, "_auth"))
-plg_url_bldr = UrlBuilder()
 
 # -- LOG FILE --------------------------------------------------------
 # log level depends on plugin directory name
@@ -232,7 +229,7 @@ class Isogeo:
         self.showDetails = False
         self.store = False
         self.settingsRequest = False
-        self.PostGISdict = plg_url_bldr.build_postgis_dict(qsettings)
+        self.PostGISdict = self.results_mng.layer_adder.build_postgis_dict(qsettings)
 
         self.currentUrl = ""
         # self.currentUrl = "https://v1.api.isogeo.com/resources/search?
@@ -1489,7 +1486,7 @@ class Isogeo:
                     logger.debug("WFS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
-                    name_url = plg_url_bldr.build_wfs_url(layer_info[3],
+                    name_url = self.results_mng.layer_adder.build_wfs_url(layer_info[3],
                                                          layer_info[4],
                                                          mode="complete")
                     if name_url[0] != 0:
@@ -1517,7 +1514,7 @@ class Isogeo:
                     logger.debug("WMS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
-                    name_url = plg_url_bldr.build_wms_url(layer_info[3],
+                    name_url = self.results_mng.layer_adder.build_wms_url(layer_info[3],
                                                          layer_info[4],
                                                          mode="complete")
                     if name_url[0] != 0:
@@ -1778,7 +1775,7 @@ class Isogeo:
                 self.dockwidget = IsogeoDockWidget()
                 logger.debug("Plugin load time: {}"
                              .format(plugin_times.get(plg_reg_name, "NR")))
-
+            
             # connect to provide cleanup on closing of dockwidget
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
 
