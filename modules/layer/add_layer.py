@@ -73,7 +73,7 @@ except ImportError as e:
 # ##################################
 
 
-class LayerAdder(object):
+class LayerAdder():
     """Basic class that holds utilitary methods for the plugin."""
 
     def __init__(self):
@@ -160,7 +160,7 @@ class LayerAdder(object):
         efs_uri.setParam("restrictToRequestBBOX", "1")
 
         btn_lbl = "EFS : {}".format(efs_lyr_title)
-        return ["arcgisfeatureserver", efs_lyr_title, efs_uri.uri(),
+        return ["EFS", efs_lyr_title, efs_uri.uri(),
                 api_layer, srv_details, btn_lbl]
 
     def build_ems_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
@@ -181,7 +181,7 @@ class LayerAdder(object):
         # ems_uri.setParam("restrictToRequestBBOX", "1")
 
         btn_lbl = "EMS : {}".format(ems_lyr_title)
-        return ["arcgismapserver", ems_lyr_title, ems_uri.uri(),
+        return ["EMS", ems_lyr_title, ems_uri.uri(),
                 api_layer, srv_details, btn_lbl]
 
     def build_wfs_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
@@ -721,14 +721,17 @@ class LayerAdder(object):
                                             self.tr("Raster not valid {}. QGIS says: {}")
                                             .format(path, error_msg))
             # If EFS link
-            elif layer_info[0] == 'arcgisfeatureserver':
+            elif layer_info[0] == 'EFS':
                 name = layer_info[1]
                 uri = layer_info[2]
                 layer = QgsVectorLayer(uri,
                                        name,
                                        'arcgisfeatureserver')
                 if layer.isValid():
-                    QgsProject.instance().addMapLayer(layer)
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    lyr.setTitle(layer_info[6][0])
+                    lyr.setAbstract(layer_info[6][1])
+                    lyr.setKeywordList(",".join(layer_info[6][2]))
                     logger.debug("EFS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
@@ -739,12 +742,15 @@ class LayerAdder(object):
                                             self.tr("EFS not valid. QGIS says: {}")
                                             .format(error_msg))
             # If EMS link
-            elif layer_info[0] == 'arcgismapserver':
+            elif layer_info[0] == 'EMS':
                 name = layer_info[1]
                 uri = layer_info[2]
                 layer = QgsRasterLayer(uri,name,"arcgismapserver")
                 if layer.isValid():
-                    QgsProject.instance().addMapLayer(layer)
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    lyr.setTitle(layer_info[6][0])
+                    lyr.setAbstract(layer_info[6][1])
+                    lyr.setKeywordList(",".join(layer_info[6][2]))
                     logger.debug("EMS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
@@ -760,7 +766,10 @@ class LayerAdder(object):
                 name = layer_info[1]
                 layer = QgsVectorLayer(url, name, 'WFS')
                 if layer.isValid():
-                    QgsProject.instance().addMapLayer(layer)
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    lyr.setTitle(layer_info[6][0])
+                    lyr.setAbstract(layer_info[6][1])
+                    lyr.setKeywordList(",".join(layer_info[6][2]))
                     logger.debug("WFS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -770,7 +779,10 @@ class LayerAdder(object):
                     if name_url[0] != 0:
                         layer = QgsVectorLayer(name_url[2], name_url[1], 'WFS')
                         if layer.isValid():
-                            QgsProject.instance().addMapLayer(layer)
+                            lyr = QgsProject.instance().addMapLayer(layer)
+                            lyr.setTitle(layer_info[6][0])
+                            lyr.setAbstract(layer_info[6][1])
+                            lyr.setKeywordList(",".join(layer_info[6][2]))
                             logger.debug("WFS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
@@ -789,7 +801,10 @@ class LayerAdder(object):
                 name = layer_info[1]
                 layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
-                    QgsProject.instance().addMapLayer(layer)
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    lyr.setTitle(layer_info[6][0])
+                    lyr.setAbstract(layer_info[6][1])
+                    lyr.setKeywordList(",".join(layer_info[6][2]))
                     logger.debug("WMS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -799,7 +814,10 @@ class LayerAdder(object):
                     if name_url[0] != 0:
                         layer = QgsRasterLayer(name_url[2], name_url[1], 'wms')
                         if layer.isValid():
-                            QgsProject.instance().addMapLayer(layer)
+                            lyr = QgsProject.instance().addMapLayer(layer)
+                            lyr.setTitle(layer_info[6][0])
+                            lyr.setAbstract(layer_info[6][1])
+                            lyr.setKeywordList(",".join(layer_info[6][2]))
                             logger.debug("WMS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
@@ -817,7 +835,10 @@ class LayerAdder(object):
                 name = layer_info[1]
                 layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
-                    QgsProject.instance().addMapLayer(layer)
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    lyr.setTitle(layer_info[3][0])
+                    lyr.setAbstract(layer_info[3][1])
+                    lyr.setKeywordList(",".join(layer_info[3][1]))
                     logger.debug("WMTS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -830,6 +851,7 @@ class LayerAdder(object):
                             .format(error_msg))
             else:
                 pass
+
         # If the data is a PostGIS table
         elif type(layer_info) == dict:
             logger.debug("Data type: PostGIS")

@@ -226,48 +226,36 @@ class ResultsManager(object):
                                        "formatVersion": service.get("formatVersion")}
                         # EFS
                         if service.get("format") == "efs":
-                            name_url = self.layer_adder.build_efs_url(layer, srv_details,
+                            params = self.layer_adder.build_efs_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                pass
                         # EMS
-                        if service.get("format") == "ems":
-                            name_url = self.layer_adder.build_ems_url(layer, srv_details,
+                        elif service.get("format") == "ems":
+                            params = self.layer_adder.build_ems_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                pass
                         # WFS
-                        if service.get("format") == "wfs":
-                            name_url = self.layer_adder.build_wfs_url(layer, srv_details,
+                        elif service.get("format") == "wfs":
+                            params = self.layer_adder.build_wfs_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                pass
+
                         # WMS
                         elif service.get("format") == "wms":
-                            name_url = self.layer_adder.build_wms_url(layer, srv_details,
+                            params = self.layer_adder.build_wms_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                pass
                         # WMTS
                         elif service.get("format") == "wmts":
-                            name_url = self.layer_adder.build_wmts_url(layer, srv_details,
-                                                                  rsc_type="ds_dyn_lyr_srv")
-                            if name_url[0] != 0:
-                                dico_add_options[u"WMTS : " + name_url[1]] = name_url
-                            else:
-                                pass
+                            params = self.layer_adder.build_wmts_url(layer, srv_details,
+                                                                  rsc_type="ds_dyn_lyr_srv") 
+                        else:
+                            pass
+
+                        if params[0] != 0:
+                            basic_md = [i.get("title", "NR"), i.get("abstract", "NR"), md_keywords]
+                            params.append(basic_md)
+                            dico_add_options["{} : {}".format(params[0], params[1])] = params
                         else:
                             pass
                     else:
@@ -362,6 +350,8 @@ class ResultsManager(object):
                     icon = ico_pgis
                 elif text.startswith(self.tr("Data file", "ResultsManager")):
                     icon = ico_file
+                else :
+                    logger.debug("text : {}".format(text))
                 add_button = QPushButton(icon, text)
                 add_button.setStyleSheet("text-align: left")
                 add_button.pressed.connect(partial(self.add_layer,
