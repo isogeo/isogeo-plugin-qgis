@@ -19,6 +19,7 @@ from qgis.core import QgsDataSourceUri, QgsProject, QgsVectorLayer, QgsRasterLay
 
 # Plugin modules
 from ..tools import IsogeoPlgTools
+from .metadata_sync import MetadataSynchronizer
 
 # ############################################################################
 # ########## Globals ###############
@@ -85,6 +86,7 @@ class LayerAdder():
 
         self.tbl_result = None
         self.tr = None
+        self.md_sync = MetadataSynchronizer()
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connexions."""
@@ -648,7 +650,7 @@ class LayerAdder():
         It then adds it.
         """
 
-        logger.debug("add_layer method called.")
+        logger.debug("adding method called.")
         if layer_info[0] == "index":
             combobox = self.tbl_result.cellWidget(layer_info[1], 3)
             layer_info = combobox.itemData(combobox.currentIndex())
@@ -656,6 +658,8 @@ class LayerAdder():
             layer_info = layer_info[1]
         else:
             pass
+
+        self.md_sync.tr = self.tr
 
         if type(layer_info) == list:
             # If the layer to be added is a vector file
@@ -665,10 +669,6 @@ class LayerAdder():
                 layer = QgsVectorLayer(path, layer_info[2], 'ogr')
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    # fill QGIS metadata from Isogeo
-                    lyr.setTitle(layer_info[2])
-                    lyr.setAbstract(layer_info[3])
-                    lyr.setKeywordList(",".join(layer_info[4]))
                     try:
                         QgsMessageLog.logMessage("Data layer added: {}"
                                                  .format(name),
@@ -696,10 +696,6 @@ class LayerAdder():
                 layer = QgsRasterLayer(path, layer_info[2])
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    # fill QGIS metadata from Isogeo
-                    lyr.setTitle(layer_info[2])
-                    lyr.setAbstract(layer_info[3])
-                    lyr.setKeywordList(",".join(layer_info[4]))
                     try:
                         QgsMessageLog.logMessage("Data layer added: {}"
                                                  .format(name),
@@ -729,9 +725,6 @@ class LayerAdder():
                                        'arcgisfeatureserver')
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    lyr.setTitle(layer_info[6][0])
-                    lyr.setAbstract(layer_info[6][1])
-                    lyr.setKeywordList(",".join(layer_info[6][2]))
                     logger.debug("EFS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
@@ -748,9 +741,6 @@ class LayerAdder():
                 layer = QgsRasterLayer(uri,name,"arcgismapserver")
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    lyr.setTitle(layer_info[6][0])
-                    lyr.setAbstract(layer_info[6][1])
-                    lyr.setKeywordList(",".join(layer_info[6][2]))
                     logger.debug("EMS layer added: {0}".format(uri))
                 else:
                     error_msg = layer.error().message()
@@ -767,9 +757,6 @@ class LayerAdder():
                 layer = QgsVectorLayer(url, name, 'WFS')
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    lyr.setTitle(layer_info[6][0])
-                    lyr.setAbstract(layer_info[6][1])
-                    lyr.setKeywordList(",".join(layer_info[6][2]))
                     logger.debug("WFS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -780,9 +767,6 @@ class LayerAdder():
                         layer = QgsVectorLayer(name_url[2], name_url[1], 'WFS')
                         if layer.isValid():
                             lyr = QgsProject.instance().addMapLayer(layer)
-                            lyr.setTitle(layer_info[6][0])
-                            lyr.setAbstract(layer_info[6][1])
-                            lyr.setKeywordList(",".join(layer_info[6][2]))
                             logger.debug("WFS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
@@ -802,9 +786,6 @@ class LayerAdder():
                 layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    lyr.setTitle(layer_info[6][0])
-                    lyr.setAbstract(layer_info[6][1])
-                    lyr.setKeywordList(",".join(layer_info[6][2]))
                     logger.debug("WMS layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -815,9 +796,6 @@ class LayerAdder():
                         layer = QgsRasterLayer(name_url[2], name_url[1], 'wms')
                         if layer.isValid():
                             lyr = QgsProject.instance().addMapLayer(layer)
-                            lyr.setTitle(layer_info[6][0])
-                            lyr.setAbstract(layer_info[6][1])
-                            lyr.setKeywordList(",".join(layer_info[6][2]))
                             logger.debug("WMS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
@@ -836,9 +814,6 @@ class LayerAdder():
                 layer = QgsRasterLayer(url, name, 'wms')
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    lyr.setTitle(layer_info[3][0])
-                    lyr.setAbstract(layer_info[3][1])
-                    lyr.setKeywordList(",".join(layer_info[3][1]))
                     logger.debug("WMTS service layer added: {0}".format(url))
                 else:
                     error_msg = layer.error().message()
@@ -851,7 +826,7 @@ class LayerAdder():
                             .format(error_msg))
             else:
                 pass
-
+            
         # If the data is a PostGIS table
         elif type(layer_info) == dict:
             logger.debug("Data type: PostGIS")
@@ -878,15 +853,8 @@ class LayerAdder():
             uri.setDataSource(schema, table, geometry_column)
             # Adding the layer to the map canvas
             layer = QgsVectorLayer(uri.uri(), table, "postgres")
-            # layer.setTitle(layer_info.get("title", "notitle"))
-            # layer.setAbstract(layer_info.get("abstract", ""))
-            # layer.setKeywordList(",".join(layer_info.get("keywords", ())))
             if layer.isValid():
                 lyr = QgsProject.instance().addMapLayer(layer)
-                # fill QGIS metadata from Isogeo
-                lyr.setTitle(layer_info.get("title", "notitle"))
-                lyr.setAbstract(layer_info.get("abstract", ""))
-                lyr.setKeywordList(",".join(layer_info.get("keywords", ())))
                 logger.debug("Data added: {}".format(table))
             elif not layer.isValid() and plg_tools.last_error[0] == "postgis" and "prim" in plg_tools.last_error[1]:
                 logger.debug("PostGIS layer may be a view, "
@@ -902,12 +870,10 @@ class LayerAdder():
                     layer = QgsVectorLayer(uri.uri(True), table, "postgres")
                     if layer.isValid():
                         lyr = QgsProject.instance().addMapLayer(layer)
-                        # fill QGIS metadata from Isogeo
-                        lyr.setTitle(layer_info.get("title", "notitle"))
-                        lyr.setAbstract(layer_info.get("abstract", ""))
-                        lyr.setKeywordList(",".join(layer_info.get("keywords", ())))
                         logger.debug("PostGIS view layer added with [{}] as key column"
                                     .format(field))
+                        # filling 'QGIS Server' tab of layer Properties
+                        self.md_sync.basic_sync(layer = lyr, info = layer_info)
                         return 1
                     else:
                         continue
@@ -919,4 +885,9 @@ class LayerAdder():
                     self.tr("The PostGIS layer is not valid."
                             " Reason: {}".format(plg_tools.last_error)))
                 return 0
+        # filling 'QGIS Server' tab of layer Properties
+        if layer.isValid():
+            self.md_sync.basic_sync(layer = lyr, info = layer_info)
+        else :
+            pass
         return 1 
