@@ -74,6 +74,7 @@ from .modules import IsogeoPlgApiMngr
 from .modules import MetadataDisplayer
 from .modules import ResultsManager
 from .modules import IsogeoPlgTools
+from .modules import QuickSearchManager
 from.modules.isogeo_pysdk import IsogeoUtils
 
 # ############################################################################
@@ -211,6 +212,8 @@ class Isogeo:
         self.quicksearch_new_dialog = QuicksearchNew()
         self.quicksearch_rename_dialog = QuicksearchRename()
         self.credits_dialog = IsogeoCredits()
+
+        # submodules
         self.md_display = MetadataDisplayer(IsogeoMdDetails())
         self.results_mng = ResultsManager(self)
 
@@ -866,7 +869,8 @@ class Isogeo:
             self.results_mng.show_results(result,
                                           self.dockwidget.tbl_result,
                                           progress_bar=self.bar)
-            self.write_search_params('_current', search_kind="Current")
+            # self.write_search_params('_current', search_kind="Current")
+            self.quicksearch.write_params('_current', search_kind="Current")
             self.store = True
         # Re enable all user input fields now the search function is
         # finished.
@@ -1132,38 +1136,6 @@ class Isogeo:
             if plg_api_mngr.req_status_isClear is True:
                 self.api_get_requests(self.token)
 
-
-    def write_search_params(self, search_name, search_kind="Default"):
-        """Write a new element in the json file when a search is saved."""
-        # Open the saved_search file as a dict. Each key is a search name,
-        # each value is a dict containing the parameters for this search name
-        with open(self.json_path) as data_file:
-            saved_searches = json.load(data_file)
-        # If the name already exists, ask for a new one. ================ TO DO
-
-        # Write the current parameters in a dict, and store it in the saved
-        # search dict
-        params = self.save_params()
-        params['url'] = self.currentUrl
-        for i in range(len(params.get('keys'))):
-            params['keyword_{0}'.format(i)] = params.get('keys')[i]
-        params.pop('keys', None)
-        saved_searches[search_name] = params
-        # writing file
-        with open(self.json_path, 'w') as outfile:
-            json.dump(saved_searches, outfile,
-                      sort_keys=True, indent=4)
-        # Log and messages
-        logger.debug("{} search stored: {}. Parameters: {}"
-                    .format(search_kind, search_name, params))
-        if search_kind != "Current":
-            msgBar.pushMessage(self.tr("{} successfully saved: {}")
-                                       .format(search_kind, search_name),
-                               duration=3)
-        else:
-            pass
-        return
-
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
         selected_search = self.dockwidget.cbb_quicksearch_use.currentText()
@@ -1282,85 +1254,6 @@ class Isogeo:
         self.add_loading_bar()
         self.showResult = True
         self.search()
-
-    # -- QUICKSEARCHES  -------------------------------------------------------
-    def quicksearch_save(self):
-        """Call the write_search() function and refresh the combobox."""
-        # retrieve quicksearch given name and store it
-        search_name = self.quicksearch_new_dialog.txt_quicksearch_name.text()
-        self.write_search_params(search_name, search_kind="Quicksearch")
-        # load all saved quicksearches and populate drop-down (combobox)
-        with open(self.json_path, "r") as saved_searches_file:
-            saved_searches = json.load(saved_searches_file)
-        search_list = list(saved_searches.keys())
-        search_list.pop(search_list.index('_default'))
-        search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch_use.clear()
-        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_quicksearch_edit.clear()
-        for i in search_list:
-            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
-            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-        # method ending
-        return
-
-    def quicksearch_rename(self):
-        """Modify the json file in order to rename a search."""
-        old_name = self.dockwidget.cbb_quicksearch_edit.currentText()
-        with open(self.json_path, "r") as saved_searches_file:
-            saved_searches = json.load(saved_searches_file)
-        new_name = self.quicksearch_rename_dialog.txt_quicksearch_rename.text()
-        saved_searches[new_name] = saved_searches[old_name]
-        saved_searches.pop(old_name)
-        search_list = list(saved_searches.keys())
-        search_list.pop(search_list.index('_default'))
-        search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch_use.clear()
-        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_quicksearch_edit.clear()
-        for i in search_list:
-            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
-            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-        # Update JSON file
-        with open(self.json_path, 'w') as outfile:
-            json.dump(saved_searches, outfile,
-                      sort_keys=True, indent=4)
-        # inform user
-        msgBar.pushMessage("Isogeo",
-                           self.tr("Quicksearch renamed: from {} to {}")
-                                   .format(old_name, new_name),
-                           level=0,
-                           duration=3)
-        # method ending
-        return
-
-    def quicksearch_remove(self):
-        """Modify the json file in order to delete a search."""
-        to_be_deleted = self.dockwidget.cbb_quicksearch_edit.currentText()
-        with open(self.json_path, "r") as saved_searches_file:
-            saved_searches = json.load(saved_searches_file)
-        saved_searches.pop(to_be_deleted)
-        search_list = list(saved_searches.keys())
-        search_list.pop(search_list.index('_default'))
-        search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch_use.clear()
-        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_quicksearch_edit.clear()
-        for i in search_list:
-            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
-            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-        # Update JSON file
-        with open(self.json_path, 'w') as outfile:
-            json.dump(saved_searches, outfile,
-                      sort_keys=True, indent=4)
-        # inform user
-        msgBar.pushMessage("Isogeo",
-                           self.tr("Quicksearch removed: {}")
-                                   .format(to_be_deleted),
-                           level=0,
-                           duration=3)
-        # method ending
-        return
 
     # -- UTILS ----------------------------------------------------------------
     def add_loading_bar(self):
@@ -1558,23 +1451,11 @@ class Isogeo:
         self.dockwidget.btn_previous.pressed.connect(self.previous_page)
         
         # -- Quicksearches ----------------------------------------------------
+        self.quicksearch = QuickSearchManager(self)
         # select and use
         self.dockwidget.cbb_quicksearch_use.activated.connect(self.set_widget_status)
-        self.dockwidget.btn_quicksearch_save.pressed.connect(partial(self.show_popup, popup='ask_name'))
-        # create and save
-        self.quicksearch_new_dialog.accepted.connect(self.quicksearch_save)
-        # rename
-        self.quicksearch_rename_dialog.accepted.connect(self.quicksearch_rename)
 
-        # -- Settings tab - Search --------------------------------------------
-        # quicksearches
-        self.dockwidget.btn_rename_sr.pressed.connect(partial(self.show_popup,  # rename
-                                                              popup='new_name'))
-        self.dockwidget.btn_delete_sr.pressed.connect(self.quicksearch_remove)  # delete
-
-        # default search
-        self.dockwidget.btn_default_save.pressed.connect(
-            partial(self.write_search_params, '_default', "Default"))
+        # # -- Settings tab - Search --------------------------------------------
         # button to empty the cache of filepaths #135
         self.dockwidget.btn_cache_trash.pressed.connect(self.results_mng._cache_cleaner)
 
