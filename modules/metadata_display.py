@@ -21,7 +21,6 @@ from .isogeo_pysdk import IsogeoTranslator
 
 # Plugin modules
 from .api import IsogeoPlgApiMngr
-from .url_builder import UrlBuilder
 from .tools import IsogeoPlgTools
 
 # ############################################################################
@@ -33,7 +32,6 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_api_mngr = IsogeoPlgApiMngr()
 plg_tools = IsogeoPlgTools()
-plg_url_bldr = UrlBuilder()
 
 osm_lbls = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Labels&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
 osm_refs = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Features&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
@@ -280,9 +278,6 @@ class MetadataDisplayer(object):
                                      qgs_prj.mapLayer(li_lyrs_refs[0].id()),
                                      qgs_prj.mapLayer(li_lyrs_refs[1].id()),
                                      qgs_prj.mapLayer(li_lyrs_refs[2].id())]
-            
-            logger.debug("*=====* type de map_canvas_layer_list[] : {} / {}".format(map_canvas_layer_list[0], map_canvas_layer_list[1]))
-            logger.debug("*=====* map_canvas_layer_list : {}".format(map_canvas_layer_list))
 
             self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())

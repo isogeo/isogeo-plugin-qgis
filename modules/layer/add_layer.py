@@ -5,17 +5,21 @@ from __future__ import (absolute_import, division,
 # Standard library
 import logging
 import re
+import os
 from urllib.request import unquote
 from urllib.parse import urlencode
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QMessageBox
 
-# QGIS
-from qgis.core import QgsDataSourceUri
+# PyQGIS
+import db_manager.db_plugins.postgis.connector as pgis_con
+from qgis.core import QgsDataSourceUri, QgsProject, QgsVectorLayer, QgsRasterLayer, QgsMessageLog
 
 # Plugin modules
-from .tools import IsogeoPlgTools
+from ..tools import IsogeoPlgTools
+from .metadata_sync import MetadataSynchronizer
 
 # ############################################################################
 # ########## Globals ###############
@@ -70,7 +74,7 @@ except ImportError as e:
 # ##################################
 
 
-class UrlBuilder(object):
+class LayerAdder():
     """Basic class that holds utilitary methods for the plugin."""
 
     def __init__(self):
@@ -79,6 +83,10 @@ class UrlBuilder(object):
         self.cached_wfs = dict()
         self.cached_wms = dict()
         self.cached_wmts = dict()
+
+        self.tbl_result = None
+        self.tr = None
+        self.md_sync = MetadataSynchronizer()
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connexions."""
@@ -145,15 +153,16 @@ class UrlBuilder(object):
         srs_map = plg_tools.get_map_crs()
         layer_name = api_layer.get("id")
         efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
-        efs_lyr_url = "{}/{}".format(srv_details.get("path"), layer_name)
+        efs_lyr_url = str(srv_details.get("path"))
 
         efs_uri = QgsDataSourceUri()
         efs_uri.setParam("url", efs_lyr_url)
+        efs_uri.setParam("layer", layer_name)
         efs_uri.setParam("crs", srs_map)
         efs_uri.setParam("restrictToRequestBBOX", "1")
 
         btn_lbl = "EFS : {}".format(efs_lyr_title)
-        return ["arcgisfeatureserver", efs_lyr_title, efs_uri.uri(),
+        return ["EFS", efs_lyr_title, efs_uri.uri(),
                 api_layer, srv_details, btn_lbl]
 
     def build_ems_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
@@ -165,15 +174,16 @@ class UrlBuilder(object):
         srs_map = plg_tools.get_map_crs()
         layer_name = api_layer.get("id")
         ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
-        ems_lyr_url = "{}/{}".format(srv_details.get("path"), layer_name)
+        ems_lyr_url = str(srv_details.get("path"))
 
         ems_uri = QgsDataSourceUri()
         ems_uri.setParam("url", ems_lyr_url)
+        ems_uri.setParam("layer", layer_name)
         ems_uri.setParam("crs", srs_map)
         # ems_uri.setParam("restrictToRequestBBOX", "1")
 
         btn_lbl = "EMS : {}".format(ems_lyr_title)
-        return ["arcgismapserver", ems_lyr_title, ems_uri.uri(),
+        return ["EMS", ems_lyr_title, ems_uri.uri(),
                 api_layer, srv_details, btn_lbl]
 
     def build_wfs_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
@@ -631,3 +641,253 @@ class UrlBuilder(object):
         # method ending
         return ["WMTS", layer_title, wmts_url_final]
         # return QgsRasterLayer(wms_url_final, layer_title, 'wms')
+
+    def adding(self, layer_info):
+        """Add a layer to QGIS map canvas.
+
+        Take layer index, search the required information to add it in
+        the temporary dictionnary constructed in the show_results function.
+        It then adds it.
+        """
+
+        logger.debug("adding method called.")
+        if layer_info[0] == "index":
+            combobox = self.tbl_result.cellWidget(layer_info[1], 3)
+            layer_info = combobox.itemData(combobox.currentIndex())
+        elif layer_info[0] == "info":
+            layer_info = layer_info[1]
+        else:
+            pass
+
+        self.md_sync.tr = self.tr
+
+        if type(layer_info) == list:
+            # If the layer to be added is a vector file
+            if layer_info[0] == "vector":
+                path = layer_info[1]
+                name = os.path.basename(path).split(".")[0]
+                layer = QgsVectorLayer(path, layer_info[2], 'ogr')
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    try:
+                        QgsMessageLog.logMessage("Data layer added: {}"
+                                                 .format(name),
+                                                 "Isogeo")
+                        logger.debug("Vector layer added: {}".format(path))
+                    except UnicodeEncodeError:
+                        QgsMessageLog.logMessage(
+                            "Vector layer added:: {}".format(
+                                name.decode("latin1")), "Isogeo")
+                        logger.debug("Vector layer added: {}"
+                                    .format(name.decode("latin1")))
+                else:
+                    error_msg = layer.error().message()
+                    logger.warning("Invalid vector layer: {}. QGIS says: {}"
+                                   .format(path,
+                                           error_msg))
+                    QMessageBox.information(iface.mainWindow(),
+                                            self.tr('Error'),
+                                            self.tr("Vector not valid {}. QGIS says: {}")
+                                            .format(path, error_msg))
+            # If raster file
+            elif layer_info[0] == "raster":
+                path = layer_info[1]
+                name = os.path.basename(path).split(".")[0]
+                layer = QgsRasterLayer(path, layer_info[2])
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    try:
+                        QgsMessageLog.logMessage("Data layer added: {}"
+                                                 .format(name),
+                                                 "Isogeo")
+                        logger.debug("Raster layer added: {}".format(path))
+                    except UnicodeEncodeError:
+                        QgsMessageLog.logMessage(
+                            "Raster layer added:: {}".format(
+                                name.decode("latin1")), "Isogeo")
+                        logger.debug("Raster layer added: {}"
+                                    .format(name.decode("latin1")))
+                else:
+                    error_msg = layer.error().message()
+                    logger.warning("Invalid raster layer: {}. QGIS says: {}"
+                                   .format(path,
+                                           error_msg))
+                    QMessageBox.information(iface.mainWindow(),
+                                            self.tr('Error'),
+                                            self.tr("Raster not valid {}. QGIS says: {}")
+                                            .format(path, error_msg))
+            # If EFS link
+            elif layer_info[0] == 'EFS':
+                name = layer_info[1]
+                uri = layer_info[2]
+                layer = QgsVectorLayer(uri,
+                                       name,
+                                       'arcgisfeatureserver')
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    logger.debug("EFS layer added: {0}".format(uri))
+                else:
+                    error_msg = layer.error().message()
+                    logger.warning("Invalid service: {0}. QGIS says: {}"
+                                   .format(uri, error_msg.encode("latin1")))
+                    QMessageBox.information(iface.mainWindow(),
+                                            self.tr('Error'),
+                                            self.tr("EFS not valid. QGIS says: {}")
+                                            .format(error_msg))
+            # If EMS link
+            elif layer_info[0] == 'EMS':
+                name = layer_info[1]
+                uri = layer_info[2]
+                layer = QgsRasterLayer(uri,name,"arcgismapserver")
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    logger.debug("EMS layer added: {0}".format(uri))
+                else:
+                    error_msg = layer.error().message()
+                    logger.warning("Invalid service: {0}. QGIS says: {}"
+                                   .format(uri, error_msg.encode("latin1")))
+                    QMessageBox.information(iface.mainWindow(),
+                                            self.tr('Error'),
+                                            self.tr("EMS not valid. QGIS says: {}")
+                                            .format(error_msg))
+            # If WFS link
+            elif layer_info[0] == 'WFS':
+                url = layer_info[2]
+                name = layer_info[1]
+                layer = QgsVectorLayer(url, name, 'WFS')
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    logger.debug("WFS layer added: {0}".format(url))
+                else:
+                    error_msg = layer.error().message()
+                    name_url = self.build_wfs_url(layer_info[3],
+                                                         layer_info[4],
+                                                         mode="complete")
+                    if name_url[0] != 0:
+                        layer = QgsVectorLayer(name_url[2], name_url[1], 'WFS')
+                        if layer.isValid():
+                            lyr = QgsProject.instance().addMapLayer(layer)
+                            logger.debug("WFS layer added: {0}".format(url))
+                        else:
+                            error_msg = layer.error().message()
+                            logger.warning("Invalid service: {0}. QGIS says: {}"
+                                           .format(url, error_msg.encode("latin1")))
+                    else:
+                        QMessageBox.information(
+                            iface.mainWindow(),
+                            self.tr('Error'),
+                            self.tr("WFS is not valid. QGIS says: {}")
+                                .format(error_msg))
+                        pass
+            # If WMS link
+            elif layer_info[0] == 'WMS':
+                url = layer_info[2]
+                name = layer_info[1]
+                layer = QgsRasterLayer(url, name, 'wms')
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    logger.debug("WMS layer added: {0}".format(url))
+                else:
+                    error_msg = layer.error().message()
+                    name_url = self.build_wms_url(layer_info[3],
+                                                         layer_info[4],
+                                                         mode="complete")
+                    if name_url[0] != 0:
+                        layer = QgsRasterLayer(name_url[2], name_url[1], 'wms')
+                        if layer.isValid():
+                            lyr = QgsProject.instance().addMapLayer(layer)
+                            logger.debug("WMS layer added: {0}".format(url))
+                        else:
+                            error_msg = layer.error().message()
+                            logger.warning("Invalid service: {0}. QGIS says: {}"
+                                           .format(url, error_msg.encode("latin1")))
+                    else:
+                        QMessageBox.information(
+                            iface.mainWindow(),
+                            self.tr('Error'),
+                            self.tr("WMS is not valid. QGIS says: {}")
+                                    .format(error_msg))
+            # If WMTS link
+            elif layer_info[0] == 'WMTS':
+                url = layer_info[2]
+                name = layer_info[1]
+                layer = QgsRasterLayer(url, name, 'wms')
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    logger.debug("WMTS service layer added: {0}".format(url))
+                else:
+                    error_msg = layer.error().message()
+                    logger.warning("Invalid service: {}. QGIS says: {}"
+                                   .format(url, error_msg))
+                    QMessageBox.information(
+                        iface.mainWindow(),
+                        self.tr('Error'),
+                        self.tr("WMTS is not valid. QGIS says: {}")
+                            .format(error_msg))
+            else:
+                pass
+            
+        # If the data is a PostGIS table
+        elif type(layer_info) == dict:
+            logger.debug("Data type: PostGIS")
+            # Give aliases to the data passed as arguement
+            base_name = layer_info.get("base_name", "")
+            schema = layer_info.get("schema", "")
+            table = layer_info.get("table", "")
+            # Retrieve the database information stored in the PostGISdict
+            uri = QgsDataSourceURI()
+            host = self.PostGISdict[base_name]['host']
+            port = self.PostGISdict[base_name]['port']
+            user = self.PostGISdict[base_name]['username']
+            password = self.PostGISdict[base_name]['password']
+            # set host name, port, database name, username and password
+            uri.setConnection(host, port, base_name, user, password)
+            # Get the geometry column name from the database connexion & table
+            # name.
+            c = pgis_con.PostGisDBConnector(uri)
+            dico = c.getTables()
+            for i in dico:
+                if i[0 == 1] and i[1] == table:
+                    geometry_column = i[8]
+            # set database schema, table name, geometry column
+            uri.setDataSource(schema, table, geometry_column)
+            # Adding the layer to the map canvas
+            layer = QgsVectorLayer(uri.uri(), table, "postgres")
+            if layer.isValid():
+                lyr = QgsProject.instance().addMapLayer(layer)
+                logger.debug("Data added: {}".format(table))
+            elif not layer.isValid() and plg_tools.last_error[0] == "postgis" and "prim" in plg_tools.last_error[1]:
+                logger.debug("PostGIS layer may be a view, "
+                            "so key column is missing. "
+                            "Trying to automatically set one...")
+                # get layer fields to set as key column
+                fields = layer.dataProvider().fields()
+                fields_names = [i.name() for i in fields]
+                # sort them by name containing id to better perf
+                fields_names.sort(key=lambda x: ("id" not in x, x))
+                for field in fields_names:
+                    uri.setKeyColumn(field)
+                    layer = QgsVectorLayer(uri.uri(True), table, "postgres")
+                    if layer.isValid():
+                        lyr = QgsProject.instance().addMapLayer(layer)
+                        logger.debug("PostGIS view layer added with [{}] as key column"
+                                    .format(field))
+                        # filling 'QGIS Server' tab of layer Properties
+                        self.md_sync.basic_sync(layer = lyr, info = layer_info)
+                        return 1
+                    else:
+                        continue
+            else:
+                logger.debug("Layer not valid. table = {0}".format(table))
+                QMessageBox.information(
+                    iface.mainWindow(),
+                    self.tr("Error"),
+                    self.tr("The PostGIS layer is not valid."
+                            " Reason: {}".format(plg_tools.last_error)))
+                return 0
+        # filling 'QGIS Server' tab of layer Properties
+        if layer.isValid():
+            self.md_sync.basic_sync(layer = lyr, info = layer_info)
+        else :
+            pass
+        return 1 

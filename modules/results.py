@@ -19,13 +19,12 @@ from qgis.utils import iface
 
 # Plugin modules
 from .tools import IsogeoPlgTools
-from .url_builder import UrlBuilder
+from .layer.add_layer import LayerAdder
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-plg_url_bldr = UrlBuilder()
 plg_tools = IsogeoPlgTools()
 
 qsettings = QSettings()
@@ -73,11 +72,14 @@ class ResultsManager(object):
     def __init__(self, isogeo_plugin):
         """Class constructor."""
         self.isogeo_widget = isogeo_plugin.dockwidget
-        self.add_layer = isogeo_plugin.add_layer
         self.send_details_request = isogeo_plugin.send_details_request
         self.tr = isogeo_plugin.tr
-        self.pg_connections = plg_url_bldr.build_postgis_dict(qsettings)
         self.cached_unreach_paths = []
+
+        self.layer_adder = LayerAdder()
+        self.layer_adder.tr = self.tr
+        self.add_layer = self.layer_adder.adding
+        self.pg_connections = self.layer_adder.build_postgis_dict(qsettings)
 
     def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
         """Display the results in a table ."""
@@ -87,6 +89,7 @@ class ResultsManager(object):
             tbl_result = self.isogeo_widget.tbl_result
         else:
             pass
+        self.layer_adder.tbl_result = tbl_result
         # Get the name (and other informations) of all databases whose
         # connection is set up in QGIS
         if pg_connections == {}:
@@ -223,48 +226,36 @@ class ResultsManager(object):
                                        "formatVersion": service.get("formatVersion")}
                         # EFS
                         if service.get("format") == "efs":
-                            name_url = plg_url_bldr.build_efs_url(layer, srv_details,
+                            params = self.layer_adder.build_efs_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                pass
                         # EMS
-                        if service.get("format") == "ems":
-                            name_url = plg_url_bldr.build_ems_url(layer, srv_details,
+                        elif service.get("format") == "ems":
+                            params = self.layer_adder.build_ems_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                pass
                         # WFS
-                        if service.get("format") == "wfs":
-                            name_url = plg_url_bldr.build_wfs_url(layer, srv_details,
+                        elif service.get("format") == "wfs":
+                            params = self.layer_adder.build_wfs_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                pass
+
                         # WMS
                         elif service.get("format") == "wms":
-                            name_url = plg_url_bldr.build_wms_url(layer, srv_details,
+                            params = self.layer_adder.build_wms_url(layer, srv_details,
                                                                  rsc_type="ds_dyn_lyr_srv",
                                                                  mode="quicky")
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                pass
                         # WMTS
                         elif service.get("format") == "wmts":
-                            name_url = plg_url_bldr.build_wmts_url(layer, srv_details,
-                                                                  rsc_type="ds_dyn_lyr_srv")
-                            if name_url[0] != 0:
-                                dico_add_options[u"WMTS : " + name_url[1]] = name_url
-                            else:
-                                pass
+                            params = self.layer_adder.build_wmts_url(layer, srv_details,
+                                                                  rsc_type="ds_dyn_lyr_srv") 
+                        else:
+                            pass
+
+                        if params[0] != 0:
+                            basic_md = [i.get("title", "NR"), i.get("abstract", "NR"), md_keywords]
+                            params.append(basic_md)
+                            dico_add_options["{} : {}".format(params[0], params[1])] = params
                         else:
                             pass
                     else:
@@ -278,7 +269,7 @@ class ResultsManager(object):
                     # EFS
                     if i.get("format") == "efs":
                         for layer in i.get("layers"):
-                            name_url = plg_url_bldr.build_efs_url(layer, srv_details,
+                            name_url = self.layer_adder.build_efs_url(layer, srv_details,
                                                                   rsc_type="service",
                                                                   mode="quicky")
                             if name_url[0] != 0:
@@ -288,7 +279,7 @@ class ResultsManager(object):
                     # EMS
                     if i.get("format") == "ems":
                         for layer in i.get("layers"):
-                            name_url = plg_url_bldr.build_ems_url(layer, srv_details,
+                            name_url = self.layer_adder.build_ems_url(layer, srv_details,
                                                                   rsc_type="service",
                                                                   mode="quicky")
                             if name_url[0] != 0:
@@ -298,7 +289,7 @@ class ResultsManager(object):
                     # WFS
                     if i.get("format") == "wfs":
                         for layer in i.get("layers"):
-                            name_url = plg_url_bldr.build_wfs_url(layer, srv_details,
+                            name_url = self.layer_adder.build_wfs_url(layer, srv_details,
                                                                  rsc_type="service",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -308,7 +299,7 @@ class ResultsManager(object):
                     # WMS
                     elif i.get("format") == "wms":
                         for layer in i.get("layers"):
-                            name_url = plg_url_bldr.build_wms_url(layer, srv_details,
+                            name_url = self.layer_adder.build_wms_url(layer, srv_details,
                                                                  rsc_type="service",
                                                                  mode="quicky")
                             if name_url[0] != 0:
@@ -318,7 +309,7 @@ class ResultsManager(object):
                     # WMTS
                     elif i.get("format") == "wmts":
                         for layer in i.get("layers"):
-                            name_url = plg_url_bldr.build_wmts_url(layer, srv_details,
+                            name_url = self.layer_adder.build_wmts_url(layer, srv_details,
                                                                   rsc_type="service")
                             if name_url[0] != 0:
                                 btn_label = "WMTS : {}".format(name_url[1])
@@ -359,6 +350,8 @@ class ResultsManager(object):
                     icon = ico_pgis
                 elif text.startswith(self.tr("Data file", "ResultsManager")):
                     icon = ico_file
+                else :
+                    logger.debug("text : {}".format(text))
                 add_button = QPushButton(icon, text)
                 add_button.setStyleSheet("text-align: left")
                 add_button.pressed.connect(partial(self.add_layer,
@@ -416,8 +409,8 @@ class ResultsManager(object):
         if mode == 1:
             filepath = os.path.normpath(metadata_path)
             dir_file = os.path.dirname(filepath)
-            logger.debug("*======* METADATA_PATH : {}".format(metadata_path))
-            logger.debug("*======* FILEPATH : {}".format(filepath))
+            # logger.debug("*======* METADATA_PATH : {}".format(metadata_path))
+            # logger.debug("*======* FILEPATH : {}".format(filepath))
             if dir_file not in self.cached_unreach_paths:
                 try:
                     with open(filepath) as f:

@@ -46,7 +46,6 @@ from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # PyQGIS
-import db_manager.db_plugins.postgis.connector as pgis_con
 
 from qgis.utils import iface, plugin_times
 
@@ -75,7 +74,7 @@ from .modules import IsogeoPlgApiMngr
 from .modules import MetadataDisplayer
 from .modules import ResultsManager
 from .modules import IsogeoPlgTools
-from .modules import UrlBuilder
+from .modules import QuickSearchManager
 from.modules.isogeo_pysdk import IsogeoUtils
 
 # ############################################################################
@@ -104,7 +103,6 @@ if not os.path.exists(os.path.join(plg_basepath, "_user")):
 # plugin internal submodules
 plg_api_mngr = IsogeoPlgApiMngr(auth_folder=os.path.join(plg_basepath, "_auth"))
 plg_tools = IsogeoPlgTools(auth_folder=os.path.join(plg_basepath, "_auth"))
-plg_url_bldr = UrlBuilder()
 
 # -- LOG FILE --------------------------------------------------------
 # log level depends on plugin directory name
@@ -214,6 +212,8 @@ class Isogeo:
         self.quicksearch_new_dialog = QuicksearchNew()
         self.quicksearch_rename_dialog = QuicksearchRename()
         self.credits_dialog = IsogeoCredits()
+
+        # submodules
         self.md_display = MetadataDisplayer(IsogeoMdDetails())
         self.results_mng = ResultsManager(self)
 
@@ -232,7 +232,7 @@ class Isogeo:
         self.showDetails = False
         self.store = False
         self.settingsRequest = False
-        self.PostGISdict = plg_url_bldr.build_postgis_dict(qsettings)
+        self.PostGISdict = self.results_mng.layer_adder.build_postgis_dict(qsettings)
 
         self.currentUrl = ""
         # self.currentUrl = "https://v1.api.isogeo.com/resources/search?
@@ -869,7 +869,8 @@ class Isogeo:
             self.results_mng.show_results(result,
                                           self.dockwidget.tbl_result,
                                           progress_bar=self.bar)
-            self.write_search_params('_current', search_kind="Current")
+            # self.write_search_params('_current', search_kind="Current")
+            self.quicksearch.write_params('_current', search_kind="Current")
             self.store = True
         # Re enable all user input fields now the search function is
         # finished.
@@ -1135,38 +1136,6 @@ class Isogeo:
             if plg_api_mngr.req_status_isClear is True:
                 self.api_get_requests(self.token)
 
-
-    def write_search_params(self, search_name, search_kind="Default"):
-        """Write a new element in the json file when a search is saved."""
-        # Open the saved_search file as a dict. Each key is a search name,
-        # each value is a dict containing the parameters for this search name
-        with open(self.json_path) as data_file:
-            saved_searches = json.load(data_file)
-        # If the name already exists, ask for a new one. ================ TO DO
-
-        # Write the current parameters in a dict, and store it in the saved
-        # search dict
-        params = self.save_params()
-        params['url'] = self.currentUrl
-        for i in range(len(params.get('keys'))):
-            params['keyword_{0}'.format(i)] = params.get('keys')[i]
-        params.pop('keys', None)
-        saved_searches[search_name] = params
-        # writing file
-        with open(self.json_path, 'w') as outfile:
-            json.dump(saved_searches, outfile,
-                      sort_keys=True, indent=4)
-        # Log and messages
-        logger.debug("{} search stored: {}. Parameters: {}"
-                    .format(search_kind, search_name, params))
-        if search_kind != "Current":
-            msgBar.pushMessage(self.tr("{} successfully saved: {}")
-                                       .format(search_kind, search_name),
-                               duration=3)
-        else:
-            pass
-        return
-
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
         selected_search = self.dockwidget.cbb_quicksearch_use.currentText()
@@ -1285,344 +1254,6 @@ class Isogeo:
         self.add_loading_bar()
         self.showResult = True
         self.search()
-
-    # -- QUICKSEARCHES  -------------------------------------------------------
-    def quicksearch_save(self):
-        """Call the write_search() function and refresh the combobox."""
-        # retrieve quicksearch given name and store it
-        search_name = self.quicksearch_new_dialog.txt_quicksearch_name.text()
-        self.write_search_params(search_name, search_kind="Quicksearch")
-        # load all saved quicksearches and populate drop-down (combobox)
-        with open(self.json_path, "r") as saved_searches_file:
-            saved_searches = json.load(saved_searches_file)
-        search_list = list(saved_searches.keys())
-        search_list.pop(search_list.index('_default'))
-        search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch_use.clear()
-        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_quicksearch_edit.clear()
-        for i in search_list:
-            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
-            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-        # method ending
-        return
-
-    def quicksearch_rename(self):
-        """Modify the json file in order to rename a search."""
-        old_name = self.dockwidget.cbb_quicksearch_edit.currentText()
-        with open(self.json_path, "r") as saved_searches_file:
-            saved_searches = json.load(saved_searches_file)
-        new_name = self.quicksearch_rename_dialog.txt_quicksearch_rename.text()
-        saved_searches[new_name] = saved_searches[old_name]
-        saved_searches.pop(old_name)
-        search_list = list(saved_searches.keys())
-        search_list.pop(search_list.index('_default'))
-        search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch_use.clear()
-        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_quicksearch_edit.clear()
-        for i in search_list:
-            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
-            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-        # Update JSON file
-        with open(self.json_path, 'w') as outfile:
-            json.dump(saved_searches, outfile,
-                      sort_keys=True, indent=4)
-        # inform user
-        msgBar.pushMessage("Isogeo",
-                           self.tr("Quicksearch renamed: from {} to {}")
-                                   .format(old_name, new_name),
-                           level=0,
-                           duration=3)
-        # method ending
-        return
-
-    def quicksearch_remove(self):
-        """Modify the json file in order to delete a search."""
-        to_be_deleted = self.dockwidget.cbb_quicksearch_edit.currentText()
-        with open(self.json_path, "r") as saved_searches_file:
-            saved_searches = json.load(saved_searches_file)
-        saved_searches.pop(to_be_deleted)
-        search_list = list(saved_searches.keys())
-        search_list.pop(search_list.index('_default'))
-        search_list.pop(search_list.index('_current'))
-        self.dockwidget.cbb_quicksearch_use.clear()
-        self.dockwidget.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quick Search'))
-        self.dockwidget.cbb_quicksearch_edit.clear()
-        for i in search_list:
-            self.dockwidget.cbb_quicksearch_use.addItem(i, i)
-            self.dockwidget.cbb_quicksearch_edit.addItem(i, i)
-        # Update JSON file
-        with open(self.json_path, 'w') as outfile:
-            json.dump(saved_searches, outfile,
-                      sort_keys=True, indent=4)
-        # inform user
-        msgBar.pushMessage("Isogeo",
-                           self.tr("Quicksearch removed: {}")
-                                   .format(to_be_deleted),
-                           level=0,
-                           duration=3)
-        # method ending
-        return
-
-    # -- RESULTS to MAP ----------------------------------------------------------
-    def add_layer(self, layer_info):
-        """Add a layer to QGIS map canvas.
-
-        Take layer index, search the required information to add it in
-        the temporary dictionnary constructed in the show_results function.
-        It then adds it.
-        """
-        logger.debug("add_layer method called.")
-        if layer_info[0] == "index":
-            combobox = self.dockwidget.tbl_result.cellWidget(layer_info[1], 3)
-            layer_info = combobox.itemData(combobox.currentIndex())
-        elif layer_info[0] == "info":
-            layer_info = layer_info[1]
-        else:
-            pass
-
-        if type(layer_info) == list:
-            # If the layer to be added is a vector file
-            if layer_info[0] == "vector":
-                path = layer_info[1]
-                name = os.path.basename(path).split(".")[0]
-                layer = QgsVectorLayer(path, layer_info[2], 'ogr')
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    # fill QGIS metadata from Isogeo
-                    lyr.setTitle(layer_info[2])
-                    lyr.setAbstract(layer_info[3])
-                    lyr.setKeywordList(",".join(layer_info[4]))
-                    try:
-                        QgsMessageLog.logMessage("Data layer added: {}"
-                                                 .format(name),
-                                                 "Isogeo")
-                        logger.debug("Vector layer added: {}".format(path))
-                    except UnicodeEncodeError:
-                        QgsMessageLog.logMessage(
-                            "Vector layer added:: {}".format(
-                                name.decode("latin1")), "Isogeo")
-                        logger.debug("Vector layer added: {}"
-                                    .format(name.decode("latin1")))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning("Invalid vector layer: {}. QGIS says: {}"
-                                   .format(path,
-                                           error_msg))
-                    QMessageBox.information(iface.mainWindow(),
-                                            self.tr('Error'),
-                                            self.tr("Vector not valid {}. QGIS says: {}")
-                                            .format(path, error_msg))
-            # If raster file
-            elif layer_info[0] == "raster":
-                path = layer_info[1]
-                name = os.path.basename(path).split(".")[0]
-                layer = QgsRasterLayer(path, layer_info[2])
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    # fill QGIS metadata from Isogeo
-                    lyr.setTitle(layer_info[2])
-                    lyr.setAbstract(layer_info[3])
-                    lyr.setKeywordList(",".join(layer_info[4]))
-                    try:
-                        QgsMessageLog.logMessage("Data layer added: {}"
-                                                 .format(name),
-                                                 "Isogeo")
-                        logger.debug("Raster layer added: {}".format(path))
-                    except UnicodeEncodeError:
-                        QgsMessageLog.logMessage(
-                            "Raster layer added:: {}".format(
-                                name.decode("latin1")), "Isogeo")
-                        logger.debug("Raster layer added: {}"
-                                    .format(name.decode("latin1")))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning("Invalid raster layer: {}. QGIS says: {}"
-                                   .format(path,
-                                           error_msg))
-                    QMessageBox.information(iface.mainWindow(),
-                                            self.tr('Error'),
-                                            self.tr("Raster not valid {}. QGIS says: {}")
-                                            .format(path, error_msg))
-            # If EFS link
-            elif layer_info[0] == 'arcgisfeatureserver':
-                name = layer_info[1]
-                uri = layer_info[2]
-                layer = QgsVectorLayer(uri,
-                                       name,
-                                       'arcgisfeatureserver')
-                if layer.isValid():
-                    QgsProject.instance().addMapLayer(layer)
-                    logger.debug("EFS layer added: {0}".format(uri))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning("Invalid service: {0}. QGIS says: {}"
-                                   .format(uri, error_msg.encode("latin1")))
-                    QMessageBox.information(iface.mainWindow(),
-                                            self.tr('Error'),
-                                            self.tr("EFS not valid. QGIS says: {}")
-                                            .format(error_msg))
-            # If EMS link
-            elif layer_info[0] == 'arcgismapserver':
-                name = layer_info[1]
-                uri = layer_info[2]
-                layer = QgsRasterLayer(uri,name,"arcgismapserver")
-                if layer.isValid():
-                    QgsProject.instance().addMapLayer(layer)
-                    logger.debug("EMS layer added: {0}".format(uri))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning("Invalid service: {0}. QGIS says: {}"
-                                   .format(uri, error_msg.encode("latin1")))
-                    QMessageBox.information(iface.mainWindow(),
-                                            self.tr('Error'),
-                                            self.tr("EMS not valid. QGIS says: {}")
-                                            .format(error_msg))
-            # If WFS link
-            elif layer_info[0] == 'WFS':
-                url = layer_info[2]
-                name = layer_info[1]
-                layer = QgsVectorLayer(url, name, 'WFS')
-                if layer.isValid():
-                    QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WFS layer added: {0}".format(url))
-                else:
-                    error_msg = layer.error().message()
-                    name_url = plg_url_bldr.build_wfs_url(layer_info[3],
-                                                         layer_info[4],
-                                                         mode="complete")
-                    if name_url[0] != 0:
-                        layer = QgsVectorLayer(name_url[2], name_url[1], 'WFS')
-                        if layer.isValid():
-                            QgsProject.instance().addMapLayer(layer)
-                            logger.debug("WFS layer added: {0}".format(url))
-                        else:
-                            error_msg = layer.error().message()
-                            logger.warning("Invalid service: {0}. QGIS says: {}"
-                                           .format(url, error_msg.encode("latin1")))
-                    else:
-                        QMessageBox.information(
-                            iface.mainWindow(),
-                            self.tr('Error'),
-                            self.tr("WFS is not valid. QGIS says: {}")
-                                .format(error_msg))
-            # If WMS link
-            elif layer_info[0] == 'WMS':
-                url = layer_info[2]
-                name = layer_info[1]
-                layer = QgsRasterLayer(url, name, 'wms')
-                if layer.isValid():
-                    QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WMS layer added: {0}".format(url))
-                else:
-                    error_msg = layer.error().message()
-                    name_url = plg_url_bldr.build_wms_url(layer_info[3],
-                                                         layer_info[4],
-                                                         mode="complete")
-                    if name_url[0] != 0:
-                        layer = QgsRasterLayer(name_url[2], name_url[1], 'wms')
-                        if layer.isValid():
-                            QgsProject.instance().addMapLayer(layer)
-                            logger.debug("WMS layer added: {0}".format(url))
-                        else:
-                            error_msg = layer.error().message()
-                            logger.warning("Invalid service: {0}. QGIS says: {}"
-                                           .format(url, error_msg.encode("latin1")))
-                    else:
-                        QMessageBox.information(
-                            iface.mainWindow(),
-                            self.tr('Error'),
-                            self.tr("WMS is not valid. QGIS says: {}")
-                                    .format(error_msg))
-            # If WMTS link
-            elif layer_info[0] == 'WMTS':
-                url = layer_info[2]
-                name = layer_info[1]
-                layer = QgsRasterLayer(url, name, 'wms')
-                if layer.isValid():
-                    QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WMTS service layer added: {0}".format(url))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning("Invalid service: {}. QGIS says: {}"
-                                   .format(url, error_msg))
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr('Error'),
-                        self.tr("WMTS is not valid. QGIS says: {}")
-                            .format(error_msg))
-            else:
-                pass
-        # If the data is a PostGIS table
-        elif type(layer_info) == dict:
-            logger.debug("Data type: PostGIS")
-            # Give aliases to the data passed as arguement
-            base_name = layer_info.get("base_name", "")
-            schema = layer_info.get("schema", "")
-            table = layer_info.get("table", "")
-            # Retrieve the database information stored in the PostGISdict
-            uri = QgsDataSourceURI()
-            host = self.PostGISdict[base_name]['host']
-            port = self.PostGISdict[base_name]['port']
-            user = self.PostGISdict[base_name]['username']
-            password = self.PostGISdict[base_name]['password']
-            # set host name, port, database name, username and password
-            uri.setConnection(host, port, base_name, user, password)
-            # Get the geometry column name from the database connexion & table
-            # name.
-            c = pgis_con.PostGisDBConnector(uri)
-            dico = c.getTables()
-            for i in dico:
-                if i[0 == 1] and i[1] == table:
-                    geometry_column = i[8]
-            # set database schema, table name, geometry column
-            uri.setDataSource(schema, table, geometry_column)
-            # Adding the layer to the map canvas
-            layer = QgsVectorLayer(uri.uri(), table, "postgres")
-            # layer.setTitle(layer_info.get("title", "notitle"))
-            # layer.setAbstract(layer_info.get("abstract", ""))
-            # layer.setKeywordList(",".join(layer_info.get("keywords", ())))
-            if layer.isValid():
-                lyr = QgsProject.instance().addMapLayer(layer)
-                # fill QGIS metadata from Isogeo
-                lyr.setTitle(layer_info.get("title", "notitle"))
-                lyr.setAbstract(layer_info.get("abstract", ""))
-                lyr.setKeywordList(",".join(layer_info.get("keywords", ())))
-                logger.debug("Data added: {}".format(table))
-            elif not layer.isValid() and plg_tools.last_error[0] == "postgis" and "prim" in plg_tools.last_error[1]:
-                logger.debug("PostGIS layer may be a view, "
-                            "so key column is missing. "
-                            "Trying to automatically set one...")
-                # get layer fields to set as key column
-                fields = layer.dataProvider().fields()
-                fields_names = [i.name() for i in fields]
-                # sort them by name containing id to better perf
-                fields_names.sort(key=lambda x: ("id" not in x, x))
-                for field in fields_names:
-                    uri.setKeyColumn(field)
-                    layer = QgsVectorLayer(uri.uri(True), table, "postgres")
-                    if layer.isValid():
-                        lyr = QgsProject.instance().addMapLayer(layer)
-                        # fill QGIS metadata from Isogeo
-                        lyr.setTitle(layer_info.get("title", "notitle"))
-                        lyr.setAbstract(layer_info.get("abstract", ""))
-                        lyr.setKeywordList(",".join(layer_info.get("keywords", ())))
-                        logger.debug("PostGIS view layer added with [{}] as key column"
-                                    .format(field))
-                        return 1
-                    else:
-                        continue
-            else:
-                logger.debug("Layer not valid. table = {0}".format(table))
-                QMessageBox.information(
-                    iface.mainWindow(),
-                    self.tr("Error"),
-                    self.tr("The PostGIS layer is not valid."
-                            " Reason: {}".format(plg_tools.last_error)))
-                return 0
-        return 1
-
 
     # -- UTILS ----------------------------------------------------------------
     def add_loading_bar(self):
@@ -1778,7 +1409,7 @@ class Isogeo:
                 self.dockwidget = IsogeoDockWidget()
                 logger.debug("Plugin load time: {}"
                              .format(plugin_times.get(plg_reg_name, "NR")))
-
+            
             # connect to provide cleanup on closing of dockwidget
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
 
@@ -1820,23 +1451,11 @@ class Isogeo:
         self.dockwidget.btn_previous.pressed.connect(self.previous_page)
         
         # -- Quicksearches ----------------------------------------------------
+        self.quicksearch = QuickSearchManager(self)
         # select and use
         self.dockwidget.cbb_quicksearch_use.activated.connect(self.set_widget_status)
-        self.dockwidget.btn_quicksearch_save.pressed.connect(partial(self.show_popup, popup='ask_name'))
-        # create and save
-        self.quicksearch_new_dialog.accepted.connect(self.quicksearch_save)
-        # rename
-        self.quicksearch_rename_dialog.accepted.connect(self.quicksearch_rename)
 
-        # -- Settings tab - Search --------------------------------------------
-        # quicksearches
-        self.dockwidget.btn_rename_sr.pressed.connect(partial(self.show_popup,  # rename
-                                                              popup='new_name'))
-        self.dockwidget.btn_delete_sr.pressed.connect(self.quicksearch_remove)  # delete
-
-        # default search
-        self.dockwidget.btn_default_save.pressed.connect(
-            partial(self.write_search_params, '_default', "Default"))
+        # # -- Settings tab - Search --------------------------------------------
         # button to empty the cache of filepaths #135
         self.dockwidget.btn_cache_trash.pressed.connect(self.results_mng._cache_cleaner)
 
