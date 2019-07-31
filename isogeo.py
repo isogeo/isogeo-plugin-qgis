@@ -171,6 +171,7 @@ class Isogeo:
 
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
+        self.plg_basepath = os.path.dirname(os.path.realpath(__file__))
 
         # initialize locale
         locale = qsettings.value('locale/userLocale')[0:2]
@@ -216,13 +217,10 @@ class Isogeo:
         # submodules
         self.md_display = MetadataDisplayer(IsogeoMdDetails())
         self.results_mng = ResultsManager(self)
+        self.results_mng.cache_mng.loader()
 
         # link UI and submodules
         plg_api_mngr.ui_auth_form = self.auth_prompt_form
-        self.results_mng.paths_cache = os.path.realpath(os.path.join(plg_basepath,
-                                                                     "_user",
-                                                                     "paths_cache.json"))
-        self.results_mng._cache_loader()
 
         # start variables
         self.savedSearch = "first"
@@ -232,7 +230,7 @@ class Isogeo:
         self.showDetails = False
         self.store = False
         self.settingsRequest = False
-        self.PostGISdict = self.results_mng.layer_adder.build_postgis_dict(qsettings)
+        self.PostGISdict = self.results_mng.build_postgis_dict(qsettings)
 
         self.currentUrl = ""
         # self.currentUrl = "https://v1.api.isogeo.com/resources/search?
@@ -318,7 +316,7 @@ class Isogeo:
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed."""
         # save cache
-        self.results_mng._cache_dumper()
+        self.results_mng.cache_mng.dumper()
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
 
@@ -1457,7 +1455,7 @@ class Isogeo:
 
         # # -- Settings tab - Search --------------------------------------------
         # button to empty the cache of filepaths #135
-        self.dockwidget.btn_cache_trash.pressed.connect(self.results_mng._cache_cleaner)
+        self.dockwidget.btn_cache_trash.pressed.connect(self.results_mng.cache_mng.cleaner)
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form

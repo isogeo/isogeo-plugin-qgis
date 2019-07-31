@@ -88,62 +88,6 @@ class LayerAdder():
         self.tr = None
         self.md_sync = MetadataSynchronizer()
 
-    def build_postgis_dict(self, input_dict):
-        """Build the dict that stores informations about PostGIS connexions."""
-        # input_dict.beginGroup("PostgreSQL/connections")
-        final_dict = {}
-        for k in sorted(input_dict.allKeys()):
-            if k.startswith("PostgreSQL/connections/")\
-                    and k.endswith("/database"):
-                if len(k.split("/")) == 4:
-                    connection_name = k.split("/")[2]
-                    password_saved = input_dict.value(
-                        'PostgreSQL/connections/' +
-                        connection_name +
-                        '/savePassword')
-                    user_saved = input_dict.value(
-                        'PostgreSQL/connections/' +
-                        connection_name +
-                        '/saveUsername')
-                    if password_saved == 'true' and user_saved == 'true':
-                        dictionary = {'name':
-                                      input_dict.value(
-                                          'PostgreSQL/connections/' +
-                                          connection_name +
-                                          '/database'),
-                                      'host':
-                                      input_dict.value(
-                                          'PostgreSQL/connections/' +
-                                          connection_name +
-                                          '/host'),
-                                      'port':
-                                      input_dict.value(
-                                          'PostgreSQL/connections/' +
-                                          connection_name +
-                                          '/port'),
-                                      'username':
-                                      input_dict.value(
-                                          'PostgreSQL/connections/' +
-                                          connection_name +
-                                          '/username'),
-                                      'password':
-                                      input_dict.value(
-                                          'PostgreSQL/connections/' +
-                                          connection_name +
-                                          '/password')}
-                        final_dict[
-                            input_dict.value('PostgreSQL/connections/' +
-                                             connection_name +
-                                             '/database')
-                        ] = dictionary
-                    else:
-                        continue
-                else:
-                    pass
-            else:
-                pass
-        return final_dict
-
     def build_efs_url(self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"):
         """Reformat the input Esri Feature Service url so it fits QGIS criterias.
 

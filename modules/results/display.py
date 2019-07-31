@@ -18,8 +18,9 @@ from qgis.PyQt.QtWidgets import (QTableWidgetItem, QComboBox, QPushButton, QLabe
 from qgis.utils import iface
 
 # Plugin modules
-from .tools import IsogeoPlgTools
-from .layer.add_layer import LayerAdder
+from .cache import CacheManager
+from ..tools import IsogeoPlgTools
+from ..layer.add_layer import LayerAdder
 
 # ############################################################################
 # ########## Globals ###############
@@ -67,19 +68,20 @@ ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 
 class ResultsManager(object):
     """Basic class that holds utilitary methods for the plugin."""
-    paths_cache = ""
 
     def __init__(self, isogeo_plugin):
         """Class constructor."""
         self.isogeo_widget = isogeo_plugin.dockwidget
         self.send_details_request = isogeo_plugin.send_details_request
         self.tr = isogeo_plugin.tr
-        self.cached_unreach_paths = []
 
         self.layer_adder = LayerAdder()
         self.layer_adder.tr = self.tr
         self.add_layer = self.layer_adder.adding
-        self.pg_connections = self.layer_adder.build_postgis_dict(qsettings)
+        self.pg_connections = self.build_postgis_dict(qsettings)
+
+        self.path_cache_file = os.path.realpath(os.path.join(isogeo_plugin.plg_basepath, "_user", "paths_cache.json"))
+        self.cache_mng = CacheManager(self.path_cache_file)
 
     def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
         """Display the results in a table ."""
@@ -397,7 +399,7 @@ class ResultsManager(object):
     def _filepath_builder(self, metadata_path, mode=1):
         """Build filepath from metadata path handling various cases. See: #129.
 
-        :param dict metadata: path found in metadata
+        :param dict metadata_path: path found in metadata
         :param int mode: mode to apply. Options:
           1 = only with standard path.normpath
           2 = using raw string (useful for Windows systems)
@@ -409,9 +411,7 @@ class ResultsManager(object):
         if mode == 1:
             filepath = os.path.normpath(metadata_path)
             dir_file = os.path.dirname(filepath)
-            # logger.debug("*======* METADATA_PATH : {}".format(metadata_path))
-            # logger.debug("*======* FILEPATH : {}".format(filepath))
-            if dir_file not in self.cached_unreach_paths:
+            if dir_file not in self.cache_mng.cached_unreach_paths:
                 try:
                     with open(filepath) as f:
                         return filepath
@@ -423,45 +423,74 @@ class ResultsManager(object):
                 return False
         elif mode == 2:
             logger.debug("Using forced raw string")
-            dir_file = os.path.dirname(metadata_path)
             filepath = plg_tools._to_raw_string(metadata_path)
+            dir_file = os.path.dirname(metadata_path)
             try:
                 with open(filepath) as f:
                     return filepath
             except IOError:
-                self.cached_unreach_paths.append(dir_file)
+                self.cache_mng.cached_unreach_paths.append(dir_file)
                 logger.debug("Path is not reachable and has been cached:{}".format(dir_file))
                 return False
         else:
             logger.debug("Incorrect mode: {}".format(mode))
             raise ValueError
 
-    def _cache_dumper(self):
-        """Dumps paths ignored into a JSON file. See: #135"""
-        cached_filepaths_unique = set(self.cached_unreach_paths)
-        with open(self.paths_cache, 'w') as cached_path_file:
-            json.dump(list(cached_filepaths_unique), cached_path_file,
-                      sort_keys=True, indent=4)
-        logger.debug("Paths cache has been dumped")
-
-    def _cache_loader(self):
-        """Loads paths ignored into a JSON file."""
-        try:
-            with open(self.paths_cache, 'r') as cached_path_file:
-                self.cached_unreach_paths = json.load(cached_path_file)
-            logger.debug("Paths cache has been loaded")
-        except ValueError as e:
-            logger.error("Path JSON corrupted")
-            self.cached_unreach_paths = []
-        except IOError:
-        	logger.debug("Paths cache file not found. Maybe because of first launch.")
-        	self._cache_dumper()
-
-    def _cache_cleaner(self):
-        """Clean cached paths."""
-        self.cached_unreach_paths = []
-        self._cache_dumper()
-        logger.debug("Cache has been cleaned")
+    def build_postgis_dict(self, input_dict):
+        """Build the dict that stores informations about PostGIS connexions."""
+        # input_dict.beginGroup("PostgreSQL/connections")
+        final_dict = {}
+        for k in sorted(input_dict.allKeys()):
+            if k.startswith("PostgreSQL/connections/")\
+                    and k.endswith("/database"):
+                if len(k.split("/")) == 4:
+                    connection_name = k.split("/")[2]
+                    password_saved = input_dict.value(
+                        'PostgreSQL/connections/' +
+                        connection_name +
+                        '/savePassword')
+                    user_saved = input_dict.value(
+                        'PostgreSQL/connections/' +
+                        connection_name +
+                        '/saveUsername')
+                    if password_saved == 'true' and user_saved == 'true':
+                        dictionary = {'name':
+                                      input_dict.value(
+                                          'PostgreSQL/connections/' +
+                                          connection_name +
+                                          '/database'),
+                                      'host':
+                                      input_dict.value(
+                                          'PostgreSQL/connections/' +
+                                          connection_name +
+                                          '/host'),
+                                      'port':
+                                      input_dict.value(
+                                          'PostgreSQL/connections/' +
+                                          connection_name +
+                                          '/port'),
+                                      'username':
+                                      input_dict.value(
+                                          'PostgreSQL/connections/' +
+                                          connection_name +
+                                          '/username'),
+                                      'password':
+                                      input_dict.value(
+                                          'PostgreSQL/connections/' +
+                                          connection_name +
+                                          '/password')}
+                        final_dict[
+                            input_dict.value('PostgreSQL/connections/' +
+                                             connection_name +
+                                             '/database')
+                        ] = dictionary
+                    else:
+                        continue
+                else:
+                    pass
+            else:
+                pass
+        return final_dict
 
 
 # #############################################################################
