@@ -72,7 +72,6 @@ from .modules import MetadataDisplayer
 from .modules import ResultsManager
 from .modules import IsogeoPlgTools
 from .modules import QuickSearchManager
-from.modules.isogeo_pysdk import IsogeoUtils
 
 # ############################################################################
 # ########## Globals ###############
@@ -377,7 +376,7 @@ class Isogeo:
                 self.api_requester.reply_ready.connect(self.update_fields)
                 self.api_requester.api_get_requests()
         elif token_signal == "credIssue":
-            self.authentificator.display_auth_form()
+            self.authenticator.display_auth_form()
             msgBar.pushMessage("Isogeo",
                                self.tr("API authentication failed.Isogeo API answered: {}")
                                        .format(parsed_content.get('error')),

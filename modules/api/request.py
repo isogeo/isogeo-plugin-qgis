@@ -9,16 +9,11 @@ from functools import partial
 
 # PyQGIS
 from qgis.core import QgsNetworkAccessManager, QgsMessageLog
-
 from qgis.utils import iface
 
 # PyQT
 from qgis.PyQt.QtCore import QByteArray, QUrl, QObject, pyqtSignal
-
 from qgis.PyQt.QtNetwork import QNetworkRequest
-
-# Plugin modules
-
 
 # ############################################################################
 # ########## Globals ###############
