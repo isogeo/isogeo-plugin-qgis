@@ -19,7 +19,7 @@ from ..ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
 from ..ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
 
 # Plugin modules
-from .api import IsogeoPlgApiMngr
+from .api import ApiRequester
 
 # ############################################################################
 # ########## Globals ###############
@@ -46,9 +46,8 @@ class QuickSearchManager():
         self.tr = isogeo_plg.tr
         self.lang = isogeo_plg.lang
 
-        # Getting wath the class need from IsogeoPlgApiMngr to build search URL
-        self.auth_folder = os.path.join(isogeo_plg.plugin_dir, "_auth")
-        self.api_mngr = IsogeoPlgApiMngr(auth_folder = self.auth_folder)
+        # Getting wath the class need from ApiRequester to build search URL
+        self.requester = object
 
         # Setting ui elements from plugin dockwidget
         self.btn_save = self.dockwidget.btn_quicksearch_save
@@ -91,7 +90,7 @@ class QuickSearchManager():
         # Info for _lang parameter
         params['lang'] = self.lang
         # building request url
-        params['url'] = self.api_mngr.build_request_url(params)
+        params['url'] = self.requester.build_request_url(params)
 
         for i in range(len(params.get('keys'))):
             params['keyword_{0}'.format(i)] = params.get('keys')[i]

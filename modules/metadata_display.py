@@ -20,7 +20,7 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem
 from .isogeo_pysdk import IsogeoTranslator
 
 # Plugin modules
-from .api import IsogeoPlgApiMngr
+from .api import Authenticator
 from .tools import IsogeoPlgTools
 
 # ############################################################################
@@ -30,7 +30,7 @@ from .tools import IsogeoPlgTools
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
-plg_api_mngr = IsogeoPlgApiMngr()
+plg_api_mngr = Authenticator()
 plg_tools = IsogeoPlgTools()
 
 osm_lbls = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Labels&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
