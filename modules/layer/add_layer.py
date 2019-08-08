@@ -16,6 +16,7 @@ from qgis.PyQt.QtWidgets import QMessageBox
 # PyQGIS
 import db_manager.db_plugins.postgis.connector as pgis_con
 from qgis.core import QgsDataSourceUri, QgsProject, QgsVectorLayer, QgsRasterLayer, QgsMessageLog
+from qgis.utils import iface 
 
 # Plugin modules
 from ..tools import IsogeoPlgTools

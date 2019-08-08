@@ -13,6 +13,6 @@
         "owner": null,
         "srs": null,
         "text": "",
-        "url": "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
+        "url": "https://v1.api.isogeo.com/resources/search?q=type:dataset&_limit=0&_offset=0"
     }
 }
