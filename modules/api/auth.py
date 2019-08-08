@@ -254,9 +254,9 @@ class Authenticator():
         except Exception as e:
             logger.error(e)
             QMessageBox.critical(self.ui_auth_form,
-                                 self.tr("Alert", "IsogeoAuthenticator"),
+                                 self.tr("Alert", "Authenticator"),
                                  self.tr("The selected credentials file is not correct.",
-                                         "IsogeoAuthenticator"))
+                                         "Authenticator"))
         # move credentials file into the plugin file structure
         if path.isfile(path.join(self.auth_folder, "client_secrets.json")):
             old_filename = "old_client_secrets_{}.json".format(int(time.time()))
@@ -356,7 +356,7 @@ class Authenticator():
 
         # override API tags to allow all datasets filter - see #
         if type_dataset == 2:
-            md_types[self.tr("Dataset", "IsogeoAuthenticator")] = "type:dataset"
+            md_types[self.tr("Dataset", "Authenticator")] = "type:dataset"
         else:
             pass
 
