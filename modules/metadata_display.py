@@ -63,7 +63,7 @@ class MetadataDisplayer(object):
 
         self.complete_md.btn_md_edit.pressed.connect(lambda: plg_tools.open_webpage(link=self.url_edition))
 
-    def show_complete_md(self, md):
+    def show_complete_md(self, md:dict):
         """Open the pop up window that shows the metadata sheet details.
         
         :param md dict: Isogeo metadata dict
