@@ -47,7 +47,7 @@ class QuickSearchManager():
         self.lang = isogeo_plg.lang
 
         # Getting wath the class need from ApiRequester to build search URL
-        self.requester = object
+        self.request_url_builder = object
 
         # Setting ui elements from plugin dockwidget
         self.btn_save = self.dockwidget.btn_quicksearch_save
@@ -90,7 +90,7 @@ class QuickSearchManager():
         # Info for _lang parameter
         params['lang'] = self.lang
         # building request url
-        params['url'] = self.requester.build_request_url(params)
+        params['url'] = self.request_url_builder(params)
 
         for i in range(len(params.get('keys'))):
             params['keyword_{0}'.format(i)] = params.get('keys')[i]
