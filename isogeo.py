@@ -25,7 +25,8 @@ from __future__ import (division,
 
 # Standard library
 import requests
-import os.path
+from os import path
+from pathlib import Path, PurePath
 import platform
 import json
 import base64
@@ -78,25 +79,34 @@ from .modules import SharesParser
 # ##################################
 
 # plugin directory path
-plg_basepath = os.path.dirname(os.path.realpath(__file__))
-plg_reg_name = os.path.basename(plg_basepath)
+plg_basepath = PurePath(__file__).parent
+plg_reg_name = path.basename(plg_basepath)
 
 # QGIS useful tooling and shortcuts
 msgBar = iface.messageBar()
 qsettings = QSettings()
 
 # required subfolders
-plg_logdir = os.path.join(plg_basepath, "_logs")
+plg_authdir = Path(plg_basepath)/"_auth"
+if not plg_authdir.exists():
+    os.mkdir(plg_authdir)
+else:
+    pass
 
-if not os.path.exists(os.path.join(plg_basepath, "_auth")):
-    os.mkdir(os.path.join(plg_basepath, "_auth"))
-if not os.path.exists(plg_logdir):
+plg_logdir = Path(plg_basepath)/"_logs"
+if not plg_logdir.exists():
     os.mkdir(plg_logdir)
-if not os.path.exists(os.path.join(plg_basepath, "_user")):
-    os.mkdir(os.path.join(plg_basepath, "_user"))
+else:
+    pass
+
+plg_userdir = Path(plg_basepath)/"_user"
+if not plg_userdir.exists():
+    os.mkdir(plg_userdir)
+else:
+    pass
 
 # plugin internal submodules
-plg_tools = IsogeoPlgTools(auth_folder=os.path.join(plg_basepath, "_auth"))
+plg_tools = IsogeoPlgTools(auth_folder=plg_authdir)
 
 # -- LOG FILE --------------------------------------------------------
 # log level depends on plugin directory name
@@ -113,9 +123,7 @@ logger.setLevel(log_level)
 log_form = logging.Formatter("%(asctime)s || %(levelname)s "
                              "|| %(module)s - %(lineno)d ||"
                              " %(funcName)s || %(message)s")
-logfile = RotatingFileHandler(os.path.join(plg_logdir,
-                                           "log_isogeo_plugin.log"),
-                              "a", 5000000, 1)
+logfile = RotatingFileHandler(Path(plg_logdir)/"log_isogeo_plugin.log", "a", 5000000, 1)
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
@@ -164,20 +172,16 @@ class Isogeo:
         self.iface = iface
 
         # initialize plugin directory
-        self.plugin_dir = os.path.dirname(__file__)
-        self.plg_basepath = os.path.realpath(os.path.dirname(__file__))
+        self.plugin_dir = path.dirname(__file__)
 
         # initialize locale
         locale = qsettings.value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'isogeo_search_engine_{}.qm'.format(locale))
+        locale_path = PurePath(self.plugin_dir).joinpath('i18n', 'isogeo_search_engine_{}.qm'.format(locale))
         logger.info('Language applied: {0}'.format(locale))
 
-        if os.path.exists(locale_path):
+        if path.exists(locale_path):
             self.translator = QTranslator()
-            self.translator.load(locale_path)
+            self.translator.load(str(locale_path))
 
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
@@ -208,13 +212,13 @@ class Isogeo:
         # instanciating
         self.md_display = MetadataDisplayer()
 
-        self.results_mng = ResultsManager(self)
+        self.results_mng = ResultsManager(self, plg_basepath)
         self.results_mng.cache_mng.loader()
 
         self.approps_mng = SharesParser()
         self.approps_mng.tr = self.tr
 
-        self.authenticator = Authenticator(auth_folder=os.path.join(self.plg_basepath, "_auth"))
+        self.authenticator = Authenticator(auth_folder=plg_authdir)
 
         self.api_requester = ApiRequester()
         self.api_requester.tr = self.tr
@@ -238,8 +242,7 @@ class Isogeo:
 
         self.old_text = ""
         self.page_index = 1
-        self.json_path = os.path.realpath(os.path.join(plg_basepath,
-                                                       "_user/quicksearches.json"))
+        self.json_path = path.realpath(Path(plg_basepath)/"_user/quicksearches.json")
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message, context="Isogeo"):

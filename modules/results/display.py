@@ -69,7 +69,7 @@ ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 class ResultsManager(object):
     """Basic class that holds utilitary methods for the plugin."""
 
-    def __init__(self, isogeo_plugin):
+    def __init__(self, isogeo_plugin, plg_basepath):
         """Class constructor."""
         self.isogeo_widget = isogeo_plugin.dockwidget
         self.send_details_request = isogeo_plugin.send_details_request
@@ -80,7 +80,7 @@ class ResultsManager(object):
         self.add_layer = self.layer_adder.adding
         self.pg_connections = self.build_postgis_dict(qsettings)
 
-        self.path_cache_file = os.path.realpath(os.path.join(isogeo_plugin.plg_basepath, "_user", "paths_cache.json"))
+        self.path_cache_file = os.path.realpath(os.path.join(plg_basepath, "_user", "paths_cache.json"))
         self.cache_mng = CacheManager(self.path_cache_file)
 
     def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):

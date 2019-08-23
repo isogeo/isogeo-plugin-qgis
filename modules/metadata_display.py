@@ -32,7 +32,7 @@ from ..ui.metadata.dlg_md_details import IsogeoMdDetails
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
-plg_api_mngr = Authenticator()
+plg_api_mngr = Authenticator(auth_folder=None)
 plg_tools = IsogeoPlgTools()
 
 osm_lbls = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Labels&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
@@ -50,7 +50,7 @@ li_lyrs_refs = [
 # ##################################
 
 
-class MetadataDisplayer(object):
+class MetadataDisplayer():
     """Manage metadata displaying in QGIS UI."""
     url_edition = "https://app.isogeo.com"
 

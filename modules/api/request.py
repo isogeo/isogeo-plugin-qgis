@@ -186,8 +186,8 @@ class ApiRequester(QgsNetworkAccessManager):
                 return
         
             url = reply.url().toString()
-            # for token request, one signal is emitted with different data's value
-            # depending on the reply content
+            # for token request, one signal is emitted passing a string whose
+            # value depend on the reply content
             if "token" in url:
                 logger.debug("Handling reply to a 'token' request")
                 logger.debug("(from : {}).".format(url))
@@ -207,8 +207,7 @@ class ApiRequester(QgsNetworkAccessManager):
                                 .format(parsed_content))
                     self.token_sig.emit("authIssue")
             # for other types of request, a different signal is emitted depending
-            # on the type of request but the value of emitted data is always the 
-            # reply's content
+            # on the type of request but it always pass the reply's content
             else :
                 self.loopCount = 0
                 if "shares" in url:

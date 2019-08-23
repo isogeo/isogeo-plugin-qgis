@@ -3,7 +3,8 @@
 # Standard library
 import json
 import logging
-from os import path, rename
+from os import rename
+from pathlib import Path
 import time
 from functools import partial
 
@@ -64,13 +65,14 @@ class Authenticator():
             self.mng_url, self.oc_url, self.ssl = plg_tools.set_base_url("prod")
 
         # credentials storage folder
-        if isinstance(auth_folder, str):
+        if isinstance(auth_folder, Path):
             self.auth_folder = auth_folder
-        elif auth_folder != None:
-            raise TypeError("str expected")
+            self.cred_filepath = self.auth_folder/"client_secrets.json"
+        elif auth_folder == None:
+            self.auth_folder = None
         else:
-            raise ValueError("path to 'plugin/_auth' subfolder required to instantiate Authenticator")
-
+            raise ValueError("pathlib.Path expected")
+     
         # translation
         self.tr = object
         self.lang = str
@@ -149,9 +151,9 @@ class Authenticator():
 
         :rtype: bool
         """
-        credentials_filepath = path.join(self.auth_folder, "client_secrets.json")
+        credentials_filepath = self.cred_filepath
         # check if a client_secrets.json file is stored inside the _auth subfolder
-        if not path.isfile(credentials_filepath):
+        if not credentials_filepath.is_file():
             logger.debug("No credential files found: {}"
                          .format(credentials_filepath))
             return False
@@ -201,8 +203,7 @@ class Authenticator():
             self.api_params["url_token"] = qsettings.value("isogeo/auth/url_token", "https://id.api.isogeo.com/oauth/token")
             self.api_params["url_redirect"] = qsettings.value("isogeo/auth/url_redirect", "http://localhost:5000/callback")
         elif credentials_source == "oAuth2_file":
-            creds = plg_tools.credentials_loader(path.join(self.auth_folder,
-                                                           "client_secrets.json"))
+            creds = plg_tools.credentials_loader(self.cred_filepath)
             self.api_params["app_id"] = creds.get("client_id")
             self.api_params["app_secret"] = creds.get("client_secret")
             self.api_params["url_base"] = creds.get("uri_base")
@@ -248,7 +249,7 @@ class Authenticator():
         """
         # test file structure
         try:
-            selected_file = path.normpath(self.ui_auth_form.btn_browse_credentials.filePath())
+            selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
             logger.debug("*=====* selected_file : {}".format(selected_file))
             api_credentials = plg_tools.credentials_loader(selected_file)
         except Exception as e:
@@ -258,14 +259,17 @@ class Authenticator():
                                  self.tr("The selected credentials file is not correct.",
                                          "Authenticator"))
         # move credentials file into the plugin file structure
-        if path.isfile(path.join(self.auth_folder, "client_secrets.json")):
-            old_filename = "old_client_secrets_{}.json".format(int(time.time()))
-            rename(path.join(self.auth_folder, "client_secrets.json"), path.join(self.auth_folder, old_filename))
+        dest_path = self.cred_filepath
+        if dest_path.is_file():
             logger.debug("client_secrets.json already existed. "
                          "Previous file has been renamed.")
+
+            dest_path_renamed = self.auth_folder/"old_client_secrets_{}.json".format(int(time.time()))
+            rename(dest_path, dest_path_renamed.resolve())
+            
         else:
             pass
-        rename(selected_file, path.join(self.auth_folder, "client_secrets.json"))
+        rename(selected_file, dest_path)
         logger.debug("Selected credentials file has been moved into plugin"
                      "_auth subfolder")
 
