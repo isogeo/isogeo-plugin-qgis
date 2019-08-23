@@ -34,7 +34,7 @@ class SharesParser(QObject):
         self.tr = object
 
     @pyqtSlot(list)
-    def send_share_info(self, result: list):
+    def send_share_info(self, shares: list):
         """Slot connected to ApiRequester.shares_sig signal emitted when a response 
         to a share request has been received from the Isogeo's API, validated and parsed.
         'result' parameter correspond to the content of shares request's reply passed 
@@ -45,7 +45,7 @@ class SharesParser(QObject):
         :param list result: list of shares feeding the application
         """
         logger.debug("Application properties provided by the Isogeo API.")
-        content = result
+        content = shares
 
         text = u"<html>"  # opening html content
         # Isogeo application authenticated in the plugin

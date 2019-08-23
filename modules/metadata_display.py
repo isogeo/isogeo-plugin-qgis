@@ -10,7 +10,6 @@ from datetime import datetime
 from qgis.core import (QgsProject, QgsMessageLog, QgsVectorLayer, QgsPointXY, 
                         QgsRectangle, QgsFeature, QgsGeometry, QgsRasterLayer, QgsRenderContext)
 
-
 # PyQT
 from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtGui import QColor
@@ -22,6 +21,9 @@ from .isogeo_pysdk import IsogeoTranslator
 # Plugin modules
 from .api import Authenticator
 from .tools import IsogeoPlgTools
+
+# UI module 
+from ..ui.metadata.dlg_md_details import IsogeoMdDetails
 
 # ############################################################################
 # ########## Globals ###############
@@ -52,9 +54,9 @@ class MetadataDisplayer(object):
     """Manage metadata displaying in QGIS UI."""
     url_edition = "https://app.isogeo.com"
 
-    def __init__(self, ui_md_details):
+    def __init__(self):
         """Class constructor."""
-        self.complete_md = ui_md_details
+        self.complete_md = IsogeoMdDetails()
         self.complete_md.stackedWidget.setCurrentIndex(0)
 
         # some basic settings

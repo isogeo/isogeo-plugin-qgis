@@ -61,7 +61,6 @@ from . import resources
 # UI classes
 from .ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
 from .ui.credits.dlg_credits import IsogeoCredits
-from .ui.metadata.dlg_md_details import IsogeoMdDetails
 from .ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
 from .ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
 
@@ -207,7 +206,7 @@ class Isogeo:
 
         # SUBMODULES
         # instanciating
-        self.md_display = MetadataDisplayer(IsogeoMdDetails())
+        self.md_display = MetadataDisplayer()
 
         self.results_mng = ResultsManager(self)
         self.results_mng.cache_mng.loader()
@@ -229,7 +228,7 @@ class Isogeo:
         self.approps_mng.shares_ready.connect(self.write_shares_info) 
 
         # start variables
-        self.savedSearch = "first"
+        self.savedSearch = str
         self.loopCount = 0
         self.hardReset = False
         self.showResult = False
@@ -1258,6 +1257,7 @@ class Isogeo:
         self.dockwidget.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
         # self.dockwidget.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.dockwidget.txt_input.setFocus()
+        self.savedSearch = "first"
         self.user_authentication()
 
 # #############################################################################
