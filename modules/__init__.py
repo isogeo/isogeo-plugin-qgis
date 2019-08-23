@@ -1,4 +1,4 @@
-from .api import Authenticator, ApiRequester
+from .api import Authenticator, ApiRequester, SharesParser
 from .metadata_display import MetadataDisplayer
 from .results import ResultsManager, CacheManager 
 from .tools import IsogeoPlgTools

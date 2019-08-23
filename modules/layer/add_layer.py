@@ -367,8 +367,7 @@ class LayerAdder():
             # check if GetMap operation is available
             if not hasattr(wms, "getmap") or "GetMap" not in [op.name for op in wms.operations]:
                 self.cached_wms["GetMap"] = 1
-                return 0, "Required GetMap operation not available in: "\
-                          + wms_url_getcap
+                return 0, "Required GetMap operation not available in: "+ wms_url_getcap
             else:
                 self.cached_wms["GetMap"] = 0
                 pass
@@ -403,9 +402,7 @@ class LayerAdder():
             if srs_map in wms_lyr.crsOptions:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
                 srs = srs_map
-            elif srs_qgs_new in wms_lyr.crsOptions\
-                 and srs_qgs_otf_on == "false"\
-                 and srs_qgs_otf_auto == "false":
+            elif srs_qgs_new in wms_lyr.crsOptions and srs_qgs_otf_on == "false" and srs_qgs_otf_auto == "false":
                 logger.debug("It's a SRS match! With default new project: " + srs_qgs_new)
                 srs = srs_qgs_new
             elif srs_lyr_crs in wms_lyr.crsOptions and srs_lyr_new == "useGlobal":
@@ -431,7 +428,7 @@ class LayerAdder():
                 layer_format = formats_image[0]
 
             # Style definition
-            lyr_style = wms_lyr.styles.keys()[0]
+            lyr_style = list(wms_lyr.styles.keys())[0]
 
             # GetMap URL
             wms_lyr_url = wms.getOperationByName('GetMap').methods
@@ -744,8 +741,7 @@ class LayerAdder():
                             logger.debug("WMS layer added: {0}".format(url))
                         else:
                             error_msg = layer.error().message()
-                            logger.warning("Invalid service: {0}. QGIS says: {}"
-                                           .format(url, error_msg.encode("latin1")))
+                            logger.warning("Invalid service: {0}. QGIS says: {1}".format(url, error_msg.encode("latin1")))
                     else:
                         QMessageBox.information(
                             iface.mainWindow(),

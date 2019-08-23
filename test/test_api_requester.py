@@ -18,16 +18,13 @@ class TestApiRequester(unittest.TestCase):
     def test_setup_api_params(self):
         pass
 
-    def test_api_auth_post_get_token(self):
+    def test_create_request(self):
         pass
 
-    def test_api_auth_handle_token(self):
+    def test_send_request(self):
         pass
 
-    def test_api_get_requests(self):
-        pass
-
-    def test_api_requests_handle_reply(self):
+    def test_handle_request(self):
         pass
     
     def test_build_request_url(self):

@@ -61,7 +61,6 @@ from . import resources
 # UI classes
 from .ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
 from .ui.credits.dlg_credits import IsogeoCredits
-from .ui.metadata.dlg_md_details import IsogeoMdDetails
 from .ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
 from .ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
 
@@ -72,6 +71,7 @@ from .modules import MetadataDisplayer
 from .modules import ResultsManager
 from .modules import IsogeoPlgTools
 from .modules import QuickSearchManager
+from .modules import SharesParser
 
 # ############################################################################
 # ########## Globals ###############
@@ -204,32 +204,37 @@ class Isogeo:
         self.quicksearch_rename_dialog = QuicksearchRename()
         self.credits_dialog = IsogeoCredits()
 
-        # submodules
-        self.md_display = MetadataDisplayer(IsogeoMdDetails())
+        # SUBMODULES
+        # instanciating
+        self.md_display = MetadataDisplayer()
 
         self.results_mng = ResultsManager(self)
         self.results_mng.cache_mng.loader()
+
+        self.approps_mng = SharesParser()
+        self.approps_mng.tr = self.tr
 
         self.authenticator = Authenticator(auth_folder=os.path.join(self.plg_basepath, "_auth"))
 
         self.api_requester = ApiRequester()
         self.api_requester.tr = self.tr
-        self.api_requester.token_received.connect(self.token_result)
+        
+        # connecting
+        self.api_requester.token_sig.connect(self.token_slot)
+        self.api_requester.search_sig.connect(self.update_fields)
+        self.api_requester.details_sig.connect(self.md_display.show_complete_md)
+        self.api_requester.shares_sig.connect(self.approps_mng.send_share_info)
 
-        # link UI and submodules
+        self.approps_mng.shares_ready.connect(self.write_shares_info) 
 
         # start variables
-        self.savedSearch = "first"
+        self.savedSearch = str
         self.loopCount = 0
         self.hardReset = False
         self.showResult = False
         self.showDetails = False
         self.store = False
-        self.settingsRequest = False
         self.PostGISdict = self.results_mng.build_postgis_dict(qsettings)
-
-        # self.api_requester.currentUrl = "https://v1.api.isogeo.com/resources/search?
-        # _limit=10&_include=links&_lang={0}".format(self.lang)
 
         self.old_text = ""
         self.page_index = 1
@@ -345,16 +350,12 @@ class Isogeo:
         their default value, it asks for them.
         If not, it tries to send a request.
         """
-        self.api_requester.status_isClear = False
         self.dockwidget.tab_search.setEnabled(False)
 
         api_init = self.authenticator.manage_api_initialization()
         if api_init[0]:
             self.dockwidget.tab_search.setEnabled(True)
-            self.api_requester.status_isClear = True
             self.api_requester.setup_api_params(api_init[1])
-            self.quicksearch.requester = self.api_requester
-
 
     def write_ids_and_test(self):
         """Store the id & secret and launch the test function.
@@ -366,15 +367,16 @@ class Isogeo:
         # launch authentication
         self.user_authentication()
     
-    def token_result(self, token_signal):
-        logger.debug(str(token_signal))
-        if token_signal == "tokenOk":
+    def token_slot(self, token_signal: str):
+        logger.debug(token_signal)
+        if token_signal == "tokenOK":
             if self.savedSearch == "first":
                 logger.debug("First search since plugin started.")
-                self.set_widget_status()
+                self.set_widget_status()  
+                logger.debug("Asking application properties to the Isogeo API.")
+                self.api_requester.send_request(request_type = "shares")     
             else:
-                self.api_requester.reply_ready.connect(self.update_fields)
-                self.api_requester.api_get_requests()
+                self.api_requester.send_request()
         elif token_signal == "credIssue":
             self.authenticator.display_auth_form()
             msgBar.pushMessage("Isogeo",
@@ -394,19 +396,16 @@ class Isogeo:
                                    level=1)
             self.pluginIsActive = False
 
-
-
     # -- UI - UPDATE SEARCH FORM ----------------------------------------------
-    def update_fields(self):
+    def update_fields(self, result: dict):
         """Update search form fields from search tags and previous search.
+        Slot connected to ApiRequster.search_sig (see modules/api/requester.py)
+        This takes an API answer ('result' parameter) and update the fields 
+        accordingly. It also calls show_results in the end. This may change,  
+        so results would be shown only when a specific button is pressed.
 
-        This takes an API answer and update the fields accordingly. It also
-        calls show_results in the end. This may change, so results would be
-        shown only when a specific button is pressed.
+        :param dict result: Parsed content of search request's reply
         """
-        result = self.api_requester.reply_content
-        self.api_requester.reply_ready.disconnect()
-        # logs
         logger.debug("Update_fields function called on the API reply. reset = "
                      "{}".format(self.hardReset))
         QgsMessageLog.logMessage("Query sent & received: {}"
@@ -829,7 +828,7 @@ class Isogeo:
         """Build the request url to be sent to Isogeo API.
 
         This builds the url, retrieving the parameters from the widgets. When
-        the final url is built, it calls api_get_requests
+        the final url is built, it calls get_request
         """
         logger.debug("Search function called. Building the "
                      "url that is to be sent to the API")
@@ -881,13 +880,7 @@ class Isogeo:
         self.api_requester.currentUrl = self.api_requester.build_request_url(params)
         logger.debug(self.api_requester.currentUrl)
         # Sending the request to Isogeo API
-        if self.api_requester.status_isClear is True:
-            self.api_requester.reply_ready.connect(self.update_fields)
-            self.api_requester.api_get_requests()
-        else:
-            pass
-
-        # method end
+        self.api_requester.send_request()
         return
 
     def next_page(self):
@@ -918,11 +911,8 @@ class Isogeo:
             # URL BUILDING FUNCTION CALLED.
             self.api_requester.currentUrl = self.api_requester.build_request_url(params)
             # Sending the request
-            if self.api_requester.status_isClear is True:
-                self.api_requester.reply_ready.connect(self.update_fields)
-                self.api_requester.api_get_requests()
+            self.api_requester.send_request()
                 
-
     def previous_page(self):
         """Add the _offset parameter to the url to display previous page.
 
@@ -950,11 +940,8 @@ class Isogeo:
             # URL BUILDING FUNCTION CALLED.
             self.api_requester.currentUrl = self.api_requester.build_request_url(params)
             # Sending the request
-            if self.api_requester.status_isClear is True:
-                self.api_requester.reply_ready.connect(self.update_fields)
-                self.api_requester.api_get_requests()
+            self.api_requester.send_request()
                       
-
     def set_widget_status(self):
         """Set a few variable and send the request to Isogeo API."""
         selected_search = self.dockwidget.cbb_quicksearch_use.currentText()
@@ -1004,13 +991,7 @@ class Isogeo:
                     canvas.refresh()
             # load request
             self.api_requester.currentUrl = search_params.get('url')
-            if self.api_requester.status_isClear is True:
-                self.api_requester.reply_ready.connect(self.update_fields)
-                self.api_requester.api_get_requests()
-                    
-            else:
-                logger.info("A request to the API is already running."
-                            "Please wait and try again later.")
+            self.api_requester.send_request()
         else:
             if self.savedSearch == "first":
                 logger.debug("First search. Launch '_default' search.")
@@ -1019,8 +1000,7 @@ class Isogeo:
                 search_params = saved_searches.get('_default')
 
                 self.api_requester.currentUrl = search_params.get('url')
-                self.api_requester.reply_ready.connect(self.update_fields)
-                self.api_requester.api_get_requests()
+                self.api_requester.send_request()
 
             else :
                 logger.debug("No quicksearch selected.")
@@ -1154,77 +1134,15 @@ class Isogeo:
         logger.debug("Full metatada sheet asked. Building the url.")
         self.api_requester.currentUrl = "{}/resources/{}{}".format(self.api_requester.api_url_base, md_id,
             "?_include=conditions,contacts,coordinate-system,events,feature-attributes,limitations,keywords,specifications")
+        self.api_requester.send_request("details")
 
-        self.showDetails = True
-        if self.api_requester.status_isClear is True:
-            self.showDetails = False
-            self.api_requester.reply_ready.connect(self.show_md)
-            self.api_requester.api_get_requests()
-            
-        else:
-            pass
-    
-    def show_md(self):
-        self.api_requester.reply_ready.disconnect()
-        self.md_display.show_complete_md(md = self.api_requester.reply_content)
-
-    # -- SETTINGS - Shares ----------------------------------------------------
-    def ask_shares_info(self, index):
-        """TODO : Only if not already done before."""
-        if index == 0:
-            pass
-        elif index == 1 and self.api_requester.status_isClear is True:
-            if self.dockwidget.txt_shares.toPlainText() == "":
-                self.settingsRequest = True
-                self.api_requester.oldUrl = self.api_requester.currentUrl
-                self.api_requester.currentUrl = "{}/shares".format(self.api_requester.api_url_base)
-                self.api_requester.reply_ready.connect(self.write_shares_info)
-                self.api_requester.api_get_requests()
-                
-
-            else:
-                pass
-        else:
-            pass
-        QgsMessageLog.logMessage("Shares information retrieved in settings tab.",
-                                 "Isogeo")
-        # method end
-        return
-
-    def write_shares_info(self):
+    def write_shares_info(self, text:str):
         """Write informations about the shares in the Settings pannel.
         See: #87
 
-        :param content dict: share informations from Isogeo API
+        :param text str: share informations from Isogeo API
         """
-        content = self.api_requester.reply_content
-        self.api_requester.reply_ready.disconnect()
-        self.api_requester.currentUrl = self.api_requester.oldUrl
-        text = u"<html>"  # opening html content
-        # Isogeo application authenticated in the plugin
-        app = content[0].get("applications")[0]
-        text += self.tr(u"<p>This plugin is authenticated as "
-                        u"<a href='{}'>{}</a> and ").format(app.get("url", "https://isogeo.gitbooks.io/app-plugin-qgis/content"),
-                            app.get("name", "Isogeo plugin for QGIS"))
-        # shares feeding the application
-        if len(content) == 1:
-            text += self.tr(u" powered by 1 share:</p></br>")
-        else:
-            text += self.tr(u" powered by {0} shares:</p></br>").format(len(content))
-        # shares details
-        for share in content:
-            # share variables
-            creator_name = share.get("_creator").get("contact").get("name")
-            creator_email = share.get("_creator").get("contact").get("email")
-            creator_id = share.get("_creator").get("_tag")[6:]
-            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}".format(creator_id, share.get("_id"))
-            # formatting text
-            text += u"<p><a href='{}'><b>{}</b></a></p>".format(share_url,
-                            share.get("name"))
-            text += self.tr(u"<p>Updated: {}</p>").format(plg_tools.handle_date(share.get("_modified")))
-            text += self.tr(u"<p>Contact: {} - {}</p>").format(creator_name, creator_email)
-            text += u"<p><hr></p>"
-        text += u"</html>"
+        logger.debug("Displaying application properties.")
         self.dockwidget.txt_shares.setText(text)
         # method ending
         return
@@ -1286,6 +1204,7 @@ class Isogeo:
         
         # -- Quicksearches ----------------------------------------------------
         self.quicksearch = QuickSearchManager(self)
+        self.quicksearch.request_url_builder = self.api_requester.build_request_url
         # select and use
         self.dockwidget.cbb_quicksearch_use.activated.connect(self.set_widget_status)
 
@@ -1324,7 +1243,6 @@ class Isogeo:
 
         """ ------ CUSTOM CONNECTIONS ------------------------------------- """
         # get shares only if user switch on tabs
-        self.dockwidget.tabWidget.currentChanged.connect(self.ask_shares_info)
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
         QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
 
@@ -1339,6 +1257,7 @@ class Isogeo:
         self.dockwidget.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
         # self.dockwidget.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.dockwidget.txt_input.setFocus()
+        self.savedSearch = "first"
         self.user_authentication()
 
 # #############################################################################
