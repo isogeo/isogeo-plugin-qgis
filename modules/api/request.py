@@ -26,7 +26,6 @@ msgBar = iface.messageBar()
 # ########## Classes ###############
 # ##################################
 
-# class ApiRequester(QObject):
 class ApiRequester(QgsNetworkAccessManager):
     """Basic class to manage direct interactions with Isogeo's API :
         - Authentication request for token
@@ -181,6 +180,7 @@ class ApiRequester(QgsNetworkAccessManager):
             except ValueError as e:
                 if "No JSON object could be decoded" in str(e):
                     logger.error("Internet connection failed")
+                    self.token_sig.emit("NoInternet")
                 else:
                     pass
                 return
@@ -224,7 +224,6 @@ class ApiRequester(QgsNetworkAccessManager):
                     self.details_sig.emit(parsed_content)
                 else :
                     logger.debug("Unkown reply type")
-                    return
             del parsed_content
         
         # if replys's content is invalid
@@ -248,6 +247,7 @@ class ApiRequester(QgsNetworkAccessManager):
                     self.tr("The script is looping. Make sure you shared a "
                             "catalog with the plugin. If so, please report "
                             "this on the bug tracker."))
+                self.token_sig.emit("NoInternet")
                 return
         else :
             logger.warning("Unknown error : {}".format(str(reply.error())))

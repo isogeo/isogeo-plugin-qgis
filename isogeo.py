@@ -25,8 +25,8 @@ from __future__ import (division,
 
 # Standard library
 import requests
-from os import path
-from pathlib import Path, PurePath
+import os
+from pathlib import Path
 import platform
 import json
 import base64
@@ -38,19 +38,14 @@ from functools import partial
 
 # PyQT
 from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QSettings, Qt, QTranslator, QUrl, qVersion, QSize, pyqtSlot
-
-from qgis.PyQt.QtWidgets import QAction, QComboBox, QMessageBox, QProgressBar
+from qgis.PyQt.QtWidgets import QAction, QComboBox, QProgressBar
 from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
-
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # PyQGIS
-
 from qgis.utils import iface, plugin_times
-
 from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsDataSourceUri, QgsMessageLog, QgsPointXY, QgsRectangle, QgsRasterLayer, QgsVectorLayer, QgsProject,
                        QgsApplication)
-
 try:
     from qgis.core import Qgis
 except ImportError:
@@ -79,9 +74,8 @@ from .modules import SharesParser
 # ##################################
 
 # plugin directory path
-plg_basepath = PurePath(__file__).parent
-plg_reg_name = path.basename(plg_basepath)
-
+plg_basepath = Path(__file__).parent
+plg_reg_name = plg_basepath.name
 # QGIS useful tooling and shortcuts
 msgBar = iface.messageBar()
 qsettings = QSettings()
@@ -172,14 +166,14 @@ class Isogeo:
         self.iface = iface
 
         # initialize plugin directory
-        self.plugin_dir = path.dirname(__file__)
+        self.plugin_dir = Path(__file__).parent
 
         # initialize locale
         locale = qsettings.value('locale/userLocale')[0:2]
-        locale_path = PurePath(self.plugin_dir).joinpath('i18n', 'isogeo_search_engine_{}.qm'.format(locale))
+        locale_path = self.plugin_dir/'i18n'/'isogeo_search_engine_{}.qm'.format(locale)
         logger.info('Language applied: {0}'.format(locale))
 
-        if path.exists(locale_path):
+        if locale_path.exists():
             self.translator = QTranslator()
             self.translator.load(str(locale_path))
 
@@ -212,7 +206,7 @@ class Isogeo:
         # instanciating
         self.md_display = MetadataDisplayer()
 
-        self.results_mng = ResultsManager(self, plg_basepath)
+        self.results_mng = ResultsManager(self, plg_userdir)
         self.results_mng.cache_mng.loader()
 
         self.approps_mng = SharesParser()
@@ -242,7 +236,7 @@ class Isogeo:
 
         self.old_text = ""
         self.page_index = 1
-        self.json_path = path.realpath(Path(plg_basepath)/"_user/quicksearches.json")
+        self.json_path = plg_basepath/"_user/quicksearches.json"
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message, context="Isogeo"):
@@ -353,11 +347,9 @@ class Isogeo:
         their default value, it asks for them.
         If not, it tries to send a request.
         """
-        self.dockwidget.tab_search.setEnabled(False)
-
+        self.switch_widgets_on_and_off(0)
         api_init = self.authenticator.manage_api_initialization()
         if api_init[0]:
-            self.dockwidget.tab_search.setEnabled(True)
             self.api_requester.setup_api_params(api_init[1])
 
     def write_ids_and_test(self):
@@ -373,6 +365,7 @@ class Isogeo:
     def token_slot(self, token_signal: str):
         logger.debug(token_signal)
         if token_signal == "tokenOK":
+            self.dockwidget.tab_search.setEnabled(True)
             if self.savedSearch == "first":
                 logger.debug("First search since plugin started.")
                 self.set_widget_status()  
@@ -414,6 +407,7 @@ class Isogeo:
         QgsMessageLog.logMessage("Query sent & received: {}"
                                  .format(result.get("query")),
                                  "Isogeo")
+        self.switch_widgets_on_and_off(1)
         # getting and parsing tags
         tags = self.authenticator.get_tags(result.get("tags"))
         # save entered text and filters in search form

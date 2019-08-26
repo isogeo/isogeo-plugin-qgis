@@ -4,10 +4,9 @@ from __future__ import (absolute_import, division,
 
 # Standard library
 import logging
-from functools import partial
 import json
-import os
-
+from functools import partial
+from pathlib import Path
 # PyQT
 # from QByteArray
 from qgis.PyQt.QtCore import QSettings
@@ -69,7 +68,7 @@ ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 class ResultsManager(object):
     """Basic class that holds utilitary methods for the plugin."""
 
-    def __init__(self, isogeo_plugin, plg_basepath):
+    def __init__(self, isogeo_plugin, plg_userdir):
         """Class constructor."""
         self.isogeo_widget = isogeo_plugin.dockwidget
         self.send_details_request = isogeo_plugin.send_details_request
@@ -80,8 +79,7 @@ class ResultsManager(object):
         self.add_layer = self.layer_adder.adding
         self.pg_connections = self.build_postgis_dict(qsettings)
 
-        self.path_cache_file = os.path.realpath(os.path.join(plg_basepath, "_user", "paths_cache.json"))
-        self.cache_mng = CacheManager(self.path_cache_file)
+        self.cache_mng = CacheManager(plg_userdir)
 
     def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
         """Display the results in a table ."""
@@ -396,45 +394,28 @@ class ResultsManager(object):
         return None
 
     # -- PRIVATE METHOD -------------------------------------------------------
-    def _filepath_builder(self, metadata_path, mode=1):
+    def _filepath_builder(self, metadata_path):
         """Build filepath from metadata path handling various cases. See: #129.
 
         :param dict metadata_path: path found in metadata
-        :param int mode: mode to apply. Options:
-          1 = only with standard path.normpath
-          2 = using raw string (useful for Windows systems)
         """
-        # basic checks
-        if not isinstance(mode, int):
-            raise TypeError
         # building
-        if mode == 1:
-            filepath = os.path.normpath(metadata_path)
-            dir_file = os.path.dirname(filepath)
-            if dir_file not in self.cache_mng.cached_unreach_paths:
-                try:
-                    with open(filepath) as f:
-                        return filepath
-                except IOError:
-                    logger.debug("Filepath is not reachable: {}".format(filepath))
-                    return self._filepath_builder(metadata_path, mode=2)
-            else:
-                logger.debug("Path has been ignored because it's cached.")
-                return False
-        elif mode == 2:
-            logger.debug("Using forced raw string")
-            filepath = plg_tools._to_raw_string(metadata_path)
-            dir_file = os.path.dirname(metadata_path)
+        logger.debug("*=====* {}".format(metadata_path))
+        filepath = Path(metadata_path)
+        dir_file = str(filepath.parent.resolve())
+        if dir_file not in self.cache_mng.cached_unreach_paths:
+            logger.debug("*=====* {}".format(dir_file))
             try:
                 with open(filepath) as f:
-                    return filepath
-            except IOError:
+                    return str(filepath)
+            except:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
+                logger.debug("*=====* {}".format(self.cache_mng.cached_unreach_paths))
                 logger.debug("Path is not reachable and has been cached:{}".format(dir_file))
                 return False
         else:
-            logger.debug("Incorrect mode: {}".format(mode))
-            raise ValueError
+            logger.debug("Path has been ignored because it's cached.")
+            return False
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connexions."""

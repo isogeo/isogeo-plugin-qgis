@@ -5,7 +5,6 @@ from __future__ import (absolute_import, division,
 # Standard library
 import logging
 import json
-import os
 from functools import partial
 
 # PyQGIS

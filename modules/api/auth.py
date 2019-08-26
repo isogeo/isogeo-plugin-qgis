@@ -3,7 +3,6 @@
 # Standard library
 import json
 import logging
-from os import rename
 from pathlib import Path
 import time
 from functools import partial
@@ -264,12 +263,16 @@ class Authenticator():
             logger.debug("client_secrets.json already existed. "
                          "Previous file has been renamed.")
 
-            dest_path_renamed = self.auth_folder/"old_client_secrets_{}.json".format(int(time.time()))
-            rename(dest_path, dest_path_renamed.resolve())
+            old_file_renamed = self.auth_folder/"old_client_secrets_{}.json".format(int(time.time()))
+            dest_path.rename(old_file_renamed)
             
         else:
             pass
-        rename(selected_file, dest_path)
+        try:
+            selected_file.rename(dest_path)
+        except Exception as e:
+            logger.debug("OAuth2 file issue : check path validity.")
+
         logger.debug("Selected credentials file has been moved into plugin"
                      "_auth subfolder")
 

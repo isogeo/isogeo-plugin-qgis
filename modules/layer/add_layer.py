@@ -648,12 +648,12 @@ class LayerAdder():
                             "Raster layer added:: {}".format(
                                 name.decode("latin1")), "Isogeo")
                         logger.debug("Raster layer added: {}"
-                                    .format(name.decode("latin1")))
+                            .format(name.decode("latin1")))
                 else:
                     error_msg = layer.error().message()
                     logger.warning("Invalid raster layer: {}. QGIS says: {}"
-                                   .format(path,
-                                           error_msg))
+                        .format(path,
+                                error_msg))
                     QMessageBox.information(iface.mainWindow(),
                                             self.tr('Error'),
                                             self.tr("Raster not valid {}. QGIS says: {}")

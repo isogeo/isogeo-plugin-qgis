@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division,
 # Standard library
 import logging
 import json
+from pathlib import Path
 
 # ############################################################################
 # ########## Globals ###############
@@ -21,14 +22,16 @@ class CacheManager():
     """Basic class to manage the cache system of the layer addition. 
     """
 
-    def __init__(self, path_cache_file : str = None):
+    def __init__(self, plg_userdir : str = None):
         # Path to JSON cache file
-        if isinstance(path_cache_file, str):
-            self.cache_file = path_cache_file
-        elif path_cache_file != None:
-            raise TypeError("str expected")
+        test_cache_file = plg_userdir/"paths_cache.json"
+        if isinstance(test_cache_file, Path):
+            self.cache_file = test_cache_file.resolve()
+            logger.debug("*=====* {}".format(self.cache_file))
+        elif plg_userdir != None:
+            raise TypeError("pathlib.Path expected")
         else:
-            raise ValueError("path to JSON cache file must be given to instantiate CacheManager")
+            raise ValueError("path to JSON cache file required to instantiate CacheManager")
 
         # Objects for storing inaccessible elements 
         self.cached_dict = {}
@@ -65,14 +68,17 @@ class CacheManager():
         try:
             with open(self.cache_file, 'r') as cache:
                 cache_loaded = json.load(cache)
+                logger.debug("*=====*".format(cache_loaded))
             logger.debug("cache_loaded : {}".format(cache_loaded))
-            if isinstance(cache_loaded[0], dict) :
+            if len(cache_loaded) == 0:
+                logger.debug("Empty cache file.")
+            elif isinstance(cache_loaded[0], dict) :
                 self.cached_unreach_paths = cache_loaded[0].get("files")
                 self.cached_unreach_postgis = cache_loaded[0].get("PostGIS")
                 self.cached_unreach_srv = cache_loaded[0].get("services")
-                logger.debug("Paths cache has been loaded")
+                logger.debug("Cache file has been loaded.")
             else:
-                logger.debug("Old cache file format detected")
+                logger.debug("Old cache file format detected.")
                 self.cached_unreach_paths = cache_loaded
             return cache_loaded
 
