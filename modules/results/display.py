@@ -65,12 +65,12 @@ ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 # ##################################
 
 
-class ResultsManager(object):
+class ResultsManager():
     """Basic class that holds utilitary methods for the plugin."""
 
-    def __init__(self, isogeo_plugin, plg_userdir):
+    def __init__(self, isogeo_plugin):
         """Class constructor."""
-        self.isogeo_widget = isogeo_plugin.dockwidget
+        self.isogeo_widget = isogeo_plugin.form_mng
         self.send_details_request = isogeo_plugin.send_details_request
         self.tr = isogeo_plugin.tr
 
@@ -79,7 +79,7 @@ class ResultsManager(object):
         self.add_layer = self.layer_adder.adding
         self.pg_connections = self.build_postgis_dict(qsettings)
 
-        self.cache_mng = CacheManager(plg_userdir)
+        self.cache_mng = CacheManager()
 
     def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
         """Display the results in a table ."""
@@ -400,17 +400,14 @@ class ResultsManager(object):
         :param dict metadata_path: path found in metadata
         """
         # building
-        logger.debug("*=====* {}".format(metadata_path))
         filepath = Path(metadata_path)
         dir_file = str(filepath.parent.resolve())
         if dir_file not in self.cache_mng.cached_unreach_paths:
-            logger.debug("*=====* {}".format(dir_file))
             try:
                 with open(filepath) as f:
                     return str(filepath)
             except:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
-                logger.debug("*=====* {}".format(self.cache_mng.cached_unreach_paths))
                 logger.debug("Path is not reachable and has been cached:{}".format(dir_file))
                 return False
         else:
