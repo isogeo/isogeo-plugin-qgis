@@ -22,17 +22,9 @@ class CacheManager():
     """Basic class to manage the cache system of the layer addition. 
     """
 
-    def __init__(self, plg_userdir : str = None):
+    def __init__(self):
         # Path to JSON cache file
-        test_cache_file = plg_userdir/"paths_cache.json"
-        if isinstance(test_cache_file, Path):
-            self.cache_file = test_cache_file.resolve()
-            logger.debug("*=====* {}".format(self.cache_file))
-        elif plg_userdir != None:
-            raise TypeError("pathlib.Path expected")
-        else:
-            raise ValueError("path to JSON cache file required to instantiate CacheManager")
-
+        self.cache_file = Path(__file__).parents[2]/"_user"/"cache.json"
         # Objects for storing inaccessible elements 
         self.cached_dict = {}
         self.cached_unreach_paths = []
@@ -68,8 +60,6 @@ class CacheManager():
         try:
             with open(self.cache_file, 'r') as cache:
                 cache_loaded = json.load(cache)
-                logger.debug("*=====*".format(cache_loaded))
-            logger.debug("cache_loaded : {}".format(cache_loaded))
             if len(cache_loaded) == 0:
                 logger.debug("Empty cache file.")
             elif isinstance(cache_loaded[0], dict) :
