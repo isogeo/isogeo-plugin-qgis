@@ -19,7 +19,6 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem
 from .isogeo_pysdk import IsogeoTranslator
 
 # Plugin modules
-from .api import Authenticator
 from .tools import IsogeoPlgTools
 
 # UI module 
@@ -32,7 +31,6 @@ from ..ui.metadata.dlg_md_details import IsogeoMdDetails
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
-plg_api_mngr = Authenticator(auth_folder=None)
 plg_tools = IsogeoPlgTools()
 
 osm_lbls = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Labels&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
@@ -65,13 +63,12 @@ class MetadataDisplayer():
 
         self.complete_md.btn_md_edit.pressed.connect(lambda: plg_tools.open_webpage(link=self.url_edition))
 
-    def show_complete_md(self, md:dict):
+    def show_complete_md(self, md: dict, tags: dict):
         """Open the pop up window that shows the metadata sheet details.
         
         :param md dict: Isogeo metadata dict
         """
         logger.info("Displaying the whole metadata sheet.")
-        tags = plg_api_mngr.get_tags(md.get("tags"))
         isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])
 
         # clean map canvas
