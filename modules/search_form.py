@@ -55,7 +55,7 @@ ico_poly = QIcon(':/images/themes/default/mIconPolygonLayer.svg')
 # ##################################
 
 class SearchFormManager(IsogeoDockWidget):
-    """ Basic class to manage IsogeoDockwidget Ui module (ui/isogeo_dockwidget.py).
+    """ Basic class to manage IsogeoDockwidget UI module (ui/isogeo_dockwidget.py).
     It performs different tasks :
         - update widgets (clear, fill and set appropriate status)
         - fill the results table calling ResultsManager.show_results method
