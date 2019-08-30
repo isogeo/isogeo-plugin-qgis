@@ -28,7 +28,9 @@ class MetadataSynchronizer():
         self.tr = None
 
     def basic_sync(self, layer, info):
-        logger.debug("basic_sync method called.")
+        logger.debug("Filling {} layer's properties from : {}".format(
+            layer.name, info
+        ))
         layer_type = info[0]
         # If the data is a PostGIS table
         if type(info) == dict:
