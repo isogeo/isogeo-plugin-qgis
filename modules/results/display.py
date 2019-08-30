@@ -9,7 +9,7 @@ from functools import partial
 from pathlib import Path
 # PyQT
 # from QByteArray
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal
 from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import (QTableWidgetItem, QComboBox, QPushButton, QLabel, 
                                 QProgressBar, QHeaderView)
@@ -65,31 +65,31 @@ ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 # ##################################
 
 
-class ResultsManager():
+class ResultsManager(QObject):
     """Basic class that holds utilitary methods for the plugin."""
 
-    def __init__(self, isogeo_plugin):
-        """Class constructor."""
-        self.isogeo_widget = isogeo_plugin.form_mng
-        self.send_details_request = isogeo_plugin.send_details_request
-        self.tr = isogeo_plugin.tr
+    md_asked = pyqtSignal(str)
+
+    def __init__(self, search_form_manager: object):
+        # inheritance
+        super().__init__()
+
+        self.form_mng = search_form_manager
+        self.tbl_result = self.form_mng.tbl_result
+        self.tr = self.form_mng.tr
 
         self.layer_adder = LayerAdder()
         self.layer_adder.tr = self.tr
+        self.layer_adder.tbl_result = self.tbl_result
         self.add_layer = self.layer_adder.adding
         self.pg_connections = self.build_postgis_dict(qsettings)
 
         self.cache_mng = CacheManager()
 
-    def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
-        """Display the results in a table ."""
+    def show_results(self, api_results, pg_connections=dict()):
+        """Display the results in a table."""
         logger.info("Results manager called. Displaying the results")
-        # check parameters
-        if not tbl_result:
-            tbl_result = self.isogeo_widget.tbl_result
-        else:
-            pass
-        self.layer_adder.tbl_result = tbl_result
+        tbl_result = self.tbl_result
         # Get the name (and other informations) of all databases whose
         # connection is set up in QGIS
         if pg_connections == {}:
@@ -120,7 +120,7 @@ class ResultsManager():
             btn_md_title = QPushButton(plg_tools.format_button_title(md_title))
             # Connecting the button to the full metadata popup
             btn_md_title.pressed.connect(partial(
-                self.send_details_request, md_id=md_id))
+                self.md_asked.emit, md_id))
             # Putting the abstract as a tooltip on this button
             btn_md_title.setToolTip(i.get("abstract", "")[:300])
             # Insert it in column 1
@@ -388,8 +388,6 @@ class ResultsManager():
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        # Remove the "loading" bar
-        iface.mainWindow().statusBar().removeWidget(progress_bar)
         # method ending
         return None
 

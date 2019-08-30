@@ -55,8 +55,16 @@ ico_poly = QIcon(':/images/themes/default/mIconPolygonLayer.svg')
 # ##################################
 
 class SearchFormManager(IsogeoDockWidget):
+    """ Basic class to manage IsogeoDockwidget Ui module (ui/isogeo_dockwidget.py).
+    It performs different tasks :
+        - update widgets (clear, fill and set appropriate status)
+        - fill the results table calling ResultsManager.show_results method
+        - save search parameters selected by the user, wich is useful for updating 
+        widgets or building search request's URL.
+    Most of its methods are called by Isogeo.search_slot method which launched after
+    the results of a search request has been parsed and validated.
     """
-    """
+    # Simple signal to connect keywords special combobox with Isogeo.search method 
     kw_sig = pyqtSignal()
 
     def __init__(self, trad):
@@ -97,6 +105,9 @@ class SearchFormManager(IsogeoDockWidget):
         self.btn_rename_sr.pressed.connect(self.qs_mng.dlg_rename.show)
         self.btn_delete_sr.pressed.connect(self.qs_mng.remove)
         self.btn_default_save.pressed.connect(self.qs_mng.write_params)
+
+        # Setting result manager
+        self.results_mng = ResultsManager(self)
 
     def update_cbb_keywords(self, tags_keywords:dict ={}, selected_keywords:list =[]):
         """Keywords combobox is specific because items are checkable.
@@ -248,24 +259,24 @@ class SearchFormManager(IsogeoDockWidget):
 
         return
     
-    def prepare_tbl_result(self, page_index:int, results_count:int):
+    def fill_tbl_result(self, content: dict, page_index:int, results_count:int):
         """ Called by Isogeo.search_slot method. It sets some widgets' statuts
         in order to display results.
 
-        :param int page_index: results table's page index
+        :param int page_index: results table's page index.
         :param int results_count: number of metadata to be displayed in the
         table.
+        :param dict content: a dict containing the parsed content of API's reply
+        to a search request
         """
         nb_page = plg_tools.results_pages_counter(total=results_count)
         if nb_page == 1:
             self.btn_next.setEnabled(False)
             self.btn_previous.setEnabled(False)
         elif page_index < 2:
-            logger.debug("*=====* desabling btn_previous")
             self.btn_previous.setEnabled(False)
             self.btn_next.setEnabled(True)
         elif page_index == nb_page:
-            logger.debug("*=====* desabling btn_next")
             self.btn_next.setEnabled(False)
             self.btn_previous.setEnabled(True)
         else :
@@ -275,10 +286,9 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_ob.setEnabled(True)
         self.cbb_od.setEnabled(True)
         self.btn_show.setToolTip(self.tr("Display results"))
-        # self.results_mng.show_results(content,
-        #                                 self.tbl_result,
-        #                                 progress_bar=self.bar)
-        # self.write_search_params('_current', search_kind="Current")
+
+        self.results_mng.show_results(api_results = content)
+        self.qs_mng.write_params('_current', search_kind="Current")
 
     def switch_widgets_on_and_off(self, mode=1):
         """Disable all the UI widgets when a request is being sent.
@@ -329,9 +339,16 @@ class SearchFormManager(IsogeoDockWidget):
     def save_params(self):
         """Save the widgets state/index.
 
-        This save the current state/index of each user input so we can put them
-        back to their previous state/index after they have been updated
-        (cleared and filled again).
+        This save the current state/index of each user input in a dict so we can 
+        put them back to their previous state/index after they have been updated
+        (cleared and filled again). The dict is also used to build search requests 
+        URL.
+        
+        :returns: a dictionary whose keys correspond to the names of the different 
+        user input and values correspond to the user's sélection in  each of these 
+        inputs (None if nothing selected).
+        
+        :rtype: dict
         """
         params = {}
         # get the data of the item which index is (comboboxes current index)
@@ -379,11 +396,20 @@ class SearchFormManager(IsogeoDockWidget):
             pass
         # saving params in QSettings
         qsettings.setValue("isogeo/settings/georelation", params.get("operation"))
-        logger.debug("*=====* params : {}".format(params))
         return params
 
-    def get_coords(self, filter):
-        """Get the canvas coordinates in the right format and SRS (WGS84)."""
+    def get_coords(self, filter:str):
+        """Get the extent's coordinates of a layer or canvas in the right format 
+        and SRS (WGS84).
+        
+        :param str filter: the name of the element wich we want to get extent's 
+        coordinates.
+
+        :returns: the x and y coordinates of the canvas' Southwestern and 
+        Northeastern vertexes.
+
+        :rtype: str
+        """
         if filter == 'canvas':
             e = iface.mapCanvas().extent()
             current_epsg = plg_tools.get_map_crs()

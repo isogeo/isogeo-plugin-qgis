@@ -55,16 +55,13 @@ except ImportError:
 from . import resources
 
 # UI classes
-from .ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
 from .ui.credits.dlg_credits import IsogeoCredits
 
 # Plugin modules
 from .modules import Authenticator
 from .modules import ApiRequester
 from .modules import MetadataDisplayer
-from .modules import ResultsManager
 from .modules import IsogeoPlgTools
-from .modules import QuickSearchManager
 from .modules import SharesParser
 from .modules import SearchFormManager
 
@@ -197,9 +194,6 @@ class Isogeo:
         # instanciating
         self.md_display = MetadataDisplayer()
 
-        self.results_mng = ResultsManager(self)
-        self.results_mng.cache_mng.loader()
-
         self.approps_mng = SharesParser()
         self.approps_mng.tr = self.tr
 
@@ -207,6 +201,10 @@ class Isogeo:
 
         self.api_requester = ApiRequester()
         self.api_requester.tr = self.tr
+
+        self.form_mng = SearchFormManager(self.tr)
+        self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
+        self.form_mng.qs_mng.lang = self.lang
     
         # connecting
         self.api_requester.token_sig.connect(self.token_slot)
@@ -223,7 +221,7 @@ class Isogeo:
         self.showResult = False
         self.showDetails = False
         self.store = False
-        self.PostGISdict = self.results_mng.build_postgis_dict(qsettings)
+        self.PostGISdict = self.form_mng.results_mng.build_postgis_dict(qsettings)
 
         self.old_text = ""
         self.page_index = 1
@@ -303,7 +301,7 @@ class Isogeo:
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed."""
         # save cache
-        self.results_mng.cache_mng.dumper()
+        self.form_mng.results_mng.cache_mng.dumper()
         # disconnects
         self.form_mng.closingPlugin.disconnect(self.onClosePlugin)
 
@@ -536,11 +534,8 @@ class Isogeo:
 
         # Showing result : if button 'show result', 'next page' or 'previous page' pressed
         if self.showResult is True:
-            self.form_mng.prepare_tbl_result(self.page_index, self.results_count)
-            self.form_mng.qs_mng.write_params('_current', search_kind="Current")
-            self.results_mng.show_results(result,
-                                self.form_mng.tbl_result,
-                                progress_bar=self.bar)
+            self.form_mng.fill_tbl_result(content = result, page_index = self.page_index, results_count = self.results_count)
+            iface.mainWindow().statusBar().removeWidget(self.bar)
             self.store = True
         else: 
             pass
@@ -742,6 +737,8 @@ class Isogeo:
         # pagination
         self.form_mng.btn_next.pressed.connect(partial(self.search, show = True, page_change = 1))
         self.form_mng.btn_previous.pressed.connect(partial(self.search, show = True, page_change = -1))
+        # metadata display
+        self.form_mng.results_mng.md_asked.connect(self.send_details_request)
         
         # -- Quicksearches ----------------------------------------------------
         
@@ -750,7 +747,7 @@ class Isogeo:
 
         # # -- Settings tab - Search --------------------------------------------
         # button to empty the cache of filepaths #135
-        self.form_mng.btn_cache_trash.pressed.connect(self.results_mng.cache_mng.cleaner)
+        self.form_mng.btn_cache_trash.pressed.connect(self.form_mng.results_mng.cache_mng.cleaner)
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
@@ -765,11 +762,12 @@ class Isogeo:
         self.form_mng.btn_log_dir.pressed.connect(partial(plg_tools.open_dir_file,
                                                             target=plg_logdir))
         self.form_mng.btn_report.pressed.connect(partial(plg_tools.open_webpage,
-                    link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4".format(self.tr("TITLE ISSUE REPORTED"),
-                    plg_tools.plugin_metadata(base_path=plg_basepath),
-                    Qgis.QGIS_VERSION,
-                    platform.platform())
-                    ))
+            link=u"https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4".format(
+                self.tr("TITLE ISSUE REPORTED"),
+                plg_tools.plugin_metadata(base_path=plg_basepath),
+                Qgis.QGIS_VERSION,
+                platform.platform())
+            ))
         # help button
         self.form_mng.btn_help.pressed.connect(
             partial(plg_tools.open_webpage,
@@ -798,6 +796,9 @@ class Isogeo:
         # self.form_mng.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.form_mng.txt_input.setFocus()
         self.savedSearch = "first"
+        # load cache file
+        self.form_mng.results_mng.cache_mng.loader()
+        # launch authentication
         self.user_authentication()
 
 # #############################################################################
