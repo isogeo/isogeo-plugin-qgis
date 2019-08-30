@@ -37,15 +37,13 @@ from collections import OrderedDict
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QSettings, Qt, QTranslator, QUrl, qVersion, QSize, pyqtSlot
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QSettings, Qt, QTranslator, qVersion, QSize, pyqtSlot
 from qgis.PyQt.QtWidgets import QAction, QComboBox, QProgressBar
-from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
-from qgis.PyQt.QtNetwork import QNetworkRequest
+from qgis.PyQt.QtGui import QIcon
 
 # PyQGIS
 from qgis.utils import iface, plugin_times
-from qgis.core import (QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsDataSourceUri, QgsMessageLog, QgsPointXY, QgsRectangle, QgsRasterLayer, QgsVectorLayer, QgsProject,
-                       QgsApplication)
+from qgis.core import (QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle, QgsVectorLayer, QgsApplication)
 try:
     from qgis.core import Qgis
 except ImportError:
@@ -426,10 +424,8 @@ class Isogeo:
         # Info for _offset parameter
         if page_change != 0:
             if page_change < 0 and self.page_index > 1:
-                logger.debug("previous_page function called.")
                 self.page_index -= 1
             elif page_change > 0 and self.page_index < plg_tools.results_pages_counter(total=self.results_count):
-                logger.debug("next_page function called.")
                 self.page_index += 1
             else:
                 return False
