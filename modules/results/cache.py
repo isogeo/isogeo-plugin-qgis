@@ -42,8 +42,6 @@ class CacheManager():
         self.cached_dict = {"files" : list(set(self.cached_unreach_paths)),
                             "PostGIS" : list(set(self.cached_unreach_postgis)),
                             "services" : list(set(self.cached_unreach_srv))}
-        logger.debug("cached_dict : {}".format(self.cached_dict))
-
         with open(self.cache_file, 'w') as cache:
             json.dump([self.cached_dict], cache, indent=4)
         logger.debug("Paths cache has been dumped")

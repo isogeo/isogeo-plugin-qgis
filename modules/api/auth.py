@@ -249,7 +249,6 @@ class Authenticator():
         # test file structure
         try:
             selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
-            logger.debug("*=====* selected_file : {}".format(selected_file))
             api_credentials = plg_tools.credentials_loader(selected_file)
         except Exception as e:
             logger.error(e)
