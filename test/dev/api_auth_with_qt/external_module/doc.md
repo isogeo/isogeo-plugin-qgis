@@ -5,24 +5,24 @@ It uses the `PyQt` library to authenticate itself to the Isogeo API using an app
 
 ## How to use it
 
-1. Put the `client_secrets.json` authentication file in the `/dev` folder.
+1. Put the `client_secrets.json` authentication file in the `test/dev/api_auth_with_qt/external_module` folder.
 
 2. Create and activate a virtual environment in the same folder :
 
-    ``` powershell
-        cd .\test\dev\api_auth_with_qt\external_module\
-        python -m venv .venv_authwithqt --system-site-packages
-        .\.venv_authwithqt\Scripts\activate
+    ```powershell
+    cd .\test\dev\api_auth_with_qt\external_module\
+    python -m venv .venv_authwithqt --system-site-packages
+    .\.venv_authwithqt\Scripts\activate
     ```
 
 3. Install the [`isogeo-pysdk`](https://github.com/isogeo/isogeo-api-py-minsdk) package in your virtual environment :
 
-    ``` powershell
-        pip install isogeo-pysdk
+    ```powershell
+    python -m pip install isogeo-pysdk==2.21.*
     ```
 
 4. Run the `api_with_qt.py` python file in your vitual environment :
 
-    ``` powershell
-        python api_with_qt.py
+    ```powershell
+    python api_with_qt.py
     ```

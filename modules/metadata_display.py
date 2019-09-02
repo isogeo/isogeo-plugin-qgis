@@ -10,7 +10,6 @@ from datetime import datetime
 from qgis.core import (QgsProject, QgsMessageLog, QgsVectorLayer, QgsPointXY, 
                         QgsRectangle, QgsFeature, QgsGeometry, QgsRasterLayer, QgsRenderContext)
 
-
 # PyQT
 from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtGui import QColor
@@ -20,9 +19,10 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem
 from .isogeo_pysdk import IsogeoTranslator
 
 # Plugin modules
-from .api import IsogeoPlgApiMngr
-from .url_builder import UrlBuilder
 from .tools import IsogeoPlgTools
+
+# UI module 
+from ..ui.metadata.dlg_md_details import IsogeoMdDetails
 
 # ############################################################################
 # ########## Globals ###############
@@ -31,9 +31,7 @@ from .tools import IsogeoPlgTools
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
-plg_api_mngr = IsogeoPlgApiMngr()
 plg_tools = IsogeoPlgTools()
-plg_url_bldr = UrlBuilder()
 
 osm_lbls = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Labels&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
 osm_refs = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Features&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
@@ -50,13 +48,13 @@ li_lyrs_refs = [
 # ##################################
 
 
-class MetadataDisplayer(object):
+class MetadataDisplayer():
     """Manage metadata displaying in QGIS UI."""
     url_edition = "https://app.isogeo.com"
 
-    def __init__(self, ui_md_details):
+    def __init__(self):
         """Class constructor."""
-        self.complete_md = ui_md_details
+        self.complete_md = IsogeoMdDetails()
         self.complete_md.stackedWidget.setCurrentIndex(0)
 
         # some basic settings
@@ -65,13 +63,12 @@ class MetadataDisplayer(object):
 
         self.complete_md.btn_md_edit.pressed.connect(lambda: plg_tools.open_webpage(link=self.url_edition))
 
-    def show_complete_md(self, md):
+    def show_complete_md(self, md: dict, tags: dict):
         """Open the pop up window that shows the metadata sheet details.
         
         :param md dict: Isogeo metadata dict
         """
         logger.info("Displaying the whole metadata sheet.")
-        tags = plg_api_mngr.get_tags(md.get("tags"))
         isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])
 
         # clean map canvas
@@ -280,9 +277,6 @@ class MetadataDisplayer(object):
                                      qgs_prj.mapLayer(li_lyrs_refs[0].id()),
                                      qgs_prj.mapLayer(li_lyrs_refs[1].id()),
                                      qgs_prj.mapLayer(li_lyrs_refs[2].id())]
-            
-            logger.debug("*=====* type de map_canvas_layer_list[] : {} / {}".format(map_canvas_layer_list[0], map_canvas_layer_list[1]))
-            logger.debug("*=====* map_canvas_layer_list : {}".format(map_canvas_layer_list))
 
             self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())

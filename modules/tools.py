@@ -397,9 +397,6 @@ class IsogeoPlgTools(IsogeoUtils):
         if isinstance(in_string, str) or isinstance(in_string, unicode):
             logger.debug(in_string)
             return in_string.encode('unicode-escape')
-        # elif isinstance(in_string, unicode):
-        #     logger.debug(in_string)
-        #     return in_string.encode('unicode-escape')
         else:
             raise TypeError
 

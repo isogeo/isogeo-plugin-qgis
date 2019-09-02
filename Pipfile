@@ -7,8 +7,7 @@ name = "pypi"
 "pb_tool" = "*"
 
 [packages]
-isogeo-pysdk = "*"
-"pathlib2" = "*"
+isogeo-pysdk = "==2.21.*"
 
 [requires]
-python_version = "2.7"
+python_version = "3.7"
