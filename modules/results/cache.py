@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division,
 # Standard library
 import logging
 import json
+from pathlib import Path
 
 # ############################################################################
 # ########## Globals ###############
@@ -21,15 +22,9 @@ class CacheManager():
     """Basic class to manage the cache system of the layer addition. 
     """
 
-    def __init__(self, path_cache_file : str = None):
+    def __init__(self):
         # Path to JSON cache file
-        if isinstance(path_cache_file, str):
-            self.cache_file = path_cache_file
-        elif path_cache_file != None:
-            raise TypeError("str expected")
-        else:
-            raise ValueError("path to JSON cache file must be given to instantiate CacheManager")
-
+        self.cache_file = Path(__file__).parents[2]/"_user"/"cache.json"
         # Objects for storing inaccessible elements 
         self.cached_dict = {}
         self.cached_unreach_paths = []
@@ -47,8 +42,6 @@ class CacheManager():
         self.cached_dict = {"files" : list(set(self.cached_unreach_paths)),
                             "PostGIS" : list(set(self.cached_unreach_postgis)),
                             "services" : list(set(self.cached_unreach_srv))}
-        logger.debug("cached_dict : {}".format(self.cached_dict))
-
         with open(self.cache_file, 'w') as cache:
             json.dump([self.cached_dict], cache, indent=4)
         logger.debug("Paths cache has been dumped")
@@ -65,14 +58,15 @@ class CacheManager():
         try:
             with open(self.cache_file, 'r') as cache:
                 cache_loaded = json.load(cache)
-            logger.debug("cache_loaded : {}".format(cache_loaded))
-            if isinstance(cache_loaded[0], dict) :
+            if len(cache_loaded) == 0:
+                logger.debug("Empty cache file.")
+            elif isinstance(cache_loaded[0], dict) :
                 self.cached_unreach_paths = cache_loaded[0].get("files")
                 self.cached_unreach_postgis = cache_loaded[0].get("PostGIS")
                 self.cached_unreach_srv = cache_loaded[0].get("services")
-                logger.debug("Paths cache has been loaded")
+                logger.debug("Cache file has been loaded.")
             else:
-                logger.debug("Old cache file format detected")
+                logger.debug("Old cache file format detected.")
                 self.cached_unreach_paths = cache_loaded
             return cache_loaded
 

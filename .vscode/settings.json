@@ -13,6 +13,11 @@
     //"python.pythonPath": "${workspaceFolder}/.venv_tests/Scripts/python.exe",
     "python.pythonPath": "C:/OSGeo4W64/bin/python-qgis-ltr.bat",
 
+    // Formatting with black
+    "python.formatting.provider": "black",
+    "python.formatting.blackPath": "${workspaceFolder}/.venv_dev/Lib",
+    "python.formatting.blackArgs": ["--target-version=py37",],
+
     // Replicate the QGIS environment
     "terminal.integrated.env.windows": {
         // Path

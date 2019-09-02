@@ -37,12 +37,12 @@ class SharesParser(QObject):
     def send_share_info(self, shares: list):
         """Slot connected to ApiRequester.shares_sig signal emitted when a response 
         to a share request has been received from the Isogeo's API, validated and parsed.
-        'result' parameter correspond to the content of shares request's reply passed 
+        'shares' parameter correspond to the content of shares request's reply passed 
         by the ApiRequester.handle_reply method (see modules/api/request.py). 
         Once the string building from 'result' is done, the shares_ready signal is emitted 
         passing this string to a connected slot : Isogeo.write_shares_info (see isogeo.py).
         
-        :param list result: list of shares feeding the application
+        :param list shares: list of shares feeding the application
         """
         logger.debug("Application properties provided by the Isogeo API.")
         content = shares

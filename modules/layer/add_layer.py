@@ -219,8 +219,14 @@ class LayerAdder():
                         return (0,
                                 "Layer {} not found in WFS service: {}"
                                 .format(layer_name,
-                                        wfs_url_getcap),
+                                        wfs_url_getcap), 
                                 e)
+                else:
+                    return (0,
+                                "Layer {} not found in WFS service: {}"
+                                .format(layer_name,
+                                        wfs_url_getcap), 
+                            e)
 
             # SRS definition
             srs_map = plg_tools.get_map_crs()
@@ -648,12 +654,12 @@ class LayerAdder():
                             "Raster layer added:: {}".format(
                                 name.decode("latin1")), "Isogeo")
                         logger.debug("Raster layer added: {}"
-                                    .format(name.decode("latin1")))
+                            .format(name.decode("latin1")))
                 else:
                     error_msg = layer.error().message()
                     logger.warning("Invalid raster layer: {}. QGIS says: {}"
-                                   .format(path,
-                                           error_msg))
+                        .format(path,
+                                error_msg))
                     QMessageBox.information(iface.mainWindow(),
                                             self.tr('Error'),
                                             self.tr("Raster not valid {}. QGIS says: {}")
@@ -828,7 +834,10 @@ class LayerAdder():
                 return 0
         # filling 'QGIS Server' tab of layer Properties
         if layer.isValid():
-            self.md_sync.basic_sync(layer = lyr, info = layer_info)
+            try:
+                self.md_sync.basic_sync(layer = lyr, info = layer_info)
+            except IndexError as e:
+                logger.debug("Not supported 'layer_info' format causes this error : {}".format(e))
         else :
             pass
         return 1 

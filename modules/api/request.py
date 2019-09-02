@@ -26,7 +26,6 @@ msgBar = iface.messageBar()
 # ########## Classes ###############
 # ##################################
 
-# class ApiRequester(QObject):
 class ApiRequester(QgsNetworkAccessManager):
     """Basic class to manage direct interactions with Isogeo's API :
         - Authentication request for token
@@ -36,8 +35,8 @@ class ApiRequester(QgsNetworkAccessManager):
     """
 
     token_sig = pyqtSignal(str)
-    search_sig = pyqtSignal(dict)
-    details_sig = pyqtSignal(dict)
+    search_sig = pyqtSignal(dict, dict)
+    details_sig = pyqtSignal(dict, dict)
     shares_sig = pyqtSignal(list)
 
     def __init__(self):
@@ -181,13 +180,14 @@ class ApiRequester(QgsNetworkAccessManager):
             except ValueError as e:
                 if "No JSON object could be decoded" in str(e):
                     logger.error("Internet connection failed")
+                    self.token_sig.emit("NoInternet")
                 else:
                     pass
                 return
         
             url = reply.url().toString()
-            # for token request, one signal is emitted with different data's value
-            # depending on the reply content
+            # for token request, one signal is emitted passing a string whose
+            # value depend on the reply content
             if "token" in url:
                 logger.debug("Handling reply to a 'token' request")
                 logger.debug("(from : {}).".format(url))
@@ -201,14 +201,22 @@ class ApiRequester(QgsNetworkAccessManager):
                     logger.error("The API reply is an error: {}. ID and SECRET must be "
                                 "invalid. Asking for them again."
                                 .format(parsed_content.get('error')))
+                    msgBar.pushMessage("Isogeo",
+                               self.tr("API authentication failed.Isogeo API answered: {}")
+                                       .format(parsed_content.get('error')),
+                               duration=10,
+                               level=1)
                     self.token_sig.emit("credIssue")
                 else:
+                    msgBar.pushMessage("Isogeo",
+                               self.tr("API authentication failed.Isogeo API answered: {}")
+                                       .format(parsed_content.get('error')),
+                               duration=10,
+                               level=2)
                     logger.debug("The API reply has an unexpected form: {}."
                                 .format(parsed_content))
-                    self.token_sig.emit("authIssue")
             # for other types of request, a different signal is emitted depending
-            # on the type of request but the value of emitted data is always the 
-            # reply's content
+            # on the type of request but it always pass the reply's content
             else :
                 self.loopCount = 0
                 if "shares" in url:
@@ -218,14 +226,13 @@ class ApiRequester(QgsNetworkAccessManager):
                 elif "resources/search?" in url:
                     logger.debug("Handling reply to a 'search' request")
                     logger.debug("(from : {}).".format(url))
-                    self.search_sig.emit(parsed_content)
+                    self.search_sig.emit(parsed_content, self.get_tags(parsed_content.get("tags")))
                 elif "resources/" in reply.url().toString():
                     logger.debug("Handling reply to a 'details' request")
                     logger.debug("(from : {}).".format(url))
-                    self.details_sig.emit(parsed_content)
+                    self.details_sig.emit(parsed_content, self.get_tags(parsed_content.get("tags")))
                 else :
                     logger.debug("Unkown reply type")
-                    return
             del parsed_content
         
         # if replys's content is invalid
@@ -249,6 +256,7 @@ class ApiRequester(QgsNetworkAccessManager):
                     self.tr("The script is looping. Make sure you shared a "
                             "catalog with the plugin. If so, please report "
                             "this on the bug tracker."))
+                self.token_sig.emit("NoInternet")
                 return
         else :
             logger.warning("Unknown error : {}".format(str(reply.error())))
@@ -283,8 +291,8 @@ class ApiRequester(QgsNetworkAccessManager):
         for keyword in params.get("keys"):
             filters += keyword + " "
         # Owner
-        if params.get("owner") is not None:
-            filters += params.get("owner") + " "
+        if params.get("owners") is not None:
+            filters += params.get("owners") + " "
         # SRS
         if params.get("srs") is not None:
             filters += params.get("srs") + " "
@@ -292,17 +300,17 @@ class ApiRequester(QgsNetworkAccessManager):
         if params.get("inspire") is not None:
             filters += params.get("inspire") + " "
         # Format
-        if params.get("format") is not None:
-            filters += params.get("format") + " "
+        if params.get("formats") is not None:
+            filters += params.get("formats") + " "
         # Data type
-        if params.get("datatype") is not None:
-            filters += params.get("datatype") + " "
+        if params.get("types") is not None:
+            filters += params.get("types") + " "
         # Contact
-        if params.get("contact") is not None:
-            filters += params.get("contact") + " "
+        if params.get("contacts") is not None:
+            filters += params.get("contacts") + " "
         # License
-        if params.get("license") is not None:
-            filters += params.get("license") + " "
+        if params.get("licenses") is not None:
+            filters += params.get("licenses") + " "
         # Formating the filters
         if filters != "":
             filters = "q=" + filters[:-1]
@@ -333,6 +341,102 @@ class ApiRequester(QgsNetworkAccessManager):
         # method ending
         return url        
 
+    def get_tags(self, tags: dict):
+        """ This parse the tags contained in API_answer[tags] and class them so
+        they are more easy to handle in other function such as update_fields()
+
+        :param dict tags: a dict of tags as thez are return by the API
+
+        return: a dict containing one dict for each type of tags
+
+        rtype: dict(dict)
+        """
+        # set dicts
+        actions = {}
+        contacts = {}
+        formats = {}
+        inspire = {}
+        keywords = {}
+        licenses = {}
+        md_types = {}
+        owners = {}
+        srs = {}
+        # unused = {}
+        # 0/1 values
+        compliance = 0
+        type_dataset = 0
+        # parsing tags
+        for tag in sorted(tags.keys()):
+            # actions
+            if tag.startswith("action"):
+                actions[tags.get(tag, tag)] = tag
+                continue
+            # compliance INSPIRE
+            elif tag.startswith("conformity"):
+                compliance = 1
+                continue
+            # contacts
+            elif tag.startswith("contact"):
+                contacts[tags.get(tag)] = tag
+                continue
+            # formats
+            elif tag.startswith("format"):
+                formats[tags.get(tag)] = tag
+                continue
+            # INSPIRE themes
+            elif tag.startswith("keyword:in"):
+                inspire[tags.get(tag)] = tag
+                continue
+            # keywords
+            elif tag.startswith("keyword:is"):
+                keywords[tags.get(tag)] = tag
+                continue
+            # licenses
+            elif tag.startswith("license"):
+                licenses[tags.get(tag)] = tag
+                continue
+            # owners
+            elif tag.startswith("owner"):
+                owners[tags.get(tag)] = tag
+                continue
+            # SRS
+            elif tag.startswith("coordinate-system"):
+                srs[tags.get(tag)] = tag
+                continue
+            # types
+            elif tag.startswith("type"):
+                md_types[tags.get(tag)] = tag
+                if tag in ("type:vector-dataset", "type:raster-dataset"):
+                    type_dataset += 1
+                continue
+            # ignored tags
+            else:
+                # unused[tags.get(tag, tag)] = tag
+                continue
+
+        # override API tags to allow all datasets filter - see #
+        if type_dataset == 2:
+            md_types[self.tr("Dataset", "Authenticator")] = "type:dataset"
+        else:
+            pass
+
+        # storing dicts
+        tags_parsed = {"actions": actions,
+                       "compliance": compliance,
+                       "contacts": contacts,
+                       "formats": formats,
+                       "inspire": inspire,
+                       "keywords": keywords,
+                       "licenses": licenses,
+                       "owners": owners,
+                       "srs": srs,
+                       "types": md_types,
+                       # "unused": unused
+                       }
+
+        # method ending
+        logger.info("Tags retrieved")
+        return tags_parsed
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################

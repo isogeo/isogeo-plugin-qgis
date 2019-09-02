@@ -4,13 +4,12 @@ from __future__ import (absolute_import, division,
 
 # Standard library
 import logging
-from functools import partial
 import json
-import os
-
+from functools import partial
+from pathlib import Path
 # PyQT
 # from QByteArray
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal
 from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import (QTableWidgetItem, QComboBox, QPushButton, QLabel, 
                                 QProgressBar, QHeaderView)
@@ -66,32 +65,31 @@ ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 # ##################################
 
 
-class ResultsManager(object):
+class ResultsManager(QObject):
     """Basic class that holds utilitary methods for the plugin."""
 
-    def __init__(self, isogeo_plugin):
-        """Class constructor."""
-        self.isogeo_widget = isogeo_plugin.dockwidget
-        self.send_details_request = isogeo_plugin.send_details_request
-        self.tr = isogeo_plugin.tr
+    md_asked = pyqtSignal(str)
+
+    def __init__(self, search_form_manager: object):
+        # inheritance
+        super().__init__()
+
+        self.form_mng = search_form_manager
+        self.tbl_result = self.form_mng.tbl_result
+        self.tr = self.form_mng.tr
 
         self.layer_adder = LayerAdder()
         self.layer_adder.tr = self.tr
+        self.layer_adder.tbl_result = self.tbl_result
         self.add_layer = self.layer_adder.adding
         self.pg_connections = self.build_postgis_dict(qsettings)
 
-        self.path_cache_file = os.path.realpath(os.path.join(isogeo_plugin.plg_basepath, "_user", "paths_cache.json"))
-        self.cache_mng = CacheManager(self.path_cache_file)
+        self.cache_mng = CacheManager()
 
-    def show_results(self, api_results, tbl_result=None, pg_connections=dict(), progress_bar=QProgressBar):
-        """Display the results in a table ."""
+    def show_results(self, api_results, pg_connections=dict()):
+        """Display the results in a table."""
         logger.info("Results manager called. Displaying the results")
-        # check parameters
-        if not tbl_result:
-            tbl_result = self.isogeo_widget.tbl_result
-        else:
-            pass
-        self.layer_adder.tbl_result = tbl_result
+        tbl_result = self.tbl_result
         # Get the name (and other informations) of all databases whose
         # connection is set up in QGIS
         if pg_connections == {}:
@@ -122,7 +120,7 @@ class ResultsManager(object):
             btn_md_title = QPushButton(plg_tools.format_button_title(md_title))
             # Connecting the button to the full metadata popup
             btn_md_title.pressed.connect(partial(
-                self.send_details_request, md_id=md_id))
+                self.md_asked.emit, md_id))
             # Putting the abstract as a tooltip on this button
             btn_md_title.setToolTip(i.get("abstract", "")[:300])
             # Insert it in column 1
@@ -390,51 +388,29 @@ class ResultsManager(object):
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        # Remove the "loading" bar
-        iface.mainWindow().statusBar().removeWidget(progress_bar)
         # method ending
         return None
 
     # -- PRIVATE METHOD -------------------------------------------------------
-    def _filepath_builder(self, metadata_path, mode=1):
+    def _filepath_builder(self, metadata_path):
         """Build filepath from metadata path handling various cases. See: #129.
 
         :param dict metadata_path: path found in metadata
-        :param int mode: mode to apply. Options:
-          1 = only with standard path.normpath
-          2 = using raw string (useful for Windows systems)
         """
-        # basic checks
-        if not isinstance(mode, int):
-            raise TypeError
         # building
-        if mode == 1:
-            filepath = os.path.normpath(metadata_path)
-            dir_file = os.path.dirname(filepath)
-            if dir_file not in self.cache_mng.cached_unreach_paths:
-                try:
-                    with open(filepath) as f:
-                        return filepath
-                except IOError:
-                    logger.debug("Filepath is not reachable: {}".format(filepath))
-                    return self._filepath_builder(metadata_path, mode=2)
-            else:
-                logger.debug("Path has been ignored because it's cached.")
-                return False
-        elif mode == 2:
-            logger.debug("Using forced raw string")
-            filepath = plg_tools._to_raw_string(metadata_path)
-            dir_file = os.path.dirname(metadata_path)
+        filepath = Path(metadata_path)
+        dir_file = str(filepath.parent.resolve())
+        if dir_file not in self.cache_mng.cached_unreach_paths:
             try:
                 with open(filepath) as f:
-                    return filepath
-            except IOError:
+                    return str(filepath)
+            except:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
                 logger.debug("Path is not reachable and has been cached:{}".format(dir_file))
                 return False
         else:
-            logger.debug("Incorrect mode: {}".format(mode))
-            raise ValueError
+            logger.debug("Path has been ignored because it's cached.")
+            return False
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connexions."""
