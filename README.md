@@ -24,8 +24,8 @@ It's based on Isogeo API:
 
 It's fully integrated with QGIS ecosystem:
 
-* PyQGIS 2
-* PyQt 4.8.x
+* PyQGIS 3
+* PyQt 5.11.x
 
 ### Features
 
