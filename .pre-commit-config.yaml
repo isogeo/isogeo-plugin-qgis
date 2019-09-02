@@ -1,0 +1,12 @@
+exclude: ^(.venv_packaging/|.venv_tests/|.venv*/|tests/dev/|tests/fixtures/)
+repos:
+-   repo: https://github.com/python/black
+    rev: 19.3b0
+    hooks:
+    - id: black
+      name: black
+      description: 'Formatting code using Black'
+      exclude_types: [directory,]
+      language_version: python3
+      log_file: dev_precommit.log
+      types: [file, python]
