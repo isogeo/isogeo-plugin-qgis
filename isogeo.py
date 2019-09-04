@@ -36,29 +36,14 @@ from collections import OrderedDict
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import (
-    QByteArray,
-    QCoreApplication,
-    QSettings,
-    Qt,
-    QTranslator,
-    qVersion,
-    QSize,
-    pyqtSlot,
-)
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QSettings, Qt, QTranslator, qVersion, QSize, pyqtSlot
 
 from qgis.PyQt.QtWidgets import QAction, QComboBox, QProgressBar
 from qgis.PyQt.QtGui import QIcon
 
 # PyQGIS
 from qgis.utils import iface, plugin_times
-from qgis.core import (
-    QgsCoordinateReferenceSystem,
-    QgsMessageLog,
-    QgsRectangle,
-    QgsVectorLayer,
-    QgsApplication,
-)
+from qgis.core import QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle, QgsVectorLayer, QgsApplication
 
 
 try:
