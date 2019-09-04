@@ -43,13 +43,7 @@ from qgis.PyQt.QtGui import QIcon
 
 # PyQGIS
 from qgis.utils import iface, plugin_times
-from qgis.core import (
-    QgsCoordinateReferenceSystem,
-    QgsMessageLog,
-    QgsRectangle,
-    QgsVectorLayer,
-    QgsApplication,
-)
+from qgis.core import QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle, QgsVectorLayer, QgsApplication
 
 
 try:
