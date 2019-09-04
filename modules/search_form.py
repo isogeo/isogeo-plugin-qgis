@@ -34,25 +34,26 @@ plg_tools = IsogeoPlgTools()
 
 qsettings = QSettings()
 # icons
-ico_od_asc = QIcon(':/plugins/Isogeo/resources/results/sort-alpha-asc.svg')
-ico_od_desc = QIcon(':/plugins/Isogeo/resources/results/sort-alpha-desc.svg')
+ico_od_asc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-asc.svg")
+ico_od_desc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-desc.svg")
 ico_ob_relev = QIcon(":/plugins/Isogeo/resources/results/star.svg")
-ico_ob_alpha = QIcon(':/plugins/Isogeo/resources/metadata/language.svg')
-ico_ob_dcrea = QIcon(':/plugins/Isogeo/resources/datacreated.svg')
-ico_ob_dupda = QIcon(':/plugins/Isogeo/resources/datamodified.svg')
-ico_ob_mcrea = QIcon(':/plugins/Isogeo/resources/calendar-plus-o.svg')
-ico_ob_mupda = QIcon(':/plugins/Isogeo/resources/calendar_blue.svg')
-ico_bolt = QIcon(':/plugins/Isogeo/resources/search/bolt.svg')
-ico_keyw = QIcon(':/plugins/Isogeo/resources/tag.svg')
-ico_none = QIcon(':/plugins/Isogeo/resources/none.svg')
-ico_line = QIcon(':/images/themes/default/mIconLineLayer.svg')
+ico_ob_alpha = QIcon(":/plugins/Isogeo/resources/metadata/language.svg")
+ico_ob_dcrea = QIcon(":/plugins/Isogeo/resources/datacreated.svg")
+ico_ob_dupda = QIcon(":/plugins/Isogeo/resources/datamodified.svg")
+ico_ob_mcrea = QIcon(":/plugins/Isogeo/resources/calendar-plus-o.svg")
+ico_ob_mupda = QIcon(":/plugins/Isogeo/resources/calendar_blue.svg")
+ico_bolt = QIcon(":/plugins/Isogeo/resources/search/bolt.svg")
+ico_keyw = QIcon(":/plugins/Isogeo/resources/tag.svg")
+ico_none = QIcon(":/plugins/Isogeo/resources/none.svg")
+ico_line = QIcon(":/images/themes/default/mIconLineLayer.svg")
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
-ico_poin = QIcon(':/images/themes/default/mIconPointLayer.svg')
-ico_poly = QIcon(':/images/themes/default/mIconPolygonLayer.svg')
+ico_poin = QIcon(":/images/themes/default/mIconPointLayer.svg")
+ico_poly = QIcon(":/images/themes/default/mIconPolygonLayer.svg")
 
 # ############################################################################
 # ########## Classes ###############
 # ##################################
+
 
 class SearchFormManager(IsogeoDockWidget):
     """ Basic class to manage IsogeoDockwidget UI module (ui/isogeo_dockwidget.py).
@@ -64,7 +65,8 @@ class SearchFormManager(IsogeoDockWidget):
     Most of its methods are called by Isogeo.search_slot method which launched after
     the results of a search request has been parsed and validated.
     """
-    # Simple signal to connect keywords special combobox with Isogeo.search method 
+
+    # Simple signal to connect keywords special combobox with Isogeo.search method
     kw_sig = pyqtSignal()
 
     def __init__(self, trad):
@@ -72,31 +74,43 @@ class SearchFormManager(IsogeoDockWidget):
         super().__init__()
 
         self.tr = trad
-        # geofilter, type, format, owner, inspire, srs, contact and license 
+        # geofilter, type, format, owner, inspire, srs, contact and license
         self.cbbs_search_advanced = self.grp_filters.findChildren(QComboBox)
         # match between widgets and metadata fields
         self.match_widget_field = {
-            self.cbb_type : "types",
-            self.cbb_format : "formats",
-            self.cbb_owner : "owners",
-            self.cbb_inspire : "inspire",
-            self.cbb_srs : "srs",
-            self.cbb_contact : "contacts",
-            self.cbb_license : "licenses"
-            }
-        
+            self.cbb_type: "types",
+            self.cbb_format: "formats",
+            self.cbb_owner: "owners",
+            self.cbb_inspire: "inspire",
+            self.cbb_srs: "srs",
+            self.cbb_contact: "contacts",
+            self.cbb_license: "licenses",
+        }
+
         # Static dictionnaries for filling static widgets
-        self.dict_operation = OrderedDict([(self.tr('Intersects'), "intersects"),
-            (self.tr('within'), "within"),
-            (self.tr('contains'), "contains")])
-        self.dict_ob = OrderedDict([(self.tr("Relevance"), (ico_ob_relev, "relevance")),
-            (self.tr("Alphabetical order"), (ico_ob_alpha, "title")),
-            (self.tr("Data modified"), (ico_ob_dupda, "modified")),
-            (self.tr("Data created"), (ico_ob_dcrea, "created")),
-            (self.tr("Metadata modified"), (ico_ob_mcrea, "_modified")),
-            (self.tr("Metadata created"), (ico_ob_mupda, "_created"))])
-        self.dict_od = OrderedDict([(self.tr("Descending"), (ico_od_desc, "desc")),
-            (self.tr("Ascending"), (ico_od_asc, "asc"))])
+        self.dict_operation = OrderedDict(
+            [
+                (self.tr("Intersects"), "intersects"),
+                (self.tr("within"), "within"),
+                (self.tr("contains"), "contains"),
+            ]
+        )
+        self.dict_ob = OrderedDict(
+            [
+                (self.tr("Relevance"), (ico_ob_relev, "relevance")),
+                (self.tr("Alphabetical order"), (ico_ob_alpha, "title")),
+                (self.tr("Data modified"), (ico_ob_dupda, "modified")),
+                (self.tr("Data created"), (ico_ob_dcrea, "created")),
+                (self.tr("Metadata modified"), (ico_ob_mcrea, "_modified")),
+                (self.tr("Metadata created"), (ico_ob_mupda, "_created")),
+            ]
+        )
+        self.dict_od = OrderedDict(
+            [
+                (self.tr("Descending"), (ico_od_desc, "desc")),
+                (self.tr("Ascending"), (ico_od_asc, "asc")),
+            ]
+        )
 
         # Setting quick search manager
         self.qs_mng = QuickSearchManager(self)
@@ -109,7 +123,9 @@ class SearchFormManager(IsogeoDockWidget):
         # Setting result manager
         self.results_mng = ResultsManager(self)
 
-    def update_cbb_keywords(self, tags_keywords:dict ={}, selected_keywords:list =[]):
+    def update_cbb_keywords(
+        self, tags_keywords: dict = {}, selected_keywords: list = []
+    ):
         """Keywords combobox is specific because items are checkable.
         See: https://github.com/isogeo/isogeo-plugin-qgis/issues/159
 
@@ -117,12 +133,15 @@ class SearchFormManager(IsogeoDockWidget):
         :param list selected_keywords: keywords (codes) already checked.
         """
         selected_keywords_lbls = self.cbb_chck_kw.checkedItems()  # for tooltip
-        logger.debug("Updating keywords combobox with {} items, including {} selected."
-            .format(len(tags_keywords), len(selected_keywords_lbls)))
+        logger.debug(
+            "Updating keywords combobox with {} items, including {} selected.".format(
+                len(tags_keywords), len(selected_keywords_lbls)
+            )
+        )
 
         model = QStandardItemModel(5, 1)  # 5 rows, 1 col
         # parse keywords and check selected
-        i = 0   # row index
+        i = 0  # row index
         for tag_label, tag_code in sorted(tags_keywords.items()):
             i += 1
             item = QStandardItem(tag_label)
@@ -137,8 +156,7 @@ class SearchFormManager(IsogeoDockWidget):
             else:
                 pass
         # first item = label for the combobox.
-        first_item = QStandardItem("---- {} ----"
-                                   .format(self.tr('Keywords')))
+        first_item = QStandardItem("---- {} ----".format(self.tr("Keywords")))
         first_item.setIcon(ico_keyw)
         first_item.setSelectable(False)
         model.insertRow(0, first_item)
@@ -151,9 +169,11 @@ class SearchFormManager(IsogeoDockWidget):
 
         # add tooltip with selected keywords. see: #107#issuecomment-341742142
         if selected_keywords:
-            tooltip = "{}\n - {}".format(self.tr("Selected keywords:"), "\n - ".join(selected_keywords_lbls))
+            tooltip = "{}\n - {}".format(
+                self.tr("Selected keywords:"), "\n - ".join(selected_keywords_lbls)
+            )
         else:
-            tooltip =  self.tr("No keyword selected")
+            tooltip = self.tr("No keyword selected")
         self.cbb_chck_kw.setToolTip(tooltip)
 
     def pop_as_cbbs(self, tags: dict):
@@ -194,20 +214,20 @@ class SearchFormManager(IsogeoDockWidget):
         :param list items_list: a list of quick searche's names 
         from _user/quicksearches.json file.
         """
-        logger.debug("Filling quick searches comboboxes")  
+        logger.debug("Filling quick searches comboboxes")
         # building the list of widgets' items'content
         if items_list == None:
-            qs_list =list(self.qs_mng.load_file().keys())
+            qs_list = list(self.qs_mng.load_file().keys())
         else:
             qs_list = items_list
-        qs_list.pop(qs_list.index('_default'))
-        if '_current' in qs_list:
-            qs_list.pop(qs_list.index('_current'))
+        qs_list.pop(qs_list.index("_default"))
+        if "_current" in qs_list:
+            qs_list.pop(qs_list.index("_current"))
         # clear widgets
         self.cbb_quicksearch_use.clear()
         self.cbb_quicksearch_edit.clear()
         # filling widgets from the saved searches list built above
-        self.cbb_quicksearch_use.addItem(ico_bolt, self.tr('Quicksearches'))
+        self.cbb_quicksearch_use.addItem(ico_bolt, self.tr("Quicksearches"))
         for qs in qs_list:
             self.cbb_quicksearch_use.addItem(qs, qs)
             self.cbb_quicksearch_edit.addItem(qs, qs)
@@ -223,43 +243,46 @@ class SearchFormManager(IsogeoDockWidget):
         :param str quicksearch: empty string if no quicksearch performed. 
         Otherwise:the name of the quicksearch performed.
         """
-        logger.debug("Settings widgets statut according to these parameters : \n{}"
-            .format(params))
+        logger.debug(
+            "Settings widgets statut according to these parameters : \n{}".format(
+                params
+            )
+        )
         # for Advanced search Combobox except geo_filter
         for cbb in self.match_widget_field.keys():
             field_name = self.match_widget_field.get(cbb)
             dest_index = cbb.findData(params.get(field_name))
             cbb.setCurrentIndex(dest_index)
         # for geo filter, use quick search, and text label if quicksearch is True
-        if quicksearch == "": 
+        if quicksearch == "":
             if params.get("geofilter") == "mapcanvas":
                 dest_index = self.cbb_geofilter.findData("mapcanvas")
                 self.cbb_geofilter.setCurrentIndex(dest_index)
-            else : 
+            else:
                 dest_index = self.cbb_geofilter.findText(params["geofilter"])
                 self.cbb_geofilter.setCurrentIndex(dest_index)
-            dest_index = self.cbb_quicksearch_use.findData(params.get('favorite'))
+            dest_index = self.cbb_quicksearch_use.findData(params.get("favorite"))
             self.cbb_quicksearch_use.setCurrentIndex(dest_index)
         else:
             dest_index = self.cbb_geofilter.findData(params.get("geofilter"))
             self.cbb_geofilter.setCurrentIndex(dest_index)
             if quicksearch != "_default":
-                    saved_index = self.cbb_quicksearch_use.findData(quicksearch)
-                    self.cbb_quicksearch_use.setCurrentIndex(saved_index)
+                saved_index = self.cbb_quicksearch_use.findData(quicksearch)
+                self.cbb_quicksearch_use.setCurrentIndex(saved_index)
             else:
                 pass
             self.txt_input.setText(params.get("text"))
-        # for geo_op  
+        # for geo_op
         dest_index = self.cbb_geo_op.findData(params.get("operation"))
         self.cbb_geo_op.setCurrentIndex(dest_index)
 
         # for sorting order and direction
-        self.cbb_ob.setCurrentIndex(self.cbb_ob.findData(params.get('ob')))
-        self.cbb_od.setCurrentIndex(self.cbb_od.findData(params.get('od')))
+        self.cbb_ob.setCurrentIndex(self.cbb_ob.findData(params.get("ob")))
+        self.cbb_od.setCurrentIndex(self.cbb_od.findData(params.get("od")))
 
         return
-    
-    def fill_tbl_result(self, content: dict, page_index:int, results_count:int):
+
+    def fill_tbl_result(self, content: dict, page_index: int, results_count: int):
         """ Called by Isogeo.search_slot method. It sets some widgets' statuts
         in order to display results.
 
@@ -279,16 +302,16 @@ class SearchFormManager(IsogeoDockWidget):
         elif page_index == nb_page:
             self.btn_next.setEnabled(False)
             self.btn_previous.setEnabled(True)
-        else :
+        else:
             self.btn_next.setEnabled(True)
             self.btn_previous.setEnabled(True)
-        
+
         self.cbb_ob.setEnabled(True)
         self.cbb_od.setEnabled(True)
         self.btn_show.setToolTip(self.tr("Display results"))
 
-        self.results_mng.show_results(api_results = content)
-        self.qs_mng.write_params('_current', search_kind="Current")
+        self.results_mng.show_results(api_results=content)
+        self.qs_mng.write_params("_current", search_kind="Current")
 
     def switch_widgets_on_and_off(self, mode=1):
         """Disable all the UI widgets when a request is being sent.
@@ -305,7 +328,7 @@ class SearchFormManager(IsogeoDockWidget):
         else:
             self.txt_input.setReadOnly(True)
             self.tab_search.setEnabled(False)
-            
+
     def init_steps(self):
         """ Called by Isogeo.search_slot method in case of reset or "_default" 
         quicksearch. It initialise the widgets that don't need to be updated
@@ -352,29 +375,28 @@ class SearchFormManager(IsogeoDockWidget):
         """
         params = {}
         # get the data of the item which index is (comboboxes current index)
-        for cbb in self.match_widget_field :
+        for cbb in self.match_widget_field:
             field = self.match_widget_field.get(cbb)
             item = cbb.itemData(cbb.currentIndex())
             params[field] = item
 
         if self.cbb_geofilter.currentIndex() < 2:
             params["geofilter"] = self.cbb_geofilter.itemData(
-                self.cbb_geofilter.currentIndex())
+                self.cbb_geofilter.currentIndex()
+            )
         else:
             params["geofilter"] = self.cbb_geofilter.currentText()
 
         params["favorite"] = self.cbb_quicksearch_use.itemData(
-            self.cbb_quicksearch_use.currentIndex())
-        
+            self.cbb_quicksearch_use.currentIndex()
+        )
+
         # Getting the text in the search line
         params["text"] = self.txt_input.text()
 
-        params["operation"] = self.cbb_geo_op.itemData(
-            self.cbb_geo_op.currentIndex())
-        params["ob"] = self.cbb_ob.itemData(
-            self.cbb_ob.currentIndex())
-        params["od"] = self.cbb_od.itemData(
-            self.cbb_od.currentIndex())
+        params["operation"] = self.cbb_geo_op.itemData(self.cbb_geo_op.currentIndex())
+        params["ob"] = self.cbb_ob.itemData(self.cbb_ob.currentIndex())
+        params["od"] = self.cbb_od.itemData(self.cbb_od.currentIndex())
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
@@ -383,22 +405,24 @@ class SearchFormManager(IsogeoDockWidget):
             key_params.append(self.cbb_chck_kw.itemData(item_index, 32))
         params["keys"] = key_params
         # check geographic filter
-        if params.get('geofilter') == "mapcanvas":
+        if params.get("geofilter") == "mapcanvas":
             e = iface.mapCanvas().extent()
             extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
-            params['extent'] = extent
-            epsg = int(plg_tools.get_map_crs().split(':')[1])
-            params['epsg'] = epsg
-            params['coord'] = self.get_coords('canvas')
-        elif params.get('geofilter') in [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]:
-            params['coord'] = self.get_coords(params.get('geofilter'))
+            params["extent"] = extent
+            epsg = int(plg_tools.get_map_crs().split(":")[1])
+            params["epsg"] = epsg
+            params["coord"] = self.get_coords("canvas")
+        elif params.get("geofilter") in [
+            lyr.name() for lyr in QgsProject.instance().mapLayers().values()
+        ]:
+            params["coord"] = self.get_coords(params.get("geofilter"))
         else:
             pass
         # saving params in QSettings
         qsettings.setValue("isogeo/settings/georelation", params.get("operation"))
         return params
 
-    def get_coords(self, filter:str):
+    def get_coords(self, filter: str):
         """Get the extent's coordinates of a layer or canvas in the right format 
         and SRS (WGS84).
         
@@ -410,7 +434,7 @@ class SearchFormManager(IsogeoDockWidget):
 
         :rtype: str
         """
-        if filter == 'canvas':
+        if filter == "canvas":
             e = iface.mapCanvas().extent()
             current_epsg = plg_tools.get_map_crs()
         else:
@@ -418,28 +442,34 @@ class SearchFormManager(IsogeoDockWidget):
             e = layer.extent()
             current_epsg = layer.crs().authid()
         # epsg code as integer
-        current_epsg = int(current_epsg.split(':')[1])
+        current_epsg = int(current_epsg.split(":")[1])
 
         if current_epsg == 4326:
             coord = "{0},{1},{2},{3}".format(
-                e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum())
+                e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()
+            )
             return coord
         elif type(current_epsg) is int:
             current_srs = QgsCoordinateReferenceSystem(
-                current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId)
+                current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId
+            )
             wgs = QgsCoordinateReferenceSystem(
-                4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+                4326, QgsCoordinateReferenceSystem.EpsgCrsId
+            )
             xform = QgsCoordinateTransform(current_srs, wgs, QgsProject.instance())
             minimum = xform.transform(QgsPointXY(e.xMinimum(), e.yMinimum()))
             maximum = xform.transform(QgsPointXY(e.xMaximum(), e.yMaximum()))
             coord = "{0},{1},{2},{3}".format(
-                minimum[0], minimum[1], maximum[0], maximum[1])
+                minimum[0], minimum[1], maximum[0], maximum[1]
+            )
             return coord
         else:
-            logger.debug('Wrong EPSG')
+            logger.debug("Wrong EPSG")
             return False
+
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Standalone execution."""

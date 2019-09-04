@@ -1,14 +1,22 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Standard library
 import logging
 from datetime import datetime
 
 # PyQGIS
-from qgis.core import (QgsProject, QgsMessageLog, QgsVectorLayer, QgsPointXY, 
-                        QgsRectangle, QgsFeature, QgsGeometry, QgsRasterLayer, QgsRenderContext)
+from qgis.core import (
+    QgsProject,
+    QgsMessageLog,
+    QgsVectorLayer,
+    QgsPointXY,
+    QgsRectangle,
+    QgsFeature,
+    QgsGeometry,
+    QgsRasterLayer,
+    QgsRenderContext,
+)
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings, Qt
@@ -21,7 +29,7 @@ from .isogeo_pysdk import IsogeoTranslator
 # Plugin modules
 from .tools import IsogeoPlgTools
 
-# UI module 
+# UI module
 from ..ui.metadata.dlg_md_details import IsogeoMdDetails
 
 # ############################################################################
@@ -38,9 +46,9 @@ osm_refs = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format
 blue_marble = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/jpeg&layers=BlueMarble_ShadedRelief_Bathymetry&styles=default&tileMatrixSet=500m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
 
 li_lyrs_refs = [
-    QgsRasterLayer(osm_lbls, "Labels", 'wms'),
-    QgsRasterLayer(osm_refs, "Refs", 'wms'),
-    QgsRasterLayer(blue_marble, "Base", 'wms')
+    QgsRasterLayer(osm_lbls, "Labels", "wms"),
+    QgsRasterLayer(osm_refs, "Refs", "wms"),
+    QgsRasterLayer(blue_marble, "Base", "wms"),
 ]
 
 # ############################################################################
@@ -48,8 +56,9 @@ li_lyrs_refs = [
 # ##################################
 
 
-class MetadataDisplayer():
+class MetadataDisplayer:
     """Manage metadata displaying in QGIS UI."""
+
     url_edition = "https://app.isogeo.com"
 
     def __init__(self):
@@ -61,7 +70,9 @@ class MetadataDisplayer():
         self.complete_md.wid_bbox.setCanvasColor(Qt.white)
         self.complete_md.wid_bbox.enableAntiAliasing(True)
 
-        self.complete_md.btn_md_edit.pressed.connect(lambda: plg_tools.open_webpage(link=self.url_edition))
+        self.complete_md.btn_md_edit.pressed.connect(
+            lambda: plg_tools.open_webpage(link=self.url_edition)
+        )
 
     def show_complete_md(self, md: dict, tags: dict):
         """Open the pop up window that shows the metadata sheet details.
@@ -69,19 +80,19 @@ class MetadataDisplayer():
         :param md dict: Isogeo metadata dict
         """
         logger.info("Displaying the whole metadata sheet.")
-        isogeo_tr = IsogeoTranslator(qsettings.value('locale/userLocale')[0:2])
+        isogeo_tr = IsogeoTranslator(qsettings.value("locale/userLocale")[0:2])
 
         # clean map canvas
         vec_lyr = [i.id() for i in self.complete_md.wid_bbox.layers() if i.type() == 0]
         QgsProject.instance().removeMapLayers(vec_lyr)
         self.complete_md.wid_bbox.refresh()
-    
+
         # -- GENERAL ---------------------------------------------------------
         title = md.get("title", "NR")
         self.complete_md.lbl_title.setText(md.get("title", "NR"))
-        self.complete_md.val_owner.setText(md.get("_creator")
-                                             .get("contact")
-                                             .get("name", "NR"))
+        self.complete_md.val_owner.setText(
+            md.get("_creator").get("contact").get("name", "NR")
+        )
         # Keywords
         kwords = tags.get("keywords", {"none": "NR"})
         self.complete_md.val_keywords.setText(" ; ".join(kwords.keys()))
@@ -91,15 +102,13 @@ class MetadataDisplayer():
         if tags.get("compliance"):
             self.complete_md.ico_inspire_conformity.setEnabled(1)
             self.complete_md.ico_inspire_conformity.setToolTip(
-                                                    isogeo_tr.tr("quality",
-                                                                 "isConform")\
-                                                    + " INSPIRE")
+                isogeo_tr.tr("quality", "isConform") + " INSPIRE"
+            )
         else:
             self.complete_md.ico_inspire_conformity.setDisabled(1)
             self.complete_md.ico_inspire_conformity.setToolTip(
-                                                    isogeo_tr.tr("quality",
-                                                                 "isNotConform")\
-                                                    + " INSPIRE")
+                isogeo_tr.tr("quality", "isNotConform") + " INSPIRE"
+            )
         # Abstract
         self.complete_md.val_abstract.setText(md.get("abstract", "NR"))
 
@@ -135,39 +144,37 @@ class MetadataDisplayer():
         contacts_pt_cct = []
         contacts_other_cct = []
 
-        for ctact in sorted(contacts, key = lambda i: i.get("contact").get("name")):
+        for ctact in sorted(contacts, key=lambda i: i.get("contact").get("name")):
             item = ctact.get("contact")
 
             if ctact.get("role", "NR") == "pointOfContact":
-                content = "<b>{1}</b> ({2})<br><a href='mailto:{3}' target='_top'>{3}</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{8}<br>{9}"\
-                        .format(
-                            isogeo_tr.tr("roles", ctact.get("role")),
-                            item.get("name", "NR"),
-                            item.get("organization", "NR"),
-                            item.get("email", "NR"),
-                            item.get("phone", "NR"),
-                            item.get("addressLine1", ""),
-                            item.get("addressLine2", ""),
-                            item.get("zipCode", ""),
-                            item.get("city", ""),
-                            item.get("country", "")
-                        )
+                content = "<b>{1}</b> ({2})<br><a href='mailto:{3}' target='_top'>{3}</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{8}<br>{9}".format(
+                    isogeo_tr.tr("roles", ctact.get("role")),
+                    item.get("name", "NR"),
+                    item.get("organization", "NR"),
+                    item.get("email", "NR"),
+                    item.get("phone", "NR"),
+                    item.get("addressLine1", ""),
+                    item.get("addressLine2", ""),
+                    item.get("zipCode", ""),
+                    item.get("city", ""),
+                    item.get("country", ""),
+                )
                 contacts_pt_cct.append(content)
 
             else:
-                content = "<b>{0} - {1}</b> ({2})<br><a href='mailto:{3}' target='_blank'>{3}</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{9}"\
-                        .format(
-                            isogeo_tr.tr("roles", ctact.get("role")),
-                            item.get("name", "NR"),
-                            item.get("organization", "NR"),
-                            item.get("email", "NR"),
-                            item.get("phone", ""),
-                            item.get("addressLine1", ""),
-                            item.get("addressLine2", ""),
-                            item.get("zipCode", ""),
-                            item.get("city", ""),
-                            item.get("country", "")
-                        )
+                content = "<b>{0} - {1}</b> ({2})<br><a href='mailto:{3}' target='_blank'>{3}</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{9}".format(
+                    isogeo_tr.tr("roles", ctact.get("role")),
+                    item.get("name", "NR"),
+                    item.get("organization", "NR"),
+                    item.get("email", "NR"),
+                    item.get("phone", ""),
+                    item.get("addressLine1", ""),
+                    item.get("addressLine2", ""),
+                    item.get("zipCode", ""),
+                    item.get("city", ""),
+                    item.get("country", ""),
+                )
                 contacts_other_cct.append(content)
 
         # write
@@ -176,26 +183,30 @@ class MetadataDisplayer():
 
         # -- HISTORY ---------------------------------------------------------
         # Data creation and last update dates
-        self.complete_md.val_data_crea.setText(plg_tools.handle_date(
-                                               md.get("_created", "NR")))
-        self.complete_md.val_data_update.setText(plg_tools.handle_date(
-                                                 md.get("_modified", "NR")))
+        self.complete_md.val_data_crea.setText(
+            plg_tools.handle_date(md.get("_created", "NR"))
+        )
+        self.complete_md.val_data_update.setText(
+            plg_tools.handle_date(md.get("_modified", "NR"))
+        )
         # Update frequency information
         if md.get("updateFrequency", None):
             freq = md.get("updateFrequency")
-            frequency_info = "{}{} {}"\
-                             .format(isogeo_tr.tr("frequencyTypes", "frequencyUpdateHelp"),
-                                     ''.join(i for i in freq if i.isdigit()),
-                                     isogeo_tr.tr("frequencyShortTypes",
-                                                  freq[-1]))
+            frequency_info = "{}{} {}".format(
+                isogeo_tr.tr("frequencyTypes", "frequencyUpdateHelp"),
+                "".join(i for i in freq if i.isdigit()),
+                isogeo_tr.tr("frequencyShortTypes", freq[-1]),
+            )
             self.complete_md.val_frequency.setText(frequency_info)
         else:
             self.complete_md.val_frequency.setText("NR")
         # Validity
-        self.complete_md.val_valid_start.setText(plg_tools.handle_date(
-                                                 md.get("validFrom", "NR")))
-        self.complete_md.val_valid_end.setText(plg_tools.handle_date(
-                                               md.get("validTo", "NR")))
+        self.complete_md.val_valid_start.setText(
+            plg_tools.handle_date(md.get("validFrom", "NR"))
+        )
+        self.complete_md.val_valid_end.setText(
+            plg_tools.handle_date(md.get("validTo", "NR"))
+        )
         self.complete_md.val_valid_comment.setText(md.get("validityComment", "NR"))
         # Collect information
         self.complete_md.val_method.setText(md.get("collectionMethod", "NR"))
@@ -208,7 +219,9 @@ class MetadataDisplayer():
         idx = 0
         for e in events:
             if e.get("kind") == "update":
-                tbl_events.setItem(idx, 0, QTableWidgetItem(plg_tools.handle_date(e.get("date", "NR"))))
+                tbl_events.setItem(
+                    idx, 0, QTableWidgetItem(plg_tools.handle_date(e.get("date", "NR")))
+                )
                 tbl_events.setItem(idx, 1, QTableWidgetItem(e.get("description", "")))
                 idx += 1
             else:
@@ -221,15 +234,16 @@ class MetadataDisplayer():
         # -- TECHNICAL -------------------------------------------------------
         # SRS
         coord_sys = md.get("coordinate-system", {"None": "NR"})
-        self.complete_md.val_srs.setText("{} (EPSG:{})"
-                                         .format(coord_sys.get("name", "NR"),
-                                                 coord_sys.get("code", "NR")))
+        self.complete_md.val_srs.setText(
+            "{} (EPSG:{})".format(
+                coord_sys.get("name", "NR"), coord_sys.get("code", "NR")
+            )
+        )
         # Set the data format
-        if tags.get('formats') != {}:
-            self.complete_md.val_format.setText(
-                list(tags.get('formats').values())[0])
+        if tags.get("formats") != {}:
+            self.complete_md.val_format.setText(list(tags.get("formats").values())[0])
         else:
-            self.complete_md.val_format.setText('NR')
+            self.complete_md.val_format.setText("NR")
 
         # feature info
         self.complete_md.val_feat_count.setText(str(md.get("features", "/")))
@@ -249,15 +263,17 @@ class MetadataDisplayer():
             else:
                 s_conformity = isogeo_tr.tr("quality", "isNotConform")
             # make data human readable
-            s_date = datetime.strptime(s_in.get("specification").get("published"),
-                                       "%Y-%m-%dT%H:%M:%S")
+            s_date = datetime.strptime(
+                s_in.get("specification").get("published"), "%Y-%m-%dT%H:%M:%S"
+            )
             s_date = s_date.strftime("%Y-%m-%d")
             # prepare text
-            spec_text = "<a href='{1}'><b>{0} ({2})</b></a>: {3}"\
-                        .format(s_in.get("specification").get("name", "NR"),
-                                s_in.get("specification").get("link", ""),
-                                s_date,
-                                s_conformity)
+            spec_text = "<a href='{1}'><b>{0} ({2})</b></a>: {3}".format(
+                s_in.get("specification").get("name", "NR"),
+                s_in.get("specification").get("link", ""),
+                s_date,
+                s_conformity,
+            )
             # store into the final list
             specs_out.append(spec_text)
         # write
@@ -271,12 +287,16 @@ class MetadataDisplayer():
             # get convex hull coordinates and create the polygon
             md_lyr = self.envelope2layer(md.get("envelope"))
             # add layers
-            qgs_prj.addMapLayers([md_lyr, li_lyrs_refs[0], li_lyrs_refs[1], li_lyrs_refs[2]], 0)
+            qgs_prj.addMapLayers(
+                [md_lyr, li_lyrs_refs[0], li_lyrs_refs[1], li_lyrs_refs[2]], 0
+            )
 
-            map_canvas_layer_list = [qgs_prj.mapLayer(md_lyr.id()),
-                                     qgs_prj.mapLayer(li_lyrs_refs[0].id()),
-                                     qgs_prj.mapLayer(li_lyrs_refs[1].id()),
-                                     qgs_prj.mapLayer(li_lyrs_refs[2].id())]
+            map_canvas_layer_list = [
+                qgs_prj.mapLayer(md_lyr.id()),
+                qgs_prj.mapLayer(li_lyrs_refs[0].id()),
+                qgs_prj.mapLayer(li_lyrs_refs[1].id()),
+                qgs_prj.mapLayer(li_lyrs_refs[2].id()),
+            ]
 
             self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())
@@ -290,13 +310,16 @@ class MetadataDisplayer():
         cgus_out = []
         for c_in in cgus_in:
             if "license" in c_in:
-                cgu_text = "<a href='{1}'><b>{0}</b></a><br>{2}<br>{3}".format(c_in.get("license").get("name", "NR"),
-                                            c_in.get("license").get("link", ""),
-                                            c_in.get("description", ""),
-                                            c_in.get("license").get("content", ""))
+                cgu_text = "<a href='{1}'><b>{0}</b></a><br>{2}<br>{3}".format(
+                    c_in.get("license").get("name", "NR"),
+                    c_in.get("license").get("link", ""),
+                    c_in.get("description", ""),
+                    c_in.get("license").get("content", ""),
+                )
             else:
-                cgu_text = "<b>{0}</b><br>{1}".format(isogeo_tr.tr("conditions", "noLicense"),
-                                            c_in.get("description", ""))
+                cgu_text = "<b>{0}</b><br>{1}".format(
+                    isogeo_tr.tr("conditions", "noLicense"), c_in.get("description", "")
+                )
 
             # store into the final list
             cgus_out.append(cgu_text)
@@ -308,17 +331,23 @@ class MetadataDisplayer():
         lims_in = md.get("limitations", dict())
         lims_out = []
         for l_in in lims_in:
-            lim_text = "<b>{0}</b><br>{1}".format(isogeo_tr.tr("limitations", l_in.get("type")),
-                                        l_in.get("description", ""))
+            lim_text = "<b>{0}</b><br>{1}".format(
+                isogeo_tr.tr("limitations", l_in.get("type")),
+                l_in.get("description", ""),
+            )
             # legal type
             if l_in.get("type") == "legal":
-                lim_text += "<br>" + isogeo_tr.tr("restrictions", l_in.get("restriction"))
+                lim_text += "<br>" + isogeo_tr.tr(
+                    "restrictions", l_in.get("restriction")
+                )
             else:
                 pass
             # INSPIRE precision
             if "directive" in l_in:
-                lim_text += "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(l_in.get("directive").get("name"),
-                l_in.get("directive").get("description"))
+                lim_text += "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
+                    l_in.get("directive").get("name"),
+                    l_in.get("directive").get("description"),
+                )
             else:
                 pass
 
@@ -335,27 +364,32 @@ class MetadataDisplayer():
         self.complete_md.val_owner_name.setText(wg_contact.get("name", ""))
         self.complete_md.val_owner_email.setText(wg_contact.get("email", ""))
         self.complete_md.val_owner_phone.setText(wg_contact.get("phone", ""))
-        self.complete_md.val_owner_address.setText("{}<br>{}"
-                                                   .format(wg_contact.get("addressLine1", "NR"),
-                                                           wg_contact.get("addressLine2", "")))
+        self.complete_md.val_owner_address.setText(
+            "{}<br>{}".format(
+                wg_contact.get("addressLine1", "NR"), wg_contact.get("addressLine2", "")
+            )
+        )
         self.complete_md.val_owner_city.setText(wg_contact.get("zipCode", ""))
         self.complete_md.val_owner_country.setText(wg_contact.get("countryCode", ""))
 
         # Metadata
         self.complete_md.val_md_lang.setText(md.get("language", "NR"))
-        self.complete_md.val_md_date_crea.setText(plg_tools.handle_date(
-                                                  md.get("_modified")[:19]))
-        self.complete_md.val_md_date_update.setText(plg_tools.handle_date(
-                                                    md.get("_created")[:19]))
+        self.complete_md.val_md_date_crea.setText(
+            plg_tools.handle_date(md.get("_modified")[:19])
+        )
+        self.complete_md.val_md_date_update.setText(
+            plg_tools.handle_date(md.get("_created")[:19])
+        )
 
         # -- EDIT LINK -------------------------------------------------------
-        self.url_edition = plg_tools.get_edit_url(md_id=md.get("_id"),
-                                                  md_type=md.get("type"),
-                                                  owner_id=wg_id)
+        self.url_edition = plg_tools.get_edit_url(
+            md_id=md.get("_id"), md_type=md.get("type"), owner_id=wg_id
+        )
 
         # only if user declared himself as Isogeo editor in authentication form
-        self.complete_md.btn_md_edit.setEnabled(qsettings
-                                                .value("isogeo/user/editor", 1))
+        self.complete_md.btn_md_edit.setEnabled(
+            qsettings.value("isogeo/user/editor", 1)
+        )
 
         # -- ADD OPTIONS ------------------------------------------------------
         self.complete_md.btn_addtomap.setHidden(1)
@@ -366,31 +400,27 @@ class MetadataDisplayer():
         # Finally open the damned window
         self.complete_md.show()
         try:
-            QgsMessageLog.logMessage("Detailed metadata displayed: {}"
-                                     .format(title),
-                                     "Isogeo")
+            QgsMessageLog.logMessage(
+                "Detailed metadata displayed: {}".format(title), "Isogeo"
+            )
         except UnicodeEncodeError:
-            QgsMessageLog.logMessage("Detailed metadata displayed: {}"
-                                     .format(title),
-                                     "Isogeo")
+            QgsMessageLog.logMessage(
+                "Detailed metadata displayed: {}".format(title), "Isogeo"
+            )
 
     def envelope2layer(self, envelope):
         """Transform metadata envelope into a QGIS layer."""
         # layer
-        md_lyr = QgsVectorLayer("Polygon?crs=epsg:4326",
-                                "Metadata envelope",
-                                "memory")
+        md_lyr = QgsVectorLayer("Polygon?crs=epsg:4326", "Metadata envelope", "memory")
         symbols = md_lyr.renderer().symbols(QgsRenderContext())
         symbol = symbols[0]
-        symbol.setColor(QColor.fromRgb(255,20,147))
+        symbol.setColor(QColor.fromRgb(255, 20, 147))
         symbol.setOpacity(0.25)
 
         if envelope.get("type") == "Polygon":
             # parse coordinates
             coords = envelope.get("coordinates")[0]
-            poly_pts = [QgsPointXY(round(i[0], 3),
-                                 round(i[1], 3))
-                        for i in coords]
+            poly_pts = [QgsPointXY(round(i[0], 3), round(i[1], 3)) for i in coords]
             # add geometry to layer
             poly = QgsFeature()
             poly.setGeometry(QgsGeometry.fromPolygonXY([poly_pts]))
@@ -398,10 +428,12 @@ class MetadataDisplayer():
             md_lyr.updateExtents()
         elif envelope.get("type") == "MultiPolygon":
             coords = envelope.get("bbox")
-            bbox = QgsRectangle(round(coords[0], 3),
-                                round(coords[1], 3),
-                                round(coords[2], 3),
-                                round(coords[3], 3),)
+            bbox = QgsRectangle(
+                round(coords[0], 3),
+                round(coords[1], 3),
+                round(coords[2], 3),
+                round(coords[3], 3),
+            )
             poly = QgsFeature()
             poly.setGeometry(QgsGeometry.fromWkt(bbox.asWktPolygon()))
             md_lyr.dataProvider().addFeatures([poly])
@@ -530,8 +562,9 @@ class MetadataDisplayer():
             logger.error("Metadata type not recognized:", md_type)
             return
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Standalone execution."""
