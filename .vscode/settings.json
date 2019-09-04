@@ -6,6 +6,10 @@
 
     "python.linting.enabled": true,
 
+    // Git
+    "git.enabled": true,
+    "git.path": "C:\\Users\\SimonSAMPERE\\AppData\\Local\\GitHubDesktop\\app-2.1.3\\resources\\app\\git\\cmd\\git.exe",
+
     // Not working yet 
     "python.envFile": "${workspaceFolder}/dev.env",
 
