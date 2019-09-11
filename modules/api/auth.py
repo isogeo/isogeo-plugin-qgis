@@ -234,8 +234,8 @@ class Authenticator():
         self.ui_auth_form.ent_app_id.setText(self.api_params["app_id"])
         self.ui_auth_form.ent_app_secret.setText(self.api_params["app_secret"])
         self.ui_auth_form.lbl_api_url_value.setText(self.api_params["url_base"])
-        self.ui_auth_form.chb_isogeo_editor.setChecked(qsettings
-                                                  .value("isogeo/user/editor", 0))
+        self.ui_auth_form.chb_isogeo_editor.setChecked(int(qsettings
+                                            .value("isogeo/user/editor", 0)))
         
         # display
         logger.debug("Authentication form filled and ready to be launched.")
