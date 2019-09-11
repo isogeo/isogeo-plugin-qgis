@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Standard library
 import logging
@@ -18,14 +17,14 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 # ##################################
 
 
-class CacheManager():
+class CacheManager:
     """Basic class to manage the cache system of the layer addition. 
     """
 
     def __init__(self):
         # Path to JSON cache file
-        self.cache_file = Path(__file__).parents[2]/"_user"/"cache.json"
-        # Objects for storing inaccessible elements 
+        self.cache_file = Path(__file__).parents[2] / "_user" / "cache.json"
+        # Objects for storing inaccessible elements
         self.cached_dict = {}
         self.cached_unreach_paths = []
         self.cached_unreach_postgis = []
@@ -39,13 +38,15 @@ class CacheManager():
 
         :rtype: dict
         """
-        self.cached_dict = {"files" : list(set(self.cached_unreach_paths)),
-                            "PostGIS" : list(set(self.cached_unreach_postgis)),
-                            "services" : list(set(self.cached_unreach_srv))}
-        with open(self.cache_file, 'w') as cache:
+        self.cached_dict = {
+            "files": list(set(self.cached_unreach_paths)),
+            "PostGIS": list(set(self.cached_unreach_postgis)),
+            "services": list(set(self.cached_unreach_srv)),
+        }
+        with open(self.cache_file, "w") as cache:
             json.dump([self.cached_dict], cache, indent=4)
         logger.debug("Paths cache has been dumped")
-        
+
         return self.cached_dict
 
     def loader(self):
@@ -56,11 +57,11 @@ class CacheManager():
         :rtype: dict
         """
         try:
-            with open(self.cache_file, 'r') as cache:
+            with open(self.cache_file, "r") as cache:
                 cache_loaded = json.load(cache)
             if len(cache_loaded) == 0:
                 logger.debug("Empty cache file.")
-            elif isinstance(cache_loaded[0], dict) :
+            elif isinstance(cache_loaded[0], dict):
                 self.cached_unreach_paths = cache_loaded[0].get("files")
                 self.cached_unreach_postgis = cache_loaded[0].get("PostGIS")
                 self.cached_unreach_srv = cache_loaded[0].get("services")
@@ -73,8 +74,8 @@ class CacheManager():
         except ValueError as e:
             logger.error("Path JSON corrupted")
         except IOError:
-        	logger.debug("Paths cache file not found. Maybe because of first launch.")
-        	self.dumper()
+            logger.debug("Paths cache file not found. Maybe because of first launch.")
+            self.dumper()
 
     def cleaner(self):
         """Removes the stored elements and empties the JSON cache file."""
@@ -84,8 +85,9 @@ class CacheManager():
         self.dumper()
         logger.debug("Cache has been cleaned")
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Standalone execution."""

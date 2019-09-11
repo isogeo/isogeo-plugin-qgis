@@ -15,7 +15,7 @@
 
     // Formatting with black
     "python.formatting.provider": "black",
-    "python.formatting.blackPath": "${workspaceFolder}/.venv_dev/Lib",
+    "python.formatting.blackPath": "${workspaceFolder}\\.venv_dev\\Scripts\\black.exe",
     "python.formatting.blackArgs": ["--target-version=py37",],
 
     // Replicate the QGIS environment

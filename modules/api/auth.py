@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
- 
+
 # Standard library
 import json
 import logging
@@ -29,7 +29,8 @@ plg_tools = IsogeoPlgTools()
 # ########## Classes ###############
 # ##################################
 
-class Authenticator():
+
+class Authenticator:
     """Basic class to manage user authentication to Isogeo's API :
         - Getting credentials from oAuth2 file or QGIS Settings
         - Storing credentials
@@ -38,40 +39,39 @@ class Authenticator():
     :param str auth_folder: the path to the plugin/_auth subfolder 
     where oAuth2 file is stored.
     """
+
     # ui reference - authentication form
     ui_auth_form = IsogeoAuthentication()
 
     # api parameters
     api_params = {
-        "app_id" : "",
-        "app_secret" : "",
-        "url_base" : "https://v1.api.isogeo.com/",
-        "url_auth" : "https://id.api.isogeo.com/oauth/authorize",
-        "url_token" : "https://id.api.isogeo.com/oauth/token",
-        "url_redirect" : "http://localhost:5000/callback" 
-        }
-    
-    # plugin credentials storage parameters
-    credentials_location = {
-        "QSettings": 0,
-        "oAuth2_file": 0,
-        }
+        "app_id": "",
+        "app_secret": "",
+        "url_base": "https://v1.api.isogeo.com/",
+        "url_auth": "https://id.api.isogeo.com/oauth/authorize",
+        "url_token": "https://id.api.isogeo.com/oauth/token",
+        "url_redirect": "http://localhost:5000/callback",
+    }
 
-    def __init__(self, auth_folder: str=r"../_auth"):
-        
+    # plugin credentials storage parameters
+    credentials_location = {"QSettings": 0, "oAuth2_file": 0}
+
+    def __init__(self, auth_folder: str = r"../_auth"):
+
         # API URLs - Prod
-        self.platform, self.api_url, self.app_url, self.csw_url,\
-            self.mng_url, self.oc_url, self.ssl = plg_tools.set_base_url("prod")
+        self.platform, self.api_url, self.app_url, self.csw_url, self.mng_url, self.oc_url, self.ssl = plg_tools.set_base_url(
+            "prod"
+        )
 
         # credentials storage folder
         if isinstance(auth_folder, Path):
             self.auth_folder = auth_folder
-            self.cred_filepath = self.auth_folder/"client_secrets.json"
+            self.cred_filepath = self.auth_folder / "client_secrets.json"
         elif auth_folder == None:
             self.auth_folder = None
         else:
             raise ValueError("pathlib.Path expected")
-     
+
         # translation
         self.tr = object
         self.lang = str
@@ -112,8 +112,10 @@ class Authenticator():
         """
 
         if "isogeo-plugin" in qsettings.childGroups():
-            logger.warning("Old credentials found and removed in QGIS QSettings: isogeo-plugin")
-            
+            logger.warning(
+                "Old credentials found and removed in QGIS QSettings: isogeo-plugin"
+            )
+
             qsettings.remove("isogeo-plugin")
             return False
         elif "isogeo" in qsettings.childGroups():
@@ -127,7 +129,9 @@ class Authenticator():
                 qsettings.remove("isogeo/api_auth")
                 logger.debug("QSettings clean up - api_auth")
                 pass
-            if "auth" in qsettings.childGroups() and not qsettings.contains("auth/app_id"):
+            if "auth" in qsettings.childGroups() and not qsettings.contains(
+                "auth/app_id"
+            ):
                 qsettings.remove("isogeo/auth")
                 logger.debug("QSettings clean up - bad formatted auth")
                 pass
@@ -153,10 +157,9 @@ class Authenticator():
         credentials_filepath = self.cred_filepath
         # check if a client_secrets.json file is stored inside the _auth subfolder
         if not credentials_filepath.is_file():
-            logger.debug("No credential files found: {}"
-                         .format(credentials_filepath))
+            logger.debug("No credential files found: {}".format(credentials_filepath))
             return False
-        else :
+        else:
             pass
         # check file structure
         try:
@@ -169,7 +172,7 @@ class Authenticator():
         return True
 
     # CREDENTIALS SAVER -------------------------------------------------------
-    def credentials_storer(self, store_location: str="QSettings"):
+    def credentials_storer(self, store_location: str = "QSettings"):
         """Store class attributes (API parameters) into the specified store_location.
         
         :param str store_location: name of targetted store location. Options:
@@ -181,12 +184,14 @@ class Authenticator():
             qsettings.setValue("isogeo/auth/url_base", self.api_params["url_base"])
             qsettings.setValue("isogeo/auth/url_auth", self.api_params["url_auth"])
             qsettings.setValue("isogeo/auth/url_token", self.api_params["url_token"])
-            qsettings.setValue("isogeo/auth/url_redirect", self.api_params["url_redirect"])
+            qsettings.setValue(
+                "isogeo/auth/url_redirect", self.api_params["url_redirect"]
+            )
         else:
             pass
         logger.debug("Credentials stored into: {}".format(store_location))
 
-    def credentials_update(self, credentials_source: str="QSettings"):
+    def credentials_update(self, credentials_source: str = "QSettings"):
         """Update class attributes (API parameters) from specified credentials source.
         
         :param str credentials_source: name of targetted credentials source. Options:
@@ -196,11 +201,21 @@ class Authenticator():
         # update class attributes
         if credentials_source == "QSettings":
             self.api_params["app_id"] = qsettings.value("isogeo/auth/app_id", "")
-            self.api_params["app_secret"] = qsettings.value("isogeo/auth/app_secret", "")
-            self.api_params["url_base"] = qsettings.value("isogeo/auth/url_base", "https://v1.api.isogeo.com/")
-            self.api_params["url_auth"] = qsettings.value("isogeo/auth/url_auth", "https://id.api.isogeo.com/oauth/authorize")
-            self.api_params["url_token"] = qsettings.value("isogeo/auth/url_token", "https://id.api.isogeo.com/oauth/token")
-            self.api_params["url_redirect"] = qsettings.value("isogeo/auth/url_redirect", "http://localhost:5000/callback")
+            self.api_params["app_secret"] = qsettings.value(
+                "isogeo/auth/app_secret", ""
+            )
+            self.api_params["url_base"] = qsettings.value(
+                "isogeo/auth/url_base", "https://v1.api.isogeo.com/"
+            )
+            self.api_params["url_auth"] = qsettings.value(
+                "isogeo/auth/url_auth", "https://id.api.isogeo.com/oauth/authorize"
+            )
+            self.api_params["url_token"] = qsettings.value(
+                "isogeo/auth/url_token", "https://id.api.isogeo.com/oauth/token"
+            )
+            self.api_params["url_redirect"] = qsettings.value(
+                "isogeo/auth/url_redirect", "http://localhost:5000/callback"
+            )
         elif credentials_source == "oAuth2_file":
             creds = plg_tools.credentials_loader(self.cred_filepath)
             self.api_params["app_id"] = creds.get("client_id")
@@ -209,12 +224,15 @@ class Authenticator():
             self.api_params["url_auth"] = creds.get("uri_auth")
             self.api_params["url_token"] = creds.get("uri_token")
             self.api_params["url_redirect"] = creds.get("uri_redirect")
-            #self.credentials_storer(store_location="QSettings")
+            # self.credentials_storer(store_location="QSettings")
         else:
             pass
 
-        logger.debug("Credentials updated from: {}. Application ID used: {}"
-                     .format(credentials_source, self.api_params["app_id"]))
+        logger.debug(
+            "Credentials updated from: {}. Application ID used: {}".format(
+                credentials_source, self.api_params["app_id"]
+            )
+        )
 
     # AUTHENTICATION FORM -----------------------------------------------------
     def display_auth_form(self):
@@ -224,19 +242,25 @@ class Authenticator():
         # connecting widgets
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
             lambda: qsettings.setValue(
-                "isogeo/user/editor", int(self.ui_auth_form.chb_isogeo_editor.isChecked())
+                "isogeo/user/editor",
+                int(self.ui_auth_form.chb_isogeo_editor.isChecked()),
             )
         )
-        self.ui_auth_form.btn_account_new.pressed.connect(partial(plg_tools.mail_to_isogeo, lang=self.lang))
-        self.ui_auth_form.btn_browse_credentials.fileChanged.connect(self.credentials_uploader)
+        self.ui_auth_form.btn_account_new.pressed.connect(
+            partial(plg_tools.mail_to_isogeo, lang=self.lang)
+        )
+        self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
+            self.credentials_uploader
+        )
 
         # fillfull auth form fields from stored settings
         self.ui_auth_form.ent_app_id.setText(self.api_params["app_id"])
         self.ui_auth_form.ent_app_secret.setText(self.api_params["app_secret"])
         self.ui_auth_form.lbl_api_url_value.setText(self.api_params["url_base"])
-        self.ui_auth_form.chb_isogeo_editor.setChecked(qsettings
-                                                  .value("isogeo/user/editor", 0))
-        
+        self.ui_auth_form.chb_isogeo_editor.setChecked(
+            qsettings.value("isogeo/user/editor", 0)
+        )
+
         # display
         logger.debug("Authentication form filled and ready to be launched.")
         self.ui_auth_form.show()
@@ -252,19 +276,26 @@ class Authenticator():
             api_credentials = plg_tools.credentials_loader(selected_file)
         except Exception as e:
             logger.error(e)
-            QMessageBox.critical(self.ui_auth_form,
-                                 self.tr("Alert", "Authenticator"),
-                                 self.tr("The selected credentials file is not correct.",
-                                         "Authenticator"))
+            QMessageBox.critical(
+                self.ui_auth_form,
+                self.tr("Alert", "Authenticator"),
+                self.tr(
+                    "The selected credentials file is not correct.", "Authenticator"
+                ),
+            )
         # move credentials file into the plugin file structure
         dest_path = self.cred_filepath
         if dest_path.is_file():
-            logger.debug("client_secrets.json already existed. "
-                         "Previous file has been renamed.")
+            logger.debug(
+                "client_secrets.json already existed. "
+                "Previous file has been renamed."
+            )
 
-            old_file_renamed = self.auth_folder/"old_client_secrets_{}.json".format(int(time.time()))
+            old_file_renamed = self.auth_folder / "old_client_secrets_{}.json".format(
+                int(time.time())
+            )
             dest_path.rename(old_file_renamed)
-            
+
         else:
             pass
         try:
@@ -272,8 +303,9 @@ class Authenticator():
         except Exception as e:
             logger.debug("OAuth2 file issue : check path validity.")
 
-        logger.debug("Selected credentials file has been moved into plugin"
-                     "_auth subfolder")
+        logger.debug(
+            "Selected credentials file has been moved into plugin" "_auth subfolder"
+        )
 
         # set form
         self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
@@ -367,25 +399,27 @@ class Authenticator():
             pass
 
         # storing dicts
-        tags_parsed = {"actions": actions,
-                       "compliance": compliance,
-                       "contacts": contacts,
-                       "formats": formats,
-                       "inspire": inspire,
-                       "keywords": keywords,
-                       "licenses": licenses,
-                       "owners": owners,
-                       "srs": srs,
-                       "types": md_types,
-                       # "unused": unused
-                       }
+        tags_parsed = {
+            "actions": actions,
+            "compliance": compliance,
+            "contacts": contacts,
+            "formats": formats,
+            "inspire": inspire,
+            "keywords": keywords,
+            "licenses": licenses,
+            "owners": owners,
+            "srs": srs,
+            "types": md_types,
+            # "unused": unused
+        }
 
         # method ending
         logger.info("Tags retrieved")
         return tags_parsed
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Standalone execution."""
