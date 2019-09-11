@@ -51,6 +51,11 @@ PLG_METADATA_FILE = DIR_PLUGIN_ROOT.resolve() / "metadata.txt"
 # #############################################################################
 # ########## Functions##############
 # ##################################
+def clean_files(start_folder: Path = ".", glob_pattern: str = "**/*.pyc"):
+    """Remove files under the start folder which are matching the glob pattern."""
+    start_folder = Path(start_folder)
+    for file_to_be_removed in list(start_folder.glob(glob_pattern)):
+        file_to_be_removed.unlink()
 
 def plugin_metadata():
     """Retrieve plugin information from the conventional `metadata.txt`."""
@@ -66,6 +71,9 @@ def plugin_metadata():
 # ##############################################################################
 # ##### Main program ###############
 # ##################################
+
+# clean up
+clean_files()   # remove Python compiled files
 
 # get plugin metadata
 version = plugin_metadata()
@@ -104,8 +112,6 @@ for dirpath, dirs, files in walk(BASE_DIR_ABS):
                         print("INFO - Custom widget header fixed.")
                     else:
                         continue
-        elif f.endswith(".pyc"):
-            remove(path.join(dirpath, f))
         else:
             continue
 
