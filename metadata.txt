@@ -8,7 +8,7 @@
 
 [general]
 name=Isogeo
-qgisMinimumVersion=3.0
+qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 description=Isogeo search engine within QGIS
 version=2.0.0-alpha1
@@ -33,7 +33,7 @@ changelog=2.0.0-alpha1: first version meant to be compatible with QGIS
 tags=REST API,catalog,search,explore,webservices,metadata,open data,INSPIRE
 tags[fr]=catalogue,données,webservices,géoservices,métadonnées,données ouvertes,INSPIRE
 
-homepage=https://isogeo.gitbooks.io/app-plugin-qgis/content
+homepage=http://help.isogeo.com/qgis/
 category=Web
 icon=icon.png
 # experimental flag
