@@ -269,22 +269,19 @@ class Authenticator():
             pass
         try:
             selected_file.rename(dest_path)
-        except Exception as e:
-            logger.debug("OAuth2 file issue : check path validity.")
+            # set form
+            self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
+            self.ui_auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
+            self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
+            # update class attributes from file
+            self.credentials_update(credentials_source="oAuth2_file")
+            # store into QSettings if existing
+            self.credentials_storer(store_location="QSettings")
 
-        logger.debug("Selected credentials file has been moved into plugin"
+            logger.debug("Selected credentials file has been moved into plugin"
                      "_auth subfolder")
-
-        # set form
-        self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
-        self.ui_auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
-        self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
-
-        # update class attributes from file
-        self.credentials_update(credentials_source="oAuth2_file")
-
-        # store into QSettings if existing
-        self.credentials_storer(store_location="QSettings")
+        except Exception as e:
+            logger.debug("OAuth2 file issue : check path validity.")       
 
     # REQUEST and RESULTS ----------------------------------------------------
     def get_tags(self, tags: dict):
