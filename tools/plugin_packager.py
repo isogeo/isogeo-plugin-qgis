@@ -1,11 +1,12 @@
 # -*- coding: UTF-8 -*-
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
     This script packages files into a zip ready to be uploaded to QGIS plugins
     repository.
 
     How to use on Windows:
+
         1. Launch OSGeo4W Shell inside th Isogeo QGIS Plugin repository
         2. Run:
             ```bash
@@ -15,12 +16,16 @@
     See: https://docs.qgis.org/testing/en/docs/pyqgis_developer_cookbook/releasing.html
 
     Authors: J. Moura (Isogeo)
-    Python: 2.7.x
+    Python: 3.7.x
     Created: 20/07/2016
     License: GPL 3
 """
 
-# ------------ Imports -------------------------------------------------------
+# #############################################################################
+# ########## Libraries #############
+# ##################################
+
+# Standard library
 from configparser import ConfigParser
 from os import listdir, makedirs, path, remove, walk
 import json
@@ -29,7 +34,9 @@ import zipfile
 
 from pathlib import Path
 
-# ------------ Globals -------------------------------------------------------
+# ##############################################################################
+# ########## Globals ###############
+# ##################################
 
 # Paths
 DIR_PLUGIN_ROOT = Path(__file__).parent.parent
@@ -41,8 +48,12 @@ BASE_DIR_ABS = DIR_PLUGIN_ROOT.resolve()
 PLG_DIRNAME = "isogeo_search_engine"
 PLG_METADATA_FILE = DIR_PLUGIN_ROOT.resolve() / "metadata.txt"
 
-# ------------ Functions -----------------------------------------------
-def plugin_version():
+# #############################################################################
+# ########## Functions##############
+# ##################################
+
+def plugin_metadata():
+    """Retrieve plugin information from the conventional `metadata.txt`."""
     config = ConfigParser()
     if PLG_METADATA_FILE.is_file():
         config.read(PLG_METADATA_FILE.resolve())
@@ -52,9 +63,14 @@ def plugin_version():
     else:
         raise IOError("Metadata text not found")
 
-version = plugin_version()
-print("Packaging the version {} of the Isogeo plugin for QGIS version {} to {})"
-      .format(*version))
+# ##############################################################################
+# ##### Main program ###############
+# ##################################
+
+# get plugin metadata
+version = plugin_metadata()
+print("Packaging the version {} of the Isogeo plugin for QGIS version {} to {})".format(*version))
+
 
 # ------------ UI files check -----------------------------------------------
 # see: http://gis.stackexchange.com/a/155599/19817
