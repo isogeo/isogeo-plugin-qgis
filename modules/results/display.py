@@ -110,6 +110,7 @@ class ResultsManager(QObject):
         self.pg_connections = self.build_postgis_dict(qsettings)
 
         self.cache_mng = CacheManager()
+        self.cache_mng.tr = self.tr
 
     def show_results(self, api_results, pg_connections=dict()):
         """Display the results in a table."""

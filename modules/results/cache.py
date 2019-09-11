@@ -7,11 +7,16 @@ import logging
 import json
 from pathlib import Path
 
+# PyQGIS
+from qgis.utils import iface
+
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
 logger = logging.getLogger("IsogeoQgisPlugin")
+
+msgBar = iface.messageBar()
 
 # ############################################################################
 # ########## Classes ###############
@@ -30,6 +35,8 @@ class CacheManager():
         self.cached_unreach_paths = []
         self.cached_unreach_postgis = []
         self.cached_unreach_srv = []
+        # Translator
+        self.tr = object
 
     def dumper(self):
         """Builds a dict from the stored inaccessible elements 
@@ -45,15 +52,9 @@ class CacheManager():
         with open(self.cache_file, 'w') as cache:
             json.dump([self.cached_dict], cache, indent=4)
         logger.debug("Paths cache has been dumped")
-        
-        return self.cached_dict
 
     def loader(self):
         """Load and store ignored elements from the JSON cache file.
-        
-        :returns: the content of the JSON cache file
-
-        :rtype: dict
         """
         try:
             with open(self.cache_file, 'r') as cache:
@@ -82,6 +83,8 @@ class CacheManager():
         self.cached_unreach_postgis = []
         self.cached_unreach_srv = []
         self.dumper()
+        msgBar.pushMessage("Cache has been cleaned.",
+            duration=3)
         logger.debug("Cache has been cleaned")
 
 # #############################################################################
