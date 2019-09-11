@@ -216,7 +216,7 @@ class Isogeo:
         self.approps_mng = SharesParser()
         self.approps_mng.tr = self.tr
 
-        self.authenticator = Authenticator(auth_folder=plg_authdir)
+        self.authenticator = Authenticator()
 
         self.api_requester = ApiRequester()
         self.api_requester.tr = self.tr
