@@ -447,23 +447,23 @@
     </message>
 </context>
 <context>
-    <name>IsogeoPlgApiMngr</name>
+    <name>Authenticator</name>
     <message>
         <location filename="../modules/api.py" line="224"/>
         <source>Alert</source>
-        <comment>IsogeoPlgApiMngr</comment>
+        <comment>Authenticator</comment>
         <translation>Alerte</translation>
     </message>
     <message>
         <location filename="../modules/api.py" line="224"/>
         <source>The selected credentials file is not correct.</source>
-        <comment>IsogeoPlgApiMngr</comment>
+        <comment>Authenticator</comment>
         <translation>Le fichier d&apos;authentification n&apos;est pas conforme.</translation>
     </message>
     <message>
         <location filename="../modules/api.py" line="391"/>
         <source>Dataset</source>
-        <comment>IsogeoPlgApiMngr</comment>
+        <comment>Authenticator</comment>
         <translation>Données (vecteurs et rasters)</translation>
     </message>
 </context>
