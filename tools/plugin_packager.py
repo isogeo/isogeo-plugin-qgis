@@ -146,31 +146,10 @@ RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "isogeo.py"),
                   "{}/{}".format(PLG_DIRNAME, "isogeo.py"))
 
 # Modules
-RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "__init__.py"),
-                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "__init__.py"))
-RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "api.py"),
-                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "api.py"))
-RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "metadata_display.py"),
-                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "metadata_display.py"))
-RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "results.py"),
-                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "results.py"))
-RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "tools.py"),
-                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "tools.py"))
-RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "url_builder.py"),
-                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "url_builder.py"))
-RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "isogeo.qml"),
-                  "{}/{}/{}".format(PLG_DIRNAME, "modules", "isogeo.qml"))
-
-# Isogeo PySDK - raw
-tp_isogeo_pysdk = ("__init__.py",
-                   "checker.py",
-                   "isogeo_sdk.py",
-                   "translator.py",
-                   "utils.py")
-
-for i in tp_isogeo_pysdk:
-    RELEASE_ZIP.write(path.join(BASE_DIR_ABS, "modules", "isogeo_pysdk", i),
-                      "{}/{}/{}".format(PLG_DIRNAME, "modules/isogeo_pysdk", i))
+modules_paths = Path("./modules")
+for module_file in list(modules_paths.glob('**/*.py')):
+    module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
+    RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
 
 # Resources (media files)
 RESOURCES_FILES = [path.relpath(f) for f in listdir("resources")
