@@ -843,7 +843,7 @@ class Isogeo:
         self.form_mng.btn_help.pressed.connect(
             partial(
                 plg_tools.open_webpage,
-                link="https://isogeo.gitbooks.io/app-plugin-qgis/content/",
+                link="http://help.isogeo.com/qgis/",
             )
         )
         # view credits - see: #52
