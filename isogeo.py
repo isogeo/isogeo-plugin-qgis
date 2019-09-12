@@ -23,29 +23,16 @@ from __future__ import division, print_function, unicode_literals
 """
 
 # Standard library
-import requests
 import os
 from pathlib import Path
 import platform
-import json
-import base64
-from urllib.parse import urlencode
+
 import logging
 from logging.handlers import RotatingFileHandler
-from collections import OrderedDict
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import (
-    QByteArray,
-    QCoreApplication,
-    QSettings,
-    Qt,
-    QTranslator,
-    qVersion,
-    QSize,
-    pyqtSlot,
-)
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, Qt, QTranslator, qVersion
 
 from qgis.PyQt.QtWidgets import QAction, QComboBox, QProgressBar
 from qgis.PyQt.QtGui import QIcon
@@ -56,7 +43,6 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsMessageLog,
     QgsRectangle,
-    QgsVectorLayer,
     QgsApplication,
 )
 
@@ -388,11 +374,11 @@ class Isogeo:
         """ Slot connected to ApiRequester.token_sig signal emitted when a response to
         a token request has been received from Isogeo's API or when the content of
         a response to any type of request can't be parsed. The 'token_sig' parameter
-        correspond to the string passed by ApiRequester.handle_reply method (see 
+        correspond to the string passed by ApiRequester.handle_reply method (see
         modules/api/request.py). The value of this parameter depend on the response's
         content received from Isogeo's API.
 
-        :param str token_signal: a string passed by the signal whose value determines 
+        :param str token_signal: a string passed by the signal whose value determines
         what will be done. Options :
             - "tokenOK" : Authentication has succeeded, the token is stored so it sends
             a search request to the API.
@@ -423,15 +409,15 @@ class Isogeo:
 
     # --- SEARCH --------------------------------------------------------------
     def search(self, show: bool = False, page_change: int = 0):
-        """ Slot connected to signals emitted by 'advances search', 'order' or 
+        """ Slot connected to signals emitted by 'advances search', 'order' or
         'keywords' comboboxes, also by 'show results', 'next page' or 'previous
-        page' buttons when a user interacts with one of them. It retrieves the 
+        page' buttons when a user interacts with one of them. It retrieves the
         selected parameters and establishes the corresponding URL, and then sends
         a search request to the API, by calling ApiRequester.send_request().
 
         :param bool show: True if the 'show results', 'next page' or 'previous page'
         button was pressed
-        :param int page_change: -1 if 'previous page' button was pressed, 1 if 
+        :param int page_change: -1 if 'previous page' button was pressed, 1 if
         'next page' button was pressed, 0 otherwise
         """
         logger.debug(
@@ -485,19 +471,19 @@ class Isogeo:
 
     def search_slot(self, result: dict, tags: dict):
         """ Slot connected to ApiRequester.search_sig signal. It updates widgets, using
-        SearchFormManager appropiate methods to fill them from 'tags' parameter and put 
+        SearchFormManager appropiate methods to fill them from 'tags' parameter and put
         them in the right status. It also display the results contained in 'result'
         parameter by calling ResultManager.show_results method if necessary.
 
-        :param dict result: parsed content of API's reply to a search request (passed by 
+        :param dict result: parsed content of API's reply to a search request (passed by
         ApiRequester.handle_reply method)
         :param dict tags: tags contained in API's reply parsed and classed into a dict
         (passed by ApiRequester.handle_reply method)
         """
         QgsMessageLog.logMessage(
-            message = "Query sent & received: {}".format(result.get("query")), 
-            tag = "Isogeo",
-            level = 0
+            message="Query sent & received: {}".format(result.get("query")),
+            tag="Isogeo",
+            level=0,
         )
         # Save entered text and filters in search form
         self.form_mng.old_text = self.form_mng.txt_input.text()
@@ -551,7 +537,8 @@ class Isogeo:
                     selected_keywords=params.get("keys"),
                 )
             else:
-                # Putting all the comboboxes selected index according to params found in the json file
+                # Putting all the comboboxes selected index
+                # according to params found in the json file
                 logger.debug("Quicksearch case: {}".format(self.savedSearch))
                 # Opening the json to get quick search's params
                 search_params = self.form_mng.qs_mng.load_file().get(self.savedSearch)
@@ -634,8 +621,8 @@ class Isogeo:
 
             # Check projection settings in loaded search params
             if "epsg" in search_params:
-                logger.debug("Specific SRS found in search params: {}".format(epsg))
                 epsg = int(plg_tools.get_map_crs().split(":")[1])
+                logger.debug("Specific SRS found in search params: {}".format(epsg))
                 if epsg == search_params.get("epsg"):
                     canvas = iface.mapCanvas()
                     e = search_params.get("extent")
@@ -720,14 +707,15 @@ class Isogeo:
 
     def send_details_request(self, md_id):
         """Send a request for aditionnal info about one data.
-        
+
         :param str md_id: UUID of metadata to retrieve
         """
         logger.debug("Full metatada sheet asked. Building the url.")
         self.api_requester.currentUrl = "{}/resources/{}{}".format(
             self.api_requester.api_url_base,
             md_id,
-            "?_include=conditions,contacts,coordinate-system,events,feature-attributes,limitations,keywords,specifications",
+            "?_include=conditions,contacts,coordinate-system,events,"
+            "feature-attributes,limitations,keywords,specifications",
         )
         self.api_requester.send_request("details")
 
@@ -851,10 +839,7 @@ class Isogeo:
         )
         # help button
         self.form_mng.btn_help.pressed.connect(
-            partial(
-                plg_tools.open_webpage,
-                link="http://help.isogeo.com/qgis/",
-            )
+            partial(plg_tools.open_webpage, link="http://help.isogeo.com/qgis/")
         )
         # view credits - see: #52
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)

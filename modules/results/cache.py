@@ -23,7 +23,7 @@ msgBar = iface.messageBar()
 
 
 class CacheManager:
-    """Basic class to manage the cache system of the layer addition. 
+    """Basic class to manage the cache system of the layer addition.
     """
 
     def __init__(self):
@@ -38,7 +38,7 @@ class CacheManager:
         self.tr = object
 
     def dumper(self):
-        """Builds a dict from the stored inaccessible elements 
+        """Builds a dict from the stored inaccessible elements
         and dumps it into the JSON cache file.
 
         :returns: the dict dumped in the JSON file
@@ -72,11 +72,11 @@ class CacheManager:
                 self.cached_unreach_paths = cache_loaded
             return cache_loaded
 
-        except ValueError as e:
+        except ValueError:
             logger.error("Path JSON corrupted")
         except IOError:
-        	logger.debug("Cache file not found. Maybe because of first launch.")
-        	self.dumper()
+            logger.debug("Cache file not found. Maybe because of first launch.")
+            self.dumper()
 
     def cleaner(self):
         """Removes the stored elements and empties the JSON cache file."""
@@ -84,8 +84,9 @@ class CacheManager:
         self.cached_unreach_postgis = []
         self.cached_unreach_srv = []
         self.dumper()
-        msgBar.pushMessage(self.tr("Cache has been cleaned.", "CacheManager"),
-            duration=3)
+        msgBar.pushMessage(
+            self.tr("Cache has been cleaned.", "CacheManager"), duration=3
+        )
         logger.debug(self.tr("Cache has been cleaned", "CacheManager"))
 
 

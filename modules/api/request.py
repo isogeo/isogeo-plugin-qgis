@@ -5,15 +5,15 @@ import logging
 import json
 import base64
 from urllib.parse import urlencode
-from functools import partial
 
 # PyQGIS
 from qgis.core import QgsNetworkAccessManager, QgsMessageLog
 from qgis.utils import iface
 
 # PyQT
-from qgis.PyQt.QtCore import QByteArray, QUrl, QObject, pyqtSignal, pyqtSlot
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkAccessManager, QNetworkReply
+from qgis.PyQt.QtCore import QByteArray, QUrl, pyqtSignal
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtWidgets import QMessageBox
 
 # ############################################################################
 # ########## Globals ###############
@@ -86,7 +86,7 @@ class ApiRequester(QgsNetworkAccessManager):
     def create_request(self, request_type: str):
         """Creates a QNetworkRequest() with appropriate headers and URL
         according to the 'request_type' parameter.
-        
+
         :param str request_type: type of request to create. Options:
             - 'token'
             - 'search'
@@ -134,7 +134,7 @@ class ApiRequester(QgsNetworkAccessManager):
     def send_request(self, request_type: str = "search"):
         """ Sends a request to the Isogeo's API using QNetworkRequestManager.
         That's the handle_reply method which get the API's response. See below.
-        
+
         :param str request_type: type of request to send. Options:
             - 'token'
             - 'search'
@@ -151,26 +151,26 @@ class ApiRequester(QgsNetworkAccessManager):
         if request_type == "token":
             data = QByteArray()
             data.append(urlencode({"grant_type": "client_credentials"}))
-            reply = self.post(request, data)
+            self.post(request, data)
         # get request for other
         else:
-            reply = self.get(request)
+            self.get(request)
         return
 
     def handle_reply(self, reply: QNetworkReply):
-        """Slot to QNetworkAccesManager.finished signal who handles the API's response to any type 
+        """Slot to QNetworkAccesManager.finished signal who handles the API's response to any type
         of request : 'token', 'search', 'shares' or 'details'.
 
-        The request's type is identicated from the url of the request from which the answer comes. 
-        Depending on the reply's content validity and the request's type, an appropriated signal 
+        The request's type is identicated from the url of the request from which the answer comes.
+        Depending on the reply's content validity and the request's type, an appropriated signal
         is emitted with different data's value.
 
-        - For token requests : the token_sig signal is emitted wathever the replys's content but the emitted 
-        str's value depend on this content. A single slot is connected to this signal and acts 
-        according to value of the string recieved (see isogeo.py : Isogeo.token_slot).
-        - For other requests : for each type of request there is a corresponding signal but the reply's 
-        parsed content is emitted wathever the request's type. Each signal is connected to an appropriate 
-        slot (see isogeo.py).
+        - For token requests : the token_sig signal is emitted wathever the replys's content but
+        the mitted str's value depend on this content. A single slot is connected to this signal
+        and acts according to value of the string recieved (see isogeo.py : Isogeo.token_slot).
+        - For other requests : for each type of request there is a corresponding signal but the
+        reply's parsed content is emitted wathever the request's type. Each signal is connected to
+        an appropriate slot (see isogeo.py).
 
         :param QNetworkReply reply: Isogeo API response
         """
@@ -196,11 +196,9 @@ class ApiRequester(QgsNetworkAccessManager):
             if "token" in url:
                 logger.debug("Handling reply to a 'token' request")
                 logger.debug("(from : {}).".format(url))
-                if 'access_token' in parsed_content:
+                if "access_token" in parsed_content:
                     QgsMessageLog.logMessage(
-                        message = "Authentication succeeded", 
-                        tag = "Isogeo",
-                        level = 0
+                        message="Authentication succeeded", tag="Isogeo", level=0
                     )
                     logger.debug("Access token retrieved.")
                     # storing token
@@ -295,15 +293,15 @@ class ApiRequester(QgsNetworkAccessManager):
                 self.iface.mainWindow(),
                 self.tr("Error"),
                 self.tr("You are facing an unknown error. " "Code: ")
-                + str(answer.error())
+                + str(reply.error())
                 + "\nPlease report it on the bug tracker.",
             )
         return
 
     def build_request_url(self, params: dict):
-        """Builds the request url according to the user selection. These URLs 
+        """Builds the request url according to the user selection. These URLs
         are used by create_request.
-        
+
         :param dict params: a dictionnary provided by Isogeo().get_params
         method
 

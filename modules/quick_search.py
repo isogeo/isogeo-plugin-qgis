@@ -4,7 +4,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 # Standard library
 import logging
 import json
-from functools import partial
 from pathlib import Path
 
 # PyQGIS
@@ -16,9 +15,6 @@ from qgis.PyQt.QtGui import QIcon
 # UI classes
 from ..ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
 from ..ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
-
-# Plugin modules
-from .api import ApiRequester
 
 # ############################################################################
 # ########## Globals ###############
@@ -37,7 +33,8 @@ ico_bolt = QIcon(":/plugins/Isogeo/resources/search/bolt.svg")
 
 class QuickSearchManager:
     """ A basic class to manage quick searches :
-        - Create a new quick search by giving it a name and writing its parameters in the JSON file (`_user/quicksearches.json`)
+        - Create a new quick search by giving it a name and writing its parameters in the JSON file
+        (`_user/quicksearches.json`)
         - Rename a quick search
         - Delete a quick search
     """
