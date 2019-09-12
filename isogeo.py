@@ -73,7 +73,14 @@ from . import resources
 from .ui.credits.dlg_credits import IsogeoCredits
 
 # Plugin modules
-from .modules import Authenticator, ApiRequester, MetadataDisplayer, IsogeoPlgTools, SharesParser, SearchFormManager
+from .modules import (
+    Authenticator,
+    ApiRequester,
+    MetadataDisplayer,
+    IsogeoPlgTools,
+    SharesParser,
+    SearchFormManager,
+)
 
 # ############################################################################
 # ########## Globals ###############

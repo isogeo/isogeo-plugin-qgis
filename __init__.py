@@ -25,9 +25,10 @@
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
-       """Load Isogeo class from file Isogeo.
+    """Load Isogeo class from file Isogeo.
        :param iface: A QGIS interface instance.
        :type iface: QgsInterface
        """
-       from .isogeo import Isogeo
-       return Isogeo(iface)
+    from .isogeo import Isogeo
+    return Isogeo(iface)
+

@@ -26,6 +26,7 @@ msgBar = iface.messageBar()
 # ########## Classes ###############
 # ##################################
 
+
 class ApiRequester(QgsNetworkAccessManager):
     """Basic class to manage direct interactions with Isogeo's API :
         - Authentication request for token
@@ -71,7 +72,7 @@ class ApiRequester(QgsNetworkAccessManager):
         :param dict dict_params: a dict containing API parameters provided
         by Authenticator().manage_api_initialization method.
         """
-        logger.debug("Setting api parameters")   
+        logger.debug("Setting api parameters")
         self.app_id = dict_params.get("app_id", "")
         self.app_secret = dict_params.get("app_secret", "")
         self.api_url_base = dict_params.get("url_base", "")
@@ -82,7 +83,7 @@ class ApiRequester(QgsNetworkAccessManager):
         self.send_request("token")
         # self.auth_post_get_token()
 
-    def create_request(self, request_type:str):
+    def create_request(self, request_type: str):
         """Creates a QNetworkRequest() with appropriate headers and URL
         according to the 'request_type' parameter.
         
@@ -105,20 +106,22 @@ class ApiRequester(QgsNetworkAccessManager):
         if request_type == "token":
             # filling request header with credentials
             header_value.append("Basic ")
-            header_value.append(base64.b64encode("{}:{}".format(self.app_id, self.app_secret).encode()))
-            # creating the QNetworkRequest from oAuth2 authentication URL     
+            header_value.append(
+                base64.b64encode("{}:{}".format(self.app_id, self.app_secret).encode())
+            )
+            # creating the QNetworkRequest from oAuth2 authentication URL
             request = QNetworkRequest(QUrl(self.api_url_token))
-            # creating and setting the 'Content-type header' 
+            # creating and setting the 'Content-type header'
             ct_header_value = QByteArray()
             ct_header_value.append("application/json")
             request.setHeader(request.ContentTypeHeader, ct_header_value)
         # for other request_type, setting appropriate url
-        else : 
+        else:
             if request_type == "shares":
                 url = QUrl("{}/shares".format(self.api_url_base))
-            elif request_type == "search" or request_type == "details" :
+            elif request_type == "search" or request_type == "details":
                 url = QUrl(self.currentUrl)
-            else :
+            else:
                 logger.debug("Unkown request type asked : {}".format(request_type))
                 raise ValueError
             # filling request header with token
@@ -138,17 +141,19 @@ class ApiRequester(QgsNetworkAccessManager):
             - 'details'
             - 'shares'
         """
-        logger.debug("-------------- Sending a '{}' request --------------".format(request_type))
+        logger.debug(
+            "-------------- Sending a '{}' request --------------".format(request_type)
+        )
         # creating the QNetworkRequest appropriate to the request_type
         request = self.create_request(request_type)
         logger.debug("to : {}".format(request.url().toString()))
-        # post request for 'token' request 
+        # post request for 'token' request
         if request_type == "token":
             data = QByteArray()
             data.append(urlencode({"grant_type": "client_credentials"}))
             reply = self.post(request, data)
         # get request for other
-        else :
+        else:
             reply = self.get(request)
         return
 
@@ -184,7 +189,7 @@ class ApiRequester(QgsNetworkAccessManager):
                 else:
                     pass
                 return
-        
+
             url = reply.url().toString()
             # for token request, one signal is emitted passing a string whose
             # value depend on the reply content
@@ -199,29 +204,41 @@ class ApiRequester(QgsNetworkAccessManager):
                     )
                     logger.debug("Access token retrieved.")
                     # storing token
-                    self.token = "Bearer " + parsed_content.get('access_token')
+                    self.token = "Bearer " + parsed_content.get("access_token")
                     self.token_sig.emit("tokenOK")
-                elif 'error' in parsed_content:
-                    logger.error("The API reply is an error: {}. ID and SECRET must be "
-                                "invalid. Asking for them again."
-                                .format(parsed_content.get('error')))
-                    msgBar.pushMessage("Isogeo",
-                               self.tr("API authentication failed.Isogeo API answered: {}")
-                                       .format(parsed_content.get('error')),
-                               duration=10,
-                               level=1)
+                elif "error" in parsed_content:
+                    logger.error(
+                        "The API reply is an error: {}. ID and SECRET must be "
+                        "invalid. Asking for them again.".format(
+                            parsed_content.get("error")
+                        )
+                    )
+                    msgBar.pushMessage(
+                        "Isogeo",
+                        self.tr(
+                            "API authentication failed.Isogeo API answered: {}"
+                        ).format(parsed_content.get("error")),
+                        duration=10,
+                        level=1,
+                    )
                     self.token_sig.emit("credIssue")
                 else:
-                    msgBar.pushMessage("Isogeo",
-                               self.tr("API authentication failed.Isogeo API answered: {}")
-                                       .format(parsed_content.get('error')),
-                               duration=10,
-                               level=2)
-                    logger.debug("The API reply has an unexpected form: {}."
-                                .format(parsed_content))
+                    msgBar.pushMessage(
+                        "Isogeo",
+                        self.tr(
+                            "API authentication failed.Isogeo API answered: {}"
+                        ).format(parsed_content.get("error")),
+                        duration=10,
+                        level=2,
+                    )
+                    logger.debug(
+                        "The API reply has an unexpected form: {}.".format(
+                            parsed_content
+                        )
+                    )
             # for other types of request, a different signal is emitted depending
             # on the type of request but it always pass the reply's content
-            else :
+            else:
                 self.loopCount = 0
                 if "shares" in url:
                     logger.debug("Handling reply to a 'shares' request")
@@ -230,15 +247,19 @@ class ApiRequester(QgsNetworkAccessManager):
                 elif "resources/search?" in url:
                     logger.debug("Handling reply to a 'search' request")
                     logger.debug("(from : {}).".format(url))
-                    self.search_sig.emit(parsed_content, self.get_tags(parsed_content.get("tags")))
+                    self.search_sig.emit(
+                        parsed_content, self.get_tags(parsed_content.get("tags"))
+                    )
                 elif "resources/" in reply.url().toString():
                     logger.debug("Handling reply to a 'details' request")
                     logger.debug("(from : {}).".format(url))
-                    self.details_sig.emit(parsed_content, self.get_tags(parsed_content.get("tags")))
-                else :
+                    self.details_sig.emit(
+                        parsed_content, self.get_tags(parsed_content.get("tags"))
+                    )
+                else:
                     logger.debug("Unkown reply type")
             del parsed_content
-        
+
         # if replys's content is invalid
         elif reply.error() == 204:
             logger.debug("Token expired. Renewing it.")
@@ -246,9 +267,11 @@ class ApiRequester(QgsNetworkAccessManager):
             self.send_request("token")
 
         elif content == "":
-            logger.error("Empty reply. Weither no catalog is shared with the "
-                         "plugin, or there is a problem (2 requests sent "
-                         "together)")
+            logger.error(
+                "Empty reply. Weither no catalog is shared with the "
+                "plugin, or there is a problem (2 requests sent "
+                "together)"
+            )
             if self.loopCount < 3:
                 self.loopCount += 1
                 reply.abort()
@@ -257,20 +280,24 @@ class ApiRequester(QgsNetworkAccessManager):
             else:
                 # self.status_isClear = True
                 msgBar.pushMessage(
-                    self.tr("The script is looping. Make sure you shared a "
-                            "catalog with the plugin. If so, please report "
-                            "this on the bug tracker."))
+                    self.tr(
+                        "The script is looping. Make sure you shared a "
+                        "catalog with the plugin. If so, please report "
+                        "this on the bug tracker."
+                    )
+                )
                 self.token_sig.emit("NoInternet")
                 return
-        else :
+        else:
             logger.warning("Unknown error : {}".format(str(reply.error())))
             # self.status_isClear = True
-            QMessageBox.information(self.iface.mainWindow(),
-                                    self.tr("Error"),
-                                    self.tr("You are facing an unknown error. "
-                                            "Code: ") +
-                                    str(answer.error()) +
-                                    "\nPlease report it on the bug tracker.")
+            QMessageBox.information(
+                self.iface.mainWindow(),
+                self.tr("Error"),
+                self.tr("You are facing an unknown error. " "Code: ")
+                + str(answer.error())
+                + "\nPlease report it on the bug tracker.",
+            )
         return
 
     def build_request_url(self, params: dict):
@@ -321,16 +348,16 @@ class ApiRequester(QgsNetworkAccessManager):
         # Geographical filter
         if params.get("geofilter") is not None:
             if params.get("coord") is not False:
-                filters += "&box={0}&rel={1}".format(params.get("coord"),
-                                                    params.get("operation"))
+                filters += "&box={0}&rel={1}".format(
+                    params.get("coord"), params.get("operation")
+                )
             else:
                 pass
         else:
             pass
         # Sorting order and direction
         if params.get("show"):
-            filters += "&ob={0}&od={1}".format(params.get("ob"),
-                                            params.get("od"))
+            filters += "&ob={0}&od={1}".format(params.get("ob"), params.get("od"))
             filters += "&_include=serviceLayers,layers"
             limit = 10
         else:
@@ -343,7 +370,7 @@ class ApiRequester(QgsNetworkAccessManager):
         # BUILDING FINAL URL
         url += filters
         # method ending
-        return url        
+        return url
 
     def get_tags(self, tags: dict):
         """ This parse the tags contained in API_answer[tags] and class them so
@@ -425,24 +452,27 @@ class ApiRequester(QgsNetworkAccessManager):
             pass
 
         # storing dicts
-        tags_parsed = {"actions": actions,
-                       "compliance": compliance,
-                       "contacts": contacts,
-                       "formats": formats,
-                       "inspire": inspire,
-                       "keywords": keywords,
-                       "licenses": licenses,
-                       "owners": owners,
-                       "srs": srs,
-                       "types": md_types,
-                       # "unused": unused
-                       }
+        tags_parsed = {
+            "actions": actions,
+            "compliance": compliance,
+            "contacts": contacts,
+            "formats": formats,
+            "inspire": inspire,
+            "keywords": keywords,
+            "licenses": licenses,
+            "owners": owners,
+            "srs": srs,
+            "types": md_types,
+            # "unused": unused
+        }
 
         # method ending
         logger.info("Tags retrieved")
         return tags_parsed
+
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Standalone execution."""
