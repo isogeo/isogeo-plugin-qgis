@@ -185,10 +185,10 @@ for resource in RESOURCES_FILES:
     )
 
 # Translations
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "i18n", "isogeo_search_engine_fr.qm"),
-    "{}/{}/{}".format(PLG_DIRNAME, "i18n", "isogeo_search_engine_fr.qm"),
-)
+i18n_path = Path("./i18n")
+for module_file in list(i18n_path.glob("**/*.qm")):
+    module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
+    RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
 
 # UI - Base
 RELEASE_ZIP.write(
