@@ -910,7 +910,7 @@ class LayerAdder:
             schema = layer_info.get("schema", "")
             table = layer_info.get("table", "")
             # Retrieve the database information stored in the PostGISdict
-            uri = QgsDataSourceURI()
+            uri = QgsDataSourceUri()
             host = self.PostGISdict[base_name]["host"]
             port = self.PostGISdict[base_name]["port"]
             user = self.PostGISdict[base_name]["username"]
