@@ -9,8 +9,9 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QComboBox
 from qgis.PyQt.QtGui import QStandardItemModel
 
+
 class CheckableComboBox(QComboBox):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(CheckableComboBox, self).__init__(parent)
         self.view().pressed.connect(self.handleItemPressed)
         self.setModel(QStandardItemModel(self))

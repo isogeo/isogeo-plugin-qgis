@@ -56,10 +56,14 @@ logger = logging.getLogger("IsogeoAPIAuthWithQT")
 logging.captureWarnings(True)
 
 logger.setLevel(log_level)
-log_form = logging.Formatter("%(asctime)s || %(levelname)s "
-                             "|| %(module)s - %(lineno)d ||"
-                             " %(funcName)s || %(message)s")
-logfile = RotatingFileHandler(os.path.join(logdir, "log_api_with_pyqt.log"),"a", 5000000, 1)
+log_form = logging.Formatter(
+    "%(asctime)s || %(levelname)s "
+    "|| %(module)s - %(lineno)d ||"
+    " %(funcName)s || %(message)s"
+)
+logfile = RotatingFileHandler(
+    os.path.join(logdir, "log_api_with_pyqt.log"), "a", 5000000, 1
+)
 
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
@@ -70,11 +74,12 @@ logger.addHandler(logfile)
 # ########## Classes ###############
 # ##################################
 
-class ApiConnection():
+
+class ApiConnection:
     def __init__(self, auth_file):
 
         logger.debug("\n================== ISOGEO API WITH QT ==================")
-        
+
         # getting credentials :
         logger.debug("Getting credentials")
         self.utils = IsogeoUtils()
@@ -85,14 +90,16 @@ class ApiConnection():
         # for connection :
         self.naMngr = QNetworkAccessManager()
         self.token_url = "https://id.api.isogeo.com/oauth/token"
-        self.request_url = "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
+        self.request_url = (
+            "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
+        )
         self.token = ""
 
         # for ui :
         logger.debug("Processing and displaying UI")
         self.app = QApplication([])
         self.ui = AuthWidget()
-        self.ui.resize(350 , 100)
+        self.ui.resize(350, 100)
         self.ui.btn.clicked.connect(self.api_authentification)
         self.pysdk_checking()
         self.ui.show()
@@ -101,20 +108,25 @@ class ApiConnection():
     def pysdk_checking(self):
         logger.debug("\n------------------ isogeo-pysdk ------------------")
         logger.debug("Checking credentials")
-        try :
+        try:
             isogeo = Isogeo(self.app_id, self.app_secrets)
             isogeo.connect()
-        except OSError as e: 
+        except OSError as e:
             logger.debug("Credentials issue : {}".format(e))
             return
         except ValueError as e:
             logger.debug("Credentials issue : {}".format(e))
             return
-        
-        self.md_expected = isogeo.search(whole_share=0, page_size=0, augment=0).get("total")
+
+        self.md_expected = isogeo.search(whole_share=0, page_size=0, augment=0).get(
+            "total"
+        )
         self.ui.lbl_expected.setText("{} expected resources".format(self.md_expected))
         logger.debug(
-            "isogeo-pysdk validates the authentication file, {} accessible resources".format(self.md_expected))
+            "isogeo-pysdk validates the authentication file, {} accessible resources".format(
+                self.md_expected
+            )
+        )
 
     def api_authentification(self):
         logger.debug("\n------------------ Authentication ------------------")
@@ -124,7 +136,9 @@ class ApiConnection():
 
         crd_header_value = QByteArray()
         crd_header_value.append("Basic ")
-        crd_header_value.append(base64.b64encode("{}:{}".format(self.app_id, self.app_secrets).encode()))
+        crd_header_value.append(
+            base64.b64encode("{}:{}".format(self.app_id, self.app_secrets).encode())
+        )
 
         crd_header_name = QByteArray()
         crd_header_name.append("Authorization")
@@ -141,10 +155,18 @@ class ApiConnection():
 
         # setting headers
         token_rqst.setRawHeader(crd_header_name, crd_header_value)
-        logger.debug("Setting credentials header : {}".format(token_rqst.rawHeader(crd_header_name)))
+        logger.debug(
+            "Setting credentials header : {}".format(
+                token_rqst.rawHeader(crd_header_name)
+            )
+        )
 
         token_rqst.setHeader(token_rqst.ContentTypeHeader, ct_header_value)
-        logger.debug("Setting 'Content-Type' header : {}".format(token_rqst.header(token_rqst.ContentTypeHeader)))
+        logger.debug(
+            "Setting 'Content-Type' header : {}".format(
+                token_rqst.header(token_rqst.ContentTypeHeader)
+            )
+        )
 
         # creating data
         data = QByteArray()
@@ -154,12 +176,12 @@ class ApiConnection():
         # requesting and handle reply
         logger.debug("Asking for token")
         token_reply = self.naMngr.post(token_rqst, data)
-        token_reply.finished.connect(partial(self.api_handle_token, reply = token_reply))
+        token_reply.finished.connect(partial(self.api_handle_token, reply=token_reply))
 
     def api_handle_token(self, reply):
         logger.debug("\n------------------ Token retrieval ------------------")
         logger.debug("Token asked and API reply received : {}".format(reply))
-        
+
         logger.debug("Storage and formatting of the reply")
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
@@ -167,16 +189,16 @@ class ApiConnection():
         # check API response structure
         try:
             parsed_content = json.loads(content)
-        except :
+        except:
             logger.debug("Reply format issue")
             return
         logger.debug("Reply format is good")
 
-        if 'access_token' in parsed_content:
-            self.token = "Bearer " + parsed_content.get('access_token')
+        if "access_token" in parsed_content:
+            self.token = "Bearer " + parsed_content.get("access_token")
             logger.debug("TOKEN STORED")
             self.api_get_request()
-        else :
+        else:
             logger.debug("ya une couille dans la magouille : {}".format(parsed_content))
 
     def api_get_request(self):
@@ -191,29 +213,30 @@ class ApiConnection():
         crd_header_name = QByteArray()
         crd_header_name.append("Authorization")
 
-        #creating request
+        # creating request
         rqst = QNetworkRequest(QUrl(self.request_url))
         logger.debug("Creating request : {}".format(rqst.url()))
-        
+
         # setting credentials header
         rqst.setRawHeader(crd_header_name, crd_header_value)
-        logger.debug("Setting credentials header : {}".format(rqst.rawHeader(crd_header_name)))
+        logger.debug(
+            "Setting credentials header : {}".format(rqst.rawHeader(crd_header_name))
+        )
 
-        #sending request
+        # sending request
         rqst_reply = self.naMngr.get(rqst)
         logger.debug("Sending request")
 
         rqst_reply.finished.connect(partial(self.api_handle_request, reply=rqst_reply))
 
     def api_handle_request(self, reply):
-        logger.debug(
-            "\n------------------ Reply retrieval ------------------")
+        logger.debug("\n------------------ Reply retrieval ------------------")
         logger.debug("Request sent and API reply received : {}".format(reply))
 
         logger.debug("Storage and formatting of the reply")
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
-        
+
         # check API response structure
         try:
             parsed_content = json.loads(content)
@@ -226,10 +249,11 @@ class ApiConnection():
         logger.debug("RESULT STORED")
         self.ui.lbl_found.setText("{} resources found".format(self.md_found))
 
-        if self.md_found == self.md_expected :
+        if self.md_found == self.md_expected:
             logger.debug("!!! It's working !!!")
-        else :
+        else:
             logger.debug("It's NOT working")
+
 
 # #############################################################################
 # ##### Stand alone program ########

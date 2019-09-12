@@ -29,6 +29,7 @@
 # originial imports
 # Initialize Qt resources from file resources.py
 from .resources import *
+
 # Import the code for the dialog
 from .api_with_qt_dialog import ApiWithQtDialog
 import os.path
@@ -45,7 +46,14 @@ from logging.handlers import RotatingFileHandler
 
 # PyQT
 from qgis.PyQt.QtNetwork import QNetworkAccessManager, QNetworkRequest
-from qgis.PyQt.QtCore import QUrl, QByteArray, QSettings, QTranslator, qVersion, QCoreApplication
+from qgis.PyQt.QtCore import (
+    QUrl,
+    QByteArray,
+    QSettings,
+    QTranslator,
+    qVersion,
+    QCoreApplication,
+)
 from qgis.PyQt.QtWidgets import QApplication, QAction
 from qgis.PyQt.QtGui import QIcon
 
@@ -55,6 +63,7 @@ from qgis.utils import iface
 
 # isogeo-pysdk
 from .isogeo_pysdk import IsogeoUtils, Isogeo
+
 
 class ApiWithQt:
     """QGIS Plugin Implementation."""
@@ -72,22 +81,21 @@ class ApiWithQt:
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
+        locale = QSettings().value("locale/userLocale")[0:2]
         locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'ApiWithQt_{}.qm'.format(locale))
+            self.plugin_dir, "i18n", "ApiWithQt_{}.qm".format(locale)
+        )
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
             self.translator.load(locale_path)
 
-            if qVersion() > '4.3.3':
+            if qVersion() > "4.3.3":
                 QCoreApplication.installTranslator(self.translator)
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&ApiWithQt')
+        self.menu = self.tr("&ApiWithQt")
 
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
@@ -96,14 +104,18 @@ class ApiWithQt:
         # additional initialization lines
         # getting creds
         self.utils = IsogeoUtils()
-        self.app_creds = self.utils.credentials_loader("C:\\Users\\Adminstrateur\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\api_with_qt\\client_secrets.json")
+        self.app_creds = self.utils.credentials_loader(
+            "C:\\Users\\Adminstrateur\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\api_with_qt\\client_secrets.json"
+        )
         self.app_id = self.app_creds.get("client_id")
         self.app_secrets = self.app_creds.get("client_secret")
 
         # prepare connection
         self.naMngr = QgsNetworkAccessManager.instance()
         self.token_url = "https://id.api.isogeo.com/oauth/token"
-        self.request_url = "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
+        self.request_url = (
+            "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
+        )
         self.token = ""
 
     # noinspection PyMethodMayBeStatic
@@ -119,7 +131,7 @@ class ApiWithQt:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('ApiWithQt', message)
+        return QCoreApplication.translate("ApiWithQt", message)
 
     def add_action(
         self,
@@ -131,7 +143,8 @@ class ApiWithQt:
         add_to_toolbar=True,
         status_tip=None,
         whats_this=None,
-        parent=None):
+        parent=None,
+    ):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -187,9 +200,7 @@ class ApiWithQt:
             self.iface.addToolBarIcon(action)
 
         if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
+            self.iface.addPluginToMenu(self.menu, action)
 
         self.actions.append(action)
 
@@ -198,30 +209,30 @@ class ApiWithQt:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/api_with_qt/icon.png'
+        icon_path = ":/plugins/api_with_qt/icon.png"
         self.add_action(
             icon_path,
-            text=self.tr(u'API With Qt'),
+            text=self.tr("API With Qt"),
             callback=self.run,
-            parent=self.iface.mainWindow())
+            parent=self.iface.mainWindow(),
+        )
 
         # will be set False in run()
         self.first_start = True
 
-
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&ApiWithQt'),
-                action)
+            self.iface.removePluginMenu(self.tr("&ApiWithQt"), action)
             self.iface.removeToolBarIcon(action)
 
     # additional methode to check auth file validity and API authentication
     def pysdk_checking(self):
         isogeo = Isogeo(self.app_id, self.app_secrets)
         token = isogeo.connect()
-        self.md_expected = isogeo.search(token = token, whole_share=0, page_size=0, augment=0).get("total")
+        self.md_expected = isogeo.search(
+            token=token, whole_share=0, page_size=0, augment=0
+        ).get("total")
         self.dlg.lbl_expected.setText("{} expected resources".format(self.md_expected))
 
     # additional methode to send token request to the API (with QgsNetworkAccessManager class)
@@ -229,7 +240,9 @@ class ApiWithQt:
         # creating credentials header
         crd_header_value = QByteArray()
         crd_header_value.append("Basic ")
-        crd_header_value.append(base64.b64encode("{}:{}".format(self.app_id, self.app_secrets).encode()))
+        crd_header_value.append(
+            base64.b64encode("{}:{}".format(self.app_id, self.app_secrets).encode())
+        )
         crd_header_name = QByteArray()
         crd_header_name.append("Authorization")
 
@@ -265,9 +278,9 @@ class ApiWithQt:
             return
 
         # chacking token existance in API response
-        if 'access_token' in parsed_content:
+        if "access_token" in parsed_content:
             # storing token
-            self.token = "Bearer " + parsed_content.get('access_token')
+            self.token = "Bearer " + parsed_content.get("access_token")
             # sending resources request to the API with stored token
             self.api_get_request()
         else:
@@ -281,13 +294,13 @@ class ApiWithQt:
         crd_header_name = QByteArray()
         crd_header_name.append("Authorization")
 
-        #creating request
+        # creating request
         rqst = QNetworkRequest(QUrl(self.request_url))
 
         # setting credentials header
         rqst.setRawHeader(crd_header_name, crd_header_value)
 
-        #sending request and handle API reply
+        # sending request and handle API reply
         rqst_reply = self.naMngr.get(rqst)
         rqst_reply.finished.connect(partial(self.api_handle_request, reply=rqst_reply))
 
@@ -306,7 +319,6 @@ class ApiWithQt:
         # Storing and displaying the result provided by the API
         self.md_found = parsed_content.get("total")
         self.dlg.lbl_found.setText("{} resources found".format(self.md_found))
-
 
     def run(self):
         """Run method that performs all the real work"""

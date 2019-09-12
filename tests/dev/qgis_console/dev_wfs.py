@@ -9,36 +9,45 @@ from sys import exit
 try:
     from owslib.wfs import WebFeatureService
     from owslib.util import ServiceException
-    #from owslib import crs
+
+    # from owslib import crs
     import owslib
-    print("Depencencies - owslib version: {}"
-                .format(owslib.__version__))
+
+    print("Depencencies - owslib version: {}".format(owslib.__version__))
 except ImportError as e:
     print("Depencencies - owslib is not present")
 
 try:
     from owslib.util import HTTPError
+
     print("Depencencies - HTTPError within owslib")
 except ImportError as e:
-    print("Depencencies - HTTPError not within owslib."
-                 " Trying to get it from urllib2 directly.")
+    print(
+        "Depencencies - HTTPError not within owslib."
+        " Trying to get it from urllib2 directly."
+    )
     from urllib2 import HTTPError
 
 # ################################
 # ######## Variables  ###############
 # ################################
 
-current_crs = str(iface.mapCanvas()
-                                 .mapRenderer()
-                                 .destinationCrs()
-                                 .authid())
+current_crs = str(iface.mapCanvas().mapRenderer().destinationCrs().authid())
 
 # sample WFS
-wfs_url_in_v2_public_1 = "http://geoserv.weichand.de:8080/geoserver/wfs?request=GetCapabilities&service=WFS"
-wfs_url_in_v2_public_2 = "http://noisy.hq.isogeo.fr:6090/geoserver/ows?service=wfs&request=GetCapabilities"
-wfs_url_in_v2_public_3 = "http://magosm.magellium.com/geoserver/wfs?request=GetCapabilities"
+wfs_url_in_v2_public_1 = (
+    "http://geoserv.weichand.de:8080/geoserver/wfs?request=GetCapabilities&service=WFS"
+)
+wfs_url_in_v2_public_2 = (
+    "http://noisy.hq.isogeo.fr:6090/geoserver/ows?service=wfs&request=GetCapabilities"
+)
+wfs_url_in_v2_public_3 = (
+    "http://magosm.magellium.com/geoserver/wfs?request=GetCapabilities"
+)
 wfs_url_in_v1_public = "http://noisy.hq.isogeo.fr:6090/geoserver/ows?service=wfs&version=1.1.0&request=GetCapabilities"
-wfs_url_in_v2_auth_1 = "https://www.ppige-npdc.fr/geoserver/ayants-droits/wfs?request=GetCapabilities"
+wfs_url_in_v2_auth_1 = (
+    "https://www.ppige-npdc.fr/geoserver/ayants-droits/wfs?request=GetCapabilities"
+)
 wfs_url_in_v2_mix_2 = "https://www.ppige-npdc.fr/geoserver/wfs?request=GetCapabilities"
 
 # ################################
@@ -52,23 +61,23 @@ print("Using OWSLib")
 # opening WFS
 wfs_url_getcap = wfs_url_in_v1_public
 
-#try:
+# try:
 #    wfs = WebFeatureService(wfs_url_getcap)
-#except ServiceException as e:
+# except ServiceException as e:
 #    print("WFS - Bad operation: " + wfs_url_getcap, str(e))
-#except HTTPError as e:
+# except HTTPError as e:
 #    print("WFS - Service not reached: " + wfs_url_getcap, str(e))
-#except Exception as e:
+# except Exception as e:
 #    print(str(e))
 #
-#print(dir(wfs))
+# print(dir(wfs))
 ## contents', 'exceptions', 'getOperationByName', 'getServiceXML', 'getcapabilities',
 ## 'getfeatureinfo', 'getmap', 'identification', 'items',
 ## 'operations', 'password', 'provider', 'url', 'username', 'version']
 #
 ## service responsible
-#print(wfs.provider.name, wfs.provider.url)
-#try:
+# print(wfs.provider.name, wfs.provider.url)
+# try:
 #    print("Contact: ",
 #          wfs.provider.contact.name,
 #          wfs.provider.contact.email,
@@ -79,63 +88,63 @@ wfs_url_getcap = wfs_url_in_v1_public
 #          wfs.provider.contact.city,
 #          wfs.provider.contact.region,
 #          wfs.provider.contact.country)
-#except AttributeError as e:
+# except AttributeError as e:
 #    print(str(e))
 #
 ## check if GetFeature operation is available
-#if not hasattr(wfs, "getfeature") or "GetFeature" not in [op.name for op in wfs.operations]:
+# if not hasattr(wfs, "getfeature") or "GetFeature" not in [op.name for op in wfs.operations]:
 #    print("Required GetFeature operation not available in: " + wfs_url_getcap)
-#else:
+# else:
 #    print("GetFeature available")
 #    pass
 #
-#if "DescribeFeatureType" not in [op.name for op in wfs.operations]:
+# if "DescribeFeatureType" not in [op.name for op in wfs.operations]:
 #    print("Required DescribeFeatureType operation not available in: " + wfs_url_getcap)
-#else:
+# else:
 #    print("DescribeFeatureType available")
 #    pass
 #
 ## get a layer
-#print("Available layers: ", list(wfs.contents))
-#layer_name = list(wfs.contents)[0]
-#wfs_lyr = wfs[layer_name]
-#try:
+# print("Available layers: ", list(wfs.contents))
+# layer_name = list(wfs.contents)[0]
+# wfs_lyr = wfs[layer_name]
+# try:
 #    wfs_lyr = wfs["epci_2015"]
-#except KeyError as e:
+# except KeyError as e:
 #    print("Asked layer is not present (anymore): ")
-#layer_title = wfs_lyr.title
-#layer_id = wfs_lyr.id
-#print("First layer picked: ", layer_title, layer_name, layer_id)
+# layer_title = wfs_lyr.title
+# layer_id = wfs_lyr.id
+# print("First layer picked: ", layer_title, layer_name, layer_id)
 #
 ## SRS
-#print("Available SRS: ", wfs_lyr.crsOptions)
-#wfs_lyr_crs_epsg = ["{}:{}".format(srs.authority, srs.code) for srs in wfs_lyr.crsOptions]
-#print(wfs_lyr_crs_epsg)
+# print("Available SRS: ", wfs_lyr.crsOptions)
+# wfs_lyr_crs_epsg = ["{}:{}".format(srs.authority, srs.code) for srs in wfs_lyr.crsOptions]
+# print(wfs_lyr_crs_epsg)
 #
-#if current_crs in wfs_lyr_crs_epsg:
+# if current_crs in wfs_lyr_crs_epsg:
 #    print("It's a SRS match! With map canvas: " + current_crs)
 #    srs = current_crs
-#elif "EPSG:4326" in wfs_lyr_crs_epsg:
+# elif "EPSG:4326" in wfs_lyr_crs_epsg:
 #    print("It's a SRS match! With standard WGS 84 (EPSG:4326)")
 #    srs = "EPSG:4326"
-#else:
+# else:
 #    print("Searched SRS not available within service CRS.")
 #    srs = wfs_lyr_crs_epsg[0]
 #
 ## Style definition
-#print("Available styles: ", wfs_lyr.styles)
+# print("Available styles: ", wfs_lyr.styles)
 ##lyr_style = wfs_lyr.styles.keys()[0]
 #
 ## GetFeature URL
-#wfs_lyr_url = wfs.getOperationByName('GetFeature').methods
-#wfs_lyr_url = wfs_lyr_url[0].get("url")
-#if wfs_lyr_url[-1] != "&":
+# wfs_lyr_url = wfs.getOperationByName('GetFeature').methods
+# wfs_lyr_url = wfs_lyr_url[0].get("url")
+# if wfs_lyr_url[-1] != "&":
 #    wfs_lyr_url = wfs_lyr_url + "&"
-#else:
+# else:
 #    pass
 #
 ## URL construction
-#wfs_url_params = {"service": "WFS",
+# wfs_url_params = {"service": "WFS",
 #                  "version": "1.0.0",
 #                  "typename": layer_id,
 #                  "srsname": srs,
@@ -143,18 +152,17 @@ wfs_url_getcap = wfs_url_in_v1_public
 #                  "password": "",
 #                  }
 ##wfs_url_final = unquote(urlencode(wfs_url_params))
-#wfs_url_final = wfs_lyr_url + unquote(urlencode(wfs_url_params))
-#print(wfs_url_final)
+# wfs_url_final = wfs_lyr_url + unquote(urlencode(wfs_url_params))
+# print(wfs_url_final)
 #
 
 
-
 ## let's try to add it to the map canvas
-#qgis_wfs_lyr_auto = QgsVectorLayer(wfs_url_final, "Auto - " + layer_title, 'WFS')
-#if qgis_wfs_lyr_auto.isValid():
+# qgis_wfs_lyr_auto = QgsVectorLayer(wfs_url_final, "Auto - " + layer_title, 'WFS')
+# if qgis_wfs_lyr_auto.isValid():
 #    QgsMapLayerRegistry.instance().addMapLayer(qgis_wfs_lyr_auto)
 #    print("WFS auto url build SUCCEED")
-#else:
+# else:
 #    print("WFS auto url build FAILED")
 #    print(qgis_wfs_lyr_auto.error().message())
 
@@ -162,7 +170,7 @@ wfs_url_getcap = wfs_url_in_v1_public
 
 uri = QgsDataSourceURI()
 uri.setParam("url", "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/wfs?")
-#uri.setParam("port", "6090")
+# uri.setParam("port", "6090")
 uri.setParam("service", "wfs")
 uri.setParam("version", "1.1.0")
 uri.setParam("typename", "Isogeo:isogeo_logo")
@@ -173,7 +181,7 @@ print(uri.uri())
 # srsname='EPSG:2154' typename='opendata:unesco_bassin_minier_bien_inscrit' url='https://www.ppige-npdc.fr/geoserver/opendata/ows?' version='auto' table="" sql=
 
 # let's try to add it to the map canvas
-qgis_wfs_lyr_auto = QgsVectorLayer(uri.uri(), "Auto - " + "HOHOH", 'WFS')
+qgis_wfs_lyr_auto = QgsVectorLayer(uri.uri(), "Auto - " + "HOHOH", "WFS")
 if qgis_wfs_lyr_auto.isValid():
     QgsMapLayerRegistry.instance().addMapLayer(qgis_wfs_lyr_auto)
     print("WFS auto url build with URI DataSource SUCCEED")
@@ -182,13 +190,13 @@ else:
     print(qgis_wfs_lyr_auto.error().message())
 
 ## for comparison, manual URL
-#manual_lyr = "http://geoserv.weichand.de:8080/geoserver/wfs?request=GetFeature&service=WFS&srsname=EPSG:31468&typename=bvv:vg_ex&version=1.0.0"
-#qgis_wfs_lyr_manual = QgsVectorLayer(manual_lyr, "Manual - " + layer_title, 'WFS')
-#if qgis_wfs_lyr_manual.isValid():
+# manual_lyr = "http://geoserv.weichand.de:8080/geoserver/wfs?request=GetFeature&service=WFS&srsname=EPSG:31468&typename=bvv:vg_ex&version=1.0.0"
+# qgis_wfs_lyr_manual = QgsVectorLayer(manual_lyr, "Manual - " + layer_title, 'WFS')
+# if qgis_wfs_lyr_manual.isValid():
 #    QgsMapLayerRegistry.instance().addMapLayer(qgis_wfs_lyr_manual)
 #    print("WFS manual url build SUCCEED")
 #    pass
-#else:
+# else:
 #    print(qgis_wfs_lyr_manual.error().message())
 #    print("WFS manual url build FAILED")
 
@@ -201,7 +209,7 @@ else:
 
 print("Using GDAL (ogr)")
 
-#QgsMapLayerRegistry.instance().removeAllMapLayers()
+# QgsMapLayerRegistry.instance().removeAllMapLayers()
 
 # Open the service
 try:
@@ -229,12 +237,14 @@ lyr_srs = wfs_lyr.GetSpatialRef()
 lyr_srs.AutoIdentifyEPSG()
 if lyr_srs.GetAuthorityName("PROJCS"):
     print("CRS type: projected")
-    srs = "{}:{}".format(lyr_srs.GetAuthorityName("PROJCS"),
-                                    lyr_srs.GetAuthorityCode("PROJCS"))
+    srs = "{}:{}".format(
+        lyr_srs.GetAuthorityName("PROJCS"), lyr_srs.GetAuthorityCode("PROJCS")
+    )
 elif lyr_srs.GetAuthorityName("GEOGCS"):
     print("CRS type: geographic")
-    srs = "{}:{}".format(lyr_srs.GetAuthorityName("GEOGCS"),
-                                    lyr_srs.GetAuthorityCode("GEOGCS"))
+    srs = "{}:{}".format(
+        lyr_srs.GetAuthorityName("GEOGCS"), lyr_srs.GetAuthorityCode("GEOGCS")
+    )
 else:
     print("SRS: undetermined CRS")
     pass

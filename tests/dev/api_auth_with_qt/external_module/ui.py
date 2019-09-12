@@ -1,6 +1,7 @@
 from qgis.PyQt.QtWidgets import QApplication, QPushButton, QLabel, QWidget, QVBoxLayout
 from qgis.PyQt.QtCore import Qt
 
+
 class AuthWidget(QWidget):
     def __init__(self):
         super().__init__()

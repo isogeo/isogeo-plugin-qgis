@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from os import path
 
 # basic function to solve raw string problem
 def raw_string(s):
     if isinstance(s, str):
-        s = s.encode('string-escape')
+        s = s.encode("string-escape")
     elif isinstance(s, unicode):
-        s = s.encode('unicode-escape')
+        s = s.encode("unicode-escape")
     else:
         raise TypeError
     return s
@@ -18,7 +17,7 @@ def raw_string(s):
 # fixture
 target_nat = "\\TORCY\Data\SIG\SIG_DATA_SERVICE\DEMO\Evenements\GeoLittoral\n_azi_submersion_marine_s_092014\n_azi_submersion_marine_s.shp"
 target_raw = r"\\TORCY\Data\SIG\SIG_DATA_SERVICE\DEMO\Evenements\GeoLittoral\n_azi_submersion_marine_s_092014\n_azi_submersion_marine_s.shp"
-target_enc = target_nat.encode('utf8')
+target_enc = target_nat.encode("utf8")
 target_tra = r"{}".format(target_nat)
 target_fct = raw_string(target_nat)
 

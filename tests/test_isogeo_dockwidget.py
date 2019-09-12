@@ -8,9 +8,9 @@
 
 """
 
-__author__ = 'projets+qgis@isogeo.fr'
-__date__ = '2016-07-22'
-__copyright__ = 'Copyright 2016, Isogeo, Theo Sinatti, GeoJulien'
+__author__ = "projets+qgis@isogeo.fr"
+__date__ = "2016-07-22"
+__copyright__ = "Copyright 2016, Isogeo, Theo Sinatti, GeoJulien"
 
 import unittest
 
@@ -38,8 +38,8 @@ class IsogeoDockWidgetTest(unittest.TestCase):
         """Test we can click OK."""
         pass
 
+
 if __name__ == "__main__":
     suite = unittest.makeSuite(IsogeoDockWidgetTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
-

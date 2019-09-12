@@ -27,8 +27,9 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDockWidget
 from qgis.PyQt.QtCore import pyqtSignal
 
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'isogeo_dockwidget_base.ui'))
+FORM_CLASS, _ = uic.loadUiType(
+    os.path.join(os.path.dirname(__file__), "isogeo_dockwidget_base.ui")
+)
 
 
 class IsogeoDockWidget(QDockWidget, FORM_CLASS):
@@ -48,4 +49,3 @@ class IsogeoDockWidget(QDockWidget, FORM_CLASS):
     def closeEvent(self, event):
         self.closingPlugin.emit()
         event.accept()
-

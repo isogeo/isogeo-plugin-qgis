@@ -1,10 +1,19 @@
 # PyQt
-from qgis.PyQt.QtWidgets import QApplication, QPushButton, QLabel, QWidget, QVBoxLayout, QComboBox, QGridLayout
+from qgis.PyQt.QtWidgets import (
+    QApplication,
+    QPushButton,
+    QLabel,
+    QWidget,
+    QVBoxLayout,
+    QComboBox,
+    QGridLayout,
+)
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QStandardItemModel
 
 # Custom widget
 from checkable_combobox import CheckableComboBox
+
 
 class AuthWidget(QWidget):
     def __init__(self):

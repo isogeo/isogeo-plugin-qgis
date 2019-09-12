@@ -32,8 +32,9 @@ from qgis.PyQt.QtWidgets import QApplication, QPushButton, QLabel, QWidget, QVBo
 from qgis.PyQt.QtCore import Qt
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'api_with_qt_dialog_base.ui'))
+FORM_CLASS, _ = uic.loadUiType(
+    os.path.join(os.path.dirname(__file__), "api_with_qt_dialog_base.ui")
+)
 
 
 class ApiWithQtDialog(QtWidgets.QDialog, FORM_CLASS):
@@ -59,7 +60,6 @@ class ApiWithQtDialog(QtWidgets.QDialog, FORM_CLASS):
         self.layout.addWidget(self.lbl_found)
 
         self.setLayout(self.layout)
-        
+
         # original ui setup line
         self.setupUi(self)
-        

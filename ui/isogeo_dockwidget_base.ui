@@ -1844,7 +1844,7 @@
   <customwidget>
     <class>QgsCheckableComboBox</class>
     <extends>QComboBox</extends>
-    <header>qgscheckablecombobox.h</header>
+    <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
  <connections />

@@ -8,9 +8,9 @@
 
 """
 
-__author__ = 'projets+qgis@isogeo.fr'
-__date__ = '2019-07-10'
-__copyright__ = 'Copyright 2016, Isogeo, Simon Sampere, GeoJulien'
+__author__ = "projets+qgis@isogeo.fr"
+__date__ = "2019-07-10"
+__copyright__ = "Copyright 2016, Isogeo, Simon Sampere, GeoJulien"
 import unittest
 import os
 
@@ -35,9 +35,8 @@ class IsogeoResourcesTest(unittest.TestCase):
         icon = QIcon(path)
         self.assertFalse(icon.isNull())
 
+
 if __name__ == "__main__":
     suite = unittest.makeSuite(IsogeoResourcesTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
-
-

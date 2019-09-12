@@ -58,10 +58,14 @@ logger = logging.getLogger("IsogeoAPIAuthWithQT")
 logging.captureWarnings(True)
 
 logger.setLevel(log_level)
-log_form = logging.Formatter("%(asctime)s || %(levelname)s "
-                             "|| %(module)s - %(lineno)d ||"
-                             " %(funcName)s || %(message)s")
-logfile = RotatingFileHandler(os.path.join(logdir, "log_api_with_pyqt.log"),"a", 5000000, 1)
+log_form = logging.Formatter(
+    "%(asctime)s || %(levelname)s "
+    "|| %(module)s - %(lineno)d ||"
+    " %(funcName)s || %(message)s"
+)
+logfile = RotatingFileHandler(
+    os.path.join(logdir, "log_api_with_pyqt.log"), "a", 5000000, 1
+)
 
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
@@ -72,11 +76,12 @@ logger.addHandler(logfile)
 # ########## Classes ###############
 # ##################################
 
-class KeyWordsSelection():
+
+class KeyWordsSelection:
     def __init__(self, auth_file):
 
         logger.debug("\n================== ISOGEO API WITH QT ==================")
-        
+
         # getting credentials :
         logger.debug("Getting credentials")
         self.utils = IsogeoUtils()
@@ -87,7 +92,9 @@ class KeyWordsSelection():
         # for connection :
         self.naMngr = QNetworkAccessManager()
         self.token_url = "https://id.api.isogeo.com/oauth/token"
-        self.request_url = "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
+        self.request_url = (
+            "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
+        )
 
         # init variables :
         self.token = ""
@@ -98,7 +105,7 @@ class KeyWordsSelection():
         logger.debug("Processing and displaying UI")
         self.app = QApplication(sys.argv)
         self.ui = AuthWidget()
-        self.ui.resize(400 , 100)
+        self.ui.resize(400, 100)
         self.pysdk_checking()
         self.api_authentification()
         self.ui.btn_reset.pressed.connect(self.reset)
@@ -108,10 +115,10 @@ class KeyWordsSelection():
     def pysdk_checking(self):
         logger.debug("\n--------------- isogeo-pysdk ---------------")
         logger.debug("Checking credentials")
-        try :
+        try:
             isogeo = Isogeo(self.app_id, self.app_secrets)
             isogeo.connect()
-        except OSError as e: 
+        except OSError as e:
             logger.debug("Credentials issue : {}".format(e))
             return
         except ValueError as e:
@@ -119,24 +126,37 @@ class KeyWordsSelection():
             return
 
         if self.search_type == "init":
-            result = isogeo.search(whole_share=0, page_size=0, augment=0, tags_as_dicts=1)
-        else :
+            result = isogeo.search(
+                whole_share=0, page_size=0, augment=0, tags_as_dicts=1
+            )
+        else:
             query = " ".join(list(self.checked_kw.keys()))
-            result = isogeo.search(whole_share=0, page_size=0, augment=0, tags_as_dicts=1, query=query)
+            result = isogeo.search(
+                whole_share=0, page_size=0, augment=0, tags_as_dicts=1, query=query
+            )
 
         self.tags_expected = result.get("tags")
         self.kw_expected_nb = len(self.tags_expected.get("keywords"))
-        self.ui.lbl_expected.setText("Expected : {} resources and {} keywords".format(result.get("total") ,self.kw_expected_nb))
+        self.ui.lbl_expected.setText(
+            "Expected : {} resources and {} keywords".format(
+                result.get("total"), self.kw_expected_nb
+            )
+        )
         logger.debug(
-            "isogeo-pysdk validates the authentication file, {} accessible resources".format(result.get("total")))
+            "isogeo-pysdk validates the authentication file, {} accessible resources".format(
+                result.get("total")
+            )
+        )
 
     def api_authentification(self):
         logger.debug("\n------------------ Authentication ------------------")
-        
+
         # creating credentials header
         crd_header_value = QByteArray()
         crd_header_value.append("Basic ")
-        crd_header_value.append(base64.b64encode("{}:{}".format(self.app_id, self.app_secrets).encode()))
+        crd_header_value.append(
+            base64.b64encode("{}:{}".format(self.app_id, self.app_secrets).encode())
+        )
 
         crd_header_name = QByteArray()
         crd_header_name.append("Authorization")
@@ -147,11 +167,11 @@ class KeyWordsSelection():
 
         # creating request
         token_rqst = QNetworkRequest(QUrl(self.token_url))
-        
+
         # setting headers
         token_rqst.setRawHeader(crd_header_name, crd_header_value)
         token_rqst.setHeader(token_rqst.ContentTypeHeader, ct_header_value)
-        
+
         # creating data
         data = QByteArray()
         data.append(urlencode({"grant_type": "client_credentials"}))
@@ -159,7 +179,7 @@ class KeyWordsSelection():
         # requesting and handle reply
         logger.debug("Asking for token")
         token_reply = self.naMngr.post(token_rqst, data)
-        token_reply.finished.connect(partial(self.api_handle_token, reply = token_reply))
+        token_reply.finished.connect(partial(self.api_handle_token, reply=token_reply))
 
     def api_handle_token(self, reply):
         logger.debug("Token asked and API reply received")
@@ -171,15 +191,15 @@ class KeyWordsSelection():
         # check API response structure
         try:
             parsed_content = json.loads(content)
-        except :
+        except:
             logger.debug("Reply format issue")
             return
 
         # check API response content
-        if 'access_token' in parsed_content:
-            self.token = "Bearer " + parsed_content.get('access_token')
+        if "access_token" in parsed_content:
+            self.token = "Bearer " + parsed_content.get("access_token")
             self.api_get_request()
-        else :
+        else:
             logger.debug("ya une couille dans la magouille : {}".format(parsed_content))
 
     def api_get_request(self):
@@ -191,11 +211,11 @@ class KeyWordsSelection():
         crd_header_name = QByteArray()
         crd_header_name.append("Authorization")
 
-        #creating request
+        # creating request
         rqst = QNetworkRequest(QUrl(self.request_url))
 
         # setting credentials header
-        rqst.setRawHeader(crd_header_name, crd_header_value)#sending request
+        rqst.setRawHeader(crd_header_name, crd_header_value)  # sending request
 
         rqst_reply = self.naMngr.get(rqst)
         rqst_reply.finished.connect(partial(self.api_handle_request, reply=rqst_reply))
@@ -204,7 +224,7 @@ class KeyWordsSelection():
         logger.debug("Request sent and API reply received")
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
-        
+
         if reply.error() == 0:
             # check API response structure
             try:
@@ -219,18 +239,22 @@ class KeyWordsSelection():
             for tag in sorted(self.tags_found):
                 if tag.startswith("keyword:is"):
                     self.kw_found[tag] = self.tags_found.get(tag)
-                else :
+                else:
                     pass
-            
+
             # displaying result
-            self.ui.lbl_found.setText("Found : {} resources and {} keywords".format(parsed_content.get("total") ,len(self.kw_found)))
+            self.ui.lbl_found.setText(
+                "Found : {} resources and {} keywords".format(
+                    parsed_content.get("total"), len(self.kw_found)
+                )
+            )
 
             if self.search_type == "init":
-                if len(self.kw_found) == self.kw_expected_nb :
+                if len(self.kw_found) == self.kw_expected_nb:
                     logger.debug("!!! It's working !!!")
-                else :
+                else:
                     logger.debug("It's NOT working")
-            else :
+            else:
                 pass
 
             # filling keywords checkable combo box
@@ -240,13 +264,12 @@ class KeyWordsSelection():
             logger.debug("token expired, renewing it")
             self.api_authentification()
 
-        else :
+        else:
             pass
 
     def pop_kw_cbbox(self):
-        logger.debug(
-            "\n-------------- Poping Keywords ComboBox --------------")
-        
+        logger.debug("\n-------------- Poping Keywords ComboBox --------------")
+
         # to prepare the filling
         self.ui.kw_cbbox.clear()
         if self.search_type != "init":
@@ -257,13 +280,13 @@ class KeyWordsSelection():
         first_item = self.ui.kw_cbbox.model().item(0, 0)
         first_item.setEnabled(False)
         i = 1
-        for kw_code, kw_lbl in self.kw_found.items() :
-            
+        for kw_code, kw_lbl in self.kw_found.items():
+
             if self.search_type == "kw" and kw_code in self.checked_kw.keys():
                 self.ui.kw_cbbox.insertItem(1, kw_lbl)
                 item = self.ui.kw_cbbox.model().item(1, 0)
                 item.setCheckState(Qt.Checked)
-            else : 
+            else:
                 self.ui.kw_cbbox.addItem(kw_lbl)
                 item = self.ui.kw_cbbox.model().item(i, 0)
                 item.setCheckState(Qt.Unchecked)
@@ -274,32 +297,34 @@ class KeyWordsSelection():
         self.ui.kw_cbbox.setEnabled(True)
         # connecting to a signal returning the checked item's index
         self.ui.kw_cbbox.activated.connect(self.get_checked_kw)
-    
+
     def get_checked_kw(self, index):
-        logger.debug(
-            "\n------------ Getting Checked Keywords ------------")
+        logger.debug("\n------------ Getting Checked Keywords ------------")
 
         self.ui.kw_cbbox.setEnabled(False)
         self.ui.kw_cbbox.setCurrentText(self.ui.kw_cbbox.itemText(index))
 
-        # Testing if checked keyword is already in the dict is easier than 
+        # Testing if checked keyword is already in the dict is easier than
         # testing if the user checked or unchecked it :
-        # removing the selected keyword from the dict if it is already in        
+        # removing the selected keyword from the dict if it is already in
         if self.ui.kw_cbbox.itemData(index, 32) in self.checked_kw.keys():
             del self.checked_kw[self.ui.kw_cbbox.itemData(index, 32)]
         # adding the selected keyword to the dict if it is not already in
         else:
-            self.checked_kw[self.ui.kw_cbbox.itemData(index, 32)] = self.ui.kw_cbbox.itemText(index)
+            self.checked_kw[
+                self.ui.kw_cbbox.itemData(index, 32)
+            ] = self.ui.kw_cbbox.itemText(index)
         logger.debug("ckeched kw : {}".format(self.checked_kw))
 
-        self.ui.lbl_selection.setText("{} keywords selected".format(len(self.checked_kw)))
+        self.ui.lbl_selection.setText(
+            "{} keywords selected".format(len(self.checked_kw))
+        )
         self.ui.kw_cbbox.setToolTip(" / ".join(list(self.checked_kw.values())))
-        # now selected keywords are stocked, time to request the API 
+        # now selected keywords are stocked, time to request the API
         self.kw_search()
-            
+
     def kw_search(self):
-        logger.debug(
-            "\n------------ Searching with keywords -------------")
+        logger.debug("\n------------ Searching with keywords -------------")
         # preparing the request
         self.search_type = "kw"
         self.request_url = self.url_builder()
@@ -308,24 +333,26 @@ class KeyWordsSelection():
         self.api_get_request()
 
     def url_builder(self):
-        logger.debug(
-            "\n------------------ Building URL ------------------")
+        logger.debug("\n------------------ Building URL ------------------")
         # adding selected keywords to the request URL
         search_url = "https://v1.api.isogeo.com/resources/search?q="
         for kw in self.checked_kw:
             search_url += "{} ".format(str(kw))
         logger.debug("URL : {}".format(search_url))
         return search_url[:-1]
-    
+
     def reset(self):
         logger.debug("----------------- RESET -------------------")
         self.search_type = "reset"
         self.checked_kw = {}
-        self.request_url = "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
+        self.request_url = (
+            "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
+        )
         self.ui.lbl_selection.setText("")
         self.ui.kw_cbbox.setToolTip("")
         self.pysdk_checking()
         self.api_get_request()
+
 
 # #############################################################################
 # ##### Stand alone program ########

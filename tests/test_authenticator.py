@@ -13,17 +13,17 @@ from qgis.PyQt.QtCore import QSettings
 # Tested module
 from modules import Authenticator
 
-class TestAuthenticator(unittest.TestCase):
 
+class TestAuthenticator(unittest.TestCase):
     def setUp(self):
         auth_folder = Path(__file__).parents[0] / "_auth"
         self.authenticator = Authenticator(auth_folder)
         self.authenticator.lang = "fr"
         self.qsettings = QSettings
-    
+
     def tearDown(self):
         pass
-     
+
     def test_instantiation(self):
         with self.assertRaises(TypeError):
             Authenticator(1)
@@ -37,10 +37,16 @@ class TestAuthenticator(unittest.TestCase):
         self.assertFalse(self.authenticator.credentials_check_qsettings())
 
     def test_credentials_check_file(self):
-        os.rename(Path(self.authenticator.auth_folder)/"client_secrets.json", Path(self.authenticator.auth_folder)/"client_secrets_test.json")
+        os.rename(
+            Path(self.authenticator.auth_folder) / "client_secrets.json",
+            Path(self.authenticator.auth_folder) / "client_secrets_test.json",
+        )
         self.assertFalse(self.authenticator.credentials_check_file())
-        os.rename(Path(self.authenticator.auth_folder)/"client_secrets_test.json", Path(self.authenticator.auth_folder)/"client_secrets.json")
-    
+        os.rename(
+            Path(self.authenticator.auth_folder) / "client_secrets_test.json",
+            Path(self.authenticator.auth_folder) / "client_secrets.json",
+        )
+
     def test_credentials_update(self):
         pass
 
@@ -54,5 +60,5 @@ class TestAuthenticator(unittest.TestCase):
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
