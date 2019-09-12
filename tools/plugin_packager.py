@@ -51,7 +51,41 @@ PLG_METADATA_FILE = DIR_PLUGIN_ROOT.resolve() / "metadata.txt"
 # #############################################################################
 # ########## Functions##############
 # ##################################
-def clean_files(start_folder: Path = ".", glob_pattern: str = "**/*.pyc"):
+def fix_ui_files(ui_folder: Path = "./ui"):
+    """Fix UI files with some custom QGIS Qt widgets.
+    See: http://gis.stackexchange.com/a/155599/19817
+    """
+    ui_folder = Path(ui_folder)
+    for ui_file in ui_folder.glob("**/*.ui"):
+        with ui_file.open('r') as ui_file:
+            ui_xml = ET.parse(ui_file)
+            root = ui_xml.getroot()
+            for rsrc in root.iter('resources'):
+                if len(rsrc) > 0:
+                    print("WARNING - resources tag spotted in: {}"\
+                            .format(f))
+                    # AUTO REMOVE ##
+                    root.remove(rsrc)
+                    ui_xml.write(path.join(dirpath, f),
+                                    encoding='utf-8',
+                                    xml_declaration='version="1.0"',
+                                    method='xml')
+                    print("INFO - resources tag has been removed.")
+                else:
+                    continue
+            for custom in root.iter('customwidget'):
+                header = list(custom)[2]
+                if header.text != "qgis.gui":
+                    header.text = header.text.replace(header.text, 'qgis.gui')
+                    ui_xml.write(path.join(dirpath, f),
+                                    encoding='utf-8',
+                                    xml_declaration='version="1.0"',
+                                    method='xml')
+                    print("INFO - Custom widget header fixed.")
+                else:
+                    continue
+
+def remove_files(start_folder: Path = ".", glob_pattern: str = "**/*.pyc"):
     """Remove files under the start folder which are matching the glob pattern."""
     start_folder = Path(start_folder)
     for file_to_be_removed in list(start_folder.glob(glob_pattern)):
@@ -73,47 +107,14 @@ def plugin_metadata():
 # ##################################
 
 # clean up
-clean_files()   # remove Python compiled files
+remove_files()   # remove Python compiled files
 
 # get plugin metadata
 version = plugin_metadata()
 print("Packaging the version {} of the Isogeo plugin for QGIS version {} to {})".format(*version))
 
-
-# ------------ UI files check -----------------------------------------------
-# see: http://gis.stackexchange.com/a/155599/19817
-for dirpath, dirs, files in walk(BASE_DIR_ABS):
-    for f in files:
-        if f.endswith(".ui"):
-            with open(path.join(dirpath, f), 'r') as ui_file:
-                ui_xml = ET.parse(ui_file)
-                root = ui_xml.getroot()
-                for rsrc in root.iter('resources'):
-                    if len(rsrc) > 0:
-                        print("WARNING - resources tag spotted in: {}"\
-                              .format(f))
-                        # AUTO REMOVE ##
-                        root.remove(rsrc)
-                        ui_xml.write(path.join(dirpath, f),
-                                     encoding='utf-8',
-                                     xml_declaration='version="1.0"',
-                                     method='xml')
-                        print("INFO - resources tag has been removed.")
-                    else:
-                        continue
-                for custom in root.iter('customwidget'):
-                    header = list(custom)[2]
-                    if header.text != "qgis.gui":
-                        header.text = header.text.replace(header.text, 'qgis.gui')
-                        ui_xml.write(path.join(dirpath, f),
-                                     encoding='utf-8',
-                                     xml_declaration='version="1.0"',
-                                     method='xml')
-                        print("INFO - Custom widget header fixed.")
-                    else:
-                        continue
-        else:
-            continue
+# ensure UI files are good
+fix_ui_files()
 
 # ------------ Led Zipping -------------------------------------------
 RELEASE_ZIP = zipfile.ZipFile(path.join(DIR_OUTPUT.resolve(), PLG_DIRNAME + ".zip"), "w")
