@@ -157,7 +157,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     displayName: "Publish artifact: plugin packaged"
     inputs:
-      path: $(System.DefaultWorkingDirectory)/build/latest/*.zip
+      path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
       artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
 # UNIT TESTS
