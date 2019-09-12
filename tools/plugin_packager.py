@@ -47,6 +47,7 @@ BASE_DIR_ABS = DIR_PLUGIN_ROOT.resolve()
 
 PLG_DIRNAME = "isogeo_search_engine"
 PLG_METADATA_FILE = DIR_PLUGIN_ROOT.resolve() / "metadata.txt"
+PLG_FINAL_ZIP_PATH = str(DIR_OUTPUT / PLG_DIRNAME) + ".zip"
 
 # #############################################################################
 # ########## Functions##############
@@ -120,8 +121,8 @@ remove_files()  # remove Python compiled files
 # get plugin metadata
 version = plugin_metadata()
 print(
-    "Packaging the version {} of the Isogeo plugin for QGIS version {} to {})".format(
-        *version
+    "Packaging the version {} of the Isogeo plugin for QGIS version {} to {}) to: {}".format(
+        *version, PLG_FINAL_ZIP_PATH
     )
 )
 
@@ -129,9 +130,7 @@ print(
 fix_ui_files()
 
 # ------------ Led Zipping -------------------------------------------
-RELEASE_ZIP = zipfile.ZipFile(
-    path.join(DIR_OUTPUT.resolve(), PLG_DIRNAME + ".zip"), "w"
-)
+RELEASE_ZIP = zipfile.ZipFile(PLG_FINAL_ZIP_PATH, "w")
 
 # AUTH folder
 auth_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_auth/"))
