@@ -5,15 +5,15 @@ import logging
 import json
 import base64
 from urllib.parse import urlencode
-from functools import partial
 
 # PyQGIS
 from qgis.core import QgsNetworkAccessManager, QgsMessageLog
 from qgis.utils import iface
 
 # PyQT
-from qgis.PyQt.QtCore import QByteArray, QUrl, QObject, pyqtSignal, pyqtSlot
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkAccessManager, QNetworkReply
+from qgis.PyQt.QtCore import QByteArray, QUrl, pyqtSignal
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtWidgets import QMessageBox
 
 # ############################################################################
 # ########## Globals ###############
