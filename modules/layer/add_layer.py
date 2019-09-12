@@ -56,7 +56,7 @@ try:
     import owslib
 
     logging.info("Depencencies - owslib version: {}".format(owslib.__version__))
-except ImportError as e:
+except ImportError:
     logger.warning("Depencencies - owslib is not present")
 
 try:
@@ -68,7 +68,7 @@ try:
     from owslib.util import HTTPError
 
     logger.info("Depencencies - HTTPError within owslib")
-except ImportError as e:
+except ImportError:
     from urllib.error import HTTPError
 
     logger.warning(
@@ -79,7 +79,7 @@ try:
     import requests
 
     logger.info("Depencencies - Requests version: {}".format(requests.__version__))
-except ImportError as e:
+except ImportError:
     logger.warning("Depencencies - Requests not available")
 
 # ############################################################################
@@ -357,7 +357,6 @@ class LayerAdder:
         wms_url_getcap = (
             srv_details.get("path") + "?request=GetCapabilities&service=WMS"
         )
-        geoserver = "geoserver" in wms_url_getcap
 
         if mode == "quicky":
             # let's try a quick & dirty url build
@@ -508,7 +507,7 @@ class LayerAdder:
                 layer_format = formats_image[0]
 
             # Style definition
-            lyr_style = list(wms_lyr.styles.keys())[0]
+            # lyr_style = list(wms_lyr.styles.keys())[0]
 
             # GetMap URL
             wms_lyr_url = wms.getOperationByName("GetMap").methods
@@ -567,7 +566,6 @@ class LayerAdder:
         wmts_url_getcap = (
             srv_details.get("path") + "?request=GetCapabilities&service=WMTS"
         )
-        geoserver = "geoserver" in wmts_url_getcap
         # basic checks on service url
         try:
             wmts = WebMapTileService(wmts_url_getcap)
@@ -648,7 +646,7 @@ class LayerAdder:
             layer_format = "image/png"
 
         # Style definition
-        lyr_style = wmts_lyr.styles.keys()[0]
+        # lyr_style = wmts_lyr.styles.keys()[0]
 
         # GetTile URL
         wmts_lyr_url = wmts.getOperationByName("GetTile").methods
