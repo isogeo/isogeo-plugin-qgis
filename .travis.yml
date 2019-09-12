@@ -6,6 +6,7 @@ sudo: false
 env:
   global:
     - IMAGE=qgis/qgis
+    - PLUGIN_NAME=Isogeo
 
   matrix:
     - QGIS_VERSION_TAG=release-3_4
@@ -29,7 +30,7 @@ python:
 addons:
   apt:
     packages:
-      - git
+      - pyqt5-dev-tools
       - python-software-properties
 
 before_install:
@@ -37,8 +38,19 @@ before_install:
 
 install:
   - python -m pip install -U pip setuptools wheel black
-  - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/isogeo-plugin-qgis -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
+  # run the qgis container naming it as 'qgis-testing-environment'
+  - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/${PLUGIN_NAME} -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
+  # This is required to allow xvfb to start
   - sleep 10
+  # Setup qgis and enables the plugin
+  - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh ${PLUGIN_NAME}"
+  # Fix the symlink created by qgis_setup.sh
+  - docker exec  -it qgis-testing-environment sh -c "rm -f  /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/${PLUGIN_NAME}"
+  - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/ /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/${PLUGIN_NAME}"
+
 
 script:
-  - python -m black --target-version=py37 /isogeo-plugin-qgis
+  # - docker exec -it qgis-testing-environment sh -c "cd /${PLUGIN_NAME} && qgis_testrunner.sh tests.test_Plugin"
+  - docker exec -it qgis-testing-environment sh -c "cd /${PLUGIN_NAME} && ls -a"
+  - docker exec -it qgis-testing-environment sh -c "cd /${PLUGIN_NAME} && python3 tools/plugin_packager.py"
+

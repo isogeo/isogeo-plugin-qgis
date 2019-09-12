@@ -1,10 +1,80 @@
 # Lint, test and package a plugin for QGIS
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops&tabs=yaml
 
-pool:
-  vmImage: 'ubuntu-16.04'
+# GLOBAL ENVIRONMENT VARIABLES
+variables:
+  QGIS_VERSION_TAG: release-3_4
+  QGIS_IMAGE: qgis/qgis
+  PLUGIN_NAME: Isogeo
 
-container: qgis/qgis:release-3_4
+# CONDITIONS WHICH TRIGGER OR NOT THE JOBS
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+  tags:
+    include:
+    - "*"
 
-steps:
-- script: python -m tools/plugin_packager.py
+pr:
+- master
+
+# JOBS LIST
+jobs:
+
+# LINT AND FORMATTING CODE
+- job: 'Lint'
+  displayName: 'Lint and format Python source code'
+  pool:
+    vmImage: "vs2017-win2016"
+
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Install Python'
+    inputs:
+      versionSpec: '3.7'
+      architecture: 'x64'
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip
+      python -m pip install -U black flake8
+    displayName: 'Install black and flake8'
+
+  - script: |
+      python -m black --target-version=py37 .\isogeo.py
+      python -m black --target-version=py37 .\modules
+      python -m black --target-version=py37 .\tools
+      python -m black --target-version=py37 .\tests
+      python -m black --target-version=py37 .\ui
+    displayName: 'Apply black code formatting'
+
+  - script: |
+      # stop the build if there are Python syntax errors or undefined names
+      flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
+      flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
+      flake8 ./tools --count --select=E9,F63,F7,F82 --show-source --statistics
+      flake8 ./ui --count --select=E9,F63,F7,F82 --show-source --statistics
+      # exit-zero treats all errors as warnings. Tolerance of line length fixed to 100.
+      flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
+      flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
+      flake8 ./tools --count --exit-zero --max-complexity=10 --max-line-length=100
+      flake8 ./ui --count --exit-zero --max-complexity=10 --max-line-length=100
+    displayName: 'Static code analisis: PEP8 conformance, imports... (flake8)'
+
+
+# UNIT TESTS
+# - job: 'Test'
+#   dependsOn: 'Lint'
+#   pool:
+#     vmImage: 'ubuntu-16.04'
+
+#   container:
+#     image: qgis/qgis:release-3_4
+#     options: --name qgis-testing-environment -v QGIS:/${PLUGIN_NAME} -e DISPLAY=:99
+
+#   steps:
+#   - script: sh -c "qgis_setup.sh ${PLUGIN_NAME}"
+
+#   displayName: 'Install plugin'
