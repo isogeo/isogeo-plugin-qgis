@@ -110,6 +110,7 @@ class ResultsManager(QObject):
         self.pg_connections = self.build_postgis_dict(qsettings)
 
         self.cache_mng = CacheManager()
+        self.cache_mng.tr = self.tr
 
     def show_results(self, api_results, pg_connections=dict()):
         """Display the results in a table."""
@@ -422,7 +423,7 @@ class ResultsManager(QObject):
                 add_button = QPushButton(icon, text)
                 add_button.setStyleSheet("text-align: left")
                 add_button.pressed.connect(
-                    partial(self.add_layer, layer_info=["info", params])
+                    partial(self.add_layer, layer_info=["info", params, count])
                 )
                 tbl_result.setCellWidget(count, 3, add_button)
             # Else, add a combobox, storing all possibilities.
@@ -467,7 +468,11 @@ class ResultsManager(QObject):
         """
         # building
         filepath = Path(metadata_path)
-        dir_file = str(filepath.parent.resolve())
+        try:
+            dir_file = str(filepath.parent.resolve())
+        except OSError as e:
+            logger.debug("'{}' is not a reguler path : {}".format(metadata_path, e))
+            return False
         if dir_file not in self.cache_mng.cached_unreach_paths:
             try:
                 with open(filepath) as f:

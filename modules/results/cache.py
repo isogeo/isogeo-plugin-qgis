@@ -6,11 +6,16 @@ import logging
 import json
 from pathlib import Path
 
+# PyQGIS
+from qgis.utils import iface
+
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
 logger = logging.getLogger("IsogeoQgisPlugin")
+
+msgBar = iface.messageBar()
 
 # ############################################################################
 # ########## Classes ###############
@@ -29,6 +34,8 @@ class CacheManager:
         self.cached_unreach_paths = []
         self.cached_unreach_postgis = []
         self.cached_unreach_srv = []
+        # Translator
+        self.tr = object
 
     def dumper(self):
         """Builds a dict from the stored inaccessible elements 
@@ -45,16 +52,10 @@ class CacheManager:
         }
         with open(self.cache_file, "w") as cache:
             json.dump([self.cached_dict], cache, indent=4)
-        logger.debug("Paths cache has been dumped")
-
-        return self.cached_dict
+        logger.debug("Cache has been dumped")
 
     def loader(self):
         """Load and store ignored elements from the JSON cache file.
-        
-        :returns: the content of the JSON cache file
-
-        :rtype: dict
         """
         try:
             with open(self.cache_file, "r") as cache:
@@ -74,8 +75,8 @@ class CacheManager:
         except ValueError as e:
             logger.error("Path JSON corrupted")
         except IOError:
-            logger.debug("Paths cache file not found. Maybe because of first launch.")
-            self.dumper()
+        	logger.debug("Cache file not found. Maybe because of first launch.")
+        	self.dumper()
 
     def cleaner(self):
         """Removes the stored elements and empties the JSON cache file."""
@@ -83,7 +84,9 @@ class CacheManager:
         self.cached_unreach_postgis = []
         self.cached_unreach_srv = []
         self.dumper()
-        logger.debug("Cache has been cleaned")
+        msgBar.pushMessage(self.tr("Cache has been cleaned.", "CacheManager"),
+            duration=3)
+        logger.debug(self.tr("Cache has been cleaned", "CacheManager"))
 
 
 # #############################################################################

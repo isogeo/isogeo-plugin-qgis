@@ -17,7 +17,7 @@ from modules import Authenticator
 class TestAuthenticator(unittest.TestCase):
     def setUp(self):
         auth_folder = Path(__file__).parents[0] / "_auth"
-        self.authenticator = Authenticator(auth_folder)
+        self.authenticator = Authenticator()
         self.authenticator.lang = "fr"
         self.qsettings = QSettings
 
