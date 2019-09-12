@@ -125,6 +125,41 @@ jobs:
       path: $(System.DefaultWorkingDirectory)
       artifact: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
+# UI COMPILATION
+- job: "Packaging"  # only letters and numbers (no space...)
+  displayName: "Packaging the plugin"  # can't contain special characters
+  dependsOn: "BuildUi"
+  pool:
+    vmImage: "windows-2019"
+
+  steps:
+
+  # no need for source code
+  - checkout: none
+
+  - task: DownloadPipelineArtifact@2
+    displayName: "Download artifact previously saved"
+    inputs:
+      buildType: "current"
+      artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
+      targetPath: "$(System.DefaultWorkingDirectory)"
+
+  - task: UsePythonVersion@0
+    displayName: "Install Python"
+    inputs:
+      versionSpec: "3.7"
+      architecture: "x64"
+      addToPath: true
+
+  - script: python  ./tools/plugin_packager.py
+    displayName: "Install Qt5 and PyQt5 dependencies"
+
+  - task: PublishPipelineArtifact@1
+    displayName: "Publish artifact: Qt stuff compiled"
+    inputs:
+      path: $(System.DefaultWorkingDirectory)/build/dist/*.zip
+      artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+
 # UNIT TESTS
 # - job: "Test"
 #   dependsOn: "Lint"
