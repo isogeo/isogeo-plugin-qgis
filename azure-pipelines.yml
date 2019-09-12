@@ -151,11 +151,11 @@ jobs:
       architecture: "x64"
       addToPath: true
 
-  - script: python  ./tools/plugin_packager.py
-    displayName: "Install Qt5 and PyQt5 dependencies"
+  - script: python ./tools/plugin_packager.py
+    displayName: "Packager script"
 
   - task: PublishPipelineArtifact@1
-    displayName: "Publish artifact: Qt stuff compiled"
+    displayName: "Publish artifact: plugin packaged"
     inputs:
       path: $(System.DefaultWorkingDirectory)/build/dist/*.zip
       artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
