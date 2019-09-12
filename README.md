@@ -2,6 +2,8 @@
 
 ![Isogeo plugin for QGIS - logo](https://github.com/isogeo/isogeo-plugin-qgis/blob/master/img/logo_complet_IsoQGIS.png?raw=true)
 
+[![Build Status](https://dev.azure.com/isogeo/Plugin%20QGIS/_apis/build/status/isogeo.isogeo-plugin-qgis?branchName=master)](https://dev.azure.com/isogeo/Plugin%20QGIS/_build/latest?definitionId=13&branchName=master)
+
 QGIS plugin for [Isogeo](https://www.isogeo.com/), a SaaS software to give an easier access to geodata.
 Equivalent of [plugins for ArcGIS](https://www.isogeo.com/nos-produits/Plugins-Widgets).
 
