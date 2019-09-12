@@ -51,7 +51,7 @@ class CacheManager():
                             "services" : list(set(self.cached_unreach_srv))}
         with open(self.cache_file, 'w') as cache:
             json.dump([self.cached_dict], cache, indent=4)
-        logger.debug("Paths cache has been dumped")
+        logger.debug("Cache has been dumped")
 
     def loader(self):
         """Load and store ignored elements from the JSON cache file.
@@ -74,7 +74,7 @@ class CacheManager():
         except ValueError as e:
             logger.error("Path JSON corrupted")
         except IOError:
-        	logger.debug("Paths cache file not found. Maybe because of first launch.")
+        	logger.debug("Cache file not found. Maybe because of first launch.")
         	self.dumper()
 
     def cleaner(self):
@@ -83,9 +83,9 @@ class CacheManager():
         self.cached_unreach_postgis = []
         self.cached_unreach_srv = []
         self.dumper()
-        msgBar.pushMessage("Cache has been cleaned.",
+        msgBar.pushMessage(self.tr("Cache has been cleaned.", "CacheManager"),
             duration=3)
-        logger.debug("Cache has been cleaned")
+        logger.debug(self.tr("Cache has been cleaned", "CacheManager"))
 
 # #############################################################################
 # ##### Stand alone program ########

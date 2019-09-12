@@ -25,7 +25,6 @@ class MetadataSynchronizer():
 
     def __init__(self):
         """Class constructor."""
-        self.tr = None
 
     def basic_sync(self, layer, info):
         logger.debug("Filling {} layer's properties from : {}".format(

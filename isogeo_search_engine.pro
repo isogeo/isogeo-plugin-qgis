@@ -7,11 +7,15 @@ FORMS = ui/isogeo_dockwidget_base.ui \
 
 SOURCES = __init__.py \
 	isogeo.py \
-    modules\api.py \
-    modules\metadata_display.py \
-    modules\results.py \
-    modules\tools.py \
-    modules\url_builder.py \
+    modules/api/auth.py \
+    modules/api/request.py \
+    modules/api/shares.py \
+    modules/layer/add_layer.py \
+    modules/quick_search.py \
+    modules/results/cache.py \
+    modules/results/display.py \
+    modules/search_form.py \
+    modules/tools.py \
 	ui/isogeo_dockwidget.py \
 	ui/auth/ui_authentication.py \
     ui/credits/ui_credits.py \
