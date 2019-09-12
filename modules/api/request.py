@@ -151,10 +151,10 @@ class ApiRequester(QgsNetworkAccessManager):
         if request_type == "token":
             data = QByteArray()
             data.append(urlencode({"grant_type": "client_credentials"}))
-            reply = self.post(request, data)
+            self.post(request, data)
         # get request for other
         else:
-            reply = self.get(request)
+            self.get(request)
         return
 
     def handle_reply(self, reply: QNetworkReply):
@@ -295,7 +295,7 @@ class ApiRequester(QgsNetworkAccessManager):
                 self.iface.mainWindow(),
                 self.tr("Error"),
                 self.tr("You are facing an unknown error. " "Code: ")
-                + str(answer.error())
+                + str(reply.error())
                 + "\nPlease report it on the bug tracker.",
             )
         return
