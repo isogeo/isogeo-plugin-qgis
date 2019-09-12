@@ -258,7 +258,7 @@ class IsogeoPlgTools(IsogeoUtils):
                 logger.error("WMS layer failed: {}".format(wms_lyr.error().message()))
 
             # WFS
-            uri = QgsDataSourceURI()
+            uri = QgsDataSourceUri()
             uri.setParam("url", "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?")
             uri.setParam("service", "WFS")
             uri.setParam("version", "1.1.0")
