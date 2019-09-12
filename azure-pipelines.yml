@@ -63,6 +63,11 @@ jobs:
       flake8 ./ui --count --exit-zero --max-complexity=10 --max-line-length=100
     displayName: 'Static code analisis: PEP8 conformance, imports... (flake8)'
 
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish artifact: soucre code formatted and linted'
+    inputs:
+      path: $(System.DefaultWorkingDirectory)
+      artifact: '$(Agent.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
 
 # UNIT TESTS
 # - job: 'Test'
