@@ -163,7 +163,7 @@ class LayerAdder:
         layer_name = re.sub("\{.*?}", "", layer_id)
         # handling WFS namespaces
         if "{" in layer_id:
-            namespace = layer_id[layer_id.find("{") + 1 : layer_id.find("}")]
+            namespace = layer_id[layer_id.find("{") + 1:layer_id.find("}")]
             logging.debug("WFS - Namespace: " + namespace)
         else:
             namespace = ""
