@@ -54,13 +54,9 @@ jobs:
       # stop the build if there are Python syntax errors or undefined names
       flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
       flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
-      flake8 ./tools --count --select=E9,F63,F7,F82 --show-source --statistics
-      flake8 ./ui --count --select=E9,F63,F7,F82 --show-source --statistics
       # exit-zero treats all errors as warnings. Tolerance of line length fixed to 100.
       flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
       flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
-      flake8 ./tools --count --exit-zero --max-complexity=10 --max-line-length=100
-      flake8 ./ui --count --exit-zero --max-complexity=10 --max-line-length=100
     displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
 
   - task: PublishPipelineArtifact@1
@@ -124,6 +120,41 @@ jobs:
     inputs:
       path: $(System.DefaultWorkingDirectory)
       artifact: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
+
+# UI COMPILATION
+- job: "Packaging"  # only letters and numbers (no space...)
+  displayName: "Packaging the plugin"  # can't contain special characters
+  dependsOn: "BuildUi"
+  pool:
+    vmImage: "windows-2019"
+
+  steps:
+
+  # no need for source code
+  - checkout: none
+
+  - task: DownloadPipelineArtifact@2
+    displayName: "Download artifact previously saved"
+    inputs:
+      buildType: "current"
+      artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
+      targetPath: "$(System.DefaultWorkingDirectory)"
+
+  - task: UsePythonVersion@0
+    displayName: "Install Python"
+    inputs:
+      versionSpec: "3.7"
+      architecture: "x64"
+      addToPath: true
+
+  - script: python ./tools/plugin_packager.py
+    displayName: "Packager script"
+
+  - task: PublishPipelineArtifact@1
+    displayName: "Publish artifact: plugin packaged"
+    inputs:
+      path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
+      artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
 # UNIT TESTS
 # - job: "Test"
