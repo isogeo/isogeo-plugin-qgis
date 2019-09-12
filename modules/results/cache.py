@@ -23,7 +23,7 @@ msgBar = iface.messageBar()
 
 
 class CacheManager:
-    """Basic class to manage the cache system of the layer addition. 
+    """Basic class to manage the cache system of the layer addition.
     """
 
     def __init__(self):
@@ -38,7 +38,7 @@ class CacheManager:
         self.tr = object
 
     def dumper(self):
-        """Builds a dict from the stored inaccessible elements 
+        """Builds a dict from the stored inaccessible elements
         and dumps it into the JSON cache file.
 
         :returns: the dict dumped in the JSON file

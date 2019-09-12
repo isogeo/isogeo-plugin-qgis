@@ -49,9 +49,9 @@ class Authenticator:
     """Basic class to manage user authentication to Isogeo's API :
         - Getting credentials from oAuth2 file or QGIS Settings
         - Storing credentials
-        - Displaying authentication form 
+        - Displaying authentication form
 
-    :param str auth_folder: the path to the plugin/_auth subfolder 
+    :param str auth_folder: the path to the plugin/_auth subfolder
     where oAuth2 file is stored.
     """
 
@@ -89,13 +89,13 @@ class Authenticator:
     # MANAGER -----------------------------------------------------------------
     def manage_api_initialization(self):
         """Perform several operations to use Isogeo API:
-        
+
         1. check if existing credentials are stored into QGIS or a file
         2. gettings credentials from there storage location (QGIS settings or file)
         3. display auth form if no credentials are found
-
-        :returns: True and a dictionnary containing api parameters nessary for the 
-        instanciation of the ApiRequester class if credentials are found. False and 
+        
+        :returns: True and a dictionnary containing api parameters nessary for the
+        instanciation of the ApiRequester class if credentials are found. False and
         None if no credentials are found.
 
         :rtype: bool, dict
@@ -156,10 +156,10 @@ class Authenticator:
         return False
 
     def credentials_check_file(self):
-        """Retrieve Isogeo API credentials from a file stored inside the 
+        """Retrieve Isogeo API credentials from a file stored inside the
         plugin/_auth subfolder.
 
-        return: True if credentials can be retrieved from oAuth2 file. 
+        return: True if credentials can be retrieved from oAuth2 file.
         False if the file doesn't exists or if credentials can't be retrieved.
 
         :rtype: bool
@@ -184,7 +184,7 @@ class Authenticator:
     # CREDENTIALS SAVER -------------------------------------------------------
     def credentials_storer(self, store_location: str = "QSettings"):
         """Store class attributes (API parameters) into the specified store_location.
-        
+
         :param str store_location: name of targetted store location. Options:
             - QSettings
         """
@@ -203,7 +203,7 @@ class Authenticator:
 
     def credentials_update(self, credentials_source: str = "QSettings"):
         """Update class attributes (API parameters) from specified credentials source.
-        
+
         :param str credentials_source: name of targetted credentials source. Options:
             - QSettings
             - oAuth2_file
@@ -319,7 +319,7 @@ class Authenticator:
 
             logger.debug("Selected credentials file has been moved into plugin"
                      "_auth subfolder")
-        except Exception as e:
+        except Exception as:
             logger.debug("OAuth2 file issue : check path validity.")       
 
     # REQUEST and RESULTS ----------------------------------------------------

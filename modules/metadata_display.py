@@ -76,7 +76,7 @@ class MetadataDisplayer:
 
     def show_complete_md(self, md: dict, tags: dict):
         """Open the pop up window that shows the metadata sheet details.
-        
+
         :param md dict: Isogeo metadata dict
         """
         logger.info("Displaying the whole metadata sheet.")

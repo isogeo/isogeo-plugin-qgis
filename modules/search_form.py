@@ -238,7 +238,7 @@ class SearchFormManager(IsogeoDockWidget):
         :param dict params: parameters saved in _user/quicksearches.json in case
         of quicksearch. Otherwise  : parameters selected by the user retrieved at 
         the beginning of the Isogeo.search_slot method.
-        :param str quicksearch: empty string if no quicksearch performed. 
+        :param str quicksearch: empty string if no quicksearch performed.
         Otherwise:the name of the quicksearch performed.
         """
         logger.debug(
@@ -365,10 +365,10 @@ class SearchFormManager(IsogeoDockWidget):
         (cleared and filled again). The dict is also used to build search requests 
         URL.
         
-        :returns: a dictionary whose keys correspond to the names of the different 
-        user input and values correspond to the user's sélection in  each of these 
+        :returns: a dictionary whose keys correspond to the names of the different
+        user input and values correspond to the user's sélection in  each of these
         inputs (None if nothing selected).
-        
+
         :rtype: dict
         """
         params = {}
@@ -427,7 +427,7 @@ class SearchFormManager(IsogeoDockWidget):
         :param str filter: the name of the element wich we want to get extent's 
         coordinates.
 
-        :returns: the x and y coordinates of the canvas' Southwestern and 
+        :returns: the x and y coordinates of the canvas' Southwestern and
         Northeastern vertexes.
 
         :rtype: str

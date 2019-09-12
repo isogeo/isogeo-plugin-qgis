@@ -158,18 +158,18 @@ class ApiRequester(QgsNetworkAccessManager):
         return
 
     def handle_reply(self, reply: QNetworkReply):
-        """Slot to QNetworkAccesManager.finished signal who handles the API's response to any type 
+        """Slot to QNetworkAccesManager.finished signal who handles the API's response to any type
         of request : 'token', 'search', 'shares' or 'details'.
 
-        The request's type is identicated from the url of the request from which the answer comes. 
+        The request's type is identicated from the url of the request from which the answer comes.
         Depending on the reply's content validity and the request's type, an appropriated signal 
         is emitted with different data's value.
 
-        - For token requests : the token_sig signal is emitted wathever the replys's content but the emitted 
-        str's value depend on this content. A single slot is connected to this signal and acts 
+        - For token requests : the token_sig signal is emitted wathever the replys's content but the 
+        emitted str's value depend on this content. A single slot is connected to this signal and acts
         according to value of the string recieved (see isogeo.py : Isogeo.token_slot).
-        - For other requests : for each type of request there is a corresponding signal but the reply's 
-        parsed content is emitted wathever the request's type. Each signal is connected to an appropriate 
+        - For other requests : for each type of request there is a corresponding signal but the reply's
+        parsed content is emitted wathever the request's type. Each signal is connected to an appropriate
         slot (see isogeo.py).
 
         :param QNetworkReply reply: Isogeo API response
