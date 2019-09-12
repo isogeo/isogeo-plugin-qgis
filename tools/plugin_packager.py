@@ -9,9 +9,9 @@
 
         1. Launch OSGeo4W Shell inside th Isogeo QGIS Plugin repository
         2. Run:
-            ```bash
+            
             python tools\plugin_packager.py
-            ```
+            
 
     See: https://docs.qgis.org/testing/en/docs/pyqgis_developer_cookbook/releasing.html
 
@@ -27,7 +27,7 @@
 
 # Standard library
 from configparser import ConfigParser
-from os import listdir, makedirs, path, remove, walk
+from os import listdir, path
 import json
 import xml.etree.ElementTree as ET
 import zipfile
@@ -49,6 +49,7 @@ PLG_DIRNAME = "isogeo_search_engine"
 PLG_METADATA_FILE = DIR_PLUGIN_ROOT.resolve() / "metadata.txt"
 PLG_FINAL_ZIP_PATH = str(DIR_OUTPUT / PLG_DIRNAME) + ".zip"
 
+
 # #############################################################################
 # ########## Functions##############
 # ##################################
@@ -67,7 +68,7 @@ def fix_ui_files(ui_folder: Path = "./ui"):
                     # AUTO REMOVE ##
                     root.remove(rsrc)
                     ui_xml.write(
-                        path.join(dirpath, f),
+                        ui_file.resolve(),
                         encoding="utf-8",
                         xml_declaration='version="1.0"',
                         method="xml",
@@ -80,7 +81,7 @@ def fix_ui_files(ui_folder: Path = "./ui"):
                 if header.text != "qgis.gui":
                     header.text = header.text.replace(header.text, "qgis.gui")
                     ui_xml.write(
-                        path.join(dirpath, f),
+                        ui_file.resolve(),
                         encoding="utf-8",
                         xml_declaration='version="1.0"',
                         method="xml",
@@ -129,9 +130,11 @@ print(
 # ensure UI files are good
 fix_ui_files()
 
-# ------------ Led Zipping -------------------------------------------
+# -- LED ZIPPING ----------------------------------------------------------
 RELEASE_ZIP = zipfile.ZipFile(PLG_FINAL_ZIP_PATH, "w")
 
+
+# -- EMPTIES FOLDERS -------------------------------------------------------
 # AUTH folder
 auth_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_auth/"))
 RELEASE_ZIP.writestr(auth_folder, "")
@@ -139,7 +142,6 @@ RELEASE_ZIP.writestr(auth_folder, "")
 # LOG folder
 log_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_logs/"))
 RELEASE_ZIP.writestr(log_folder, "")
-
 
 # USER folder
 user_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_user/"))
@@ -207,7 +209,8 @@ RELEASE_ZIP.write(
     path.join(BASE_DIR_ABS, "icon.png"), "{}/{}".format(PLG_DIRNAME, "icon.png")
 )
 RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "resources_rc.py"), "{}/{}".format(PLG_DIRNAME, "resources_rc.py")
+    path.join(BASE_DIR_ABS, "resources_rc.py"),
+    "{}/{}".format(PLG_DIRNAME, "resources_rc.py"),
 )
 RELEASE_ZIP.write(
     path.join(BASE_DIR_ABS, "resources.qrc"),
