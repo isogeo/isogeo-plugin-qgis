@@ -435,7 +435,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
         :param str in_string: string (str or unicode) to convert to raw
         """
-        if isinstance(in_string, str) or isinstance(in_string, unicode):
+        if isinstance(in_string, str) or isinstance(in_string, bytes)::
             logger.debug(in_string)
             return in_string.encode("unicode-escape")
         else:
