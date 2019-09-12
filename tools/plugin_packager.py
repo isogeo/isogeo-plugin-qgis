@@ -171,6 +171,17 @@ for module_file in list(modules_path.glob("**/*.py")):
     module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
     RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
 
+# UI files
+ui_path = Path("./ui")
+for module_file in list(ui_path.glob("**/*.py")):
+    if module_file.name.startswith("ui_"):
+        continue
+    module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
+    RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
+for module_file in list(ui_path.glob("**/*.ui")):
+    module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
+    RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
+
 # Translations
 i18n_path = Path("./i18n")
 for module_file in list(i18n_path.glob("**/*.qm")):
@@ -202,108 +213,6 @@ RELEASE_ZIP.write(
 RELEASE_ZIP.write(
     path.join(BASE_DIR_ABS, "resources.qrc"),
     "{}/{}".format(PLG_DIRNAME, "resources.qrc"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "__init__.py"),
-    "{}/{}/{}".format(PLG_DIRNAME, "ui", "__init__.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "isogeo_dockwidget_base.ui"),
-    "{}/{}/{}".format(PLG_DIRNAME, "ui", "isogeo_dockwidget_base.ui"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "isogeo_dockwidget.py"),
-    "{}/{}/{}".format(PLG_DIRNAME, "ui", "isogeo_dockwidget.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "ui_isogeo.py"),
-    "{}/{}/{}".format(PLG_DIRNAME, "ui", "ui_isogeo.py"),
-)
-
-# UI - Auth
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "auth", "__init__.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "auth", "__init__.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "auth", "ui_authentication.ui"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "auth", "ui_authentication.ui"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "auth", "ui_authentication.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "auth", "ui_authentication.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "auth", "dlg_authentication.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "auth", "dlg_authentication.py"),
-)
-
-# UI - Credits
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "credits", "__init__.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "credits", "__init__.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "credits", "ui_credits.ui"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "credits", "ui_credits.ui"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "credits", "ui_credits.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "credits", "ui_credits.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "credits", "dlg_credits.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "credits", "dlg_credits.py"),
-)
-
-# UI - MdDetails
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "metadata", "__init__.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "metadata", "__init__.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "metadata", "ui_md_details.ui"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "metadata", "ui_md_details.ui"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "metadata", "ui_md_details.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "metadata", "ui_md_details.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "metadata", "dlg_md_details.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "metadata", "dlg_md_details.py"),
-)
-
-# UI - Quicksearch - name
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "quicksearch", "__init__.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "__init__.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "quicksearch", "ui_quicksearch_new.ui"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "ui_quicksearch_new.ui"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "quicksearch", "ui_quicksearch_new.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "ui_quicksearch_new.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "quicksearch", "dlg_quicksearch_new.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "dlg_quicksearch_new.py"),
-)
-
-# UI - Quicksearch - rename
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "quicksearch", "ui_quicksearch_rename.ui"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "ui_quicksearch_rename.ui"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "quicksearch", "ui_quicksearch_rename.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "ui_quicksearch_rename.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "ui", "quicksearch", "dlg_quicksearch_rename.py"),
-    "{}/{}/{}/{}".format(PLG_DIRNAME, "ui", "quicksearch", "dlg_quicksearch_rename.py"),
 )
 
 # -- User settings ----------------------------------------------------------
