@@ -24,23 +24,23 @@ pr:
 jobs:
 
 # LINT AND FORMATTING CODE
-- job: 'Lint'
-  displayName: 'Lint and format Python source code'
+- job: "Lint"
+  displayName: "Lint and format Python source code"
   pool:
     vmImage: "vs2017-win2016"
 
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Install Python'
+    displayName: "Install Python"
     inputs:
-      versionSpec: '3.7'
-      architecture: 'x64'
+      versionSpec: "3.7"
+      architecture: "x64"
       addToPath: true
 
   - script: |
       python -m pip install -U pip
       python -m pip install -U black flake8
-    displayName: 'Install black and flake8'
+    displayName: "Install black and flake8"
 
   - script: |
       python -m black --target-version=py37 .\isogeo.py
@@ -48,7 +48,7 @@ jobs:
       python -m black --target-version=py37 .\tools
       python -m black --target-version=py37 .\tests
       python -m black --target-version=py37 .\ui
-    displayName: 'Apply black code formatting'
+    displayName: "Apply black code formatting"
 
   - script: |
       # stop the build if there are Python syntax errors or undefined names
@@ -61,14 +61,75 @@ jobs:
       flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
       flake8 ./tools --count --exit-zero --max-complexity=10 --max-line-length=100
       flake8 ./ui --count --exit-zero --max-complexity=10 --max-line-length=100
-    displayName: 'Static code analisis: PEP8 conformance, imports... (flake8)'
+    displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
 
+  - task: PublishPipelineArtifact@1
+    displayName: "Publish artifact: source code formatted and linted"
+    inputs:
+      path: $(System.DefaultWorkingDirectory)
+      artifact: "LINTED_$(Build.SourceBranchName)_$(Build.BuildId)"
+
+# UI COMPILATION
+- job: "BuildUi"  # only letters and numbers (no space...)
+  displayName: "Qt - compilation and internationalization"  # can't contain special characters
+  dependsOn: "Lint"
+  pool:
+    vmImage: "windows-2019"
+
+  steps:
+
+  # no need for source code
+  - checkout: none
+
+  - task: DownloadPipelineArtifact@2
+    displayName: "Download artifact previously saved"
+    inputs:
+      buildType: "current"
+      artifactName: "LINTED_$(Build.SourceBranchName)_$(Build.BuildId)"
+      targetPath: "$(System.DefaultWorkingDirectory)"
+
+  - task: UsePythonVersion@0
+    displayName: "Install Python"
+    inputs:
+      versionSpec: "3.7"
+      architecture: "x64"
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip
+      python -m pip install -U pyqt5-tools==5.13.*
+    displayName: "Install Qt5 and PyQt5 dependencies"
+
+  - script: |
+      pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
+      lrelease .\i18n\isogeo_search_engine_en.ts
+      lrelease .\i18n\isogeo_search_engine_fr.ts
+    displayName: "Qt: processing translations (i18n)"
+
+  - script: |
+      pyrcc5 resources.qrc -o resources_rc.py
+    displayName: "Qt: processing resources compilation"
+
+  - script: |
+      pyuic5 -x "ui\isogeo_dockwidget_base.ui" -o "ui\ui_isogeo.py"
+      pyuic5 -x "ui\auth\ui_authentication.ui" -o "ui\auth\ui_authentication.py"
+      pyuic5 -x "ui\credits\ui_credits.ui" -o "ui\credits\ui_credits.py"
+      pyuic5 -x "ui\metadata\ui_md_details.ui" -o "ui\metadata\ui_md_details.py"
+      pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicksearch_rename.py"
+      pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
+    displayName: "Qt: processing UI files compilation"
+
+  - task: PublishPipelineArtifact@1
+    displayName: "Publish artifact: Qt stuff compiled"
+    inputs:
+      path: $(System.DefaultWorkingDirectory)
+      artifact: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
 # UNIT TESTS
-# - job: 'Test'
-#   dependsOn: 'Lint'
+# - job: "Test"
+#   dependsOn: "Lint"
 #   pool:
-#     vmImage: 'ubuntu-16.04'
+#     vmImage: "ubuntu-16.04"
 
 #   container:
 #     image: qgis/qgis:release-3_4
@@ -77,4 +138,4 @@ jobs:
 #   steps:
 #   - script: sh -c "qgis_setup.sh ${PLUGIN_NAME}"
 
-#   displayName: 'Install plugin'
+#   displayName: "Install plugin"

@@ -195,7 +195,7 @@ RELEASE_ZIP.write(
     path.join(BASE_DIR_ABS, "icon.png"), "{}/{}".format(PLG_DIRNAME, "icon.png")
 )
 RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "resources.py"), "{}/{}".format(PLG_DIRNAME, "resources.py")
+    path.join(BASE_DIR_ABS, "resources_rc.py"), "{}/{}".format(PLG_DIRNAME, "resources_rc.py")
 )
 RELEASE_ZIP.write(
     path.join(BASE_DIR_ABS, "resources.qrc"),
