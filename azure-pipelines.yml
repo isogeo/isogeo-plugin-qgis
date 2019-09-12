@@ -157,7 +157,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     displayName: "Publish artifact: plugin packaged"
     inputs:
-      path: $(System.DefaultWorkingDirectory)/build/*.zip
+      path: $(System.DefaultWorkingDirectory)/build/latest/*.zip
       artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
 # UNIT TESTS
