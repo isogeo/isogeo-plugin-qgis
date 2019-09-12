@@ -64,10 +64,57 @@ jobs:
     displayName: 'Static code analisis: PEP8 conformance, imports... (flake8)'
 
   - task: PublishPipelineArtifact@1
-    displayName: 'Publish artifact: soucre code formatted and linted'
+    displayName: 'Publish artifact: source code formatted and linted'
     inputs:
       path: $(System.DefaultWorkingDirectory)
-      artifact: '$(Agent.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
+      artifact: '$(System.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
+
+# UI COMPILATION
+- job: 'BuildUi'
+  displayName: "Qt: compilation and internationalization"
+  dependsOn: 'Lint'
+  pool:
+    vmImage: "windows-2019"
+
+  steps:
+
+  # no need for source code
+  - checkout: none
+
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download artifact previously saved'
+    inputs:
+      buildType: 'current'
+      artifactName: '$(System.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
+      targetPath: '$(System.DefaultWorkingDirectory)'
+
+  - task: UsePythonVersion@0
+    displayName: 'Install Python'
+    inputs:
+      versionSpec: '3.7'
+      architecture: 'x64'
+      addToPath: true
+
+  - script: |
+      python -m pip install -U pip
+      python -m pip install -U pyqt5-tools==5.13.*
+    displayName: 'Install Qt5 and PyQt5 dependencies'
+
+  - script: |
+      pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
+      lrelease .\i18n\isogeo_search_engine_en.ts
+      lrelease .\i18n\isogeo_search_engine_fr.ts
+    displayName: 'Qt: processing translations (i18n)'
+
+  - script: |
+      pyrcc5 resources.qrc -o resources_rc.py
+    displayName: 'Qt: processing resources compilation'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish artifact: Qt stuff compiled'
+    inputs:
+      path: $(System.DefaultWorkingDirectory)
+      artifact: '$(System.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
 
 # UNIT TESTS
 # - job: 'Test'
