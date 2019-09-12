@@ -10,7 +10,7 @@ pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicks
 pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
 
 Echo "Updating Qt resources files (images)"
-pyrcc5 -o resources.py resources.qrc
+pyrcc5 resources.qrc -o resources_rc.py
 
 Echo "Packaging plugin"
 python tools\plugin_packager.py
