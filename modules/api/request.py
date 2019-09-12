@@ -86,7 +86,7 @@ class ApiRequester(QgsNetworkAccessManager):
     def create_request(self, request_type: str):
         """Creates a QNetworkRequest() with appropriate headers and URL
         according to the 'request_type' parameter.
-        
+
         :param str request_type: type of request to create. Options:
             - 'token'
             - 'search'
@@ -134,7 +134,7 @@ class ApiRequester(QgsNetworkAccessManager):
     def send_request(self, request_type: str = "search"):
         """ Sends a request to the Isogeo's API using QNetworkRequestManager.
         That's the handle_reply method which get the API's response. See below.
-        
+
         :param str request_type: type of request to send. Options:
             - 'token'
             - 'search'
@@ -162,10 +162,10 @@ class ApiRequester(QgsNetworkAccessManager):
         of request : 'token', 'search', 'shares' or 'details'.
 
         The request's type is identicated from the url of the request from which the answer comes.
-        Depending on the reply's content validity and the request's type, an appropriated signal 
+        Depending on the reply's content validity and the request's type, an appropriated signal
         is emitted with different data's value.
 
-        - For token requests : the token_sig signal is emitted wathever the replys's content but the 
+        - For token requests : the token_sig signal is emitted wathever the replys's content but the
         emitted str's value depend on this content. A single slot is connected to this signal and acts
         according to value of the string recieved (see isogeo.py : Isogeo.token_slot).
         - For other requests : for each type of request there is a corresponding signal but the reply's
@@ -299,9 +299,9 @@ class ApiRequester(QgsNetworkAccessManager):
         return
 
     def build_request_url(self, params: dict):
-        """Builds the request url according to the user selection. These URLs 
+        """Builds the request url according to the user selection. These URLs
         are used by create_request.
-        
+
         :param dict params: a dictionnary provided by Isogeo().get_params
         method
 

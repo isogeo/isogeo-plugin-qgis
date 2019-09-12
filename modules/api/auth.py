@@ -93,7 +93,7 @@ class Authenticator:
         1. check if existing credentials are stored into QGIS or a file
         2. gettings credentials from there storage location (QGIS settings or file)
         3. display auth form if no credentials are found
-        
+
         :returns: True and a dictionnary containing api parameters nessary for the
         instanciation of the ApiRequester class if credentials are found. False and
         None if no credentials are found.

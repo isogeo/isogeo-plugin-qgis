@@ -417,7 +417,7 @@ class Isogeo:
 
         :param bool show: True if the 'show results', 'next page' or 'previous page'
         button was pressed
-        :param int page_change: -1 if 'previous page' button was pressed, 1 if 
+        :param int page_change: -1 if 'previous page' button was pressed, 1 if
         'next page' button was pressed, 0 otherwise
         """
         logger.debug(
