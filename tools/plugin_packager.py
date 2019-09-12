@@ -62,12 +62,12 @@ def fix_ui_files(ui_folder: Path = "./ui"):
     """
     ui_folder = Path(ui_folder)
     for ui_file in ui_folder.glob("**/*.ui"):
-        with ui_file.open("r") as ui_file:
-            ui_xml = ET.parse(ui_file)
+        with ui_file.open("r") as f:
+            ui_xml = ET.parse(f)
             root = ui_xml.getroot()
             for rsrc in root.iter("resources"):
                 if len(rsrc) > 0:
-                    print("WARNING - resources tag spotted in: {}".format(f))
+                    print("WARNING - resources tag spotted in: {}".format(ui_file))
                     # AUTO REMOVE ##
                     root.remove(rsrc)
                     ui_xml.write(
@@ -152,53 +152,44 @@ RELEASE_ZIP.writestr(user_folder, "")
 
 # -- QGIS PLUGIN REQUIRED FILES -------------------------------------------------------
 
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "LICENSE"), "{}/{}".format(PLG_DIRNAME, "LICENSE")
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "metadata.txt"), "{}/{}".format(PLG_DIRNAME, "metadata.txt")
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "README.md"), "{}/{}".format(PLG_DIRNAME, "README")
-)
+RELEASE_ZIP.write(Path(BASE_DIR_ABS, "LICENSE"), Path(PLG_DIRNAME, "LICENSE"))
+RELEASE_ZIP.write(Path(BASE_DIR_ABS, "metadata.txt"), Path(PLG_DIRNAME, "metadata.txt"))
+RELEASE_ZIP.write(Path(BASE_DIR_ABS, "README.md"), Path(PLG_DIRNAME, "README"))
 
 # -- PLUGIN PYTHON CODE ------------------------------------------------------------
 RELEASE_ZIP.write(Path(BASE_DIR_ABS, "__init__.py"), Path(PLG_DIRNAME, "__init__.py"))
-RELEASE_ZIP.write(
-    Path(BASE_DIR_ABS, "isogeo.py").resolve(), Path(PLG_DIRNAME, "isogeo.py").resolve()
-)
+RELEASE_ZIP.write(Path(BASE_DIR_ABS, "isogeo.py"), Path(PLG_DIRNAME, "isogeo.py"))
 
 # Python modules
 modules_path = Path("./modules")
-for module_file in list(modules_path.glob("**/*.py")):
-    module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
-    RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
+for file_src in list(modules_path.glob("**/*.py")):
+    file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
+    RELEASE_ZIP.write(file_src, file_dest_zip_path)
 
 # UI files
 ui_path = Path("./ui")
-for module_file in list(ui_path.glob("**/*.py")):
-    if module_file.name.startswith("ui_"):
+for file_src in list(ui_path.glob("**/*.py")):
+    if file_src.name.startswith("ui_"):
         continue
-    module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
-    RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
-for module_file in list(ui_path.glob("**/*.ui")):
-    module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
-    RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
+    file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
+    RELEASE_ZIP.write(file_src, file_dest_zip_path)
+
+for file_src in list(ui_path.glob("**/*.ui")):
+    file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
+    RELEASE_ZIP.write(file_src, file_dest_zip_path)
 
 # Translations
 i18n_path = Path("./i18n")
-for module_file in list(i18n_path.glob("**/*.qm")):
-    module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
-    RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
-
+for file_src in list(i18n_path.glob("**/*.qm")):
+    file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
+    RELEASE_ZIP.write(file_src, file_dest_zip_path)
 
 # Resources (media files)
 resources_path = Path("./resources")
 for resource_type in RESOURCES_TYPES:
-    for resource_file in list(resources_path.glob(resource_type)):
-        resource_file_zip_path = PLG_DIRNAME / resource_file.parent / resource_file.name
-        RELEASE_ZIP.write(resource_file.resolve(), resource_file_zip_path.resolve())
-
+    for file_src in list(resources_path.glob(resource_type)):
+        file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
+        RELEASE_ZIP.write(file_src, file_dest_zip_path)
 
 # UI - Base
 RELEASE_ZIP.write(Path(BASE_DIR_ABS, "icon.png"), Path(PLG_DIRNAME, "icon.png"))
