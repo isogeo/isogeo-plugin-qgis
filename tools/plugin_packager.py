@@ -162,12 +162,10 @@ RELEASE_ZIP.write(
     path.join(BASE_DIR_ABS, "README.md"), "{}/{}".format(PLG_DIRNAME, "README")
 )
 
-# Python base code
+# -- PLUGIN PYTHON CODE ------------------------------------------------------------
+RELEASE_ZIP.write(Path(BASE_DIR_ABS, "__init__.py"), Path(PLG_DIRNAME, "__init__.py"))
 RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "__init__.py"), "{}/{}".format(PLG_DIRNAME, "__init__.py")
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "isogeo.py"), "{}/{}".format(PLG_DIRNAME, "isogeo.py")
+    Path(BASE_DIR_ABS, "isogeo.py").resolve(), Path(PLG_DIRNAME, "isogeo.py").resolve()
 )
 
 # Python modules
