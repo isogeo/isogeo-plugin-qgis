@@ -319,7 +319,7 @@ class Authenticator:
 
             logger.debug("Selected credentials file has been moved into plugin"
                      "_auth subfolder")
-        except Exception as:
+        except Exception:
             logger.debug("OAuth2 file issue : check path validity.")       
 
     # REQUEST and RESULTS ----------------------------------------------------
