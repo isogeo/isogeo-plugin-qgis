@@ -54,13 +54,9 @@ jobs:
       # stop the build if there are Python syntax errors or undefined names
       flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
       flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
-      flake8 ./tools --count --select=E9,F63,F7,F82 --show-source --statistics
-      flake8 ./ui --count --select=E9,F63,F7,F82 --show-source --statistics
       # exit-zero treats all errors as warnings. Tolerance of line length fixed to 100.
       flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
       flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
-      flake8 ./tools --count --exit-zero --max-complexity=10 --max-line-length=100
-      flake8 ./ui --count --exit-zero --max-complexity=10 --max-line-length=100
     displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
 
   - task: PublishPipelineArtifact@1
