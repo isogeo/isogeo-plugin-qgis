@@ -201,16 +201,9 @@ for resource_type in RESOURCES_TYPES:
 
 
 # UI - Base
+RELEASE_ZIP.write(Path(BASE_DIR_ABS, "icon.png"), Path(PLG_DIRNAME, "icon.png"))
 RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "icon.png"), "{}/{}".format(PLG_DIRNAME, "icon.png")
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "resources_rc.py"),
-    "{}/{}".format(PLG_DIRNAME, "resources_rc.py"),
-)
-RELEASE_ZIP.write(
-    path.join(BASE_DIR_ABS, "resources.qrc"),
-    "{}/{}".format(PLG_DIRNAME, "resources.qrc"),
+    Path(BASE_DIR_ABS, "resources_rc.py"), Path(PLG_DIRNAME, "resources_rc.py")
 )
 
 # -- User settings ----------------------------------------------------------
