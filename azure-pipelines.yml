@@ -50,6 +50,11 @@ jobs:
       python -m black --target-version=py37 .\ui
     displayName: 'Apply black code formatting'
 
+  - script: |
+      # stop the build if there are Python syntax errors or undefined names
+      flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    displayName: 'Lint code (check PEP8 conformance with flake8'
+
 
 # UNIT TESTS
 # - job: 'Test'
