@@ -7,7 +7,7 @@ from functools import partial
 from collections import OrderedDict
 
 # PyQGIS
-from qgis.core import QgsMessageLog, QgsProject
+from qgis.core import QgsMessageLog, QgsProject, QgsCoordinateReferenceSystem, QgsPointXY, QgsCoordinateTransform
 from qgis.utils import iface
 
 # PyQT
