@@ -53,7 +53,9 @@ jobs:
   - script: |
       # stop the build if there are Python syntax errors or undefined names
       flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
-    displayName: 'Lint code (check PEP8 conformance with flake8'
+      # exit-zero treats all errors as warnings. Tolerance of line length fixed to 100.
+      flake8 .\isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
+    displayName: 'Static code analisis: PEP8 conformance, imports... (flake8)'
 
 
 # UNIT TESTS
