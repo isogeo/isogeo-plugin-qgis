@@ -71,7 +71,7 @@ jobs:
 
 # UI COMPILATION
 - job: 'BuildUi'
-  displayName: "Qt: compilation and internationalization"
+  displayName: "Qt - compilation and internationalization"
   dependsOn: 'Lint'
   pool:
     vmImage: "windows-2019"
