@@ -38,6 +38,9 @@ from pathlib import Path
 # ########## Globals ###############
 # ##################################
 
+# TYPES
+RESOURCES_TYPES = ("**/*.svg", "**/*.png")
+
 # Paths
 DIR_PLUGIN_ROOT = Path(__file__).parent.parent
 DIR_OUTPUT = DIR_PLUGIN_ROOT.resolve() / "build/latest"
@@ -134,7 +137,7 @@ fix_ui_files()
 RELEASE_ZIP = zipfile.ZipFile(PLG_FINAL_ZIP_PATH, "w")
 
 
-# -- EMPTIES FOLDERS -------------------------------------------------------
+# -- REQUIRED EMPTIES FOLDERS -------------------------------------------------------
 # AUTH folder
 auth_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_auth/"))
 RELEASE_ZIP.writestr(auth_folder, "")
@@ -147,7 +150,8 @@ RELEASE_ZIP.writestr(log_folder, "")
 user_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_user/"))
 RELEASE_ZIP.writestr(user_folder, "")
 
-# QGIS Plugin requirements
+# -- QGIS PLUGIN REQUIRED FILES -------------------------------------------------------
+
 RELEASE_ZIP.write(
     path.join(BASE_DIR_ABS, "LICENSE"), "{}/{}".format(PLG_DIRNAME, "LICENSE")
 )
@@ -191,17 +195,11 @@ for module_file in list(i18n_path.glob("**/*.qm")):
 
 
 # Resources (media files)
-RESOURCES_FILES = [
-    path.relpath(f)
-    for f in listdir("resources")
-    if path.isfile(path.join(path.realpath("resources"), f))
-]
-
-for resource in RESOURCES_FILES:
-    RELEASE_ZIP.write(
-        path.join(BASE_DIR_ABS, "resources", resource),
-        "{}/{}/{}".format(PLG_DIRNAME, "resources", resource),
-    )
+resources_path = Path("./resources")
+for resource_type in RESOURCES_TYPES:
+    for resource_file in list(resources_path.glob(resource_type)):
+        resource_file_zip_path = PLG_DIRNAME / resource_file.parent / resource_file.name
+        RELEASE_ZIP.write(resource_file.resolve(), resource_file_zip_path.resolve())
 
 
 # UI - Base
