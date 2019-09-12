@@ -3,7 +3,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 # Standard library
 import logging
-import json
 from functools import partial
 from pathlib import Path
 
@@ -16,12 +15,8 @@ from qgis.PyQt.QtWidgets import (
     QComboBox,
     QPushButton,
     QLabel,
-    QProgressBar,
     QHeaderView,
 )
-
-# PyQGIS
-from qgis.utils import iface
 
 # Plugin modules
 from .cache import CacheManager

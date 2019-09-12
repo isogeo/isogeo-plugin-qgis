@@ -9,7 +9,7 @@ from os import access, path, R_OK
 import subprocess
 from sys import platform as opersys
 from urllib.request import getproxies, unquote
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlencode
 import webbrowser
 
 # PyQGIS

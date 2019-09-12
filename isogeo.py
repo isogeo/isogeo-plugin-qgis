@@ -23,28 +23,21 @@ from __future__ import division, print_function, unicode_literals
 """
 
 # Standard library
-import requests
 import os
 from pathlib import Path
 import platform
-import json
-import base64
-from urllib.parse import urlencode
+
 import logging
 from logging.handlers import RotatingFileHandler
-from collections import OrderedDict
 from functools import partial
 
 # PyQT
 from qgis.PyQt.QtCore import (
-    QByteArray,
     QCoreApplication,
     QSettings,
     Qt,
     QTranslator,
     qVersion,
-    QSize,
-    pyqtSlot,
 )
 
 from qgis.PyQt.QtWidgets import QAction, QComboBox, QProgressBar
@@ -56,7 +49,6 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsMessageLog,
     QgsRectangle,
-    QgsVectorLayer,
     QgsApplication,
 )
 

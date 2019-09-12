@@ -2,12 +2,10 @@
 
 # Standard library
 import logging
-import json
-from functools import partial
 from collections import OrderedDict
 
 # PyQGIS
-from qgis.core import QgsMessageLog, QgsProject, QgsCoordinateReferenceSystem, QgsPointXY, QgsCoordinateTransform
+from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsPointXY, QgsCoordinateTransform
 from qgis.utils import iface
 
 # PyQT

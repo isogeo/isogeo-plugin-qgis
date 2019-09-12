@@ -4,7 +4,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 # Standard library
 import logging
 import json
-from functools import partial
 from pathlib import Path
 
 # PyQGIS
@@ -16,9 +15,6 @@ from qgis.PyQt.QtGui import QIcon
 # UI classes
 from ..ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
 from ..ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
-
-# Plugin modules
-from .api import ApiRequester
 
 # ############################################################################
 # ########## Globals ###############

@@ -3,11 +3,8 @@
 # Standard library
 import logging
 
-# PyQGIS
-from qgis.core import QgsNetworkAccessManager
-
 # PyQT
-from qgis.PyQt.QtCore import pyqtSignal, QThread, QObject, pyqtSlot
+from qgis.PyQt.QtCore import pyqtSignal, QObject, pyqtSlot
 
 # Plugin modules
 from ..tools import IsogeoPlgTools

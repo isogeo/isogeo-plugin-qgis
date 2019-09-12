@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # Standard library
-import json
 import logging
 from pathlib import Path
 import time
