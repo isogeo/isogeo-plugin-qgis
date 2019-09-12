@@ -20,15 +20,15 @@ from qgis.utils import iface
 from qgis.PyQt.QtCore import QSettings, QUrl
 from qgis.PyQt.QtWidgets import QMessageBox
 
+# 3rd party
+from .isogeo_pysdk import IsogeoUtils
+
 # Depending on operating system
 if opersys == "win32":
     """ windows """
     from os import startfile  # to open a folder/file
 else:
     pass
-
-# 3rd party
-from .isogeo_pysdk import IsogeoUtils
 
 # ############################################################################
 # ########## Globals ###############
