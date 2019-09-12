@@ -838,7 +838,8 @@ class Isogeo:
         self.form_mng.btn_report.pressed.connect(
             partial(
                 plg_tools.open_webpage,
-                link="https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4".format(
+                link="https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={}"
+                " - plugin v{} QGIS {} ({})&labels=bug&milestone=4".format(
                     self.tr("TITLE ISSUE REPORTED"),
                     plg_tools.plugin_metadata(base_path=plg_basepath),
                     Qgis.QGIS_VERSION,
