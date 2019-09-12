@@ -165,12 +165,12 @@ class ApiRequester(QgsNetworkAccessManager):
         Depending on the reply's content validity and the request's type, an appropriated signal
         is emitted with different data's value.
 
-        - For token requests : the token_sig signal is emitted wathever the replys's content but the
-        emitted str's value depend on this content. A single slot is connected to this signal and acts
-        according to value of the string recieved (see isogeo.py : Isogeo.token_slot).
-        - For other requests : for each type of request there is a corresponding signal but the reply's
-        parsed content is emitted wathever the request's type. Each signal is connected to an appropriate
-        slot (see isogeo.py).
+        - For token requests : the token_sig signal is emitted wathever the replys's content but
+        the mitted str's value depend on this content. A single slot is connected to this signal
+        and acts according to value of the string recieved (see isogeo.py : Isogeo.token_slot).
+        - For other requests : for each type of request there is a corresponding signal but the
+        reply's parsed content is emitted wathever the request's type. Each signal is connected to
+        an appropriate slot (see isogeo.py).
 
         :param QNetworkReply reply: Isogeo API response
         """

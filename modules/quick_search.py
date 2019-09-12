@@ -33,7 +33,8 @@ ico_bolt = QIcon(":/plugins/Isogeo/resources/search/bolt.svg")
 
 class QuickSearchManager:
     """ A basic class to manage quick searches :
-        - Create a new quick search by giving it a name and writing its parameters in the JSON file (`_user/quicksearches.json`)
+        - Create a new quick search by giving it a name and writing its parameters in the JSON file
+        (`_user/quicksearches.json`)
         - Rename a quick search
         - Delete a quick search
     """

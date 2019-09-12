@@ -537,7 +537,8 @@ class Isogeo:
                     selected_keywords=params.get("keys"),
                 )
             else:
-                # Putting all the comboboxes selected index according to params found in the json file
+                # Putting all the comboboxes selected index
+                # according to params found in the json file
                 logger.debug("Quicksearch case: {}".format(self.savedSearch))
                 # Opening the json to get quick search's params
                 search_params = self.form_mng.qs_mng.load_file().get(self.savedSearch)
@@ -713,7 +714,8 @@ class Isogeo:
         self.api_requester.currentUrl = "{}/resources/{}{}".format(
             self.api_requester.api_url_base,
             md_id,
-            "?_include=conditions,contacts,coordinate-system,events,feature-attributes,limitations,keywords,specifications",
+            "?_include=conditions,contacts,coordinate-system,events,"
+            "feature-attributes,limitations,keywords,specifications",
         )
         self.api_requester.send_request("details")
 

@@ -74,9 +74,15 @@ class Authenticator:
     def __init__(self):
 
         # API URLs - Prod
-        self.platform, self.api_url, self.app_url, self.csw_url, self.mng_url, self.oc_url, self.ssl = plg_tools.set_base_url(
-            "prod"
-        )
+        (
+            self.platform,
+            self.api_url,
+            self.app_url,
+            self.csw_url,
+            self.mng_url,
+            self.oc_url,
+            self.ssl,
+        ) = plg_tools.set_base_url("prod")
 
         # credentials storage folder
         self.auth_folder = plugin_dir / "_auth"

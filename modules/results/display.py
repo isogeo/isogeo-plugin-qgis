@@ -250,9 +250,8 @@ class ResultsManager(QObject):
                         pass
                 else:
                     logger.debug(
-                        "Metadata {} has a format but it's not recognized or path is missing".format(
-                            md_id
-                        )
+                        "Metadata {} has a format but it's not recognized or path is"
+                        "missing".format(md_id)
                     )
                     pass
             # Associated service layers
