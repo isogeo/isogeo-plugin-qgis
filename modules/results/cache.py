@@ -72,7 +72,7 @@ class CacheManager:
                 self.cached_unreach_paths = cache_loaded
             return cache_loaded
 
-        except ValueError as e:
+        except ValueError:
             logger.error("Path JSON corrupted")
         except IOError:
             logger.debug("Cache file not found. Maybe because of first launch.")
