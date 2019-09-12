@@ -39,7 +39,7 @@ def ask_for_token(c_id, c_secret, request_status=True):
 def request_download(manager, target_url):
     url = QUrl(target_url)
     request = QNetworkRequest(url)
-    print "Download start time: {}".format(datetime.now())
+    print("Download start time: {}".format(datetime.now()))
     manager.get( request )
 
 def handle_download(reply):
