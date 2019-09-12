@@ -165,9 +165,9 @@ RELEASE_ZIP.write(
     path.join(BASE_DIR_ABS, "isogeo.py"), "{}/{}".format(PLG_DIRNAME, "isogeo.py")
 )
 
-# Modules
-modules_paths = Path("./modules")
-for module_file in list(modules_paths.glob("**/*.py")):
+# Python modules
+modules_path = Path("./modules")
+for module_file in list(modules_path.glob("**/*.py")):
     module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
     RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
 
