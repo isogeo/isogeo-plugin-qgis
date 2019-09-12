@@ -401,11 +401,15 @@ class MetadataDisplayer:
         self.complete_md.show()
         try:
             QgsMessageLog.logMessage(
-                "Detailed metadata displayed: {}".format(title), "Isogeo"
+                message = "Detailed metadata displayed: {}".format(title),
+                tag = "Isogeo",
+                level = 0
             )
         except UnicodeEncodeError:
             QgsMessageLog.logMessage(
-                "Detailed metadata displayed: {}".format(title), "Isogeo"
+                message = "Detailed metadata displayed: {}".format(title),
+                tag = "Isogeo",
+                level = 0
             )
 
     def envelope2layer(self, envelope):

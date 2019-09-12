@@ -8,7 +8,7 @@ import time
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings, QCoreApplication, QTranslator, qVersion
 from qgis.PyQt.QtWidgets import QMessageBox
 
 # Plugin modules
@@ -24,6 +24,22 @@ from ...ui.auth.dlg_authentication import IsogeoAuthentication
 logger = logging.getLogger("IsogeoQgisPlugin")
 qsettings = QSettings()
 plg_tools = IsogeoPlgTools()
+
+plugin_dir = Path(__file__).parents[2]
+
+locale = qsettings.value("locale/userLocale")[0:2]
+locale_path = plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
+
+if locale_path.exists():
+    translator = QTranslator()
+    translator.load(str(locale_path))
+
+    if qVersion() > "4.3.3":
+        QCoreApplication.installTranslator(translator)
+    else:
+        pass
+else:
+    pass
 
 # ############################################################################
 # ########## Classes ###############
@@ -56,21 +72,16 @@ class Authenticator:
     # plugin credentials storage parameters
     credentials_location = {"QSettings": 0, "oAuth2_file": 0}
 
-    def __init__(self, auth_folder: str = r"../_auth"):
-
+    def __init__(self):
+        
         # API URLs - Prod
         self.platform, self.api_url, self.app_url, self.csw_url, self.mng_url, self.oc_url, self.ssl = plg_tools.set_base_url(
             "prod"
         )
 
         # credentials storage folder
-        if isinstance(auth_folder, Path):
-            self.auth_folder = auth_folder
-            self.cred_filepath = self.auth_folder / "client_secrets.json"
-        elif auth_folder == None:
-            self.auth_folder = None
-        else:
-            raise ValueError("pathlib.Path expected")
+        self.auth_folder = plugin_dir/"_auth"
+        self.cred_filepath = self.auth_folder/"client_secrets.json"
 
         # translation
         self.tr = object
@@ -257,10 +268,8 @@ class Authenticator:
         self.ui_auth_form.ent_app_id.setText(self.api_params["app_id"])
         self.ui_auth_form.ent_app_secret.setText(self.api_params["app_secret"])
         self.ui_auth_form.lbl_api_url_value.setText(self.api_params["url_base"])
-        self.ui_auth_form.chb_isogeo_editor.setChecked(
-            qsettings.value("isogeo/user/editor", 0)
-        )
-
+        self.ui_auth_form.chb_isogeo_editor.setChecked(int(qsettings
+                                            .value("isogeo/user/editor", 0)))
         # display
         logger.debug("Authentication form filled and ready to be launched.")
         self.ui_auth_form.show()
@@ -300,23 +309,19 @@ class Authenticator:
             pass
         try:
             selected_file.rename(dest_path)
+            # set form
+            self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
+            self.ui_auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
+            self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
+            # update class attributes from file
+            self.credentials_update(credentials_source="oAuth2_file")
+            # store into QSettings if existing
+            self.credentials_storer(store_location="QSettings")
+
+            logger.debug("Selected credentials file has been moved into plugin"
+                     "_auth subfolder")
         except Exception as e:
-            logger.debug("OAuth2 file issue : check path validity.")
-
-        logger.debug(
-            "Selected credentials file has been moved into plugin" "_auth subfolder"
-        )
-
-        # set form
-        self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
-        self.ui_auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
-        self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
-
-        # update class attributes from file
-        self.credentials_update(credentials_source="oAuth2_file")
-
-        # store into QSettings if existing
-        self.credentials_storer(store_location="QSettings")
+            logger.debug("OAuth2 file issue : check path validity.")       
 
     # REQUEST and RESULTS ----------------------------------------------------
     def get_tags(self, tags: dict):

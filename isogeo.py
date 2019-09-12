@@ -223,7 +223,7 @@ class Isogeo:
         self.approps_mng = SharesParser()
         self.approps_mng.tr = self.tr
 
-        self.authenticator = Authenticator(auth_folder=plg_authdir)
+        self.authenticator = Authenticator()
 
         self.api_requester = ApiRequester()
         self.api_requester.tr = self.tr
@@ -495,7 +495,9 @@ class Isogeo:
         (passed by ApiRequester.handle_reply method)
         """
         QgsMessageLog.logMessage(
-            "Query sent & received: {}".format(result.get("query")), "Isogeo"
+            message = "Query sent & received: {}".format(result.get("query")), 
+            tag = "Isogeo",
+            level = 0
         )
         # Save entered text and filters in search form
         self.form_mng.old_text = self.form_mng.txt_input.text()
@@ -838,7 +840,7 @@ class Isogeo:
         self.form_mng.btn_report.pressed.connect(
             partial(
                 plg_tools.open_webpage,
-                link="https://github.com/isogeo/isogeo-plugin-qgis/issues/new?title={} - plugin v{} QGIS {} ({})&labels=bug&milestone=4".format(
+                link="https://github.com/isogeo/isogeo-plugin-qgis/issues/new?assignees=&labels=bug&template=bug_report.md&title={} - plugin v{} QGIS {} ({})&milestone=4".format(
                     self.tr("TITLE ISSUE REPORTED"),
                     plg_tools.plugin_metadata(base_path=plg_basepath),
                     Qgis.QGIS_VERSION,
@@ -850,7 +852,7 @@ class Isogeo:
         self.form_mng.btn_help.pressed.connect(
             partial(
                 plg_tools.open_webpage,
-                link="https://isogeo.gitbooks.io/app-plugin-qgis/content/",
+                link="http://help.isogeo.com/qgis/",
             )
         )
         # view credits - see: #52

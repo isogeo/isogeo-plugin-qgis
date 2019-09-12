@@ -196,8 +196,12 @@ class ApiRequester(QgsNetworkAccessManager):
             if "token" in url:
                 logger.debug("Handling reply to a 'token' request")
                 logger.debug("(from : {}).".format(url))
-                if "access_token" in parsed_content:
-                    QgsMessageLog.logMessage("Authentication succeeded", "Isogeo")
+                if 'access_token' in parsed_content:
+                    QgsMessageLog.logMessage(
+                        message = "Authentication succeeded", 
+                        tag = "Isogeo",
+                        level = 0
+                    )
                     logger.debug("Access token retrieved.")
                     # storing token
                     self.token = "Bearer " + parsed_content.get("access_token")
