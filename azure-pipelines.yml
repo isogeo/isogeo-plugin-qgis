@@ -173,20 +173,14 @@ jobs:
       artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
       targetPath: "$(System.DefaultWorkingDirectory)"
 
-  - task: GitHubRelease@1
+  - task: GitHubRelease@0
     inputs:
       gitHubConnection: 'github_isogeo'
-      repositoryName: 'isogeo/isogeo-plugin-qgis'
+      repositoryName: '$(Build.Repository.Name)'
       action: 'create'
-      assets: '$(System.DefaultWorkingDirectory)/*'
-      assetUploadMode: "replace"
       target: '$(Build.SourceVersion)'
-      tagSource: 'gitTag'
-      title: '$(Build.SourceVersion)'
-      changeLogCompareToRelease: 'lastFullRelease'
-      changeLogType: 'issueBased'
-
-
+      tagSource: 'auto'
+      compareWith: 'lastFullRelease'
 
 
 # UNIT TESTS
