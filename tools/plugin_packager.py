@@ -171,6 +171,13 @@ for module_file in list(modules_path.glob("**/*.py")):
     module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
     RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
 
+# Translations
+i18n_path = Path("./i18n")
+for module_file in list(i18n_path.glob("**/*.qm")):
+    module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
+    RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
+
+
 # Resources (media files)
 RESOURCES_FILES = [
     path.relpath(f)
@@ -184,11 +191,6 @@ for resource in RESOURCES_FILES:
         "{}/{}/{}".format(PLG_DIRNAME, "resources", resource),
     )
 
-# Translations
-i18n_path = Path("./i18n")
-for module_file in list(i18n_path.glob("**/*.qm")):
-    module_file_zip_path = PLG_DIRNAME / module_file.parent / module_file.name
-    RELEASE_ZIP.write(module_file.resolve(), module_file_zip_path.resolve())
 
 # UI - Base
 RELEASE_ZIP.write(
