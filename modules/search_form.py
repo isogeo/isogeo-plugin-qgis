@@ -2,12 +2,15 @@
 
 # Standard library
 import logging
-import json
-from functools import partial
 from collections import OrderedDict
 
 # PyQGIS
-from qgis.core import QgsMessageLog, QgsProject
+from qgis.core import (
+    QgsProject,
+    QgsCoordinateReferenceSystem,
+    QgsPointXY,
+    QgsCoordinateTransform,
+)
 from qgis.utils import iface
 
 # PyQT
@@ -60,7 +63,7 @@ class SearchFormManager(IsogeoDockWidget):
     It performs different tasks :
         - update widgets (clear, fill and set appropriate status)
         - fill the results table calling ResultsManager.show_results method
-        - save search parameters selected by the user, wich is useful for updating 
+        - save search parameters selected by the user, wich is useful for updating
         widgets or building search request's URL.
     Most of its methods are called by Isogeo.search_slot method which launched after
     the results of a search request has been parsed and validated.
@@ -211,7 +214,7 @@ class SearchFormManager(IsogeoDockWidget):
         """ Called by Isogeo.search_slot method. Clears quick searches comboboxes
         (also the one in settings tab) and fills them from 'items_list' parameter.
 
-        :param list items_list: a list of quick searche's names 
+        :param list items_list: a list of quick searche's names
         from _user/quicksearches.json file.
         """
         logger.debug("Filling quick searches comboboxes")
@@ -234,13 +237,13 @@ class SearchFormManager(IsogeoDockWidget):
         return
 
     def set_ccb_index(self, params: dict, quicksearch: str = ""):
-        """ Called by Isogeo.search_slot method. It sets the status of widgets 
-        according to the user's selection or the quick search performed. 
+        """ Called by Isogeo.search_slot method. It sets the status of widgets
+        according to the user's selection or the quick search performed.
 
         :param dict params: parameters saved in _user/quicksearches.json in case
-        of quicksearch. Otherwise  : parameters selected by the user retrieved at 
+        of quicksearch. Otherwise  : parameters selected by the user retrieved at
         the beginning of the Isogeo.search_slot method.
-        :param str quicksearch: empty string if no quicksearch performed. 
+        :param str quicksearch: empty string if no quicksearch performed.
         Otherwise:the name of the quicksearch performed.
         """
         logger.debug(
@@ -330,7 +333,7 @@ class SearchFormManager(IsogeoDockWidget):
             self.tab_search.setEnabled(False)
 
     def init_steps(self):
-        """ Called by Isogeo.search_slot method in case of reset or "_default" 
+        """ Called by Isogeo.search_slot method in case of reset or "_default"
         quicksearch. It initialise the widgets that don't need to be updated
         """
         self.tbl_result.horizontalHeader().setSectionResizeMode(1)
@@ -362,15 +365,15 @@ class SearchFormManager(IsogeoDockWidget):
     def save_params(self):
         """Save the widgets state/index.
 
-        This save the current state/index of each user input in a dict so we can 
+        This save the current state/index of each user input in a dict so we can
         put them back to their previous state/index after they have been updated
-        (cleared and filled again). The dict is also used to build search requests 
+        (cleared and filled again). The dict is also used to build search requests
         URL.
-        
-        :returns: a dictionary whose keys correspond to the names of the different 
-        user input and values correspond to the user's sélection in  each of these 
+
+        :returns: a dictionary whose keys correspond to the names of the different
+        user input and values correspond to the user's sélection in  each of these
         inputs (None if nothing selected).
-        
+
         :rtype: dict
         """
         params = {}
@@ -423,13 +426,13 @@ class SearchFormManager(IsogeoDockWidget):
         return params
 
     def get_coords(self, filter: str):
-        """Get the extent's coordinates of a layer or canvas in the right format 
+        """Get the extent's coordinates of a layer or canvas in the right format
         and SRS (WGS84).
-        
-        :param str filter: the name of the element wich we want to get extent's 
+
+        :param str filter: the name of the element wich we want to get extent's
         coordinates.
 
-        :returns: the x and y coordinates of the canvas' Southwestern and 
+        :returns: the x and y coordinates of the canvas' Southwestern and
         Northeastern vertexes.
 
         :rtype: str

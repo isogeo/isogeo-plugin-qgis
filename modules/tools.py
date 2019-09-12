@@ -9,7 +9,7 @@ from os import access, path, R_OK
 import subprocess
 from sys import platform as opersys
 from urllib.request import getproxies, unquote
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlencode
 import webbrowser
 
 # PyQGIS
@@ -20,15 +20,15 @@ from qgis.utils import iface
 from qgis.PyQt.QtCore import QSettings, QUrl
 from qgis.PyQt.QtWidgets import QMessageBox
 
+# 3rd party
+from .isogeo_pysdk import IsogeoUtils
+
 # Depending on operating system
 if opersys == "win32":
     """ windows """
     from os import startfile  # to open a folder/file
 else:
     pass
-
-# 3rd party
-from .isogeo_pysdk import IsogeoUtils
 
 # ############################################################################
 # ########## Globals ###############
@@ -71,7 +71,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def format_button_title(self, title):
         """Format the title to fit the button.
-        
+
         :param str title: title to format
         """
         words = title.split(" ")
@@ -108,7 +108,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def handle_date(self, input_date):
         """Create a date object with the string given as a date by the API.
-        
+
         :param str input_date: input date to format
         """
         if input_date != "NR":
@@ -124,7 +124,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def mail_to_isogeo(self, lang):
         """Open the credentials request online form in web browser.
-        
+
         :param str lang: language code. If not fr (French), the English form is displayed.
         """
         if lang == "fr":
@@ -140,7 +140,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def open_dir_file(self, target):
         """Open a file or a directory in the explorer of the operating system.
-        
+
         :param str target: path to the file or folder to open.
         """
         # check if the file or the directory exists
@@ -175,7 +175,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def open_webpage(self, link):
         """Open a link in the user's default web browser.
-        
+
         :param str link: URL to open. Can be a QUrl object.
         """
         if isinstance(link, QUrl):
@@ -190,7 +190,7 @@ class IsogeoPlgTools(IsogeoUtils):
         self, base_path=path.dirname(__file__), section="general", value="version"
     ):
         """Plugin metadata.txt parser.
-        
+
         :param path base_path: directory path whete the metadata txt is stored
         :param str section: section of values. Until nom, there is only "general".
         :param str value: value to get from the file. Available values:
@@ -214,7 +214,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def results_pages_counter(self, total=0, page_size=10):
         """Calculate the number of pages for a given number of results.
-        
+
         :param int total: count of metadata in a search request
         :param int page_size: count of metadata to display in each page
         """
@@ -230,9 +230,9 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def special_search(self, easter_code="isogeo"):
         """Make some special actions in certains cases.
-        
+
         :param str easter_code: easter egg label. Available values:
-          
+
           * isogeo: display Isogeo logo and zoom in our office location
           * picasa: change QGS project title
         """
@@ -258,7 +258,7 @@ class IsogeoPlgTools(IsogeoUtils):
                 logger.error("WMS layer failed: {}".format(wms_lyr.error().message()))
 
             # WFS
-            uri = QgsDataSourceURI()
+            uri = QgsDataSourceUri()
             uri.setParam("url", "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?")
             uri.setParam("service", "WFS")
             uri.setParam("version", "1.1.0")
@@ -435,7 +435,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
         :param str in_string: string (str or unicode) to convert to raw
         """
-        if isinstance(in_string, str) or isinstance(in_string, unicode):
+        if isinstance(in_string, str) or isinstance(in_string, bytes):
             logger.debug(in_string)
             return in_string.encode("unicode-escape")
         else:

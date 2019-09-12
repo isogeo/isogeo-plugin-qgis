@@ -3,11 +3,8 @@
 # Standard library
 import logging
 
-# PyQGIS
-from qgis.core import QgsNetworkAccessManager
-
 # PyQT
-from qgis.PyQt.QtCore import pyqtSignal, QThread, QObject, pyqtSlot
+from qgis.PyQt.QtCore import pyqtSignal, QObject, pyqtSlot
 
 # Plugin modules
 from ..tools import IsogeoPlgTools
@@ -24,7 +21,7 @@ plg_tools = IsogeoPlgTools()
 
 
 class SharesParser(QObject):
-    """Build the string informing the user about the shares feeding his plugin 
+    """Build the string informing the user about the shares feeding his plugin
     from the Isogeo API's response to a share request.
     """
 
@@ -36,13 +33,13 @@ class SharesParser(QObject):
 
     @pyqtSlot(list)
     def send_share_info(self, shares: list):
-        """Slot connected to ApiRequester.shares_sig signal emitted when a response 
+        """Slot connected to ApiRequester.shares_sig signal emitted when a response
         to a share request has been received from the Isogeo's API, validated and parsed.
-        'shares' parameter correspond to the content of shares request's reply passed 
-        by the ApiRequester.handle_reply method (see modules/api/request.py). 
-        Once the string building from 'result' is done, the shares_ready signal is emitted 
+        'shares' parameter correspond to the content of shares request's reply passed
+        by the ApiRequester.handle_reply method (see modules/api/request.py).
+        Once the string building from 'result' is done, the shares_ready signal is emitted
         passing this string to a connected slot : Isogeo.write_shares_info (see isogeo.py).
-        
+
         :param list shares: list of shares feeding the application
         """
         logger.debug("Application properties provided by the Isogeo API.")

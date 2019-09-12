@@ -41,9 +41,21 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_tools = IsogeoPlgTools()
 
-osm_lbls = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Labels&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
-osm_refs = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=Reference_Features&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
-blue_marble = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/jpeg&layers=BlueMarble_ShadedRelief_Bathymetry&styles=default&tileMatrixSet=500m&url=https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
+osm_lbls = (
+    "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers"
+    "=Reference_Labels&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts"
+    "/epsg4326/best/1.0.0/WMTSCapabilities.xml"
+)
+osm_refs = (
+    "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers"
+    "=Reference_Features&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wm"
+    "ts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
+)
+blue_marble = (
+    "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/jpeg&la"
+    "yers=BlueMarble_ShadedRelief_Bathymetry&styles=default&tileMatrixSet=500m&url=https://gibs.e"
+    "arthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
+)
 
 li_lyrs_refs = [
     QgsRasterLayer(osm_lbls, "Labels", "wms"),
@@ -76,7 +88,7 @@ class MetadataDisplayer:
 
     def show_complete_md(self, md: dict, tags: dict):
         """Open the pop up window that shows the metadata sheet details.
-        
+
         :param md dict: Isogeo metadata dict
         """
         logger.info("Displaying the whole metadata sheet.")
@@ -148,32 +160,38 @@ class MetadataDisplayer:
             item = ctact.get("contact")
 
             if ctact.get("role", "NR") == "pointOfContact":
-                content = "<b>{1}</b> ({2})<br><a href='mailto:{3}' target='_top'>{3}</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{8}<br>{9}".format(
-                    isogeo_tr.tr("roles", ctact.get("role")),
-                    item.get("name", "NR"),
-                    item.get("organization", "NR"),
-                    item.get("email", "NR"),
-                    item.get("phone", "NR"),
-                    item.get("addressLine1", ""),
-                    item.get("addressLine2", ""),
-                    item.get("zipCode", ""),
-                    item.get("city", ""),
-                    item.get("country", ""),
+                content = (
+                    "<b>{1}</b> ({2})<br><a href='mailto:{3}' target='_top'>{3}</a><br>{4}"
+                    "<br>{5} {6}<br>{7} {8}<br>{8}<br>{9}".format(
+                        isogeo_tr.tr("roles", ctact.get("role")),
+                        item.get("name", "NR"),
+                        item.get("organization", "NR"),
+                        item.get("email", "NR"),
+                        item.get("phone", "NR"),
+                        item.get("addressLine1", ""),
+                        item.get("addressLine2", ""),
+                        item.get("zipCode", ""),
+                        item.get("city", ""),
+                        item.get("country", ""),
+                    )
                 )
                 contacts_pt_cct.append(content)
 
             else:
-                content = "<b>{0} - {1}</b> ({2})<br><a href='mailto:{3}' target='_blank'>{3}</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{9}".format(
-                    isogeo_tr.tr("roles", ctact.get("role")),
-                    item.get("name", "NR"),
-                    item.get("organization", "NR"),
-                    item.get("email", "NR"),
-                    item.get("phone", ""),
-                    item.get("addressLine1", ""),
-                    item.get("addressLine2", ""),
-                    item.get("zipCode", ""),
-                    item.get("city", ""),
-                    item.get("country", ""),
+                content = (
+                    "<b>{0} - {1}</b> ({2})<br><a href='mailto:{3}' target='_blank'>{3}"
+                    "</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{9}".format(
+                        isogeo_tr.tr("roles", ctact.get("role")),
+                        item.get("name", "NR"),
+                        item.get("organization", "NR"),
+                        item.get("email", "NR"),
+                        item.get("phone", ""),
+                        item.get("addressLine1", ""),
+                        item.get("addressLine2", ""),
+                        item.get("zipCode", ""),
+                        item.get("city", ""),
+                        item.get("country", ""),
+                    )
                 )
                 contacts_other_cct.append(content)
 
@@ -388,7 +406,7 @@ class MetadataDisplayer:
 
         # only if user declared himself as Isogeo editor in authentication form
         self.complete_md.btn_md_edit.setEnabled(
-            qsettings.value("isogeo/user/editor", 1)
+            int(qsettings.value("isogeo/user/editor", 1))
         )
 
         # -- ADD OPTIONS ------------------------------------------------------
@@ -401,15 +419,15 @@ class MetadataDisplayer:
         self.complete_md.show()
         try:
             QgsMessageLog.logMessage(
-                message = "Detailed metadata displayed: {}".format(title),
-                tag = "Isogeo",
-                level = 0
+                message="Detailed metadata displayed: {}".format(title),
+                tag="Isogeo",
+                level=0,
             )
         except UnicodeEncodeError:
             QgsMessageLog.logMessage(
-                message = "Detailed metadata displayed: {}".format(title),
-                tag = "Isogeo",
-                level = 0
+                message="Detailed metadata displayed: {}".format(title),
+                tag="Isogeo",
+                level=0,
             )
 
     def envelope2layer(self, envelope):
