@@ -634,8 +634,8 @@ class Isogeo:
 
             # Check projection settings in loaded search params
             if "epsg" in search_params:
-                logger.debug("Specific SRS found in search params: {}".format(epsg))
                 epsg = int(plg_tools.get_map_crs().split(":")[1])
+                logger.debug("Specific SRS found in search params: {}".format(epsg))
                 if epsg == search_params.get("epsg"):
                     canvas = iface.mapCanvas()
                     e = search_params.get("extent")
