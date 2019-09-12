@@ -75,8 +75,8 @@ class CacheManager:
         except ValueError as e:
             logger.error("Path JSON corrupted")
         except IOError:
-        	logger.debug("Cache file not found. Maybe because of first launch.")
-        	self.dumper()
+            logger.debug("Cache file not found. Maybe because of first launch.")
+            self.dumper()
 
     def cleaner(self):
         """Removes the stored elements and empties the JSON cache file."""
@@ -84,8 +84,9 @@ class CacheManager:
         self.cached_unreach_postgis = []
         self.cached_unreach_srv = []
         self.dumper()
-        msgBar.pushMessage(self.tr("Cache has been cleaned.", "CacheManager"),
-            duration=3)
+        msgBar.pushMessage(
+            self.tr("Cache has been cleaned.", "CacheManager"), duration=3
+        )
         logger.debug(self.tr("Cache has been cleaned", "CacheManager"))
 
 

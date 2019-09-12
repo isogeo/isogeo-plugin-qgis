@@ -5,7 +5,12 @@ import logging
 from collections import OrderedDict
 
 # PyQGIS
-from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsPointXY, QgsCoordinateTransform
+from qgis.core import (
+    QgsProject,
+    QgsCoordinateReferenceSystem,
+    QgsPointXY,
+    QgsCoordinateTransform,
+)
 from qgis.utils import iface
 
 # PyQT
