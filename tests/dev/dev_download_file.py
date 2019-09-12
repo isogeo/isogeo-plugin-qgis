@@ -43,8 +43,8 @@ def request_download(manager, target_url):
     manager.get( request )
 
 def handle_download(reply):
-    print "Download finish time: {}".format(datetime.now())
-    print "Finished: {}".format(reply.isFinished())
+    print("Download finish time: {}".format(datetime.now()))
+    print("Finished: {}".format(reply.isFinished()))
     # print "Bytes received: {}".format(len(reply.readAll()))
     print(type(reply), dir(reply), help(reply.write))
     url = reply.url().path()
@@ -52,7 +52,7 @@ def handle_download(reply):
 #    with open("C:\Users\julien.moura\Documents\GIS DataBase\youhou.xml", "wb") as fifi:
 #        fifi.write(reply.writeData())
     newFile = QFile()
-    newFile.setFileName("C:\Users\julien.moura\Documents\GIS DataBase\youhou_2.htm")
+    newFile.setFileName(".\youhou_2.htm")
     newFile.open(QIODevice.WriteOnly)
     newFile.write(reply.readAll())
     newFile.close()
