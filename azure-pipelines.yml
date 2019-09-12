@@ -67,7 +67,7 @@ jobs:
     displayName: 'Publish artifact: source code formatted and linted'
     inputs:
       path: $(System.DefaultWorkingDirectory)
-      artifact: '$(System.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
+      artifact: '$(Agent.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
 
 # UI COMPILATION
 - job: 'BuildUi'
@@ -85,7 +85,7 @@ jobs:
     displayName: 'Download artifact previously saved'
     inputs:
       buildType: 'current'
-      artifactName: '$(System.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
+      artifactName: '$(Agent.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
       targetPath: '$(System.DefaultWorkingDirectory)'
 
   - task: UsePythonVersion@0
@@ -114,7 +114,7 @@ jobs:
     displayName: 'Publish artifact: Qt stuff compiled'
     inputs:
       path: $(System.DefaultWorkingDirectory)
-      artifact: '$(System.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
+      artifact: '$(Agent.JobName)_$(Build.SourceBranchName)_$(Build.BuildId)'
 
 # UNIT TESTS
 # - job: 'Test'
