@@ -601,11 +601,14 @@ class LayerAdder():
         logger.debug("adding method called.")
         if layer_info[0] == "index":
             combobox = self.tbl_result.cellWidget(layer_info[1], 3)
+            layer_label = self.tbl_result.cellWidget(layer_info[1], 0).text()
             layer_info = combobox.itemData(combobox.currentIndex())
         elif layer_info[0] == "info":
+            layer_label = self.tbl_result.cellWidget(layer_info[2], 0).text()
             layer_info = layer_info[1]
         else:
             pass
+        
 
         self.md_sync.tr = self.tr
 
@@ -614,18 +617,22 @@ class LayerAdder():
             if layer_info[0] == "vector":
                 path = layer_info[1]
                 name = os.path.basename(path).split(".")[0]
-                layer = QgsVectorLayer(path, layer_info[2], 'ogr')
+                layer = QgsVectorLayer(path, layer_label, 'ogr')
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
                     try:
-                        QgsMessageLog.logMessage("Data layer added: {}"
-                                                 .format(name),
-                                                 "Isogeo")
+                        QgsMessageLog.logMessage(
+                            message ="Data layer added: {}".format(name),
+                            tag = "Isogeo",
+                            level = 0
+                        )
                         logger.debug("Vector layer added: {}".format(path))
                     except UnicodeEncodeError:
                         QgsMessageLog.logMessage(
-                            "Vector layer added:: {}".format(
-                                name.decode("latin1")), "Isogeo")
+                            message = "Vector layer added:: {}".format(name.decode("latin1")), 
+                            tag = "Isogeo",
+                            level = 0
+                        )
                         logger.debug("Vector layer added: {}"
                                     .format(name.decode("latin1")))
                 else:
@@ -641,18 +648,22 @@ class LayerAdder():
             elif layer_info[0] == "raster":
                 path = layer_info[1]
                 name = os.path.basename(path).split(".")[0]
-                layer = QgsRasterLayer(path, layer_info[2])
+                layer = QgsRasterLayer(path, layer_label)
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
                     try:
-                        QgsMessageLog.logMessage("Data layer added: {}"
-                                                 .format(name),
-                                                 "Isogeo")
+                        QgsMessageLog.logMessage(
+                            message = "Data layer added: {}".format(name),
+                            tag = "Isogeo",
+                            level = 0
+                        )
                         logger.debug("Raster layer added: {}".format(path))
                     except UnicodeEncodeError:
                         QgsMessageLog.logMessage(
-                            "Raster layer added:: {}".format(
-                                name.decode("latin1")), "Isogeo")
+                            message = "Raster layer added:: {}".format(name.decode("latin1")), 
+                            tag = "Isogeo",
+                            level = 0
+                        )
                         logger.debug("Raster layer added: {}"
                             .format(name.decode("latin1")))
                 else:
@@ -669,7 +680,7 @@ class LayerAdder():
                 name = layer_info[1]
                 uri = layer_info[2]
                 layer = QgsVectorLayer(uri,
-                                       name,
+                                       layer_label,
                                        'arcgisfeatureserver')
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
@@ -686,7 +697,7 @@ class LayerAdder():
             elif layer_info[0] == 'EMS':
                 name = layer_info[1]
                 uri = layer_info[2]
-                layer = QgsRasterLayer(uri,name,"arcgismapserver")
+                layer = QgsRasterLayer(uri,layer_label,"arcgismapserver")
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
                     logger.debug("EMS layer added: {0}".format(uri))
@@ -702,7 +713,7 @@ class LayerAdder():
             elif layer_info[0] == 'WFS':
                 url = layer_info[2]
                 name = layer_info[1]
-                layer = QgsVectorLayer(url, name, 'WFS')
+                layer = QgsVectorLayer(url, layer_label, 'WFS')
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
                     logger.debug("WFS layer added: {0}".format(url))
@@ -712,7 +723,7 @@ class LayerAdder():
                                                          layer_info[4],
                                                          mode="complete")
                     if name_url[0] != 0:
-                        layer = QgsVectorLayer(name_url[2], name_url[1], 'WFS')
+                        layer = QgsVectorLayer(name_url[2], layer_label, 'WFS')
                         if layer.isValid():
                             lyr = QgsProject.instance().addMapLayer(layer)
                             logger.debug("WFS layer added: {0}".format(url))
@@ -731,7 +742,7 @@ class LayerAdder():
             elif layer_info[0] == 'WMS':
                 url = layer_info[2]
                 name = layer_info[1]
-                layer = QgsRasterLayer(url, name, 'wms')
+                layer = QgsRasterLayer(url, layer_label, 'wms')
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
                     logger.debug("WMS layer added: {0}".format(url))
@@ -741,7 +752,7 @@ class LayerAdder():
                                                          layer_info[4],
                                                          mode="complete")
                     if name_url[0] != 0:
-                        layer = QgsRasterLayer(name_url[2], name_url[1], 'wms')
+                        layer = QgsRasterLayer(name_url[2], layer_label, 'wms')
                         if layer.isValid():
                             lyr = QgsProject.instance().addMapLayer(layer)
                             logger.debug("WMS layer added: {0}".format(url))
@@ -758,7 +769,7 @@ class LayerAdder():
             elif layer_info[0] == 'WMTS':
                 url = layer_info[2]
                 name = layer_info[1]
-                layer = QgsRasterLayer(url, name, 'wms')
+                layer = QgsRasterLayer(url, layer_label, 'wms')
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
                     logger.debug("WMTS service layer added: {0}".format(url))

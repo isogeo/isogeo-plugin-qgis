@@ -423,7 +423,7 @@ class ResultsManager(QObject):
                 add_button = QPushButton(icon, text)
                 add_button.setStyleSheet("text-align: left")
                 add_button.pressed.connect(
-                    partial(self.add_layer, layer_info=["info", params])
+                    partial(self.add_layer, layer_info=["info", params, count])
                 )
                 tbl_result.setCellWidget(count, 3, add_button)
             # Else, add a combobox, storing all possibilities.

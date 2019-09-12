@@ -488,7 +488,9 @@ class Isogeo:
         (passed by ApiRequester.handle_reply method)
         """
         QgsMessageLog.logMessage(
-            "Query sent & received: {}".format(result.get("query")), "Isogeo"
+            message = "Query sent & received: {}".format(result.get("query")), 
+            tag = "Isogeo",
+            level = 0
         )
         # Save entered text and filters in search form
         self.form_mng.old_text = self.form_mng.txt_input.text()
