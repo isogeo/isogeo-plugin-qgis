@@ -79,7 +79,7 @@ plg_reg_name = plg_basepath.name
 msgBar = iface.messageBar()
 qsettings = QSettings()
 
-# required `_log` subfolder 
+# required `_log` subfolder
 plg_logdir = Path(plg_basepath) / "_logs"
 if not plg_logdir.exists():
     plg_logdir.mkdir()
