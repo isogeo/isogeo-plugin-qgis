@@ -79,21 +79,15 @@ plg_reg_name = plg_basepath.name
 msgBar = iface.messageBar()
 qsettings = QSettings()
 
-# required subfolders
-plg_authdir = Path(plg_basepath) / "_auth"
-if not plg_authdir.exists():
-    os.mkdir(plg_authdir)
-else:
-    pass
-
+# required `_log` subfolder 
 plg_logdir = Path(plg_basepath) / "_logs"
 if not plg_logdir.exists():
-    os.mkdir(plg_logdir)
+    plg_logdir.mkdir()
 else:
     pass
 
 # plugin internal submodules
-plg_tools = IsogeoPlgTools(auth_folder=plg_authdir)
+plg_tools = IsogeoPlgTools()
 
 # -- LOG FILE --------------------------------------------------------
 # log level depends on plugin directory name
@@ -167,6 +161,13 @@ class Isogeo:
 
         # initialize plugin directory
         self.plugin_dir = Path(__file__).parent
+
+        # requiered `_auth` subfolder
+        plg_authdir = Path(plg_basepath) / "_auth"
+        if not plg_authdir.exists():
+            plg_authdir.mkdir()
+        else:
+            pass
 
         # initialize locale
         locale = qsettings.value("locale/userLocale")[0:2]

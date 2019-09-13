@@ -50,11 +50,8 @@ class IsogeoPlgTools(IsogeoUtils):
     last_error = None
     tr = object
 
-    def __init__(self, auth_folder=r"../_auth"):
+    def __init__(self):
         """Check and manage authentication credentials."""
-        # authentication
-        self.auth_folder = auth_folder
-
         # instanciate
         super(IsogeoPlgTools, self).__init__()
 
