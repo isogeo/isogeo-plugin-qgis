@@ -138,17 +138,17 @@ RELEASE_ZIP = zipfile.ZipFile(PLG_FINAL_ZIP_PATH, "w")
 
 
 # -- REQUIRED EMPTIES FOLDERS -------------------------------------------------------
-# AUTH folder
-auth_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_auth/"))
-RELEASE_ZIP.writestr(auth_folder, "")
+# # AUTH folder
+# auth_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_auth/"))
+# RELEASE_ZIP.writestr(auth_folder, "")
 
-# LOG folder
-log_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_logs/"))
-RELEASE_ZIP.writestr(log_folder, "")
+# # LOG folder
+# log_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_logs/"))
+# RELEASE_ZIP.writestr(log_folder, "")
 
-# USER folder
-user_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_user/"))
-RELEASE_ZIP.writestr(user_folder, "")
+# # USER folder
+# user_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_user/"))
+# RELEASE_ZIP.writestr(user_folder, "")
 
 # -- QGIS PLUGIN REQUIRED FILES -------------------------------------------------------
 
@@ -197,31 +197,31 @@ RELEASE_ZIP.write(
     Path(BASE_DIR_ABS, "resources_rc.py"), Path(PLG_DIRNAME, "resources_rc.py")
 )
 
-# -- User settings ----------------------------------------------------------
+# # -- User settings ----------------------------------------------------------
 
-QUICKSEARCHES = {
-    "_default": {
-        "contact": None,
-        "datatype": "type:dataset",
-        "favorite": None,
-        "format": None,
-        "geofilter": None,
-        "inspire": None,
-        "license": None,
-        "ob": "relevance",
-        "od": "desc",
-        "operation": "intersects",
-        "owner": None,
-        "srs": None,
-        "text": "",
-        "url": "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0",
-    }
-}
+# QUICKSEARCHES = {
+#     "_default": {
+#         "contact": None,
+#         "datatype": "type:dataset",
+#         "favorite": None,
+#         "format": None,
+#         "geofilter": None,
+#         "inspire": None,
+#         "license": None,
+#         "ob": "relevance",
+#         "od": "desc",
+#         "operation": "intersects",
+#         "owner": None,
+#         "srs": None,
+#         "text": "",
+#         "url": "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0",
+#     }
+# }
 
-QUICKSEARCHES_JSON = path.join(DIR_OUTPUT.resolve(), "..", "quicksearches.json")
-with open(QUICKSEARCHES_JSON, "w") as qs:
-    json.dump(QUICKSEARCHES, qs, sort_keys=True, indent=4)
+# QUICKSEARCHES_JSON = path.join(DIR_OUTPUT.resolve(), "..", "quicksearches.json")
+# with open(QUICKSEARCHES_JSON, "w") as qs:
+#     json.dump(QUICKSEARCHES, qs, sort_keys=True, indent=4)
 
-RELEASE_ZIP.write(
-    QUICKSEARCHES_JSON, "{}/{}/{}".format(PLG_DIRNAME, "_user", "quicksearches.json")
-)
+# RELEASE_ZIP.write(
+#     QUICKSEARCHES_JSON, "{}/{}/{}".format(PLG_DIRNAME, "_user", "quicksearches.json")
+# )
