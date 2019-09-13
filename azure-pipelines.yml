@@ -156,6 +156,33 @@ jobs:
       path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
       artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
+- job: 'Publish'
+  dependsOn: 'Packaging'
+  pool:
+    vmImage: "windows-2019"
+  condition:
+    contains(variables['Build.SourceBranch'], 'tags')
+
+  steps:
+  - checkout: none
+
+  - task: DownloadPipelineArtifact@2
+    displayName: "Download artifact previously saved"
+    inputs:
+      buildType: "current"
+      artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+      targetPath: "$(System.DefaultWorkingDirectory)"
+
+  - task: GitHubRelease@0
+    inputs:
+      gitHubConnection: 'github_isogeo'
+      repositoryName: '$(Build.Repository.Name)'
+      action: 'create'
+      target: '$(Build.SourceVersion)'
+      tagSource: 'auto'
+      compareWith: 'lastFullRelease'
+
+
 # UNIT TESTS
 # - job: "Test"
 #   dependsOn: "Lint"
