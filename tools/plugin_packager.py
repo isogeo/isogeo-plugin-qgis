@@ -30,7 +30,7 @@ from configparser import ConfigParser
 from os import listdir, path
 import json
 import xml.etree.ElementTree as ET
-import zipfile
+from zipfile import ZipFile, ZipInfo
 
 from pathlib import Path
 
@@ -134,94 +134,87 @@ print(
 fix_ui_files()
 
 # -- LED ZIPPING ----------------------------------------------------------
-RELEASE_ZIP = zipfile.ZipFile(PLG_FINAL_ZIP_PATH, "w")
+# release_zip = zipfile.ZipFile(PLG_FINAL_ZIP_PATH, "w")
 
+with ZipFile(PLG_FINAL_ZIP_PATH, "w") as release_zip:
 
-# -- REQUIRED EMPTIES FOLDERS -------------------------------------------------------
-# AUTH folder
-auth_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_auth/"))
-RELEASE_ZIP.writestr(auth_folder, "")
+    # -- QGIS PLUGIN REQUIRED FILES -------------------------------------------------------
 
-# LOG folder
-log_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_logs/"))
-RELEASE_ZIP.writestr(log_folder, "")
+    release_zip.write(Path(BASE_DIR_ABS, "LICENSE"), Path(PLG_DIRNAME, "LICENSE"))
+    release_zip.write(
+        Path(BASE_DIR_ABS, "metadata.txt"), Path(PLG_DIRNAME, "metadata.txt")
+    )
+    release_zip.write(Path(BASE_DIR_ABS, "README.md"), Path(PLG_DIRNAME, "README"))
 
-# USER folder
-user_folder = zipfile.ZipInfo(path.join(PLG_DIRNAME, "_user/"))
-RELEASE_ZIP.writestr(user_folder, "")
+    # -- PLUGIN PYTHON CODE ------------------------------------------------------------
+    release_zip.write(
+        Path(BASE_DIR_ABS, "__init__.py"), Path(PLG_DIRNAME, "__init__.py")
+    )
+    release_zip.write(Path(BASE_DIR_ABS, "isogeo.py"), Path(PLG_DIRNAME, "isogeo.py"))
 
-# -- QGIS PLUGIN REQUIRED FILES -------------------------------------------------------
-
-RELEASE_ZIP.write(Path(BASE_DIR_ABS, "LICENSE"), Path(PLG_DIRNAME, "LICENSE"))
-RELEASE_ZIP.write(Path(BASE_DIR_ABS, "metadata.txt"), Path(PLG_DIRNAME, "metadata.txt"))
-RELEASE_ZIP.write(Path(BASE_DIR_ABS, "README.md"), Path(PLG_DIRNAME, "README"))
-
-# -- PLUGIN PYTHON CODE ------------------------------------------------------------
-RELEASE_ZIP.write(Path(BASE_DIR_ABS, "__init__.py"), Path(PLG_DIRNAME, "__init__.py"))
-RELEASE_ZIP.write(Path(BASE_DIR_ABS, "isogeo.py"), Path(PLG_DIRNAME, "isogeo.py"))
-
-# Python modules
-modules_path = Path("./modules")
-for file_src in list(modules_path.glob("**/*.py")):
-    file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
-    RELEASE_ZIP.write(file_src, file_dest_zip_path)
-
-# UI files
-ui_path = Path("./ui")
-for file_src in list(ui_path.glob("**/*.py")):
-    if file_src.name.startswith("ui_"):
-        continue
-    file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
-    RELEASE_ZIP.write(file_src, file_dest_zip_path)
-
-for file_src in list(ui_path.glob("**/*.ui")):
-    file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
-    RELEASE_ZIP.write(file_src, file_dest_zip_path)
-
-# Translations
-i18n_path = Path("./i18n")
-for file_src in list(i18n_path.glob("**/*.qm")):
-    file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
-    RELEASE_ZIP.write(file_src, file_dest_zip_path)
-
-# Resources (media files)
-resources_path = Path("./resources")
-for resource_type in RESOURCES_TYPES:
-    for file_src in list(resources_path.glob(resource_type)):
+    # Python modules
+    modules_path = Path("./modules")
+    for file_src in list(modules_path.glob("**/*.py")):
         file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
-        RELEASE_ZIP.write(file_src, file_dest_zip_path)
+        release_zip.write(file_src, file_dest_zip_path)
 
-# UI - Base
-RELEASE_ZIP.write(Path(BASE_DIR_ABS, "icon.png"), Path(PLG_DIRNAME, "icon.png"))
-RELEASE_ZIP.write(
-    Path(BASE_DIR_ABS, "resources_rc.py"), Path(PLG_DIRNAME, "resources_rc.py")
-)
+    # UI files
+    ui_path = Path("./ui")
+    for file_src in list(ui_path.glob("**/*.py")):
+        if file_src.name.startswith("ui_"):
+            continue
+        file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
+        release_zip.write(file_src, file_dest_zip_path)
 
-# -- User settings ----------------------------------------------------------
+    for file_src in list(ui_path.glob("**/*.ui")):
+        file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
+        release_zip.write(file_src, file_dest_zip_path)
 
-QUICKSEARCHES = {
-    "_default": {
-        "contact": None,
-        "datatype": "type:dataset",
-        "favorite": None,
-        "format": None,
-        "geofilter": None,
-        "inspire": None,
-        "license": None,
-        "ob": "relevance",
-        "od": "desc",
-        "operation": "intersects",
-        "owner": None,
-        "srs": None,
-        "text": "",
-        "url": "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0",
+    # Translations
+    i18n_path = Path("./i18n")
+    for file_src in list(i18n_path.glob("**/*.qm")):
+        file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
+        release_zip.write(file_src, file_dest_zip_path)
+
+    # Resources (media files)
+    resources_path = Path("./resources")
+    for resource_type in RESOURCES_TYPES:
+        for file_src in list(resources_path.glob(resource_type)):
+            file_dest_zip_path = PLG_DIRNAME / file_src.parent / file_src.name
+            release_zip.write(file_src, file_dest_zip_path)
+
+    # UI - Base
+    release_zip.write(Path(BASE_DIR_ABS, "icon.png"), Path(PLG_DIRNAME, "icon.png"))
+    release_zip.write(
+        Path(BASE_DIR_ABS, "resources_rc.py"), Path(PLG_DIRNAME, "resources_rc.py")
+    )
+
+    # -- User settings ----------------------------------------------------------
+
+    QUICKSEARCHES = {
+        "_default": {
+            "contact": None,
+            "datatype": "type:dataset",
+            "favorite": None,
+            "format": None,
+            "geofilter": None,
+            "inspire": None,
+            "license": None,
+            "ob": "relevance",
+            "od": "desc",
+            "operation": "intersects",
+            "owner": None,
+            "srs": None,
+            "text": "",
+            "url": "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0",
+        }
     }
-}
 
-QUICKSEARCHES_JSON = path.join(DIR_OUTPUT.resolve(), "..", "quicksearches.json")
-with open(QUICKSEARCHES_JSON, "w") as qs:
-    json.dump(QUICKSEARCHES, qs, sort_keys=True, indent=4)
+    QUICKSEARCHES_JSON = path.join(DIR_OUTPUT.resolve(), "..", "quicksearches.json")
+    with open(QUICKSEARCHES_JSON, "w") as qs:
+        json.dump(QUICKSEARCHES, qs, sort_keys=True, indent=4)
 
-RELEASE_ZIP.write(
-    QUICKSEARCHES_JSON, "{}/{}/{}".format(PLG_DIRNAME, "_user", "quicksearches.json")
-)
+    release_zip.write(
+        QUICKSEARCHES_JSON,
+        "{}/{}/{}".format(PLG_DIRNAME, "_user", "quicksearches.json"),
+    )

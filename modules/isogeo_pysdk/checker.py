@@ -106,9 +106,11 @@ class IsogeoChecker(object):
     def __init__(self):
         super(IsogeoChecker, self).__init__()
 
-    def check_internet_connection(self, remote_server: str = "api.isogeo.com") -> bool:
+    def check_internet_connection(
+        self, remote_server: str = "api.isogeo.com", proxies: dict = None
+    ) -> bool:
         """Test if an internet connection is operational.
-        Src: http://stackoverflow.com/a/20913928/2556577.
+        Src: https://stackoverflow.com/a/20913928/2556577.
 
         :param str remote_server: remote server used to check
         """
@@ -122,6 +124,9 @@ class IsogeoChecker(object):
             return True
         except Exception as e:
             logging.error(e)
+            if proxies is not None:
+                logging.debug("Proxy detected. Ignoring error...")
+                return True
             return False
 
     def check_bearer_validity(self, token: dict, connect_mtd) -> dict:
@@ -140,7 +145,7 @@ class IsogeoChecker(object):
          from Isogeo PySDK to get new bearer
         """
         warnings.warn(
-            "Method is now executed as a decorator within the main SDK class. Will be removed in future versions.",
+            "Method is now executed as a decorator wihtin the main SDK class. Will be removed in future versions.",
             DeprecationWarning,
         )
         if datetime.now() < token.get("expires_at"):

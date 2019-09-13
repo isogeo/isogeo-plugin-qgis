@@ -85,17 +85,6 @@ class IsogeoUtils(object):
             "&id={md_uuid_urn}&elementsetname=full"
             "&outputSchema=http://www.isotc211.org/2005/gmd",
         },
-        "csw_getrecords": {  # https://github.com/isogeo/isogeo-api-py-minsdk/issues/44
-            "args": ("share_id", "share_token"),
-            "url": "https://services.api.isogeo.com/ows/s/"
-            "{share_id}/{share_token}?service=CSW"
-            "&version=2.0.2&request=GetRecords&ResultType=results"
-            "&ElementSetName=brief&maxRecords=20"
-            "&OutputFormat=application/xml"
-            "&OutputSchema=http://www.opengis.net/cat/csw/2.0.2"
-            "&namespace=xmlns(csw=http://www.opengis.net/cat/csw/2.0.2)"
-            "&TypeNames=csw:Record&startPosition=1",
-        },
         "oc": {
             "args": ("md_id", "share_id", "share_token"),
             "url": "https://open.isogeo.com/s/{share_id}" "/{share_token}/r/{md_id}",
@@ -757,10 +746,3 @@ class IsogeoUtils(object):
 if __name__ == "__main__":
     """Standalone execution."""
     utils = IsogeoUtils()
-    print(
-        utils.get_view_url(
-            webapp="csw_getrecords",
-            share_id="1e07910d365449b59b6596a9b428ecd9",
-            share_token="TokenOhDearToken",
-        )
-    )

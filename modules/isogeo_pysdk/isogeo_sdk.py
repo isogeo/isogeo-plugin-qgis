@@ -42,7 +42,7 @@ except (ImportError, ValueError, SystemError):
 
 checker = checker.IsogeoChecker()
 utils = utils.IsogeoUtils()
-version = "2.21.0"
+version = "2.21.2"
 
 # #############################################################################
 # ########## Classes ###############
@@ -96,7 +96,9 @@ class Isogeo(Session):
         self.token = {}
 
         # checking internet connection
-        if not checker.check_internet_connection():
+        if not checker.check_internet_connection(proxies=proxy):
+            if proxy:
+                logging.debug("Proxy enabled")
             raise EnvironmentError("Internet connection issue.")
         else:
             pass
@@ -153,7 +155,7 @@ class Isogeo(Session):
         # handling proxy parameters
         # see: http://docs.python-requests.org/en/latest/user/advanced/#proxies
         if proxy and isinstance(proxy, dict) and "http" in proxy:
-            logging.debug("Proxy enabled")
+            logging.debug("Proxy enabled.")
             self.proxies = proxy
         elif proxy and not isinstance(proxy, dict):
             raise TypeError(
@@ -170,8 +172,8 @@ class Isogeo(Session):
             pass
 
         # get API version
-        logging.debug("Isogeo API version: {}".format(utils.get_isogeo_version()))
-        logging.debug("Isogeo DB version: {}".format(utils.get_isogeo_version("db")))
+        # logging.debug("Isogeo API version: {}".format(utils.get_isogeo_version()))
+        # logging.debug("Isogeo DB version: {}".format(utils.get_isogeo_version("db")))
 
     # -- API CONNECTION ------------------------------------------------------
     def connect(self, client_id: str = None, client_secret: str = None) -> dict:
