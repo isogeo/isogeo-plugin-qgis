@@ -157,8 +157,8 @@ class Authenticator:
             qsettings.endGroup()
             return True
         else:
+            logger.debug("No Isogeo credentials found within QGIS QSettings.")
             pass
-        logger.debug("No Isogeo credentials found within QGIS QSettings.")
         return False
 
     def credentials_check_file(self):
@@ -269,6 +269,8 @@ class Authenticator:
             self.credentials_uploader
         )
 
+        self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
+
         # fillfull auth form fields from stored settings
         self.ui_auth_form.ent_app_id.setText(self.api_params["app_id"])
         self.ui_auth_form.ent_app_secret.setText(self.api_params["app_secret"])
@@ -288,16 +290,11 @@ class Authenticator:
         # test file structure
         try:
             selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
-            api_credentials = plg_tools.credentials_loader(selected_file)
+            api_credentials = plg_tools.credentials_loader(self.ui_auth_form.btn_browse_credentials.filePath())
         except Exception as e:
             logger.error(e)
-            QMessageBox.critical(
-                self.ui_auth_form,
-                self.tr("Alert", "Authenticator"),
-                self.tr(
-                    "The selected credentials file is not correct.", "Authenticator"
-                ),
-            )
+            self.show_error("file")
+            return False
         # move credentials file into the plugin file structure
         dest_path = self.cred_filepath
         if dest_path.is_file():
@@ -315,22 +312,38 @@ class Authenticator:
             pass
         try:
             selected_file.rename(dest_path)
-            # set form
-            self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
-            self.ui_auth_form.ent_app_secret.setText(
-                api_credentials.get("client_secret")
-            )
-            self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
-            # update class attributes from file
-            self.credentials_update(credentials_source="oAuth2_file")
-            # store into QSettings if existing
-            self.credentials_storer(store_location="QSettings")
-
             logger.debug(
                 "Selected credentials file has been moved into plugin" "_auth subfolder"
-            )
+            )    
         except Exception:
-            logger.debug("OAuth2 file issue : check path validity.")
+            self.show_error("path")
+            return False
+        # set form
+        self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
+        self.ui_auth_form.ent_app_secret.setText(
+            api_credentials.get("client_secret")
+        )
+        self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
+        # update class attributes from file
+        self.credentials_update(credentials_source="oAuth2_file")
+        # store into QSettings if existing
+        self.credentials_storer(store_location="QSettings")
+        return True
+    
+    def show_error(self, error_type:str):
+        message_type = {
+            "path" : "The specified file is not found.",
+            "file" : "The selected credentials file is not valid.",
+            "creds" : "Authentication failed."
+        }
+        QMessageBox.critical(
+                self.ui_auth_form,
+                self.tr("Alert", "Authenticator"),
+                self.tr(
+                    message_type.get(error_type), "Authenticator"
+                ),
+            )
+
 
     # REQUEST and RESULTS ----------------------------------------------------
     def get_tags(self, tags: dict):

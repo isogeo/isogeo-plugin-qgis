@@ -356,6 +356,9 @@ class Isogeo:
         their default value, it asks for them.
         If not, it tries to send a request.
         """
+        
+        self.savedSearch = "first"
+
         self.form_mng.switch_widgets_on_and_off(0)
         api_init = self.authenticator.manage_api_initialization()
         if api_init[0]:
@@ -367,9 +370,18 @@ class Isogeo:
         it stores the values in the file, then call the
         user_authentification function to test them.
         """
-        self.authenticator.credentials_storer()
-        # launch authentication
-        self.user_authentication()
+        self.authenticator.ui_auth_form.btn_browse_credentials.fileChanged.disconnect()
+
+        if self.authenticator.credentials_uploader() is True:
+            self.authenticator.credentials_storer()
+            # launch authentication
+            self.user_authentication()
+        else :
+            pass
+
+        self.authenticator.ui_auth_form.btn_browse_credentials.fileChanged.connect(
+            self.write_ids_and_test
+        )
 
     def token_slot(self, token_signal: str):
         """ Slot connected to ApiRequester.token_sig signal emitted when a response to
@@ -390,6 +402,7 @@ class Isogeo:
         logger.debug(token_signal)
         if token_signal == "tokenOK":
             if self.savedSearch == "first":
+                self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
                 logger.debug("First search since plugin started.")
                 self.set_widget_status()
                 logger.debug("Asking application properties to the Isogeo API.")
@@ -397,7 +410,7 @@ class Isogeo:
             else:
                 self.api_requester.send_request()
         elif token_signal == "credIssue":
-            self.authenticator.display_auth_form()
+            self.authenticator.show_error("file")
         else:
             msgBar.pushMessage(
                 self.tr(
@@ -846,7 +859,7 @@ class Isogeo:
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
 
         # -- Authentication form ----------------------------------------------
-        self.authenticator.ui_auth_form.btn_check_auth.pressed.connect(
+        self.authenticator.ui_auth_form.btn_browse_credentials.fileChanged.connect(
             self.write_ids_and_test
         )
 
@@ -866,7 +879,6 @@ class Isogeo:
         self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
         # self.form_mng.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.form_mng.txt_input.setFocus()
-        self.savedSearch = "first"
         # load cache file
         self.form_mng.results_mng.cache_mng.loader()
         # launch authentication

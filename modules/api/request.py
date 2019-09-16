@@ -290,7 +290,7 @@ class ApiRequester(QgsNetworkAccessManager):
             logger.warning("Unknown error : {}".format(str(reply.error())))
             # self.status_isClear = True
             QMessageBox.information(
-                self.iface.mainWindow(),
+                iface.mainWindow(),
                 self.tr("Error"),
                 self.tr("You are facing an unknown error. " "Code: ")
                 + str(reply.error())
