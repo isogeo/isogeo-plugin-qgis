@@ -287,12 +287,13 @@ class Authenticator:
         If the selected is compliant, credentials are loaded from then it's
         moved inside plugin/_auth subfolder.
         """
+        selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
         # test file structure
+        logger.debug("Loading credentials from file indicated by the user : {}".format(selected_file))
         try:
-            selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
             api_credentials = plg_tools.credentials_loader(self.ui_auth_form.btn_browse_credentials.filePath())
         except Exception as e:
-            logger.error(e)
+            logger.error("Fail to load credentials from authentication file : {}".format(e))
             self.show_error("file")
             return False
         # move credentials file into the plugin file structure
@@ -315,7 +316,8 @@ class Authenticator:
             logger.debug(
                 "Selected credentials file has been moved into plugin" "_auth subfolder"
             )    
-        except Exception:
+        except Exception as e:
+            logger.debug("Fail to rename authentication file : {}".format(e))
             self.show_error("path")
             return False
         # set form

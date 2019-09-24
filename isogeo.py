@@ -358,7 +358,6 @@ class Isogeo:
         """
         
         self.savedSearch = "first"
-
         self.form_mng.switch_widgets_on_and_off(0)
         api_init = self.authenticator.manage_api_initialization()
         if api_init[0]:
@@ -373,7 +372,6 @@ class Isogeo:
         self.authenticator.ui_auth_form.btn_browse_credentials.fileChanged.disconnect()
 
         if self.authenticator.credentials_uploader() is True:
-            self.authenticator.credentials_storer()
             # launch authentication
             self.user_authentication()
         else :
