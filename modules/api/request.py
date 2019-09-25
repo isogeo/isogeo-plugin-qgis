@@ -264,31 +264,42 @@ class ApiRequester(QgsNetworkAccessManager):
             self.loopCount = 0
             self.send_request("token")
 
-        elif content == "":
-            logger.error(
-                "Empty reply. Weither no catalog is shared with the "
-                "plugin, or there is a problem (2 requests sent "
-                "together)"
-            )
+        elif content == "" or reply.error() == 302:
             if self.loopCount < 3:
                 self.loopCount += 1
                 reply.abort()
-                # self.status_isClear = True
                 self.send_request("token")
             else:
-                # self.status_isClear = True
-                msgBar.pushMessage(
-                    self.tr(
-                        "The script is looping. Make sure you shared a "
-                        "catalog with the plugin. If so, please report "
-                        "this on the bug tracker."
+                if content == "":
+                    logger.error(
+                        "Empty reply. Weither no catalog is shared with the "
+                        "plugin, or there is a problem (2 requests sent "
+                        "together)"
                     )
-                )
+                    msgBar.pushMessage(
+                        self.tr(
+                            "The script is looping. Make sure you shared a "
+                            "catalog with the plugin. If so, please report "
+                            "this on the bug tracker."
+                        ),
+                        duration=5,
+                        level=1,
+                    )
+                else : 
+                    logger.debug("Redirecting code received.") 
+                    msgBar.pushMessage(
+                        self.tr(
+                            "Redirecting code received. Please report "
+                            "this on the bug tracker."
+                        ),
+                        duration=5,
+                        level=1,
+                    )
                 self.token_sig.emit("NoInternet")
                 return
+            
         else:
             logger.warning("Unknown error : {}".format(str(reply.error())))
-            # self.status_isClear = True
             QMessageBox.information(
                 iface.mainWindow(),
                 self.tr("Error"),
