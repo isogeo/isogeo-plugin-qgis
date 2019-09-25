@@ -7,7 +7,7 @@ import time
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, QCoreApplication, QTranslator, qVersion
+from qgis.PyQt.QtCore import QSettings, QCoreApplication, QTranslator, qVersion, QObject, pyqtSignal
 from qgis.PyQt.QtWidgets import QMessageBox
 
 # Plugin modules
@@ -45,7 +45,7 @@ else:
 # ##################################
 
 
-class Authenticator:
+class Authenticator(QObject):
     """Basic class to manage user authentication to Isogeo's API :
         - Getting credentials from oAuth2 file or QGIS Settings
         - Storing credentials
@@ -54,6 +54,8 @@ class Authenticator:
     :param str auth_folder: the path to the plugin/_auth subfolder
     where oAuth2 file is stored.
     """
+
+    auth_sig = pyqtSignal()
 
     # ui reference - authentication form
     ui_auth_form = IsogeoAuthentication()
@@ -72,6 +74,8 @@ class Authenticator:
     credentials_location = {"QSettings": 0, "oAuth2_file": 0}
 
     def __init__(self):
+        # inheritance
+        super().__init__()
 
         # API URLs - Prod
         (
@@ -92,6 +96,10 @@ class Authenticator:
         self.tr = object
         self.lang = str
 
+        self.first_auth = bool
+
+    def emit_auth_sig(self):
+        self.auth_sig.emit()
     # MANAGER -----------------------------------------------------------------
     def manage_api_initialization(self):
         """Perform several operations to use Isogeo API:
@@ -117,6 +125,7 @@ class Authenticator:
             self.credentials_update("oAuth2_file")
         else:
             logger.info("No credentials found. ")
+            self.first_auth = True
             self.display_auth_form()
             return False, None
 
@@ -282,11 +291,19 @@ class Authenticator:
         logger.debug("Authentication form filled and ready to be launched.")
         self.ui_auth_form.show()
 
+        if self.first_auth:
+            pass
+        else :
+            self.auth_sig.emit()
+            pass
+
     def credentials_uploader(self):
         """Get file selected by the user and loads API credentials into plugin.
         If the selected is compliant, credentials are loaded from then it's
         moved inside plugin/_auth subfolder.
         """
+        self.ui_auth_form.btn_browse_credentials.fileChanged.disconnect()
+
         selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
         # test file structure
         logger.debug("Loading credentials from file indicated by the user : {}".format(selected_file))
@@ -295,6 +312,9 @@ class Authenticator:
         except Exception as e:
             logger.error("Fail to load credentials from authentication file : {}".format(e))
             self.show_error("file")
+            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
+            self.credentials_uploader
+            )
             return False
         # move credentials file into the plugin file structure
         dest_path = self.cred_filepath
@@ -319,17 +339,22 @@ class Authenticator:
         except Exception as e:
             logger.debug("Fail to rename authentication file : {}".format(e))
             self.show_error("path")
+            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
+            self.credentials_uploader
+            )
             return False
         # set form
         self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
-        self.ui_auth_form.ent_app_secret.setText(
-            api_credentials.get("client_secret")
-        )
+        self.ui_auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
         self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
         # update class attributes from file
         self.credentials_update(credentials_source="oAuth2_file")
         # store into QSettings if existing
         self.credentials_storer(store_location="QSettings")
+        self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
+            self.credentials_uploader
+        )
+        self.emit_auth_sig()
         return True
     
     def show_error(self, error_type:str):
@@ -338,7 +363,7 @@ class Authenticator:
             "file" : "The selected credentials file is not valid.",
             "creds" : "Authentication failed."
         }
-        QMessageBox.critical(
+        QMessageBox.warning(
                 self.ui_auth_form,
                 self.tr("Alert", "Authenticator"),
                 self.tr(

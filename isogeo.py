@@ -356,30 +356,33 @@ class Isogeo:
         their default value, it asks for them.
         If not, it tries to send a request.
         """
-        
+        self.authenticator.auth_sig.disconnect()
         self.savedSearch = "first"
         self.form_mng.switch_widgets_on_and_off(0)
         api_init = self.authenticator.manage_api_initialization()
         if api_init[0]:
             self.api_requester.setup_api_params(api_init[1])
-
-    def write_ids_and_test(self):
-        """Store the id & secret and launch the test function.
-        Called when the authentification window is closed,
-        it stores the values in the file, then call the
-        user_authentification function to test them.
-        """
-        self.authenticator.ui_auth_form.btn_browse_credentials.fileChanged.disconnect()
-
-        if self.authenticator.credentials_uploader() is True:
-            # launch authentication
-            self.user_authentication()
         else :
             pass
+        self.authenticator.auth_sig.connect(self.user_authentication)
 
-        self.authenticator.ui_auth_form.btn_browse_credentials.fileChanged.connect(
-            self.write_ids_and_test
-        )
+    # def write_ids_and_test(self):
+    #     """Store the id & secret and launch the test function.
+    #     Called when the authentification window is closed,
+    #     it stores the values in the file, then call the
+    #     user_authentification function to test them.
+    #     """
+        # self.authenticator.auth_sig.disconnect()
+
+        # if self.authenticator.credentials_uploader() is True:
+        #     # launch authentication
+        #     self.user_authentication()
+        # else :
+        #     pass
+
+        # self.authenticator.auth_sig.connect(
+        #     self.write_ids_and_test
+        # )
 
     def token_slot(self, token_signal: str):
         """ Slot connected to ApiRequester.token_sig signal emitted when a response to
@@ -401,6 +404,7 @@ class Isogeo:
         if token_signal == "tokenOK":
             if self.savedSearch == "first":
                 self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
+                self.authenticator.first_auth = False
                 logger.debug("First search since plugin started.")
                 self.set_widget_status()
                 logger.debug("Asking application properties to the Isogeo API.")
@@ -412,7 +416,8 @@ class Isogeo:
         else:
             msgBar.pushMessage(
                 self.tr(
-                    "Request to Isogeo failed: please check your Internet connection."
+                    "Request to Isogeo failed: please check your Internet"
+                    " connection and your proxy configuration"
                 ),
                 duration=10,
                 level=1,
@@ -858,9 +863,13 @@ class Isogeo:
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
 
         # -- Authentication form ----------------------------------------------
-        self.authenticator.ui_auth_form.btn_browse_credentials.fileChanged.connect(
-            self.write_ids_and_test
+        # self.authenticator.auth_sig.connect(
+        #     self.write_ids_and_test
+        # )
+        self.authenticator.auth_sig.connect(
+            self.user_authentication
         )
+
 
         """ ------ CUSTOM CONNECTIONS ------------------------------------- """
         # get shares only if user switch on tabs
