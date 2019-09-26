@@ -179,6 +179,7 @@ class ApiRequester(QgsNetworkAccessManager):
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
         # if reply's content is valid
+        logger.debug("*=====* code : {}".format(reply.error()))
         if reply.error() == 0 and content != "":
             try:
                 parsed_content = json.loads(content)
@@ -189,6 +190,7 @@ class ApiRequester(QgsNetworkAccessManager):
                 else:
                     pass
                 return
+            logger.debug("*=====* content : {}".format(parsed_content))
 
             url = reply.url().toString()
             # for token request, one signal is emitted passing a string whose
@@ -196,6 +198,7 @@ class ApiRequester(QgsNetworkAccessManager):
             if "token" in url:
                 logger.debug("Handling reply to a 'token' request")
                 logger.debug("(from : {}).".format(url))
+                
                 if "access_token" in parsed_content:
                     QgsMessageLog.logMessage(
                         message="Authentication succeeded", tag="Isogeo", level=0
@@ -224,10 +227,10 @@ class ApiRequester(QgsNetworkAccessManager):
                     msgBar.pushMessage(
                         "Isogeo",
                         self.tr(
-                            "API authentication failed.Isogeo API answered: {}"
+                            "API authentication failed. Isogeo API answered: {}"
                         ).format(parsed_content.get("error")),
                         duration=10,
-                        level=2,
+                        level=1,
                     )
                     logger.debug(
                         "The API reply has an unexpected form: {}.".format(
@@ -264,37 +267,55 @@ class ApiRequester(QgsNetworkAccessManager):
             self.loopCount = 0
             self.send_request("token")
 
-        elif content == "" or reply.error() == 302:
+        elif reply.error() >= 101 and reply.error() <= 105:
+            logger.error("Proxy issue code received : {}".format(reply.error()))
+            msgBar.pushMessage(
+                self.tr(
+                    "Proxy issue code received : {}. Check your"
+                    "OS and QGIS proxy configuration. If this error"
+                    "keeps happening, please report it in the "
+                    "bug tracker.".format(
+                        reply.error()
+                    )
+                ),
+                duration=10,
+                level=1,
+            )
+
+        elif reply.error() == 302:
+            logger.error("Redirecting code received : 302") 
+            msgBar.pushMessage(
+                self.tr(
+                    "Redirecting code received. ID and SECRET "
+                    "could be invalid. Asking for them again. "
+                    "If this error keeps happening, please "
+                    "report it in the bug tracker."
+                ),
+                duration=10,
+                level=1,
+            )
+            self.token_sig.emit("credIssue")
+
+        elif content == "":
             if self.loopCount < 3:
                 self.loopCount += 1
                 reply.abort()
                 self.send_request("token")
             else:
-                if content == "":
-                    logger.error(
-                        "Empty reply. Weither no catalog is shared with the "
-                        "plugin, or there is a problem (2 requests sent "
-                        "together)"
-                    )
-                    msgBar.pushMessage(
-                        self.tr(
-                            "The script is looping. Make sure you shared a "
-                            "catalog with the plugin. If so, please report "
-                            "this on the bug tracker."
-                        ),
-                        duration=5,
-                        level=1,
-                    )
-                else : 
-                    logger.debug("Redirecting code received.") 
-                    msgBar.pushMessage(
-                        self.tr(
-                            "Redirecting code received. Please report "
-                            "this on the bug tracker."
-                        ),
-                        duration=5,
-                        level=1,
-                    )
+                logger.error(
+                    "Empty reply. Weither no catalog is shared with the "
+                    "plugin, or there is a problem (2 requests sent "
+                    "together)"
+                )
+                msgBar.pushMessage(
+                    self.tr(
+                        "The script is looping. Make sure you shared a "
+                        "catalog with the plugin. If so, please report "
+                        "this on the bug tracker."
+                    ),
+                    duration=10,
+                    level=1,
+                )
                 self.token_sig.emit("NoInternet")
                 return
             

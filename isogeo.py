@@ -412,7 +412,7 @@ class Isogeo:
             else:
                 self.api_requester.send_request()
         elif token_signal == "credIssue":
-            self.authenticator.show_error("file")
+            self.authenticator.show_error("creds")
         else:
             msgBar.pushMessage(
                 self.tr(

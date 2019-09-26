@@ -297,7 +297,7 @@ class IsogeoPlgTools(IsogeoUtils):
         system_proxy_config = getproxies()
         qgis_proxy = str(qsettings.value("proxy/proxyEnabled", ""))
 
-        if system_proxy_config == {} and qgis_proxy == "false":
+        if system_proxy_config == {} and qgis_proxy != "true":
             logger.info(
                 "No proxy found on the OS or in QGIS" 
                 "=> Proxy config : OK"
@@ -307,6 +307,10 @@ class IsogeoPlgTools(IsogeoUtils):
             if qgis_proxy == "true":
                 http = system_proxy_config.get("http")
                 if http is None:
+                    logger.info(
+                                "A proxy is set up in QGIS but not "
+                                "in the OS. => Proxy config: not OK"
+                            )
                     pass
                 else:
                     elements = http.split(":")
@@ -361,6 +365,7 @@ class IsogeoPlgTools(IsogeoUtils):
                                     "Tools",
                                 ),
                             )
+                      
             else:
                 logger.error(
                     "OS uses a proxy but it isn't set up in QGIS."

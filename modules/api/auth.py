@@ -309,8 +309,15 @@ class Authenticator(QObject):
         logger.debug("Loading credentials from file indicated by the user : {}".format(selected_file))
         try:
             api_credentials = plg_tools.credentials_loader(self.ui_auth_form.btn_browse_credentials.filePath())
-        except Exception as e:
-            logger.error("Fail to load credentials from authentication file : {}".format(e))
+        except IOError as e:
+            logger.error("Fail to load credentials from authentication file. IOError : {}".format(e))
+            self.show_error("path")
+            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
+            self.credentials_uploader
+            )
+            return False
+        except ValueError as e:
+            logger.error("Fail to load credentials from authentication file. Error : {}".format(e))
             self.show_error("file")
             self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
             self.credentials_uploader
@@ -359,8 +366,8 @@ class Authenticator(QObject):
     
     def show_error(self, error_type:str):
         message_type = {
-            "path" : "The specified file is not found.",
-            "file" : "The selected credentials file is not valid.",
+            "path" : "The specified file does not exist.",
+            "file" : "The selected credentials file's format is not valid.",
             "creds" : "Authentication failed."
         }
         QMessageBox.warning(
