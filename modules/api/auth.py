@@ -8,10 +8,14 @@ from functools import partial
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings, QCoreApplication, QTranslator, qVersion, QObject, pyqtSignal
-from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox, QSizePolicy
+
+# PyQGIS
+from qgis.gui import QgsMessageBar
 
 # Plugin modules
 from ..tools import IsogeoPlgTools
+from ..user_inform import UserInformer
 
 # UI class
 from ...ui.auth.dlg_authentication import IsogeoAuthentication
@@ -55,10 +59,13 @@ class Authenticator(QObject):
     where oAuth2 file is stored.
     """
 
-    auth_sig = pyqtSignal()
+    auth_sig = pyqtSignal(str)
 
     # ui reference - authentication form
     ui_auth_form = IsogeoAuthentication()
+    # display messages to the user
+    msgbar = QgsMessageBar(ui_auth_form)
+    ui_auth_form.msgbar_vlayout.addWidget(msgbar)
 
     # api parameters
     api_params = {
@@ -96,10 +103,10 @@ class Authenticator(QObject):
         self.tr = object
         self.lang = str
 
+        #inform user
+        self.informer = object
         self.first_auth = bool
 
-    def emit_auth_sig(self):
-        self.auth_sig.emit()
     # MANAGER -----------------------------------------------------------------
     def manage_api_initialization(self):
         """Perform several operations to use Isogeo API:
@@ -263,8 +270,9 @@ class Authenticator(QObject):
     def display_auth_form(self):
         """Show authentication form with prefilled fields and connected widgets.
         """
-
-        # connecting widgets
+        self.informer = UserInformer(message_bar = self.msgbar, trad = self.tr)
+        self.auth_sig.connect(self.informer.authentication_slot)
+        # self.ui_auth_form.finished.connect(partial(self.disconnect_msgbar, informer.authentication_slot))
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
             lambda: qsettings.setValue(
                 "isogeo/user/editor",
@@ -294,7 +302,7 @@ class Authenticator(QObject):
         if self.first_auth:
             pass
         else :
-            self.auth_sig.emit()
+            self.auth_sig.emit("ok")
             pass
 
     def credentials_uploader(self):
@@ -304,24 +312,26 @@ class Authenticator(QObject):
         """
         self.ui_auth_form.btn_browse_credentials.fileChanged.disconnect()
 
-        selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
         # test file structure
+        selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
         logger.debug("Loading credentials from file indicated by the user : {}".format(selected_file))
         try:
             api_credentials = plg_tools.credentials_loader(self.ui_auth_form.btn_browse_credentials.filePath())
         except IOError as e:
+            self.auth_sig.emit("path")
             logger.error("Fail to load credentials from authentication file. IOError : {}".format(e))
-            self.show_error("path")
             self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
             self.credentials_uploader
             )
+            self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
         except ValueError as e:
-            logger.error("Fail to load credentials from authentication file. Error : {}".format(e))
-            self.show_error("file")
+            self.auth_sig.emit("file")
+            logger.error("Fail to load credentials from authentication file. ValueError : {}".format(e))
             self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
             self.credentials_uploader
             )
+            self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
         # move credentials file into the plugin file structure
         dest_path = self.cred_filepath
@@ -345,10 +355,11 @@ class Authenticator(QObject):
             )    
         except Exception as e:
             logger.debug("Fail to rename authentication file : {}".format(e))
-            self.show_error("path")
+            self.auth_sig.emit("path")
             self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
             self.credentials_uploader
             )
+            self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
         # set form
         self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
@@ -361,23 +372,8 @@ class Authenticator(QObject):
         self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
             self.credentials_uploader
         )
-        self.emit_auth_sig()
+        self.auth_sig.emit("ok")
         return True
-    
-    def show_error(self, error_type:str):
-        message_type = {
-            "path" : "The specified file does not exist.",
-            "file" : "The selected credentials file's format is not valid.",
-            "creds" : "Authentication failed."
-        }
-        QMessageBox.warning(
-                self.ui_auth_form,
-                self.tr("Alert", "Authenticator"),
-                self.tr(
-                    message_type.get(error_type), "Authenticator"
-                ),
-            )
-
 
     # REQUEST and RESULTS ----------------------------------------------------
     def get_tags(self, tags: dict):

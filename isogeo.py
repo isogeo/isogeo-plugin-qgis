@@ -391,7 +391,6 @@ class Isogeo:
             form to provide good ones.
             - "NoInternet" : Asks to user to check his Internet connection.
         """
-        logger.debug("*=====* token_signal : {}".format(token_signal))
         if token_signal == "ok":
             if self.savedSearch == "first":
                 self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
