@@ -66,6 +66,7 @@ from .modules import (
     IsogeoPlgTools,
     SharesParser,
     SearchFormManager,
+    UserInformer
 )
 
 # ############################################################################
@@ -205,10 +206,13 @@ class Isogeo:
 
         # SUBMODULES
         # instanciating
+        self.informer = UserInformer(message_bar = msgBar, trad = self.tr)
+
         self.md_display = MetadataDisplayer()
 
         self.approps_mng = SharesParser()
         self.approps_mng.tr = self.tr
+
 
         self.authenticator = Authenticator()
 
@@ -220,7 +224,8 @@ class Isogeo:
         self.form_mng.qs_mng.lang = self.lang
 
         # connecting
-        self.api_requester.token_sig.connect(self.token_slot)
+        self.api_requester.api_sig.connect(self.token_slot)
+        self.api_requester.api_sig.connect(self.informer.request_slot)
         self.api_requester.search_sig.connect(self.search_slot)
         self.api_requester.details_sig.connect(self.md_display.show_complete_md)
         self.api_requester.shares_sig.connect(self.approps_mng.send_share_info)
@@ -356,7 +361,6 @@ class Isogeo:
         their default value, it asks for them.
         If not, it tries to send a request.
         """
-        self.authenticator.auth_sig.disconnect()
         self.savedSearch = "first"
         self.form_mng.switch_widgets_on_and_off(0)
         api_init = self.authenticator.manage_api_initialization()
@@ -364,44 +368,31 @@ class Isogeo:
             self.api_requester.setup_api_params(api_init[1])
         else :
             pass
-        self.authenticator.auth_sig.connect(self.user_authentication)
-
-    # def write_ids_and_test(self):
-    #     """Store the id & secret and launch the test function.
-    #     Called when the authentification window is closed,
-    #     it stores the values in the file, then call the
-    #     user_authentification function to test them.
-    #     """
-        # self.authenticator.auth_sig.disconnect()
-
-        # if self.authenticator.credentials_uploader() is True:
-        #     # launch authentication
-        #     self.user_authentication()
-        # else :
-        #     pass
-
-        # self.authenticator.auth_sig.connect(
-        #     self.write_ids_and_test
-        # )
+    
+    def auth_slot(self, auth_signal: str):
+        if auth_signal == "ok":
+            self.user_authentication()
+        else :
+            pass
 
     def token_slot(self, token_signal: str):
-        """ Slot connected to ApiRequester.token_sig signal emitted when a response to
+        """ Slot connected to ApiRequester.api_sig signal emitted when a response to
         a token request has been received from Isogeo's API or when the content of
-        a response to any type of request can't be parsed. The 'token_sig' parameter
+        a response to any type of request can't be parsed. The 'api_sig' parameter
         correspond to the string passed by ApiRequester.handle_reply method (see
         modules/api/request.py). The value of this parameter depend on the response's
         content received from Isogeo's API.
 
         :param str token_signal: a string passed by the signal whose value determines
         what will be done. Options :
-            - "tokenOK" : Authentication has succeeded, the token is stored so it sends
+            - "ok" : Authentication has succeeded, the token is stored so it sends
             a search request to the API.
-            - "credIssue" : User's credentials are wrong so it displays the authentication
+            - "creds_issue" : User's credentials are wrong so it displays the authentication
             form to provide good ones.
             - "NoInternet" : Asks to user to check his Internet connection.
         """
-        logger.debug(token_signal)
-        if token_signal == "tokenOK":
+        logger.debug("*=====* token_signal : {}".format(token_signal))
+        if token_signal == "ok":
             if self.savedSearch == "first":
                 self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
                 self.authenticator.first_auth = False
@@ -411,17 +402,10 @@ class Isogeo:
                 self.api_requester.send_request(request_type="shares")
             else:
                 self.api_requester.send_request()
-        elif token_signal == "credIssue":
-            self.authenticator.show_error("creds")
+
+        elif token_signal == "creds_issue":
+            self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
         else:
-            msgBar.pushMessage(
-                self.tr(
-                    "Request to Isogeo failed: please check your Internet"
-                    " connection and your proxy configuration"
-                ),
-                duration=10,
-                level=1,
-            )
             self.pluginIsActive = False
 
     # --- SEARCH --------------------------------------------------------------
@@ -863,11 +847,8 @@ class Isogeo:
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
 
         # -- Authentication form ----------------------------------------------
-        # self.authenticator.auth_sig.connect(
-        #     self.write_ids_and_test
-        # )
         self.authenticator.auth_sig.connect(
-            self.user_authentication
+            self.auth_slot
         )
 
 
