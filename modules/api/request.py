@@ -282,10 +282,10 @@ class ApiRequester(QgsNetworkAccessManager):
             else:
                 logger.error(
                     "Request to the API failed. Empty reply for the third time. "
-                    "Weither no catalog is shared with the plugin, or there is a "
-                    "problem (2 requests sent together)"
+                    "Weither no catalog is shared with the plugin, or there is no "
+                    "Internet connection."
                 )
-                self.api_sig.emit("shares_issue")
+                self.api_sig.emit("internet_issue")
 
         else:
             logger.warning(
