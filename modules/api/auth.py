@@ -15,7 +15,6 @@ from qgis.PyQt.QtCore import (
     QObject,
     pyqtSignal,
 )
-from qgis.PyQt.QtWidgets import QMessageBox, QSizePolicy
 
 # PyQGIS
 from qgis.gui import QgsMessageBar
@@ -279,7 +278,6 @@ class Authenticator(QObject):
         """
         self.informer = UserInformer(message_bar=self.msgbar, trad=self.tr)
         self.auth_sig.connect(self.informer.authentication_slot)
-        # self.ui_auth_form.finished.connect(partial(self.disconnect_msgbar, informer.authentication_slot))
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
             lambda: qsettings.setValue(
                 "isogeo/user/editor",

@@ -219,7 +219,7 @@ class SearchFormManager(IsogeoDockWidget):
         """
         logger.debug("Filling quick searches comboboxes")
         # building the list of widgets' items'content
-        if items_list == None:
+        if items_list is None:
             qs_list = list(self.qs_mng.load_file().keys())
         else:
             qs_list = items_list

@@ -3,16 +3,9 @@
 
 # Standard library
 import logging
-import json
-from pathlib import Path
 
 # PyQGIS
-from qgis.utils import iface
 from qgis.gui import QgsMessageBar
-
-# PyQT
-from qgis.PyQt.QtGui import QIcon
-
 
 # ############################################################################
 # ########## Globals ###############
@@ -87,16 +80,19 @@ class UserInformer:
                 "UserInformer",
             ),
             "unkown_error": self.tr(
-                "Request to Isogeo's API failed : unkown error found. Please, report it in the bug tracker.",
+                "Request to Isogeo's API failed : unkown error found. Please,"
+                " report it in the bug tracker.",
                 "UserInformer",
             ),
             "unkonw_reply": self.tr(
-                "API authentication failed : unexpected API's reply. Please, report it in the bug tracker.",
+                "API authentication failed : unexpected API's reply. Please,"
+                " report it in the bug tracker.",
                 "UserInformer",
             ),
             "internet_issue": self.tr(
-                "Request to Isogeo's API failed : please check your Internet connection and your proxy configuration."
-                "If this error keeps happening, please report it in the bug tracker.",
+                "Request to Isogeo's API failed : please check your Internet connection and"
+                " your proxy configuration. If this error keeps happening, please report it"
+                " in the bug tracker.",
                 "UserInformer",
             ),
         }

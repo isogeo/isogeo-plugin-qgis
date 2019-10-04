@@ -13,7 +13,6 @@ from qgis.utils import iface
 # PyQT
 from qgis.PyQt.QtCore import QByteArray, QUrl, pyqtSignal
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
-from qgis.PyQt.QtWidgets import QMessageBox
 
 # ############################################################################
 # ########## Globals ###############
