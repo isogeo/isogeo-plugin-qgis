@@ -86,6 +86,7 @@ class SharesParser(QObject):
             logger.debug("The plugin is not powered by any shares.")
             return
 
+
 # #############################################################################
 # ##### Stand alone program ########
 # ##################################

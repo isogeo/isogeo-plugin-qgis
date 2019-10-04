@@ -234,7 +234,7 @@ class ApiRequester(QgsNetworkAccessManager):
                     logger.debug("(from : {}).".format(url))
                     if len(parsed_content) > 0:
                         self.shares_sig.emit(parsed_content)
-                    else :
+                    else:
                         self.api_sig.emit("shares_issue")
                 elif "resources/search?" in url:
                     logger.debug("Handling reply to a 'search' request")
