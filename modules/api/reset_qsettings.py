@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" A script to remove Isogeo's settings from QGIS' settings. 
+""" A script to remove Isogeo's settings from QGIS' settings.
 Usefull to test first authentication to Isogeo plugin.
 
 """
@@ -11,6 +11,5 @@ qsettings = QSettings()
 if "isogeo" in qsettings.childGroups():
     print("'isogeo' child group detected in QSettings --> removing it")
     qsettings.remove("isogeo")
-
 else:
     print("QSettings already cleared")

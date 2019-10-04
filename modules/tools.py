@@ -298,19 +298,16 @@ class IsogeoPlgTools(IsogeoUtils):
         qgis_proxy = str(qsettings.value("proxy/proxyEnabled", ""))
 
         if system_proxy_config == {} and qgis_proxy != "true":
-            logger.info(
-                "No proxy found on the OS or in QGIS" 
-                "=> Proxy config : OK"
-            )
+            logger.info("No proxy found on the OS or in QGIS" "=> Proxy config : OK")
             return 0
         else:
             if qgis_proxy == "true":
                 http = system_proxy_config.get("http")
                 if http is None:
                     logger.info(
-                                "A proxy is set up in QGIS but not "
-                                "in the OS. => Proxy config: not OK"
-                            )
+                        "A proxy is set up in QGIS but not "
+                        "in the OS. => Proxy config: not OK"
+                    )
                     pass
                 else:
                     elements = http.split(":")
@@ -327,9 +324,9 @@ class IsogeoPlgTools(IsogeoUtils):
                             )
                         else:
                             logger.error(
-                                    "OS and QGIS proxy ports do not "
-                                    "match. => Proxy config: not OK"
-                                )
+                                "OS and QGIS proxy ports do not "
+                                "match. => Proxy config: not OK"
+                            )
                             QMessageBox.information(
                                 iface.mainWindow(),
                                 self.tr("Alert", "Tools"),
@@ -345,7 +342,9 @@ class IsogeoPlgTools(IsogeoUtils):
                         port = elements[2]
                         qgis_host = qsettings.value("proxy/proxyHost", "")
                         qgis_port = qsettings.value("proxy/proxyPort", "")
-                        if (qgis_host == host_short or qgis_host == host_long) and qgis_port == port:
+                        if (
+                            qgis_host == host_short or qgis_host == host_long
+                        ) and qgis_port == port:
                             logger.info(
                                 "A proxy is set up both in QGIS"
                                 " and the OS and they match "
@@ -365,7 +364,7 @@ class IsogeoPlgTools(IsogeoUtils):
                                     "Tools",
                                 ),
                             )
-                      
+
             else:
                 logger.error(
                     "OS uses a proxy but it isn't set up in QGIS."

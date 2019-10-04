@@ -7,8 +7,14 @@ import time
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, QCoreApplication, QTranslator, qVersion, QObject, pyqtSignal
-from qgis.PyQt.QtWidgets import QMessageBox, QSizePolicy
+from qgis.PyQt.QtCore import (
+    QSettings,
+    QCoreApplication,
+    QTranslator,
+    qVersion,
+    QObject,
+    pyqtSignal,
+)
 
 # PyQGIS
 from qgis.gui import QgsMessageBar
@@ -103,7 +109,7 @@ class Authenticator(QObject):
         self.tr = object
         self.lang = str
 
-        #inform user
+        # inform user
         self.informer = object
         self.first_auth = bool
 
@@ -270,9 +276,8 @@ class Authenticator(QObject):
     def display_auth_form(self):
         """Show authentication form with prefilled fields and connected widgets.
         """
-        self.informer = UserInformer(message_bar = self.msgbar, trad = self.tr)
+        self.informer = UserInformer(message_bar=self.msgbar, trad=self.tr)
         self.auth_sig.connect(self.informer.authentication_slot)
-        # self.ui_auth_form.finished.connect(partial(self.disconnect_msgbar, informer.authentication_slot))
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
             lambda: qsettings.setValue(
                 "isogeo/user/editor",
@@ -301,7 +306,7 @@ class Authenticator(QObject):
 
         if self.first_auth:
             pass
-        else :
+        else:
             self.auth_sig.emit("ok")
             pass
 
@@ -314,22 +319,36 @@ class Authenticator(QObject):
 
         # test file structure
         selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
-        logger.debug("Loading credentials from file indicated by the user : {}".format(selected_file))
+        logger.debug(
+            "Loading credentials from file indicated by the user : {}".format(
+                selected_file
+            )
+        )
         try:
-            api_credentials = plg_tools.credentials_loader(self.ui_auth_form.btn_browse_credentials.filePath())
+            api_credentials = plg_tools.credentials_loader(
+                self.ui_auth_form.btn_browse_credentials.filePath()
+            )
         except IOError as e:
             self.auth_sig.emit("path")
-            logger.error("Fail to load credentials from authentication file. IOError : {}".format(e))
+            logger.error(
+                "Fail to load credentials from authentication file. IOError : {}".format(
+                    e
+                )
+            )
             self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
-            self.credentials_uploader
+                self.credentials_uploader
             )
             self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
         except ValueError as e:
             self.auth_sig.emit("file")
-            logger.error("Fail to load credentials from authentication file. ValueError : {}".format(e))
+            logger.error(
+                "Fail to load credentials from authentication file. ValueError : {}".format(
+                    e
+                )
+            )
             self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
-            self.credentials_uploader
+                self.credentials_uploader
             )
             self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
@@ -352,12 +371,12 @@ class Authenticator(QObject):
             selected_file.rename(dest_path)
             logger.debug(
                 "Selected credentials file has been moved into plugin" "_auth subfolder"
-            )    
+            )
         except Exception as e:
             logger.debug("Fail to rename authentication file : {}".format(e))
             self.auth_sig.emit("path")
             self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
-            self.credentials_uploader
+                self.credentials_uploader
             )
             self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
@@ -374,6 +393,7 @@ class Authenticator(QObject):
         )
         self.auth_sig.emit("ok")
         return True
+
 
 # #############################################################################
 # ##### Stand alone program ########
