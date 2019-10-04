@@ -29,16 +29,17 @@ msgBar = iface.messageBar()
 
 class ApiRequester(QgsNetworkAccessManager):
     """Basic class to manage direct interactions with Isogeo's API :
-        - Authentication request for token
+        - Authentication request for tokenl
         - Request about application's shares
         - Request about ressources
         - Building request URLs
     """
 
-    token_sig = pyqtSignal(str)
+    api_sig = pyqtSignal(str)
     search_sig = pyqtSignal(dict, dict)
     details_sig = pyqtSignal(dict, dict)
     shares_sig = pyqtSignal(list)
+    error_sig = pyqtSignal(str)
 
     def __init__(self):
         # inheritance
@@ -81,7 +82,6 @@ class ApiRequester(QgsNetworkAccessManager):
         self.api_url_redirect = dict_params.get("url_redirect", "")
         # sending an authentication request once API parameters are storer
         self.send_request("token")
-        # self.auth_post_get_token()
 
     def create_request(self, request_type: str):
         """Creates a QNetworkRequest() with appropriate headers and URL
@@ -165,7 +165,7 @@ class ApiRequester(QgsNetworkAccessManager):
         Depending on the reply's content validity and the request's type, an appropriated signal
         is emitted with different data's value.
 
-        - For token requests : the token_sig signal is emitted wathever the replys's content but
+        - For token requests : the api_sig signal is emitted wathever the replys's content but
         the mitted str's value depend on this content. A single slot is connected to this signal
         and acts according to value of the string recieved (see isogeo.py : Isogeo.token_slot).
         - For other requests : for each type of request there is a corresponding signal but the
@@ -184,64 +184,58 @@ class ApiRequester(QgsNetworkAccessManager):
                 parsed_content = json.loads(content)
             except ValueError as e:
                 if "No JSON object could be decoded" in str(e):
-                    logger.error("Internet connection failed")
-                    self.token_sig.emit("NoInternet")
+                    logger.error(
+                        "'No JSON object could be decoded' --> Internet connection failed"
+                    )
+                    self.api_sig.emit("internet_issue")
                 else:
                     pass
                 return
-
             url = reply.url().toString()
             # for token request, one signal is emitted passing a string whose
             # value depend on the reply content
             if "token" in url:
                 logger.debug("Handling reply to a 'token' request")
                 logger.debug("(from : {}).".format(url))
+
                 if "access_token" in parsed_content:
+                    logger.debug("Authentication succeeded, access token retrieved.")
+
                     QgsMessageLog.logMessage(
                         message="Authentication succeeded", tag="Isogeo", level=0
                     )
-                    logger.debug("Access token retrieved.")
+
                     # storing token
                     self.token = "Bearer " + parsed_content.get("access_token")
-                    self.token_sig.emit("tokenOK")
+                    self.api_sig.emit("ok")
+
                 elif "error" in parsed_content:
                     logger.error(
-                        "The API reply is an error: {}. ID and SECRET must be "
-                        "invalid. Asking for them again.".format(
-                            parsed_content.get("error")
-                        )
-                    )
-                    msgBar.pushMessage(
-                        "Isogeo",
-                        self.tr(
-                            "API authentication failed.Isogeo API answered: {}"
-                        ).format(parsed_content.get("error")),
-                        duration=10,
-                        level=1,
-                    )
-                    self.token_sig.emit("credIssue")
-                else:
-                    msgBar.pushMessage(
-                        "Isogeo",
-                        self.tr(
-                            "API authentication failed.Isogeo API answered: {}"
-                        ).format(parsed_content.get("error")),
-                        duration=10,
-                        level=2,
-                    )
-                    logger.debug(
-                        "The API reply has an unexpected form: {}.".format(
+                        "Authentication request failed. 'error' in parsed_content, may be "
+                        "because of invalid credentials \n API's reply content : {}".format(
                             parsed_content
                         )
                     )
+                    self.api_sig.emit("creds_issue")
+
+                else:
+                    logger.warning(
+                        "Authentication request failed. API's reply's has an unexpected form."
+                        "\n API's reply content : {}".format(parsed_content)
+                    )
+                    self.api_sig.emit("unkown_reply")
+
             # for other types of request, a different signal is emitted depending
-            # on the type of request but it always pass the reply's content
+            # on the type of request but always passing the reply's content
             else:
                 self.loopCount = 0
                 if "shares" in url:
                     logger.debug("Handling reply to a 'shares' request")
                     logger.debug("(from : {}).".format(url))
-                    self.shares_sig.emit(parsed_content)
+                    if len(parsed_content) > 0:
+                        self.shares_sig.emit(parsed_content)
+                    else :
+                        self.api_sig.emit("shares_issue")
                 elif "resources/search?" in url:
                     logger.debug("Handling reply to a 'search' request")
                     logger.debug("(from : {}).".format(url))
@@ -255,7 +249,7 @@ class ApiRequester(QgsNetworkAccessManager):
                         parsed_content, self.get_tags(parsed_content.get("tags"))
                     )
                 else:
-                    logger.debug("Unkown reply type")
+                    logger.debug("Unkown reply type : {}".format(parsed_content))
             del parsed_content
 
         # if replys's content is invalid
@@ -264,38 +258,44 @@ class ApiRequester(QgsNetworkAccessManager):
             self.loopCount = 0
             self.send_request("token")
 
-        elif content == "":
+        elif reply.error() >= 101 and reply.error() <= 105:
             logger.error(
-                "Empty reply. Weither no catalog is shared with the "
-                "plugin, or there is a problem (2 requests sent "
-                "together)"
+                "Request to the API failed. Proxy issue code received : {}"
+                "\nsee https://doc.qt.io/qt-5/qnetworkreply.html#NetworkError-enum".format(
+                    str(reply.error())
+                )
             )
+            self.api_sig.emit("proxy_issue")
+
+        elif reply.error() == 302:
+            logger.error(
+                "Request to the API failed. Redirecting code received : 302."
+                "Creds may be invalid or a proxy error wasn't catched."
+            )
+            self.api_sig.emit("creds_issue")
+
+        elif content == "":
             if self.loopCount < 3:
                 self.loopCount += 1
                 reply.abort()
-                # self.status_isClear = True
                 self.send_request("token")
             else:
-                # self.status_isClear = True
-                msgBar.pushMessage(
-                    self.tr(
-                        "The script is looping. Make sure you shared a "
-                        "catalog with the plugin. If so, please report "
-                        "this on the bug tracker."
-                    )
+                logger.error(
+                    "Request to the API failed. Empty reply for the third time. "
+                    "Weither no catalog is shared with the plugin, or there is no "
+                    "Internet connection."
                 )
-                self.token_sig.emit("NoInternet")
-                return
+                self.api_sig.emit("internet_issue")
+
         else:
-            logger.warning("Unknown error : {}".format(str(reply.error())))
-            # self.status_isClear = True
-            QMessageBox.information(
-                self.iface.mainWindow(),
-                self.tr("Error"),
-                self.tr("You are facing an unknown error. " "Code: ")
-                + str(reply.error())
-                + "\nPlease report it on the bug tracker.",
+            logger.warning(
+                "Request to the API failed. Unkown error : {}"
+                "\n(see https://doc.qt.io/qt-5/qnetworkreply.html#NetworkError-enum)".format(
+                    str(reply.error())
+                )
             )
+
+            self.api_sig.emit("unkown_error")
         return
 
     def build_request_url(self, params: dict):
@@ -445,7 +445,7 @@ class ApiRequester(QgsNetworkAccessManager):
 
         # override API tags to allow all datasets filter - see #
         if type_dataset == 2:
-            md_types[self.tr("Dataset", "Authenticator")] = "type:dataset"
+            md_types[self.tr("Dataset", "ApiRequester")] = "type:dataset"
         else:
             pass
 

@@ -45,43 +45,46 @@ class SharesParser(QObject):
         logger.debug("Application properties provided by the Isogeo API.")
         content = shares
 
-        text = "<html>"  # opening html content
-        # Isogeo application authenticated in the plugin
-        app = content[0].get("applications")[0]
-        text += self.tr(
-            "<p>This plugin is authenticated as " "<a href='{}'>{}</a> and "
-        ).format(
-            app.get("url", "https://isogeo.gitbooks.io/app-plugin-qgis/content"),
-            app.get("name", "Isogeo plugin for QGIS"),
-        )
-        # shares feeding the application
-        if len(content) == 1:
-            text += self.tr(" powered by 1 share:</p></br>")
+        if len(content) > 0:
+            text = "<html>"  # opening html content
+            # Isogeo application authenticated in the plugin
+            app = content[0].get("applications")[0]
+            text += self.tr(
+                "<p>This plugin is authenticated as " "<a href='{}'>{}</a> and "
+            ).format(
+                app.get("url", "https://isogeo.gitbooks.io/app-plugin-qgis/content"),
+                app.get("name", "Isogeo plugin for QGIS"),
+            )
+            # shares feeding the application
+            if len(content) == 1:
+                text += self.tr(" powered by 1 share:</p></br>")
+            else:
+                text += self.tr(" powered by {} shares:</p></br>").format(len(content))
+            # shares details
+            for share in content:
+                # share variables
+                creator_name = share.get("_creator").get("contact").get("name")
+                creator_email = share.get("_creator").get("contact").get("email")
+                creator_id = share.get("_creator").get("_tag")[6:]
+                share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}".format(
+                    creator_id, share.get("_id")
+                )
+                # formatting text
+                text += "<p><a href='{}'><b>{}</b></a></p>".format(
+                    share_url, share.get("name")
+                )
+                text += self.tr("<p>Updated: {}</p>").format(
+                    plg_tools.handle_date(share.get("_modified"))
+                )
+                text += self.tr("<p>Contact: {} - {}</p>").format(
+                    creator_name, creator_email
+                )
+                text += "<p><hr></p>"
+            text += "</html>"
+            self.shares_ready.emit(text)
         else:
-            text += self.tr(" powered by {} shares:</p></br>").format(len(content))
-        # shares details
-        for share in content:
-            # share variables
-            creator_name = share.get("_creator").get("contact").get("name")
-            creator_email = share.get("_creator").get("contact").get("email")
-            creator_id = share.get("_creator").get("_tag")[6:]
-            share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}".format(
-                creator_id, share.get("_id")
-            )
-            # formatting text
-            text += "<p><a href='{}'><b>{}</b></a></p>".format(
-                share_url, share.get("name")
-            )
-            text += self.tr("<p>Updated: {}</p>").format(
-                plg_tools.handle_date(share.get("_modified"))
-            )
-            text += self.tr("<p>Contact: {} - {}</p>").format(
-                creator_name, creator_email
-            )
-            text += "<p><hr></p>"
-        text += "</html>"
-        self.shares_ready.emit(text)
-
+            logger.debug("The plugin is not powered by any shares.")
+            return
 
 # #############################################################################
 # ##### Stand alone program ########

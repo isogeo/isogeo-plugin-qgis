@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Isogeo</author>
  <class>dlg_form_auth_prompt</class>
@@ -27,16 +27,19 @@
    <string>Isogeo authentication settings</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../resources.qrc">
+   <iconset>
     <normaloff>:/plugins/Isogeo/resources/users.svg</normaloff>:/plugins/Isogeo/resources/users.svg</iconset>
   </property>
   <property name="locale">
-   <locale country="UnitedStates" language="English" />
+   <locale language="English" country="UnitedStates"/>
   </property>
   <property name="modal">
    <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QVBoxLayout" name="msgbar_vlayout"/>
+   </item>
    <item>
     <widget class="QGroupBox" name="grb_connection_ready">
      <property name="minimumSize">
@@ -55,7 +58,7 @@
       <bool>true</bool>
      </property>
      <property name="locale">
-      <locale country="UnitedStates" language="English" />
+      <locale language="English" country="UnitedStates"/>
      </property>
      <property name="title">
       <string>I already have Isogeo ID and SECRET for this application</string>
@@ -64,135 +67,20 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item column="1" row="3">
-       <widget class="QLabel" name="lbl_app_secret">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="locale">
-         <locale country="UnitedStates" language="English" />
-        </property>
-        <property name="text">
-         <string>Application SECRET:</string>
-        </property>
-        <property name="scaledContents">
-         <bool>true</bool>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item column="4" row="3">
-       <spacer name="horizontalSpacer_2">
+      <item row="1" column="3">
+       <spacer name="verticalSpacer_2">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
-          <height>20</height>
+          <width>20</width>
+          <height>40</height>
          </size>
         </property>
        </spacer>
       </item>
-      <item column="3" row="3">
-       <widget class="QLineEdit" name="ent_app_secret">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>475</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>800</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string notr="true" />
-        </property>
-        <property name="maxLength">
-         <number>64</number>
-        </property>
-        <property name="echoMode">
-         <enum>QLineEdit::PasswordEchoOnEdit</enum>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-        <property name="placeholderText">
-         <string notr="true">*******************************************</string>
-        </property>
-       </widget>
-      </item>
-      <item column="3" row="5">
-       <widget class="QCheckBox" name="chb_isogeo_editor">
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>I've got the power hey yeah heh!</string>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>I've got edition rights on app.isogeo.com</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../resources.qrc">
-          <normaloff>:/plugins/Isogeo/resources/authentication/user.svg</normaloff>:/plugins/Isogeo/resources/authentication/user.svg</iconset>
-        </property>
-        <property name="tristate">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item column="3" row="2">
+      <item row="2" column="3">
        <widget class="QLineEdit" name="ent_app_id">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -219,13 +107,13 @@
          </font>
         </property>
         <property name="toolTip">
-         <string />
+         <string/>
         </property>
         <property name="autoFillBackground">
          <bool>true</bool>
         </property>
         <property name="text">
-         <string />
+         <string/>
         </property>
         <property name="maxLength">
          <number>100</number>
@@ -244,7 +132,73 @@
         </property>
        </widget>
       </item>
-      <item column="4" row="0">
+      <item row="3" column="1">
+       <widget class="QLabel" name="lbl_app_secret">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="locale">
+         <locale language="English" country="UnitedStates"/>
+        </property>
+        <property name="text">
+         <string>Application SECRET:</string>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3">
+       <widget class="QCheckBox" name="chb_isogeo_editor">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>I've got the power hey yeah heh!</string>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>I've got edition rights on app.isogeo.com</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/plugins/Isogeo/resources/authentication/user.svg</normaloff>:/plugins/Isogeo/resources/authentication/user.svg</iconset>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
        <spacer name="horizontalSpacer_3">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -257,7 +211,29 @@
         </property>
        </spacer>
       </item>
-      <item colspan="8" column="0" row="6">
+      <item row="0" column="1">
+       <widget class="QLabel" name="lbl_browse_credentials">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>From a file:</string>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" colspan="7">
        <widget class="QDialogButtonBox" name="btn_ok_cancel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -297,7 +273,20 @@
         </property>
        </widget>
       </item>
-      <item column="1" row="2">
+      <item row="2" column="4">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="1">
        <widget class="QLabel" name="lbl_app_id">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -315,7 +304,7 @@
          <bool>true</bool>
         </property>
         <property name="locale">
-         <locale country="UnitedStates" language="English" />
+         <locale language="English" country="UnitedStates"/>
         </property>
         <property name="text">
          <string>Application ID:</string>
@@ -328,24 +317,24 @@
         </property>
        </widget>
       </item>
-      <item column="5" row="2" rowspan="2">
-       <widget class="QPushButton" name="btn_check_auth">
+      <item row="3" column="3">
+       <widget class="QLineEdit" name="ent_app_secret">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>
-          <width>0</width>
-          <height>50</height>
+          <width>475</width>
+          <height>25</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>16777215</width>
-          <height>16777215</height>
+          <width>800</width>
+          <height>30</height>
          </size>
         </property>
         <property name="font">
@@ -354,37 +343,45 @@
           <bold>false</bold>
          </font>
         </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="toolTip">
-         <string>Check access validity</string>
-        </property>
-        <property name="text">
-         <string>Check</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../resources.qrc">
-          <normaloff>:/plugins/Isogeo/resources/authentication/sign-in.svg</normaloff>:/plugins/Isogeo/resources/authentication/sign-in.svg</iconset>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item column="1" row="0">
-       <widget class="QLabel" name="lbl_browse_credentials">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
         </property>
         <property name="autoFillBackground">
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>From a file:</string>
+         <string notr="true"/>
+        </property>
+        <property name="maxLength">
+         <number>64</number>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::PasswordEchoOnEdit</enum>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
+         <string notr="true">*******************************************</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="lbl_api_url">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>Only for information, the Isogeo API base URL</string>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>API location:</string>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -394,7 +391,20 @@
         </property>
        </widget>
       </item>
-      <item column="3" row="0">
+      <item row="3" column="4">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="3">
        <widget class="QgsFileWidget" name="btn_browse_credentials">
         <property name="enabled">
          <bool>true</bool>
@@ -448,62 +458,11 @@
          <string notr="true">*.json;*.ini</string>
         </property>
         <property name="defaultRoot">
-         <string notr="true" />
+         <string notr="true"/>
         </property>
        </widget>
       </item>
-      <item column="4" row="2">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item column="3" row="1">
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item column="1" row="4">
-       <widget class="QLabel" name="lbl_api_url">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Only for information, the Isogeo API base URL</string>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>API location:</string>
-        </property>
-        <property name="scaledContents">
-         <bool>true</bool>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item column="3" row="4">
+      <item row="4" column="3">
        <widget class="QLabel" name="lbl_api_url_value">
         <property name="font">
          <font>
@@ -542,7 +501,6 @@
      <zorder>btn_browse_credentials</zorder>
      <zorder>lbl_browse_credentials</zorder>
      <zorder>horizontalSpacer_3</zorder>
-     <zorder>btn_check_auth</zorder>
      <zorder>verticalSpacer_2</zorder>
      <zorder>lbl_api_url_value</zorder>
      <zorder>lbl_api_url</zorder>
@@ -572,7 +530,7 @@
       <bool>true</bool>
      </property>
      <property name="locale">
-      <locale country="UnitedStates" language="English" />
+      <locale language="English" country="UnitedStates"/>
      </property>
      <property name="title">
       <string>Don't have an account yet ?</string>
@@ -584,7 +542,7 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item column="0" row="1">
+      <item row="1" column="0">
        <widget class="QPushButton" name="btn_account_new">
         <property name="minimumSize">
          <size>
@@ -614,7 +572,7 @@
          <string>Request plugin access</string>
         </property>
         <property name="icon">
-         <iconset resource="../../resources.qrc">
+         <iconset>
           <normaloff>:/plugins/Isogeo/resources/authentication/send-o.svg</normaloff>:/plugins/Isogeo/resources/authentication/send-o.svg</iconset>
         </property>
         <property name="default">
@@ -622,7 +580,7 @@
         </property>
        </widget>
       </item>
-      <item column="0" row="0">
+      <item row="0" column="0">
        <widget class="QLabel" name="lbl_access_conditions">
         <property name="maximumSize">
          <size>
@@ -665,9 +623,10 @@
   <customwidget>
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
-   <header>qgis.gui</header>
+   <header>qgsfilewidget.h</header>
   </customwidget>
  </customwidgets>
+ <resources/>
  <connections>
   <connection>
    <sender>btn_ok_cancel</sender>

@@ -7,11 +7,15 @@ import time
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, QCoreApplication, QTranslator, qVersion
-from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtCore import QSettings, QCoreApplication, QTranslator, qVersion, QObject, pyqtSignal
+from qgis.PyQt.QtWidgets import QMessageBox, QSizePolicy
+
+# PyQGIS
+from qgis.gui import QgsMessageBar
 
 # Plugin modules
 from ..tools import IsogeoPlgTools
+from ..user_inform import UserInformer
 
 # UI class
 from ...ui.auth.dlg_authentication import IsogeoAuthentication
@@ -45,7 +49,7 @@ else:
 # ##################################
 
 
-class Authenticator:
+class Authenticator(QObject):
     """Basic class to manage user authentication to Isogeo's API :
         - Getting credentials from oAuth2 file or QGIS Settings
         - Storing credentials
@@ -55,8 +59,13 @@ class Authenticator:
     where oAuth2 file is stored.
     """
 
+    auth_sig = pyqtSignal(str)
+
     # ui reference - authentication form
     ui_auth_form = IsogeoAuthentication()
+    # display messages to the user
+    msgbar = QgsMessageBar(ui_auth_form)
+    ui_auth_form.msgbar_vlayout.addWidget(msgbar)
 
     # api parameters
     api_params = {
@@ -72,6 +81,8 @@ class Authenticator:
     credentials_location = {"QSettings": 0, "oAuth2_file": 0}
 
     def __init__(self):
+        # inheritance
+        super().__init__()
 
         # API URLs - Prod
         (
@@ -91,6 +102,10 @@ class Authenticator:
         # translation
         self.tr = object
         self.lang = str
+
+        #inform user
+        self.informer = object
+        self.first_auth = bool
 
     # MANAGER -----------------------------------------------------------------
     def manage_api_initialization(self):
@@ -117,6 +132,7 @@ class Authenticator:
             self.credentials_update("oAuth2_file")
         else:
             logger.info("No credentials found. ")
+            self.first_auth = True
             self.display_auth_form()
             return False, None
 
@@ -157,8 +173,8 @@ class Authenticator:
             qsettings.endGroup()
             return True
         else:
+            logger.debug("No Isogeo credentials found within QGIS QSettings.")
             pass
-        logger.debug("No Isogeo credentials found within QGIS QSettings.")
         return False
 
     def credentials_check_file(self):
@@ -254,8 +270,9 @@ class Authenticator:
     def display_auth_form(self):
         """Show authentication form with prefilled fields and connected widgets.
         """
-
-        # connecting widgets
+        self.informer = UserInformer(message_bar = self.msgbar, trad = self.tr)
+        self.auth_sig.connect(self.informer.authentication_slot)
+        # self.ui_auth_form.finished.connect(partial(self.disconnect_msgbar, informer.authentication_slot))
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
             lambda: qsettings.setValue(
                 "isogeo/user/editor",
@@ -269,6 +286,8 @@ class Authenticator:
             self.credentials_uploader
         )
 
+        self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
+
         # fillfull auth form fields from stored settings
         self.ui_auth_form.ent_app_id.setText(self.api_params["app_id"])
         self.ui_auth_form.ent_app_secret.setText(self.api_params["app_secret"])
@@ -280,24 +299,40 @@ class Authenticator:
         logger.debug("Authentication form filled and ready to be launched.")
         self.ui_auth_form.show()
 
+        if self.first_auth:
+            pass
+        else :
+            self.auth_sig.emit("ok")
+            pass
+
     def credentials_uploader(self):
         """Get file selected by the user and loads API credentials into plugin.
         If the selected is compliant, credentials are loaded from then it's
         moved inside plugin/_auth subfolder.
         """
+        self.ui_auth_form.btn_browse_credentials.fileChanged.disconnect()
+
         # test file structure
+        selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
+        logger.debug("Loading credentials from file indicated by the user : {}".format(selected_file))
         try:
-            selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
-            api_credentials = plg_tools.credentials_loader(selected_file)
-        except Exception as e:
-            logger.error(e)
-            QMessageBox.critical(
-                self.ui_auth_form,
-                self.tr("Alert", "Authenticator"),
-                self.tr(
-                    "The selected credentials file is not correct.", "Authenticator"
-                ),
+            api_credentials = plg_tools.credentials_loader(self.ui_auth_form.btn_browse_credentials.filePath())
+        except IOError as e:
+            self.auth_sig.emit("path")
+            logger.error("Fail to load credentials from authentication file. IOError : {}".format(e))
+            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
+            self.credentials_uploader
             )
+            self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
+            return False
+        except ValueError as e:
+            self.auth_sig.emit("file")
+            logger.error("Fail to load credentials from authentication file. ValueError : {}".format(e))
+            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
+            self.credentials_uploader
+            )
+            self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
+            return False
         # move credentials file into the plugin file structure
         dest_path = self.cred_filepath
         if dest_path.is_file():
@@ -315,122 +350,30 @@ class Authenticator:
             pass
         try:
             selected_file.rename(dest_path)
-            # set form
-            self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
-            self.ui_auth_form.ent_app_secret.setText(
-                api_credentials.get("client_secret")
-            )
-            self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
-            # update class attributes from file
-            self.credentials_update(credentials_source="oAuth2_file")
-            # store into QSettings if existing
-            self.credentials_storer(store_location="QSettings")
-
             logger.debug(
                 "Selected credentials file has been moved into plugin" "_auth subfolder"
+            )    
+        except Exception as e:
+            logger.debug("Fail to rename authentication file : {}".format(e))
+            self.auth_sig.emit("path")
+            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
+            self.credentials_uploader
             )
-        except Exception:
-            logger.debug("OAuth2 file issue : check path validity.")
-
-    # REQUEST and RESULTS ----------------------------------------------------
-    def get_tags(self, tags: dict):
-        """ This parse the tags contained in API_answer[tags] and class them so
-        they are more easy to handle in other function such as update_fields()
-
-        :param dict tags: a dict of tags as thez are return by the API
-
-        return: a dict containing one dict for each type of tags
-
-        rtype: dict(dict)
-        """
-        # set dicts
-        actions = {}
-        contacts = {}
-        formats = {}
-        inspire = {}
-        keywords = {}
-        licenses = {}
-        md_types = {}
-        owners = {}
-        srs = {}
-        # unused = {}
-        # 0/1 values
-        compliance = 0
-        type_dataset = 0
-        # parsing tags
-        for tag in sorted(tags.keys()):
-            # actions
-            if tag.startswith("action"):
-                actions[tags.get(tag, tag)] = tag
-                continue
-            # compliance INSPIRE
-            elif tag.startswith("conformity"):
-                compliance = 1
-                continue
-            # contacts
-            elif tag.startswith("contact"):
-                contacts[tags.get(tag)] = tag
-                continue
-            # formats
-            elif tag.startswith("format"):
-                formats[tags.get(tag)] = tag
-                continue
-            # INSPIRE themes
-            elif tag.startswith("keyword:in"):
-                inspire[tags.get(tag)] = tag
-                continue
-            # keywords
-            elif tag.startswith("keyword:is"):
-                keywords[tags.get(tag)] = tag
-                continue
-            # licenses
-            elif tag.startswith("license"):
-                licenses[tags.get(tag)] = tag
-                continue
-            # owners
-            elif tag.startswith("owner"):
-                owners[tags.get(tag)] = tag
-                continue
-            # SRS
-            elif tag.startswith("coordinate-system"):
-                srs[tags.get(tag)] = tag
-                continue
-            # types
-            elif tag.startswith("type"):
-                md_types[tags.get(tag)] = tag
-                if tag in ("type:vector-dataset", "type:raster-dataset"):
-                    type_dataset += 1
-                continue
-            # ignored tags
-            else:
-                # unused[tags.get(tag, tag)] = tag
-                continue
-
-        # override API tags to allow all datasets filter - see #
-        if type_dataset == 2:
-            md_types[self.tr("Dataset", "Authenticator")] = "type:dataset"
-        else:
-            pass
-
-        # storing dicts
-        tags_parsed = {
-            "actions": actions,
-            "compliance": compliance,
-            "contacts": contacts,
-            "formats": formats,
-            "inspire": inspire,
-            "keywords": keywords,
-            "licenses": licenses,
-            "owners": owners,
-            "srs": srs,
-            "types": md_types,
-            # "unused": unused
-        }
-
-        # method ending
-        logger.info("Tags retrieved")
-        return tags_parsed
-
+            self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
+            return False
+        # set form
+        self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
+        self.ui_auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
+        self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
+        # update class attributes from file
+        self.credentials_update(credentials_source="oAuth2_file")
+        # store into QSettings if existing
+        self.credentials_storer(store_location="QSettings")
+        self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
+            self.credentials_uploader
+        )
+        self.auth_sig.emit("ok")
+        return True
 
 # #############################################################################
 # ##### Stand alone program ########

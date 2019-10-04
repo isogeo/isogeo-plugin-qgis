@@ -295,14 +295,22 @@ class IsogeoPlgTools(IsogeoUtils):
         computer but not in QGIS, pops an alert message.
         """
         system_proxy_config = getproxies()
-        if system_proxy_config == {}:
-            logger.info("No proxy found on the OS: OK.")
+        qgis_proxy = str(qsettings.value("proxy/proxyEnabled", ""))
+
+        if system_proxy_config == {} and qgis_proxy != "true":
+            logger.info(
+                "No proxy found on the OS or in QGIS" 
+                "=> Proxy config : OK"
+            )
             return 0
         else:
-            qgis_proxy = qsettings.value("proxy/proxyEnabled", "")
-            if str(qgis_proxy) == "true":
+            if qgis_proxy == "true":
                 http = system_proxy_config.get("http")
                 if http is None:
+                    logger.info(
+                                "A proxy is set up in QGIS but not "
+                                "in the OS. => Proxy config: not OK"
+                            )
                     pass
                 else:
                     elements = http.split(":")
@@ -311,31 +319,23 @@ class IsogeoPlgTools(IsogeoUtils):
                         port = elements[1]
                         qgis_host = qsettings.value("proxy/proxyHost", "")
                         qgis_port = qsettings.value("proxy/proxyPort", "")
-                        if qgis_host == host:
-                            if qgis_port == port:
-                                logger.info(
-                                    "A proxy is set up both in QGIS "
-                                    "and the OS and they match => "
-                                    "Proxy config : OK"
-                                )
-                                pass
-                            else:
-                                QMessageBox.information(
-                                    iface.mainWindow(),
-                                    self.tr("Alert", "Tools"),
-                                    self.tr(
-                                        "Proxy issue : \nQGIS and your OS "
-                                        "have different proxy set up.",
-                                        "Tools",
-                                    ),
-                                )
+                        if qgis_host == host and qgis_port == port:
+                            logger.info(
+                                "A proxy is set up both in QGIS "
+                                "and the OS and they match => "
+                                "Proxy config : OK"
+                            )
                         else:
+                            logger.error(
+                                    "OS and QGIS proxy ports do not "
+                                    "match. => Proxy config: not OK"
+                                )
                             QMessageBox.information(
                                 iface.mainWindow(),
                                 self.tr("Alert", "Tools"),
                                 self.tr(
-                                    "Proxy issue : \nQGIS and your OS have"
-                                    " different proxy set ups.",
+                                    "Proxy issue : \nQGIS and your OS "
+                                    "have different proxy set up.",
                                     "Tools",
                                 ),
                             )
@@ -345,42 +345,27 @@ class IsogeoPlgTools(IsogeoUtils):
                         port = elements[2]
                         qgis_host = qsettings.value("proxy/proxyHost", "")
                         qgis_port = qsettings.value("proxy/proxyPort", "")
-                        if qgis_host == host_short or qgis_host == host_long:
-                            if qgis_port == port:
-                                logger.info(
-                                    "A proxy is set up both in QGIS"
-                                    " and the OS and they match "
-                                    "=> Proxy config : OK"
-                                )
-                                pass
-                            else:
-                                logger.error(
-                                    "OS and QGIS proxy ports do not "
-                                    "match. => Proxy config: not OK"
-                                )
-                                QMessageBox.information(
-                                    iface.mainWindow(),
-                                    self.tr("Alert", "Tools"),
-                                    self.tr(
-                                        "Proxy issue : \nQGIS and your OS"
-                                        " have different proxy set ups.",
-                                        "Tools",
-                                    ),
-                                )
+                        if (qgis_host == host_short or qgis_host == host_long) and qgis_port == port:
+                            logger.info(
+                                "A proxy is set up both in QGIS"
+                                " and the OS and they match "
+                                "=> Proxy config : OK"
+                            )
                         else:
                             logger.error(
-                                "OS and QGIS proxy hosts do not "
+                                "OS and QGIS proxy ports do not "
                                 "match. => Proxy config: not OK"
                             )
                             QMessageBox.information(
                                 iface.mainWindow(),
                                 self.tr("Alert", "Tools"),
                                 self.tr(
-                                    "Proxy issue : \nQGIS and your OS have"
-                                    " different proxy set ups.",
+                                    "Proxy issue : \nQGIS and your OS"
+                                    " have different proxy set ups.",
                                     "Tools",
                                 ),
                             )
+                      
             else:
                 logger.error(
                     "OS uses a proxy but it isn't set up in QGIS."

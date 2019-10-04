@@ -127,3 +127,5 @@ help/
 .idea
 .coverage
 .noseids
+
+modules/isogeo_pysdk/samples/*
