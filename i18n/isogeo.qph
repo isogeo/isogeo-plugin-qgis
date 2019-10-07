@@ -1,7 +1,844 @@
 <!DOCTYPE QPH>
-<QPH sourcelanguage="en_US" language="fr_FR">
+<QPH language="fr_FR">
+<phrase>
+    <source>Dataset</source>
+    <target>Données (vecteurs et rasters)</target>
+    <definition>ApiRequester</definition>
+</phrase>
+<phrase>
+    <source>Cache has been cleaned</source>
+    <target>Le cache a été vidé</target>
+    <definition>CacheManager</definition>
+</phrase>
+<phrase>
+    <source>Cache has been cleaned.</source>
+    <target>Le cache a été vidé.</target>
+    <definition>CacheManager</definition>
+</phrase>
+<phrase>
+    <source>&amp;Isogeo</source>
+    <target>&amp;Isogeo</target>
+</phrase>
+<phrase>
+    <source>Search within Isogeo catalogs</source>
+    <target>Rechercher au sein de  catalogues Isogeo</target>
+</phrase>
+<phrase>
+    <source> on </source>
+    <target> sur </target>
+</phrase>
+<phrase>
+    <source>Last search</source>
+    <target>Dernière recherche</target>
+</phrase>
+<phrase>
+    <source> results</source>
+    <target> résultats</target>
+</phrase>
+<phrase>
+    <source>TITLE ISSUE REPORTED</source>
+    <target>TITRE DU PROBLEME SIGNALE</target>
+</phrase>
+<phrase>
+    <source>Quicksearches</source>
+    <target>Recherches rapides</target>
+</phrase>
+<phrase>
+    <source>Search</source>
+    <target>Recherche</target>
+</phrase>
+<phrase>
+    <source>Advanced search</source>
+    <target>Recherche avancée</target>
+</phrase>
+<phrase>
+    <source>INSPIRE keywords</source>
+    <target>Thématiques INSPIRE</target>
+</phrase>
+<phrase>
+    <source>Show results</source>
+    <target>Voir les résultats</target>
+</phrase>
+<phrase>
+    <source>Title</source>
+    <target>Titre</target>
+</phrase>
+<phrase>
+    <source>Modified</source>
+    <target>Modifiée</target>
+</phrase>
+<phrase>
+    <source>Type</source>
+    <target>Type</target>
+</phrase>
+<phrase>
+    <source>Add</source>
+    <target>Ajouter</target>
+</phrase>
+<phrase>
+    <source>Rename</source>
+    <target>Renommer</target>
+</phrase>
+<phrase>
+    <source>Report an issue on the bug tracker</source>
+    <target>Signaler un problème sur le bug tracker</target>
+</phrase>
+<phrase>
+    <source>Save research</source>
+    <target>Enregistrer la recherche</target>
+</phrase>
+<phrase>
+    <source>Reset all input fields</source>
+    <target>Réinitialiser la recherche</target>
+</phrase>
+<phrase>
+    <source>Geographic filter</source>
+    <target>Filtre géographique</target>
+</phrase>
+<phrase>
+    <source>Resource type</source>
+    <target>Type de ressource</target>
+</phrase>
+<phrase>
+    <source>Display the results list</source>
+    <target>Afficher la liste des résultats</target>
+</phrase>
+<phrase>
+    <source>Sorting method</source>
+    <target>Tri des résultats</target>
+</phrase>
+<phrase>
+    <source>Sorting direction</source>
+    <target>Direction du tri</target>
+</phrase>
+<phrase>
+    <source>Settings</source>
+    <target>Paramètres</target>
+</phrase>
+<phrase>
+    <source>Authentication settings</source>
+    <target>Paramètres d&apos;authentification</target>
+</phrase>
+<phrase>
+    <source>Search settings</source>
+    <target>Paramètres de recherche</target>
+</phrase>
+<phrase>
+    <source>Geographical operator applied to the filter</source>
+    <target>Opérateur géographique à appliquer au filtre</target>
+</phrase>
+<phrase>
+    <source>Default search</source>
+    <target>Recherche par défaut</target>
+</phrase>
+<phrase>
+    <source>Resources</source>
+    <target>Ressources</target>
+</phrase>
+<phrase>
+    <source>Open online plugin help</source>
+    <target>Ouvrir l&apos;aide en ligne du plugin</target>
+</phrase>
+<phrase>
+    <source>Open plugin credits</source>
+    <target>Ouvrir les crédits de l&apos;application</target>
+</phrase>
+<phrase>
+    <source>Page x on x</source>
+    <target>Page x sur x</target>
+</phrase>
+<phrase>
+    <source>Set plugin authentication:</source>
+    <target>Changer les paramètres d&apos;authentification du plugin :</target>
+</phrase>
+<phrase>
+    <source>Enter your search terms</source>
+    <target>Termes de recherche</target>
+</phrase>
+<phrase>
+    <source>roads, habitat, cadastral parcel, transport</source>
+    <target>routes, habitat, cadastre, transport, vélo</target>
+</phrase>
+<phrase>
+    <source>Launch search</source>
+    <target>Lancer la recherche</target>
+</phrase>
+<phrase>
+    <source>Format (source)</source>
+    <target>Format source</target>
+</phrase>
+<phrase>
+    <source>Contact</source>
+    <target>Contact</target>
+</phrase>
+<phrase>
+    <source>Metadata owner</source>
+    <target>Propriétaire de la métadonnée</target>
+</phrase>
+<phrase>
+    <source>Coordinate system (source)</source>
+    <target>Système de coordonnées source</target>
+</phrase>
+<phrase>
+    <source>License</source>
+    <target>Licence</target>
+</phrase>
+<phrase>
+    <source>Quick searches</source>
+    <target>Recherches rapides</target>
+</phrase>
+<phrase>
+    <source>Get the log file: &quot;log_isogeo_plugin.log&quot;</source>
+    <target>Trouver le fichier &quot;log_isogeo_plugin.log&quot;</target>
+</phrase>
+<phrase>
+    <source>LOG File</source>
+    <target>Fichier LOG</target>
+</phrase>
+<phrase>
+    <source>Open online help in default browser</source>
+    <target>Consulter l&apos;aide en ligne dans le navigateur par défaut</target>
+</phrase>
+<phrase>
+    <source>Open credits popup</source>
+    <target>Ouvre la fenêtre des crédits</target>
+</phrase>
+<phrase>
+    <source>Quicksearches</source>
+    <target>Recherches rapides</target>
+</phrase>
+<phrase>
+    <source>Edit quicksearch</source>
+    <target>Editer la quicksearch</target>
+</phrase>
+<phrase>
+    <source>Paths cache</source>
+    <target>Chemins des fichiers en cache</target>
+</phrase>
+<phrase>
+    <source>Empty the paths cached</source>
+    <target>Vider le cache des chemins de fichiers</target>
+</phrase>
+<phrase>
+    <source>Alert</source>
+    <target>Alerte</target>
+    <definition>Tools</definition>
+</phrase>
+<phrase>
+    <source>Proxy issue : 
+QGIS and your OS have different proxy set up.</source>
+    <target>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.@</target>
+    <definition>Tools</definition>
+</phrase>
+<phrase>
+    <source>Proxy issue : 
+QGIS and your OS have different proxy set ups.</source>
+    <target>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.@</target>
+    <definition>Tools</definition>
+</phrase>
+<phrase>
+    <source>Proxy issue : 
+You have a proxy set up on your OS but none in QGIS.
+Please set it up in &apos;Preferences/Options/Network&apos;.</source>
+    <target>Problème de proxy :
+Votre ordinateur utilise un proxy, mais il n&apos;est pas configuré
+dans QGIS (Menu &apos;Préférences/Options/Réseau).@</target>
+    <definition>Tools</definition>
+</phrase>
+<phrase>
+    <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
+    <target>Le {} style de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</target>
+</phrase>
+<phrase>
+    <source>Error</source>
+    <target>Erreur</target>
+</phrase>
+<phrase>
+    <source>Vector not valid {}. QGIS says: {}</source>
+    <target>Couche vecteur {}  invalide. QGIS renvoie : {}</target>
+</phrase>
+<phrase>
+    <source>Raster not valid {}. QGIS says: {}</source>
+    <target>Couche raster {}  invalide. QGIS renvoie : {}</target>
+</phrase>
+<phrase>
+    <source>EFS not valid. QGIS says: {}</source>
+    <target>EFS {}  invalide. QGIS renvoie : {}</target>
+</phrase>
+<phrase>
+    <source>EMS not valid. QGIS says: {}</source>
+    <target>EMS {}  invalide. QGIS renvoie : {}</target>
+</phrase>
+<phrase>
+    <source>WFS is not valid. QGIS says: {}</source>
+    <target>WFS {}  invalide. QGIS renvoie : {}</target>
+</phrase>
+<phrase>
+    <source>WMS is not valid. QGIS says: {}</source>
+    <target>WMS {}  invalide. QGIS renvoie : {}</target>
+</phrase>
+<phrase>
+    <source>WMTS is not valid. QGIS says: {}</source>
+    <target>WMTS {}  invalide. QGIS renvoie : {}</target>
+</phrase>
+<phrase>
+    <source>The PostGIS layer is not valid. Reason: {}</source>
+    <target>Couche PostGIS {}  invalide. QGIS renvoie : {}</target>
+</phrase>
+<phrase>
+    <source>{} successfully saved: {}</source>
+    <target>{} sauvegardée correctement : {}</target>
+</phrase>
+<phrase>
+    <source>Quicksearch renamed: from {} to {}</source>
+    <target>Recherche rapide renommée de {} à {}</target>
+</phrase>
+<phrase>
+    <source>Quicksearch removed: {}</source>
+    <target>Recherche rapide supprimée : {}</target>
+</phrase>
+<phrase>
+    <source>Point</source>
+    <target>Point</target>
+    <definition>ResultsManager</definition>
+</phrase>
+<phrase>
+    <source>Polygon</source>
+    <target>Polygone</target>
+    <definition>ResultsManager</definition>
+</phrase>
+<phrase>
+    <source>Line</source>
+    <target>Linéaire</target>
+    <definition>ResultsManager</definition>
+</phrase>
+<phrase>
+    <source>MultiPolygon</source>
+    <target>Multi-polygone</target>
+    <definition>ResultsManager</definition>
+</phrase>
+<phrase>
+    <source>Unknown geometry</source>
+    <target>Géométrie inconnue</target>
+    <definition>ResultsManager</definition>
+</phrase>
+<phrase>
+    <source>Raster</source>
+    <target>Raster</target>
+    <definition>ResultsManager</definition>
+</phrase>
+<phrase>
+    <source>Service</source>
+    <target>Service</target>
+    <definition>ResultsManager</definition>
+</phrase>
+<phrase>
+    <source>Data file</source>
+    <target>Donnée fichier</target>
+    <definition>ResultsManager</definition>
+</phrase>
+<phrase>
+    <source>PostGIS table</source>
+    <target>Table PostGIS</target>
+    <definition>ResultsManager</definition>
+</phrase>
+<phrase>
+    <source>Can&apos;t be added</source>
+    <target>Non ajoutable</target>
+    <definition>ResultsManager</definition>
+</phrase>
+<phrase>
+    <source>Intersects</source>
+    <target>Intersecte</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>within</source>
+    <target>Est contenu</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>contains</source>
+    <target>Contient</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Relevance</source>
+    <target>Pertinence</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Alphabetical order</source>
+    <target>Ordre alphabétique</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Data modified</source>
+    <target>Donnée modifiée</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Data created</source>
+    <target>Donnée créée</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Metadata modified</source>
+    <target>Métadonnée modifiée</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Metadata created</source>
+    <target>Métadonnée créée</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Descending</source>
+    <target>Descendant</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Ascending</source>
+    <target>Ascendant</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Keywords</source>
+    <target>Mots-clés</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Selected keywords:</source>
+    <target>Mots-clés sélectionnés :</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>No keyword selected</source>
+    <target>Aucun mot-clé sélectionné</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Map canvas</source>
+    <target>Emprise de la carte</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Quicksearches</source>
+    <target>Recherches rapides</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>Display results</source>
+    <target>Affichage des résultats</target>
+    <definition>SearchFormManager</definition>
+</phrase>
+<phrase>
+    <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
+    <target>&lt;p&gt;Ce plugin est authentifié en tant que &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; et </target>
+</phrase>
+<phrase>
+    <source> powered by 1 share:&lt;/p&gt;&lt;/br&gt;</source>
+    <target> alimenté par 1 seul partage :&lt;/p&gt;&lt;/br&gt;</target>
+</phrase>
+<phrase>
+    <source> powered by {} shares:&lt;/p&gt;&lt;/br&gt;</source>
+    <target> alimenté par {} partages :&lt;/p&gt;&lt;/br&gt;</target>
+</phrase>
+<phrase>
+    <source>&lt;p&gt;Updated: {}&lt;/p&gt;</source>
+    <target>&lt;p&gt;Dernière mise à jour : {}&lt;/p&gt;</target>
+</phrase>
+<phrase>
+    <source>&lt;p&gt;Contact: {} - {}&lt;/p&gt;</source>
+    <target>&lt;p&gt;Groupe de travail propriétaire : {} - {}&lt;/p&gt;</target>
+</phrase>
+<phrase>
+    <source>The specified file does not exist.</source>
+    <target>Le fichier indiqué est introuvable.</target>
+    <definition>UserInformer</definition>
+</phrase>
+<phrase>
+    <source>The selected credentials file&apos;s format is not valid.</source>
+    <target>Le format du fichier d&apos;authentification indiqué n&apos;est pas valide.@</target>
+    <definition>UserInformer</definition>
+</phrase>
+<phrase>
+    <source>Authentication file is valid. Asking for authorization to Isogeo&apos;s API.</source>
+    <target>Le fichier d&apos;authentification est valide. Demande d&apos;autorisation envoyée à l&apos;API.@</target>
+    <definition>UserInformer</definition>
+</phrase>
+<phrase>
+    <source>Redirecting code received. ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
+    <target>Les identifiant et mot de passe ne sont pas valides. Renseignez les une nouvelle fois. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.@</target>
+    <definition>UserInformer</definition>
+</phrase>
+<phrase>
+    <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
+    <target>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.@</target>
+    <definition>UserInformer</definition>
+</phrase>
+<phrase>
+    <source>The script is looping. Make sure you shared a catalog with the plugin.If this error keeps happening, please report it in the bug tracker.</source>
+    <target>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème dans le bug tracker.@</target>
+    <definition>UserInformer</definition>
+</phrase>
+<phrase>
+    <source>Request to Isogeo&apos;s API failed : unkown error found. Please, report it in the bug tracker.</source>
+    <target>La requête à l&apos;API Isogeo a échoué pour une raison inconnue. Merci de le signaler dans le bug tracker.@</target>
+    <definition>UserInformer</definition>
+</phrase>
+<phrase>
+    <source>API authentication failed : unexpected API&apos;s reply. Please, report it in the bug tracker.</source>
+    <target>La requête à l&apos;API Isogeo a échoué. Merci de le signaler dans le bug tracker.@</target>
+    <definition>UserInformer</definition>
+</phrase>
+<phrase>
+    <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
+    <target>La requête à l&apos;API Isogeo a échoué. Vérifiez votre connexion Internet et votre configuration proxy. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.@</target>
+    <definition>UserInformer</definition>
+</phrase>
+<phrase>
+    <source>Credits</source>
+    <target>Crédits</target>
+</phrase>
+<phrase>
+    <source>Realization</source>
+    <target>Développement</target>
+</phrase>
+<phrase>
+    <source>Sponsors</source>
+    <target>Sponsors</target>
+</phrase>
+<phrase>
+    <source>Sources and license</source>
+    <target>Sources et licence</target>
+</phrase>
+<phrase>
+    <source>&lt;a href=&quot;https://www.isogeo.com&quot; style=&quot;color:#6480A7;text-decoration:none;&quot;&gt;Easy access to geodata!&lt;/a&gt;</source>
+    <target></target>
+</phrase>
+<phrase>
+    <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+    <target>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hébergé sur Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</target>
+</phrase>
+<phrase>
+    <source>Isogeo authentication settings</source>
+    <target>Paramètres d&apos;authentification du plugin</target>
+</phrase>
+<phrase>
+    <source>Request plugin access</source>
+    <target>Demander un accès</target>
+</phrase>
+<phrase>
+    <source>Application ID:</source>
+    <target>ID :</target>
+</phrase>
+<phrase>
+    <source>Application SECRET:</source>
+    <target>Secret :</target>
+</phrase>
+<phrase>
+    <source>Don&apos;t have an account yet ?</source>
+    <target>Pas encore de compte ?</target>
+</phrase>
+<phrase>
+    <source>I already have Isogeo ID and SECRET for this application</source>
+    <target>Je dispose déjà des ID et Secret pour ce plugin</target>
+</phrase>
+<phrase>
+    <source>Check access validity</source>
+    <target>Vérifier la validité</target>
+</phrase>
+<phrase>
+    <source>Check</source>
+    <target>Vérifier</target>
+</phrase>
+<phrase>
+    <source>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+&lt;/ul&gt; 
+
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
+    <target>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+&lt;/ul&gt; 
+
+&lt;/body&gt;
+&lt;/html&gt;
+</target>
+</phrase>
+<phrase>
+    <source>I&apos;ve got the power hey yeah heh!</source>
+    <target></target>
+</phrase>
+<phrase>
+    <source>I&apos;ve got edition rights on app.isogeo.com</source>
+    <target>J&apos;ai accès aux fonctionnalités d&apos;édition sur app.isogeo.com</target>
+</phrase>
+<phrase>
+    <source>From a file:</source>
+    <target>Importer depuis un fichier :</target>
+</phrase>
+<phrase>
+    <source>plugin-qgis-org-a1b23c4d5f6g7h8i9j10kl11mn13op14</source>
+    <target></target>
+</phrase>
+<phrase>
+    <source>Pick your credentials file</source>
+    <target>Importer le fichier d&apos;authentification fourni par Isogeo ou votre administrateur</target>
+</phrase>
+<phrase>
+    <source>Locate the Isogeo API credentials file</source>
+    <target>Trouver le fichier &quot;client_secrets.json&quot;</target>
+</phrase>
+<phrase>
+    <source>Only for information, the Isogeo API base URL</source>
+    <target>Pour information, l&apos;URL de base de l&apos;API Isogeo</target>
+</phrase>
+<phrase>
+    <source>API location:</source>
+    <target>URL de l&apos;API :</target>
+</phrase>
+<phrase>
+    <source>Isogeo Metadata</source>
+    <target>Fiche de métadonnée Isogeo</target>
+</phrase>
+<phrase>
+    <source>addButton</source>
+    <target>Ajouter à la carte</target>
+</phrase>
+<phrase>
+    <source>General</source>
+    <target>Général</target>
+</phrase>
+<phrase>
+    <source>Feature attributes</source>
+    <target>Attributs</target>
+</phrase>
+<phrase>
+    <source>Contacts</source>
+    <target>Contacts</target>
+</phrase>
+<phrase>
+    <source>History</source>
+    <target>Historique</target>
+</phrase>
+<phrase>
+    <source>Geography</source>
+    <target>Géométrie</target>
+</phrase>
+<phrase>
+    <source>Licenses</source>
+    <target>Licences</target>
+</phrase>
+<phrase>
+    <source>Advanced</source>
+    <target>Divers</target>
+</phrase>
+<phrase>
+    <source>Edit it on Isogeo</source>
+    <target>Editer sur Isogeo</target>
+</phrase>
+<phrase>
+    <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;No title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+    <target>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Sans titre&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</target>
+</phrase>
+<phrase>
+    <source>INSPIRE themes</source>
+    <target>Thématiques INSPIRE</target>
+</phrase>
+<phrase>
+    <source>Keywords</source>
+    <target>Mots-clés</target>
+</phrase>
+<phrase>
+    <source>Abstract</source>
+    <target>Résumé</target>
+</phrase>
+<phrase>
+    <source>TextLabel</source>
+    <target>NR</target>
+</phrase>
+<phrase>
+    <source>Metadata owner</source>
+    <target>Propriétaire de la métadonnée</target>
+</phrase>
+<phrase>
+    <source>Name</source>
+    <target>Nom</target>
+</phrase>
+<phrase>
+    <source>Alias</source>
+    <target>Alias</target>
+</phrase>
+<phrase>
+    <source>Type</source>
+    <target>Type</target>
+</phrase>
+<phrase>
+    <source>Description</source>
+    <target>Description</target>
+</phrase>
+<phrase>
+    <source>Point of contact</source>
+    <target>Point(s) de contact</target>
+</phrase>
+<phrase>
+    <source>Others contacts</source>
+    <target>Autre(s) contact(s)</target>
+</phrase>
+<phrase>
+    <source>Data history</source>
+    <target>Historique de la donnée</target>
+</phrase>
+<phrase>
+    <source>Updated every:</source>
+    <target>Mise à jour tous les :</target>
+</phrase>
+<phrase>
+    <source>Last update:</source>
+    <target>Dernière modification :</target>
+</phrase>
+<phrase>
+    <source>Creation date:</source>
+    <target>Date de création :</target>
+</phrase>
+<phrase>
+    <source>Validity comment:</source>
+    <target>Commentaire :</target>
+</phrase>
+<phrase>
+    <source>Validity period start:</source>
+    <target>Début de validité :</target>
+</phrase>
 <phrase>
     <source>Validity period end:</source>
     <target>Fin de validité :</target>
+</phrase>
+<phrase>
+    <source>Last modifications</source>
+    <target>Dernières modifications sur la donnée</target>
+</phrase>
+<phrase>
+    <source>Date</source>
+    <target>Date</target>
+</phrase>
+<phrase>
+    <source>Technical informations</source>
+    <target>Informations techniques</target>
+</phrase>
+<phrase>
+    <source>Scale:</source>
+    <target>Echelle :</target>
+</phrase>
+<phrase>
+    <source>SRS:</source>
+    <target>SRS :</target>
+</phrase>
+<phrase>
+    <source>Resolution:</source>
+    <target>Résolution :</target>
+</phrase>
+<phrase>
+    <source>Format:</source>
+    <target>Format :</target>
+</phrase>
+<phrase>
+    <source>Features count:</source>
+    <target>Nombre d&apos;objets :</target>
+</phrase>
+<phrase>
+    <source>Geometry type:</source>
+    <target>Type de géométrie :</target>
+</phrase>
+<phrase>
+    <source>Bounding box preview</source>
+    <target>Aperçu de l&apos;enveloppe</target>
+</phrase>
+<phrase>
+    <source>Limitations</source>
+    <target>Limitations</target>
+</phrase>
+<phrase>
+    <source>Download metadata XML</source>
+    <target>Télécharger la métadonnée en XML ISO 19139</target>
+</phrase>
+<phrase>
+    <source>wg_email</source>
+    <target>Email</target>
+</phrase>
+<phrase>
+    <source>wg_address</source>
+    <target>Adresse</target>
+</phrase>
+<phrase>
+    <source>wg_phone</source>
+    <target>Tél</target>
+</phrase>
+<phrase>
+    <source>wg_pc_city</source>
+    <target>Code postal et ville</target>
+</phrase>
+<phrase>
+    <source>wg_country</source>
+    <target>Pays</target>
+</phrase>
+<phrase>
+    <source>Metadata properties</source>
+    <target>Détails de la métadonnée</target>
+</phrase>
+<phrase>
+    <source>Created:</source>
+    <target>Créée le :</target>
+</phrase>
+<phrase>
+    <source>Collection context</source>
+    <target>Contexte de collecte</target>
+</phrase>
+<phrase>
+    <source>Collection method</source>
+    <target>Méthode de collecte</target>
+</phrase>
+<phrase>
+    <source>Language: </source>
+    <target>Langue: </target>
+</phrase>
+<phrase>
+    <source>Quality</source>
+    <target>Qualité des données</target>
+</phrase>
+<phrase>
+    <source>wg_owner</source>
+    <target>Organisme</target>
+</phrase>
+<phrase>
+    <source>Isogeo - New quicksearch</source>
+    <target>Isogeo - Nouvelle recherche rapide</target>
+</phrase>
+<phrase>
+    <source>Quicksearch name:</source>
+    <target>Nom de la recherche rapide :</target>
+</phrase>
+<phrase>
+    <source>Isogeo - Rename quicksearch</source>
+    <target>Isogeo - Renommer une recherche rapide</target>
+</phrase>
+<phrase>
+    <source>Quicksearch new name:</source>
+    <target>Nouveau nom :</target>
 </phrase>
 </QPH>

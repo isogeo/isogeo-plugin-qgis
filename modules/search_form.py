@@ -93,25 +93,25 @@ class SearchFormManager(IsogeoDockWidget):
         # Static dictionnaries for filling static widgets
         self.dict_operation = OrderedDict(
             [
-                (self.tr("Intersects"), "intersects"),
-                (self.tr("within"), "within"),
-                (self.tr("contains"), "contains"),
+                (self.tr("Intersects", "SearchFormManager"), "intersects"),
+                (self.tr("within", "SearchFormManager"), "within"),
+                (self.tr("contains", "SearchFormManager"), "contains"),
             ]
         )
         self.dict_ob = OrderedDict(
             [
-                (self.tr("Relevance"), (ico_ob_relev, "relevance")),
-                (self.tr("Alphabetical order"), (ico_ob_alpha, "title")),
-                (self.tr("Data modified"), (ico_ob_dupda, "modified")),
-                (self.tr("Data created"), (ico_ob_dcrea, "created")),
-                (self.tr("Metadata modified"), (ico_ob_mcrea, "_modified")),
-                (self.tr("Metadata created"), (ico_ob_mupda, "_created")),
+                (self.tr("Relevance", "SearchFormManager"), (ico_ob_relev, "relevance")),
+                (self.tr("Alphabetical order", "SearchFormManager"), (ico_ob_alpha, "title")),
+                (self.tr("Data modified", "SearchFormManager"), (ico_ob_dupda, "modified")),
+                (self.tr("Data created", "SearchFormManager"), (ico_ob_dcrea, "created")),
+                (self.tr("Metadata modified", "SearchFormManager"), (ico_ob_mcrea, "_modified")),
+                (self.tr("Metadata created", "SearchFormManager"), (ico_ob_mupda, "_created")),
             ]
         )
         self.dict_od = OrderedDict(
             [
-                (self.tr("Descending"), (ico_od_desc, "desc")),
-                (self.tr("Ascending"), (ico_od_asc, "asc")),
+                (self.tr("Descending", "SearchFormManager"), (ico_od_desc, "desc")),
+                (self.tr("Ascending", "SearchFormManager"), (ico_od_asc, "asc")),
             ]
         )
 
@@ -159,7 +159,7 @@ class SearchFormManager(IsogeoDockWidget):
             else:
                 pass
         # first item = label for the combobox.
-        first_item = QStandardItem("---- {} ----".format(self.tr("Keywords")))
+        first_item = QStandardItem("---- {} ----".format(self.tr("Keywords", "SearchFormManager")))
         first_item.setIcon(ico_keyw)
         first_item.setSelectable(False)
         model.insertRow(0, first_item)
@@ -173,10 +173,10 @@ class SearchFormManager(IsogeoDockWidget):
         # add tooltip with selected keywords. see: #107#issuecomment-341742142
         if selected_keywords:
             tooltip = "{}\n - {}".format(
-                self.tr("Selected keywords:"), "\n - ".join(selected_keywords_lbls)
+                self.tr("Selected keywords:", "SearchFormManager"), "\n - ".join(selected_keywords_lbls)
             )
         else:
-            tooltip = self.tr("No keyword selected")
+            tooltip = self.tr("No keyword selected", "SearchFormManager")
         self.cbb_chck_kw.setToolTip(tooltip)
 
     def pop_as_cbbs(self, tags: dict):
@@ -198,7 +198,7 @@ class SearchFormManager(IsogeoDockWidget):
             for tag in field_tags:
                 cbb.addItem(tag, field_tags.get(tag))
         # Filling geo filter combobox
-        self.cbb_geofilter.addItem(self.tr("Map canvas"), "mapcanvas")
+        self.cbb_geofilter.addItem(self.tr("Map canvas", "SearchFormManager"), "mapcanvas")
         layers = QgsProject.instance().mapLayers().values()
         for layer in layers:
             if layer.type() == 0:
@@ -230,7 +230,7 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_quicksearch_use.clear()
         self.cbb_quicksearch_edit.clear()
         # filling widgets from the saved searches list built above
-        self.cbb_quicksearch_use.addItem(ico_bolt, self.tr("Quicksearches"))
+        self.cbb_quicksearch_use.addItem(ico_bolt, self.tr("Quicksearches", "SearchFormManager"))
         for qs in qs_list:
             self.cbb_quicksearch_use.addItem(qs, qs)
             self.cbb_quicksearch_edit.addItem(qs, qs)
@@ -311,7 +311,7 @@ class SearchFormManager(IsogeoDockWidget):
 
         self.cbb_ob.setEnabled(True)
         self.cbb_od.setEnabled(True)
-        self.btn_show.setToolTip(self.tr("Display results"))
+        self.btn_show.setToolTip(self.tr("Display results", "SearchFormManager"))
 
         self.results_mng.show_results(api_results=content)
         self.qs_mng.write_params("_current", search_kind="Current")
@@ -343,12 +343,15 @@ class SearchFormManager(IsogeoDockWidget):
         self.tbl_result.horizontalHeader().resizeSection(2, 50)
         self.tbl_result.verticalHeader().setSectionResizeMode(3)
         # Geographical operator cbb
+        self.cbb_geo_op.clear()
         for key in self.dict_operation.keys():
             self.cbb_geo_op.addItem(key, self.dict_operation.get(key))
         # Order by cbb
+        self.cbb_ob.clear()
         for k, v in self.dict_ob.items():
             self.cbb_ob.addItem(v[0], k, v[1])
         # Order direction cbb
+        self.cbb_od.clear()
         for k, v in self.dict_od.items():
             self.cbb_od.addItem(v[0], k, v[1])
 
