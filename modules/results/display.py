@@ -103,6 +103,7 @@ class ResultsManager(QObject):
         self.layer_adder.tbl_result = self.tbl_result
         self.add_layer = self.layer_adder.adding
         self.pg_connections = self.build_postgis_dict(qsettings)
+        self.layer_adder.PostGISdict = self.pg_connections
 
         self.cache_mng = CacheManager()
         self.cache_mng.tr = self.tr
