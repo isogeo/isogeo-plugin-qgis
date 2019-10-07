@@ -47,8 +47,8 @@ class IsogeoPlgTools(IsogeoUtils):
     """Inheritance from Isogeo Python SDK utils class. It adds some
     specific tools for QGIS plugin."""
 
-    last_error = None
     tr = object
+    last_error = list
 
     def __init__(self):
         """Check and manage authentication credentials."""
@@ -58,11 +58,11 @@ class IsogeoPlgTools(IsogeoUtils):
     def error_catcher(self, msg, tag, level):
         """Catch QGIS error messages for introspection."""
         if tag == "WMS" and level != 0:
-            self.last_error = "wms", msg
+            self.last_error = ["wms", msg]
         elif tag == "WFS" and level != 0:
-            self.last_error = "wfs", msg
+            self.last_error = ["wfs", msg]
         elif tag == "PostGIS" and level != 0:
-            self.last_error = "postgis", msg
+            self.last_error = ["postgis", msg]
         else:
             pass
 

@@ -27,9 +27,8 @@ class MetadataSynchronizer:
 
     def basic_sync(self, layer, info):
         logger.debug("Filling {} layer's properties from : {}".format(layer.name, info))
-        layer_type = info[0]
         # If the data is a PostGIS table
-        if type(info) == dict:
+        if isinstance(info, dict):
             self.filling_field(
                 layer,
                 info.get("title", "notitle"),
@@ -38,6 +37,7 @@ class MetadataSynchronizer:
             )
         # If the data is a file or a service
         else:
+            layer_type = info[0]
             # vector or raster file
             if layer_type in file_types:
                 self.filling_field(layer, info[2], info[3], info[4])
