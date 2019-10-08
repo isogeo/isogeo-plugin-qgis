@@ -42,8 +42,7 @@ from qgis.utils import iface, plugin_times
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsMessageLog,
-    QgsRectangle,
-    QgsApplication,
+    QgsRectangle
 )
 
 
@@ -850,12 +849,6 @@ class Isogeo:
             self.auth_slot
         )
 
-
-        """ ------ CUSTOM CONNECTIONS ------------------------------------- """
-        # get shares only if user switch on tabs
-        # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
-        QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
-
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.form_mng.setWindowTitle("Isogeo - {}".format(self.plg_version))
         # add translator method in others modules
@@ -871,7 +864,6 @@ class Isogeo:
         self.form_mng.results_mng.cache_mng.loader()
         # launch authentication
         self.user_authentication()
-
 
 # #############################################################################
 # ##### Stand alone program ########

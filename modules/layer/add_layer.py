@@ -20,6 +20,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsRasterLayer,
     QgsMessageLog,
+    QgsApplication
 )
 from qgis.utils import iface
 
@@ -100,6 +101,11 @@ class LayerAdder:
         self.tbl_result = None
         self.tr = None
         self.md_sync = MetadataSynchronizer()
+
+        # add layer from PostGIS table
+        self.PostGISdict = object
+        # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
+        QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
 
     def build_efs_url(
         self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
@@ -693,7 +699,6 @@ class LayerAdder:
             layer_info = layer_info[1]
         else:
             pass
-
         self.md_sync.tr = self.tr
 
         if type(layer_info) == list:
@@ -904,7 +909,7 @@ class LayerAdder:
                 pass
 
         # If the data is a PostGIS table
-        elif type(layer_info) == dict:
+        elif isinstance(layer_info, dict):
             logger.debug("Data type: PostGIS")
             # Give aliases to the data passed as arguement
             base_name = layer_info.get("base_name", "")
