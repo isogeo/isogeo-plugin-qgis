@@ -332,8 +332,8 @@ class IsogeoPlgTools(IsogeoUtils):
                                 self.tr("Alert", "Tools"),
                                 self.tr(
                                     "Proxy issue : \nQGIS and your OS "
-                                    "have different proxy set up.",
-                                    "Tools",
+                                    "have different proxy set ups.",
+                                    "Tools"
                                 ),
                             )
                     elif len(elements) == 3 and elements[0] == "http":
@@ -361,7 +361,7 @@ class IsogeoPlgTools(IsogeoUtils):
                                 self.tr(
                                     "Proxy issue : \nQGIS and your OS"
                                     " have different proxy set ups.",
-                                    "Tools",
+                                    "Tools"
                                 ),
                             )
 
@@ -377,7 +377,7 @@ class IsogeoPlgTools(IsogeoUtils):
                         "Proxy issue : \nYou have a proxy set up on your"
                         " OS but none in QGIS.\nPlease set it up in "
                         "'Preferences/Options/Network'.",
-                        "Tools",
+                        "Tools"
                     ),
                 )
 

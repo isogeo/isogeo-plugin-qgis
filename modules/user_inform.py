@@ -42,7 +42,7 @@ class UserInformer:
             "file": [
                 self.tr(
                     "The selected credentials file's format is not valid.",
-                    "UserInformer",
+                    "UserInformer"
                 ),
                 5,
                 1,
@@ -50,7 +50,7 @@ class UserInformer:
             "ok": [
                 self.tr(
                     "Authentication file is valid. Asking for authorization to Isogeo's API.",
-                    "UserInformer",
+                    "UserInformer"
                 ),
                 5,
                 3,
@@ -67,33 +67,33 @@ class UserInformer:
             "creds_issue": self.tr(
                 "Redirecting code received. ID and SECRET could be invalid. Provide them again."
                 " If this error keeps happening, please report it in the bug tracker.",
-                "UserInformer",
+                "UserInformer"
             ),
             "proxy_issue": self.tr(
                 "Proxy error found. Check your OS and QGIS proxy configuration."
                 "If this error keeps happening, please report it in the bug tracker.",
-                "UserInformer",
+                "UserInformer"
             ),
             "shares_issue": self.tr(
                 "The script is looping. Make sure you shared a catalog with the plugin."
                 "If this error keeps happening, please report it in the bug tracker.",
-                "UserInformer",
+                "UserInformer"
             ),
             "unkown_error": self.tr(
                 "Request to Isogeo's API failed : unkown error found. Please,"
                 " report it in the bug tracker.",
-                "UserInformer",
+                "UserInformer"
             ),
             "unkonw_reply": self.tr(
                 "API authentication failed : unexpected API's reply. Please,"
                 " report it in the bug tracker.",
-                "UserInformer",
+                "UserInformer"
             ),
             "internet_issue": self.tr(
                 "Request to Isogeo's API failed : please check your Internet connection and"
                 " your proxy configuration. If this error keeps happening, please report it"
                 " in the bug tracker.",
-                "UserInformer",
+                "UserInformer"
             ),
         }
         if api_sig in list(msg_dict.keys()):

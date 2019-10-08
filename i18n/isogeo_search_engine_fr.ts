@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR">
 <context>
     <name>ApiRequester</name>
     <message>
@@ -27,37 +28,37 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="345"/>
+        <location filename="../isogeo.py" line="348"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="320"/>
+        <location filename="../isogeo.py" line="323"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="496"/>
+        <location filename="../isogeo.py" line="502"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="431"/>
+        <location filename="../isogeo.py" line="437"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="500"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="829"/>
+        <location filename="../isogeo.py" line="836"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="599"/>
+        <location filename="../isogeo.py" line="605"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
@@ -293,38 +294,22 @@
         <comment>Tools</comment>
         <translation>Alerte</translation>
     </message>
-    <message numerus="yes">
-        <location filename="../modules/tools.py" line="332"/>
-        <source>Proxy issue : 
-QGIS and your OS have different proxy set up.</source>
-        <comment>Tools</comment>
-        <translation>
-            <numerusform>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.</numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
+    <message>
         <location filename="../modules/tools.py" line="360"/>
         <source>Proxy issue : 
 QGIS and your OS have different proxy set ups.</source>
         <comment>Tools</comment>
-        <translation>
-            <numerusform>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.</numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../modules/tools.py" line="375"/>
         <source>Proxy issue : 
 You have a proxy set up on your OS but none in QGIS.
 Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <comment>Tools</comment>
-        <translation>
-            <numerusform>Problème de proxy :
+        <translation>Problème de proxy :
 Votre ordinateur utilise un proxy, mais il n&apos;est pas configuré
-dans QGIS (Menu &apos;Préférences/Options/Réseau).</numerusform>
-            <numerusform></numerusform>
-        </translation>
+dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     </message>
     <message>
         <location filename="../modules/tools.py" line="395"/>
@@ -602,77 +587,53 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</numerusform>
         <comment>UserInformer</comment>
         <translation>Le fichier indiqué est introuvable.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../modules/user_inform.py" line="43"/>
         <source>The selected credentials file&apos;s format is not valid.</source>
         <comment>UserInformer</comment>
-        <translation>
-            <numerusform>Le format du fichier d&apos;authentification indiqué n&apos;est pas valide.</numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>Le format du fichier d&apos;authentification indiqué n&apos;est pas valide.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../modules/user_inform.py" line="51"/>
         <source>Authentication file is valid. Asking for authorization to Isogeo&apos;s API.</source>
         <comment>UserInformer</comment>
-        <translation>
-            <numerusform>Le fichier d&apos;authentification est valide. Demande d&apos;autorisation envoyée à l&apos;API.</numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>Le fichier d&apos;authentification est valide. Demande d&apos;autorisation envoyée à l&apos;API.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../modules/user_inform.py" line="67"/>
         <source>Redirecting code received. ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
         <comment>UserInformer</comment>
-        <translation>
-            <numerusform>Les identifiant et mot de passe ne sont pas valides. Renseignez les une nouvelle fois. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>Les identifiant et mot de passe ne sont pas valides. Renseignez les une nouvelle fois. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../modules/user_inform.py" line="72"/>
         <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
         <comment>UserInformer</comment>
-        <translation>
-            <numerusform>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../modules/user_inform.py" line="77"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin.If this error keeps happening, please report it in the bug tracker.</source>
         <comment>UserInformer</comment>
-        <translation>
-            <numerusform>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème dans le bug tracker.</numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème dans le bug tracker.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../modules/user_inform.py" line="82"/>
         <source>Request to Isogeo&apos;s API failed : unkown error found. Please, report it in the bug tracker.</source>
         <comment>UserInformer</comment>
-        <translation>
-            <numerusform>La requête à l&apos;API Isogeo a échoué pour une raison inconnue. Merci de le signaler dans le bug tracker.</numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>La requête à l&apos;API Isogeo a échoué pour une raison inconnue. Merci de le signaler dans le bug tracker.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../modules/user_inform.py" line="87"/>
         <source>API authentication failed : unexpected API&apos;s reply. Please, report it in the bug tracker.</source>
         <comment>UserInformer</comment>
-        <translation>
-            <numerusform>La requête à l&apos;API Isogeo a échoué. Merci de le signaler dans le bug tracker.</numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>La requête à l&apos;API Isogeo a échoué. Merci de le signaler dans le bug tracker.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../modules/user_inform.py" line="92"/>
         <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
         <comment>UserInformer</comment>
-        <translation>
-            <numerusform>La requête à l&apos;API Isogeo a échoué. Vérifiez votre connexion Internet et votre configuration proxy. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation>La requête à l&apos;API Isogeo a échoué. Vérifiez votre connexion Internet et votre configuration proxy. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
     </message>
 </context>
 <context>
@@ -757,9 +718,9 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</numerusform>
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -770,9 +731,9 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</numerusform>
 &lt;body&gt;
 
 &lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;

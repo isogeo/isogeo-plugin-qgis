@@ -226,14 +226,8 @@
 </phrase>
 <phrase>
     <source>Proxy issue : 
-QGIS and your OS have different proxy set up.</source>
-    <target>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.@</target>
-    <definition>Tools</definition>
-</phrase>
-<phrase>
-    <source>Proxy issue : 
 QGIS and your OS have different proxy set ups.</source>
-    <target>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.@</target>
+    <target>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.</target>
     <definition>Tools</definition>
 </phrase>
 <phrase>
@@ -242,7 +236,7 @@ You have a proxy set up on your OS but none in QGIS.
 Please set it up in &apos;Preferences/Options/Network&apos;.</source>
     <target>Problème de proxy :
 Votre ordinateur utilise un proxy, mais il n&apos;est pas configuré
-dans QGIS (Menu &apos;Préférences/Options/Réseau).@</target>
+dans QGIS (Menu &apos;Préférences/Options/Réseau).</target>
     <definition>Tools</definition>
 </phrase>
 <phrase>
@@ -459,42 +453,42 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).@</target>
 </phrase>
 <phrase>
     <source>The selected credentials file&apos;s format is not valid.</source>
-    <target>Le format du fichier d&apos;authentification indiqué n&apos;est pas valide.@</target>
+    <target>Le format du fichier d&apos;authentification indiqué n&apos;est pas valide.</target>
     <definition>UserInformer</definition>
 </phrase>
 <phrase>
     <source>Authentication file is valid. Asking for authorization to Isogeo&apos;s API.</source>
-    <target>Le fichier d&apos;authentification est valide. Demande d&apos;autorisation envoyée à l&apos;API.@</target>
+    <target>Le fichier d&apos;authentification est valide. Demande d&apos;autorisation envoyée à l&apos;API.</target>
     <definition>UserInformer</definition>
 </phrase>
 <phrase>
     <source>Redirecting code received. ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
-    <target>Les identifiant et mot de passe ne sont pas valides. Renseignez les une nouvelle fois. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.@</target>
+    <target>Les identifiant et mot de passe ne sont pas valides. Renseignez les une nouvelle fois. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</target>
     <definition>UserInformer</definition>
 </phrase>
 <phrase>
     <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
-    <target>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.@</target>
+    <target>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</target>
     <definition>UserInformer</definition>
 </phrase>
 <phrase>
     <source>The script is looping. Make sure you shared a catalog with the plugin.If this error keeps happening, please report it in the bug tracker.</source>
-    <target>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème dans le bug tracker.@</target>
+    <target>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème dans le bug tracker.</target>
     <definition>UserInformer</definition>
 </phrase>
 <phrase>
     <source>Request to Isogeo&apos;s API failed : unkown error found. Please, report it in the bug tracker.</source>
-    <target>La requête à l&apos;API Isogeo a échoué pour une raison inconnue. Merci de le signaler dans le bug tracker.@</target>
+    <target>La requête à l&apos;API Isogeo a échoué pour une raison inconnue. Merci de le signaler dans le bug tracker.</target>
     <definition>UserInformer</definition>
 </phrase>
 <phrase>
     <source>API authentication failed : unexpected API&apos;s reply. Please, report it in the bug tracker.</source>
-    <target>La requête à l&apos;API Isogeo a échoué. Merci de le signaler dans le bug tracker.@</target>
+    <target>La requête à l&apos;API Isogeo a échoué. Merci de le signaler dans le bug tracker.</target>
     <definition>UserInformer</definition>
 </phrase>
 <phrase>
     <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
-    <target>La requête à l&apos;API Isogeo a échoué. Vérifiez votre connexion Internet et votre configuration proxy. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.@</target>
+    <target>La requête à l&apos;API Isogeo a échoué. Vérifiez votre connexion Internet et votre configuration proxy. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</target>
     <definition>UserInformer</definition>
 </phrase>
 <phrase>
