@@ -32,7 +32,7 @@ class UserInformer:
     def show(self, message: str, duration: int = 6, level: int = 1):
         self.bar.pushMessage(message, duration=duration, level=level)
 
-    def authentication_slot(self, auth_sig: str):
+    def authentication_slot(self, auth_sig: str = "ok"):
         msg_dict = {
             "path": [
                 self.tr("The specified file does not exist.", "UserInformer"),

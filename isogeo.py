@@ -229,6 +229,9 @@ class Isogeo:
         self.api_requester.details_sig.connect(self.md_display.show_complete_md)
         self.api_requester.shares_sig.connect(self.approps_mng.send_share_info)
 
+        self.authenticator.auth_sig.connect(self.auth_slot)
+        self.authenticator.ask_shares.connect(self.shares_slot)
+
         self.approps_mng.shares_ready.connect(self.write_shares_info)
 
         # start variables
@@ -372,6 +375,7 @@ class Isogeo:
         if auth_signal == "ok":
             self.user_authentication()
         else :
+            self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             pass
 
     def token_slot(self, token_signal: str):
@@ -392,12 +396,10 @@ class Isogeo:
         """
         if token_signal == "ok":
             if self.savedSearch == "first":
-                self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
-                self.authenticator.first_auth = False
                 logger.debug("First search since plugin started.")
+                self.authenticator.first_auth = False
                 self.set_widget_status()
-                logger.debug("Asking application properties to the Isogeo API.")
-                self.api_requester.send_request(request_type="shares")
+                self.shares_slot()
             else:
                 self.api_requester.send_request()
 
@@ -405,6 +407,10 @@ class Isogeo:
             self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
         else:
             self.pluginIsActive = False
+
+    def shares_slot(self):
+        logger.debug("Asking application properties to the Isogeo API.")
+        self.api_requester.send_request(request_type="shares")
 
     # --- SEARCH --------------------------------------------------------------
     def search(self, show: bool = False, page_change: int = 0):
@@ -725,6 +731,7 @@ class Isogeo:
         :param text str: share informations from Isogeo API
         """
         logger.debug("Displaying application properties.")
+        self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
         self.form_mng.txt_shares.setText(text)
         # method ending
         return
@@ -843,11 +850,6 @@ class Isogeo:
         )
         # view credits - see: #52
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
-
-        # -- Authentication form ----------------------------------------------
-        self.authenticator.auth_sig.connect(
-            self.auth_slot
-        )
 
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.form_mng.setWindowTitle("Isogeo - {}".format(self.plg_version))

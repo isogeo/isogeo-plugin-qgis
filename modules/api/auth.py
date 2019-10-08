@@ -66,6 +66,7 @@ class Authenticator(QObject):
     """
 
     auth_sig = pyqtSignal(str)
+    ask_shares = pyqtSignal()
 
     # ui reference - authentication form
     ui_auth_form = IsogeoAuthentication()
@@ -278,6 +279,7 @@ class Authenticator(QObject):
         """
         self.informer = UserInformer(message_bar=self.msgbar, trad=self.tr)
         self.auth_sig.connect(self.informer.authentication_slot)
+        self.check_shares.connect(self.informer.authentication_slot)
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
             lambda: qsettings.setValue(
                 "isogeo/user/editor",
@@ -307,7 +309,7 @@ class Authenticator(QObject):
         if self.first_auth:
             pass
         else:
-            self.auth_sig.emit("ok")
+            self.check_shares.emit()
             pass
 
     def credentials_uploader(self):
