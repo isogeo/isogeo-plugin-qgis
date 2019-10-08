@@ -1,64 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
 <context>
     <name>ApiRequester</name>
     <message>
         <location filename="../modules/api/request.py" line="448"/>
         <source>Dataset</source>
-        <comment>ApiRequester</comment>
         <translation>Données (vecteurs et rasters)</translation>
     </message>
 </context>
 <context>
     <name>CacheManager</name>
     <message>
-        <location filename="../modules/results/cache.py" line="90"/>
-        <source>Cache has been cleaned</source>
-        <comment>CacheManager</comment>
-        <translation>Le cache a été vidé</translation>
-    </message>
-    <message>
-        <location filename="../modules/results/cache.py" line="87"/>
+        <location filename="../modules/results/cache.py" line="88"/>
         <source>Cache has been cleaned.</source>
-        <comment>CacheManager</comment>
         <translation>Le cache a été vidé.</translation>
     </message>
 </context>
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="348"/>
+        <location filename="../isogeo.py" line="342"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="323"/>
+        <location filename="../isogeo.py" line="317"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="502"/>
+        <location filename="../isogeo.py" line="496"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="437"/>
+        <location filename="../isogeo.py" line="431"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="500"/>
+        <location filename="../isogeo.py" line="494"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="836"/>
+        <location filename="../isogeo.py" line="830"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="605"/>
+        <location filename="../isogeo.py" line="599"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
@@ -289,16 +280,19 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
+        <location filename="../modules/tools.py" line="395"/>
+        <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
+        <translation>Le {} style de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</translation>
+    </message>
+    <message>
         <location filename="../modules/tools.py" line="375"/>
         <source>Alert</source>
-        <comment>Tools</comment>
         <translation>Alerte</translation>
     </message>
     <message>
         <location filename="../modules/tools.py" line="360"/>
         <source>Proxy issue : 
 QGIS and your OS have different proxy set ups.</source>
-        <comment>Tools</comment>
         <translation>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.</translation>
     </message>
     <message>
@@ -306,21 +300,15 @@ QGIS and your OS have different proxy set ups.</source>
         <source>Proxy issue : 
 You have a proxy set up on your OS but none in QGIS.
 Please set it up in &apos;Preferences/Options/Network&apos;.</source>
-        <comment>Tools</comment>
         <translation>Problème de proxy :
 Votre ordinateur utilise un proxy, mais il n&apos;est pas configuré
 dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
-    </message>
-    <message>
-        <location filename="../modules/tools.py" line="395"/>
-        <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
-        <translation>Le {} style de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</translation>
     </message>
 </context>
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="973"/>
+        <location filename="../modules/layer/add_layer.py" line="984"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
@@ -330,37 +318,37 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <translation>Couche vecteur {}  invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="777"/>
+        <location filename="../modules/layer/add_layer.py" line="778"/>
         <source>Raster not valid {}. QGIS says: {}</source>
         <translation>Couche raster {}  invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="799"/>
+        <location filename="../modules/layer/add_layer.py" line="801"/>
         <source>EFS not valid. QGIS says: {}</source>
         <translation>EFS {}  invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="819"/>
+        <location filename="../modules/layer/add_layer.py" line="823"/>
         <source>EMS not valid. QGIS says: {}</source>
         <translation>EMS {}  invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="850"/>
+        <location filename="../modules/layer/add_layer.py" line="856"/>
         <source>WFS is not valid. QGIS says: {}</source>
         <translation>WFS {}  invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="884"/>
+        <location filename="../modules/layer/add_layer.py" line="891"/>
         <source>WMS is not valid. QGIS says: {}</source>
         <translation>WMS {}  invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="904"/>
+        <location filename="../modules/layer/add_layer.py" line="912"/>
         <source>WMTS is not valid. QGIS says: {}</source>
         <translation>WMTS {}  invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="973"/>
+        <location filename="../modules/layer/add_layer.py" line="984"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation>Couche PostGIS {}  invalide. QGIS renvoie : {}</translation>
     </message>
@@ -373,12 +361,12 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <translation>{} sauvegardée correctement : {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="138"/>
+        <location filename="../modules/quick_search.py" line="140"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation>Recherche rapide renommée de {} à {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="159"/>
+        <location filename="../modules/quick_search.py" line="163"/>
         <source>Quicksearch removed: {}</source>
         <translation>Recherche rapide supprimée : {}</translation>
     </message>
@@ -388,61 +376,51 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="../modules/results/display.py" line="162"/>
         <source>Point</source>
-        <comment>ResultsManager</comment>
         <translation>Point</translation>
     </message>
     <message>
         <location filename="../modules/results/display.py" line="165"/>
         <source>Polygon</source>
-        <comment>ResultsManager</comment>
         <translation>Polygone</translation>
     </message>
     <message>
         <location filename="../modules/results/display.py" line="168"/>
         <source>Line</source>
-        <comment>ResultsManager</comment>
         <translation>Linéaire</translation>
     </message>
     <message>
         <location filename="../modules/results/display.py" line="171"/>
         <source>MultiPolygon</source>
-        <comment>ResultsManager</comment>
         <translation>Multi-polygone</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="189"/>
+        <location filename="../modules/results/display.py" line="193"/>
         <source>Unknown geometry</source>
-        <comment>ResultsManager</comment>
         <translation>Géométrie inconnue</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="183"/>
+        <location filename="../modules/results/display.py" line="187"/>
         <source>Raster</source>
-        <comment>ResultsManager</comment>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="186"/>
+        <location filename="../modules/results/display.py" line="190"/>
         <source>Service</source>
-        <comment>ResultsManager</comment>
         <translation>Service</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="440"/>
+        <location filename="../modules/results/display.py" line="450"/>
         <source>Data file</source>
-        <comment>ResultsManager</comment>
         <translation>Donnée fichier</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="438"/>
+        <location filename="../modules/results/display.py" line="446"/>
         <source>PostGIS table</source>
-        <comment>ResultsManager</comment>
         <translation>Table PostGIS</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="392"/>
+        <location filename="../modules/results/display.py" line="398"/>
         <source>Can&apos;t be added</source>
-        <comment>ResultsManager</comment>
         <translation>Non ajoutable</translation>
     </message>
 </context>
@@ -451,103 +429,86 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="../modules/search_form.py" line="94"/>
         <source>Intersects</source>
-        <comment>SearchFormManager</comment>
         <translation>Intersecte</translation>
     </message>
     <message>
         <location filename="../modules/search_form.py" line="94"/>
         <source>within</source>
-        <comment>SearchFormManager</comment>
         <translation>Est contenu</translation>
     </message>
     <message>
         <location filename="../modules/search_form.py" line="94"/>
         <source>contains</source>
-        <comment>SearchFormManager</comment>
         <translation>Contient</translation>
     </message>
     <message>
         <location filename="../modules/search_form.py" line="101"/>
         <source>Relevance</source>
-        <comment>SearchFormManager</comment>
         <translation>Pertinence</translation>
     </message>
     <message>
         <location filename="../modules/search_form.py" line="101"/>
         <source>Alphabetical order</source>
-        <comment>SearchFormManager</comment>
         <translation>Ordre alphabétique</translation>
     </message>
     <message>
         <location filename="../modules/search_form.py" line="101"/>
         <source>Data modified</source>
-        <comment>SearchFormManager</comment>
         <translation>Donnée modifiée</translation>
     </message>
     <message>
         <location filename="../modules/search_form.py" line="101"/>
         <source>Data created</source>
-        <comment>SearchFormManager</comment>
         <translation>Donnée créée</translation>
     </message>
     <message>
         <location filename="../modules/search_form.py" line="101"/>
         <source>Metadata modified</source>
-        <comment>SearchFormManager</comment>
         <translation>Métadonnée modifiée</translation>
     </message>
     <message>
         <location filename="../modules/search_form.py" line="101"/>
         <source>Metadata created</source>
-        <comment>SearchFormManager</comment>
         <translation>Métadonnée créée</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="129"/>
         <source>Descending</source>
-        <comment>SearchFormManager</comment>
         <translation>Descendant</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="129"/>
         <source>Ascending</source>
-        <comment>SearchFormManager</comment>
         <translation>Ascendant</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="162"/>
+        <location filename="../modules/search_form.py" line="183"/>
         <source>Keywords</source>
-        <comment>SearchFormManager</comment>
         <translation>Mots-clés</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="175"/>
+        <location filename="../modules/search_form.py" line="198"/>
         <source>Selected keywords:</source>
-        <comment>SearchFormManager</comment>
         <translation>Mots-clés sélectionnés :</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="179"/>
+        <location filename="../modules/search_form.py" line="203"/>
         <source>No keyword selected</source>
-        <comment>SearchFormManager</comment>
         <translation>Aucun mot-clé sélectionné</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="201"/>
+        <location filename="../modules/search_form.py" line="225"/>
         <source>Map canvas</source>
-        <comment>SearchFormManager</comment>
         <translation>Emprise de la carte</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="233"/>
+        <location filename="../modules/search_form.py" line="259"/>
         <source>Quicksearches</source>
-        <comment>SearchFormManager</comment>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="314"/>
+        <location filename="../modules/search_form.py" line="342"/>
         <source>Display results</source>
-        <comment>SearchFormManager</comment>
         <translation>Affichage des résultats</translation>
     </message>
 </context>
@@ -559,22 +520,22 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <translation>&lt;p&gt;Ce plugin est authentifié en tant que &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; et </translation>
     </message>
     <message>
-        <location filename="../modules/api/shares.py" line="60"/>
+        <location filename="../modules/api/shares.py" line="61"/>
         <source> powered by 1 share:&lt;/p&gt;&lt;/br&gt;</source>
         <translation> alimenté par 1 seul partage :&lt;/p&gt;&lt;/br&gt;</translation>
     </message>
     <message>
-        <location filename="../modules/api/shares.py" line="62"/>
+        <location filename="../modules/api/shares.py" line="65"/>
         <source> powered by {} shares:&lt;/p&gt;&lt;/br&gt;</source>
         <translation> alimenté par {} partages :&lt;/p&gt;&lt;/br&gt;</translation>
     </message>
     <message>
-        <location filename="../modules/api/shares.py" line="76"/>
+        <location filename="../modules/api/shares.py" line="81"/>
         <source>&lt;p&gt;Updated: {}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Dernière mise à jour : {}&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../modules/api/shares.py" line="79"/>
+        <location filename="../modules/api/shares.py" line="84"/>
         <source>&lt;p&gt;Contact: {} - {}&lt;/p&gt;</source>
         <translation>&lt;p&gt;Groupe de travail propriétaire : {} - {}&lt;/p&gt;</translation>
     </message>
@@ -584,55 +545,46 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="../modules/user_inform.py" line="38"/>
         <source>The specified file does not exist.</source>
-        <comment>UserInformer</comment>
         <translation>Le fichier indiqué est introuvable.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="43"/>
+        <location filename="../modules/user_inform.py" line="45"/>
         <source>The selected credentials file&apos;s format is not valid.</source>
-        <comment>UserInformer</comment>
         <translation>Le format du fichier d&apos;authentification indiqué n&apos;est pas valide.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="51"/>
+        <location filename="../modules/user_inform.py" line="53"/>
         <source>Authentication file is valid. Asking for authorization to Isogeo&apos;s API.</source>
-        <comment>UserInformer</comment>
         <translation>Le fichier d&apos;authentification est valide. Demande d&apos;autorisation envoyée à l&apos;API.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="67"/>
+        <location filename="../modules/user_inform.py" line="69"/>
         <source>Redirecting code received. ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
-        <comment>UserInformer</comment>
         <translation>Les identifiant et mot de passe ne sont pas valides. Renseignez les une nouvelle fois. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="72"/>
+        <location filename="../modules/user_inform.py" line="74"/>
         <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
-        <comment>UserInformer</comment>
         <translation>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="77"/>
+        <location filename="../modules/user_inform.py" line="79"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin.If this error keeps happening, please report it in the bug tracker.</source>
-        <comment>UserInformer</comment>
         <translation>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème dans le bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="82"/>
+        <location filename="../modules/user_inform.py" line="84"/>
         <source>Request to Isogeo&apos;s API failed : unkown error found. Please, report it in the bug tracker.</source>
-        <comment>UserInformer</comment>
         <translation>La requête à l&apos;API Isogeo a échoué pour une raison inconnue. Merci de le signaler dans le bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="87"/>
+        <location filename="../modules/user_inform.py" line="89"/>
         <source>API authentication failed : unexpected API&apos;s reply. Please, report it in the bug tracker.</source>
-        <comment>UserInformer</comment>
         <translation>La requête à l&apos;API Isogeo a échoué. Merci de le signaler dans le bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="92"/>
+        <location filename="../modules/user_inform.py" line="94"/>
         <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
-        <comment>UserInformer</comment>
         <translation>La requête à l&apos;API Isogeo a échoué. Vérifiez votre connexion Internet et votre configuration proxy. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
     </message>
 </context>
@@ -718,9 +670,9 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;
@@ -731,9 +683,9 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
 &lt;body&gt;
 
 &lt;ul&gt;
-	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
 &lt;/ul&gt; 
 
 &lt;/body&gt;

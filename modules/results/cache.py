@@ -84,10 +84,10 @@ class CacheManager:
         self.cached_unreach_postgis = []
         self.cached_unreach_srv = []
         self.dumper()
+        logger.debug("Cache has been cleaned")
         msgBar.pushMessage(
-            self.tr("Cache has been cleaned.", "CacheManager"), duration=3
+            self.tr("Cache has been cleaned.", context=__class__.__name__), duration=3
         )
-        logger.debug(self.tr("Cache has been cleaned", "CacheManager"))
 
 
 # #############################################################################

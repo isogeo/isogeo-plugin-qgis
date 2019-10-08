@@ -102,7 +102,9 @@ class QuickSearchManager:
         )
         if search_kind != "Current" and search_kind != "Last":
             msgBar.pushMessage(
-                self.tr("{} successfully saved: {}").format(search_kind, search_name),
+                self.tr("{} successfully saved: {}", context=__class__.__name__).format(
+                    search_kind, search_name
+                ),
                 duration=3,
             )
         else:
@@ -137,7 +139,9 @@ class QuickSearchManager:
         # inform user
         msgBar.pushMessage(
             "Isogeo",
-            self.tr("Quicksearch renamed: from {} to {}").format(old_name, new_name),
+            self.tr(
+                "Quicksearch renamed: from {} to {}", context=__class__.__name__
+            ).format(old_name, new_name),
             level=0,
             duration=3,
         )
@@ -158,7 +162,9 @@ class QuickSearchManager:
         # inform user
         msgBar.pushMessage(
             "Isogeo",
-            self.tr("Quicksearch removed: {}").format(to_remove),
+            self.tr("Quicksearch removed: {}", context=__class__.__name__).format(
+                to_remove
+            ),
             level=0,
             duration=3,
         )

@@ -329,11 +329,11 @@ class IsogeoPlgTools(IsogeoUtils):
                             )
                             QMessageBox.information(
                                 iface.mainWindow(),
-                                self.tr("Alert", "Tools"),
+                                self.tr("Alert", context=__class__.__name__),
                                 self.tr(
                                     "Proxy issue : \nQGIS and your OS "
                                     "have different proxy set ups.",
-                                    "Tools"
+                                    context=__class__.__name__,
                                 ),
                             )
                     elif len(elements) == 3 and elements[0] == "http":
@@ -357,11 +357,11 @@ class IsogeoPlgTools(IsogeoUtils):
                             )
                             QMessageBox.information(
                                 iface.mainWindow(),
-                                self.tr("Alert", "Tools"),
+                                self.tr("Alert", context=__class__.__name__),
                                 self.tr(
                                     "Proxy issue : \nQGIS and your OS"
                                     " have different proxy set ups.",
-                                    "Tools"
+                                    context=__class__.__name__,
                                 ),
                             )
 
@@ -372,12 +372,12 @@ class IsogeoPlgTools(IsogeoUtils):
                 )
                 QMessageBox.information(
                     iface.mainWindow(),
-                    self.tr("Alert", "Tools"),
+                    self.tr("Alert", context=__class__.__name__),
                     self.tr(
                         "Proxy issue : \nYou have a proxy set up on your"
                         " OS but none in QGIS.\nPlease set it up in "
                         "'Preferences/Options/Network'.",
-                        "Tools"
+                        context=__class__.__name__,
                     ),
                 )
 

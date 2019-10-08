@@ -444,7 +444,7 @@ class ApiRequester(QgsNetworkAccessManager):
 
         # override API tags to allow all datasets filter - see #
         if type_dataset == 2:
-            md_types[self.tr("Dataset", "ApiRequester")] = "type:dataset"
+            md_types[self.tr("Dataset", context=__class__.__name__)] = "type:dataset"
         else:
             pass
 
