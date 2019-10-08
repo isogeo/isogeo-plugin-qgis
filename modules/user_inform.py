@@ -35,14 +35,16 @@ class UserInformer:
     def authentication_slot(self, auth_sig: str = "ok"):
         msg_dict = {
             "path": [
-                self.tr("The specified file does not exist.", "UserInformer"),
+                self.tr(
+                    "The specified file does not exist.", context=__class__.__name__
+                ),
                 5,
                 1,
             ],
             "file": [
                 self.tr(
                     "The selected credentials file's format is not valid.",
-                    "UserInformer",
+                    context=__class__.__name__,
                 ),
                 5,
                 1,
@@ -50,7 +52,7 @@ class UserInformer:
             "ok": [
                 self.tr(
                     "Authentication file is valid. Asking for authorization to Isogeo's API.",
-                    "UserInformer",
+                    context=__class__.__name__,
                 ),
                 5,
                 3,
@@ -67,33 +69,33 @@ class UserInformer:
             "creds_issue": self.tr(
                 "Redirecting code received. ID and SECRET could be invalid. Provide them again."
                 " If this error keeps happening, please report it in the bug tracker.",
-                "UserInformer",
+                context=__class__.__name__,
             ),
             "proxy_issue": self.tr(
                 "Proxy error found. Check your OS and QGIS proxy configuration."
                 "If this error keeps happening, please report it in the bug tracker.",
-                "UserInformer",
+                context=__class__.__name__,
             ),
             "shares_issue": self.tr(
                 "The script is looping. Make sure you shared a catalog with the plugin."
                 "If this error keeps happening, please report it in the bug tracker.",
-                "UserInformer",
+                context=__class__.__name__,
             ),
             "unkown_error": self.tr(
                 "Request to Isogeo's API failed : unkown error found. Please,"
                 " report it in the bug tracker.",
-                "UserInformer",
+                context=__class__.__name__,
             ),
             "unkonw_reply": self.tr(
                 "API authentication failed : unexpected API's reply. Please,"
                 " report it in the bug tracker.",
-                "UserInformer",
+                context=__class__.__name__,
             ),
             "internet_issue": self.tr(
                 "Request to Isogeo's API failed : please check your Internet connection and"
                 " your proxy configuration. If this error keeps happening, please report it"
                 " in the bug tracker.",
-                "UserInformer",
+                context=__class__.__name__,
             ),
         }
         if api_sig in list(msg_dict.keys()):

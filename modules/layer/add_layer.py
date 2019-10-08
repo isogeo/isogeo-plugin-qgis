@@ -20,7 +20,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsRasterLayer,
     QgsMessageLog,
-    QgsApplication
+    QgsApplication,
 )
 from qgis.utils import iface
 
@@ -99,7 +99,7 @@ class LayerAdder:
         self.cached_wmts = dict()
 
         self.tbl_result = None
-        self.tr = None
+        self.tr = object
         self.md_sync = MetadataSynchronizer()
 
         # add layer from PostGIS table
@@ -736,10 +736,11 @@ class LayerAdder:
                     )
                     QMessageBox.information(
                         iface.mainWindow(),
-                        self.tr("Error"),
-                        self.tr("Vector not valid {}. QGIS says: {}").format(
-                            path, error_msg
-                        ),
+                        self.tr("Error", context=__class__.__name__),
+                        self.tr(
+                            "Vector not valid {}. QGIS says: {}",
+                            context=__class__.__name__,
+                        ).format(path, error_msg),
                     )
             # If raster file
             elif layer_info[0] == "raster":
@@ -775,10 +776,11 @@ class LayerAdder:
                     )
                     QMessageBox.information(
                         iface.mainWindow(),
-                        self.tr("Error"),
-                        self.tr("Raster not valid {}. QGIS says: {}").format(
-                            path, error_msg
-                        ),
+                        self.tr("Error", context=__class__.__name__),
+                        self.tr(
+                            "Raster not valid {}. QGIS says: {}",
+                            context=__class__.__name__,
+                        ).format(path, error_msg),
                     )
             # If EFS link
             elif layer_info[0] == "EFS":
@@ -797,8 +799,10 @@ class LayerAdder:
                     )
                     QMessageBox.information(
                         iface.mainWindow(),
-                        self.tr("Error"),
-                        self.tr("EFS not valid. QGIS says: {}").format(error_msg),
+                        self.tr("Error", context=__class__.__name__),
+                        self.tr(
+                            "EFS not valid. QGIS says: {}", context=__class__.__name__
+                        ).format(error_msg),
                     )
             # If EMS link
             elif layer_info[0] == "EMS":
@@ -817,8 +821,10 @@ class LayerAdder:
                     )
                     QMessageBox.information(
                         iface.mainWindow(),
-                        self.tr("Error"),
-                        self.tr("EMS not valid. QGIS says: {}").format(error_msg),
+                        self.tr("Error", context=__class__.__name__),
+                        self.tr(
+                            "EMS not valid. QGIS says: {}", context=__class__.__name__
+                        ).format(error_msg),
                     )
             # If WFS link
             elif layer_info[0] == "WFS":
@@ -848,10 +854,11 @@ class LayerAdder:
                     else:
                         QMessageBox.information(
                             iface.mainWindow(),
-                            self.tr("Error"),
-                            self.tr("WFS is not valid. QGIS says: {}").format(
-                                error_msg
-                            ),
+                            self.tr("Error", context=__class__.__name__),
+                            self.tr(
+                                "WFS is not valid. QGIS says: {}",
+                                context=__class__.__name__,
+                            ).format(error_msg),
                         )
                         pass
             # If WMS link
@@ -882,10 +889,11 @@ class LayerAdder:
                     else:
                         QMessageBox.information(
                             iface.mainWindow(),
-                            self.tr("Error"),
-                            self.tr("WMS is not valid. QGIS says: {}").format(
-                                error_msg
-                            ),
+                            self.tr("Error", context=__class__.__name__),
+                            self.tr(
+                                "WMS is not valid. QGIS says: {}",
+                                context=__class__.__name__,
+                            ).format(error_msg),
                         )
             # If WMTS link
             elif layer_info[0] == "WMTS":
@@ -902,8 +910,11 @@ class LayerAdder:
                     )
                     QMessageBox.information(
                         iface.mainWindow(),
-                        self.tr("Error"),
-                        self.tr("WMTS is not valid. QGIS says: {}").format(error_msg),
+                        self.tr("Error", context=__class__.__name__),
+                        self.tr(
+                            "WMTS is not valid. QGIS says: {}",
+                            context=__class__.__name__,
+                        ).format(error_msg),
                     )
             else:
                 pass
@@ -971,11 +982,11 @@ class LayerAdder:
                 logger.debug("Layer not valid. table = {0}".format(table))
                 QMessageBox.information(
                     iface.mainWindow(),
-                    self.tr("Error"),
+                    self.tr("Error", context=__class__.__name__),
                     self.tr(
-                        "The PostGIS layer is not valid."
-                        " Reason: {}".format(plg_tools.last_error)
-                    ),
+                        "The PostGIS layer is not valid." " Reason: {}",
+                        context=__class__.__name__,
+                    ).format(plg_tools.last_error),
                 )
                 return 0
         # filling 'QGIS Server' tab of layer Properties

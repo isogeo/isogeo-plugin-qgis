@@ -50,16 +50,21 @@ class SharesParser(QObject):
             # Isogeo application authenticated in the plugin
             app = content[0].get("applications")[0]
             text += self.tr(
-                "<p>This plugin is authenticated as " "<a href='{}'>{}</a> and "
+                "<p>This plugin is authenticated as " "<a href='{}'>{}</a> and ",
+                context=__class__.__name__,
             ).format(
                 app.get("url", "https://isogeo.gitbooks.io/app-plugin-qgis/content"),
                 app.get("name", "Isogeo plugin for QGIS"),
             )
             # shares feeding the application
             if len(content) == 1:
-                text += self.tr(" powered by 1 share:</p></br>")
+                text += self.tr(
+                    " powered by 1 share:</p></br>", context=__class__.__name__
+                )
             else:
-                text += self.tr(" powered by {} shares:</p></br>").format(len(content))
+                text += self.tr(
+                    " powered by {} shares:</p></br>", context=__class__.__name__
+                ).format(len(content))
             # shares details
             for share in content:
                 # share variables
@@ -73,12 +78,13 @@ class SharesParser(QObject):
                 text += "<p><a href='{}'><b>{}</b></a></p>".format(
                     share_url, share.get("name")
                 )
-                text += self.tr("<p>Updated: {}</p>").format(
-                    plg_tools.handle_date(share.get("_modified"))
-                )
-                text += self.tr("<p>Contact: {} - {}</p>").format(
-                    creator_name, creator_email
-                )
+                text += self.tr(
+                    "<p>Updated: {}</p>", context=__class__.__name__
+                ).format(plg_tools.handle_date(share.get("_modified")))
+                text += self.tr(
+                    "<p>Contact: {} - {}</p>", context=__class__.__name__
+                ).format(creator_name, creator_email)
+
                 text += "<p><hr></p>"
             text += "</html>"
             self.shares_ready.emit(text)

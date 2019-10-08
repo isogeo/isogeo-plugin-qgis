@@ -16,6 +16,7 @@ SOURCES = __init__.py \
     modules/results/display.py \
     modules/search_form.py \
     modules/tools.py \
+    modules/user_inform.py \
 	ui/isogeo_dockwidget.py \
 	ui/auth/ui_authentication.py \
     ui/credits/ui_credits.py \

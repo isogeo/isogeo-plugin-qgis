@@ -23,7 +23,6 @@
 """
 
 # Standard library
-import os
 from pathlib import Path
 import platform
 
@@ -39,11 +38,7 @@ from qgis.PyQt.QtGui import QIcon
 
 # PyQGIS
 from qgis.utils import iface, plugin_times
-from qgis.core import (
-    QgsCoordinateReferenceSystem,
-    QgsMessageLog,
-    QgsRectangle
-)
+from qgis.core import QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle
 
 
 try:
@@ -65,7 +60,7 @@ from .modules import (
     IsogeoPlgTools,
     SharesParser,
     SearchFormManager,
-    UserInformer
+    UserInformer,
 )
 
 # ############################################################################
@@ -205,13 +200,12 @@ class Isogeo:
 
         # SUBMODULES
         # instanciating
-        self.informer = UserInformer(message_bar = msgBar, trad = self.tr)
+        self.informer = UserInformer(message_bar=msgBar, trad=self.tr)
 
         self.md_display = MetadataDisplayer()
 
         self.approps_mng = SharesParser()
         self.approps_mng.tr = self.tr
-
 
         self.authenticator = Authenticator()
 
@@ -368,13 +362,13 @@ class Isogeo:
         api_init = self.authenticator.manage_api_initialization()
         if api_init[0]:
             self.api_requester.setup_api_params(api_init[1])
-        else :
+        else:
             pass
-    
+
     def auth_slot(self, auth_signal: str):
         if auth_signal == "ok":
             self.user_authentication()
-        else :
+        else:
             self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             pass
 
@@ -866,6 +860,7 @@ class Isogeo:
         self.form_mng.results_mng.cache_mng.loader()
         # launch authentication
         self.user_authentication()
+
 
 # #############################################################################
 # ##### Stand alone program ########

@@ -159,34 +159,40 @@ class ResultsManager(QObject):
             if ds_geometry:
                 if ds_geometry in point_list:
                     lbl_geom.setPixmap(pix_point)
-                    lbl_geom.setToolTip(self.tr("Point", "ResultsManager"))
+                    lbl_geom.setToolTip(self.tr("Point", context=__class__.__name__))
                 elif ds_geometry in polygon_list:
                     lbl_geom.setPixmap(pix_polyg)
-                    lbl_geom.setToolTip(self.tr("Polygon", "ResultsManager"))
+                    lbl_geom.setToolTip(self.tr("Polygon", context=__class__.__name__))
                 elif ds_geometry in line_list:
                     lbl_geom.setPixmap(pix_line)
-                    lbl_geom.setToolTip(self.tr("Line", "ResultsManager"))
+                    lbl_geom.setToolTip(self.tr("Line", context=__class__.__name__))
                 elif ds_geometry in multi_list:
                     lbl_geom.setPixmap(pix_multi)
-                    lbl_geom.setToolTip(self.tr("MultiPolygon", "ResultsManager"))
+                    lbl_geom.setToolTip(
+                        self.tr("MultiPolygon", context=__class__.__name__)
+                    )
                 elif ds_geometry == "TIN":
                     tbl_result.setItem(count, 2, QTableWidgetItem("TIN"))
                 else:
                     tbl_result.setItem(
                         count,
                         2,
-                        QTableWidgetItem(self.tr("Unknown geometry", "ResultsManager")),
+                        QTableWidgetItem(
+                            self.tr("Unknown geometry", context=__class__.__name__)
+                        ),
                     )
             else:
                 if "rasterDataset" in i.get("type"):
                     lbl_geom.setPixmap(pix_rastr)
-                    lbl_geom.setToolTip(self.tr("Raster", "ResultsManager"))
+                    lbl_geom.setToolTip(self.tr("Raster", context=__class__.__name__))
                 elif "service" in i.get("type"):
                     lbl_geom.setPixmap(pix_serv)
-                    lbl_geom.setToolTip(self.tr("Service", "ResultsManager"))
+                    lbl_geom.setToolTip(self.tr("Service", context=__class__.__name__))
                 else:
                     lbl_geom.setPixmap(pix_nogeo)
-                    lbl_geom.setToolTip(self.tr("Unknown geometry", "ResultsManager"))
+                    lbl_geom.setToolTip(
+                        self.tr("Unknown geometry", context=__class__.__name__)
+                    )
 
             tbl_result.setCellWidget(count, 2, lbl_geom)
 
@@ -208,7 +214,7 @@ class ResultsManager(QObject):
                             md_keywords,
                         ]
                         dico_add_options[
-                            self.tr("Data file", "ResultsManager")
+                            self.tr("Data file", context=__class__.__name__)
                         ] = params
                     else:
                         pass
@@ -224,7 +230,7 @@ class ResultsManager(QObject):
                             md_keywords,
                         ]
                         dico_add_options[
-                            self.tr("Data file", "ResultsManager")
+                            self.tr("Data file", context=__class__.__name__)
                         ] = params
                     else:
                         pass
@@ -243,7 +249,7 @@ class ResultsManager(QObject):
                             params["title"] = i.get("title", None)
                             params["keywords"] = md_keywords
                             dico_add_options[
-                                self.tr("PostGIS table", "ResultsManager")
+                                self.tr("PostGIS table", context=__class__.__name__)
                             ] = params
                         else:
                             pass
@@ -389,7 +395,7 @@ class ResultsManager(QObject):
 
             # If the data can't be added, just insert "can't" text.
             if dico_add_options == {}:
-                text = self.tr("Can't be added", "ResultsManager")
+                text = self.tr("Can't be added", context=__class__.__name__)
                 fake_button = QPushButton(text)
                 fake_button.setStyleSheet("text-align: left")
                 fake_button.setEnabled(False)
@@ -409,9 +415,11 @@ class ResultsManager(QObject):
                     icon = ico_efs
                 elif text.startswith("EMS"):
                     icon = ico_ems
-                elif text.startswith(self.tr("PostGIS table", "ResultsManager")):
+                elif text.startswith(
+                    self.tr("PostGIS table", context=__class__.__name__)
+                ):
                     icon = ico_pgis
-                elif text.startswith(self.tr("Data file", "ResultsManager")):
+                elif text.startswith(self.tr("Data file", context=__class__.__name__)):
                     icon = ico_file
                 else:
                     logger.debug("text : {}".format(text))
@@ -435,9 +443,11 @@ class ResultsManager(QObject):
                         icon = ico_efs
                     elif i.startswith("EMS"):
                         icon = ico_ems
-                    elif i.startswith(self.tr("PostGIS table", "ResultsManager")):
+                    elif i.startswith(
+                        self.tr("PostGIS table", context=__class__.__name__)
+                    ):
                         icon = ico_pgis
-                    elif i.startswith(self.tr("Data file", "ResultsManager")):
+                    elif i.startswith(self.tr("Data file", context=__class__.__name__)):
                         icon = ico_file
                     combo.addItem(icon, i, dico_add_options.get(i))
                 combo.activated.connect(
