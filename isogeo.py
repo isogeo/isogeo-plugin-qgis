@@ -23,7 +23,6 @@
 """
 
 # Standard library
-import os
 from pathlib import Path
 import platform
 
