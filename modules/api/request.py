@@ -273,28 +273,30 @@ class ApiRequester(QgsNetworkAccessManager):
             )
             self.api_sig.emit("creds_issue")
 
-        elif content == "":
+        elif content != "":
+            logger.warning(
+                "Request to the API failed. Unkown error : {}"
+                "\n(see https://doc.qt.io/qt-5/qnetworkreply.html#NetworkError-enum)"
+                "\n Unexpected reply content : {}".format(
+                    str(reply.error()), parsed_content
+                )
+            )
+
+            self.api_sig.emit("unkown_error")
+        
+        else:
             if self.loopCount < 3:
                 self.loopCount += 1
                 reply.abort()
                 self.send_request("token")
             else:
                 logger.error(
-                    "Request to the API failed. Empty reply for the third time. "
+                    "Request to the API failed (error : {}). Empty reply for the third time. "
                     "Weither no catalog is shared with the plugin, or there is no "
-                    "Internet connection."
+                    "Internet connection.".format(str(reply.error()))
                 )
                 self.api_sig.emit("internet_issue")
 
-        else:
-            logger.warning(
-                "Request to the API failed. Unkown error : {}"
-                "\n(see https://doc.qt.io/qt-5/qnetworkreply.html#NetworkError-enum)".format(
-                    str(reply.error())
-                )
-            )
-
-            self.api_sig.emit("unkown_error")
         return
 
     def build_request_url(self, params: dict):
