@@ -156,6 +156,13 @@ class ApiRequester(QgsNetworkAccessManager):
             self.get(request)
         return
 
+    def reply_attributes_printer(self, reply):
+        for i in range(0, 27):
+            try:
+                logger.debug("*=====* {}".format(reply.attribute(i)))
+            except:
+                continue
+
     def handle_reply(self, reply: QNetworkReply):
         """Slot to QNetworkAccesManager.finished signal who handles the API's response to any type
         of request : 'token', 'search', 'shares' or 'details'.
@@ -173,7 +180,9 @@ class ApiRequester(QgsNetworkAccessManager):
 
         :param QNetworkReply reply: Isogeo API response
         """
-
+        url = reply.url().toString()
+        logger.debug("API answer from {} : \n {} --> {}".format(url, reply.attribute(0), reply.attribute(1)))
+        # self.reply_attributes_printer(reply)
         # retrieving API reply content
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
@@ -184,13 +193,14 @@ class ApiRequester(QgsNetworkAccessManager):
             except ValueError as e:
                 if "No JSON object could be decoded" in str(e):
                     logger.error(
-                        "'No JSON object could be decoded' --> Internet connection failed"
+                        "{} --> Internet connection failed".format(
+                            str(e)
+                        )
                     )
                     self.api_sig.emit("internet_issue")
                 else:
                     pass
                 return
-            url = reply.url().toString()
             # for token request, one signal is emitted passing a string whose
             # value depend on the reply content
             if "token" in url:
@@ -230,26 +240,22 @@ class ApiRequester(QgsNetworkAccessManager):
                 self.loopCount = 0
                 if "shares" in url:
                     logger.debug("Handling reply to a 'shares' request")
-                    logger.debug("(from : {}).".format(url))
                     if len(parsed_content) > 0:
                         self.shares_sig.emit(parsed_content)
                     else:
                         self.api_sig.emit("shares_issue")
                 elif "resources/search?" in url:
                     logger.debug("Handling reply to a 'search' request")
-                    logger.debug("(from : {}).".format(url))
                     self.search_sig.emit(
                         parsed_content, self.get_tags(parsed_content.get("tags"))
                     )
                 elif "resources/" in reply.url().toString():
                     logger.debug("Handling reply to a 'details' request")
-                    logger.debug("(from : {}).".format(url))
                     self.details_sig.emit(
                         parsed_content, self.get_tags(parsed_content.get("tags"))
                     )
                 else:
                     logger.debug("Unkown reply type : {}".format(parsed_content))
-            del parsed_content
 
         # if replys's content is invalid
         elif reply.error() == 204:
@@ -268,8 +274,9 @@ class ApiRequester(QgsNetworkAccessManager):
 
         elif reply.error() == 302:
             logger.error(
-                "Request to the API failed. Redirecting code received : 302."
-                "Creds may be invalid or a proxy error wasn't catched."
+                "Request to the API failed. 'the requested operation is "
+                "invalid for this protocol' : 302. Creds may be invalid "
+                "or a proxy error wasn't catched."
             )
             self.api_sig.emit("creds_issue")
 
@@ -291,12 +298,14 @@ class ApiRequester(QgsNetworkAccessManager):
                 self.send_request("token")
             else:
                 logger.error(
-                    "Request to the API failed (error : {}). Empty reply for the third time. "
+                    "Request to the API failed. Empty reply for the third time. "
                     "Weither no catalog is shared with the plugin, or there is no "
-                    "Internet connection.".format(str(reply.error()))
+                    "Internet connection. (qt error code : {} / http status code : {})".format(
+                        str(reply.error()), reply.attribute(0))
                 )
                 self.api_sig.emit("internet_issue")
 
+        reply.deleteLater()
         return
 
     def build_request_url(self, params: dict):

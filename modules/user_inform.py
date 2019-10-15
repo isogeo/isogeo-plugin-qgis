@@ -67,7 +67,7 @@ class UserInformer:
     def request_slot(self, api_sig: str):
         msg_dict = {
             "creds_issue": self.tr(
-                "Redirecting code received. ID and SECRET could be invalid. Provide them again."
+                "ID and SECRET could be invalid. Provide them again."
                 " If this error keeps happening, please report it in the bug tracker.",
                 context=__class__.__name__,
             ),
