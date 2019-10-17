@@ -156,13 +156,6 @@ class ApiRequester(QgsNetworkAccessManager):
             self.get(request)
         return
 
-    def reply_attributes_printer(self, reply):
-        for i in range(0, 27):
-            try:
-                logger.debug("*=====* {}".format(reply.attribute(i)))
-            except:
-                continue
-
     def handle_reply(self, reply: QNetworkReply):
         """Slot to QNetworkAccesManager.finished signal who handles the API's response to any type
         of request : 'token', 'search', 'shares' or 'details'.
@@ -182,7 +175,6 @@ class ApiRequester(QgsNetworkAccessManager):
         """
         url = reply.url().toString()
         logger.debug("API answer from {} : \n {} --> {}".format(url, reply.attribute(0), reply.attribute(1)))
-        # self.reply_attributes_printer(reply)
         # retrieving API reply content
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
