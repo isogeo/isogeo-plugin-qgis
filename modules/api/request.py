@@ -174,7 +174,11 @@ class ApiRequester(QgsNetworkAccessManager):
         :param QNetworkReply reply: Isogeo API response
         """
         url = reply.url().toString()
-        logger.debug("API answer from {} : \n {} --> {}".format(url, reply.attribute(0), reply.attribute(1)))
+        logger.debug(
+            "API answer from {} : \n {} --> {}".format(
+                url, reply.attribute(0), reply.attribute(1)
+            )
+        )
         # retrieving API reply content
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
@@ -184,11 +188,7 @@ class ApiRequester(QgsNetworkAccessManager):
                 parsed_content = json.loads(content)
             except ValueError as e:
                 if "No JSON object could be decoded" in str(e):
-                    logger.error(
-                        "{} --> Internet connection failed".format(
-                            str(e)
-                        )
-                    )
+                    logger.error("{} --> Internet connection failed".format(str(e)))
                     self.api_sig.emit("internet_issue")
                 else:
                     pass
@@ -282,7 +282,7 @@ class ApiRequester(QgsNetworkAccessManager):
             )
 
             self.api_sig.emit("unkown_error")
-        
+
         else:
             if self.loopCount < 3:
                 self.loopCount += 1
@@ -293,7 +293,8 @@ class ApiRequester(QgsNetworkAccessManager):
                     "Request to the API failed. Empty reply for the third time. "
                     "Weither no catalog is shared with the plugin, or there is no "
                     "Internet connection. (qt error code : {} / http status code : {})".format(
-                        str(reply.error()), reply.attribute(0))
+                        str(reply.error()), reply.attribute(0)
+                    )
                 )
                 self.api_sig.emit("internet_issue")
 
