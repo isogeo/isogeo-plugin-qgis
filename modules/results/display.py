@@ -8,7 +8,7 @@ from pathlib import Path
 
 # PyQT
 # from QByteArray
-from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal
+from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal, Qt
 from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
@@ -123,6 +123,15 @@ class ResultsManager(QObject):
             tbl_result.setRowCount(10)
         else:
             tbl_result.setRowCount(api_results.get("total"))
+
+        # dimensions
+        header = tbl_result.horizontalHeader()
+        header.setSectionResizeMode(1)
+        header.setSectionResizeMode(1, 2)
+        header.setSectionResizeMode(2, 2)
+        header.resizeSection(1, 80)
+        header.resizeSection(2, 40)
+        header.setSectionResizeMode(0, 2)
         
         # Looping inside the table lines. For each of them, showing the title,
         # abstract, geometry type, and a button that allow to add the data
@@ -146,14 +155,16 @@ class ResultsManager(QObject):
             btn_md_title.pressed.connect(partial(self.md_asked.emit, md_id))
             # Putting the abstract as a tooltip on this button
             btn_md_title.setToolTip(i.get("abstract", "")[:300])
-            # Resizing the button to match with column's width
-            btn_md_title.setFixedWidth(tbl_result.columnWidth(0))
             # Insert it in column 1
             tbl_result.setCellWidget(count, 0, btn_md_title)
+            # Resizing the button to match with column's width
+            # btn_md_title.setFixedWidth(header.sectionSize(0))
 
             # COLUMN 2 - Data last update
+            date_item = QTableWidgetItem(plg_tools.handle_date(i.get("_modified")))
+            date_item.setTextAlignment(Qt.AlignCenter)
             tbl_result.setItem(
-                count, 1, QTableWidgetItem(plg_tools.handle_date(i.get("_modified")))
+                count, 1, date_item
             )
 
             # COLUMN 3 - Geometry type
@@ -195,7 +206,7 @@ class ResultsManager(QObject):
                     lbl_geom.setToolTip(
                         self.tr("Unknown geometry", context=__class__.__name__)
                     )
-
+            lbl_geom.setAlignment(Qt.AlignCenter)
             tbl_result.setCellWidget(count, 2, lbl_geom)
 
             # COLUMN 4 - Add options
@@ -457,18 +468,12 @@ class ResultsManager(QObject):
                     partial(self.add_layer, layer_info=["index", count])
                 )
                 combo.model().sort(0)  # sort alphabetically on option prefix. see: #113
-                combo.setFixedWidth(tbl_result.columnWidth(3))
+                # combo.setFixedWidth(tbl_result.columnWidth(3))
                 tbl_result.setCellWidget(count, 3, combo)
 
             count += 1
-        # dimensions
-        header = tbl_result.horizontalHeader()
-        # header.setSectionResizeMode(0, QHeaderView.Stretch)
-        # header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        # header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        # header.setSectionResizeMode(3, QHeaderView.Stretch)
-        header.resizeSection(1, 80)
-        header.resizeSection(2, 50)
+        
+        # vertical dimensions
         tbl_result.verticalHeader().setSectionResizeMode(3)
         # method ending
         return None
