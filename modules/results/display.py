@@ -10,13 +10,7 @@ from pathlib import Path
 # from QByteArray
 from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal, Qt
 from qgis.PyQt.QtGui import QIcon, QPixmap
-from qgis.PyQt.QtWidgets import (
-    QTableWidgetItem,
-    QComboBox,
-    QPushButton,
-    QLabel,
-    QHeaderView,
-)
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QPushButton, QLabel
 
 # Plugin modules
 from .cache import CacheManager
@@ -125,14 +119,12 @@ class ResultsManager(QObject):
             tbl_result.setRowCount(api_results.get("total"))
 
         # dimensions
-        header = tbl_result.horizontalHeader()
-        header.setSectionResizeMode(1)
-        header.setSectionResizeMode(1, 2)
-        header.setSectionResizeMode(2, 2)
-        header.resizeSection(1, 80)
-        header.resizeSection(2, 40)
-        header.setSectionResizeMode(0, 2)
-        
+        hheader = tbl_result.horizontalHeader()
+        hheader.setSectionResizeMode(1)
+        hheader.setSectionResizeMode(1, 3)
+        hheader.setSectionResizeMode(2, 3)
+
+        vheader = tbl_result.verticalHeader()
         # Looping inside the table lines. For each of them, showing the title,
         # abstract, geometry type, and a button that allow to add the data
         # to the canvas.
@@ -150,22 +142,19 @@ class ResultsManager(QObject):
 
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
-            btn_md_title = QPushButton(plg_tools.format_button_title(md_title))
+            btn_title = plg_tools.format_button_title(md_title)
+            btn_md_title = QPushButton(btn_title)
             # Connecting the button to the full metadata popup
             btn_md_title.pressed.connect(partial(self.md_asked.emit, md_id))
             # Putting the abstract as a tooltip on this button
             btn_md_title.setToolTip(i.get("abstract", "")[:300])
             # Insert it in column 1
             tbl_result.setCellWidget(count, 0, btn_md_title)
-            # Resizing the button to match with column's width
-            # btn_md_title.setFixedWidth(header.sectionSize(0))
 
             # COLUMN 2 - Data last update
             date_item = QTableWidgetItem(plg_tools.handle_date(i.get("_modified")))
             date_item.setTextAlignment(Qt.AlignCenter)
-            tbl_result.setItem(
-                count, 1, date_item
-            )
+            tbl_result.setItem(count, 1, date_item)
 
             # COLUMN 3 - Geometry type
             lbl_geom = QLabel(tbl_result)
@@ -441,7 +430,6 @@ class ResultsManager(QObject):
                 add_button.pressed.connect(
                     partial(self.add_layer, layer_info=["info", params, count])
                 )
-                btn_md_title.setFixedWidth(tbl_result.columnWidth(0))
                 tbl_result.setCellWidget(count, 3, add_button)
             # Else, add a combobox, storing all possibilities.
             else:
@@ -468,13 +456,16 @@ class ResultsManager(QObject):
                     partial(self.add_layer, layer_info=["index", count])
                 )
                 combo.model().sort(0)  # sort alphabetically on option prefix. see: #113
-                # combo.setFixedWidth(tbl_result.columnWidth(3))
                 tbl_result.setCellWidget(count, 3, combo)
 
+            # make the widget (button or combobox) width the same as the column width
+            tbl_result.cellWidget(count, 3).setFixedWidth(hheader.sectionSize(3))
             count += 1
-        
-        # vertical dimensions
-        tbl_result.verticalHeader().setSectionResizeMode(3)
+
+        # dimensions bis
+        hheader.setSectionResizeMode(3, 3)
+        vheader.setSectionResizeMode(3)
+
         # method ending
         return None
 
