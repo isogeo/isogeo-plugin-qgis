@@ -335,8 +335,8 @@ class ApiRequester(QgsNetworkAccessManager):
         if params.get("formats") is not None:
             filters += params.get("formats") + " "
         # Data type
-        if params.get("types") is not None:
-            filters += params.get("types") + " "
+        if params.get("datatype") is not None:
+            filters += params.get("datatype") + " "
         # Contact
         if params.get("contacts") is not None:
             filters += params.get("contacts") + " "
@@ -463,7 +463,7 @@ class ApiRequester(QgsNetworkAccessManager):
             "licenses": licenses,
             "owners": owners,
             "srs": srs,
-            "types": md_types,
+            "datatype": md_types,
             # "unused": unused
         }
 
