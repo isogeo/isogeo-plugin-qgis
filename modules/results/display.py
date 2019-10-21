@@ -464,8 +464,8 @@ class ResultsManager(QObject):
 
         # dimensions bis
         hheader.setSectionResizeMode(3, 3)
+        vheader.setMinimumSectionSize(30)
         vheader.setSectionResizeMode(3)
-
         # method ending
         return None
 
