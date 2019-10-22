@@ -376,7 +376,7 @@ class IsogeoPlgTools(IsogeoUtils):
                     )
                     pass
                 else:
-                    elements = http.split(":")
+                    elements = http_proxy.split(":")
                     if len(elements) == 2:
                         host = elements[0]
                         port = elements[1]
