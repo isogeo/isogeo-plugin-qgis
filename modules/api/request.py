@@ -173,7 +173,12 @@ class ApiRequester(QgsNetworkAccessManager):
 
         :param QNetworkReply reply: Isogeo API response
         """
-
+        url = reply.url().toString()
+        logger.debug(
+            "API answer from {} : \n {} --> {}".format(
+                url, reply.attribute(0), reply.attribute(1)
+            )
+        )
         # retrieving API reply content
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
@@ -183,14 +188,11 @@ class ApiRequester(QgsNetworkAccessManager):
                 parsed_content = json.loads(content)
             except ValueError as e:
                 if "No JSON object could be decoded" in str(e):
-                    logger.error(
-                        "'No JSON object could be decoded' --> Internet connection failed"
-                    )
+                    logger.error("{} --> Internet connection failed".format(str(e)))
                     self.api_sig.emit("internet_issue")
                 else:
                     pass
                 return
-            url = reply.url().toString()
             # for token request, one signal is emitted passing a string whose
             # value depend on the reply content
             if "token" in url:
@@ -230,26 +232,22 @@ class ApiRequester(QgsNetworkAccessManager):
                 self.loopCount = 0
                 if "shares" in url:
                     logger.debug("Handling reply to a 'shares' request")
-                    logger.debug("(from : {}).".format(url))
                     if len(parsed_content) > 0:
                         self.shares_sig.emit(parsed_content)
                     else:
                         self.api_sig.emit("shares_issue")
                 elif "resources/search?" in url:
                     logger.debug("Handling reply to a 'search' request")
-                    logger.debug("(from : {}).".format(url))
                     self.search_sig.emit(
                         parsed_content, self.get_tags(parsed_content.get("tags"))
                     )
                 elif "resources/" in reply.url().toString():
                     logger.debug("Handling reply to a 'details' request")
-                    logger.debug("(from : {}).".format(url))
                     self.details_sig.emit(
                         parsed_content, self.get_tags(parsed_content.get("tags"))
                     )
                 else:
                     logger.debug("Unkown reply type : {}".format(parsed_content))
-            del parsed_content
 
         # if replys's content is invalid
         elif reply.error() == 204:
@@ -268,12 +266,24 @@ class ApiRequester(QgsNetworkAccessManager):
 
         elif reply.error() == 302:
             logger.error(
-                "Request to the API failed. Redirecting code received : 302."
-                "Creds may be invalid or a proxy error wasn't catched."
+                "Request to the API failed. 'the requested operation is "
+                "invalid for this protocol' : 302. Creds may be invalid "
+                "or a proxy error wasn't catched."
             )
             self.api_sig.emit("creds_issue")
 
-        elif content == "":
+        elif content != "":
+            logger.warning(
+                "Request to the API failed. Unkown error : {}"
+                "\n(see https://doc.qt.io/qt-5/qnetworkreply.html#NetworkError-enum)"
+                "\n Unexpected reply content : {}".format(
+                    str(reply.error()), parsed_content
+                )
+            )
+
+            self.api_sig.emit("unkown_error")
+
+        else:
             if self.loopCount < 3:
                 self.loopCount += 1
                 reply.abort()
@@ -282,19 +292,13 @@ class ApiRequester(QgsNetworkAccessManager):
                 logger.error(
                     "Request to the API failed. Empty reply for the third time. "
                     "Weither no catalog is shared with the plugin, or there is no "
-                    "Internet connection."
+                    "Internet connection. (qt error code : {} / http status code : {})".format(
+                        str(reply.error()), reply.attribute(0)
+                    )
                 )
                 self.api_sig.emit("internet_issue")
 
-        else:
-            logger.warning(
-                "Request to the API failed. Unkown error : {}"
-                "\n(see https://doc.qt.io/qt-5/qnetworkreply.html#NetworkError-enum)".format(
-                    str(reply.error())
-                )
-            )
-
-            self.api_sig.emit("unkown_error")
+        reply.deleteLater()
         return
 
     def build_request_url(self, params: dict):
@@ -331,8 +335,8 @@ class ApiRequester(QgsNetworkAccessManager):
         if params.get("formats") is not None:
             filters += params.get("formats") + " "
         # Data type
-        if params.get("types") is not None:
-            filters += params.get("types") + " "
+        if params.get("datatype") is not None:
+            filters += params.get("datatype") + " "
         # Contact
         if params.get("contacts") is not None:
             filters += params.get("contacts") + " "
@@ -459,7 +463,7 @@ class ApiRequester(QgsNetworkAccessManager):
             "licenses": licenses,
             "owners": owners,
             "srs": srs,
-            "types": md_types,
+            "datatype": md_types,
             # "unused": unused
         }
 

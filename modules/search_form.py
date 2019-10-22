@@ -81,7 +81,7 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbbs_search_advanced = self.grp_filters.findChildren(QComboBox)
         # match between widgets and metadata fields
         self.match_widget_field = {
-            self.cbb_type: "types",
+            self.cbb_type: "datatype",
             self.cbb_format: "formats",
             self.cbb_owner: "owners",
             self.cbb_inspire: "inspire",

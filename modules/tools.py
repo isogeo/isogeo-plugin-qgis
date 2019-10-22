@@ -311,6 +311,16 @@ class IsogeoPlgTools(IsogeoUtils):
                         "A proxy is set up in QGIS but not "
                         "in the OS. => Proxy config: not OK"
                     )
+                    QMessageBox.information(
+                    iface.mainWindow(),
+                    self.tr("Alert", context=__class__.__name__),
+                    self.tr(
+                        "Proxy issue : \n You have a proxy set up in QGIS"
+                        " but none on your OS.\n Please fix the configuration"
+                        " in 'Preferences/Options/Network'.",
+                        context=__class__.__name__,
+                        ),
+                    )
                     pass
                 else:
                     elements = http.split(":")
@@ -334,7 +344,7 @@ class IsogeoPlgTools(IsogeoUtils):
                                 iface.mainWindow(),
                                 self.tr("Alert", context=__class__.__name__),
                                 self.tr(
-                                    "Proxy issue : \nQGIS and your OS "
+                                    "Proxy issue : \n QGIS and your OS "
                                     "have different proxy set ups.",
                                     context=__class__.__name__,
                                 ),
@@ -362,7 +372,7 @@ class IsogeoPlgTools(IsogeoUtils):
                                 iface.mainWindow(),
                                 self.tr("Alert", context=__class__.__name__),
                                 self.tr(
-                                    "Proxy issue : \nQGIS and your OS"
+                                    "Proxy issue : \n QGIS and your OS"
                                     " have different proxy set ups.",
                                     context=__class__.__name__,
                                 ),
@@ -377,8 +387,8 @@ class IsogeoPlgTools(IsogeoUtils):
                     iface.mainWindow(),
                     self.tr("Alert", context=__class__.__name__),
                     self.tr(
-                        "Proxy issue : \nYou have a proxy set up on your"
-                        " OS but none in QGIS.\nPlease set it up in "
+                        "Proxy issue : \n You have a proxy set up on your"
+                        " OS but none in QGIS.\n Please set it up in "
                         "'Preferences/Options/Network'.",
                         context=__class__.__name__,
                     ),

@@ -33,7 +33,7 @@ from functools import partial
 # PyQT
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, Qt, QTranslator, qVersion
 
-from qgis.PyQt.QtWidgets import QAction, QComboBox, QProgressBar
+from qgis.PyQt.QtWidgets import QAction, QComboBox, QDesktopWidget, QProgressBar
 from qgis.PyQt.QtGui import QIcon
 
 # PyQGIS
@@ -127,6 +127,7 @@ ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
 ico_poin = QIcon(":/images/themes/default/mIconPointLayer.svg")
 ico_poly = QIcon(":/images/themes/default/mIconPolygonLayer.svg")
 
+
 # ############################################################################
 # ########## Classes ###############
 # ##################################
@@ -143,6 +144,17 @@ class Isogeo:
     logger.info("QGIS Version: {0}".format(Qgis.QGIS_VERSION))
     logger.info("Plugin version: {0}".format(plg_version))
     logger.info("Log level: {0}".format(log_level))
+
+    # Screens resolution
+    screens_count = QDesktopWidget().screenCount()
+    for screenNbr in range(screens_count):
+        sizeObject = QDesktopWidget().screenGeometry(screenNbr)
+        logger.info(
+            "Screen: {}/{} - Size: {}x{}".format(
+                screenNbr + 1, screens_count, sizeObject.height(), sizeObject.width()
+            )
+        )
+    del screens_count, sizeObject
 
     def __init__(self, iface):
         """Constructor.
