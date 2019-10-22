@@ -325,32 +325,32 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
     <message>
         <location filename="../modules/layer/add_layer.py" line="801"/>
         <source>EFS not valid. QGIS says: {}</source>
-        <translation>EFS {}  invalide. QGIS renvoie : {}</translation>
+        <translation>EFS invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
         <location filename="../modules/layer/add_layer.py" line="823"/>
         <source>EMS not valid. QGIS says: {}</source>
-        <translation>EMS {}  invalide. QGIS renvoie : {}</translation>
+        <translation>EMS invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
         <location filename="../modules/layer/add_layer.py" line="856"/>
         <source>WFS is not valid. QGIS says: {}</source>
-        <translation>WFS {}  invalide. QGIS renvoie : {}</translation>
+        <translation>WFS invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
         <location filename="../modules/layer/add_layer.py" line="891"/>
         <source>WMS is not valid. QGIS says: {}</source>
-        <translation>WMS {}  invalide. QGIS renvoie : {}</translation>
+        <translation>WMS invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
         <location filename="../modules/layer/add_layer.py" line="912"/>
         <source>WMTS is not valid. QGIS says: {}</source>
-        <translation>WMTS {}  invalide. QGIS renvoie : {}</translation>
+        <translation>WMTS invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
         <location filename="../modules/layer/add_layer.py" line="984"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
-        <translation>Couche PostGIS {}  invalide. QGIS renvoie : {}</translation>
+        <translation>Couche PostGIS invalide. QGIS renvoie : {}</translation>
     </message>
 </context>
 <context>
