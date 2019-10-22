@@ -365,13 +365,13 @@ class IsogeoPlgTools(IsogeoUtils):
                         "in the OS. => Proxy config: not OK"
                     )
                     QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Alert", context=__class__.__name__),
-                        self.tr(
-                            "Proxy issue : \n You have a proxy set up in QGIS"
-                            " but none on your OS.\n Please fix the configuration"
-                            " in 'Preferences/Options/Network'.",
-                            context=__class__.__name__,
+                    iface.mainWindow(),
+                    self.tr("Alert", context=__class__.__name__),
+                    self.tr(
+                        "Proxy issue : \n You have a proxy set up in QGIS"
+                        " but none on your OS.\n Please fix the configuration"
+                        " in 'Preferences/Options/Network'.",
+                        context=__class__.__name__,
                         ),
                     )
                     pass
