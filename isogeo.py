@@ -177,7 +177,16 @@ class Isogeo:
             pass
 
         # initialize locale
-        locale = qsettings.value("locale/userLocale")[0:2]
+        try:
+            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
+        except TypeError as exc:
+            logger.error(
+                "Bad type in QSettings: {}. Original error: {}".format(
+                    type(qsettings.value("locale/userLocale")), exc
+                )
+            )
+            locale = "fr"
+        # load localized translation
         locale_path = (
             self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
         )
@@ -747,6 +756,7 @@ class Isogeo:
     def run(self):
         """Run method that loads and starts the plugin."""
         if not self.pluginIsActive:
+            logger.info("Opening (display) the plugin...")
             self.pluginIsActive = True
             # dockwidget may not exist if:
             #    first run of plugin
@@ -864,7 +874,7 @@ class Isogeo:
         self.authenticator.tr = self.tr
         self.authenticator.lang = self.lang
         # checks
-        plg_tools.test_proxy_configuration()  # 22
+        plg_tools.check_proxy_configuration()  # 22
         self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
         # self.form_mng.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.form_mng.txt_input.setFocus()

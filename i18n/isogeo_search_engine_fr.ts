@@ -3,7 +3,7 @@
 <context>
     <name>ApiRequester</name>
     <message>
-        <location filename="../modules/api/request.py" line="448"/>
+        <location filename="../modules/api/request.py" line="453"/>
         <source>Dataset</source>
         <translation>Données (vecteurs et rasters)</translation>
     </message>
@@ -19,37 +19,37 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="342"/>
+        <location filename="../isogeo.py" line="363"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="317"/>
+        <location filename="../isogeo.py" line="338"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="496"/>
+        <location filename="../isogeo.py" line="517"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="431"/>
+        <location filename="../isogeo.py" line="452"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="515"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="830"/>
+        <location filename="../isogeo.py" line="852"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="599"/>
+        <location filename="../isogeo.py" line="620"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
@@ -280,29 +280,23 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="395"/>
+        <location filename="../modules/tools.py" line="458"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation>Le {} style de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="375"/>
+        <location filename="../modules/tools.py" line="368"/>
         <source>Alert</source>
         <translation>Alerte</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="360"/>
-        <source>Proxy issue : 
-QGIS and your OS have different proxy set ups.</source>
-        <translation>Problème de proxy :\nQGIS et votre ordinateur ont des configurations de proxy différentes.</translation>
-    </message>
-    <message>
-        <location filename="../modules/tools.py" line="375"/>
-        <source>Proxy issue : 
-You have a proxy set up on your OS but none in QGIS.
-Please set it up in &apos;Preferences/Options/Network&apos;.</source>
-        <translation>Problème de proxy :
-Votre ordinateur utilise un proxy, mais il n&apos;est pas configuré
-dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
+        <location filename="../modules/tools.py" line="368"/>
+        <source>Proxy issue: 
+You have a proxy set up on your OS {} but none in QGIS.
+ Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
+        <translation>Erreur de proxy détectée :
+Un proxy est actif sur votre système {} mais pas dans QGIS.
+Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre ordinateur, puis fermer et réouvrir le plugin.</translation>
     </message>
 </context>
 <context>
@@ -558,11 +552,6 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <translation>Le fichier d&apos;authentification est valide. Demande d&apos;autorisation envoyée à l&apos;API.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="69"/>
-        <source>Redirecting code received. ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
-        <translation>Les identifiant et mot de passe ne sont pas valides. Renseignez les une nouvelle fois. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
-    </message>
-    <message>
         <location filename="../modules/user_inform.py" line="74"/>
         <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
         <translation>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
@@ -586,6 +575,11 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</translation>
         <location filename="../modules/user_inform.py" line="94"/>
         <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
         <translation>La requête à l&apos;API Isogeo a échoué. Vérifiez votre connexion Internet et votre configuration proxy. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
+    </message>
+    <message>
+        <location filename="../modules/user_inform.py" line="69"/>
+        <source>ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
+        <translation>Les paramètres d&apos;authentification (Client ID et Client Secret) semblent invalides.</translation>
     </message>
 </context>
 <context>
