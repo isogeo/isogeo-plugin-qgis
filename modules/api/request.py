@@ -5,6 +5,7 @@ import logging
 import json
 import base64
 from urllib.parse import urlencode
+from functools import partial
 
 # PyQGIS
 from qgis.core import QgsNetworkAccessManager, QgsMessageLog
@@ -63,7 +64,6 @@ class ApiRequester(QgsNetworkAccessManager):
         # make request
         self.token = str
         self.currentUrl = str
-        self.finished.connect(self.handle_reply)
 
     def setup_api_params(self, dict_params: dict):
         """Store API parameters of the application (URLs and credentials)
@@ -150,10 +150,11 @@ class ApiRequester(QgsNetworkAccessManager):
         if request_type == "token":
             data = QByteArray()
             data.append(urlencode({"grant_type": "client_credentials"}))
-            self.post(request, data)
+            req = self.post(request, data)
         # get request for other
         else:
-            self.get(request)
+            req = self.get(request)
+        req.finished.connect(partial(self.handle_reply, req))
         return
 
     def handle_reply(self, reply: QNetworkReply):
