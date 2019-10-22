@@ -439,66 +439,10 @@ class IsogeoPlgTools(IsogeoUtils):
             # compare system and QGIS settings
             qgis_proxy_params = {
                 "host": qsettings.value("proxy/proxyHost", None, type=str),
-                "port": qsettings.value("proxy/proxyPort", None, type=int)
+                "port": qsettings.value("proxy/proxyPort", None, type=int),
             }
             logger.debug(qgis_proxy_params)
             return True
-        # else:
-        #         else:
-        #             elements = http_proxy.split(":")
-        #             if len(elements) == 2:
-        #                 host = elements[0]
-        #                 port = elements[1]
-        #                 qgis_host = qsettings.value("proxy/proxyHost", "")
-        #                 qgis_port = qsettings.value("proxy/proxyPort", "")
-        #                 if qgis_host == host and qgis_port == port:
-        #                     logger.info(
-        #                         "A proxy is set up both in QGIS "
-        #                         "and the OS and they match => "
-        #                         "Proxy config : OK"
-        #                     )
-        #                 else:
-        #                     logger.error(
-        #                         "OS and QGIS proxy ports do not "
-        #                         "match. => Proxy config: not OK"
-        #                     )
-        #                     QMessageBox.information(
-        #                         iface.mainWindow(),
-        #                         self.tr("Alert", context=__class__.__name__),
-        #                         self.tr(
-        #                             "Proxy issue : \n QGIS and your OS "
-        #                             "have different proxy set ups.",
-        #                             context=__class__.__name__,
-        #                         ),
-        #                     )
-        #             elif len(elements) == 3 and elements[0] == "http":
-        #                 host_short = elements[1][2:]
-        #                 host_long = elements[0] + ":" + elements[1]
-        #                 port = elements[2]
-        #                 qgis_host = qsettings.value("proxy/proxyHost", "")
-        #                 qgis_port = qsettings.value("proxy/proxyPort", "")
-        #                 if (
-        #                     qgis_host == host_short or qgis_host == host_long
-        #                 ) and qgis_port == port:
-        #                     logger.info(
-        #                         "A proxy is set up both in QGIS"
-        #                         " and the OS and they match "
-        #                         "=> Proxy config : OK"
-        #                     )
-        #                 else:
-        #                     logger.error(
-        #                         "OS and QGIS proxy ports do not "
-        #                         "match. => Proxy config: not OK"
-        #                     )
-        #                     QMessageBox.information(
-        #                         iface.mainWindow(),
-        #                         self.tr("Alert", context=__class__.__name__),
-        #                         self.tr(
-        #                             "Proxy issue : \n QGIS and your OS"
-        #                             " have different proxy set ups.",
-        #                             context=__class__.__name__,
-        #                         ),
-        #                     )
 
     def test_qgis_style(self):
         """
