@@ -4,6 +4,7 @@
 # Standard library
 import configparser
 import datetime
+import http.client
 import logging
 from os import access, path, R_OK
 import subprocess
@@ -298,29 +299,79 @@ class IsogeoPlgTools(IsogeoUtils):
             - Case 2: if a proxy is set at the system level but not in QGIS: warn the user he should take care
             - Case 3: if a proxy is set in QGIS but not in the system: log it but do not warn the user
             - Case 4: if a proxy is set in QGIS and the system, ensure this is the same
-        """
-        system_proxy_config = getproxies()
-        qgis_proxy = str(qsettings.value("proxy/proxyEnabled", ""))
 
-        if system_proxy_config == {} and qgis_proxy != "true":
+        :rtype: bool
+        :returns: True for cases 1 2, 3 ; False for case 4 if tsystem and QGIS configs mismatch
+        """
+        conn_to_isogeo = http.client.HTTPSConnection("api.isogeo.com")
+        # -- STEP 1 --------------------------------------------------------------------
+        # retrieve system proxy settings
+        system_proxy_config = getproxies()
+        if system_proxy_config:
+            logger.info("Proxy on the system: {}".format(system_proxy_config))
+        else:
+            logger.info("No proxy settings found on the system.")
+
+        # retrieve QGIS proxy settings
+        qgis_proxy_enabled = qsettings.value("proxy/proxyEnabled", False, type=bool)
+        if qgis_proxy_enabled is True:
+            logger.info("Proxy enabled in QGIS.")
+        else:
+            logger.info("No proxy enabled in QGIS.")
+
+        # -- STEP 2 --------------------------------------------------------------------
+        # Case 1
+        if not any([system_proxy_config, qgis_proxy_enabled]):
+            logger.info(
+                "No proxy found in system and QGIS: Freedom! All signals on green!"
+            )
+            try:
+                # if no proxy, then we can send a request
+                conn_to_isogeo.request("HEAD", "/about")
+                resp_about = conn_to_isogeo.getresponse()
+                # check requests status
+                if resp_about.status >= 300:
+                    logger.error(
+                        "Connection to Isogeo failed: {} ({})".format(
+                            resp_about.reason, resp_about.status
+                        )
+                    )
+                    raise ConnectionError
+                else:
+                    logger.info(
+                        "Network connection to Isogeo API seems to be {} ({})".format(
+                            resp_about.reason, resp_about.status
+                        )
+                    )
+            except Exception as exc:
+                logger.error(
+                    "Despite the absence of proxy, connection to Isogeo API failed: {}".format(
+                        exc
+                    )
+                )
+
+            return True
+
+        # Case 2
+        if system_proxy_config == {} and qgis_proxy_enabled != "true":
             logger.info("No proxy found on the OS or in QGIS" "=> Proxy config : OK")
             return 0
         else:
-            if qgis_proxy == "true":
-                http = system_proxy_config.get("http")
-                if http is None:
+            if qgis_proxy_enabled == "true":
+                http_proxy = system_proxy_config.get("http")
+                if http_proxy is None:
                     logger.info(
                         "A proxy is set up in QGIS but not "
                         "in the OS. => Proxy config: not OK"
                     )
                     QMessageBox.information(
-                    iface.mainWindow(),
-                    self.tr("Alert", context=__class__.__name__),
-                    self.tr(
-                        "Proxy issue : \n You have a proxy set up in QGIS"
-                        " but none on your OS.\n Please fix the configuration"
-                        " in 'Preferences/Options/Network'.",
-                        context=__class__.__name__,
+                        iface.mainWindow(),
+                        self.tr("Alert", context=__class__.__name__),
+                        self.tr(
+                            "Proxy issue : \n You have a proxy set up in QGIS"
+                            " but none on your OS.\n Please fix the configuration"
+                            " in 'Preferences/Options/Network'.",
+                            context=__class__.__name__,
                         ),
                     )
                     pass
