@@ -682,11 +682,7 @@ class Isogeo:
             )
         else:
             logger.debug("The line Edit text changed." " Calls the search function.")
-            if self.form_mng.txt_input.text() == "Ici c'est Isogeo !":
-                plg_tools.special_search("isogeo")
-                self.form_mng.txt_input.clear()
-                return
-            elif self.form_mng.txt_input.text() == "Picasa":
+            if self.form_mng.txt_input.text() == "Picasa":
                 plg_tools.special_search("picasa")
                 self.form_mng.txt_input.clear()
                 return
