@@ -1,10 +1,19 @@
-{   // PyQt Integration
+{   
+    "editor.rulers": [88],
+    "editor.wordWrapColumn": 88,
+    // PyQt Integration
     "pyqt-integration.qtdesigner.path": "C:/OSGeo4W64/bin/qgis-ltr-designer.bat",
     "pyqt-integration.pyuic.cmd": "C:\\OSGEO4~1\\apps\\Python37\\Scripts\\pyuic5.bat",
     "pyqt-integration.pyrcc.cmd": "C:\\OSGEO4~1\\apps\\Python37\\Scripts\\pyrcc5.bat",
     "pyqt-integration.pyrcc.compile.filepath": "${workspace}/${qrc_name}.py",
 
+    // Linter
     "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--ignore=E24,E265,E501,W504",
+        "--verbose"
+    ],
 
     // Not working yet 
     "python.envFile": "${workspaceFolder}/dev.env",
