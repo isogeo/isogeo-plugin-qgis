@@ -429,10 +429,19 @@ class IsogeoPlgTools(IsogeoUtils):
             )
             # if proxy type is DefaultProxy, then ignore it
             if qgis_proxy_type == "DefaultProxy":
-                logger.debug("QGIS is using system settings. [case 4a]")
+                logger.debug(
+                    "QGIS is using system settings: {}. [case 4a]".format(
+                        system_proxy_config
+                    )
+                )
                 return True
-            # compare system and QGIS settings
 
+            # compare system and QGIS settings
+            qgis_proxy_params = {
+                "host": qsettings.value("proxy/proxyHost", None, type=str),
+                "port": qsettings.value("proxy/proxyPort", None, type=int)
+            }
+            logger.debug(qgis_proxy_params)
             return True
         # else:
         #         else:
