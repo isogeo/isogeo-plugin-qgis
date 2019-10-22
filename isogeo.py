@@ -864,7 +864,7 @@ class Isogeo:
         self.authenticator.tr = self.tr
         self.authenticator.lang = self.lang
         # checks
-        plg_tools.test_proxy_configuration()  # 22
+        plg_tools.check_proxy_configuration()  # 22
         self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
         # self.form_mng.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.form_mng.txt_input.setFocus()

@@ -286,12 +286,18 @@ class IsogeoPlgTools(IsogeoUtils):
         # ending method
         return
 
-    def test_proxy_configuration(self):
-        """Check adequation between system and QGIS proxy configuration.
+    def check_proxy_configuration(self) -> bool:
+        """Check adequation between system and QGIS proxy configuration. The goal is to\
+            prevent network issues connecting to the API.
 
-        If a proxy configuration is set up for the computer, and for QGIS.
-        If none or both is set up, pass. But if there is a proxy config for the
-        computer but not in QGIS, pops an alert message.
+        Steps:
+
+          1. Retrive proxy settings: from system and from QGIS
+          2. Compare them:
+            - Case 1: if a proxy is not set in the system or QGIS: everything is fine!
+            - Case 2: if a proxy is set at the system level but not in QGIS: warn the user he should take care
+            - Case 3: if a proxy is set in QGIS but not in the system: log it but do not warn the user
+            - Case 4: if a proxy is set in QGIS and the system, ensure this is the same
         """
         system_proxy_config = getproxies()
         qgis_proxy = str(qsettings.value("proxy/proxyEnabled", ""))
