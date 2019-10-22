@@ -177,7 +177,16 @@ class Isogeo:
             pass
 
         # initialize locale
-        locale = qsettings.value("locale/userLocale", "fr", type=str)[0:2]
+        try:
+            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
+        except TypeError as exc:
+            logger.error(
+                "Bad type in QSettings: {}. Original error: {}".format(
+                    type(qsettings.value("locale/userLocale")), exc
+                )
+            )
+            locale = "fr"
+        # load localized translation
         locale_path = (
             self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
         )
