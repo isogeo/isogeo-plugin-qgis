@@ -8,12 +8,10 @@ import logging
 from os import access, path, R_OK
 import subprocess
 from sys import platform as opersys
-from urllib.request import getproxies, unquote
-from urllib.parse import urlencode
+from urllib.request import getproxies
 import webbrowser
 
 # PyQGIS
-from qgis.core import QgsDataSourceUri, QgsProject, QgsVectorLayer, QgsRasterLayer
 from qgis.utils import iface
 
 # PyQT
@@ -233,54 +231,55 @@ class IsogeoPlgTools(IsogeoUtils):
           * isogeo: display Isogeo logo and zoom in our office location
           * picasa: change QGS project title
         """
-        canvas = iface.mapCanvas()
+        # canvas = iface.mapCanvas()
         if easter_code == "isogeo":
-            # WMS
-            wms_params = {
-                "service": "WMS",
-                "version": "1.3.0",
-                "request": "GetMap",
-                "layers": "Isogeo:isogeo_logo",
-                "crs": "EPSG:3857",
-                "format": "image/png",
-                "styles": "isogeo_logo",
-                "url": "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?",
-            }
-            wms_uri = unquote(urlencode(wms_params))
-            wms_lyr = QgsRasterLayer(wms_uri, "Ici c'est Isogeo !", "wms")
-            if wms_lyr.isValid:
-                QgsProject.instance().addMapLayer(wms_lyr)
-                logger.info("Isogeo easter egg used and WMS displayed!")
-            else:
-                logger.error("WMS layer failed: {}".format(wms_lyr.error().message()))
+            # # WMS
+            # wms_params = {
+            #     "service": "WMS",
+            #     "version": "1.3.0",
+            #     "request": "GetMap",
+            #     "layers": "Isogeo:isogeo_logo",
+            #     "crs": "EPSG:3857",
+            #     "format": "image/png",
+            #     "styles": "isogeo_logo",
+            #     "url": "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?",
+            # }
+            # wms_uri = unquote(urlencode(wms_params))
+            # wms_lyr = QgsRasterLayer(wms_uri, "Ici c'est Isogeo !", "wms")
+            # if wms_lyr.isValid:
+            #     QgsProject.instance().addMapLayer(wms_lyr)
+            #     logger.info("Isogeo easter egg used and WMS displayed!")
+            # else:
+            #     logger.error("WMS layer failed: {}".format(wms_lyr.error().message()))
 
-            # WFS
-            uri = QgsDataSourceUri()
-            uri.setParam("url", "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?")
-            uri.setParam("service", "WFS")
-            uri.setParam("version", "1.1.0")
-            uri.setParam("typename", "Isogeo:isogeo_logo")
-            uri.setParam("srsname", "EPSG:3857")
-            uri.setParam("restrictToRequestBBOX", "0")
-            wfs_uri = uri.uri()
-            wfs_lyr = QgsVectorLayer(wfs_uri, "Ici c'est Isogeo !", "WFS")
-            if wfs_lyr.isValid:
-                wfs_style = path.join(
-                    path.dirname(path.realpath(__file__)), "isogeo.qml"
-                )
-                wfs_lyr.loadNamedStyle(wfs_style)
-                QgsProject.instance().addMapLayer(wfs_lyr)
-                canvas.setExtent(wfs_lyr.extent())
-                logger.debug("Isogeo easter egg used")
-            else:
-                logger.error(
-                    "Esater egg - WFS layer failed: {}".format(
-                        wfs_lyr.error().message()
-                    )
-                )
+            # # WFS
+            # uri = QgsDataSourceUri()
+            # uri.setParam("url", "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?")
+            # uri.setParam("service", "WFS")
+            # uri.setParam("version", "1.1.0")
+            # uri.setParam("typename", "Isogeo:isogeo_logo")
+            # uri.setParam("srsname", "EPSG:3857")
+            # uri.setParam("restrictToRequestBBOX", "0")
+            # wfs_uri = uri.uri()
+            # wfs_lyr = QgsVectorLayer(wfs_uri, "Ici c'est Isogeo !", "WFS")
+            # if wfs_lyr.isValid:
+            #     wfs_style = path.join(
+            #         path.dirname(path.realpath(__file__)), "isogeo.qml"
+            #     )
+            #     wfs_lyr.loadNamedStyle(wfs_style)
+            #     QgsProject.instance().addMapLayer(wfs_lyr)
+            #     canvas.setExtent(wfs_lyr.extent())
+            #     logger.debug("Isogeo easter egg used")
+            # else:
+            #     logger.error(
+            #         "Esater egg - WFS layer failed: {}".format(
+            #             wfs_lyr.error().message()
+            #         )
+            #     )
+            logger.info("Easter egg 'isogeo' spotted!")
         elif easter_code == "picasa":
-            project = QgsProject.instance()
-            project.setTitle("Isogeo, le Picasa de l'information géographique")
+            # project = QgsProject.instance()
+            # project.setTitle("Isogeo, le Picasa de l'information géographique")
             logger.debug("Picasa easter egg used")
         else:
             pass
