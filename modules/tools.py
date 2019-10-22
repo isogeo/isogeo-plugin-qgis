@@ -289,7 +289,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def check_proxy_configuration(self) -> bool:
         """Check adequation between system and QGIS proxy configuration. The goal is to\
-            prevent network issues connecting to the API.
+            prevent network issues connecting to the API. See: https://github.com/isogeo/isogeo-plugin-qgis/issues/287
 
         Steps:
 
@@ -301,8 +301,9 @@ class IsogeoPlgTools(IsogeoUtils):
             - Case 4: if a proxy is set in QGIS and the system, ensure this is the same
 
         :rtype: bool
-        :returns: True for cases 1 2, 3 ; False for case 4 if tsystem and QGIS configs mismatch
+        :returns: True for cases 1, 3 ; False for case 3, and 4 depending if system and QGIS configs mismatch
         """
+        # local connector
         conn_to_isogeo = http.client.HTTPSConnection("api.isogeo.com")
         # -- STEP 1 --------------------------------------------------------------------
         # retrieve system proxy settings
@@ -320,10 +321,10 @@ class IsogeoPlgTools(IsogeoUtils):
             logger.info("No proxy enabled in QGIS.")
 
         # -- STEP 2 --------------------------------------------------------------------
-        # Case 1
+        # Case 1 - No proxy at all
         if not any([system_proxy_config, qgis_proxy_enabled]):
             logger.info(
-                "No proxy found in system and QGIS: Freedom! All signals on green!"
+                "No proxy found in system and QGIS: Freedom! All signals on green! [case 1]"
             )
             try:
                 # if no proxy, then we can send a request
@@ -352,100 +353,121 @@ class IsogeoPlgTools(IsogeoUtils):
 
             return True
 
-        # Case 2
-        if system_proxy_config == {} and qgis_proxy_enabled != "true":
-            logger.info("No proxy found on the OS or in QGIS" "=> Proxy config : OK")
-            return 0
-        else:
-            if qgis_proxy_enabled == "true":
-                http_proxy = system_proxy_config.get("http")
-                if http_proxy is None:
-                    logger.info(
-                        "A proxy is set up in QGIS but not "
-                        "in the OS. => Proxy config: not OK"
-                    )
-                    QMessageBox.information(
-                    iface.mainWindow(),
-                    self.tr("Alert", context=__class__.__name__),
-                    self.tr(
-                        "Proxy issue : \n You have a proxy set up in QGIS"
-                        " but none on your OS.\n Please fix the configuration"
-                        " in 'Preferences/Options/Network'.",
-                        context=__class__.__name__,
-                        ),
-                    )
-                    pass
-                else:
-                    elements = http_proxy.split(":")
-                    if len(elements) == 2:
-                        host = elements[0]
-                        port = elements[1]
-                        qgis_host = qsettings.value("proxy/proxyHost", "")
-                        qgis_port = qsettings.value("proxy/proxyPort", "")
-                        if qgis_host == host and qgis_port == port:
-                            logger.info(
-                                "A proxy is set up both in QGIS "
-                                "and the OS and they match => "
-                                "Proxy config : OK"
-                            )
-                        else:
-                            logger.error(
-                                "OS and QGIS proxy ports do not "
-                                "match. => Proxy config: not OK"
-                            )
-                            QMessageBox.information(
-                                iface.mainWindow(),
-                                self.tr("Alert", context=__class__.__name__),
-                                self.tr(
-                                    "Proxy issue : \n QGIS and your OS "
-                                    "have different proxy set ups.",
-                                    context=__class__.__name__,
-                                ),
-                            )
-                    elif len(elements) == 3 and elements[0] == "http":
-                        host_short = elements[1][2:]
-                        host_long = elements[0] + ":" + elements[1]
-                        port = elements[2]
-                        qgis_host = qsettings.value("proxy/proxyHost", "")
-                        qgis_port = qsettings.value("proxy/proxyPort", "")
-                        if (
-                            qgis_host == host_short or qgis_host == host_long
-                        ) and qgis_port == port:
-                            logger.info(
-                                "A proxy is set up both in QGIS"
-                                " and the OS and they match "
-                                "=> Proxy config : OK"
-                            )
-                        else:
-                            logger.error(
-                                "OS and QGIS proxy ports do not "
-                                "match. => Proxy config: not OK"
-                            )
-                            QMessageBox.information(
-                                iface.mainWindow(),
-                                self.tr("Alert", context=__class__.__name__),
-                                self.tr(
-                                    "Proxy issue : \n QGIS and your OS"
-                                    " have different proxy set ups.",
-                                    context=__class__.__name__,
-                                ),
-                            )
-
-            else:
-                logger.error(
-                    "OS uses a proxy but it isn't set up in QGIS."
-                    " => Proxy config: not OK"
+        # Case 2 - Proxy  in system but not enabled in QGIS = issue is coming!
+        if system_proxy_config and not qgis_proxy_enabled:
+            logger.warning(
+                "Proxy found in system {} but not in QGIS: please update network settings in QGIS Preferences [case 2].".format(
+                    system_proxy_config
                 )
-                QMessageBox.information(
-                    iface.mainWindow(),
-                    self.tr("Alert", context=__class__.__name__),
-                    self.tr(
-                        "Proxy issue : \n You have a proxy set up on your"
-                        " OS but none in QGIS.\n Please set it up in "
-                        "'Preferences/Options/Network'.",
-                        context=__class__.__name__,
+            )
+            QMessageBox.warning(
+                iface.mainWindow(),
+                self.tr("Alert", context=__class__.__name__),
+                self.tr(
+                    "Proxy issue: \nYou have a proxy set up on your"
+                    " OS {} but none in QGIS.\n Please set it up in "
+                    "'Preferences/Options/Network' then close/reopen the plugin.".format(
+                        system_proxy_config
                     ),
-                )
+                    context=__class__.__name__,
+                ),
+            )
+            return False
+
+        # # Case 4
+        # if system_proxy_config == {} and qgis_proxy_enabled != "true":
+        #     logger.info("No proxy found on the OS or in QGIS" "=> Proxy config : OK")
+        #     return 0
+        # else:
+        #     if qgis_proxy_enabled == "true":
+        #         http_proxy = system_proxy_config.get("http")
+        #         if http_proxy is None:
+        #             logger.info(
+        #                 "A proxy is set up in QGIS but not "
+        #                 "in the OS. => Proxy config: not OK"
+        #             )
+        #             QMessageBox.information(
+        #                 iface.mainWindow(),
+        #                 self.tr("Alert", context=__class__.__name__),
+        #                 self.tr(
+        #                     "Proxy issue : \n You have a proxy set up in QGIS"
+        #                     " but none on your OS.\n Please fix the configuration"
+        #                     " in 'Preferences/Options/Network'.",
+        #                     context=__class__.__name__,
+        #                 ),
+        #             )
+        #             pass
+        #         else:
+        #             elements = http_proxy.split(":")
+        #             if len(elements) == 2:
+        #                 host = elements[0]
+        #                 port = elements[1]
+        #                 qgis_host = qsettings.value("proxy/proxyHost", "")
+        #                 qgis_port = qsettings.value("proxy/proxyPort", "")
+        #                 if qgis_host == host and qgis_port == port:
+        #                     logger.info(
+        #                         "A proxy is set up both in QGIS "
+        #                         "and the OS and they match => "
+        #                         "Proxy config : OK"
+        #                     )
+        #                 else:
+        #                     logger.error(
+        #                         "OS and QGIS proxy ports do not "
+        #                         "match. => Proxy config: not OK"
+        #                     )
+        #                     QMessageBox.information(
+        #                         iface.mainWindow(),
+        #                         self.tr("Alert", context=__class__.__name__),
+        #                         self.tr(
+        #                             "Proxy issue : \n QGIS and your OS "
+        #                             "have different proxy set ups.",
+        #                             context=__class__.__name__,
+        #                         ),
+        #                     )
+        #             elif len(elements) == 3 and elements[0] == "http":
+        #                 host_short = elements[1][2:]
+        #                 host_long = elements[0] + ":" + elements[1]
+        #                 port = elements[2]
+        #                 qgis_host = qsettings.value("proxy/proxyHost", "")
+        #                 qgis_port = qsettings.value("proxy/proxyPort", "")
+        #                 if (
+        #                     qgis_host == host_short or qgis_host == host_long
+        #                 ) and qgis_port == port:
+        #                     logger.info(
+        #                         "A proxy is set up both in QGIS"
+        #                         " and the OS and they match "
+        #                         "=> Proxy config : OK"
+        #                     )
+        #                 else:
+        #                     logger.error(
+        #                         "OS and QGIS proxy ports do not "
+        #                         "match. => Proxy config: not OK"
+        #                     )
+        #                     QMessageBox.information(
+        #                         iface.mainWindow(),
+        #                         self.tr("Alert", context=__class__.__name__),
+        #                         self.tr(
+        #                             "Proxy issue : \n QGIS and your OS"
+        #                             " have different proxy set ups.",
+        #                             context=__class__.__name__,
+        #                         ),
+        #                     )
+
+        #     else:
+        #         logger.error(
+        #             "OS uses a proxy but it isn't set up in QGIS."
+        #             " => Proxy config: not OK"
+        #         )
+        #         QMessageBox.information(
+        #             iface.mainWindow(),
+        #             self.tr("Alert", context=__class__.__name__),
+        #             self.tr(
+        #                 "Proxy issue : \n You have a proxy set up on your"
+        #                 " OS but none in QGIS.\n Please set it up in "
+        #                 "'Preferences/Options/Network'.",
+        #                 context=__class__.__name__,
+        #             ),
+        #         )
 
     def test_qgis_style(self):
         """
