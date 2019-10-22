@@ -747,6 +747,7 @@ class Isogeo:
     def run(self):
         """Run method that loads and starts the plugin."""
         if not self.pluginIsActive:
+            logger.info("Opening (display) the plugin...")
             self.pluginIsActive = True
             # dockwidget may not exist if:
             #    first run of plugin
