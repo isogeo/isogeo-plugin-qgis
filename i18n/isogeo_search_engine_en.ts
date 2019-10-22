@@ -3,7 +3,7 @@
 <context>
     <name>ApiRequester</name>
     <message>
-        <location filename="../modules/api/request.py" line="448"/>
+        <location filename="../modules/api/request.py" line="453"/>
         <source>Dataset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19,37 +19,37 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="342"/>
+        <location filename="../isogeo.py" line="363"/>
         <source>&amp;Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="317"/>
+        <location filename="../isogeo.py" line="338"/>
         <source>Search within Isogeo catalogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="496"/>
+        <location filename="../isogeo.py" line="517"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="431"/>
+        <location filename="../isogeo.py" line="452"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="515"/>
         <source> results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="830"/>
+        <location filename="../isogeo.py" line="852"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="599"/>
+        <location filename="../isogeo.py" line="620"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
@@ -280,26 +280,20 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="395"/>
+        <location filename="../modules/tools.py" line="458"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="375"/>
+        <location filename="../modules/tools.py" line="368"/>
         <source>Alert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="360"/>
-        <source>Proxy issue : 
-QGIS and your OS have different proxy set ups.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/tools.py" line="375"/>
-        <source>Proxy issue : 
-You have a proxy set up on your OS but none in QGIS.
-Please set it up in &apos;Preferences/Options/Network&apos;.</source>
+        <location filename="../modules/tools.py" line="368"/>
+        <source>Proxy issue: 
+You have a proxy set up on your OS {} but none in QGIS.
+ Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -556,11 +550,6 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="69"/>
-        <source>Redirecting code received. ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../modules/user_inform.py" line="74"/>
         <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
@@ -583,6 +572,11 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
     <message>
         <location filename="../modules/user_inform.py" line="94"/>
         <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/user_inform.py" line="69"/>
+        <source>ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -5,6 +5,7 @@ name = "pypi"
 
 [dev-packages]
 "pb_tool" = "*"
+flake8 = "*"
 
 [packages]
 isogeo-pysdk = "==2.21.*"
