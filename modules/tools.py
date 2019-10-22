@@ -301,7 +301,7 @@ class IsogeoPlgTools(IsogeoUtils):
             - Case 4: if a proxy is set in QGIS and the system, ensure this is the same
 
         :rtype: bool
-        :returns: True for cases 1, 2, 3a ; False for case 3b and 4 depending if system and QGIS configs mismatch
+        :returns: True for cases 1, 3a ; False for cases 2, 3b and 4 depending if system and QGIS configs mismatch
         """
         # local connector
         conn_to_isogeo = http.client.HTTPSConnection("api.isogeo.com")
@@ -420,29 +420,21 @@ class IsogeoPlgTools(IsogeoUtils):
                 )
                 return False
 
-        # # Case 4
-        # if system_proxy_config == {} and qgis_proxy_enabled != "true":
-        #     logger.info("No proxy found on the OS or in QGIS" "=> Proxy config : OK")
-        #     return 0
+        # Case 4 - Proxy both in system and QGIS
+        if system_proxy_config and qgis_proxy_enabled:
+            logger.info(
+                "{} enabled in QGIS and in system {}. [case 4]".format(
+                    qgis_proxy_type, system_proxy_config
+                )
+            )
+            # if proxy type is DefaultProxy, then ignore it
+            if qgis_proxy_type == "DefaultProxy":
+                logger.debug("QGIS is using system settings. [case 4a]")
+                return True
+            # compare system and QGIS settings
+
+            return True
         # else:
-        #     if qgis_proxy_enabled == "true":
-        #         http_proxy = system_proxy_config.get("http")
-        #         if http_proxy is None:
-        #             logger.info(
-        #                 "A proxy is set up in QGIS but not "
-        #                 "in the OS. => Proxy config: not OK"
-        #             )
-        #             QMessageBox.information(
-        #                 iface.mainWindow(),
-        #                 self.tr("Alert", context=__class__.__name__),
-        #                 self.tr(
-        #                     "Proxy issue : \n You have a proxy set up in QGIS"
-        #                     " but none on your OS.\n Please fix the configuration"
-        #                     " in 'Preferences/Options/Network'.",
-        #                     context=__class__.__name__,
-        #                 ),
-        #             )
-        #             pass
         #         else:
         #             elements = http_proxy.split(":")
         #             if len(elements) == 2:
@@ -498,22 +490,6 @@ class IsogeoPlgTools(IsogeoUtils):
         #                             context=__class__.__name__,
         #                         ),
         #                     )
-
-        #     else:
-        #         logger.error(
-        #             "OS uses a proxy but it isn't set up in QGIS."
-        #             " => Proxy config: not OK"
-        #         )
-        #         QMessageBox.information(
-        #             iface.mainWindow(),
-        #             self.tr("Alert", context=__class__.__name__),
-        #             self.tr(
-        #                 "Proxy issue : \n You have a proxy set up on your"
-        #                 " OS but none in QGIS.\n Please set it up in "
-        #                 "'Preferences/Options/Network'.",
-        #                 context=__class__.__name__,
-        #             ),
-        #         )
 
     def test_qgis_style(self):
         """
