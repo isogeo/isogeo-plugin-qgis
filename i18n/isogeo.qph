@@ -247,27 +247,27 @@ dans QGIS (Menu &apos;Préférences/Options/Réseau).</target>
 </phrase>
 <phrase>
     <source>EFS not valid. QGIS says: {}</source>
-    <target>EFS {}  invalide. QGIS renvoie : {}</target>
+    <target>EFS invalide. QGIS renvoie : {}</target>
 </phrase>
 <phrase>
     <source>EMS not valid. QGIS says: {}</source>
-    <target>EMS {}  invalide. QGIS renvoie : {}</target>
+    <target>EMS invalide. QGIS renvoie : {}</target>
 </phrase>
 <phrase>
     <source>WFS is not valid. QGIS says: {}</source>
-    <target>WFS {}  invalide. QGIS renvoie : {}</target>
+    <target>WFS invalide. QGIS renvoie : {}</target>
 </phrase>
 <phrase>
     <source>WMS is not valid. QGIS says: {}</source>
-    <target>WMS {}  invalide. QGIS renvoie : {}</target>
+    <target>WMS invalide. QGIS renvoie : {}</target>
 </phrase>
 <phrase>
     <source>WMTS is not valid. QGIS says: {}</source>
-    <target>WMTS {}  invalide. QGIS renvoie : {}</target>
+    <target>WMTS invalide. QGIS renvoie : {}</target>
 </phrase>
 <phrase>
     <source>The PostGIS layer is not valid. Reason: {}</source>
-    <target>Couche PostGIS {}  invalide. QGIS renvoie : {}</target>
+    <target>Couche PostGIS invalide. QGIS renvoie : {}</target>
 </phrase>
 <phrase>
     <source>{} successfully saved: {}</source>
