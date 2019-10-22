@@ -125,6 +125,7 @@ class ResultsManager(QObject):
         hheader.setSectionResizeMode(2, 3)
 
         vheader = tbl_result.verticalHeader()
+        
         # Looping inside the table lines. For each of them, showing the title,
         # abstract, geometry type, and a button that allow to add the data
         # to the canvas.
@@ -150,11 +151,14 @@ class ResultsManager(QObject):
             btn_md_title.setToolTip(i.get("abstract", "")[:300])
             # Insert it in column 1
             tbl_result.setCellWidget(count, 0, btn_md_title)
+            
 
             # COLUMN 2 - Data last update
-            date_item = QTableWidgetItem(plg_tools.handle_date(i.get("_modified")))
-            date_item.setTextAlignment(Qt.AlignCenter)
-            tbl_result.setItem(count, 1, date_item)
+            lbl_date = QLabel(tbl_result)
+            lbl_date.setText(plg_tools.handle_date(i.get("_modified")))
+            lbl_date.setMargin(5)
+            lbl_date.setAlignment(Qt.AlignCenter)
+            tbl_result.setCellWidget(count, 1, lbl_date)
 
             # COLUMN 3 - Geometry type
             lbl_geom = QLabel(tbl_result)
@@ -464,6 +468,7 @@ class ResultsManager(QObject):
 
         # dimensions bis
         hheader.setSectionResizeMode(3, 3)
+
         vheader.setMinimumSectionSize(30)
         vheader.setSectionResizeMode(3)
         # method ending
