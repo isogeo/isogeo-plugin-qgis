@@ -297,11 +297,11 @@ class IsogeoPlgTools(IsogeoUtils):
           2. Compare them:
             - Case 1: if a proxy is not set in the system or QGIS: everything is fine!
             - Case 2: if a proxy is set at the system level but not in QGIS: warn the user he should take care
-            - Case 3: if a proxy is set in QGIS but not in the system: log it but do not warn the user
+            - Case 3 (a and b): if a proxy is set in QGIS but not in the system: depends on proxy type picked in QGIS
             - Case 4: if a proxy is set in QGIS and the system, ensure this is the same
 
         :rtype: bool
-        :returns: True for cases 1, 3 ; False for case 3, and 4 depending if system and QGIS configs mismatch
+        :returns: True for cases 1, 2, 3a ; False for case 3b and 4 depending if system and QGIS configs mismatch
         """
         # local connector
         conn_to_isogeo = http.client.HTTPSConnection("api.isogeo.com")
@@ -316,7 +316,10 @@ class IsogeoPlgTools(IsogeoUtils):
         # retrieve QGIS proxy settings
         qgis_proxy_enabled = qsettings.value("proxy/proxyEnabled", False, type=bool)
         if qgis_proxy_enabled is True:
-            logger.info("Proxy enabled in QGIS.")
+            qgis_proxy_type = qsettings.value(
+                "proxy/proxyType", "DefaultProxy", type=str
+            )
+            logger.info("Proxy enabled in QGIS: {}".format(qgis_proxy_type))
         else:
             logger.info("No proxy enabled in QGIS.")
 
@@ -353,10 +356,10 @@ class IsogeoPlgTools(IsogeoUtils):
 
             return True
 
-        # Case 2 - Proxy  in system but not enabled in QGIS = issue is coming!
+        # Case 2 - Proxy in system but not enabled in QGIS = issue is coming!
         if system_proxy_config and not qgis_proxy_enabled:
             logger.warning(
-                "Proxy found in system {} but not in QGIS: please update network settings in QGIS Preferences [case 2].".format(
+                "Proxy found in system {} but not in QGIS: please update network settings in QGIS Preferences. [case 2]".format(
                     system_proxy_config
                 )
             )
@@ -373,6 +376,49 @@ class IsogeoPlgTools(IsogeoUtils):
                 ),
             )
             return False
+
+        # Case 3 - Proxy in QGIS but not in system
+        if not system_proxy_config and qgis_proxy_enabled:
+            # Case 3a - if proxy type is set to DefaultProxy, it means no proxy
+            if qgis_proxy_type == "DefaultProxy":
+                logger.info(
+                    "{} enabled in QGIS is pointing to the system which is disabled. "
+                    "Equivalent to no proxy at all. [case 3a]".format(qgis_proxy_type)
+                )
+                try:
+                    # if no proxy, then we can send a request
+                    conn_to_isogeo.request("HEAD", "/about")
+                    resp_about = conn_to_isogeo.getresponse()
+                    # check requests status
+                    if resp_about.status >= 300:
+                        logger.error(
+                            "Connection to Isogeo failed: {} ({})".format(
+                                resp_about.reason, resp_about.status
+                            )
+                        )
+                        raise ConnectionError
+                    else:
+                        logger.info(
+                            "Network connection to Isogeo API seems to be {} ({})".format(
+                                resp_about.reason, resp_about.status
+                            )
+                        )
+                except Exception as exc:
+                    logger.error(
+                        "Despite the absence of proxy, connection to Isogeo API failed: {}".format(
+                            exc
+                        )
+                    )
+
+                return True
+            else:
+                # Case 3b - if proxy type is not DefaultProxy, it can produce some error
+                logger.warning(
+                    "{} enabled in QGIS but not in system. No blocking but weird behavior could occur. [case 3b]".format(
+                        qgis_proxy_type
+                    )
+                )
+                return False
 
         # # Case 4
         # if system_proxy_config == {} and qgis_proxy_enabled != "true":
