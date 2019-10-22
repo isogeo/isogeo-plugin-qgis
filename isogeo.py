@@ -177,7 +177,7 @@ class Isogeo:
             pass
 
         # initialize locale
-        locale = qsettings.value("locale/userLocale")[0:2]
+        locale = qsettings.value("locale/userLocale", "fr", type=str)[0:2]
         locale_path = (
             self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
         )
