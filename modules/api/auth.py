@@ -274,7 +274,7 @@ class Authenticator(QObject):
             self.api_params["url_auth"] = creds.get("uri_auth")
             self.api_params["url_token"] = creds.get("uri_token")
             self.api_params["url_redirect"] = creds.get("uri_redirect")
-            # self.credentials_storer(store_location="QSettings")
+            self.credentials_storer(store_location="QSettings")
         else:
             pass
 
@@ -290,7 +290,6 @@ class Authenticator(QObject):
         """
         self.informer = UserInformer(message_bar=self.msgbar, trad=self.tr)
         self.auth_sig.connect(self.informer.authentication_slot)
-        self.ask_shares.connect(self.informer.authentication_slot)
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
             lambda: qsettings.setValue(
                 "isogeo/user/editor",
@@ -326,7 +325,8 @@ class Authenticator(QObject):
     def credentials_uploader(self):
         """Get file selected by the user and loads API credentials into plugin.
         If the selected is compliant, credentials are loaded from then it's
-        moved inside plugin/_auth subfolder.
+        moved inside plugin/_auth subfolder. auth_sig is emitted to inform the user
+        about indicated file's accessibility and format validity.
         """
         self.ui_auth_form.btn_browse_credentials.fileChanged.disconnect()
 
