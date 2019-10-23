@@ -118,14 +118,17 @@ class ResultsManager(QObject):
         else:
             tbl_result.setRowCount(api_results.get("total"))
 
-        # dimensions
+        # dimensions (see https://github.com/isogeo/isogeo-plugin-qgis/issues/276)
         hheader = tbl_result.horizontalHeader()
+        # make the entire width of the table is occupied
         hheader.setSectionResizeMode(1)
+        # make date and icone columns width adapted to their content
+        # so title and adding columns occupy the rest of the available width
         hheader.setSectionResizeMode(1, 3)
         hheader.setSectionResizeMode(2, 3)
 
         vheader = tbl_result.verticalHeader()
-        
+
         # Looping inside the table lines. For each of them, showing the title,
         # abstract, geometry type, and a button that allow to add the data
         # to the canvas.
@@ -151,7 +154,6 @@ class ResultsManager(QObject):
             btn_md_title.setToolTip(i.get("abstract", "")[:300])
             # Insert it in column 1
             tbl_result.setCellWidget(count, 0, btn_md_title)
-            
 
             # COLUMN 2 - Data last update
             lbl_date = QLabel(tbl_result)
@@ -466,9 +468,10 @@ class ResultsManager(QObject):
             tbl_result.cellWidget(count, 3).setFixedWidth(hheader.sectionSize(3))
             count += 1
 
-        # dimensions bis
+        # dimensions bis (see https://github.com/isogeo/isogeo-plugin-qgis/issues/276)
+        # last column take the width of his content
         hheader.setSectionResizeMode(3, 3)
-
+        # the height of the row adapts to the content without falling below 30px
         vheader.setMinimumSectionSize(30)
         vheader.setSectionResizeMode(3)
         # method ending

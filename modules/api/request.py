@@ -33,6 +33,7 @@ class ApiRequester(QgsNetworkAccessManager):
         - Request about application's shares
         - Request about ressources
         - Building request URLs
+        - Parsing API's answer tags
     """
 
     api_sig = pyqtSignal(str)
@@ -66,8 +67,8 @@ class ApiRequester(QgsNetworkAccessManager):
         self.currentUrl = str
 
     def setup_api_params(self, dict_params: dict):
-        """Store API parameters of the application (URLs and credentials)
-        in class attributes.
+        """Store API parameters of the application (URLs and credentials) in class 
+        attributes.
 
         :param dict dict_params: a dict containing API parameters provided
         by Authenticator().manage_api_initialization method.
@@ -83,8 +84,8 @@ class ApiRequester(QgsNetworkAccessManager):
         self.send_request("token")
 
     def create_request(self, request_type: str):
-        """Creates a QNetworkRequest() with appropriate headers and URL
-        according to the 'request_type' parameter.
+        """Creates a QNetworkRequest() with appropriate headers and URL according to the
+        'request_type' parameter.
 
         :param str request_type: type of request to create. Options:
             - 'token'
@@ -131,8 +132,8 @@ class ApiRequester(QgsNetworkAccessManager):
         return request
 
     def send_request(self, request_type: str = "search"):
-        """ Sends a request to the Isogeo's API using QNetworkRequestManager.
-        That's the handle_reply method which get the API's response. See below.
+        """ Sends a request to the Isogeo's API using QNetworkRequestManager. That's the
+        handle_reply method which get the API's response. See below.
 
         :param str request_type: type of request to send. Options:
             - 'token'
@@ -154,23 +155,39 @@ class ApiRequester(QgsNetworkAccessManager):
         # get request for other
         else:
             req = self.get(request)
+        # since https://github.com/isogeo/isogeo-plugin-qgis/issues/288, the slot is
+        # connected to the request's signal and no more to QgsNetworkAccessManager's one
+        # because otherweise, the plugin doesn't work on QGIS 3.8.x
         req.finished.connect(partial(self.handle_reply, req))
         return
 
     def handle_reply(self, reply: QNetworkReply):
-        """Slot to QNetworkAccesManager.finished signal who handles the API's response to any type
-        of request : 'token', 'search', 'shares' or 'details'.
+        """Slot to QNetworkAccesManager.finished signal who handles the API's response
+        to any type of request: 'token', 'search', 'shares' or 'details'.
 
-        The request's type is identicated from the url of the request from which the answer comes.
-        Depending on the reply's content validity and the request's type, an appropriated signal
-        is emitted with different data's value.
+        The request's type is identicated from the url of the request from which the
+        answer comes. Depending on the reply's content validity and the request's type,
+        an appropriated signal is emitted with different data's value.
 
-        - For token requests : the api_sig signal is emitted wathever the replys's content but
-        the mitted str's value depend on this content. A single slot is connected to this signal
-        and acts according to value of the string recieved (see isogeo.py : Isogeo.token_slot).
-        - For other requests : for each type of request there is a corresponding signal but the
-        reply's parsed content is emitted wathever the request's type. Each signal is connected to
-        an appropriate slot (see isogeo.py).
+        - api_sig is emitted when a token request is handled or when there is a problem
+        with the API response. 2 slots are connected to api_sig:
+
+            - Isogeo.token_slot: it calls the necessary methods to initialize the plugin
+            when authentication is successful (when "ok" is emitted) and disables the
+            plugin when it's not (when other than "ok" str is emitted).
+
+            - UserInformer.request_slot: it displays to user the appropriated message
+            when a problem with the API response is detected (when other than "ok" str
+            is emitted) depending on the origin ofthe problem.
+
+        - search_sig is emitted when the API response to a search request is handled.
+        Isogeo.search_slot() is connected to this signal
+
+        - details_sig is emitted when the API response to a details request is handled.
+        MetadataDisplayer.show_complete_md() is connected to this signal
+
+        - shares_sig is emitted when the API response to a shares request is handled.
+        SharesParser.send_share_info() is connected to this signal
 
         :param QNetworkReply reply: Isogeo API response
         """

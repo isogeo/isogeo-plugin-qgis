@@ -280,17 +280,17 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="458"/>
+        <location filename="../modules/tools.py" line="461"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation>Le {} style de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="368"/>
+        <location filename="../modules/tools.py" line="371"/>
         <source>Alert</source>
         <translation>Alerte</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="368"/>
+        <location filename="../modules/tools.py" line="371"/>
         <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
@@ -368,52 +368,52 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="162"/>
+        <location filename="../modules/results/display.py" line="167"/>
         <source>Point</source>
         <translation>Point</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="165"/>
+        <location filename="../modules/results/display.py" line="170"/>
         <source>Polygon</source>
         <translation>Polygone</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="168"/>
+        <location filename="../modules/results/display.py" line="173"/>
         <source>Line</source>
         <translation>Linéaire</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="171"/>
+        <location filename="../modules/results/display.py" line="176"/>
         <source>MultiPolygon</source>
         <translation>Multi-polygone</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="193"/>
+        <location filename="../modules/results/display.py" line="198"/>
         <source>Unknown geometry</source>
         <translation>Géométrie inconnue</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="187"/>
+        <location filename="../modules/results/display.py" line="192"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="190"/>
+        <location filename="../modules/results/display.py" line="195"/>
         <source>Service</source>
         <translation>Service</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="450"/>
+        <location filename="../modules/results/display.py" line="455"/>
         <source>Data file</source>
         <translation>Donnée fichier</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="446"/>
+        <location filename="../modules/results/display.py" line="451"/>
         <source>PostGIS table</source>
         <translation>Table PostGIS</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="398"/>
+        <location filename="../modules/results/display.py" line="403"/>
         <source>Can&apos;t be added</source>
         <translation>Non ajoutable</translation>
     </message>
