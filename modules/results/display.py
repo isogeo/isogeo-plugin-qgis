@@ -125,7 +125,7 @@ class ResultsManager(QObject):
         hheader.setSectionResizeMode(2, 3)
 
         vheader = tbl_result.verticalHeader()
-        
+
         # Looping inside the table lines. For each of them, showing the title,
         # abstract, geometry type, and a button that allow to add the data
         # to the canvas.
@@ -151,7 +151,6 @@ class ResultsManager(QObject):
             btn_md_title.setToolTip(i.get("abstract", "")[:300])
             # Insert it in column 1
             tbl_result.setCellWidget(count, 0, btn_md_title)
-            
 
             # COLUMN 2 - Data last update
             lbl_date = QLabel(tbl_result)

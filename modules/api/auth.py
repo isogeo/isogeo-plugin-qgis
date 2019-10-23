@@ -383,7 +383,7 @@ class Authenticator(QObject):
 
         # mave new credentials file to the _auth subfolder
         try:
-            selected_file.rename(dest_path) # using pathlib.Path (= os.rename)
+            selected_file.rename(dest_path)  # using pathlib.Path (= os.rename)
             logger.debug(
                 "Selected credentials file has been moved into plugin _auth subfolder"
             )
