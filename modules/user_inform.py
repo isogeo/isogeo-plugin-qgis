@@ -67,7 +67,8 @@ class UserInformer:
             ],
             "ok": [
                 self.tr(
-                    "Authentication file is valid. Asking for authorization to Isogeo's API.",
+                    "Authentication file is valid. Asking for authorization to Isogeo's"
+                    " API.",
                     context=__class__.__name__,
                 ),
                 5,
@@ -119,14 +120,35 @@ class UserInformer:
                 context=__class__.__name__,
             ),
             "internet_issue": self.tr(
-                "Request to Isogeo's API failed : please check your Internet connection and"
-                " your proxy configuration. If this error keeps happening, please report it"
-                " in the bug tracker.",
+                "Request to Isogeo's API failed : please check your Internet connection"
+                " and your proxy configuration. If this error keeps happening, please "
+                "report it in the bug tracker.",
                 context=__class__.__name__,
             ),
         }
         if api_sig in list(msg_dict.keys()):
             msg = msg_dict.get(api_sig)
+            self.display(message=msg, duration=10)
+        else:
+            pass
+
+    def shares_slot(self, shares_sig: str):
+        """Slot connected to SharesParser.shares_ready signal emitted when informations
+        about the shares feeding the plugin have been parsed.
+
+        :param str shares_sig: str passed by SharesParser
+        """
+
+        msg_dict = {
+            "no_shares": self.tr(
+                "No share feeds the plugin. If you want to access resources via the "
+                "plugin, you must share at least one catalog containing at least one "
+                "metadata with it.",
+                context=__class__.__name__
+            )
+        }
+        if shares_sig in list(msg_dict.keys()):
+            msg = msg_dict.get(shares_sig)
             self.display(message=msg, duration=10)
         else:
             pass
