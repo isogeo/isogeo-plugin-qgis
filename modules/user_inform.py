@@ -30,9 +30,9 @@ class UserInformer:
         self.tr = trad
 
     def display(self, message: str, duration: int = 6, level: int = 1):
-        """A simple relay in charge of displaying messages to the user in the message 
+        """A simple relay in charge of displaying messages to the user in the message
         bar given has an instanciation attribute.
-        
+
         :param str message: the message to display
         :param int duration: message display duration in seconds
         :param int level: Qgis.MessageLevel used to set message bar's style
@@ -41,7 +41,7 @@ class UserInformer:
         self.bar.pushMessage(message, duration=duration, level=level)
 
     def authentication_slot(self, auth_sig: str = "ok"):
-        """Slot connected to Authenticator.auth_sig signal emitted after the format and 
+        """Slot connected to Authenticator.auth_sig signal emitted after the format and
         accessibility of the JSON file specified by the user has been tested.
 
         :param str auth_sig: Options :
@@ -82,7 +82,7 @@ class UserInformer:
             pass
 
     def request_slot(self, api_sig: str):
-        """Slot connected to ApiRequester.api_sig signal emitted when a problem is 
+        """Slot connected to ApiRequester.api_sig signal emitted when a problem is
         detected with the API response.
 
         :param str auth_sig: Options :

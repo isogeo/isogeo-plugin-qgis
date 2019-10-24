@@ -67,7 +67,7 @@ class ApiRequester(QgsNetworkAccessManager):
         self.currentUrl = str
 
     def setup_api_params(self, dict_params: dict):
-        """Store API parameters of the application (URLs and credentials) in class 
+        """Store API parameters of the application (URLs and credentials) in class
         attributes.
 
         :param dict dict_params: a dict containing API parameters provided
