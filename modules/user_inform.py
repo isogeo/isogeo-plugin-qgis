@@ -144,7 +144,7 @@ class UserInformer:
                 "No share feeds the plugin. If you want to access resources via the "
                 "plugin, you must share at least one catalog containing at least one "
                 "metadata with it.",
-                context=__class__.__name__
+                context=__class__.__name__,
             )
         }
         if shares_sig in list(msg_dict.keys()):
