@@ -248,6 +248,7 @@ class Isogeo:
         self.authenticator.ask_shares.connect(self.shares_slot)
 
         self.approps_mng.shares_ready.connect(self.write_shares_info)
+        self.approps_mng.shares_ready.connect(self.informer.shares_slot)
 
         # start variables
         self.savedSearch = str
@@ -413,7 +414,6 @@ class Isogeo:
             if self.savedSearch == "first":
                 logger.debug("First search since plugin started.")
                 self.authenticator.first_auth = False
-                self.set_widget_status()
                 self.shares_slot()
             else:
                 self.api_requester.send_request()
@@ -745,9 +745,16 @@ class Isogeo:
 
         :param text str: share informations from Isogeo API
         """
-        logger.debug("Displaying application properties.")
-        self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
-        self.form_mng.txt_shares.setText(text)
+        if text != "no_shares":
+            logger.debug("Displaying application properties.")
+            self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
+            self.form_mng.txt_shares.setText(text)
+            if self.savedSearch == "first":
+                self.set_widget_status()
+            else:
+                pass
+        else:
+            self.pluginIsActive = False
         # method ending
         return
 
