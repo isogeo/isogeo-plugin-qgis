@@ -67,7 +67,7 @@ class ApiRequester(QgsNetworkAccessManager):
         self.currentUrl = str
 
     def setup_api_params(self, dict_params: dict):
-        """Store API parameters of the application (URLs and credentials) in class 
+        """Store API parameters of the application (URLs and credentials) in class
         attributes.
 
         :param dict dict_params: a dict containing API parameters provided
@@ -250,10 +250,7 @@ class ApiRequester(QgsNetworkAccessManager):
                 self.loopCount = 0
                 if "shares" in url:
                     logger.debug("Handling reply to a 'shares' request")
-                    if len(parsed_content) > 0:
-                        self.shares_sig.emit(parsed_content)
-                    else:
-                        self.api_sig.emit("shares_issue")
+                    self.shares_sig.emit(parsed_content)
                 elif "resources/search?" in url:
                     logger.debug("Handling reply to a 'search' request")
                     self.search_sig.emit(
