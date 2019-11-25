@@ -72,7 +72,7 @@ class UserInformer:
                     context=__class__.__name__,
                 ),
                 5,
-                3,
+                0,
             ],
         }
         if auth_sig in list(msg_dict.keys()):
@@ -105,8 +105,9 @@ class UserInformer:
                 context=__class__.__name__,
             ),
             "shares_issue": self.tr(
-                "The script is looping. Make sure you shared a catalog with the plugin."
-                "If this error keeps happening, please report it in the bug tracker.",
+                "The script is looping. Make sure you shared a catalog with the plugin "
+                "and check your Internet connection. If this error keeps happening, "
+                "please report it in the bug tracker.",
                 context=__class__.__name__,
             ),
             "unkown_error": self.tr(
