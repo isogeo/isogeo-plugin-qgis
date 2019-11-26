@@ -791,11 +791,11 @@ class LayerAdder:
                 layer = QgsVectorLayer(uri, layer_label, "arcgisfeatureserver")
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("EFS layer added: {0}".format(uri))
+                    logger.debug("EFS layer added: {}".format(uri))
                 else:
                     error_msg = layer.error().message()
                     logger.warning(
-                        "Invalid service: {0}. QGIS says: {}".format(
+                        "Invalid service: {}. QGIS says: {}".format(
                             uri, error_msg.encode("latin1")
                         )
                     )
@@ -813,11 +813,11 @@ class LayerAdder:
                 layer = QgsRasterLayer(uri, layer_label, "arcgismapserver")
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("EMS layer added: {0}".format(uri))
+                    logger.debug("EMS layer added: {}".format(uri))
                 else:
                     error_msg = layer.error().message()
                     logger.warning(
-                        "Invalid service: {0}. QGIS says: {}".format(
+                        "Invalid service: {}. QGIS says: {}".format(
                             uri, error_msg.encode("latin1")
                         )
                     )
@@ -835,7 +835,7 @@ class LayerAdder:
                 layer = QgsVectorLayer(url, layer_label, "WFS")
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WFS layer added: {0}".format(url))
+                    logger.debug("WFS layer added: {}".format(url))
                 else:
                     error_msg = layer.error().message()
                     name_url = self.build_wfs_url(
@@ -845,11 +845,11 @@ class LayerAdder:
                         layer = QgsVectorLayer(name_url[2], layer_label, "WFS")
                         if layer.isValid():
                             lyr = QgsProject.instance().addMapLayer(layer)
-                            logger.debug("WFS layer added: {0}".format(url))
+                            logger.debug("WFS layer added: {}".format(url))
                         else:
                             error_msg = layer.error().message()
                             logger.warning(
-                                "Invalid service: {0}. QGIS says: {}".format(
+                                "Invalid service: {}. QGIS says: {}".format(
                                     url, error_msg.encode("latin1")
                                 )
                             )
@@ -870,7 +870,7 @@ class LayerAdder:
                 layer = QgsRasterLayer(url, layer_label, "wms")
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WMS layer added: {0}".format(url))
+                    logger.debug("WMS layer added: {}".format(url))
                 else:
                     error_msg = layer.error().message()
                     name_url = self.build_wms_url(
@@ -880,11 +880,11 @@ class LayerAdder:
                         layer = QgsRasterLayer(name_url[2], layer_label, "wms")
                         if layer.isValid():
                             lyr = QgsProject.instance().addMapLayer(layer)
-                            logger.debug("WMS layer added: {0}".format(url))
+                            logger.debug("WMS layer added: {}".format(url))
                         else:
                             error_msg = layer.error().message()
                             logger.warning(
-                                "Invalid service: {0}. QGIS says: {1}".format(
+                                "Invalid service: {}. QGIS says: {}".format(
                                     url, error_msg.encode("latin1")
                                 )
                             )
@@ -904,7 +904,7 @@ class LayerAdder:
                 layer = QgsRasterLayer(url, layer_label, "wms")
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WMTS service layer added: {0}".format(url))
+                    logger.debug("WMTS service layer added: {}".format(url))
                 else:
                     error_msg = layer.error().message()
                     logger.warning(
@@ -981,7 +981,7 @@ class LayerAdder:
                     else:
                         continue
             else:
-                logger.debug("Layer not valid. table = {0}".format(table))
+                logger.debug("Layer not valid. table = {}".format(table))
                 QMessageBox.information(
                     iface.mainWindow(),
                     self.tr("Error", context=__class__.__name__),
