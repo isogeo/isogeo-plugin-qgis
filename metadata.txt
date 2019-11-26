@@ -11,7 +11,7 @@ name=Isogeo
 qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 description=Isogeo search engine within QGIS
-version=2.0.0-beta4
+version=3.0.1
 author=Isogeo
 email=projects+qgis@isogeo.com
 
@@ -37,7 +37,7 @@ homepage=http://help.isogeo.com/qgis/
 category=Web
 icon=icon.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False

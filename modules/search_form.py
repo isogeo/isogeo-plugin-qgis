@@ -81,7 +81,7 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbbs_search_advanced = self.grp_filters.findChildren(QComboBox)
         # match between widgets and metadata fields
         self.match_widget_field = {
-            self.cbb_type: "types",
+            self.cbb_type: "datatype",
             self.cbb_format: "formats",
             self.cbb_owner: "owners",
             self.cbb_inspire: "inspire",
@@ -364,12 +364,6 @@ class SearchFormManager(IsogeoDockWidget):
         """ Called by Isogeo.search_slot method in case of reset or "_default"
         quicksearch. It initialise the widgets that don't need to be updated
         """
-        self.tbl_result.horizontalHeader().setSectionResizeMode(1)
-        self.tbl_result.horizontalHeader().setSectionResizeMode(1, 0)
-        self.tbl_result.horizontalHeader().setSectionResizeMode(2, 0)
-        self.tbl_result.horizontalHeader().resizeSection(1, 80)
-        self.tbl_result.horizontalHeader().resizeSection(2, 50)
-        self.tbl_result.verticalHeader().setSectionResizeMode(3)
         # Geographical operator cbb
         self.cbb_geo_op.clear()
         for key in self.dict_operation.keys():

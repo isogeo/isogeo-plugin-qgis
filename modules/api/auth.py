@@ -2,29 +2,30 @@
 
 # Standard library
 import logging
-from pathlib import Path
+import shutil
 import time
 from functools import partial
-
-# PyQT
-from qgis.PyQt.QtCore import (
-    QSettings,
-    QCoreApplication,
-    QTranslator,
-    qVersion,
-    QObject,
-    pyqtSignal,
-)
+from pathlib import Path
 
 # PyQGIS
 from qgis.gui import QgsMessageBar
 
-# Plugin modules
-from ..tools import IsogeoPlgTools
-from ..user_inform import UserInformer
+# PyQT
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QObject,
+    QSettings,
+    QTranslator,
+    pyqtSignal,
+    qVersion,
+)
 
 # UI class
 from ...ui.auth.dlg_authentication import IsogeoAuthentication
+
+# Plugin modules
+from ..tools import IsogeoPlgTools
+from ..user_inform import UserInformer
 
 # ############################################################################
 # ########## Globals ###############
@@ -36,7 +37,17 @@ plg_tools = IsogeoPlgTools()
 
 plugin_dir = Path(__file__).parents[2]
 
-locale = qsettings.value("locale/userLocale")[0:2]
+
+try:
+    locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
+except TypeError as exc:
+    logger.error(
+        "Bad type in QSettings: {}. Original error: {}".format(
+            type(qsettings.value("locale/userLocale")), exc
+        )
+    )
+    locale = "fr"
+
 locale_path = plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
 
 if locale_path.exists():
@@ -263,7 +274,7 @@ class Authenticator(QObject):
             self.api_params["url_auth"] = creds.get("uri_auth")
             self.api_params["url_token"] = creds.get("uri_token")
             self.api_params["url_redirect"] = creds.get("uri_redirect")
-            # self.credentials_storer(store_location="QSettings")
+            self.credentials_storer(store_location="QSettings")
         else:
             pass
 
@@ -279,7 +290,6 @@ class Authenticator(QObject):
         """
         self.informer = UserInformer(message_bar=self.msgbar, trad=self.tr)
         self.auth_sig.connect(self.informer.authentication_slot)
-        self.ask_shares.connect(self.informer.authentication_slot)
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
             lambda: qsettings.setValue(
                 "isogeo/user/editor",
@@ -315,7 +325,8 @@ class Authenticator(QObject):
     def credentials_uploader(self):
         """Get file selected by the user and loads API credentials into plugin.
         If the selected is compliant, credentials are loaded from then it's
-        moved inside plugin/_auth subfolder.
+        moved inside plugin/_auth subfolder. auth_sig is emitted to inform the user
+        about indicated file's accessibility and format validity.
         """
         self.ui_auth_form.btn_browse_credentials.fileChanged.disconnect()
 
@@ -354,7 +365,7 @@ class Authenticator(QObject):
             )
             self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
-        # move credentials file into the plugin file structure
+        # rename existing credentials file with prefix 'old_' and datetime as suffix
         dest_path = self.cred_filepath
         if dest_path.is_file():
             logger.debug(
@@ -369,13 +380,24 @@ class Authenticator(QObject):
 
         else:
             pass
+
+        # mave new credentials file to the _auth subfolder
         try:
-            selected_file.rename(dest_path)
+            selected_file.rename(dest_path)  # using pathlib.Path (= os.rename)
             logger.debug(
-                "Selected credentials file has been moved into plugin" "_auth subfolder"
+                "Selected credentials file has been moved into plugin _auth subfolder"
             )
-        except Exception as e:
-            logger.debug("Fail to rename authentication file : {}".format(e))
+        except OSError as exc:
+            logger.error(
+                "Move new file raised: {}. Maybe because of moving from a "
+                "different disk drive. Trying with lower-level lib... "
+                "See: https://github.com/isogeo/isogeo-plugin-qgis/issues/291 ".format(
+                    exc
+                )
+            )
+            shutil.move(selected_file, dest_path)
+        except Exception as exc:
+            logger.error("Failed to move authentication file: {}".format(exc))
             self.auth_sig.emit("path")
             self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
                 self.credentials_uploader

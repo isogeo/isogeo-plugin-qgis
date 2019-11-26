@@ -90,6 +90,7 @@ class SharesParser(QObject):
             self.shares_ready.emit(text)
         else:
             logger.debug("The plugin is not powered by any shares.")
+            self.shares_ready.emit("no_shares")
             return
 
 

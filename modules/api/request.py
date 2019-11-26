@@ -5,6 +5,7 @@ import logging
 import json
 import base64
 from urllib.parse import urlencode
+from functools import partial
 
 # PyQGIS
 from qgis.core import QgsNetworkAccessManager, QgsMessageLog
@@ -32,6 +33,7 @@ class ApiRequester(QgsNetworkAccessManager):
         - Request about application's shares
         - Request about ressources
         - Building request URLs
+        - Parsing API's answer tags
     """
 
     api_sig = pyqtSignal(str)
@@ -63,11 +65,10 @@ class ApiRequester(QgsNetworkAccessManager):
         # make request
         self.token = str
         self.currentUrl = str
-        self.finished.connect(self.handle_reply)
 
     def setup_api_params(self, dict_params: dict):
-        """Store API parameters of the application (URLs and credentials)
-        in class attributes.
+        """Store API parameters of the application (URLs and credentials) in class
+        attributes.
 
         :param dict dict_params: a dict containing API parameters provided
         by Authenticator().manage_api_initialization method.
@@ -83,8 +84,8 @@ class ApiRequester(QgsNetworkAccessManager):
         self.send_request("token")
 
     def create_request(self, request_type: str):
-        """Creates a QNetworkRequest() with appropriate headers and URL
-        according to the 'request_type' parameter.
+        """Creates a QNetworkRequest() with appropriate headers and URL according to the
+        'request_type' parameter.
 
         :param str request_type: type of request to create. Options:
             - 'token'
@@ -131,8 +132,8 @@ class ApiRequester(QgsNetworkAccessManager):
         return request
 
     def send_request(self, request_type: str = "search"):
-        """ Sends a request to the Isogeo's API using QNetworkRequestManager.
-        That's the handle_reply method which get the API's response. See below.
+        """ Sends a request to the Isogeo's API using QNetworkRequestManager. That's the
+        handle_reply method which get the API's response. See below.
 
         :param str request_type: type of request to send. Options:
             - 'token'
@@ -150,30 +151,52 @@ class ApiRequester(QgsNetworkAccessManager):
         if request_type == "token":
             data = QByteArray()
             data.append(urlencode({"grant_type": "client_credentials"}))
-            self.post(request, data)
+            req = self.post(request, data)
         # get request for other
         else:
-            self.get(request)
+            req = self.get(request)
+        # since https://github.com/isogeo/isogeo-plugin-qgis/issues/288, the slot is
+        # connected to the request's signal and no more to QgsNetworkAccessManager's one
+        # because otherweise, the plugin doesn't work on QGIS 3.8.x
+        req.finished.connect(partial(self.handle_reply, req))
         return
 
     def handle_reply(self, reply: QNetworkReply):
-        """Slot to QNetworkAccesManager.finished signal who handles the API's response to any type
-        of request : 'token', 'search', 'shares' or 'details'.
+        """Slot to QNetworkAccesManager.finished signal who handles the API's response
+        to any type of request: 'token', 'search', 'shares' or 'details'.
 
-        The request's type is identicated from the url of the request from which the answer comes.
-        Depending on the reply's content validity and the request's type, an appropriated signal
-        is emitted with different data's value.
+        The request's type is identicated from the url of the request from which the
+        answer comes. Depending on the reply's content validity and the request's type,
+        an appropriated signal is emitted with different data's value.
 
-        - For token requests : the api_sig signal is emitted wathever the replys's content but
-        the mitted str's value depend on this content. A single slot is connected to this signal
-        and acts according to value of the string recieved (see isogeo.py : Isogeo.token_slot).
-        - For other requests : for each type of request there is a corresponding signal but the
-        reply's parsed content is emitted wathever the request's type. Each signal is connected to
-        an appropriate slot (see isogeo.py).
+        - api_sig is emitted when a token request is handled or when there is a problem
+        with the API response. 2 slots are connected to api_sig:
+
+            - Isogeo.token_slot: it calls the necessary methods to initialize the plugin
+            when authentication is successful (when "ok" is emitted) and disables the
+            plugin when it's not (when other than "ok" str is emitted).
+
+            - UserInformer.request_slot: it displays to user the appropriated message
+            when a problem with the API response is detected (when other than "ok" str
+            is emitted) depending on the origin ofthe problem.
+
+        - search_sig is emitted when the API response to a search request is handled.
+        Isogeo.search_slot() is connected to this signal
+
+        - details_sig is emitted when the API response to a details request is handled.
+        MetadataDisplayer.show_complete_md() is connected to this signal
+
+        - shares_sig is emitted when the API response to a shares request is handled.
+        SharesParser.send_share_info() is connected to this signal
 
         :param QNetworkReply reply: Isogeo API response
         """
-
+        url = reply.url().toString()
+        logger.debug(
+            "API answer from {} : \n {} --> {}".format(
+                url, reply.attribute(0), reply.attribute(1)
+            )
+        )
         # retrieving API reply content
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
@@ -183,14 +206,11 @@ class ApiRequester(QgsNetworkAccessManager):
                 parsed_content = json.loads(content)
             except ValueError as e:
                 if "No JSON object could be decoded" in str(e):
-                    logger.error(
-                        "'No JSON object could be decoded' --> Internet connection failed"
-                    )
+                    logger.error("{} --> Internet connection failed".format(str(e)))
                     self.api_sig.emit("internet_issue")
                 else:
                     pass
                 return
-            url = reply.url().toString()
             # for token request, one signal is emitted passing a string whose
             # value depend on the reply content
             if "token" in url:
@@ -230,26 +250,19 @@ class ApiRequester(QgsNetworkAccessManager):
                 self.loopCount = 0
                 if "shares" in url:
                     logger.debug("Handling reply to a 'shares' request")
-                    logger.debug("(from : {}).".format(url))
-                    if len(parsed_content) > 0:
-                        self.shares_sig.emit(parsed_content)
-                    else:
-                        self.api_sig.emit("shares_issue")
+                    self.shares_sig.emit(parsed_content)
                 elif "resources/search?" in url:
                     logger.debug("Handling reply to a 'search' request")
-                    logger.debug("(from : {}).".format(url))
                     self.search_sig.emit(
                         parsed_content, self.get_tags(parsed_content.get("tags"))
                     )
                 elif "resources/" in reply.url().toString():
                     logger.debug("Handling reply to a 'details' request")
-                    logger.debug("(from : {}).".format(url))
                     self.details_sig.emit(
                         parsed_content, self.get_tags(parsed_content.get("tags"))
                     )
                 else:
                     logger.debug("Unkown reply type : {}".format(parsed_content))
-            del parsed_content
 
         # if replys's content is invalid
         elif reply.error() == 204:
@@ -268,12 +281,24 @@ class ApiRequester(QgsNetworkAccessManager):
 
         elif reply.error() == 302:
             logger.error(
-                "Request to the API failed. Redirecting code received : 302."
-                "Creds may be invalid or a proxy error wasn't catched."
+                "Request to the API failed. 'the requested operation is "
+                "invalid for this protocol' : 302. Creds may be invalid "
+                "or a proxy error wasn't catched."
             )
             self.api_sig.emit("creds_issue")
 
-        elif content == "":
+        elif content != "":
+            logger.warning(
+                "Request to the API failed. Unkown error : {}"
+                "\n(see https://doc.qt.io/qt-5/qnetworkreply.html#NetworkError-enum)"
+                "\n Unexpected reply content : {}".format(
+                    str(reply.error()), parsed_content
+                )
+            )
+
+            self.api_sig.emit("unkown_error")
+
+        else:
             if self.loopCount < 3:
                 self.loopCount += 1
                 reply.abort()
@@ -282,19 +307,13 @@ class ApiRequester(QgsNetworkAccessManager):
                 logger.error(
                     "Request to the API failed. Empty reply for the third time. "
                     "Weither no catalog is shared with the plugin, or there is no "
-                    "Internet connection."
+                    "Internet connection. (qt error code : {} / http status code : {})".format(
+                        str(reply.error()), reply.attribute(0)
+                    )
                 )
                 self.api_sig.emit("internet_issue")
 
-        else:
-            logger.warning(
-                "Request to the API failed. Unkown error : {}"
-                "\n(see https://doc.qt.io/qt-5/qnetworkreply.html#NetworkError-enum)".format(
-                    str(reply.error())
-                )
-            )
-
-            self.api_sig.emit("unkown_error")
+        reply.deleteLater()
         return
 
     def build_request_url(self, params: dict):
@@ -331,8 +350,8 @@ class ApiRequester(QgsNetworkAccessManager):
         if params.get("formats") is not None:
             filters += params.get("formats") + " "
         # Data type
-        if params.get("types") is not None:
-            filters += params.get("types") + " "
+        if params.get("datatype") is not None:
+            filters += params.get("datatype") + " "
         # Contact
         if params.get("contacts") is not None:
             filters += params.get("contacts") + " "
@@ -459,7 +478,7 @@ class ApiRequester(QgsNetworkAccessManager):
             "licenses": licenses,
             "owners": owners,
             "srs": srs,
-            "types": md_types,
+            "datatype": md_types,
             # "unused": unused
         }
 

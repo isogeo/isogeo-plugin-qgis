@@ -3,7 +3,7 @@
 <context>
     <name>ApiRequester</name>
     <message>
-        <location filename="../modules/api/request.py" line="448"/>
+        <location filename="../modules/api/request.py" line="467"/>
         <source>Dataset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19,37 +19,37 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="342"/>
+        <location filename="../isogeo.py" line="364"/>
         <source>&amp;Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="317"/>
+        <location filename="../isogeo.py" line="339"/>
         <source>Search within Isogeo catalogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="496"/>
+        <location filename="../isogeo.py" line="517"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="431"/>
+        <location filename="../isogeo.py" line="452"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="515"/>
         <source> results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="830"/>
+        <location filename="../isogeo.py" line="859"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="599"/>
+        <location filename="../isogeo.py" line="620"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
@@ -280,26 +280,20 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="395"/>
+        <location filename="../modules/tools.py" line="461"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="375"/>
+        <location filename="../modules/tools.py" line="371"/>
         <source>Alert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="360"/>
-        <source>Proxy issue : 
-QGIS and your OS have different proxy set ups.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/tools.py" line="375"/>
-        <source>Proxy issue : 
-You have a proxy set up on your OS but none in QGIS.
-Please set it up in &apos;Preferences/Options/Network&apos;.</source>
+        <location filename="../modules/tools.py" line="371"/>
+        <source>Proxy issue: 
+You have a proxy set up on your OS {} but none in QGIS.
+ Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -372,52 +366,52 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="162"/>
+        <location filename="../modules/results/display.py" line="170"/>
         <source>Point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="165"/>
+        <location filename="../modules/results/display.py" line="173"/>
         <source>Polygon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="168"/>
+        <location filename="../modules/results/display.py" line="176"/>
         <source>Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="171"/>
+        <location filename="../modules/results/display.py" line="179"/>
         <source>MultiPolygon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="193"/>
+        <location filename="../modules/results/display.py" line="201"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="187"/>
+        <location filename="../modules/results/display.py" line="195"/>
         <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="190"/>
+        <location filename="../modules/results/display.py" line="198"/>
         <source>Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="450"/>
+        <location filename="../modules/results/display.py" line="458"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="446"/>
+        <location filename="../modules/results/display.py" line="454"/>
         <source>PostGIS table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="398"/>
+        <location filename="../modules/results/display.py" line="406"/>
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
@@ -541,48 +535,53 @@ Please set it up in &apos;Preferences/Options/Network&apos;.</source>
 <context>
     <name>UserInformer</name>
     <message>
-        <location filename="../modules/user_inform.py" line="38"/>
+        <location filename="../modules/user_inform.py" line="54"/>
         <source>The specified file does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="45"/>
+        <location filename="../modules/user_inform.py" line="61"/>
         <source>The selected credentials file&apos;s format is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="53"/>
+        <location filename="../modules/user_inform.py" line="69"/>
         <source>Authentication file is valid. Asking for authorization to Isogeo&apos;s API.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="69"/>
-        <source>Redirecting code received. ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/user_inform.py" line="74"/>
+        <location filename="../modules/user_inform.py" line="102"/>
         <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="79"/>
+        <location filename="../modules/user_inform.py" line="107"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin.If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="84"/>
+        <location filename="../modules/user_inform.py" line="112"/>
         <source>Request to Isogeo&apos;s API failed : unkown error found. Please, report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="89"/>
+        <location filename="../modules/user_inform.py" line="117"/>
         <source>API authentication failed : unexpected API&apos;s reply. Please, report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="94"/>
+        <location filename="../modules/user_inform.py" line="122"/>
         <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/user_inform.py" line="97"/>
+        <source>ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/user_inform.py" line="143"/>
+        <source>No share feeds the plugin. If you want to access resources via the plugin, you must share at least one catalog containing at least one metadata with it.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

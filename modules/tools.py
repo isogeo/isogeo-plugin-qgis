@@ -4,16 +4,15 @@
 # Standard library
 import configparser
 import datetime
+import http.client
 import logging
 from os import access, path, R_OK
 import subprocess
 from sys import platform as opersys
-from urllib.request import getproxies, unquote
-from urllib.parse import urlencode
+from urllib.request import getproxies
 import webbrowser
 
 # PyQGIS
-from qgis.core import QgsDataSourceUri, QgsProject, QgsVectorLayer, QgsRasterLayer
 from qgis.utils import iface
 
 # PyQT
@@ -72,8 +71,11 @@ class IsogeoPlgTools(IsogeoUtils):
         :param str title: title to format
         """
         words = title.split(" ")
-        if len(words) == 1 and len(words[0]) > 33:
-            final_text = "\n" + words[0][:30] + "..."
+        if len(words) == 1:
+            if len(words[0]) > 28:
+                final_text = words[0][:25] + "..."
+            else:
+                final_text = words[0]
             return final_text
         else:
             pass
@@ -233,153 +235,217 @@ class IsogeoPlgTools(IsogeoUtils):
           * isogeo: display Isogeo logo and zoom in our office location
           * picasa: change QGS project title
         """
-        canvas = iface.mapCanvas()
+        # canvas = iface.mapCanvas()
         if easter_code == "isogeo":
-            # WMS
-            wms_params = {
-                "service": "WMS",
-                "version": "1.3.0",
-                "request": "GetMap",
-                "layers": "Isogeo:isogeo_logo",
-                "crs": "EPSG:3857",
-                "format": "image/png",
-                "styles": "isogeo_logo",
-                "url": "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?",
-            }
-            wms_uri = unquote(urlencode(wms_params))
-            wms_lyr = QgsRasterLayer(wms_uri, "Ici c'est Isogeo !", "wms")
-            if wms_lyr.isValid:
-                QgsProject.instance().addMapLayer(wms_lyr)
-                logger.info("Isogeo easter egg used and WMS displayed!")
-            else:
-                logger.error("WMS layer failed: {}".format(wms_lyr.error().message()))
+            # # WMS
+            # wms_params = {
+            #     "service": "WMS",
+            #     "version": "1.3.0",
+            #     "request": "GetMap",
+            #     "layers": "Isogeo:isogeo_logo",
+            #     "crs": "EPSG:3857",
+            #     "format": "image/png",
+            #     "styles": "isogeo_logo",
+            #     "url": "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?",
+            # }
+            # wms_uri = unquote(urlencode(wms_params))
+            # wms_lyr = QgsRasterLayer(wms_uri, "Ici c'est Isogeo !", "wms")
+            # if wms_lyr.isValid:
+            #     QgsProject.instance().addMapLayer(wms_lyr)
+            #     logger.info("Isogeo easter egg used and WMS displayed!")
+            # else:
+            #     logger.error("WMS layer failed: {}".format(wms_lyr.error().message()))
 
-            # WFS
-            uri = QgsDataSourceUri()
-            uri.setParam("url", "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?")
-            uri.setParam("service", "WFS")
-            uri.setParam("version", "1.1.0")
-            uri.setParam("typename", "Isogeo:isogeo_logo")
-            uri.setParam("srsname", "EPSG:3857")
-            uri.setParam("restrictToRequestBBOX", "0")
-            wfs_uri = uri.uri()
-            wfs_lyr = QgsVectorLayer(wfs_uri, "Ici c'est Isogeo !", "WFS")
-            if wfs_lyr.isValid:
-                wfs_style = path.join(
-                    path.dirname(path.realpath(__file__)), "isogeo.qml"
-                )
-                wfs_lyr.loadNamedStyle(wfs_style)
-                QgsProject.instance().addMapLayer(wfs_lyr)
-                canvas.setExtent(wfs_lyr.extent())
-                logger.debug("Isogeo easter egg used")
-            else:
-                logger.error(
-                    "Esater egg - WFS layer failed: {}".format(
-                        wfs_lyr.error().message()
-                    )
-                )
+            # # WFS
+            # uri = QgsDataSourceUri()
+            # uri.setParam("url", "http://noisy.hq.isogeo.fr:6090/geoserver/Isogeo/ows?")
+            # uri.setParam("service", "WFS")
+            # uri.setParam("version", "1.1.0")
+            # uri.setParam("typename", "Isogeo:isogeo_logo")
+            # uri.setParam("srsname", "EPSG:3857")
+            # uri.setParam("restrictToRequestBBOX", "0")
+            # wfs_uri = uri.uri()
+            # wfs_lyr = QgsVectorLayer(wfs_uri, "Ici c'est Isogeo !", "WFS")
+            # if wfs_lyr.isValid:
+            #     wfs_style = path.join(
+            #         path.dirname(path.realpath(__file__)), "isogeo.qml"
+            #     )
+            #     wfs_lyr.loadNamedStyle(wfs_style)
+            #     QgsProject.instance().addMapLayer(wfs_lyr)
+            #     canvas.setExtent(wfs_lyr.extent())
+            #     logger.debug("Isogeo easter egg used")
+            # else:
+            #     logger.error(
+            #         "Esater egg - WFS layer failed: {}".format(
+            #             wfs_lyr.error().message()
+            #         )
+            #     )
+            logger.info("Easter egg 'isogeo' spotted!")
         elif easter_code == "picasa":
-            project = QgsProject.instance()
-            project.setTitle("Isogeo, le Picasa de l'information géographique")
+            # project = QgsProject.instance()
+            # project.setTitle("Isogeo, le Picasa de l'information géographique")
             logger.debug("Picasa easter egg used")
         else:
             pass
         # ending method
         return
 
-    def test_proxy_configuration(self):
-        """Check adequation between system and QGIS proxy configuration.
+    def check_proxy_configuration(self) -> bool:
+        """Check adequation between system and QGIS proxy configuration. The goal is to\
+            prevent network issues connecting to the API. See: https://github.com/isogeo/isogeo-plugin-qgis/issues/287
 
-        If a proxy configuration is set up for the computer, and for QGIS.
-        If none or both is set up, pass. But if there is a proxy config for the
-        computer but not in QGIS, pops an alert message.
+        Steps:
+
+          1. Retrive proxy settings: from system and from QGIS
+          2. Compare them:
+            - Case 1: if a proxy is not set in the system or QGIS: everything is fine!
+            - Case 2: if a proxy is set at the system level but not in QGIS: warn the user he should take care
+            - Case 3 (a and b): if a proxy is set in QGIS but not in the system: depends on proxy type picked in QGIS
+            - Case 4: if a proxy is set in QGIS and the system, ensure this is the same
+
+        :rtype: bool
+        :returns: True for cases 1, 3a ; False for cases 2, 3b and 4 depending if system and QGIS configs mismatch
         """
+        # local connector
+        conn_to_isogeo = http.client.HTTPSConnection("api.isogeo.com")
+        # -- STEP 1 --------------------------------------------------------------------
+        # retrieve system proxy settings
         system_proxy_config = getproxies()
-        qgis_proxy = str(qsettings.value("proxy/proxyEnabled", ""))
-
-        if system_proxy_config == {} and qgis_proxy != "true":
-            logger.info("No proxy found on the OS or in QGIS" "=> Proxy config : OK")
-            return 0
+        if system_proxy_config:
+            logger.info("Proxy on the system: {}".format(system_proxy_config))
         else:
-            if qgis_proxy == "true":
-                http = system_proxy_config.get("http")
-                if http is None:
-                    logger.info(
-                        "A proxy is set up in QGIS but not "
-                        "in the OS. => Proxy config: not OK"
-                    )
-                    pass
-                else:
-                    elements = http.split(":")
-                    if len(elements) == 2:
-                        host = elements[0]
-                        port = elements[1]
-                        qgis_host = qsettings.value("proxy/proxyHost", "")
-                        qgis_port = qsettings.value("proxy/proxyPort", "")
-                        if qgis_host == host and qgis_port == port:
-                            logger.info(
-                                "A proxy is set up both in QGIS "
-                                "and the OS and they match => "
-                                "Proxy config : OK"
-                            )
-                        else:
-                            logger.error(
-                                "OS and QGIS proxy ports do not "
-                                "match. => Proxy config: not OK"
-                            )
-                            QMessageBox.information(
-                                iface.mainWindow(),
-                                self.tr("Alert", context=__class__.__name__),
-                                self.tr(
-                                    "Proxy issue : \nQGIS and your OS "
-                                    "have different proxy set ups.",
-                                    context=__class__.__name__,
-                                ),
-                            )
-                    elif len(elements) == 3 and elements[0] == "http":
-                        host_short = elements[1][2:]
-                        host_long = elements[0] + ":" + elements[1]
-                        port = elements[2]
-                        qgis_host = qsettings.value("proxy/proxyHost", "")
-                        qgis_port = qsettings.value("proxy/proxyPort", "")
-                        if (
-                            qgis_host == host_short or qgis_host == host_long
-                        ) and qgis_port == port:
-                            logger.info(
-                                "A proxy is set up both in QGIS"
-                                " and the OS and they match "
-                                "=> Proxy config : OK"
-                            )
-                        else:
-                            logger.error(
-                                "OS and QGIS proxy ports do not "
-                                "match. => Proxy config: not OK"
-                            )
-                            QMessageBox.information(
-                                iface.mainWindow(),
-                                self.tr("Alert", context=__class__.__name__),
-                                self.tr(
-                                    "Proxy issue : \nQGIS and your OS"
-                                    " have different proxy set ups.",
-                                    context=__class__.__name__,
-                                ),
-                            )
+            logger.info("No proxy settings found on the system.")
 
-            else:
+        # retrieve QGIS proxy settings
+        qgis_proxy_enabled = qsettings.value("proxy/proxyEnabled", False, type=bool)
+        if qgis_proxy_enabled is True:
+            qgis_proxy_type = qsettings.value(
+                "proxy/proxyType", "DefaultProxy", type=str
+            )
+            logger.info("Proxy enabled in QGIS: {}".format(qgis_proxy_type))
+        else:
+            logger.info("No proxy enabled in QGIS.")
+
+        # -- STEP 2 --------------------------------------------------------------------
+        # Case 1 - No proxy at all
+        if not any([system_proxy_config, qgis_proxy_enabled]):
+            logger.info(
+                "No proxy found in system and QGIS: Freedom! All signals on green! [case 1]"
+            )
+            try:
+                # if no proxy, then we can send a request
+                conn_to_isogeo.request("HEAD", "/about")
+                resp_about = conn_to_isogeo.getresponse()
+                # check requests status
+                if resp_about.status >= 300:
+                    logger.error(
+                        "Connection to Isogeo failed: {} ({})".format(
+                            resp_about.reason, resp_about.status
+                        )
+                    )
+                    raise ConnectionError
+                else:
+                    logger.info(
+                        "Network connection to Isogeo API seems to be {} ({})".format(
+                            resp_about.reason, resp_about.status
+                        )
+                    )
+            except Exception as exc:
                 logger.error(
-                    "OS uses a proxy but it isn't set up in QGIS."
-                    " => Proxy config: not OK"
+                    "Despite the absence of proxy, connection to Isogeo API failed: {}".format(
+                        exc
+                    )
                 )
-                QMessageBox.information(
-                    iface.mainWindow(),
-                    self.tr("Alert", context=__class__.__name__),
-                    self.tr(
-                        "Proxy issue : \nYou have a proxy set up on your"
-                        " OS but none in QGIS.\nPlease set it up in "
-                        "'Preferences/Options/Network'.",
-                        context=__class__.__name__,
+
+            return True
+
+        # Case 2 - Proxy in system but not enabled in QGIS = issue is coming!
+        if system_proxy_config and not qgis_proxy_enabled:
+            logger.warning(
+                "Proxy found in system {} but not in QGIS: please update network settings in QGIS Preferences. [case 2]".format(
+                    system_proxy_config
+                )
+            )
+            QMessageBox.warning(
+                iface.mainWindow(),
+                self.tr("Alert", context=__class__.__name__),
+                self.tr(
+                    "Proxy issue: \nYou have a proxy set up on your"
+                    " OS {} but none in QGIS.\n Please set it up in "
+                    "'Preferences/Options/Network' then close/reopen the plugin.".format(
+                        system_proxy_config
                     ),
+                    context=__class__.__name__,
+                ),
+            )
+            return False
+
+        # Case 3 - Proxy in QGIS but not in system
+        if not system_proxy_config and qgis_proxy_enabled:
+            # Case 3a - if proxy type is set to DefaultProxy, it means no proxy
+            if qgis_proxy_type == "DefaultProxy":
+                logger.info(
+                    "{} enabled in QGIS is pointing to the system which is disabled. "
+                    "Equivalent to no proxy at all. [case 3a]".format(qgis_proxy_type)
                 )
+                try:
+                    # if no proxy, then we can send a request
+                    conn_to_isogeo.request("HEAD", "/about")
+                    resp_about = conn_to_isogeo.getresponse()
+                    # check requests status
+                    if resp_about.status >= 300:
+                        logger.error(
+                            "Connection to Isogeo failed: {} ({})".format(
+                                resp_about.reason, resp_about.status
+                            )
+                        )
+                        raise ConnectionError
+                    else:
+                        logger.info(
+                            "Network connection to Isogeo API seems to be {} ({})".format(
+                                resp_about.reason, resp_about.status
+                            )
+                        )
+                except Exception as exc:
+                    logger.error(
+                        "Despite the absence of proxy, connection to Isogeo API failed: {}".format(
+                            exc
+                        )
+                    )
+
+                return True
+            else:
+                # Case 3b - if proxy type is not DefaultProxy, it can produce some error
+                logger.warning(
+                    "{} enabled in QGIS but not in system. No blocking but weird behavior could occur. [case 3b]".format(
+                        qgis_proxy_type
+                    )
+                )
+                return False
+
+        # Case 4 - Proxy both in system and QGIS
+        if system_proxy_config and qgis_proxy_enabled:
+            logger.info(
+                "{} enabled in QGIS and in system {}. [case 4]".format(
+                    qgis_proxy_type, system_proxy_config
+                )
+            )
+            # if proxy type is DefaultProxy, then ignore it
+            if qgis_proxy_type == "DefaultProxy":
+                logger.debug(
+                    "QGIS is using system settings: {}. [case 4a]".format(
+                        system_proxy_config
+                    )
+                )
+                return True
+
+            # compare system and QGIS settings
+            qgis_proxy_params = {
+                "host": qsettings.value("proxy/proxyHost", None, type=str),
+                "port": qsettings.value("proxy/proxyPort", None, type=int),
+            }
+            logger.debug(qgis_proxy_params)
+            return True
 
     def test_qgis_style(self):
         """

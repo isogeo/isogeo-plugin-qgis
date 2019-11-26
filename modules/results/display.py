@@ -8,15 +8,9 @@ from pathlib import Path
 
 # PyQT
 # from QByteArray
-from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal
+from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal, Qt
 from qgis.PyQt.QtGui import QIcon, QPixmap
-from qgis.PyQt.QtWidgets import (
-    QTableWidgetItem,
-    QComboBox,
-    QPushButton,
-    QLabel,
-    QHeaderView,
-)
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QPushButton, QLabel
 
 # Plugin modules
 from .cache import CacheManager
@@ -124,6 +118,17 @@ class ResultsManager(QObject):
         else:
             tbl_result.setRowCount(api_results.get("total"))
 
+        # dimensions (see https://github.com/isogeo/isogeo-plugin-qgis/issues/276)
+        hheader = tbl_result.horizontalHeader()
+        # make the entire width of the table is occupied
+        hheader.setSectionResizeMode(1)
+        # make date and icone columns width adapted to their content
+        # so title and adding columns occupy the rest of the available width
+        hheader.setSectionResizeMode(1, 3)
+        hheader.setSectionResizeMode(2, 3)
+
+        vheader = tbl_result.verticalHeader()
+
         # Looping inside the table lines. For each of them, showing the title,
         # abstract, geometry type, and a button that allow to add the data
         # to the canvas.
@@ -141,7 +146,8 @@ class ResultsManager(QObject):
 
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
-            btn_md_title = QPushButton(plg_tools.format_button_title(md_title))
+            btn_title = plg_tools.format_button_title(md_title)
+            btn_md_title = QPushButton(btn_title)
             # Connecting the button to the full metadata popup
             btn_md_title.pressed.connect(partial(self.md_asked.emit, md_id))
             # Putting the abstract as a tooltip on this button
@@ -150,9 +156,11 @@ class ResultsManager(QObject):
             tbl_result.setCellWidget(count, 0, btn_md_title)
 
             # COLUMN 2 - Data last update
-            tbl_result.setItem(
-                count, 1, QTableWidgetItem(plg_tools.handle_date(i.get("_modified")))
-            )
+            lbl_date = QLabel(tbl_result)
+            lbl_date.setText(plg_tools.handle_date(i.get("_modified")))
+            lbl_date.setMargin(5)
+            lbl_date.setAlignment(Qt.AlignCenter)
+            tbl_result.setCellWidget(count, 1, lbl_date)
 
             # COLUMN 3 - Geometry type
             lbl_geom = QLabel(tbl_result)
@@ -193,7 +201,7 @@ class ResultsManager(QObject):
                     lbl_geom.setToolTip(
                         self.tr("Unknown geometry", context=__class__.__name__)
                     )
-
+            lbl_geom.setAlignment(Qt.AlignCenter)
             tbl_result.setCellWidget(count, 2, lbl_geom)
 
             # COLUMN 4 - Add options
@@ -456,12 +464,16 @@ class ResultsManager(QObject):
                 combo.model().sort(0)  # sort alphabetically on option prefix. see: #113
                 tbl_result.setCellWidget(count, 3, combo)
 
+            # make the widget (button or combobox) width the same as the column width
+            tbl_result.cellWidget(count, 3).setFixedWidth(hheader.sectionSize(3))
             count += 1
-        # dimensions
-        header = tbl_result.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+
+        # dimensions bis (see https://github.com/isogeo/isogeo-plugin-qgis/issues/276)
+        # last column take the width of his content
+        hheader.setSectionResizeMode(3, 3)
+        # the height of the row adapts to the content without falling below 30px
+        vheader.setMinimumSectionSize(30)
+        vheader.setSectionResizeMode(3)
         # method ending
         return None
 

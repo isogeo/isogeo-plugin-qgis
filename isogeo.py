@@ -33,7 +33,7 @@ from functools import partial
 # PyQT
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, Qt, QTranslator, qVersion
 
-from qgis.PyQt.QtWidgets import QAction, QComboBox, QProgressBar
+from qgis.PyQt.QtWidgets import QAction, QComboBox, QDesktopWidget, QProgressBar
 from qgis.PyQt.QtGui import QIcon
 
 # PyQGIS
@@ -127,6 +127,7 @@ ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
 ico_poin = QIcon(":/images/themes/default/mIconPointLayer.svg")
 ico_poly = QIcon(":/images/themes/default/mIconPolygonLayer.svg")
 
+
 # ############################################################################
 # ########## Classes ###############
 # ##################################
@@ -143,6 +144,17 @@ class Isogeo:
     logger.info("QGIS Version: {0}".format(Qgis.QGIS_VERSION))
     logger.info("Plugin version: {0}".format(plg_version))
     logger.info("Log level: {0}".format(log_level))
+
+    # Screens resolution
+    screens_count = QDesktopWidget().screenCount()
+    for screenNbr in range(screens_count):
+        sizeObject = QDesktopWidget().screenGeometry(screenNbr)
+        logger.info(
+            "Screen: {}/{} - Size: {}x{}".format(
+                screenNbr + 1, screens_count, sizeObject.height(), sizeObject.width()
+            )
+        )
+    del screens_count, sizeObject
 
     def __init__(self, iface):
         """Constructor.
@@ -165,7 +177,16 @@ class Isogeo:
             pass
 
         # initialize locale
-        locale = qsettings.value("locale/userLocale")[0:2]
+        try:
+            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
+        except TypeError as exc:
+            logger.error(
+                "Bad type in QSettings: {}. Original error: {}".format(
+                    type(qsettings.value("locale/userLocale")), exc
+                )
+            )
+            locale = "fr"
+        # load localized translation
         locale_path = (
             self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
         )
@@ -227,6 +248,7 @@ class Isogeo:
         self.authenticator.ask_shares.connect(self.shares_slot)
 
         self.approps_mng.shares_ready.connect(self.write_shares_info)
+        self.approps_mng.shares_ready.connect(self.informer.shares_slot)
 
         # start variables
         self.savedSearch = str
@@ -392,7 +414,6 @@ class Isogeo:
             if self.savedSearch == "first":
                 logger.debug("First search since plugin started.")
                 self.authenticator.first_auth = False
-                self.set_widget_status()
                 self.shares_slot()
             else:
                 self.api_requester.send_request()
@@ -724,9 +745,16 @@ class Isogeo:
 
         :param text str: share informations from Isogeo API
         """
-        logger.debug("Displaying application properties.")
-        self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
-        self.form_mng.txt_shares.setText(text)
+        if text != "no_shares":
+            logger.debug("Displaying application properties.")
+            self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
+            self.form_mng.txt_shares.setText(text)
+            if self.savedSearch == "first":
+                self.set_widget_status()
+            else:
+                pass
+        else:
+            self.pluginIsActive = False
         # method ending
         return
 
@@ -735,6 +763,7 @@ class Isogeo:
     def run(self):
         """Run method that loads and starts the plugin."""
         if not self.pluginIsActive:
+            logger.info("Opening (display) the plugin...")
             self.pluginIsActive = True
             # dockwidget may not exist if:
             #    first run of plugin
@@ -852,7 +881,7 @@ class Isogeo:
         self.authenticator.tr = self.tr
         self.authenticator.lang = self.lang
         # checks
-        plg_tools.test_proxy_configuration()  # 22
+        plg_tools.check_proxy_configuration()  # 22
         self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
         # self.form_mng.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.form_mng.txt_input.setFocus()
