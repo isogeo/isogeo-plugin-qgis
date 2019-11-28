@@ -319,10 +319,10 @@ class ApiRequester(QObject):
         return
 
     def ssl_error_catcher(self, ssl_errors: QSslError):
-        """Slot connected to QNetworkReply.sslErrors signal to log potential errors due 
+        """Slot connected to QNetworkReply.sslErrors signal to log potential errors due
         to SSL certificate issues occuring when the plugin is intercatings with the API
 
-        :param QSslError: 
+        :param QSslError:
         """
         if isinstance(ssl_errors, list):
             for error in ssl_errors:

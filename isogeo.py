@@ -746,7 +746,7 @@ class Isogeo:
         :param text str: share informations from Isogeo API
         """
         if text != "no_shares":
-            logger.debug("Displaying application properties.")
+            logger.info("Displaying application properties.")
             self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
             self.form_mng.txt_shares.setText(text)
             if self.savedSearch == "first":
