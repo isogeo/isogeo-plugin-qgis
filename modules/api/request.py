@@ -139,7 +139,7 @@ class ApiRequester(QObject):
             - 'details'
             - 'shares'
         """
-        logger.debug(
+        logger.info(
             "-------------- Sending a '{}' request --------------".format(request_type)
         )
         # creating the QNetworkRequest appropriate to the request_type
@@ -201,8 +201,8 @@ class ApiRequester(QObject):
         httpStatus = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
         httpStatusMessage = reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
 
-        logger.debug("API answer from {}".format(url))
-        logger.debug(
+        logger.info("API answer from {}".format(url))
+        logger.info(
             "Status code: {} - Response message: {}".format(
                 httpStatus, httpStatusMessage
             )
@@ -213,12 +213,17 @@ class ApiRequester(QObject):
             if "No JSON object could be decoded" in str(e):
                 logger.error("{} --> Internet connection failed".format(str(e)))
                 self.api_sig.emit("internet_issue")
+                return
             else:
-                pass
-            return
+                try:
+                    logger.error(
+                        "API's response content cannot be loaded : {}".format(content)
+                    )
+                except Exception as e:
+                    logger.error("API's response content issue : {}".format(e))
         # error detected
         if err != QNetworkReply.NoError:
-            logger.debug("Error detected : {} - {}".format(err, err_txt))
+            logger.info("Error detected : {} - {}".format(err, err_txt))
             # request aborted via self.ssl_error_catcher()
             if err == 5:
                 logger.debug("Request canceled via a call to abort()")
@@ -230,27 +235,17 @@ class ApiRequester(QObject):
                 self.send_request("token")
             # proxy issue
             elif err >= 101 and err <= 105:
-                logger.error(
-                    "Request to the API failed. Proxy issue code received : {} - '{}'".format(
-                        str(err), err_txt
-                    )
-                )
+                logger.error("Request to the API failed. Proxy issue code received")
                 self.api_sig.emit("proxy_issue")
             # invalid credentials
             elif err == 302:
-                logger.error(
-                    "Request to the API failed : {} - {}. Creds may be invalid".format(
-                        str(err), err_txt
-                    )
-                )
+                logger.error("Request to the API failed. Creds may be invalid")
                 self.api_sig.emit("creds_issue")
             # unkown error
             else:
                 logger.warning(
-                    "Request to the API failed. Unkown error : {} - {}"
-                    "\n API's reply content : {}".format(
-                        str(err), err_txt, parsed_content
-                    )
+                    "Request to the API failed. Unkown error."
+                    "\n API's reply content : {}".format(parsed_content)
                 )
                 self.api_sig.emit("unkown_error")
         # working cases
