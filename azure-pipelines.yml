@@ -65,21 +65,29 @@ stages:
         flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
       displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
 
-    - task: PublishPipelineArtifact@1
-      displayName: "Publish artifact: source code formatted and linted"
-      inputs:
-        path: $(System.DefaultWorkingDirectory)
-        artifact: "LINTED_$(Build.SourceBranchName)_$(Build.BuildId)"
+    # save formatted code to use later avoiding git clone again
+    - publish: $(System.DefaultWorkingDirectory)
+      artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
+      displayName: "Publish formatted code with dependencies"
 
+- stage: BuildApp
+  # --  BUILD --------------------------------------------------------------------------
+  displayName: "Build and package"
+  dependsOn: Lint
+  condition: |
+    and(
+      succeeded(),
+      ne(variables['System.PullRequest.SourceBranch'], 'docs')
+    )
+
+  jobs:
   # UI COMPILATION
   - job: "BuildUi"  # only letters and numbers (no space...)
     displayName: "Qt - compilation and internationalization"  # can't contain special characters
-    dependsOn: "Lint"
     pool:
       vmImage: $(vmImageName)
 
     steps:
-
     # no need for source code
     - checkout: none
 
@@ -87,20 +95,19 @@ stages:
       displayName: "Download artifact previously saved"
       inputs:
         buildType: "current"
-        artifactName: "LINTED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
         targetPath: "$(System.DefaultWorkingDirectory)"
 
     - task: UsePythonVersion@0
-      displayName: "Install Python"
       inputs:
         versionSpec: $(pythonVersion)
-        architecture: "x64"
+        architecture: 'x64'
         addToPath: true
 
     - script: |
-        python -m pip install -U pip
-        python -m pip install -U pyqt5-tools==5.13.*
-      displayName: "Install Qt5 and PyQt5 dependencies"
+        python -m pip install -U pip --cache-dir ./.pipcache
+        python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
+      displayName: 'Install dependencies'
 
     - script: |
         pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
