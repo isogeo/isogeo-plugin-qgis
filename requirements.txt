@@ -1,0 +1,28 @@
+-i https://pypi.org/simple
+
+# Common requirements
+# -----------------------
+
+pip
+setuptools
+wheel
+
+# Project requirements
+# -----------------------
+isogeo-pysdk>=3.3,<3.4
+
+# Dev requirements
+# -----------------------
+black
+flake8
+pre-commit
+pylint
+pytest
+pytest-cov
+python-dotenv
+
+# Documentation
+# -----------------------
+sphinx-markdown-tables  # to render markdown tables
+sphinx-rtd-theme
+recommonmark
