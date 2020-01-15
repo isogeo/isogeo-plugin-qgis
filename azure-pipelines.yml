@@ -70,7 +70,7 @@ stages:
       artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
       displayName: "Publish formatted code with dependencies"
 
-- stage: BuildApp
+- stage: Build
   # --  BUILD --------------------------------------------------------------------------
   displayName: "Build and package"
   dependsOn: Lint
@@ -169,14 +169,26 @@ stages:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
-  - job: 'Publish'
-    dependsOn: 'Packaging'
+- stage: DeployPackage
+  # -- DEPLOY --------------------------------------------------------------------------
+  displayName: "Deploy packaged application"
+  dependsOn:
+    - BuildApp
+  condition: |
+    and(
+      succeeded(),
+      contains(variables['Build.SourceBranch'], 'tags')
+    )
+
+  jobs:
+
+  - job: 'PublishGithubRelease'
+    displayName: "Publish to Github release"
     pool:
       vmImage: $(vmImageName)
-    condition:
-      contains(variables['Build.SourceBranch'], 'tags')
 
     steps:
+    # no need for source code
     - checkout: none
 
     - task: DownloadPipelineArtifact@2
