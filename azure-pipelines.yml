@@ -173,7 +173,7 @@ stages:
   # -- DEPLOY --------------------------------------------------------------------------
   displayName: "Deploy packaged application"
   dependsOn:
-    - BuildApp
+    - Build
   condition: |
     and(
       succeeded(),
