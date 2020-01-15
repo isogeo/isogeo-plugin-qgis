@@ -59,10 +59,8 @@ stages:
       displayName: "Apply black code formatting"
 
     - script: |
-        # stop the build if there are Python syntax errors or undefined names
         flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. Tolerance of line length fixed to 100.
         flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
         flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
       displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
@@ -78,7 +76,7 @@ stages:
     displayName: "Qt - compilation and internationalization"  # can't contain special characters
     dependsOn: "Lint"
     pool:
-      vmImage: "windows-2019"
+      vmImage: $(vmImageName)
 
     steps:
 
@@ -95,7 +93,7 @@ stages:
     - task: UsePythonVersion@0
       displayName: "Install Python"
       inputs:
-        versionSpec: "3.7"
+        versionSpec: $(pythonVersion)
         architecture: "x64"
         addToPath: true
 
@@ -134,7 +132,7 @@ stages:
     displayName: "Packaging the plugin"  # can't contain special characters
     dependsOn: "BuildUi"
     pool:
-      vmImage: "windows-2019"
+      vmImage: $(vmImageName)
 
     steps:
 
@@ -151,7 +149,7 @@ stages:
     - task: UsePythonVersion@0
       displayName: "Install Python"
       inputs:
-        versionSpec: "3.7"
+        versionSpec: $(pythonVersion)
         architecture: "x64"
         addToPath: true
 
@@ -167,7 +165,7 @@ stages:
   - job: 'Publish'
     dependsOn: 'Packaging'
     pool:
-      vmImage: "windows-2019"
+      vmImage: $(vmImageName)
     condition:
       contains(variables['Build.SourceBranch'], 'tags')
 
