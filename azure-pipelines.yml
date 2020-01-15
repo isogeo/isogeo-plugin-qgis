@@ -171,7 +171,7 @@ stages:
 
 - stage: DeployPackage
   # -- DEPLOY --------------------------------------------------------------------------
-  displayName: "Deploy packaged application"
+  displayName: "Deploy package"
   dependsOn:
     - Build
   condition: |
@@ -188,7 +188,6 @@ stages:
       vmImage: $(vmImageName)
 
     steps:
-    # no need for source code
     - checkout: none
 
     - task: DownloadPipelineArtifact@2
