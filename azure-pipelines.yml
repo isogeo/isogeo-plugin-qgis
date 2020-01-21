@@ -17,8 +17,8 @@ pr:
 # -- GLOBAL VARIABLES ------------------------------------------------------------------
 variables:
   PLUGIN_NAME: Isogeo
-  QGIS_VERSION_TAG: release-3_4
   QGIS_IMAGE: qgis/qgis
+  QGIS_VERSION_TAG: release-3_4
   pythonVersion: "3.7"
   vmImageName: "windows-2019"
 
@@ -238,15 +238,10 @@ stages:
         artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
         targetPath: "$(System.DefaultWorkingDirectory)"
 
-      # - task: PythonScript@0
-      # inputs:
-      #     #scriptSource: 'filePath' # Options: filePath, inline
-      #     #scriptPath: # Required when scriptSource == filePath
-      #     #script: # Required when scriptSource == inline
-      #     #arguments: # Optional
-      #     #pythonInterpreter: # Optional
-      #     #workingDirectory: # Optional
-      #     #failOnStderr: false # Optional
     - script: python3 -m pip install -U pip setuptools
       displayName: "Install Python requirements"
       continueOnError: true
+    
+    - script: |
+        docker run -d --name qgis-testing-environment -v $(System.DefaultWorkingDirectory):/$(PLUGIN_NAME) -e DISPLAY=$(DISPLAY) $(IMAGE):$(QGIS_VERSION_TAG)
+      displayName: "run the qgis container naming it as 'qgis-testing-environment'"
