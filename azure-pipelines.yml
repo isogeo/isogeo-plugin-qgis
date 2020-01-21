@@ -238,10 +238,14 @@ stages:
         artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
         targetPath: "$(System.DefaultWorkingDirectory)"
 
-    - script: python3 -m pip install -U pip setuptools
-      displayName: "Install Python requirements"
-      continueOnError: true
+    - script: |
+        printenv
+        ls -a $(System.DefaultWorkingDirectory)
+      displayName: "Log environment"
     
-    - bash: |
-        qgis_setup.sh ${PLUGIN_NAME}
+    - task: ShellScript@2
       displayName: "Run QGIS Setup"
+      inputs:
+        scriptPath: qgis_setup.sh
+        args: $(PLUGIN_NAME)
+      # continueOnError: true
