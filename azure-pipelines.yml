@@ -224,9 +224,9 @@ stages:
     pool:
       vmImage: 'ubuntu-16.04'
 
-      container: $(QGIS_IMAGE):$(QGIS_VERSION_TAG)
-      environment:
-          DISPLAY: ":99"
+      container:
+      image: $(QGIS_IMAGE):$(QGIS_VERSION_TAG)
+      options: --name qgis-testing-environment -v $(System.DefaultWorkingDirectory):/$(PLUGIN_NAME) -e DISPLAY=:99 $(IMAGE):$(QGIS_VERSION_TAG)
 
     steps:
     - checkout: none
@@ -242,6 +242,6 @@ stages:
       displayName: "Install Python requirements"
       continueOnError: true
     
-    - script: |
-        docker run -d --name qgis-testing-environment -v $(System.DefaultWorkingDirectory):/$(PLUGIN_NAME) -e DISPLAY=$(DISPLAY) $(IMAGE):$(QGIS_VERSION_TAG)
-      displayName: "run the qgis container naming it as 'qgis-testing-environment'"
+    - bash: |
+        qgis_setup.sh ${PLUGIN_NAME}
+      displayName: "Run QGIS Setup"
