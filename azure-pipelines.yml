@@ -209,3 +209,20 @@ stages:
         tagSource: 'gitTag'
         changeLogCompareToRelease: 'lastFullRelease'
         changeLogType: 'commitBased'
+
+- stage: TestOnDocker
+  # --TESTING --------------------------------------------------------------------------
+  displayName: "Test installation (Docker)"
+  dependsOn:
+    - Build
+
+  jobs:
+
+  - job: 'TestDocker'
+    pool:
+      vmImage: 'ubuntu-16.04'
+
+      container: $(QGIS_IMAGE):$(QGIS_VERSION_TAG)
+      steps:
+      - script: python -m pip install -U pip setuptools wheel black
+        continueOnError: true
