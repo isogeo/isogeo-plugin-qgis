@@ -235,7 +235,7 @@ stages:
       displayName: "Download artifact previously saved"
       inputs:
         buildType: "current"
-        artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
         targetPath: "$(System.DefaultWorkingDirectory)"
 
     - script: |
