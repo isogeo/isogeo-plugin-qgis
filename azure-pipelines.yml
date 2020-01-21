@@ -1,12 +1,6 @@
 # Lint, test and package a plugin for QGIS
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops&tabs=yaml
 
-# GLOBAL ENVIRONMENT VARIABLES
-variables:
-  QGIS_VERSION_TAG: release-3_4
-  QGIS_IMAGE: qgis/qgis
-  PLUGIN_NAME: Isogeo
-
 # CONDITIONS WHICH TRIGGER OR NOT THE JOBS
 trigger:
   batch: true
@@ -20,184 +14,198 @@ trigger:
 pr:
 - master
 
-# JOBS LIST
-jobs:
+# -- GLOBAL VARIABLES ------------------------------------------------------------------
+variables:
+  PLUGIN_NAME: Isogeo
+  QGIS_VERSION_TAG: release-3_4
+  QGIS_IMAGE: qgis/qgis
+  pythonVersion: "3.7"
+  vmImageName: "windows-2019"
 
-# LINT AND FORMATTING CODE
-- job: "Lint"
-  displayName: "Lint and format Python source code"
-  pool:
-    vmImage: "vs2017-win2016"
+# -- STAGES ----------------------------------------------------------------------------
+stages:
 
-  steps:
-  - task: UsePythonVersion@0
-    displayName: "Install Python"
-    inputs:
-      versionSpec: "3.7"
-      architecture: "x64"
-      addToPath: true
+- stage: Lint
+  # -- LINT AND FORMAT -----------------------------------------------------------------
+  displayName: Format and lint code
+  jobs:
 
-  - script: |
-      python -m pip install -U pip
-      python -m pip install -U black flake8
-    displayName: "Install black and flake8"
+  # LINT AND FORMATTING CODE
+  - job: 'Lint'
+    pool:
+      vmImage: $(vmImageName)
 
-  - script: |
-      python -m black --target-version=py37 .\isogeo.py
-      python -m black --target-version=py37 .\modules
-      python -m black --target-version=py37 .\tools
-      python -m black --target-version=py37 .\tests
-      python -m black --target-version=py37 .\ui
-    displayName: "Apply black code formatting"
+    steps:
+    - checkout: self  # self represents the repo where the initial Pipelines YAML file was found
+      fetchDepth: 10
 
-  - script: |
-      # stop the build if there are Python syntax errors or undefined names
-      flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
-      flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
-      # exit-zero treats all errors as warnings. Tolerance of line length fixed to 100.
-      flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
-      flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
-    displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: $(pythonVersion)
+        architecture: 'x64'
+        addToPath: true
 
-  - task: PublishPipelineArtifact@1
-    displayName: "Publish artifact: source code formatted and linted"
-    inputs:
-      path: $(System.DefaultWorkingDirectory)
-      artifact: "LINTED_$(Build.SourceBranchName)_$(Build.BuildId)"
+    - script: |
+        python -m pip install -U pip --cache-dir ./.pipcache
+        python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
+      displayName: 'Install dependencies'
 
-# UI COMPILATION
-- job: "BuildUi"  # only letters and numbers (no space...)
-  displayName: "Qt - compilation and internationalization"  # can't contain special characters
-  dependsOn: "Lint"
-  pool:
-    vmImage: "windows-2019"
+    - script: |
+        python -m black --target-version=py37 .\isogeo.py
+        python -m black --target-version=py37 .\modules
+        python -m black --target-version=py37 .\tools
+        python -m black --target-version=py37 .\tests
+        python -m black --target-version=py37 .\ui
+      displayName: "Apply black code formatting"
 
-  steps:
+    - script: |
+        flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
+        flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
+      displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
 
-  # no need for source code
-  - checkout: none
+    # save formatted code to use later avoiding git clone again
+    - publish: $(System.DefaultWorkingDirectory)
+      artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
+      displayName: "Publish formatted code with dependencies"
 
-  - task: DownloadPipelineArtifact@2
-    displayName: "Download artifact previously saved"
-    inputs:
-      buildType: "current"
-      artifactName: "LINTED_$(Build.SourceBranchName)_$(Build.BuildId)"
-      targetPath: "$(System.DefaultWorkingDirectory)"
+- stage: Build
+  # --  BUILD --------------------------------------------------------------------------
+  displayName: "Build and package"
+  dependsOn: Lint
+  condition: |
+    and(
+      succeeded(),
+      ne(variables['System.PullRequest.SourceBranch'], 'docs')
+    )
 
-  - task: UsePythonVersion@0
-    displayName: "Install Python"
-    inputs:
-      versionSpec: "3.7"
-      architecture: "x64"
-      addToPath: true
+  jobs:
+  # UI COMPILATION
+  - job: "BuildUi"  # only letters and numbers (no space...)
+    displayName: "Qt - compilation and internationalization"  # can't contain special characters
+    pool:
+      vmImage: $(vmImageName)
 
-  - script: |
-      python -m pip install -U pip
-      python -m pip install -U pyqt5-tools==5.13.*
-    displayName: "Install Qt5 and PyQt5 dependencies"
+    steps:
+    # no need for source code
+    - checkout: none
 
-  - script: |
-      pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
-      lrelease .\i18n\isogeo_search_engine_en.ts
-      lrelease .\i18n\isogeo_search_engine_fr.ts
-    displayName: "Qt: processing translations (i18n)"
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
+        targetPath: "$(System.DefaultWorkingDirectory)"
 
-  - script: |
-      pyrcc5 resources.qrc -o resources_rc.py
-    displayName: "Qt: processing resources compilation"
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: $(pythonVersion)
+        architecture: 'x64'
+        addToPath: true
 
-  - script: |
-      pyuic5 -x "ui\isogeo_dockwidget_base.ui" -o "ui\ui_isogeo.py"
-      pyuic5 -x "ui\auth\ui_authentication.ui" -o "ui\auth\ui_authentication.py"
-      pyuic5 -x "ui\credits\ui_credits.ui" -o "ui\credits\ui_credits.py"
-      pyuic5 -x "ui\metadata\ui_md_details.ui" -o "ui\metadata\ui_md_details.py"
-      pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicksearch_rename.py"
-      pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
-    displayName: "Qt: processing UI files compilation"
+    - script: |
+        python -m pip install -U pip --cache-dir ./.pipcache
+        python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
+      displayName: 'Install dependencies'
 
-  - task: PublishPipelineArtifact@1
-    displayName: "Publish artifact: Qt stuff compiled"
-    inputs:
-      path: $(System.DefaultWorkingDirectory)
-      artifact: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
+    - script: |
+        pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
+        lrelease .\i18n\isogeo_search_engine_en.ts
+        lrelease .\i18n\isogeo_search_engine_fr.ts
+      displayName: "Qt: processing translations (i18n)"
 
-# UI COMPILATION
-- job: "Packaging"  # only letters and numbers (no space...)
-  displayName: "Packaging the plugin"  # can't contain special characters
-  dependsOn: "BuildUi"
-  pool:
-    vmImage: "windows-2019"
+    - script: |
+        pyrcc5 resources.qrc -o resources_rc.py
+      displayName: "Qt: processing resources compilation"
 
-  steps:
+    - script: |
+        pyuic5 -x "ui\isogeo_dockwidget_base.ui" -o "ui\ui_isogeo.py"
+        pyuic5 -x "ui\auth\ui_authentication.ui" -o "ui\auth\ui_authentication.py"
+        pyuic5 -x "ui\credits\ui_credits.ui" -o "ui\credits\ui_credits.py"
+        pyuic5 -x "ui\metadata\ui_md_details.ui" -o "ui\metadata\ui_md_details.py"
+        pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicksearch_rename.py"
+        pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
+      displayName: "Qt: processing UI files compilation"
 
-  # no need for source code
-  - checkout: none
+    - task: PublishPipelineArtifact@1
+      displayName: "Publish artifact: Qt stuff compiled"
+      inputs:
+        path: $(System.DefaultWorkingDirectory)
+        artifact: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
-  - task: DownloadPipelineArtifact@2
-    displayName: "Download artifact previously saved"
-    inputs:
-      buildType: "current"
-      artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
-      targetPath: "$(System.DefaultWorkingDirectory)"
+  # UI COMPILATION
+  - job: "Packaging"  # only letters and numbers (no space...)
+    displayName: "Packaging the plugin"  # can't contain special characters
+    dependsOn: "BuildUi"
+    pool:
+      vmImage: $(vmImageName)
 
-  - task: UsePythonVersion@0
-    displayName: "Install Python"
-    inputs:
-      versionSpec: "3.7"
-      architecture: "x64"
-      addToPath: true
+    steps:
 
-  - script: python ./tools/plugin_packager.py
-    displayName: "Packager script"
+    # no need for source code
+    - checkout: none
 
-  - task: PublishPipelineArtifact@1
-    displayName: "Publish artifact: plugin packaged"
-    inputs:
-      path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
-      artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        targetPath: "$(System.DefaultWorkingDirectory)"
 
-- job: 'Publish'
-  dependsOn: 'Packaging'
-  pool:
-    vmImage: "windows-2019"
-  condition:
-    contains(variables['Build.SourceBranch'], 'tags')
+    - task: UsePythonVersion@0
+      displayName: "Install Python"
+      inputs:
+        versionSpec: $(pythonVersion)
+        architecture: "x64"
+        addToPath: true
 
-  steps:
-  - checkout: none
+    - script: python ./tools/plugin_packager.py
+      displayName: "Packager script"
 
-  - task: DownloadPipelineArtifact@2
-    displayName: "Download artifact previously saved"
-    inputs:
-      buildType: "current"
-      artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
-      targetPath: "$(System.DefaultWorkingDirectory)"
+    - task: PublishPipelineArtifact@1
+      displayName: "Publish artifact: plugin packaged"
+      inputs:
+        path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
+        artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
-  - task: GitHubRelease@1
-    continueOnError: true
-    displayName: "Publish tagged code as Github Release"
-    inputs:
-      gitHubConnection: 'github_isogeo'
-      repositoryName: '$(Build.Repository.Name)'
-      action: 'create'
-      assets: "$(System.DefaultWorkingDirectory)/*"
-      target: '$(Build.SourceVersion)'
-      tagSource: 'gitTag'
-      changeLogCompareToRelease: 'lastFullRelease'
-      changeLogType: 'commitBased'
+- stage: DeployPackage
+  # -- DEPLOY --------------------------------------------------------------------------
+  displayName: "Deploy package"
+  dependsOn:
+    - Build
+  condition: |
+    and(
+      succeeded(),
+      contains(variables['Build.SourceBranch'], 'tags')
+    )
 
+  jobs:
 
-# UNIT TESTS
-# - job: "Test"
-#   dependsOn: "Lint"
-#   pool:
-#     vmImage: "ubuntu-16.04"
+  - job: 'PublishGithubRelease'
+    displayName: "Publish to Github release"
+    pool:
+      vmImage: $(vmImageName)
 
-#   container:
-#     image: qgis/qgis:release-3_4
-#     options: --name qgis-testing-environment -v QGIS:/${PLUGIN_NAME} -e DISPLAY=:99
+    steps:
+    - checkout: none
 
-#   steps:
-#   - script: sh -c "qgis_setup.sh ${PLUGIN_NAME}"
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        targetPath: "$(System.DefaultWorkingDirectory)"
 
-#   displayName: "Install plugin"
+    - task: GitHubRelease@1
+      continueOnError: true
+      displayName: "Publish tagged code as Github Release"
+      inputs:
+        gitHubConnection: 'github_isogeo'
+        repositoryName: '$(Build.Repository.Name)'
+        action: 'create'
+        assets: "$(System.DefaultWorkingDirectory)/*"
+        target: '$(Build.SourceVersion)'
+        tagSource: 'gitTag'
+        changeLogCompareToRelease: 'lastFullRelease'
+        changeLogType: 'commitBased'
