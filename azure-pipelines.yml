@@ -223,6 +223,25 @@ stages:
       vmImage: 'ubuntu-16.04'
 
       container: $(QGIS_IMAGE):$(QGIS_VERSION_TAG)
-      steps:
-      - script: python -m pip install -U pip setuptools wheel black
-        continueOnError: true
+
+    steps:
+    - checkout: none
+
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        targetPath: "$(System.DefaultWorkingDirectory)"
+
+      # - task: PythonScript@0
+      # inputs:
+      #     #scriptSource: 'filePath' # Options: filePath, inline
+      #     #scriptPath: # Required when scriptSource == filePath
+      #     #script: # Required when scriptSource == inline
+      #     #arguments: # Optional
+      #     #pythonInterpreter: # Optional
+      #     #workingDirectory: # Optional
+      #     #failOnStderr: false # Optional
+    - script: python -m pip install -U pip setuptools wheel black
+      continueOnError: true
