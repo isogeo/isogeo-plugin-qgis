@@ -157,7 +157,7 @@ class ApiRequester(QObject):
         self.request.sslErrors.connect(self.ssl_error_catcher)
         # since https://github.com/isogeo/isogeo-plugin-qgis/issues/288, the slot is
         # connected to the request's signal and no more to QgsNetworkAccessManager's one
-        # because otherwise, the plugin doesn't work on QGIS 3.8.x
+        # because otherwise, the plugin doesn't work on QGIS 3.6.x
         self.request.finished.connect(partial(self.handle_reply, self.request))
         return
 
@@ -224,7 +224,7 @@ class ApiRequester(QObject):
         # error detected
         if err != QNetworkReply.NoError:
             logger.info("Error detected : {} - {}".format(err, err_txt))
-            # request aborted via self.ssl_error_catcher()
+            # request aborted
             if err == 5:
                 logger.debug("Request canceled via a call to abort()")
                 return
@@ -320,7 +320,7 @@ class ApiRequester(QObject):
 
     def ssl_error_catcher(self, ssl_errors: QSslError):
         """Slot connected to QNetworkReply.sslErrors signal to log potential errors due
-        to SSL certificate issues occuring when the plugin is intercatings with the API
+        to SSL certificate issues occuring when the plugin is interacting with the API
 
         :param QSslError:
         """
