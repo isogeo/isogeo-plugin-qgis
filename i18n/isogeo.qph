@@ -441,6 +441,10 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
     <target>Les paramètres d&apos;authentification (Client ID et Client Secret) semblent invalides.</target>
 </phrase>
 <phrase>
+    <source>No share feeds the plugin. If you want to access resources via the plugin, you must share at least one catalog containing at least one metadata with it.</source>
+    <target>Aucun partage n&apos;alimente le plugin. Pour accéder à vos ressources via le plugin, au moins un catalogue contenant au moins une métadonnée doit lui être partagé.</target>
+</phrase>
+<phrase>
     <source>Credits</source>
     <target>Crédits</target>
 </phrase>
