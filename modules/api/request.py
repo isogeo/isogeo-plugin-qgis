@@ -9,25 +9,23 @@ from functools import partial
 
 # PyQGIS
 from qgis.core import QgsNetworkAccessManager, QgsMessageLog
-from qgis.utils import iface
 
 # PyQT
-from qgis.PyQt.QtCore import QByteArray, QUrl, pyqtSignal
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtCore import QByteArray, QUrl, pyqtSignal, QObject
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply, QSslError
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
 logger = logging.getLogger("IsogeoQgisPlugin")
-msgBar = iface.messageBar()
 
 # ############################################################################
 # ########## Classes ###############
 # ##################################
 
 
-class ApiRequester(QgsNetworkAccessManager):
+class ApiRequester(QObject):
     """Basic class to manage direct interactions with Isogeo's API :
         - Authentication request for tokenl
         - Request about application's shares
@@ -47,7 +45,6 @@ class ApiRequester(QgsNetworkAccessManager):
         super().__init__()
 
         self.tr = object
-
         # API client parameters :
         # creds
         self.app_id = str
@@ -61,10 +58,11 @@ class ApiRequester(QgsNetworkAccessManager):
         # Requesting operation attributes
         # manage requesting
         self.loopCount = 0
-        self.status_isClear = True
         # make request
+        self.qnam = QgsNetworkAccessManager.instance()
         self.token = str
         self.currentUrl = str
+        self.request = object
 
     def setup_api_params(self, dict_params: dict):
         """Store API parameters of the application (URLs and credentials) in class
@@ -97,7 +95,6 @@ class ApiRequester(QgsNetworkAccessManager):
 
         :rtype: QNetworkRequest
         """
-        logger.debug("Creating a '{}' request".format(request_type))
         # creating headers (same steps wathever request_type value)
         header_value = QByteArray()
         header_name = QByteArray()
@@ -124,6 +121,7 @@ class ApiRequester(QgsNetworkAccessManager):
             else:
                 logger.debug("Unkown request type asked : {}".format(request_type))
                 raise ValueError
+                return 0
             # filling request header with token
             header_value.append(self.token)
             request = QNetworkRequest(url)
@@ -141,24 +139,26 @@ class ApiRequester(QgsNetworkAccessManager):
             - 'details'
             - 'shares'
         """
-        logger.debug(
+        logger.info(
             "-------------- Sending a '{}' request --------------".format(request_type)
         )
         # creating the QNetworkRequest appropriate to the request_type
         request = self.create_request(request_type)
-        logger.debug("to : {}".format(request.url().toString()))
         # post request for 'token' request
         if request_type == "token":
             data = QByteArray()
             data.append(urlencode({"grant_type": "client_credentials"}))
-            req = self.post(request, data)
+            self.request = self.qnam.post(request, data)
         # get request for other
         else:
-            req = self.get(request)
+            self.request = self.qnam.get(request)
+        # to catch SSL errors
+        # (see https://github.com/isogeo/isogeo-plugin-qgis/issues/266)
+        self.request.sslErrors.connect(self.ssl_error_catcher)
         # since https://github.com/isogeo/isogeo-plugin-qgis/issues/288, the slot is
         # connected to the request's signal and no more to QgsNetworkAccessManager's one
-        # because otherweise, the plugin doesn't work on QGIS 3.8.x
-        req.finished.connect(partial(self.handle_reply, req))
+        # because otherwise, the plugin doesn't work on QGIS 3.6.x
+        self.request.finished.connect(partial(self.handle_reply, self.request))
         return
 
     def handle_reply(self, reply: QNetworkReply):
@@ -191,31 +191,69 @@ class ApiRequester(QgsNetworkAccessManager):
 
         :param QNetworkReply reply: Isogeo API response
         """
+        err = reply.error()
+        err_txt = reply.errorString()
+        # retrieving API reply content and origin request's URL
         url = reply.url().toString()
-        logger.debug(
-            "API answer from {} : \n {} --> {}".format(
-                url, reply.attribute(0), reply.attribute(1)
-            )
-        )
-        # retrieving API reply content
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
-        # if reply's content is valid
-        if reply.error() == 0 and content != "":
-            try:
-                parsed_content = json.loads(content)
-            except ValueError as e:
-                if "No JSON object could be decoded" in str(e):
-                    logger.error("{} --> Internet connection failed".format(str(e)))
-                    self.api_sig.emit("internet_issue")
-                else:
-                    pass
+
+        httpStatus = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
+        httpStatusMessage = reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
+
+        logger.info("API answer from {}".format(url))
+        logger.info(
+            "Status code: {} - Response message: {}".format(
+                httpStatus, httpStatusMessage
+            )
+        )
+        try:
+            parsed_content = json.loads(content)
+        except ValueError as e:
+            if "No JSON object could be decoded" in str(e):
+                logger.error("{} --> Internet connection failed".format(str(e)))
+                self.api_sig.emit("internet_issue")
                 return
+            else:
+                try:
+                    logger.error(
+                        "API's response content cannot be loaded : {}".format(content)
+                    )
+                except Exception as e:
+                    logger.error("API's response content issue : {}".format(e))
+        # error detected
+        if err != QNetworkReply.NoError:
+            logger.info("Error detected : {} - {}".format(err, err_txt))
+            # request aborted
+            if err == 5:
+                logger.debug("Request canceled via a call to abort()")
+                return
+            # authorization needed because token expired
+            elif err == 204:
+                logger.debug("Token expired. Renewing it.")
+                self.loopCount = 0
+                self.send_request("token")
+            # proxy issue
+            elif err >= 101 and err <= 105:
+                logger.error("Request to the API failed. Proxy issue code received")
+                self.api_sig.emit("proxy_issue")
+            # invalid credentials
+            elif err == 302:
+                logger.error("Request to the API failed. Creds may be invalid")
+                self.api_sig.emit("creds_issue")
+            # unkown error
+            else:
+                logger.warning(
+                    "Request to the API failed. Unkown error."
+                    "\n API's reply content : {}".format(parsed_content)
+                )
+                self.api_sig.emit("unkown_error")
+        # working cases
+        elif content != "":
             # for token request, one signal is emitted passing a string whose
             # value depend on the reply content
             if "token" in url:
                 logger.debug("Handling reply to a 'token' request")
-                logger.debug("(from : {}).".format(url))
 
                 if "access_token" in parsed_content:
                     logger.debug("Authentication succeeded, access token retrieved.")
@@ -263,57 +301,34 @@ class ApiRequester(QgsNetworkAccessManager):
                     )
                 else:
                     logger.debug("Unkown reply type : {}".format(parsed_content))
-
-        # if replys's content is invalid
-        elif reply.error() == 204:
-            logger.debug("Token expired. Renewing it.")
-            self.loopCount = 0
-            self.send_request("token")
-
-        elif reply.error() >= 101 and reply.error() <= 105:
-            logger.error(
-                "Request to the API failed. Proxy issue code received : {}"
-                "\nsee https://doc.qt.io/qt-5/qnetworkreply.html#NetworkError-enum".format(
-                    str(reply.error())
-                )
-            )
-            self.api_sig.emit("proxy_issue")
-
-        elif reply.error() == 302:
-            logger.error(
-                "Request to the API failed. 'the requested operation is "
-                "invalid for this protocol' : 302. Creds may be invalid "
-                "or a proxy error wasn't catched."
-            )
-            self.api_sig.emit("creds_issue")
-
-        elif content != "":
-            logger.warning(
-                "Request to the API failed. Unkown error : {}"
-                "\n(see https://doc.qt.io/qt-5/qnetworkreply.html#NetworkError-enum)"
-                "\n Unexpected reply content : {}".format(
-                    str(reply.error()), parsed_content
-                )
-            )
-
-            self.api_sig.emit("unkown_error")
-
+        # no errors detected but empty API's reply content
         else:
             if self.loopCount < 3:
                 self.loopCount += 1
-                reply.abort()
+                reply.request().abort()
                 self.send_request("token")
             else:
                 logger.error(
                     "Request to the API failed. Empty reply for the third time. "
                     "Weither no catalog is shared with the plugin, or there is no "
-                    "Internet connection. (qt error code : {} / http status code : {})".format(
-                        str(reply.error()), reply.attribute(0)
-                    )
+                    "Internet connection."
                 )
-                self.api_sig.emit("internet_issue")
+                self.api_sig.emit("shares_issue")
 
         reply.deleteLater()
+        return
+
+    def ssl_error_catcher(self, ssl_errors: QSslError):
+        """Slot connected to QNetworkReply.sslErrors signal to log potential errors due
+        to SSL certificate issues occuring when the plugin is interacting with the API
+
+        :param QSslError:
+        """
+        if isinstance(ssl_errors, list):
+            for error in ssl_errors:
+                logger.info("SSL error catched : '{}'".format(error.errorString()))
+        else:
+            logger.info("SSL error catched : '{}'".format(error.errorString()))
         return
 
     def build_request_url(self, params: dict):
