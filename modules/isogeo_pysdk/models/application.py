@@ -15,7 +15,7 @@
 import pprint
 
 # package
-from isogeo_pysdk.enums import ApplicationTypes
+from ..enums import ApplicationTypes
 
 
 # #############################################################################

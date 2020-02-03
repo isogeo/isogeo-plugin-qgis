@@ -19,10 +19,10 @@ import re
 import unicodedata
 
 # package
-from isogeo_pysdk.enums import MetadataTypes
+from ..enums import MetadataTypes
 
 # others models
-from isogeo_pysdk.models import Workgroup
+from .workgroup import Workgroup
 
 
 # #############################################################################

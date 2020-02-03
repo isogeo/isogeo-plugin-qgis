@@ -15,7 +15,7 @@
 import pprint
 
 # package
-from isogeo_pysdk.enums import LinkKinds, LinkTypes
+from ..enums import LinkKinds, LinkTypes
 
 
 # #############################################################################
