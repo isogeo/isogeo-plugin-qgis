@@ -17,6 +17,9 @@ from .cache import CacheManager
 from ..tools import IsogeoPlgTools
 from ..layer.add_layer import LayerAdder
 
+# isogeo-pysdk
+from ..isogeo_pysdk.models import Metadata
+
 # ############################################################################
 # ########## Globals ###############
 # ##################################
@@ -44,6 +47,7 @@ line_list = (
     "MultiLineString",
 )
 multi_list = ("Geometry", "GeometryCollection")
+known_geom_list = polygon_list + point_list + line_list + multi_list
 
 # Isogeo formats
 li_formats_vect = ("shp", "dxf", "dgn", "filegdb", "tab")
@@ -99,6 +103,21 @@ class ResultsManager(QObject):
         self.pg_connections = self.build_postgis_dict(qsettings)
         self.layer_adder.PostGISdict = self.pg_connections
 
+        self.pix_geom_dict = {
+            point_list: {"tooltip": "Point", "pix": pix_point},
+            polygon_list: {"tooltip": "Polygon", "pix": pix_polyg},
+            line_list: {"tooltip": "Line", "pix": pix_line},
+            multi_list: {"tooltip": "MultiPolygon", "pix": pix_multi},
+        }
+
+        self.service_dict = {
+            "efs": {"url_builder": self.layer_adder.build_efs_url, "ico": ico_efs},
+            "ems": {"url_builder": self.layer_adder.build_ems_url, "ico": ico_ems},
+            "wfs": {"url_builder": self.layer_adder.build_wfs_url, "ico": ico_wfs},
+            "wms": {"url_builder": self.layer_adder.build_wms_url, "ico": ico_wms},
+            "wmts": {"url_builder": None, "ico": ico_wmts},
+        }
+
         self.cache_mng = CacheManager()
         self.cache_mng.tr = self.tr
 
@@ -134,53 +153,51 @@ class ResultsManager(QObject):
         # to the canvas.
         count = 0
         for i in api_results.get("results"):
+            md = Metadata.clean_attributes(i)
             # get useful metadata
-            md_id = i.get("_id")
-            md_keywords = [
-                i.get("tags").get(k)
-                for k in i.get("tags", ["NR"])
-                if k.startswith("keyword:isogeo")
+            md.keywords = [
+                md.tags.get(kw) for kw in md.tags if kw.startswith("keyword:isogeo")
             ]
-            md_title = i.get("title", "NR")
-            ds_geometry = i.get("geometry")
+            ds_geometry = md.geometry
 
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
-            btn_title = plg_tools.format_button_title(md_title)
+            btn_title = plg_tools.format_button_title(md.title)
             btn_md_title = QPushButton(btn_title)
             # Connecting the button to the full metadata popup
-            btn_md_title.pressed.connect(partial(self.md_asked.emit, md_id))
+            btn_md_title.pressed.connect(partial(self.md_asked.emit, md._id))
             # Putting the abstract as a tooltip on this button
-            btn_md_title.setToolTip(i.get("abstract", "")[:300])
+            if md.abstract:
+                btn_md_title.setToolTip(md.abstract[:300])
+            else:
+                pass
             # Insert it in column 1
             tbl_result.setCellWidget(count, 0, btn_md_title)
 
             # COLUMN 2 - Data last update
             lbl_date = QLabel(tbl_result)
-            lbl_date.setText(plg_tools.handle_date(i.get("_modified")))
+            lbl_date.setText(plg_tools.handle_date(md._modified))
             lbl_date.setMargin(5)
             lbl_date.setAlignment(Qt.AlignCenter)
             tbl_result.setCellWidget(count, 1, lbl_date)
 
             # COLUMN 3 - Geometry type
             lbl_geom = QLabel(tbl_result)
-            if ds_geometry:
-                if ds_geometry in point_list:
-                    lbl_geom.setPixmap(pix_point)
-                    lbl_geom.setToolTip(self.tr("Point", context=__class__.__name__))
-                elif ds_geometry in polygon_list:
-                    lbl_geom.setPixmap(pix_polyg)
-                    lbl_geom.setToolTip(self.tr("Polygon", context=__class__.__name__))
-                elif ds_geometry in line_list:
-                    lbl_geom.setPixmap(pix_line)
-                    lbl_geom.setToolTip(self.tr("Line", context=__class__.__name__))
-                elif ds_geometry in multi_list:
-                    lbl_geom.setPixmap(pix_multi)
-                    lbl_geom.setToolTip(
-                        self.tr("MultiPolygon", context=__class__.__name__)
-                    )
-                elif ds_geometry == "TIN":
+            if md.geometry:
+                if md.geometry == "TIN":
                     tbl_result.setItem(count, 2, QTableWidgetItem("TIN"))
+                elif md.geometry in known_geom_list:
+                    for geom_type in self.pix_geom_dict:
+                        if md.geometry in geom_type:
+                            geom_item = self.pix_geom_dict.get(geom_type)
+                            lbl_geom.setPixmap(geom_item.get("pix"))
+                            lbl_geom.setToolTip(
+                                self.tr(
+                                    geom_item.get("tooltip"), context=__class__.__name__
+                                )
+                            )
+                        else:
+                            continue
                 else:
                     tbl_result.setItem(
                         count,
@@ -190,10 +207,10 @@ class ResultsManager(QObject):
                         ),
                     )
             else:
-                if "rasterDataset" in i.get("type"):
+                if "rasterDataset" in md.type:
                     lbl_geom.setPixmap(pix_rastr)
                     lbl_geom.setToolTip(self.tr("Raster", context=__class__.__name__))
-                elif "service" in i.get("type"):
+                elif "service" in md.type:
                     lbl_geom.setPixmap(pix_serv)
                     lbl_geom.setToolTip(self.tr("Service", context=__class__.__name__))
                 else:
@@ -208,18 +225,18 @@ class ResultsManager(QObject):
             dico_add_options = {}
 
             # Files and PostGIS direct access
-            if "format" in i.keys():
+            if md.format:
                 # If the data is a vector and the path is available, store
                 # useful information in the dict
-                if i.get("format", "NR") in li_formats_vect and "path" in i:
-                    add_path = self._filepath_builder(i.get("path"))
+                if md.format in li_formats_vect and md.path:
+                    add_path = self._filepath_builder(md.path)
                     if add_path:
                         params = [
                             "vector",
                             add_path,
-                            i.get("title", "NR"),
-                            i.get("abstract", "NR"),
-                            md_keywords,
+                            md.title,
+                            md.abstract,
+                            md.keywords,
                         ]
                         dico_add_options[
                             self.tr("Data file", context=__class__.__name__)
@@ -227,15 +244,15 @@ class ResultsManager(QObject):
                     else:
                         pass
                 # Same if the data is a raster
-                elif i.get("format", "NR") in li_formats_rastr and "path" in i:
-                    add_path = self._filepath_builder(i.get("path"))
+                elif md.format in li_formats_rastr and md.path:
+                    add_path = self._filepath_builder(md.path)
                     if add_path:
                         params = [
                             "raster",
                             add_path,
-                            i.get("title", "NR"),
-                            i.get("abstract", "NR"),
-                            md_keywords,
+                            md.title,
+                            md.abstract,
+                            md.keywords,
                         ]
                         dico_add_options[
                             self.tr("Data file", context=__class__.__name__)
@@ -244,18 +261,21 @@ class ResultsManager(QObject):
                         pass
                 # If the data is a postGIS table and the connexion has
                 # been saved in QGIS.
-                elif i.get("format") == "postgis":
-                    base_name = i.get("path", "No path")
+                elif md.format == "postgis":
+                    if md.path:
+                        base_name = md.path
+                    else:
+                        base_name = "No path"
                     if base_name in pg_connections.keys():
                         params = {}
                         params["base_name"] = base_name
-                        schema_table = i.get("name")
+                        schema_table = md.name
                         if schema_table is not None and "." in schema_table:
                             params["schema"] = schema_table.split(".")[0]
                             params["table"] = schema_table.split(".")[1]
-                            params["abstract"] = i.get("abstract", None)
-                            params["title"] = i.get("title", None)
-                            params["keywords"] = md_keywords
+                            params["abstract"] = md.abstract
+                            params["title"] = md.title
+                            params["keywords"] = md.keywords
                             dico_add_options[
                                 self.tr("PostGIS table", context=__class__.__name__)
                             ] = params
@@ -266,65 +286,41 @@ class ResultsManager(QObject):
                 else:
                     logger.debug(
                         "Metadata {} has a format but it's not recognized or path is"
-                        "missing".format(md_id)
+                        "missing".format(md._id)
                     )
                     pass
             # Associated service layers
-            d_type = i.get("type")
-            if d_type == "vectorDataset" or d_type == "rasterDataset":
-                for layer in i.get("serviceLayers"):
+            if md.type == "vectorDataset" or md.type == "rasterDataset":
+                for layer in md.serviceLayers:
                     service = layer.get("service")
                     if service is not None:
                         srv_details = {
                             "path": service.get("path", "NR"),
                             "formatVersion": service.get("formatVersion"),
                         }
-                        # EFS
-                        if service.get("format") == "efs":
-                            params = self.layer_adder.build_efs_url(
-                                layer,
-                                srv_details,
-                                rsc_type="ds_dyn_lyr_srv",
-                                mode="quicky",
-                            )
-                        # EMS
-                        elif service.get("format") == "ems":
-                            params = self.layer_adder.build_ems_url(
-                                layer,
-                                srv_details,
-                                rsc_type="ds_dyn_lyr_srv",
-                                mode="quicky",
-                            )
-                        # WFS
-                        elif service.get("format") == "wfs":
-                            params = self.layer_adder.build_wfs_url(
-                                layer,
-                                srv_details,
-                                rsc_type="ds_dyn_lyr_srv",
-                                mode="quicky",
-                            )
-
-                        # WMS
-                        elif service.get("format") == "wms":
-                            params = self.layer_adder.build_wms_url(
-                                layer,
-                                srv_details,
-                                rsc_type="ds_dyn_lyr_srv",
-                                mode="quicky",
-                            )
                         # WMTS
-                        elif service.get("format") == "wmts":
+                        if service.get("format") == "wmts":
                             params = self.layer_adder.build_wmts_url(
                                 layer, srv_details, rsc_type="ds_dyn_lyr_srv"
+                            )
+                        elif service.get("format") in list(self.service_dict.keys()):
+                            url_builder = self.service_dict.get(
+                                service.get("format")
+                            ).get("url_builder")
+                            params = url_builder(
+                                layer,
+                                srv_details,
+                                rsc_type="ds_dyn_lyr_srv",
+                                mode="quicky",
                             )
                         else:
                             pass
 
                         if params[0] != 0:
                             basic_md = [
-                                i.get("title", "NR"),
-                                i.get("abstract", "NR"),
-                                md_keywords,
+                                md.title,
+                                md.abstract,
+                                md.keywords,
                             ]
                             params.append(basic_md)
                             dico_add_options[
@@ -336,61 +332,33 @@ class ResultsManager(QObject):
                         pass
             # New association mode. For services metadata sheet, the layers
             # are stored in the purposely named include: "layers".
-            elif i.get("type") == "service":
-                if i.get("layers") is not None:
+            elif md.type == "service":
+                if md.layers is not None:
                     srv_details = {
-                        "path": i.get("path", "NR"),
-                        "formatVersion": i.get("formatVersion"),
+                        "path": md.path,
+                        "formatVersion": md.formatVersion,
                     }
-                    # EFS
-                    if i.get("format") == "efs":
-                        for layer in i.get("layers"):
-                            name_url = self.layer_adder.build_efs_url(
-                                layer, srv_details, rsc_type="service", mode="quicky"
-                            )
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                continue
-                    # EMS
-                    if i.get("format") == "ems":
-                        for layer in i.get("layers"):
-                            name_url = self.layer_adder.build_ems_url(
-                                layer, srv_details, rsc_type="service", mode="quicky"
-                            )
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                continue
-                    # WFS
-                    if i.get("format") == "wfs":
-                        for layer in i.get("layers"):
-                            name_url = self.layer_adder.build_wfs_url(
-                                layer, srv_details, rsc_type="service", mode="quicky"
-                            )
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                continue
-                    # WMS
-                    elif i.get("format") == "wms":
-                        for layer in i.get("layers"):
-                            name_url = self.layer_adder.build_wms_url(
-                                layer, srv_details, rsc_type="service", mode="quicky"
-                            )
-                            if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
-                            else:
-                                continue
                     # WMTS
-                    elif i.get("format") == "wmts":
-                        for layer in i.get("layers"):
+                    if md.format == "wmts":
+                        for layer in md.layers:
                             name_url = self.layer_adder.build_wmts_url(
                                 layer, srv_details, rsc_type="service"
                             )
                             if name_url[0] != 0:
                                 btn_label = "WMTS : {}".format(name_url[1])
                                 dico_add_options[btn_label] = name_url
+                            else:
+                                continue
+                    elif md.format in list(self.service_dict.keys()):
+                        url_builder = self.service_dict.get(md.format).get(
+                            "url_builder"
+                        )
+                        for layer in md.layers:
+                            name_url = url_builder(
+                                layer, srv_details, rsc_type="service", mode="quicky"
+                            )
+                            if name_url[0] != 0:
+                                dico_add_options[name_url[5]] = name_url
                             else:
                                 continue
                     else:
@@ -413,16 +381,8 @@ class ResultsManager(QObject):
             elif len(dico_add_options) == 1:
                 text = list(dico_add_options.keys())[0]
                 params = dico_add_options.get(text)
-                if text.startswith("WFS"):
-                    icon = ico_wfs
-                elif text.startswith("WMS"):
-                    icon = ico_wms
-                elif text.startswith("WMTS"):
-                    icon = ico_wmts
-                elif text.startswith("EFS"):
-                    icon = ico_efs
-                elif text.startswith("EMS"):
-                    icon = ico_ems
+                if text.lower() in list(self.service_dict.keys()):
+                    icon = self.service_dict.get(text.lower()).get("ico")
                 elif text.startswith(
                     self.tr("PostGIS table", context=__class__.__name__)
                 ):
@@ -440,24 +400,19 @@ class ResultsManager(QObject):
             # Else, add a combobox, storing all possibilities.
             else:
                 combo = QComboBox()
-                for i in dico_add_options:
-                    if i.startswith("WFS"):
-                        icon = ico_wfs
-                    elif i.startswith("WMS"):
-                        icon = ico_wms
-                    elif i.startswith("WMTS"):
-                        icon = ico_wmts
-                    elif i.startswith("EFS"):
-                        icon = ico_efs
-                    elif i.startswith("EMS"):
-                        icon = ico_ems
-                    elif i.startswith(
+                for option in dico_add_options:
+                    option_type = option.split(" : ")[0]
+                    if option_type.lower() in list(self.service_dict.keys()):
+                        icon = self.service_dict.get(option_type.lower()).get("ico")
+                    elif option.startswith(
                         self.tr("PostGIS table", context=__class__.__name__)
                     ):
                         icon = ico_pgis
-                    elif i.startswith(self.tr("Data file", context=__class__.__name__)):
+                    elif option.startswith(
+                        self.tr("Data file", context=__class__.__name__)
+                    ):
                         icon = ico_file
-                    combo.addItem(icon, i, dico_add_options.get(i))
+                    combo.addItem(icon, option, dico_add_options.get(option))
                 combo.activated.connect(
                     partial(self.add_layer, layer_info=["index", count])
                 )
@@ -496,7 +451,7 @@ class ResultsManager(QObject):
                     return str(filepath)
             except:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
-                logger.debug(
+                logger.info(
                     "Path is not reachable and has been cached:{}".format(dir_file)
                 )
                 return False
