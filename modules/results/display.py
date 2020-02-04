@@ -381,17 +381,25 @@ class ResultsManager(QObject):
             elif len(dico_add_options) == 1:
                 text = list(dico_add_options.keys())[0]
                 params = dico_add_options.get(text)
-                if text.lower() in list(self.service_dict.keys()):
-                    icon = self.service_dict.get(text.lower()).get("ico")
-                elif text.startswith(
+                option_type = text.split(" : ")[0]
+                if option_type.lower() in list(self.service_dict.keys()):
+                    icon = self.service_dict.get(option_type.lower()).get("ico")
+                elif option_type.startswith(
                     self.tr("PostGIS table", context=__class__.__name__)
                 ):
                     icon = ico_pgis
-                elif text.startswith(self.tr("Data file", context=__class__.__name__)):
+                elif option_type.startswith(
+                    self.tr("Data file", context=__class__.__name__)
+                ):
                     icon = ico_file
                 else:
-                    logger.debug("text : {}".format(text))
-                add_button = QPushButton(icon, text)
+                    logger.debug(
+                        "Undefined add option type : {}/{} --> {}".format(
+                            option_type, text, params
+                        )
+                    )
+                    pass
+                add_button = QPushButton(icon, option_type)
                 add_button.setStyleSheet("text-align: left")
                 add_button.pressed.connect(
                     partial(self.add_layer, layer_info=["info", params, count])
