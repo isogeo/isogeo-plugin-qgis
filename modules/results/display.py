@@ -154,12 +154,11 @@ class ResultsManager(QObject):
         count = 0
         for i in api_results.get("results"):
             md = Metadata.clean_attributes(i)
-            # get useful metadata
+            # get metadata's keywords from tags, they will be displayed in QGIS
+            # 'layer properties' if the layer is added to the canvas
             md.keywords = [
                 md.tags.get(kw) for kw in md.tags if kw.startswith("keyword:isogeo")
             ]
-            ds_geometry = md.geometry
-
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
             btn_title = plg_tools.format_button_title(md.title)
@@ -222,7 +221,7 @@ class ResultsManager(QObject):
             tbl_result.setCellWidget(count, 2, lbl_geom)
 
             # COLUMN 4 - Add options
-            dico_add_options = {}
+            add_options_dict = {}
 
             # Files and PostGIS direct access
             if md.format:
@@ -238,7 +237,7 @@ class ResultsManager(QObject):
                             md.abstract,
                             md.keywords,
                         ]
-                        dico_add_options[
+                        add_options_dict[
                             self.tr("Data file", context=__class__.__name__)
                         ] = params
                     else:
@@ -254,7 +253,7 @@ class ResultsManager(QObject):
                             md.abstract,
                             md.keywords,
                         ]
-                        dico_add_options[
+                        add_options_dict[
                             self.tr("Data file", context=__class__.__name__)
                         ] = params
                     else:
@@ -276,7 +275,7 @@ class ResultsManager(QObject):
                             params["abstract"] = md.abstract
                             params["title"] = md.title
                             params["keywords"] = md.keywords
-                            dico_add_options[
+                            add_options_dict[
                                 self.tr("PostGIS table", context=__class__.__name__)
                             ] = params
                         else:
@@ -303,6 +302,7 @@ class ResultsManager(QObject):
                             params = self.layer_adder.build_wmts_url(
                                 layer, srv_details, rsc_type="ds_dyn_lyr_srv"
                             )
+                        # EFS, EMS, WMS or WFS
                         elif service.get("format") in list(self.service_dict.keys()):
                             url_builder = self.service_dict.get(
                                 service.get("format")
@@ -328,8 +328,6 @@ class ResultsManager(QObject):
                             ] = params
                         else:
                             pass
-                    else:
-                        pass
             # New association mode. For services metadata sheet, the layers
             # are stored in the purposely named include: "layers".
             elif md.type == "service":
@@ -346,9 +344,10 @@ class ResultsManager(QObject):
                             )
                             if name_url[0] != 0:
                                 btn_label = "WMTS : {}".format(name_url[1])
-                                dico_add_options[btn_label] = name_url
+                                add_options_dict[btn_label] = name_url
                             else:
                                 continue
+                    # EFS, EMS, WMS or WFS
                     elif md.format in list(self.service_dict.keys()):
                         url_builder = self.service_dict.get(md.format).get(
                             "url_builder"
@@ -358,7 +357,7 @@ class ResultsManager(QObject):
                                 layer, srv_details, rsc_type="service", mode="quicky"
                             )
                             if name_url[0] != 0:
-                                dico_add_options[name_url[5]] = name_url
+                                add_options_dict[name_url[5]] = name_url
                             else:
                                 continue
                     else:
@@ -370,7 +369,7 @@ class ResultsManager(QObject):
             # added. The "Add" column has to be filled accordingly.
 
             # If the data can't be added, just insert "can't" text.
-            if dico_add_options == {}:
+            if add_options_dict == {}:
                 text = self.tr("Can't be added", context=__class__.__name__)
                 fake_button = QPushButton(text)
                 fake_button.setStyleSheet("text-align: left")
@@ -378,29 +377,34 @@ class ResultsManager(QObject):
                 tbl_result.setCellWidget(count, 3, fake_button)
             # If there is only one way for the data to be added, insert a
             # button.
-            elif len(dico_add_options) == 1:
-                text = list(dico_add_options.keys())[0]
-                params = dico_add_options.get(text)
+            elif len(add_options_dict) == 1:
+                text = list(add_options_dict.keys())[0]
+                params = add_options_dict.get(text)
                 option_type = text.split(" : ")[0]
+                # services
                 if option_type.lower() in list(self.service_dict.keys()):
                     icon = self.service_dict.get(option_type.lower()).get("ico")
+                # PostGIS table
                 elif option_type.startswith(
                     self.tr("PostGIS table", context=__class__.__name__)
                 ):
                     icon = ico_pgis
+                # Data file
                 elif option_type.startswith(
                     self.tr("Data file", context=__class__.__name__)
                 ):
                     icon = ico_file
+                # Unkown option
                 else:
                     logger.debug(
                         "Undefined add option type : {}/{} --> {}".format(
                             option_type, text, params
                         )
                     )
-                    pass
+                # create the add button with the icon corresponding to the add option
                 add_button = QPushButton(icon, option_type)
                 add_button.setStyleSheet("text-align: left")
+                # connect the widget to the adding method from LayerAdder class
                 add_button.pressed.connect(
                     partial(self.add_layer, layer_info=["info", params, count])
                 )
@@ -408,19 +412,31 @@ class ResultsManager(QObject):
             # Else, add a combobox, storing all possibilities.
             else:
                 combo = QComboBox()
-                for option in dico_add_options:
+                for option in add_options_dict:
                     option_type = option.split(" : ")[0]
+                    # services
                     if option_type.lower() in list(self.service_dict.keys()):
                         icon = self.service_dict.get(option_type.lower()).get("ico")
+                    # PostGIS table
                     elif option.startswith(
                         self.tr("PostGIS table", context=__class__.__name__)
                     ):
                         icon = ico_pgis
+                    # Data file
                     elif option.startswith(
                         self.tr("Data file", context=__class__.__name__)
                     ):
                         icon = ico_file
-                    combo.addItem(icon, option, dico_add_options.get(option))
+                    # Unkown option
+                    else:
+                        logger.debug(
+                            "Undefined add option type : {}/{} --> {}".format(
+                                option_type, text, params
+                            )
+                        )
+                    # add a combobox item with the icon corresponding to the add option
+                    combo.addItem(icon, option, add_options_dict.get(option))
+                # connect the widget to the adding method from LayerAdder class
                 combo.activated.connect(
                     partial(self.add_layer, layer_info=["index", count])
                 )
