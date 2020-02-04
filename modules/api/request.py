@@ -389,7 +389,7 @@ class ApiRequester(QObject):
         # Sorting order and direction
         if params.get("show"):
             filters += "&ob={0}&od={1}".format(params.get("ob"), params.get("od"))
-            filters += "&_include=serviceLayers,layers"
+            filters += "&_include=serviceLayers,layers,limitations"
             limit = 10
         else:
             limit = 0
