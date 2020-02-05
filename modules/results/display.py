@@ -323,7 +323,7 @@ class ResultsManager(QObject):
                                 md.keywords,
                             ]
                             params.append(basic_md)
-                            dico_add_options[
+                            add_options_dict[
                                 "{} : {}".format(params[0], params[1])
                             ] = params
                         else:
@@ -375,55 +375,35 @@ class ResultsManager(QObject):
                 fake_button.setStyleSheet("text-align: left")
                 fake_button.setEnabled(False)
                 tbl_result.setCellWidget(count, 3, fake_button)
-            # If there is only one way for the data to be added, insert a
-            # button.
-            elif len(add_options_dict) == 1:
-                text = list(add_options_dict.keys())[0]
-                params = add_options_dict.get(text)
-                option_type = text.split(" : ")[0]
-                # services
-                if option_type.lower() in list(self.service_dict.keys()):
-                    icon = self.service_dict.get(option_type.lower()).get("ico")
-                # PostGIS table
-                elif option_type.startswith(
-                    self.tr("PostGIS table", context=__class__.__name__)
-                ):
-                    icon = ico_pgis
-                # Data file
-                elif option_type.startswith(
-                    self.tr("Data file", context=__class__.__name__)
-                ):
-                    icon = ico_file
-                # Unkown option
-                else:
+            # If the data can be added
+            else:
+                data_info = {"limitations": None, "layer": None}
+                # check data limitations
+                if md.limitations:
                     logger.debug(
-                        "Undefined add option type : {}/{} --> {}".format(
-                            option_type, text, params
+                        "*=====* limitations added to data infos{}".format(
+                            md.limitations
                         )
                     )
-                # create the add button with the icon corresponding to the add option
-                add_button = QPushButton(icon, option_type)
-                add_button.setStyleSheet("text-align: left")
-                # connect the widget to the adding method from LayerAdder class
-                add_button.pressed.connect(
-                    partial(self.add_layer, layer_info=["info", params, count])
-                )
-                tbl_result.setCellWidget(count, 3, add_button)
-            # Else, add a combobox, storing all possibilities.
-            else:
-                combo = QComboBox()
-                for option in add_options_dict:
-                    option_type = option.split(" : ")[0]
+                    data_info["limitations"] = md.limitations
+                else:
+                    logger.debug("*=====* No limitations")
+
+                # If there is only one way for the data to be added, insert a button.
+                if len(add_options_dict) == 1:
+                    text = list(add_options_dict.keys())[0]
+                    params = add_options_dict.get(text)
+                    option_type = text.split(" : ")[0]
                     # services
                     if option_type.lower() in list(self.service_dict.keys()):
                         icon = self.service_dict.get(option_type.lower()).get("ico")
                     # PostGIS table
-                    elif option.startswith(
+                    elif option_type.startswith(
                         self.tr("PostGIS table", context=__class__.__name__)
                     ):
                         icon = ico_pgis
                     # Data file
-                    elif option.startswith(
+                    elif option_type.startswith(
                         self.tr("Data file", context=__class__.__name__)
                     ):
                         icon = ico_file
@@ -434,14 +414,51 @@ class ResultsManager(QObject):
                                 option_type, text, params
                             )
                         )
-                    # add a combobox item with the icon corresponding to the add option
-                    combo.addItem(icon, option, add_options_dict.get(option))
-                # connect the widget to the adding method from LayerAdder class
-                combo.activated.connect(
-                    partial(self.add_layer, layer_info=["index", count])
-                )
-                combo.model().sort(0)  # sort alphabetically on option prefix. see: #113
-                tbl_result.setCellWidget(count, 3, combo)
+                    # create the add button with the icon corresponding to the add option
+                    add_button = QPushButton(icon, option_type)
+                    add_button.setStyleSheet("text-align: left")
+                    # connect the widget to the adding method from LayerAdder class
+                    data_info["layer"] = ("info", params, count)
+                    add_button.pressed.connect(
+                        partial(self.add_layer, layer_info=data_info.get("layer"))
+                    )
+                    tbl_result.setCellWidget(count, 3, add_button)
+                # Else, add a combobox, storing all possibilities.
+                else:
+                    combo = QComboBox()
+                    for option in add_options_dict:
+                        option_type = option.split(" : ")[0]
+                        # services
+                        if option_type.lower() in list(self.service_dict.keys()):
+                            icon = self.service_dict.get(option_type.lower()).get("ico")
+                        # PostGIS table
+                        elif option.startswith(
+                            self.tr("PostGIS table", context=__class__.__name__)
+                        ):
+                            icon = ico_pgis
+                        # Data file
+                        elif option.startswith(
+                            self.tr("Data file", context=__class__.__name__)
+                        ):
+                            icon = ico_file
+                        # Unkown option
+                        else:
+                            logger.debug(
+                                "Undefined add option type : {}/{} --> {}".format(
+                                    option_type, text, params
+                                )
+                            )
+                        # add a combobox item with the icon corresponding to the add option
+                        combo.addItem(icon, option, add_options_dict.get(option))
+                    # connect the widget to the adding method from LayerAdder class
+                    data_info["layer"] = ("index", count)
+                    combo.activated.connect(
+                        partial(self.add_layer, layer_info=data_info.get("layer"))
+                    )
+                    combo.model().sort(
+                        0
+                    )  # sort alphabetically on option prefix. see: #113
+                    tbl_result.setCellWidget(count, 3, combo)
 
             # make the widget (button or combobox) width the same as the column width
             tbl_result.cellWidget(count, 3).setFixedWidth(hheader.sectionSize(3))
