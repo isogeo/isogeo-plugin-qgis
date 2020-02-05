@@ -89,7 +89,7 @@ except ImportError:
 
 
 class LayerAdder:
-    """Basic class that holds utilitary methods for the plugin."""
+    """Basic class that holds methods used to add layers to canvas."""
 
     def __init__(self):
         """Class constructor."""
@@ -692,10 +692,12 @@ class LayerAdder:
         """
 
         logger.debug("adding method called.")
+        # one of many add-on option
         if layer_info[0] == "index":
             combobox = self.tbl_result.cellWidget(layer_info[1], 3)
             layer_label = self.tbl_result.cellWidget(layer_info[1], 0).text()
             layer_info = combobox.itemData(combobox.currentIndex())
+        # the only add_on option available
         elif layer_info[0] == "info":
             layer_label = self.tbl_result.cellWidget(layer_info[2], 0).text()
             layer_info = layer_info[1]
