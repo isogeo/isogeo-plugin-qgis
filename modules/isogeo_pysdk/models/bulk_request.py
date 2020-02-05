@@ -15,8 +15,8 @@
 import pprint
 
 # other model
-from isogeo_pysdk.enums import BulkActions, BulkTargets
-from isogeo_pysdk.models.metadata import Metadata
+from ..enums import BulkActions, BulkTargets
+from .metadata import Metadata
 
 
 # #############################################################################
@@ -66,7 +66,7 @@ class BulkRequest(object):
     @action.setter
     def action(self, action: str):
         """Sets the action of this Bulk Request. \
-            Must be one of the values of `isogeo_pysdk.enums.bulk_actions`.
+            Must be one of the values of `isogeo_pysdk..enums.bulk_actions`.
         """
 
         # check if it's conformant with the enum
@@ -132,7 +132,7 @@ class BulkRequest(object):
     @target.setter
     def target(self, target: str):
         """Sets the target of this Bulk Request. \
-            Must be one of the values of `isogeo_pysdk.enums.bulk_targets`.
+            Must be one of the values of `isogeo_pysdk..enums.bulk_targets`.
 
         :param target: The target of this Bulk Request.  # noqa: E501
         :type: str

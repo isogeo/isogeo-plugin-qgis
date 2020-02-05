@@ -15,7 +15,7 @@
 import pprint
 
 # submodels
-from isogeo_pysdk.models.contact import Contact
+from .contact import Contact
 
 
 # #############################################################################

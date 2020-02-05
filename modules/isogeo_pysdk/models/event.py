@@ -15,7 +15,7 @@
 import pprint
 
 # submodules
-from isogeo_pysdk.enums import EventKinds
+from ..enums import EventKinds
 
 
 # #############################################################################

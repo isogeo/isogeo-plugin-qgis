@@ -15,7 +15,7 @@
 import pprint
 
 # other model
-from isogeo_pysdk.models.thesaurus import Thesaurus
+from .thesaurus import Thesaurus
 
 
 # #############################################################################

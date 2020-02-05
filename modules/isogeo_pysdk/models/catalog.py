@@ -15,7 +15,7 @@
 import pprint
 
 # other model
-from isogeo_pysdk.models.workgroup import Workgroup
+from .workgroup import Workgroup
 
 
 # #############################################################################

@@ -15,7 +15,7 @@
 import pprint
 
 # others related models
-from isogeo_pysdk.models import Specification
+from .specification import Specification
 
 
 # #############################################################################

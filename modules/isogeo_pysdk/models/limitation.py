@@ -15,8 +15,8 @@
 import pprint
 
 # package
-from isogeo_pysdk.enums import LimitationRestrictions, LimitationTypes
-from isogeo_pysdk.models.directive import Directive
+from ..enums import LimitationRestrictions, LimitationTypes
+from .directive import Directive
 
 
 # #############################################################################

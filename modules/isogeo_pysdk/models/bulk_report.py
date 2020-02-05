@@ -15,7 +15,7 @@
 import pprint
 
 # other model
-from isogeo_pysdk.models.bulk_request import BulkRequest
+from .bulk_request import BulkRequest
 
 
 # #############################################################################
