@@ -153,3 +153,23 @@ class UserInformer:
             self.display(message=msg, duration=10)
         else:
             pass
+
+    def lim_slot(self, lim_sig: list):
+        """
+        :param dict lim_sig: informations about data limitation the message is about
+        """
+        if isinstance(lim_sig, list):
+            msg = self.tr(
+                "This data is subject to {} legal limitation(s) :".format(len(lim_sig)),
+                context=__class__.__name__,
+            )
+            for lim in lim_sig:
+                if lim.description != "":
+                    msg += "\n - {}".format(lim.description)
+                else:
+                    msg += self.tr(
+                        "\n - No description provided", context=__class__.__name__
+                    )
+            self.display(message=msg, duration=10, level=0)
+        else:
+            raise TypeError
