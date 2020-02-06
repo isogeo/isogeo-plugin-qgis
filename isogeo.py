@@ -887,6 +887,8 @@ class Isogeo:
         self.form_mng.txt_input.setFocus()
         # load cache file
         self.form_mng.results_mng.cache_mng.loader()
+        # connect limitations checker to user informer
+        self.form_mng.results_mng.lim_checker.lim_sig.connect(self.informer.lim_slot)
         # launch authentication
         self.user_authentication()
 
