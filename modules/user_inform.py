@@ -170,6 +170,6 @@ class UserInformer:
                     msg += self.tr(
                         "\n - No description provided", context=__class__.__name__
                     )
-            self.display(message=msg, duration=10, level=0)
+            self.display(message=msg, duration=14, level=0)
         else:
             raise TypeError
