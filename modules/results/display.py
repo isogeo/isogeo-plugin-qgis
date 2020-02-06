@@ -16,6 +16,7 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QPushButton, QLabel
 from .cache import CacheManager
 from ..tools import IsogeoPlgTools
 from ..layer.add_layer import LayerAdder
+from ..layer.limitations_checker import LimitationsChecker
 
 # isogeo-pysdk
 from ..isogeo_pysdk.models import Metadata
@@ -99,9 +100,11 @@ class ResultsManager(QObject):
         self.layer_adder = LayerAdder()
         self.layer_adder.tr = self.tr
         self.layer_adder.tbl_result = self.tbl_result
-        self.add_layer = self.layer_adder.adding
+        # self.add_layer = self.layer_adder.adding
         self.pg_connections = self.build_postgis_dict(qsettings)
         self.layer_adder.PostGISdict = self.pg_connections
+
+        self.lim_checker = LimitationsChecker(self.layer_adder, self.tr)
 
         self.pix_geom_dict = {
             point_list: {"tooltip": "Point", "pix": pix_point},
@@ -378,16 +381,8 @@ class ResultsManager(QObject):
             # If the data can be added
             else:
                 data_info = {"limitations": None, "layer": None}
-                # check data limitations
-                if md.limitations:
-                    logger.debug(
-                        "*=====* limitations added to data infos{}".format(
-                            md.limitations
-                        )
-                    )
-                    data_info["limitations"] = md.limitations
-                else:
-                    logger.debug("*=====* No limitations")
+                # retrieves data limitations
+                data_info["limitations"] = md.limitations
 
                 # If there is only one way for the data to be added, insert a button.
                 if len(add_options_dict) == 1:
@@ -420,7 +415,7 @@ class ResultsManager(QObject):
                     # connect the widget to the adding method from LayerAdder class
                     data_info["layer"] = ("info", params, count)
                     add_button.pressed.connect(
-                        partial(self.add_layer, layer_info=data_info.get("layer"))
+                        partial(self.lim_checker.check, data_info)
                     )
                     tbl_result.setCellWidget(count, 3, add_button)
                 # Else, add a combobox, storing all possibilities.
@@ -452,9 +447,7 @@ class ResultsManager(QObject):
                         combo.addItem(icon, option, add_options_dict.get(option))
                     # connect the widget to the adding method from LayerAdder class
                     data_info["layer"] = ("index", count)
-                    combo.activated.connect(
-                        partial(self.add_layer, layer_info=data_info.get("layer"))
-                    )
+                    combo.activated.connect(partial(self.lim_checker.check, data_info))
                     combo.model().sort(
                         0
                     )  # sort alphabetically on option prefix. see: #113
