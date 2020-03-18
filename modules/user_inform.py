@@ -159,7 +159,7 @@ class UserInformer:
         :param dict lim_sig: informations about data limitation the message is about
         """
         logger.debug(
-            "lim_sig emitted, passing {} to UserInformer lim_slot".format(lim_slot)
+            "lim_sig emitted, passing {} to UserInformer lim_slot".format(lim_sig)
         )
         if isinstance(lim_sig, list):
             msg = self.tr(
