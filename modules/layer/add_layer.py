@@ -690,8 +690,7 @@ class LayerAdder:
         the temporary dictionnary constructed in the show_results function.
         It then adds it.
         """
-
-        logger.debug("adding method called.")
+        logger.info("Adding a layer from those parameters :{}".format(layer_info))
         # one of many add-on option
         if layer_info[0] == "index":
             combobox = self.tbl_result.cellWidget(layer_info[1], 3)

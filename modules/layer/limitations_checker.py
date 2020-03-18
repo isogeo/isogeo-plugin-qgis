@@ -6,7 +6,7 @@ import logging
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal, Qt
+from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal
 from qgis.PyQt.QtWidgets import QMessageBox
 
 # isogeo_pysdk
@@ -38,7 +38,9 @@ class LimitationsChecker(QObject):
 
     def check(self, data_info: dict):
         logger.debug("Checking data access conditions and limitation")
+        logger.debug("*=====* data_info : {}".format(data_info))
         limitations = data_info.get("limitations", None)
+        logger.debug("*=====* limitations : {}".format(limitations))
         # if there are no limits, ok for adding the layer
         if len(limitations) == 0:
             logger.debug("No limitations found, let's add this layer to the canvas !")
@@ -61,6 +63,7 @@ class LimitationsChecker(QObject):
                         pass
                     # for other legal limitations, need to informe the user
                     else:
+                        logger.debug("legal limitation detected : {}".format(lim))
                         li_lim.append(lim)
                 # for any 'security' limitation, let's show the blocking popup and end the method
                 elif lim.type == "security":

@@ -223,6 +223,9 @@ class ResultsManager(QObject):
             lbl_geom.setAlignment(Qt.AlignCenter)
             tbl_result.setCellWidget(count, 2, lbl_geom)
 
+            logger.debug("*=====* '{}' md -----------------------------".format(md._id))
+            logger.debug("*=====* lim : {}".format(md.limitations))
+            logger.debug("*=====* format : {}".format(md.format))
             # COLUMN 4 - Add options
             add_options_dict = {}
 
@@ -248,6 +251,7 @@ class ResultsManager(QObject):
                 # Same if the data is a raster
                 elif md.format in li_formats_rastr and md.path:
                     add_path = self._filepath_builder(md.path)
+                    logger.debug("*=====* path : {}".format(add_path))
                     if add_path:
                         params = [
                             "raster",
