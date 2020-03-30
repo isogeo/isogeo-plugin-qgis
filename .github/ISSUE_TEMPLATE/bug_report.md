@@ -11,13 +11,13 @@ assignees: ''
 
 *S'il s'agit d'une demande d'évolution, ne pas tenir compte du modèle et prendre le temps de décrire précisément le comportement attendu ainsi que les besoins que cela couvrirait (cas d'usage...)*
 
-Fichier log : **\\\ JOINDRE LE FICHIER LOG // [Voir ici pour le récupérer](https://isogeo.gitbooks.io/app-plugin-qgis/content/fr/appendices/support.html)**
+Fichier log : **\\\ JOINDRE LE FICHIER LOG // [Voir ici pour le récupérer](http://help.isogeo.com/qgis/fr/appendices/support.html)**
 
 ## Environnement
 
-* Version de QGIS : **2.18.x**
+* Version de QGIS : **3.10.x**
 * Installation de QGIS : **installateur indépendant ou installateur réseau OSGeo4W.**
-* Système d'exploitation : **Windows 7/Vista/10 MAc OS X Debian 8**
+* Système d'exploitation : **Windows 7/Vista/10 Mac OS X Debian 8**
 * Architecture processeur : **32 / 64 bits**
 * **Autre information potentiellement utile...**
 
