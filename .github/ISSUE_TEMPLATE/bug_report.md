@@ -16,9 +16,11 @@ Fichier log : **\\\ JOINDRE LE FICHIER LOG // [Voir ici pour le récupérer](htt
 ## Environnement
 
 * Version de QGIS : **3.10.x**
+* Version du plugin isogeo ! **3.0.2**
 * Installation de QGIS : **installateur indépendant ou installateur réseau OSGeo4W.**
 * Système d'exploitation : **Windows 7/Vista/10 Mac OS X Debian 8**
 * Architecture processeur : **32 / 64 bits**
+* Nom de l'application tel qu'il apparaît dans l'onglet "Paramètres"
 * **Autre information potentiellement utile...**
 
 ## Reproduire
