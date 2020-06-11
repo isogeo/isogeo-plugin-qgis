@@ -321,6 +321,12 @@ class ResultsManager(QObject):
                                 mode="quicky",
                             )
                         else:
+                            params = [0]
+                            logger.debug(
+                                "Service with no format detected for '{}' metadata : {}".format(
+                                    md._id, service
+                                )
+                            )
                             pass
 
                         if params[0] != 0:
