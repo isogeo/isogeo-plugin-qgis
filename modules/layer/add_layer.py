@@ -117,7 +117,13 @@ class LayerAdder:
         """
         srs_map = plg_tools.get_map_crs()
         layer_name = api_layer.get("id")
-        efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
+
+        efs_lyr_title = "EFS Layer"
+        if len(api_layer.get("titles")):
+            efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
+        else:
+            pass
+
         efs_lyr_url = str(srv_details.get("path"))
 
         efs_uri = QgsDataSourceUri()
@@ -139,7 +145,13 @@ class LayerAdder:
         """
         srs_map = plg_tools.get_map_crs()
         layer_name = api_layer.get("id")
-        ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
+
+        ems_lyr_title = "EMS Layer"
+        if len(api_layer.get("titles")):
+            ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
+        else:
+            pass
+
         ems_lyr_url = str(srv_details.get("path"))
 
         ems_uri = QgsDataSourceUri()
@@ -160,7 +172,12 @@ class LayerAdder:
         then build the url in the syntax understood by QGIS.
         """
         # local variables
-        layer_title = api_layer.get("titles")[0].get("value", "WFS Layer")
+        layer_title = "WFS Layer"
+        if len(api_layer.get("titles")):
+            layer_title = api_layer.get("titles")[0].get("value", "WFS Layer")
+        else:
+            pass
+
         wfs_url_getcap = (
             srv_details.get("path") + "?request=GetCapabilities&service=WFS"
         )
@@ -361,7 +378,13 @@ class LayerAdder:
         """
         # local variables
         layer_name = api_layer.get("id")
-        layer_title = api_layer.get("titles")[0].get("value", "WMS Layer")
+
+        layer_title = "WMS Layer"
+        if len(api_layer.get("titles")):
+            layer_title = api_layer.get("titles")[0].get("value", "WMS Layer")
+        else:
+            pass
+
         wms_url_getcap = (
             srv_details.get("path") + "?request=GetCapabilities&service=WMS"
         )
@@ -570,7 +593,13 @@ class LayerAdder:
         """
         # local variables
         layer_name = api_layer.get("id")
-        layer_title = api_layer.get("titles")[0].get("value", "WMTS Layer")
+
+        layer_title = "WMTS Layer"
+        if len(api_layer.get("titles")):
+            layer_title = api_layer.get("titles")[0].get("value", "WMTS Layer")
+        else:
+            pass
+
         wmts_url_getcap = (
             srv_details.get("path") + "?request=GetCapabilities&service=WMTS"
         )
