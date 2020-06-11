@@ -825,9 +825,7 @@ class LayerAdder:
                 else:
                     error_msg = layer.error().message()
                     logger.warning(
-                        "Invalid service: {}. QGIS says: {}".format(
-                            uri, error_msg.encode("latin1")
-                        )
+                        "Invalid service: {}. QGIS says: {}".format(uri, error_msg)
                     )
                     QMessageBox.information(
                         iface.mainWindow(),
@@ -847,9 +845,7 @@ class LayerAdder:
                 else:
                     error_msg = layer.error().message()
                     logger.warning(
-                        "Invalid service: {}. QGIS says: {}".format(
-                            uri, error_msg.encode("latin1")
-                        )
+                        "Invalid service: {}. QGIS says: {}".format(uri, error_msg)
                     )
                     QMessageBox.information(
                         iface.mainWindow(),
@@ -880,7 +876,7 @@ class LayerAdder:
                             error_msg = layer.error().message()
                             logger.warning(
                                 "Invalid service: {}. QGIS says: {}".format(
-                                    url, error_msg.encode("latin1")
+                                    url, error_msg
                                 )
                             )
                     else:
@@ -915,7 +911,7 @@ class LayerAdder:
                             error_msg = layer.error().message()
                             logger.warning(
                                 "Invalid service: {}. QGIS says: {}".format(
-                                    url, error_msg.encode("latin1")
+                                    url, error_msg
                                 )
                             )
                     else:
