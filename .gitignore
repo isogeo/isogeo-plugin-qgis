@@ -112,8 +112,9 @@ _auth/
 _logs/
 *.log
 
-# tests fixtures
+# tests and tries
 test/fixtures
+tests/try/*
 
 # user settings
 _user/
