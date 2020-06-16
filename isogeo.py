@@ -345,6 +345,10 @@ class Isogeo:
     # -------------------------------------------------------------------------
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed."""
+        # save base portal URL in qsettings
+        qsettings.setValue(
+            "isogeo/settings/portal_base_url", self.form_mng.input_portal_url.text()
+        )
         # save cache
         self.form_mng.results_mng.cache_mng.dumper()
         # disconnects
@@ -873,6 +877,11 @@ class Isogeo:
         )
         # view credits - see: #52
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
+
+        # -- Settings tab - Isogeo Portal settings ------------------------
+        self.form_mng.input_portal_url.setText(
+            qsettings.value("isogeo/settings/portal_base_url")
+        )
 
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.form_mng.setWindowTitle("Isogeo - {}".format(self.plg_version))
