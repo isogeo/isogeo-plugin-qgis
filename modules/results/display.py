@@ -223,6 +223,17 @@ class ResultsManager(QObject):
             # COLUMN 4 - Add options
             add_options_dict = {}
 
+            # Build metadata portal URL if the setting is checked in "Settings" tab
+            add_portal_md_url = int(
+                qsettings.value("isogeo/settings/add_metadata_url_portal", 0)
+            )
+            portal_base_url = self.form_mng.input_portal_url.text()
+            portal_md_url = ""
+            if add_portal_md_url and portal_base_url != "":
+                portal_md_url = portal_base_url + md._id
+            else:
+                pass
+
             # Files and PostGIS direct access
             if md.format:
                 # If the data is a vector and the path is available, store
@@ -236,6 +247,7 @@ class ResultsManager(QObject):
                             md.title,
                             md.abstract,
                             md.keywords,
+                            portal_md_url,
                         ]
                         add_options_dict[
                             self.tr("Data file", context=__class__.__name__)
@@ -252,6 +264,7 @@ class ResultsManager(QObject):
                             md.title,
                             md.abstract,
                             md.keywords,
+                            portal_md_url,
                         ]
                         add_options_dict[
                             self.tr("Data file", context=__class__.__name__)
@@ -275,6 +288,7 @@ class ResultsManager(QObject):
                             params["abstract"] = md.abstract
                             params["title"] = md.title
                             params["keywords"] = md.keywords
+                            params["md_portal_url"] = portal_md_url
                             add_options_dict[
                                 self.tr("PostGIS table", context=__class__.__name__)
                             ] = params
@@ -321,6 +335,7 @@ class ResultsManager(QObject):
                                 md.title,
                                 md.abstract,
                                 md.keywords,
+                                portal_md_url,
                             ]
                             params.append(basic_md)
                             add_options_dict[
