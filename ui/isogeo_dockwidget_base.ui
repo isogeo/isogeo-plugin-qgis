@@ -64,7 +64,7 @@
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_search">
        <property name="maximumSize">
@@ -1830,7 +1830,7 @@
            <item row="1" column="0">
             <layout class="QVBoxLayout" name="verticalLayout">
              <item>
-              <widget class="QCheckBox" name="checkBox">
+              <widget class="QCheckBox" name="chb_portal_url">
                <property name="font">
                 <font>
                  <weight>50</weight>
@@ -1867,7 +1867,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="lineEdit_portal_url">
+                <widget class="QLineEdit" name="input_portal_url">
                  <property name="enabled">
                   <bool>false</bool>
                  </property>
@@ -1916,4 +1916,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
 </ui>
