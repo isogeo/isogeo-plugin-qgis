@@ -64,7 +64,7 @@
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_search">
        <property name="maximumSize">
@@ -531,10 +531,10 @@
           <property name="title">
            <string>Advanced search</string>
           </property>
-          <property name="collapsed">
+          <property name="collapsed" stdset="0">
            <bool>false</bool>
           </property>
-          <property name="scrollOnExpand">
+          <property name="scrollOnExpand" stdset="0">
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -1916,8 +1916,4 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
- <connections/>
 </ui>
