@@ -147,6 +147,31 @@ class SearchFormManager(IsogeoDockWidget):
         # Setting result manager
         self.results_mng = ResultsManager(self)
 
+        # "Isogeo portal Settings" wigets from "Settings" tab
+        # Setting and connecting checkbox
+        self.chb_portal_url.setChecked(
+            int(qsettings.value("isogeo/settings/add_metadata_url_portal", 0))
+        )
+        self.chb_portal_url.stateChanged.connect(
+            self.update_metadata_portal_url_setting
+        )
+        # Settings line edit
+        self.input_portal_url.setEnabled(
+            int(qsettings.value("isogeo/settings/add_metadata_url_portal", 0))
+        )
+
+    def update_metadata_portal_url_setting(self):
+        """ Slot connected to self.chb_portal_url.stateChanged signal. It update
+        "isogeo/settings/add_metadata_url_portal" qsetting value (1 if the checkBox is
+        checked, 0 otherwise) and change self.input_portal_url widget status (enabled if
+        the checkBox is checked, disabled otherwise)
+
+        :param dict tags: 'tags' parameter of Isogeo.search_slot method.
+        """
+        is_checked = int(self.chb_portal_url.isChecked())
+        qsettings.setValue("isogeo/settings/add_metadata_url_portal", is_checked)
+        self.input_portal_url.setEnabled(is_checked)
+
     def update_cbb_keywords(
         self, tags_keywords: dict = {}, selected_keywords: list = []
     ):
