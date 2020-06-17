@@ -168,9 +168,24 @@ class SearchFormManager(IsogeoDockWidget):
 
         :param dict tags: 'tags' parameter of Isogeo.search_slot method.
         """
+        logger.debug(
+            "*=====* DEBUG URL --> chb_portal_url slot : is_checked = {}".format(
+                int(self.chb_portal_url.isChecked())
+            )
+        )
         is_checked = int(self.chb_portal_url.isChecked())
         qsettings.setValue("isogeo/settings/add_metadata_url_portal", is_checked)
+        logger.debug(
+            "*=====* DEBUG URL --> chb_portal_url slot : 'isogeo/settings/add_metadata_url_portal' setting = {}".format(
+                qsettings.value("isogeo/settings/add_metadata_url_portal")
+            )
+        )
         self.input_portal_url.setEnabled(is_checked)
+        logger.debug(
+            "*=====* DEBUG URL --> chb_portal_url slot : input_portal_url.isEnabled() = {}".format(
+                self.input_portal_url.isEnabled()
+            )
+        )
 
     def update_cbb_keywords(
         self, tags_keywords: dict = {}, selected_keywords: list = []

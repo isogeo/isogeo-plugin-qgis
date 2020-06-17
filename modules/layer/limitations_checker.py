@@ -38,9 +38,9 @@ class LimitationsChecker(QObject):
 
     def check(self, data_info: dict):
         logger.debug("Checking data access conditions and limitation")
-        logger.debug("*=====* data_info : {}".format(data_info))
+        logger.debug("*=====* DEBUG LIM --> data_info : {}".format(data_info))
         limitations = data_info.get("limitations", None)
-        logger.debug("*=====* limitations : {}".format(limitations))
+        logger.debug("*=====* DEBUG LIM --> limitations : {}".format(limitations))
         # if there are no limits, ok for adding the layer
         if len(limitations) == 0:
             logger.debug("No limitations found, let's add this layer to the canvas !")
