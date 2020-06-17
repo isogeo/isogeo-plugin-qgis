@@ -33,6 +33,7 @@ class MetadataSynchronizer:
                 info.get("title", "notitle"),
                 info.get("abstract", ""),
                 info.get("keywords", ()),
+                info.get("md_portal_url", ""),
             )
         # If the data is a file or a service
         else:
