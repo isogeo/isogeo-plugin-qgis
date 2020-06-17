@@ -112,9 +112,9 @@ _auth/
 _logs/
 *.log
 
-# tests and tries
-test/fixtures
-tests/try/*
+# tests fixtures
+tests/fixtures
+tests/try
 
 # user settings
 _user/

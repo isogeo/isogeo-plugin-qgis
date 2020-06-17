@@ -3,7 +3,7 @@
 <context>
     <name>ApiRequester</name>
     <message>
-        <location filename="../modules/api/request.py" line="487"/>
+        <location filename="../modules/api/request.py" line="482"/>
         <source>Dataset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -291,7 +291,7 @@
     </message>
     <message>
         <location filename="../modules/tools.py" line="371"/>
-        <source>Proxy issue: 
+        <source>Proxy issue:
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation type="unfinished"></translation>
@@ -300,48 +300,67 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="986"/>
+        <location filename="../modules/layer/add_layer.py" line="988"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="740"/>
+        <location filename="../modules/layer/add_layer.py" line="742"/>
         <source>Vector not valid {}. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="780"/>
+        <location filename="../modules/layer/add_layer.py" line="782"/>
         <source>Raster not valid {}. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="803"/>
+        <location filename="../modules/layer/add_layer.py" line="805"/>
         <source>EFS not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="825"/>
+        <location filename="../modules/layer/add_layer.py" line="827"/>
         <source>EMS not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="858"/>
+        <location filename="../modules/layer/add_layer.py" line="860"/>
         <source>WFS is not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="893"/>
+        <location filename="../modules/layer/add_layer.py" line="895"/>
         <source>WMS is not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="914"/>
+        <location filename="../modules/layer/add_layer.py" line="916"/>
         <source>WMTS is not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="986"/>
+        <location filename="../modules/layer/add_layer.py" line="988"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LimitationsChecker</name>
+    <message>
+        <location filename="../modules/layer/limitations_checker.py" line="70"/>
+        <source>This data is subject to a security limitation :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/layer/limitations_checker.py" line="77"/>
+        <source>
+ - No description provided</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/layer/limitations_checker.py" line="82"/>
+        <source>Do you want to add the layer to the canvas anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -366,52 +385,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="170"/>
-        <source>Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/results/display.py" line="173"/>
-        <source>Polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/results/display.py" line="176"/>
-        <source>Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/results/display.py" line="179"/>
-        <source>MultiPolygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/results/display.py" line="201"/>
+        <location filename="../modules/results/display.py" line="220"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="195"/>
+        <location filename="../modules/results/display.py" line="214"/>
         <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="198"/>
+        <location filename="../modules/results/display.py" line="217"/>
         <source>Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="458"/>
+        <location filename="../modules/results/display.py" line="435"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="454"/>
+        <location filename="../modules/results/display.py" line="430"/>
         <source>PostGIS table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="406"/>
+        <location filename="../modules/results/display.py" line="376"/>
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
@@ -584,6 +583,17 @@ You have a proxy set up on your OS {} but none in QGIS.
         <source>The script is looping. Make sure you shared a catalog with the plugin and check your Internet connection. If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../modules/user_inform.py" line="162"/>
+        <source>This data is subject to {} legal limitation(s) :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/user_inform.py" line="170"/>
+        <source>
+ - No description provided</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dlg_credits</name>
@@ -621,32 +631,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_form_auth_prompt</name>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="267"/>
+        <location filename="../ui/auth/ui_authentication.py" line="357"/>
         <source>Isogeo authentication settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="280"/>
+        <location filename="../ui/auth/ui_authentication.py" line="406"/>
         <source>Request plugin access</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="274"/>
+        <location filename="../ui/auth/ui_authentication.py" line="383"/>
         <source>Application ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="270"/>
+        <location filename="../ui/auth/ui_authentication.py" line="366"/>
         <source>Application SECRET:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="279"/>
+        <location filename="../ui/auth/ui_authentication.py" line="403"/>
         <source>Don&apos;t have an account yet ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="268"/>
+        <location filename="../ui/auth/ui_authentication.ui" line="64"/>
         <source>I already have Isogeo ID and SECRET for this application</source>
         <translation type="unfinished"></translation>
     </message>
@@ -660,7 +670,7 @@ You have a proxy set up on your OS {} but none in QGIS.
 <byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
 <byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
 <byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
-&lt;/ul&gt; 
+&lt;/ul&gt;
 
 &lt;/body&gt;
 &lt;/html&gt;
@@ -668,60 +678,53 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="271"/>
+        <location filename="../ui/auth/ui_authentication.py" line="369"/>
         <source>I&apos;ve got the power hey yeah heh!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="272"/>
+        <location filename="../ui/auth/ui_authentication.py" line="372"/>
         <source>I&apos;ve got edition rights on app.isogeo.com</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="273"/>
+        <location filename="../ui/auth/ui_authentication.py" line="388"/>
         <source>From a file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="269"/>
+        <location filename="../ui/auth/ui_authentication.ui" line="128"/>
         <source>plugin-qgis-org-a1b23c4d5f6g7h8i9j10kl11mn13op14</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="277"/>
+        <location filename="../ui/auth/ui_authentication.py" line="391"/>
         <source>Pick your credentials file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="278"/>
+        <location filename="../ui/auth/ui_authentication.py" line="394"/>
         <source>Locate the Isogeo API credentials file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="275"/>
+        <location filename="../ui/auth/ui_authentication.py" line="397"/>
         <source>Only for information, the Isogeo API base URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="276"/>
+        <location filename="../ui/auth/ui_authentication.py" line="402"/>
         <source>API location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="281"/>
-        <source>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;body&gt;
-
-&lt;ul&gt;
-    &lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-    &lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-    &lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
-&lt;/ul&gt; 
-
-&lt;/body&gt;
-&lt;/html&gt;
-</source>
+        <location filename="../ui/auth/ui_authentication.py" line="384"/>
+        <source>Check access validity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/auth/ui_authentication.py" line="387"/>
+        <source>Check</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

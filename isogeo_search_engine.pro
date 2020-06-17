@@ -11,6 +11,7 @@ SOURCES = __init__.py \
     modules/api/request.py \
     modules/api/shares.py \
     modules/layer/add_layer.py \
+    modules/layer/limitations_checker.py \
     modules/quick_search.py \
     modules/results/cache.py \
     modules/results/display.py \
