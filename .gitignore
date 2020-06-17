@@ -113,7 +113,8 @@ _logs/
 *.log
 
 # tests fixtures
-test/fixtures
+tests/fixtures
+tests/try
 
 # user settings
 _user/
