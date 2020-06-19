@@ -64,7 +64,7 @@ class LimitationsChecker(QObject):
                     # for other legal limitations, need to informe the user
                     else:
                         logger.debug("legal limitation detected : {}".format(lim))
-                        li_lim.append(lim.to_str())
+                        li_lim.append(lim)
                 # for any 'security' limitation, let's show the blocking popup and end the method
                 elif lim.type == "security":
                     popup = QMessageBox()
