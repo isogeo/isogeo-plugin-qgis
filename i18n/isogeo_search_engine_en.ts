@@ -19,7 +19,7 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="364"/>
+        <location filename="../isogeo.py" line="378"/>
         <source>&amp;Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
@@ -29,27 +29,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="517"/>
+        <location filename="../isogeo.py" line="531"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="452"/>
+        <location filename="../isogeo.py" line="466"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="515"/>
+        <location filename="../isogeo.py" line="529"/>
         <source> results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="859"/>
+        <location filename="../isogeo.py" line="873"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="620"/>
+        <location filename="../isogeo.py" line="634"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
@@ -97,12 +97,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1315"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1302"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1624"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1618"/>
         <source>Report an issue on the bug tracker</source>
         <translation type="unfinished"></translation>
     </message>
@@ -147,37 +147,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1549"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1536"/>
         <source>Authentication settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1261"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1248"/>
         <source>Search settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1441"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1428"/>
         <source>Geographical operator applied to the filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1365"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1352"/>
         <source>Default search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1608"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1602"/>
         <source>Resources</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1715"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1709"/>
         <source>Open online plugin help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1777"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1771"/>
         <source>Open plugin credits</source>
         <translation type="unfinished"></translation>
     </message>
@@ -187,7 +187,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1566"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1560"/>
         <source>Set plugin authentication:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -237,22 +237,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1659"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1653"/>
         <source>Get the log file: &quot;log_isogeo_plugin.log&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1665"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1659"/>
         <source>LOG File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1750"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1744"/>
         <source>Open online help in default browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1812"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1806"/>
         <source>Open credits popup</source>
         <translation type="unfinished"></translation>
     </message>
@@ -262,18 +262,33 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1277"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1264"/>
         <source>Edit quicksearch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1493"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1480"/>
         <source>Paths cache</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1525"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1512"/>
         <source>Empty the paths cached</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1827"/>
+        <source>Isogeo Portal settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1841"/>
+        <source>Add portal metadata URL to layer&apos;s properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1865"/>
+        <source>Please specify the portal base URL here:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -300,47 +315,47 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="988"/>
+        <location filename="../modules/layer/add_layer.py" line="1012"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="742"/>
+        <location filename="../modules/layer/add_layer.py" line="770"/>
         <source>Vector not valid {}. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="782"/>
+        <location filename="../modules/layer/add_layer.py" line="810"/>
         <source>Raster not valid {}. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="805"/>
+        <location filename="../modules/layer/add_layer.py" line="831"/>
         <source>EFS not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="827"/>
+        <location filename="../modules/layer/add_layer.py" line="851"/>
         <source>EMS not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="860"/>
+        <location filename="../modules/layer/add_layer.py" line="884"/>
         <source>WFS is not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="895"/>
+        <location filename="../modules/layer/add_layer.py" line="919"/>
         <source>WMS is not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="916"/>
+        <location filename="../modules/layer/add_layer.py" line="940"/>
         <source>WMTS is not valid. QGIS says: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="988"/>
+        <location filename="../modules/layer/add_layer.py" line="1012"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -348,18 +363,18 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>LimitationsChecker</name>
     <message>
-        <location filename="../modules/layer/limitations_checker.py" line="70"/>
+        <location filename="../modules/layer/limitations_checker.py" line="73"/>
         <source>This data is subject to a security limitation :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/limitations_checker.py" line="77"/>
+        <location filename="../modules/layer/limitations_checker.py" line="80"/>
         <source>
  - No description provided</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/limitations_checker.py" line="82"/>
+        <location filename="../modules/layer/limitations_checker.py" line="85"/>
         <source>Do you want to add the layer to the canvas anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -400,17 +415,17 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="435"/>
+        <location filename="../modules/results/display.py" line="487"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="430"/>
+        <location filename="../modules/results/display.py" line="482"/>
         <source>PostGIS table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="376"/>
+        <location filename="../modules/results/display.py" line="428"/>
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
@@ -473,32 +488,32 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="183"/>
+        <location filename="../modules/search_form.py" line="223"/>
         <source>Keywords</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="198"/>
+        <location filename="../modules/search_form.py" line="238"/>
         <source>Selected keywords:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="203"/>
+        <location filename="../modules/search_form.py" line="243"/>
         <source>No keyword selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="225"/>
+        <location filename="../modules/search_form.py" line="265"/>
         <source>Map canvas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="259"/>
+        <location filename="../modules/search_form.py" line="299"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="342"/>
+        <location filename="../modules/search_form.py" line="382"/>
         <source>Display results</source>
         <translation type="unfinished"></translation>
     </message>
@@ -584,12 +599,12 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="162"/>
+        <location filename="../modules/user_inform.py" line="165"/>
         <source>This data is subject to {} legal limitation(s) :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="170"/>
+        <location filename="../modules/user_inform.py" line="173"/>
         <source>
  - No description provided</source>
         <translation type="unfinished"></translation>
@@ -661,23 +676,6 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.ui" line="598"/>
-        <source>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;body&gt;
-
-&lt;ul&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-<byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../ui/auth/ui_authentication.py" line="369"/>
         <source>I&apos;ve got the power hey yeah heh!</source>
         <translation type="unfinished"></translation>
@@ -725,6 +723,23 @@ You have a proxy set up on your OS {} but none in QGIS.
     <message>
         <location filename="../ui/auth/ui_authentication.py" line="387"/>
         <source>Check</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/auth/ui_authentication.ui" line="598"/>
+        <source>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+
+&lt;ul&gt;
+<byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+<byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

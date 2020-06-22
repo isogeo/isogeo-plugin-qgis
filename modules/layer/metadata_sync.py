@@ -4,7 +4,6 @@
 # Standard library
 import logging
 
-
 # ############################################################################
 # ########## Globals ###############
 # ##################################
@@ -34,29 +33,43 @@ class MetadataSynchronizer:
                 info.get("title", "notitle"),
                 info.get("abstract", ""),
                 info.get("keywords", ()),
+                info.get("md_portal_url", ""),
             )
         # If the data is a file or a service
         else:
             layer_type = info[0]
             # vector or raster file
             if layer_type in file_types:
-                self.filling_field(layer, info[2], info[3], info[4])
+                self.filling_field(layer, info[2], info[3], info[4], info[5])
             # services
             elif layer_type in srv_types:
                 # WMS, WFS, EMS or EFS
                 if layer_type != "WMTS":
-                    self.filling_field(layer, info[6][0], info[6][1], info[6][2])
+                    self.filling_field(
+                        layer, info[6][0], info[6][1], info[6][2], info[6][3]
+                    )
                 # WMTS
                 else:
-                    self.filling_field(layer, info[3][0], info[3][1], info[3][2])
+                    self.filling_field(
+                        layer, info[3][0], info[3][1], info[3][2], info[3][3]
+                    )
             else:
                 pass
         return
 
-    def filling_field(self, layer, title, abstract, kw_list):
+    def filling_field(self, layer, title, abstract, kw_list, url):
         layer.setTitle(title)
         layer.setAbstract(abstract)
         layer.setKeywordList(",".join(kw_list))
+        logger.debug(
+            "*=====* DEBUG URL --> MetadataSynchronizer : portal metadata url = {}".format(
+                url
+            )
+        )
+        if url != "":
+            layer.setDataUrl(url)
+        else:
+            pass
         logger.debug(
             "'QGIS Server' tab from 'Layer's Properties' filled with basic info"
         )

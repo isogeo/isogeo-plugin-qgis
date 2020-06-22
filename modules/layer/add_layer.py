@@ -719,7 +719,6 @@ class LayerAdder:
         the temporary dictionnary constructed in the show_results function.
         It then adds it.
         """
-        logger.info("Adding a layer from those parameters :{}".format(layer_info))
         # one of many add-on option
         if layer_info[0] == "index":
             combobox = self.tbl_result.cellWidget(layer_info[1], 3)
@@ -732,6 +731,7 @@ class LayerAdder:
         else:
             pass
         self.md_sync.tr = self.tr
+        logger.info("Adding a layer from those parameters :{}".format(layer_info))
 
         if type(layer_info) == list:
             # If the layer to be added is a vector file
