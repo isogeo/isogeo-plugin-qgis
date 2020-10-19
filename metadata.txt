@@ -15,7 +15,7 @@ version=3.1.0-beta1
 author=Isogeo
 email=projects+qgis@isogeo.com
 
-about=This plugin helps finding geodata, searching within Isogeo catalogs. To use it, you can ask a free access sending a mail to projects+qgis@isogeo.com.
+about=Ce plugin facilite l'accès aux données géographiques. Il s'agit d'un moteur de recherche de métadonnées géographiques reposant sur l'API d'<a href="https://www.isogeo.com/">Isogeo</a>.<br>N'hésitez pas à remplir ce <a href="https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ">formulaire</a> si vous voulez l'essayer :<br><div class="pipedriveWebForms" data-pd-webforms="https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ"><script src="https://webforms.pipedrive.com/f/loader"></script></div>
 
 tracker=https://github.com/isogeo/isogeo-plugin-qgis/issues
 repository=https://github.com/isogeo/isogeo-plugin-qgis
