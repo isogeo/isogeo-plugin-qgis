@@ -221,7 +221,7 @@
     <target>Alerte</target>
 </phrase>
 <phrase>
-    <source>Proxy issue: 
+    <source>Proxy issue:
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
     <target>Erreur de proxy détectée :
@@ -265,6 +265,19 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
     <target>Couche PostGIS invalide. QGIS renvoie : {}</target>
 </phrase>
 <phrase>
+    <source>This data is subject to a security limitation :</source>
+    <target>Cette donnée est soumise à une limitation de type &quot;sécurité&quot; :</target>
+</phrase>
+<phrase>
+    <source>
+ - No description provided</source>
+    <target> - Aucune description fournie</target>
+</phrase>
+<phrase>
+    <source>Do you want to add the layer to the canvas anyway ?</source>
+    <target>Voulez-vous quand même ajouter la couche au canevas ?</target>
+</phrase>
+<phrase>
     <source>{} successfully saved: {}</source>
     <target>{} sauvegardée correctement : {}</target>
 </phrase>
@@ -275,22 +288,6 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
 <phrase>
     <source>Quicksearch removed: {}</source>
     <target>Recherche rapide supprimée : {}</target>
-</phrase>
-<phrase>
-    <source>Point</source>
-    <target>Point</target>
-</phrase>
-<phrase>
-    <source>Polygon</source>
-    <target>Polygone</target>
-</phrase>
-<phrase>
-    <source>Line</source>
-    <target>Linéaire</target>
-</phrase>
-<phrase>
-    <source>MultiPolygon</source>
-    <target>Multi-polygone</target>
 </phrase>
 <phrase>
     <source>Unknown geometry</source>
@@ -421,10 +418,6 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
     <target>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</target>
 </phrase>
 <phrase>
-    <source>The script is looping. Make sure you shared a catalog with the plugin.If this error keeps happening, please report it in the bug tracker.</source>
-    <target>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin. Si c&apos;est bien le cas, merci de signaler ce problème dans le bug tracker.</target>
-</phrase>
-<phrase>
     <source>Request to Isogeo&apos;s API failed : unkown error found. Please, report it in the bug tracker.</source>
     <target>La requête à l&apos;API Isogeo a échoué pour une raison inconnue. Merci de le signaler dans le bug tracker.</target>
 </phrase>
@@ -443,6 +436,19 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
 <phrase>
     <source>No share feeds the plugin. If you want to access resources via the plugin, you must share at least one catalog containing at least one metadata with it.</source>
     <target>Aucun partage n&apos;alimente le plugin. Pour accéder à vos ressources via le plugin, au moins un catalogue contenant au moins une métadonnée doit lui être partagé.</target>
+</phrase>
+<phrase>
+    <source>The script is looping. Make sure you shared a catalog with the plugin and check your Internet connection. If this error keeps happening, please report it in the bug tracker.</source>
+    <target>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin et vérifiez votre connexion Internet. Si l&apos;erreur persiste, merci de signaler ce problème dans le bug tracker.</target>
+</phrase>
+<phrase>
+    <source>This data is subject to {} legal limitation(s) :</source>
+    <target>Cette données est soumise à {} limitation(s) de type &quot;légal&quot; :</target>
+</phrase>
+<phrase>
+    <source>
+ - No description provided</source>
+    <target> - Aucune description fournie</target>
 </phrase>
 <phrase>
     <source>Credits</source>
@@ -493,14 +499,6 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
     <target>Je dispose déjà des ID et Secret pour ce plugin</target>
 </phrase>
 <phrase>
-    <source>Check access validity</source>
-    <target>Vérifier la validité</target>
-</phrase>
-<phrase>
-    <source>Check</source>
-    <target>Vérifier</target>
-</phrase>
-<phrase>
     <source>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;body&gt;
@@ -509,7 +507,7 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
 	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
 	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
 	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
-&lt;/ul&gt; 
+&lt;/ul&gt;
 
 &lt;/body&gt;
 &lt;/html&gt;
@@ -522,7 +520,7 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
 	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
 	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
 	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
-&lt;/ul&gt; 
+&lt;/ul&gt;
 
 &lt;/body&gt;
 &lt;/html&gt;
@@ -559,6 +557,14 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
 <phrase>
     <source>API location:</source>
     <target>URL de l&apos;API :</target>
+</phrase>
+<phrase>
+    <source>Check access validity</source>
+    <target></target>
+</phrase>
+<phrase>
+    <source>Check</source>
+    <target></target>
 </phrase>
 <phrase>
     <source>Isogeo Metadata</source>
