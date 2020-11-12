@@ -17,8 +17,8 @@ pr:
 # -- GLOBAL VARIABLES ------------------------------------------------------------------
 variables:
   PLUGIN_NAME: Isogeo
-  QGIS_VERSION_TAG: release-3_4
   QGIS_IMAGE: qgis/qgis
+  QGIS_VERSION_TAG: release-3_4
   pythonVersion: "3.7"
   vmImageName: "windows-2019"
 
@@ -209,3 +209,43 @@ stages:
         tagSource: 'gitTag'
         changeLogCompareToRelease: 'lastFullRelease'
         changeLogType: 'commitBased'
+
+- stage: TestOnDocker
+  # --TESTING --------------------------------------------------------------------------
+  displayName: "Test installation (Docker Linux)"
+  dependsOn:
+    - Build
+
+  jobs:
+
+  - job: 'TestDockerLinux'
+    variables:
+      DISPLAY: ":99" 
+    pool:
+      vmImage: 'ubuntu-16.04'
+
+      container:
+      image: $(QGIS_IMAGE):$(QGIS_VERSION_TAG)
+      options: --name qgis-testing-environment -v $(System.DefaultWorkingDirectory):/$(PLUGIN_NAME) -e DISPLAY=:99 $(IMAGE):$(QGIS_VERSION_TAG)
+
+    steps:
+    - checkout: none
+
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download artifact previously saved"
+      inputs:
+        buildType: "current"
+        artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        targetPath: "$(System.DefaultWorkingDirectory)"
+
+    - script: |
+        printenv
+        ls -a $(System.DefaultWorkingDirectory)
+      displayName: "Log environment"
+    
+    - task: ShellScript@2
+      displayName: "Run QGIS Setup"
+      inputs:
+        scriptPath: qgis_setup.sh
+        args: $(PLUGIN_NAME)
+      # continueOnError: true
