@@ -290,27 +290,34 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1865"/>
         <source>Please specify the portal base URL here:</source>
-        <translation>Veuillez indiquer la base de l&apos;URL du Portail Isogeo </translation>
+        <translation>Veuillez indiquer la base de l&apos;URL du Portail Isogeo :</translation>
     </message>
 </context>
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="461"/>
+        <location filename="../modules/tools.py" line="468"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation>Le {} style de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="371"/>
+        <location filename="../modules/tools.py" line="378"/>
         <source>Alert</source>
         <translation>Alerte</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="371"/>
-        <source>Proxy issue:
+        <location filename="../modules/tools.py" line="78"/>
+        <source>Undefined</source>
+        <translation>Non renseigné</translation>
+    </message>
+    <message>
+        <location filename="../modules/tools.py" line="378"/>
+        <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
-        <translation>Attention</translation>
+        <translation>Proxy issue: 
+You have a proxy set up on your OS {} but none in QGIS.
+ Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</translation>
     </message>
 </context>
 <context>
@@ -372,7 +379,8 @@ You have a proxy set up on your OS {} but none in QGIS.
         <location filename="../modules/layer/limitations_checker.py" line="80"/>
         <source>
  - No description provided</source>
-        <translation> - Aucune description fournie</translation>
+        <translation>
+ - Aucune description fournie</translation>
     </message>
     <message>
         <location filename="../modules/layer/limitations_checker.py" line="85"/>
@@ -401,32 +409,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="220"/>
+        <location filename="../modules/results/display.py" line="222"/>
         <source>Unknown geometry</source>
         <translation>Géométrie inconnue</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="214"/>
+        <location filename="../modules/results/display.py" line="216"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="217"/>
+        <location filename="../modules/results/display.py" line="219"/>
         <source>Service</source>
         <translation>Service</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="487"/>
+        <location filename="../modules/results/display.py" line="489"/>
         <source>Data file</source>
         <translation>Donnée fichier</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="482"/>
+        <location filename="../modules/results/display.py" line="484"/>
         <source>PostGIS table</source>
         <translation>Table PostGIS</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="428"/>
+        <location filename="../modules/results/display.py" line="430"/>
         <source>Can&apos;t be added</source>
         <translation>Non ajoutable</translation>
     </message>
@@ -608,7 +616,8 @@ You have a proxy set up on your OS {} but none in QGIS.
         <location filename="../modules/user_inform.py" line="173"/>
         <source>
  - No description provided</source>
-        <translation> - Aucune description fournie</translation>
+        <translation>
+ - Aucune description fournie</translation>
     </message>
 </context>
 <context>
@@ -736,23 +745,12 @@ You have a proxy set up on your OS {} but none in QGIS.
 	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
 	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
 	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
-&lt;/ul&gt;
+&lt;/ul&gt; 
 
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-        <translation>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;body&gt;
-
-&lt;ul&gt;
-	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-	&lt;li&gt;Gratuit pour accéder jusqu&amp;apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-	&lt;li&gt;Des abonnements pour accéder à l&amp;apos;ensemble des données et services de son organisme... et d&amp;apos;autres aussi !&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -295,18 +295,23 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="461"/>
+        <location filename="../modules/tools.py" line="468"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="371"/>
+        <location filename="../modules/tools.py" line="378"/>
         <source>Alert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="371"/>
-        <source>Proxy issue:
+        <location filename="../modules/tools.py" line="78"/>
+        <source>Undefined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/tools.py" line="378"/>
+        <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation type="unfinished"></translation>
@@ -400,32 +405,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="220"/>
+        <location filename="../modules/results/display.py" line="222"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="214"/>
+        <location filename="../modules/results/display.py" line="216"/>
         <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="217"/>
+        <location filename="../modules/results/display.py" line="219"/>
         <source>Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="487"/>
+        <location filename="../modules/results/display.py" line="489"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="482"/>
+        <location filename="../modules/results/display.py" line="484"/>
         <source>PostGIS table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="428"/>
+        <location filename="../modules/results/display.py" line="430"/>
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
@@ -735,7 +740,7 @@ You have a proxy set up on your OS {} but none in QGIS.
 <byte value="x9"/>&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
 <byte value="x9"/>&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
 <byte value="x9"/>&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
-&lt;/ul&gt;
+&lt;/ul&gt; 
 
 &lt;/body&gt;
 &lt;/html&gt;

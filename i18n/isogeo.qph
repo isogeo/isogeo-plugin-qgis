@@ -213,6 +213,18 @@
     <target>Vider le cache des chemins de fichiers</target>
 </phrase>
 <phrase>
+    <source>Isogeo Portal settings</source>
+    <target>Paramètres du Portail Isogeo</target>
+</phrase>
+<phrase>
+    <source>Add portal metadata URL to layer&apos;s properties</source>
+    <target>Ajouter l&apos;URL de la métadonnée du portail Isogeo aux propriétés des couches ajoutées</target>
+</phrase>
+<phrase>
+    <source>Please specify the portal base URL here:</source>
+    <target>Veuillez indiquer la base de l&apos;URL du Portail Isogeo :</target>
+</phrase>
+<phrase>
     <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
     <target>Le {} style de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</target>
 </phrase>
@@ -221,12 +233,16 @@
     <target>Alerte</target>
 </phrase>
 <phrase>
-    <source>Proxy issue:
+    <source>Undefined</source>
+    <target>Non renseigné</target>
+</phrase>
+<phrase>
+    <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
-    <target>Erreur de proxy détectée :
-Un proxy est actif sur votre système {} mais pas dans QGIS.
-Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre ordinateur, puis fermer et réouvrir le plugin.</target>
+    <target>Proxy issue: 
+You have a proxy set up on your OS {} but none in QGIS.
+ Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</target>
 </phrase>
 <phrase>
     <source>Error</source>
@@ -271,7 +287,8 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
 <phrase>
     <source>
  - No description provided</source>
-    <target> - Aucune description fournie</target>
+    <target>
+ - Aucune description fournie</target>
 </phrase>
 <phrase>
     <source>Do you want to add the layer to the canvas anyway ?</source>
@@ -448,7 +465,8 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
 <phrase>
     <source>
  - No description provided</source>
-    <target> - Aucune description fournie</target>
+    <target>
+ - Aucune description fournie</target>
 </phrase>
 <phrase>
     <source>Credits</source>
@@ -499,34 +517,6 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
     <target>Je dispose déjà des ID et Secret pour ce plugin</target>
 </phrase>
 <phrase>
-    <source>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;body&gt;
-
-&lt;ul&gt;
-	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;
-</source>
-    <target>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;body&gt;
-
-&lt;ul&gt;
-	&lt;li&gt;Gratuit pour accéder à un ensemble générique de données ouvertes&lt;/li&gt;
-	&lt;li&gt;Gratuit pour accéder jusqu&apos;à 20 données et services géographiques à documenter soi-même sur Isogeo&lt;/li&gt;
-	&lt;li&gt;Des abonnements pour accéder à l&apos;ensemble des données et services de son organisme... et d&apos;autres aussi !&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;
-</target>
-</phrase>
-<phrase>
     <source>I&apos;ve got the power hey yeah heh!</source>
     <target></target>
 </phrase>
@@ -564,6 +554,22 @@ Vérifiez la configuration de QGIS (Préférénces/Options/Réseau) et de votre 
 </phrase>
 <phrase>
     <source>Check</source>
+    <target></target>
+</phrase>
+<phrase>
+    <source>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+
+&lt;ul&gt;
+	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
+	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
+	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
+&lt;/ul&gt; 
+
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
     <target></target>
 </phrase>
 <phrase>
