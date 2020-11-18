@@ -233,10 +233,6 @@
     <target>Alerte</target>
 </phrase>
 <phrase>
-    <source>Undefined</source>
-    <target>Non renseigné</target>
-</phrase>
-<phrase>
     <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
@@ -329,6 +325,10 @@ You have a proxy set up on your OS {} but none in QGIS.
 <phrase>
     <source>Can&apos;t be added</source>
     <target>Non ajoutable</target>
+</phrase>
+<phrase>
+    <source>Undefined</source>
+    <target>Non renseigné</target>
 </phrase>
 <phrase>
     <source>Intersects</source>
