@@ -128,14 +128,14 @@ class IsogeoPlgTools(IsogeoUtils):
         """
         if lang == "fr":
             webbrowser.open(
-                "https://www.isogeo.com/fr/Plugin-QGIS/22", new=0, autoraise=True
+                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ", new=0, autoraise=True
             )
         else:
             webbrowser.open(
-                "https://www.isogeo.com/en/QGIS-Plugin/22", new=0, autoraise=True
+                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ", new=0, autoraise=True
             )
         # method ending
-        logger.debug("Bugtracker launched in the default web browser")
+        logger.debug("Isogeo Plugin&Widget test form launched in the default web browser")
 
     def open_dir_file(self, target):
         """Open a file or a directory in the explorer of the operating system.
