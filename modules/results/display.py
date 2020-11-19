@@ -166,13 +166,11 @@ class ResultsManager(QObject):
             # Displaying the metadata title inside a button
             title = md.title_or_name()
             if title:
-                btn_md_label = plg_tools.format_button_title(title)
+                btn_md_title = QPushButton(plg_tools.format_button_title(title))
             else:
-                btn_md_label = self.tr("Undefined", context=__class__.__name__)
+                btn_md_title = QPushButton(self.tr("Undefined", context=__class__.__name__))
+                btn_md_title.setStyleSheet("font: italic")
 
-            logger.info("*=====* DEBUG MD_LABEL --> {}".format(btn_md_label))
-
-            btn_md_title = QPushButton(btn_md_label)
             # Connecting the button to the full metadata popup
             btn_md_title.pressed.connect(partial(self.md_asked.emit, md._id))
             # Putting the abstract as a tooltip on this button
