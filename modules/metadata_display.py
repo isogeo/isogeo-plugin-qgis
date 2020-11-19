@@ -86,6 +86,8 @@ class MetadataDisplayer:
             lambda: plg_tools.open_webpage(link=self.url_edition)
         )
 
+        self.tr = object
+
     def show_complete_md(self, md: dict, tags: dict):
         """Open the pop up window that shows the metadata sheet details.
 
@@ -100,8 +102,14 @@ class MetadataDisplayer:
         self.complete_md.wid_bbox.refresh()
 
         # -- GENERAL ---------------------------------------------------------
-        title = md.get("title", "NR")
-        self.complete_md.lbl_title.setText(md.get("title", "NR"))
+        if md.get("title"):
+            self.complete_md.lbl_title.setText(md.get("title"))
+        elif md.get("name"):
+            self.complete_md.lbl_title.setText(md.get("name"))
+        else:
+            self.complete_md.lbl_title.setTextFormat(Qt.TextFormat(1))
+            self.complete_md.lbl_title.setText("<i>{}</i>".format(self.tr("Undefined", context=__class__.__name__)))
+
         self.complete_md.val_owner.setText(
             md.get("_creator").get("contact").get("name", "NR")
         )
@@ -419,13 +427,13 @@ class MetadataDisplayer:
         self.complete_md.show()
         try:
             QgsMessageLog.logMessage(
-                message="Detailed metadata displayed: {}".format(title),
+                message="Detailed metadata displayed: {}".format(self.complete_md.lbl_title.text()),
                 tag="Isogeo",
                 level=0,
             )
         except UnicodeEncodeError:
             QgsMessageLog.logMessage(
-                message="Detailed metadata displayed: {}".format(title),
+                message="Detailed metadata displayed: {}".format(self.complete_md.lbl_title.text()),
                 tag="Isogeo",
                 level=0,
             )
