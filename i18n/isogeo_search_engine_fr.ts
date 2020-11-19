@@ -20,37 +20,37 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="378"/>
+        <location filename="../isogeo.py" line="379"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="339"/>
+        <location filename="../isogeo.py" line="340"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="531"/>
+        <location filename="../isogeo.py" line="532"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="466"/>
+        <location filename="../isogeo.py" line="467"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="529"/>
+        <location filename="../isogeo.py" line="530"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="873"/>
+        <location filename="../isogeo.py" line="874"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="634"/>
+        <location filename="../isogeo.py" line="635"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
@@ -384,6 +384,14 @@ You have a proxy set up on your OS {} but none in QGIS.
     </message>
 </context>
 <context>
+    <name>MetadataDisplayer</name>
+    <message>
+        <location filename="../modules/metadata_display.py" line="111"/>
+        <source>Undefined</source>
+        <translation>Non renseigné</translation>
+    </message>
+</context>
+<context>
     <name>QuickSearchManager</name>
     <message>
         <location filename="../modules/quick_search.py" line="104"/>
@@ -404,32 +412,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="227"/>
+        <location filename="../modules/results/display.py" line="225"/>
         <source>Unknown geometry</source>
         <translation>Géométrie inconnue</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="221"/>
+        <location filename="../modules/results/display.py" line="219"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="224"/>
+        <location filename="../modules/results/display.py" line="222"/>
         <source>Service</source>
         <translation>Service</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="494"/>
+        <location filename="../modules/results/display.py" line="492"/>
         <source>Data file</source>
         <translation>Donnée fichier</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="489"/>
+        <location filename="../modules/results/display.py" line="487"/>
         <source>PostGIS table</source>
         <translation>Table PostGIS</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="435"/>
+        <location filename="../modules/results/display.py" line="433"/>
         <source>Can&apos;t be added</source>
         <translation>Non ajoutable</translation>
     </message>
@@ -1045,6 +1053,53 @@ You have a proxy set up on your OS {} but none in QGIS.
         <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="70"/>
         <source>Quicksearch new name:</source>
         <translation>Nouveau nom :</translation>
+    </message>
+</context>
+<context>
+    <name>isogeo_tr</name>
+    <message>
+        <location filename="../modules/metadata_display.py" line="288"/>
+        <source>quality</source>
+        <comment>isConform</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="290"/>
+        <source>quality</source>
+        <comment>isNotConform</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="189"/>
+        <source>roles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="221"/>
+        <source>frequencyTypes</source>
+        <comment>frequencyUpdateHelp</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="221"/>
+        <source>frequencyShortTypes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="346"/>
+        <source>conditions</source>
+        <comment>noLicense</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="360"/>
+        <source>limitations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="366"/>
+        <source>restrictions</source>
+        <translation></translation>
     </message>
 </context>
 </TS>
