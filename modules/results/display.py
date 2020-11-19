@@ -19,7 +19,7 @@ from ..layer.add_layer import LayerAdder
 from ..layer.limitations_checker import LimitationsChecker
 
 # isogeo-pysdk
-from ..isogeo_pysdk.models import Metadata
+from ..isogeo_pysdk import Metadata
 
 # ############################################################################
 # ########## Globals ###############
@@ -164,8 +164,13 @@ class ResultsManager(QObject):
             ]
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
-            btn_title = plg_tools.format_button_title(md.title)
-            btn_md_title = QPushButton(btn_title)
+            title = md.title_or_name()
+            if title:
+                btn_md_title = QPushButton(plg_tools.format_button_title(title))
+            else:
+                btn_md_title = QPushButton(self.tr("Undefined", context=__class__.__name__))
+                btn_md_title.setStyleSheet("font: italic")
+
             # Connecting the button to the full metadata popup
             btn_md_title.pressed.connect(partial(self.md_asked.emit, md._id))
             # Putting the abstract as a tooltip on this button

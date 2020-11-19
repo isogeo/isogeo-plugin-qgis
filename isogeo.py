@@ -224,6 +224,7 @@ class Isogeo:
         self.informer = UserInformer(message_bar=msgBar, trad=self.tr)
 
         self.md_display = MetadataDisplayer()
+        self.md_display.tr = self.tr
 
         self.approps_mng = SharesParser()
         self.approps_mng.tr = self.tr

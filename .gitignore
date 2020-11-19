@@ -117,9 +117,8 @@ tests/fixtures
 tests/try
 
 # user settings
-_user/
-cache.json
-quicksearches.json
+_user/cache.json
+_user/quicksearches.json
 
 *.pyc
 *.*~
