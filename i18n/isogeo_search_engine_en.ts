@@ -400,37 +400,37 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="229"/>
+        <location filename="../modules/results/display.py" line="227"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="223"/>
+        <location filename="../modules/results/display.py" line="221"/>
         <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="226"/>
+        <location filename="../modules/results/display.py" line="224"/>
         <source>Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="496"/>
+        <location filename="../modules/results/display.py" line="494"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="491"/>
+        <location filename="../modules/results/display.py" line="489"/>
         <source>PostGIS table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="437"/>
+        <location filename="../modules/results/display.py" line="435"/>
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="173"/>
+        <location filename="../modules/results/display.py" line="171"/>
         <source>Undefined</source>
         <translation type="unfinished"></translation>
     </message>
