@@ -121,8 +121,8 @@ class IsogeoPlgTools(IsogeoUtils):
         else:
             return input_date
 
-    def mail_to_isogeo(self, lang):
-        """Open the credentials request online form in web browser.
+    def open_pipedrive_test_form(self, lang):
+        """Open the Isogeo Plugin&Widgets test online form in web browser.
 
         :param str lang: language code. If not fr (French), the English form is displayed.
         """
@@ -136,6 +136,22 @@ class IsogeoPlgTools(IsogeoUtils):
             )
         # method ending
         logger.debug("Isogeo Plugin&Widget test form launched in the default web browser")
+
+    def open_pipedrive_rdv_form(self, lang):
+        """Open the rdv request online form in web browser.
+
+        :param str lang: language code. If not fr (French), the English form is displayed.
+        """
+        if lang == "fr":
+            webbrowser.open(
+                "https://isogeo.pipedrive.com/scheduler/lq0ZSm/rendez-vous-isogeo", new=0, autoraise=True
+            )
+        else:
+            webbrowser.open(
+                "https://isogeo.pipedrive.com/scheduler/lq0ZSm/rendez-vous-isogeo", new=0, autoraise=True
+            )
+        # method ending
+        logger.debug("Isogeo rdv request form launched in the default web browser")
 
     def open_dir_file(self, target):
         """Open a file or a directory in the explorer of the operating system.
