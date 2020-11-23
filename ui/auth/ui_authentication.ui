@@ -511,7 +511,7 @@
      <property name="minimumSize">
       <size>
        <width>200</width>
-       <height>150</height>
+       <height>100</height>
       </size>
      </property>
      <property name="maximumSize">
@@ -542,18 +542,12 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
-       <widget class="QPushButton" name="btn_account_new">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>30</height>
-         </size>
-        </property>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="btn_rdv_isogeo">
         <property name="maximumSize">
          <size>
           <width>700</width>
-          <height>50</height>
+          <height>30</height>
          </size>
         </property>
         <property name="font">
@@ -569,22 +563,52 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>Request plugin access</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>:/plugins/Isogeo/resources/authentication/send-o.svg</normaloff>:/plugins/Isogeo/resources/authentication/send-o.svg</iconset>
+         <string>Make an appointment with Isogeo team</string>
         </property>
         <property name="default">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lbl_access_conditions">
+      <item row="2" column="0">
+       <widget class="QPushButton" name="btn_free_test">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>30</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>700</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Test the Isogeo QGIS Plugin for free</string>
+        </property>
+        <property name="default">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="lbl_access_conditions">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
         </property>
@@ -595,19 +619,7 @@
          </font>
         </property>
         <property name="text">
-         <string>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;body&gt;
-
-&lt;ul&gt;
-	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
-&lt;/ul&gt; 
-
-&lt;/body&gt;
-&lt;/html&gt;
-</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;It is simple and free to test the Isogeo QGIS Plugin on a sample of data : &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="textFormat">
          <enum>Qt::RichText</enum>
