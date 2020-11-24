@@ -232,6 +232,7 @@ class Ui_dlg_form_auth_prompt(object):
         self.gridLayout = QtWidgets.QGridLayout(self.grb_need_account)
         self.gridLayout.setObjectName("gridLayout")
         self.btn_rdv_isogeo = QtWidgets.QPushButton(self.grb_need_account)
+        self.btn_rdv_isogeo.setMinimumSize(QtCore.QSize(200, 30))
         self.btn_rdv_isogeo.setMaximumSize(QtCore.QSize(700, 30))
         font = QtGui.QFont()
         font.setBold(False)
