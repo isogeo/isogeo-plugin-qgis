@@ -203,11 +203,21 @@ class SearchFormManager(IsogeoDockWidget):
             )
         )
 
-        model = QStandardItemModel(5, 1)  # 5 rows, 1 col
+        # shortcut
+        model = self.cbb_chck_kw.model()
+
+        # disconnect the widget before updating
+        try:
+            model.itemChanged.disconnect()
+        except TypeError:
+            pass
+
+        # clear the the combobox content
+        model.clear()
+
         # parse keywords and check selected
         i = 0  # row index
         for tag_label, tag_code in sorted(tags_keywords.items()):
-            i += 1
             item = QStandardItem(tag_label)
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setData(tag_code, 32)
@@ -219,19 +229,10 @@ class SearchFormManager(IsogeoDockWidget):
                 model.insertRow(0, item)
             else:
                 pass
-        # first item = label for the combobox.
-        first_item = QStandardItem(
-            "---- {} ----".format(self.tr("Keywords", context=__class__.__name__))
-        )
-        first_item.setIcon(ico_keyw)
-        first_item.setSelectable(False)
-        model.insertRow(0, first_item)
+            i += 1
 
         # connect keyword selected -> launch search
         model.itemChanged.connect(self.kw_sig.emit)
-
-        # add the built model to the combobox
-        self.cbb_chck_kw.setModel(model)
 
         # add tooltip with selected keywords. see: #107#issuecomment-341742142
         if selected_keywords:
