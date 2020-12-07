@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>623</width>
+    <width>630</width>
     <height>822</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>623</width>
+    <width>630</width>
     <height>759</height>
    </size>
   </property>
@@ -251,7 +251,7 @@
         </item>
         <item row="0" column="0">
          <layout class="QGridLayout" name="lyt_search">
-          <item row="1" column="2" colspan="3">
+          <item row="1" column="3" colspan="3">
            <widget class="QComboBox" name="cbb_quicksearch_use">
             <property name="minimumSize">
              <size>
@@ -297,39 +297,7 @@
             </item>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QgsCheckableComboBox" name="cbb_chck_kw">
-            <property name="minimumSize">
-             <size>
-              <width>250</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>250</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="autoFillBackground">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <spacer name="horizontalSpacer_12">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="3" colspan="2">
+          <item row="0" column="4" colspan="2">
            <widget class="QPushButton" name="btn_search_go">
             <property name="minimumSize">
              <size>
@@ -370,7 +338,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="3">
+          <item row="0" column="0" colspan="4">
            <widget class="QLineEdit" name="txt_input">
             <property name="minimumSize">
              <size>
@@ -394,6 +362,57 @@
              <string>roads, habitat, cadastral parcel, transport</string>
             </property>
            </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="ico_kw">
+            <property name="maximumSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/tag.svg</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsCheckableComboBox" name="cbb_chck_kw">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>250</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <spacer name="horizontalSpacer_12">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
@@ -531,10 +550,10 @@
           <property name="title">
            <string>Advanced search</string>
           </property>
-          <property name="collapsed" stdset="0">
+          <property name="collapsed">
            <bool>false</bool>
           </property>
-          <property name="scrollOnExpand" stdset="0">
+          <property name="scrollOnExpand">
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
