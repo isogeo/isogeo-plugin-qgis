@@ -796,6 +796,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_search_go.setToolTip(_translate("IsogeoDockWidgetBase", "Launch search"))
         self.txt_input.setToolTip(_translate("IsogeoDockWidgetBase", "Enter your search terms"))
         self.txt_input.setPlaceholderText(_translate("IsogeoDockWidgetBase", "roads, habitat, cadastral parcel, transport"))
+        self.cbb_chck_kw.setDefaultText(_translate("IsogeoDockWidgetBase", "---- Keywords ----"))
         self.lbl_page.setText(_translate("IsogeoDockWidgetBase", "Page x on x"))
         self.tbl_result.setSortingEnabled(False)
         item = self.tbl_result.horizontalHeaderItem(0)
