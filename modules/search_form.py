@@ -45,8 +45,6 @@ ico_ob_dcrea = QIcon(":/plugins/Isogeo/resources/datacreated.svg")
 ico_ob_dupda = QIcon(":/plugins/Isogeo/resources/datamodified.svg")
 ico_ob_mcrea = QIcon(":/plugins/Isogeo/resources/calendar-plus-o.svg")
 ico_ob_mupda = QIcon(":/plugins/Isogeo/resources/calendar_blue.svg")
-ico_bolt = QIcon(":/plugins/Isogeo/resources/search/bolt.svg")
-ico_keyw = QIcon(":/plugins/Isogeo/resources/tag.svg")
 ico_none = QIcon(":/plugins/Isogeo/resources/none.svg")
 ico_line = QIcon(":/images/themes/default/mIconLineLayer.svg")
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
@@ -298,7 +296,7 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_quicksearch_edit.clear()
         # filling widgets from the saved searches list built above
         self.cbb_quicksearch_use.addItem(
-            ico_bolt, self.tr("Quicksearches", context=__class__.__name__)
+            self.tr("Quicksearches", context=__class__.__name__)
         )
         for qs in qs_list:
             self.cbb_quicksearch_use.addItem(qs, qs)
