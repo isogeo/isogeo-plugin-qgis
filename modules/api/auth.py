@@ -296,8 +296,11 @@ class Authenticator(QObject):
                 int(self.ui_auth_form.chb_isogeo_editor.isChecked()),
             )
         )
-        self.ui_auth_form.btn_account_new.pressed.connect(
-            partial(plg_tools.mail_to_isogeo, lang=self.lang)
+        self.ui_auth_form.btn_free_test.pressed.connect(
+            partial(plg_tools.open_pipedrive_test_form, lang=self.lang)
+        )
+        self.ui_auth_form.btn_rdv_isogeo.pressed.connect(
+            partial(plg_tools.open_pipedrive_rdv_form, lang=self.lang)
         )
         self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
             self.credentials_uploader
