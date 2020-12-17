@@ -168,7 +168,9 @@ class ResultsManager(QObject):
             if title:
                 btn_md_title = QPushButton(plg_tools.format_button_title(title))
             else:
-                btn_md_title = QPushButton(self.tr("Undefined", context=__class__.__name__))
+                btn_md_title = QPushButton(
+                    self.tr("Undefined", context=__class__.__name__)
+                )
                 btn_md_title.setStyleSheet("font: italic")
 
             # Connecting the button to the full metadata popup
@@ -228,46 +230,19 @@ class ResultsManager(QObject):
             lbl_geom.setAlignment(Qt.AlignCenter)
             tbl_result.setCellWidget(count, 2, lbl_geom)
 
-            logger.debug(
-                "*=====* DEBUG LIM --> '{}' md -----------------------------".format(
-                    md._id
-                )
-            )
-            logger.debug("*=====* DEBUG LIM --> lim : {}".format(md.limitations))
-            logger.debug("*=====* DEBUG LIM --> format : {}".format(md.format))
             # COLUMN 4 - Add options
             add_options_dict = {}
 
             # Build metadata portal URL if the setting is checked in "Settings" tab
-            logger.debug(
-                "*=====* DEBUG URL --> ResultsManager : 'isogeo/settings/add_metadata_url_portal' setting value = {}".format(
-                    qsettings.value("isogeo/settings/add_metadata_url_portal", 0)
-                )
-            )
             add_portal_md_url = int(
                 qsettings.value("isogeo/settings/add_metadata_url_portal", 0)
             )
             portal_base_url = self.form_mng.input_portal_url.text()
             portal_md_url = ""
-            logger.debug(
-                "*=====* DEBUG URL --> ResultsManager : add_portal_md_url = {}".format(
-                    add_portal_md_url
-                )
-            )
             if add_portal_md_url and portal_base_url != "":
                 portal_md_url = portal_base_url + md._id
             else:
                 pass
-            logger.debug(
-                "*=====* DEBUG URL --> ResultsManager : input_portal_url.text() = {}".format(
-                    self.form_mng.input_portal_url.text()
-                )
-            )
-            logger.debug(
-                "*=====* DEBUG URL --> ResultsManager : portal_md_url = {}".format(
-                    portal_md_url
-                )
-            )
 
             # Files and PostGIS direct access
             if md.format:
@@ -292,9 +267,6 @@ class ResultsManager(QObject):
                 # Same if the data is a raster
                 elif md.format in li_formats_rastr and md.path:
                     add_path = self._filepath_builder(md.path)
-                    logger.debug(
-                        "*=====* DEBUG ADD FILE --> path : {}".format(add_path)
-                    )
                     if add_path:
                         params = [
                             "raster",

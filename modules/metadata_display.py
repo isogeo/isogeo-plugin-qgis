@@ -108,7 +108,9 @@ class MetadataDisplayer:
             self.complete_md.lbl_title.setText(md.get("name"))
         else:
             self.complete_md.lbl_title.setTextFormat(Qt.TextFormat(1))
-            self.complete_md.lbl_title.setText("<i>{}</i>".format(self.tr("Undefined", context=__class__.__name__)))
+            self.complete_md.lbl_title.setText(
+                "<i>{}</i>".format(self.tr("Undefined", context=__class__.__name__))
+            )
 
         self.complete_md.val_owner.setText(
             md.get("_creator").get("contact").get("name", "NR")
@@ -168,20 +170,17 @@ class MetadataDisplayer:
             item = ctact.get("contact")
 
             if ctact.get("role", "NR") == "pointOfContact":
-                content = (
-                    "<b>{1}</b> ({2})<br><a href='mailto:{3}' target='_top'>{3}</a><br>{4}"
-                    "<br>{5} {6}<br>{7} {8}<br>{8}<br>{9}".format(
-                        isogeo_tr.tr("roles", ctact.get("role")),
-                        item.get("name", "NR"),
-                        item.get("organization", "NR"),
-                        item.get("email", "NR"),
-                        item.get("phone", "NR"),
-                        item.get("addressLine1", ""),
-                        item.get("addressLine2", ""),
-                        item.get("zipCode", ""),
-                        item.get("city", ""),
-                        item.get("country", ""),
-                    )
+                content = "<b>{1}</b> ({2})<br><a href='mailto:{3}' target='_top'>{3}</a><br>{4}" "<br>{5} {6}<br>{7} {8}<br>{8}<br>{9}".format(
+                    isogeo_tr.tr("roles", ctact.get("role")),
+                    item.get("name", "NR"),
+                    item.get("organization", "NR"),
+                    item.get("email", "NR"),
+                    item.get("phone", "NR"),
+                    item.get("addressLine1", ""),
+                    item.get("addressLine2", ""),
+                    item.get("zipCode", ""),
+                    item.get("city", ""),
+                    item.get("country", ""),
                 )
                 contacts_pt_cct.append(content)
 
@@ -373,9 +372,11 @@ class MetadataDisplayer:
                 pass
             # INSPIRE precision
             if "directive" in l_in:
-                lim_text += "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
-                    l_in.get("directive").get("name"),
-                    l_in.get("directive").get("description"),
+                lim_text += (
+                    "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
+                        l_in.get("directive").get("name"),
+                        l_in.get("directive").get("description"),
+                    )
                 )
             else:
                 pass
@@ -430,13 +431,17 @@ class MetadataDisplayer:
         self.complete_md.show()
         try:
             QgsMessageLog.logMessage(
-                message="Detailed metadata displayed: {}".format(self.complete_md.lbl_title.text()),
+                message="Detailed metadata displayed: {}".format(
+                    self.complete_md.lbl_title.text()
+                ),
                 tag="Isogeo",
                 level=0,
             )
         except UnicodeEncodeError:
             QgsMessageLog.logMessage(
-                message="Detailed metadata displayed: {}".format(self.complete_md.lbl_title.text()),
+                message="Detailed metadata displayed: {}".format(
+                    self.complete_md.lbl_title.text()
+                ),
                 tag="Isogeo",
                 level=0,
             )

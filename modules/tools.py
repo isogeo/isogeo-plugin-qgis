@@ -128,14 +128,20 @@ class IsogeoPlgTools(IsogeoUtils):
         """
         if lang == "fr":
             webbrowser.open(
-                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ", new=0, autoraise=True
+                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ",
+                new=0,
+                autoraise=True,
             )
         else:
             webbrowser.open(
-                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ", new=0, autoraise=True
+                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ",
+                new=0,
+                autoraise=True,
             )
         # method ending
-        logger.debug("Isogeo Plugin&Widget test form launched in the default web browser")
+        logger.debug(
+            "Isogeo Plugin&Widget test form launched in the default web browser"
+        )
 
     def open_pipedrive_rdv_form(self, lang):
         """Open the rdv request online form in web browser.
@@ -144,11 +150,15 @@ class IsogeoPlgTools(IsogeoUtils):
         """
         if lang == "fr":
             webbrowser.open(
-                "https://isogeo.pipedrive.com/scheduler/lq0ZSm/rendez-vous-isogeo", new=0, autoraise=True
+                "https://isogeo.pipedrive.com/scheduler/lq0ZSm/rendez-vous-isogeo",
+                new=0,
+                autoraise=True,
             )
         else:
             webbrowser.open(
-                "https://isogeo.pipedrive.com/scheduler/lq0ZSm/rendez-vous-isogeo", new=0, autoraise=True
+                "https://isogeo.pipedrive.com/scheduler/lq0ZSm/rendez-vous-isogeo",
+                new=0,
+                autoraise=True,
             )
         # method ending
         logger.debug("Isogeo rdv request form launched in the default web browser")
@@ -465,9 +475,9 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def test_qgis_style(self):
         """
-            Check QGIS style applied to ensure compatibility with comboboxes.
-            Avert the user and force change if the selected is not adapted.
-            See: https://github.com/isogeo/isogeo-plugin-qgis/issues/137.
+        Check QGIS style applied to ensure compatibility with comboboxes.
+        Avert the user and force change if the selected is not adapted.
+        See: https://github.com/isogeo/isogeo-plugin-qgis/issues/137.
         """
         style_qgis = qsettings.value("qgis/style", "Default")
         if style_qgis in ("macintosh", "cleanlooks"):

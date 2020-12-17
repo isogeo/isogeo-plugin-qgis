@@ -607,7 +607,7 @@ class LayerAdder:
         try:
             wmts = WebMapTileService(wmts_url_getcap)
         except TypeError as e:
-            logger.error("WMTS - OWSLib mixing str and unicode args", e)
+            logger.error("WMTS - OWSLib mixing str and unicode args :{}".format(e))
         except ServiceException as e:
             logger.error(e)
             return 0, "WMTS - Bad operation: " + wmts_url_getcap, str(e)

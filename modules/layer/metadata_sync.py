@@ -61,11 +61,6 @@ class MetadataSynchronizer:
         layer.setTitle(title)
         layer.setAbstract(abstract)
         layer.setKeywordList(",".join(kw_list))
-        logger.debug(
-            "*=====* DEBUG URL --> MetadataSynchronizer : portal metadata url = {}".format(
-                url
-            )
-        )
         if url != "":
             layer.setDataUrl(url)
         else:
