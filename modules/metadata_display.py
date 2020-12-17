@@ -289,10 +289,13 @@ class MetadataDisplayer:
             else:
                 s_conformity = isogeo_tr.tr("quality", "isNotConform")
             # make data human readable
-            s_date = datetime.strptime(
-                s_in.get("specification").get("published"), "%Y-%m-%dT%H:%M:%S"
-            )
-            s_date = s_date.strftime("%Y-%m-%d")
+            if s_in.get("specification").get("published"):
+                s_date = datetime.strptime(
+                    s_in.get("specification").get("published"), "%Y-%m-%dT%H:%M:%S"
+                )
+                s_date = s_date.strftime("%Y-%m-%d")
+            else:
+                s_date = "<i>Date de publication non renseignée</i>"
             # prepare text
             spec_text = "<a href='{1}'><b>{0} ({2})</b></a>: {3}".format(
                 s_in.get("specification").get("name", "NR"),

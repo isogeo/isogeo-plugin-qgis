@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>623</width>
+    <width>654</width>
     <height>822</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>623</width>
+    <width>654</width>
     <height>759</height>
    </size>
   </property>
@@ -251,18 +251,43 @@
         </item>
         <item row="0" column="0">
          <layout class="QGridLayout" name="lyt_search">
-          <item row="1" column="2" colspan="3">
+          <item row="0" column="0" colspan="5">
+           <widget class="QLineEdit" name="txt_input">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Enter your search terms</string>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="inputMask">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="placeholderText">
+             <string>roads, habitat, cadastral parcel, transport</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4" colspan="3">
            <widget class="QComboBox" name="cbb_quicksearch_use">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>200</width>
               <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>300</width>
-              <height>40</height>
+              <width>200</width>
+              <height>30</height>
              </size>
             </property>
             <property name="sizeIncrement">
@@ -290,33 +315,38 @@
              <property name="text">
               <string>Quicksearches</string>
              </property>
-             <property name="icon">
-              <iconset resource="../resources.qrc">
-               <normaloff>:/plugins/Isogeo/resources/search/bolt.svg</normaloff>:/plugins/Isogeo/resources/search/bolt.svg</iconset>
-             </property>
             </item>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="1" column="1">
            <widget class="QgsCheckableComboBox" name="cbb_chck_kw">
             <property name="minimumSize">
              <size>
-              <width>250</width>
-              <height>25</height>
+              <width>300</width>
+              <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
-              <height>25</height>
+              <width>300</width>
+              <height>30</height>
              </size>
             </property>
             <property name="autoFillBackground">
              <bool>true</bool>
             </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+            </property>
+            <property name="minimumContentsLength">
+             <number>20</number>
+            </property>
+            <property name="defaultText">
+             <string>---- Keywords ----</string>
+            </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="1" column="2">
            <spacer name="horizontalSpacer_12">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -329,7 +359,26 @@
             </property>
            </spacer>
           </item>
-          <item row="0" column="3" colspan="2">
+          <item row="1" column="0">
+           <widget class="QLabel" name="ico_kw">
+            <property name="maximumSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/tag.svg</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5" colspan="2">
            <widget class="QPushButton" name="btn_search_go">
             <property name="minimumSize">
              <size>
@@ -370,28 +419,22 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QLineEdit" name="txt_input">
-            <property name="minimumSize">
+          <item row="1" column="3">
+           <widget class="QLabel" name="label">
+            <property name="maximumSize">
              <size>
-              <width>200</width>
-              <height>30</height>
+              <width>18</width>
+              <height>18</height>
              </size>
-            </property>
-            <property name="toolTip">
-             <string>Enter your search terms</string>
-            </property>
-            <property name="autoFillBackground">
-             <bool>true</bool>
-            </property>
-            <property name="inputMask">
-             <string/>
             </property>
             <property name="text">
              <string/>
             </property>
-            <property name="placeholderText">
-             <string>roads, habitat, cadastral parcel, transport</string>
+            <property name="pixmap">
+             <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/bolt.svg</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -531,21 +574,30 @@
           <property name="title">
            <string>Advanced search</string>
           </property>
-          <property name="collapsed" stdset="0">
+          <property name="collapsed">
            <bool>false</bool>
           </property>
-          <property name="scrollOnExpand" stdset="0">
+          <property name="scrollOnExpand">
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
-              <layout class="QHBoxLayout" name="lyt_horiz_filters">
+              <layout class="QHBoxLayout" name="lyt_horiz_filters" stretch="1,1,1">
+               <property name="spacing">
+                <number>7</number>
+               </property>
                <item>
                 <layout class="QVBoxLayout" name="lyt_vert_filters_left">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMaximumSize</enum>
+                 </property>
                  <item>
                   <layout class="QVBoxLayout" name="lyt_vert_filter_geo">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetDefaultConstraint</enum>
+                   </property>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout">
                      <item>
@@ -597,6 +649,12 @@
                    </item>
                    <item>
                     <widget class="QComboBox" name="cbb_geofilter">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="minimumSize">
                       <size>
                        <width>250</width>
@@ -605,7 +663,7 @@
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>360</width>
+                       <width>280</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -621,6 +679,9 @@
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="lyt_vert_filter_format">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetDefaultConstraint</enum>
+                   </property>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_3">
                      <item>
@@ -694,7 +755,7 @@
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>360</width>
+                       <width>280</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -710,6 +771,9 @@
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="lyt_vert_filter_inspire">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetDefaultConstraint</enum>
+                   </property>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_4">
                      <item>
@@ -783,7 +847,7 @@
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>360</width>
+                       <width>280</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -799,6 +863,9 @@
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="lyt_vert_filter_contact">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetDefaultConstraint</enum>
+                   </property>
                    <property name="bottomMargin">
                     <number>0</number>
                    </property>
@@ -859,6 +926,12 @@
                    </item>
                    <item>
                     <widget class="QComboBox" name="cbb_contact">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="minimumSize">
                       <size>
                        <width>250</width>
@@ -867,7 +940,7 @@
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>360</width>
+                       <width>280</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -884,9 +957,34 @@
                 </layout>
                </item>
                <item>
+                <spacer name="horizontalSpacer_20">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Maximum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
                 <layout class="QVBoxLayout" name="lyt_vert_filters_right">
+                 <property name="spacing">
+                  <number>7</number>
+                 </property>
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMaximumSize</enum>
+                 </property>
                  <item>
                   <layout class="QVBoxLayout" name="lyt_vert_filter_type">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetDefaultConstraint</enum>
+                   </property>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_2">
                      <item>
@@ -938,6 +1036,12 @@
                    </item>
                    <item>
                     <widget class="QComboBox" name="cbb_type">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="minimumSize">
                       <size>
                        <width>250</width>
@@ -946,7 +1050,7 @@
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>360</width>
+                       <width>280</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -962,6 +1066,9 @@
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="lyt_vert_filter_workgroup">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetDefaultConstraint</enum>
+                   </property>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_5">
                      <item>
@@ -1035,7 +1142,7 @@
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>360</width>
+                       <width>280</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -1051,6 +1158,9 @@
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="lyt_vert_filter_srs">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetDefaultConstraint</enum>
+                   </property>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_6">
                      <item>
@@ -1124,7 +1234,7 @@
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>360</width>
+                       <width>280</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -1140,6 +1250,9 @@
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="lyt_vert_filter_licence">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetDefaultConstraint</enum>
+                   </property>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_8">
                      <item>
@@ -1179,6 +1292,9 @@
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
                        </property>
+                       <property name="sizeType">
+                        <enum>QSizePolicy::Expanding</enum>
+                       </property>
                        <property name="sizeHint" stdset="0">
                         <size>
                          <width>40</width>
@@ -1191,6 +1307,12 @@
                    </item>
                    <item>
                     <widget class="QComboBox" name="cbb_license">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="minimumSize">
                       <size>
                        <width>250</width>
@@ -1199,7 +1321,7 @@
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>360</width>
+                       <width>280</width>
                        <height>25</height>
                       </size>
                      </property>
