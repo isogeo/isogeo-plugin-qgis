@@ -19,8 +19,7 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 
 class UserInformer:
-    """ A basic class to manage the displaying of message to the user.
-    """
+    """A basic class to manage the displaying of message to the user."""
 
     def __init__(self, message_bar: object, trad: object):
         if isinstance(message_bar, QgsMessageBar):
@@ -162,7 +161,11 @@ class UserInformer:
             "lim_sig emitted, passing {} to UserInformer lim_slot".format(lim_sig)
         )
         if isinstance(lim_sig, list):
-            msg = self.tr("This data is subject to ", context=__class__.__name__) + str(len(lim_sig)) + self.tr(" legal limitation(s) :", context=__class__.__name__)
+            msg = (
+                self.tr("This data is subject to ", context=__class__.__name__)
+                + str(len(lim_sig))
+                + self.tr(" legal limitation(s) :", context=__class__.__name__)
+            )
             for lim in lim_sig:
                 msg += " / "
                 if lim.description != "":

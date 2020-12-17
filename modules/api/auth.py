@@ -158,8 +158,7 @@ class Authenticator(QObject):
 
     # CREDENTIALS LOCATORS ----------------------------------------------------
     def credentials_check_qsettings(self):
-        """Retrieve Isogeo API credentials within QGIS QSettings.
-        """
+        """Retrieve Isogeo API credentials within QGIS QSettings."""
 
         if "isogeo-plugin" in qsettings.childGroups():
             logger.warning(
@@ -286,8 +285,7 @@ class Authenticator(QObject):
 
     # AUTHENTICATION FORM -----------------------------------------------------
     def display_auth_form(self):
-        """Show authentication form with prefilled fields and connected widgets.
-        """
+        """Show authentication form with prefilled fields and connected widgets."""
         self.informer = UserInformer(message_bar=self.msgbar, trad=self.tr)
         self.auth_sig.connect(self.informer.authentication_slot)
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(

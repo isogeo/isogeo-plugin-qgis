@@ -23,8 +23,7 @@ msgBar = iface.messageBar()
 
 
 class CacheManager:
-    """Basic class to manage the cache system of the layer addition.
-    """
+    """Basic class to manage the cache system of the layer addition."""
 
     def __init__(self):
         # Path to JSON cache file
@@ -55,8 +54,7 @@ class CacheManager:
         logger.debug("Cache has been dumped")
 
     def loader(self):
-        """Load and store ignored elements from the JSON cache file.
-        """
+        """Load and store ignored elements from the JSON cache file."""
         try:
             with open(self.cache_file, "r") as cache:
                 cache_loaded = json.load(cache)
