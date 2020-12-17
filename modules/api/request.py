@@ -210,6 +210,7 @@ class ApiRequester(QObject):
         try:
             parsed_content = json.loads(content)
         except ValueError as e:
+            parsed_content = content
             if "No JSON object could be decoded" in str(e):
                 logger.error("{} --> Internet connection failed".format(str(e)))
                 self.api_sig.emit("internet_issue")
