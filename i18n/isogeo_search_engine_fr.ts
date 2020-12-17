@@ -617,15 +617,18 @@ You have a proxy set up on your OS {} but none in QGIS.
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="165"/>
-        <source>This data is subject to {} legal limitation(s) :</source>
-        <translation>Cette données est soumise à {} limitation(s) de type &quot;légal&quot; :</translation>
+        <source>This data is subject to </source>
+        <translation>Cette donnée est soumise à </translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="173"/>
-        <source>
- - No description provided</source>
-        <translation>
- - Aucune description fournie</translation>
+        <location filename="../modules/user_inform.py" line="165"/>
+        <source> legal limitation(s) :</source>
+        <translation> limitation(s) de type &quot;légal&quot; :</translation>
+    </message>
+    <message>
+        <location filename="../modules/user_inform.py" line="171"/>
+        <source>No description provided</source>
+        <translation>Aucune description renseignée</translation>
     </message>
 </context>
 <context>
