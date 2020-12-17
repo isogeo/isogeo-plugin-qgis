@@ -16,7 +16,7 @@ from qgis.utils import iface
 # PyQT
 from qgis.PyQt.QtCore import pyqtSignal, QSettings, Qt
 from qgis.PyQt.QtWidgets import QComboBox
-from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtGui import QIcon, QStandardItem
 
 # UI classe
 from ..ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
