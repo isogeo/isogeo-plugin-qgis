@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR">
 <context>
     <name>ApiRequester</name>
     <message>
@@ -294,7 +295,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="345"/>
         <source>---- Keywords ----</source>
-        <translation type="unfinished">---- Mots-clés ----</translation>
+        <translation>---- Mots-clés ----</translation>
     </message>
 </context>
 <context>
