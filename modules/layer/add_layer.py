@@ -77,6 +77,89 @@ class LayerAdder:
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
         QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
 
+    def add_from_file(self, layer_label: str, path: list, data_type: str):
+        """Add a layer to QGIS map canvas from a file.
+        """
+        # If the layer to be added is a vector file
+        if data_type == "vector":
+            name = os.path.basename(path).split(".")[0]
+            layer = QgsVectorLayer(path, layer_label, "ogr")
+            if layer.isValid():
+                lyr = QgsProject.instance().addMapLayer(layer)
+                try:
+                    QgsMessageLog.logMessage(
+                        message="Data layer added: {}".format(name),
+                        tag="Isogeo",
+                        level=0,
+                    )
+                    logger.debug("Vector layer added: {}".format(path))
+                except UnicodeEncodeError:
+                    QgsMessageLog.logMessage(
+                        message="Vector layer added:: {}".format(
+                            name.decode("latin1")
+                        ),
+                        tag="Isogeo",
+                        level=0,
+                    )
+                    logger.debug(
+                        "Vector layer added: {}".format(name.decode("latin1"))
+                    )
+            else:
+                error_msg = layer.error().message()
+                logger.warning(
+                    "Invalid vector layer: {}. QGIS says: {}".format(
+                        path, error_msg
+                    )
+                )
+                QMessageBox.information(
+                    iface.mainWindow(),
+                    self.tr("Error", context=__class__.__name__),
+                    self.tr(
+                        "Vector not valid {}. QGIS says: {}".format(path, error_msg),
+                        context=__class__.__name__,
+                    ),
+                )
+        # If raster file
+        elif data_type == "raster":
+            name = os.path.basename(path).split(".")[0]
+            layer = QgsRasterLayer(path, layer_label)
+            if layer.isValid():
+                lyr = QgsProject.instance().addMapLayer(layer)
+                try:
+                    QgsMessageLog.logMessage(
+                        message="Data layer added: {}".format(name),
+                        tag="Isogeo",
+                        level=0,
+                    )
+                    logger.debug("Raster layer added: {}".format(path))
+                except UnicodeEncodeError:
+                    QgsMessageLog.logMessage(
+                        message="Raster layer added:: {}".format(
+                            name.decode("latin1")
+                        ),
+                        tag="Isogeo",
+                        level=0,
+                    )
+                    logger.debug(
+                        "Raster layer added: {}".format(name.decode("latin1"))
+                    )
+            else:
+                error_msg = layer.error().message()
+                logger.warning(
+                    "Invalid raster layer: {}. QGIS says: {}".format(
+                        path, error_msg
+                    )
+                )
+                QMessageBox.information(
+                    iface.mainWindow(),
+                    self.tr("Error", context=__class__.__name__),
+                    self.tr(
+                        "Raster not valid {}. QGIS says: {}".format(path, error_msg),
+                        context=__class__.__name__,
+                    ),
+                )
+        return lyr
+
     def adding(self, layer_info):
         """Add a layer to QGIS map canvas.
 
@@ -100,85 +183,12 @@ class LayerAdder:
 
         if type(layer_info) == list:
             # If the layer to be added is a vector file
-            if layer_info[0] == "vector":
-                path = layer_info[1]
-                name = os.path.basename(path).split(".")[0]
-                layer = QgsVectorLayer(path, layer_label, "ogr")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    try:
-                        QgsMessageLog.logMessage(
-                            message="Data layer added: {}".format(name),
-                            tag="Isogeo",
-                            level=0,
-                        )
-                        logger.debug("Vector layer added: {}".format(path))
-                    except UnicodeEncodeError:
-                        QgsMessageLog.logMessage(
-                            message="Vector layer added:: {}".format(
-                                name.decode("latin1")
-                            ),
-                            tag="Isogeo",
-                            level=0,
-                        )
-                        logger.debug(
-                            "Vector layer added: {}".format(name.decode("latin1"))
-                        )
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning(
-                        "Invalid vector layer: {}. QGIS says: {}".format(
-                            path, error_msg
-                        )
-                    )
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", context=__class__.__name__),
-                        self.tr(
-                            "Vector not valid {}. QGIS says: {}".format(path, error_msg),
-                            context=__class__.__name__,
-                        ),
-                    )
-            # If raster file
-            elif layer_info[0] == "raster":
-                path = layer_info[1]
-                name = os.path.basename(path).split(".")[0]
-                layer = QgsRasterLayer(path, layer_label)
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    try:
-                        QgsMessageLog.logMessage(
-                            message="Data layer added: {}".format(name),
-                            tag="Isogeo",
-                            level=0,
-                        )
-                        logger.debug("Raster layer added: {}".format(path))
-                    except UnicodeEncodeError:
-                        QgsMessageLog.logMessage(
-                            message="Raster layer added:: {}".format(
-                                name.decode("latin1")
-                            ),
-                            tag="Isogeo",
-                            level=0,
-                        )
-                        logger.debug(
-                            "Raster layer added: {}".format(name.decode("latin1"))
-                        )
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning(
-                        "Invalid raster layer: {}. QGIS says: {}".format(
-                            path, error_msg
-                        )
-                    )
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", context=__class__.__name__),
-                        self.tr(
-                            "Raster not valid {}. QGIS says: {}".format(path, error_msg),
-                            context=__class__.__name__,
-                        ),
-                    )
+            if layer_info[0] == "vector" or layer_info[0] == "raster":
+                self.add_from_file(
+                    layer_label=layer_label,
+                    path=layer_info[1],
+                    data_type=layer_info[0]
+                )
             # If EFS link
             elif layer_info[0] == "EFS":
                 name = layer_info[1]
