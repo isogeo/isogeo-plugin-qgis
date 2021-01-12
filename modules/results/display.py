@@ -16,6 +16,7 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QPushButton, QLabel
 from .cache import CacheManager
 from ..tools import IsogeoPlgTools
 from ..layer.add_layer import LayerAdder
+from ..layer.geo_service import GeoServiceManager
 from ..layer.limitations_checker import LimitationsChecker
 
 # isogeo-pysdk
@@ -26,6 +27,7 @@ from ..isogeo_pysdk import Metadata
 # ##################################
 
 plg_tools = IsogeoPlgTools()
+geo_srv_mng = GeoServiceManager()
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
@@ -114,10 +116,10 @@ class ResultsManager(QObject):
         }
 
         self.service_dict = {
-            "efs": {"url_builder": self.layer_adder.build_efs_url, "ico": ico_efs},
-            "ems": {"url_builder": self.layer_adder.build_ems_url, "ico": ico_ems},
-            "wfs": {"url_builder": self.layer_adder.build_wfs_url, "ico": ico_wfs},
-            "wms": {"url_builder": self.layer_adder.build_wms_url, "ico": ico_wms},
+            "efs": {"url_builder": geo_srv_mng.build_efs_url, "ico": ico_efs},
+            "ems": {"url_builder": geo_srv_mng.build_ems_url, "ico": ico_ems},
+            "wfs": {"url_builder": geo_srv_mng.build_wfs_url, "ico": ico_wfs},
+            "wms": {"url_builder": geo_srv_mng.build_wms_url, "ico": ico_wms},
             "wmts": {"url_builder": None, "ico": ico_wmts},
         }
 
@@ -323,7 +325,7 @@ class ResultsManager(QObject):
                         }
                         # WMTS
                         if service.get("format") == "wmts":
-                            params = self.layer_adder.build_wmts_url(
+                            params = geo_srv_mng.build_wmts_url(
                                 layer, srv_details, rsc_type="ds_dyn_lyr_srv"
                             )
                         # EFS, EMS, WMS or WFS
@@ -370,7 +372,7 @@ class ResultsManager(QObject):
                     # WMTS
                     if md.format == "wmts":
                         for layer in md.layers:
-                            name_url = self.layer_adder.build_wmts_url(
+                            name_url = geo_srv_mng.build_wmts_url(
                                 layer, srv_details, rsc_type="service"
                             )
                             if name_url[0] != 0:
