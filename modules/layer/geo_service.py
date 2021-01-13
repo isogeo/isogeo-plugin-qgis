@@ -224,7 +224,8 @@ class GeoServiceManager:
                 self.cached_wfs["DescribeFeatureType"] = 0
                 return (
                     0,
-                    "Required DescribeFeatureType operation not available in: " + wfs_url_getcap,
+                    "Required DescribeFeatureType operation not available in: "
+                    + wfs_url_getcap,
                 )
             else:
                 self.cached_wfs["DescribeFeatureType"] = 1
@@ -244,7 +245,9 @@ class GeoServiceManager:
                     lyr.split(":")[1] for lyr in list(wfs.contents)
                 ]:
                     layer_name = list(wfs.contents)[
-                        [lyr.split(":")[1] for lyr in list(wfs.contents)].index(layer_name)
+                        [lyr.split(":")[1] for lyr in list(wfs.contents)].index(
+                            layer_name
+                        )
                     ]
                     try:
                         wfs_lyr = wfs[layer_name]
@@ -288,7 +291,11 @@ class GeoServiceManager:
             if srs_map in wfs_lyr_crs_epsg:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
                 srs = srs_map
-            elif (srs_qgs_new in wfs_lyr_crs_epsg and srs_qgs_otf_on == "false" and srs_qgs_otf_auto == "false"):
+            elif (
+                srs_qgs_new in wfs_lyr_crs_epsg
+                and srs_qgs_otf_on == "false"
+                and srs_qgs_otf_auto == "false"
+            ):
                 logger.debug(
                     "It's a SRS match! With default new project: " + srs_qgs_new
                 )
@@ -479,7 +486,11 @@ class GeoServiceManager:
             if srs_map in wms_lyr.crsOptions:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
                 srs = srs_map
-            elif (srs_qgs_new in wms_lyr.crsOptions and srs_qgs_otf_on == "false" and srs_qgs_otf_auto == "false"):
+            elif (
+                srs_qgs_new in wms_lyr.crsOptions
+                and srs_qgs_otf_on == "false"
+                and srs_qgs_otf_auto == "false"
+            ):
                 logger.debug(
                     "It's a SRS match! With default new project: " + srs_qgs_new
                 )
@@ -679,5 +690,5 @@ class GeoServiceManager:
         logger.debug(wmts_url_final)
 
         # method ending
-        return ["WMTS", layer_title, wmts_url_final]
+        return ["WMTS", layer_title, wmts_url_final, "", ""]
         # return QgsRasterLayer(wms_url_final, layer_title, 'wms')

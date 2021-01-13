@@ -36,6 +36,21 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 plg_tools = IsogeoPlgTools()
 geo_srv_mng = GeoServiceManager()
 
+li_datafile_types = ["vector", "raster"]
+
+dict_service_types = {
+    "WFS": "WFS",
+    "WMS": "wms",
+    "EFS": "arcgisfeatureserver",
+    "EMS": "arcgismapserver",
+    "WMTS": "wms",
+}
+
+dict_classic_ogc_service = {
+    "WFS": {"QgsLayer": QgsVectorLayer, "url_builder": geo_srv_mng.build_wfs_url},
+    "WMS": {"QgsLayer": QgsRasterLayer, "url_builder": geo_srv_mng.build_wms_url},
+}
+
 qgis_wms_formats = (
     "image/png",
     "image/png8",
@@ -77,12 +92,50 @@ class LayerAdder:
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
         QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
 
+    def invalid_layer_inform(self, data_type: str, data_source: str, error_msg: str):
+        """Write a Warning into log fil + inform the user that the layer can't be added to the map canevas
+
+        :param str data_type: the type of data ("vector", "raster", "WFS", "WMS", "EFS", "EMS" or "WMTS")
+        :param str data_source: the path to data file or the URL to geographic service layer depending on data_type
+        :param error_msg str: the QgsLayer error message
+        """
+
+        # Retrieving 'layer specific' informations
+        if data_type in dict_service_types:
+            layer_type = "service layer"
+            data_name = data_source
+        elif data_type in li_datafile_types:
+            layer_type = "data file layer"
+            data_type = data_type.capitalize()
+            data_name = os.path.basename(data_source).split(".")[0]
+        else:
+            raise ValueError(
+                "'data_type' argument value should be 'vector', 'raster', 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
+            )
+
+        # Let's inform the user
+        logger.warning(
+            "Invalid {} {}: {}. QGIS says: {}".format(
+                data_type, layer_type, data_source, error_msg
+            )
+        )
+        QMessageBox.information(
+            iface.mainWindow(),
+            self.tr("Error", context=__class__.__name__),
+            self.tr(
+                "<strong>{} {} is not valid</strong> {}.<br><br><strong>QGIS says:</strong>{}".format(
+                    data_type, layer_type, data_name, error_msg
+                ),
+                context=__class__.__name__,
+            ),
+        )
+
     def add_from_file(self, layer_label: str, path: str, data_type: str):
         """Add a layer to QGIS map canvas from a file.
 
         :param str layer_label: the name that gonna be given to layer into QGIS layers manager
         :param list path: the path to file from which the layer gonna be created
-        :data_type str: the type of data ("vector" or "raster")
+        :param data_type str: the type of data ("vector" or "raster")
         """
         # retrieving the name of the data file
         name = os.path.basename(path).split(".")[0]
@@ -93,11 +146,14 @@ class LayerAdder:
         elif data_type == "raster":
             layer = QgsRasterLayer(path, layer_label)
         else:
-            raise TypeError("'data_type' argument value should be 'vector' or 'raster'")
+            raise ValueError(
+                "'data_type' argument value should be 'vector' or 'raster'"
+            )
 
         # If the layer is valid, add it to the map canvas and inform the user
         if layer.isValid():
             lyr = QgsProject.instance().addMapLayer(layer)
+            layer_is_ok = 1
             try:
                 QgsMessageLog.logMessage(
                     message="Data layer added: {}".format(name), tag="Isogeo", level=0,
@@ -119,26 +175,104 @@ class LayerAdder:
         # If it's not, just inform the user
         else:
             error_msg = layer.error().message()
-            logger.warning(
-                "Invalid {} layer: {}. QGIS says: {}".format(data_type, path, error_msg)
-            )
-            QMessageBox.information(
-                iface.mainWindow(),
-                self.tr("Error", context=__class__.__name__),
-                self.tr(
-                    "{} not valid {}. QGIS says: {}".format(
-                        data_type.capitalize(), path, error_msg
-                    ),
-                    context=__class__.__name__,
-                ),
-            )
+            layer_is_ok = 0
 
-        return lyr
+        if not layer_is_ok:
+            self.invalid_layer_inform(
+                data_type=data_type, data_source=path, error_msg=error_msg
+            )
+            return 0, layer
+        else:
+            return lyr, layer
 
-    def add_from_service(self, layer_label: str, path: list, url: str):
-        """Add a layer to QGIS map canvas from a file.
+    def add_from_service(
+        self,
+        layer_label: str,
+        url: list,
+        layer_name: str,
+        service_type: str,
+        additional_infos: list,
+    ):
+        """Add a layer to QGIS map canvas from a Geographic Service Layer.
+
+        :param str layer_label: the name that gonna be given to layer into QGIS layers manager
+        :param list url: the URL/URI of the Geographic Service Layer
+        :param str layer_name: the name of the Geographic Service Layer
+        :param str data_type: the type of the service ("WFS", "WMS", "EFS", "EMS" or "WMTS")
+        :param list additional_infos: infos needed to call WMS or WFS URL builder in 'complete' mode
         """
-        return
+
+        # Create the vector layer or the raster layer depending on service_type
+        if service_type == "WFS" or service_type == "EFS":
+            layer = QgsVectorLayer(
+                url, layer_label, dict_service_types.get(service_type)
+            )
+        elif service_type == "WMS" or service_type == "EMS" or service_type == "WMTS":
+            layer = QgsRasterLayer(
+                url, layer_label, dict_service_types.get(service_type)
+            )
+        else:
+            raise ValueError(
+                "'service_type' argument value should be 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
+            )
+
+        # If the layer is valid, add it to the map canvas and inform the user
+        if layer.isValid():
+            lyr = QgsProject.instance().addMapLayer(layer)
+            QgsMessageLog.logMessage(
+                message="{} service layer added: {}".format(service_type, url),
+                tag="Isogeo",
+                level=0,
+            )
+            logger.debug("{} layer added: {}".format(service_type, url))
+            layer_is_ok = 1
+        # If the layer is not valid
+        else:
+            error_msg = layer.error().message()
+            layer_is_ok = 0
+            # If the service type is WFS or WMS
+            if service_type in dict_classic_ogc_service:
+                build_url_method = dict_classic_ogc_service.get(service_type).get(
+                    "url_builder"
+                )
+                QgsLayer = dict_classic_ogc_service.get(service_type).get("QgsLayer")
+                # Rebuild the URL in 'complete' mode using 'additional_infos'
+                name_url = build_url_method(
+                    additional_infos[0], additional_infos[1], mode="complete"
+                )
+                # Then try to add
+                if name_url[0] != 0:
+                    url = name_url[2]
+                    layer = QgsLayer(
+                        name_url[2], layer_label, dict_service_types.get(service_type)
+                    )
+                    if layer.isValid():
+                        lyr = QgsProject.instance().addMapLayer(layer)
+                        QgsMessageLog.logMessage(
+                            message="{} service layer added: {}".format(
+                                service_type, url
+                            ),
+                            tag="Isogeo",
+                            level=0,
+                        )
+                        logger.debug("{} layer added: {}".format(service_type, url))
+                        layer_is_ok = 1
+                    else:
+                        error_msg = layer.error().message()
+                # If the layer is still not valid, inform the user
+                else:
+                    pass
+            # If the service type is not WFS or WMS, just inform the user
+            else:
+                pass
+
+        if not layer_is_ok:
+            self.invalid_layer_inform(
+                data_type=service_type, data_source=url, error_msg=error_msg
+            )
+            return 0, layer
+        else:
+            return lyr, layer
 
     def adding(self, layer_info):
         """Add a layer to QGIS map canvas.
@@ -163,144 +297,28 @@ class LayerAdder:
 
         if type(layer_info) == list:
             # If the layer to be added is a vector file
-            if layer_info[0] == "vector" or layer_info[0] == "raster":
-                lyr = self.add_from_file(
+            if layer_info[0] in li_datafile_types:
+                added_layer = self.add_from_file(
                     layer_label=layer_label, path=layer_info[1], data_type=layer_info[0]
                 )
-            # If EFS link
-            elif layer_info[0] == "EFS":
-                name = layer_info[1]
-                uri = layer_info[2]
-                layer = QgsVectorLayer(uri, layer_label, "arcgisfeatureserver")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("EFS layer added: {}".format(uri))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning(
-                        "Invalid service: {}. QGIS says: {}".format(uri, error_msg)
-                    )
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", context=__class__.__name__),
-                        self.tr(
-                            "EFS not valid. QGIS says: {}".format(error_msg),
-                            context=__class__.__name__,
-                        ),
-                    )
-            # If EMS link
-            elif layer_info[0] == "EMS":
-                name = layer_info[1]
-                uri = layer_info[2]
-                layer = QgsRasterLayer(uri, layer_label, "arcgismapserver")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("EMS layer added: {}".format(uri))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning(
-                        "Invalid service: {}. QGIS says: {}".format(uri, error_msg)
-                    )
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", context=__class__.__name__),
-                        self.tr(
-                            "EMS not valid. QGIS says: {}".format(error_msg),
-                            context=__class__.__name__,
-                        ),
-                    )
-            # If WFS link
-            elif layer_info[0] == "WFS":
-                name = layer_info[1]
-                url = layer_info[2]
-                layer = QgsVectorLayer(url, layer_label, "WFS")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WFS layer added: {}".format(url))
-                else:
-                    error_msg = layer.error().message()
-                    name_url = geo_srv_mng.build_wfs_url(
-                        layer_info[3], layer_info[4], mode="complete"
-                    )
-                    if name_url[0] != 0:
-                        layer = QgsVectorLayer(name_url[2], layer_label, "WFS")
-                        if layer.isValid():
-                            lyr = QgsProject.instance().addMapLayer(layer)
-                            logger.debug("WFS layer added: {}".format(url))
-                        else:
-                            error_msg = layer.error().message()
-                            logger.warning(
-                                "Invalid service: {}. QGIS says: {}".format(
-                                    url, error_msg
-                                )
-                            )
-                    else:
-                        QMessageBox.information(
-                            iface.mainWindow(),
-                            self.tr("Error", context=__class__.__name__),
-                            self.tr(
-                                "WFS is not valid. QGIS says: {}".format(error_msg),
-                                context=__class__.__name__,
-                            ),
-                        )
-                        pass
-            # If WMS link
-            elif layer_info[0] == "WMS":
-                name = layer_info[1]
-                url = layer_info[2]
-                layer = QgsRasterLayer(url, layer_label, "wms")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WMS layer added: {}".format(url))
-                else:
-                    error_msg = layer.error().message()
-                    name_url = geo_srv_mng.build_wms_url(
-                        layer_info[3], layer_info[4], mode="complete"
-                    )
-                    if name_url[0] != 0:
-                        layer = QgsRasterLayer(name_url[2], layer_label, "wms")
-                        if layer.isValid():
-                            lyr = QgsProject.instance().addMapLayer(layer)
-                            logger.debug("WMS layer added: {}".format(url))
-                        else:
-                            error_msg = layer.error().message()
-                            logger.warning(
-                                "Invalid service: {}. QGIS says: {}".format(
-                                    url, error_msg
-                                )
-                            )
-                    else:
-                        QMessageBox.information(
-                            iface.mainWindow(),
-                            self.tr("Error", context=__class__.__name__),
-                            self.tr(
-                                "WMS is not valid. QGIS says: {}".format(error_msg),
-                                context=__class__.__name__,
-                            ),
-                        )
-            # If WMTS link
-            elif layer_info[0] == "WMTS":
-                name = layer_info[1]
-                url = layer_info[2]
-                layer = QgsRasterLayer(url, layer_label, "wms")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WMTS service layer added: {}".format(url))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning(
-                        "Invalid service: {}. QGIS says: {}".format(url, error_msg)
-                    )
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", context=__class__.__name__),
-                        self.tr(
-                            "WMTS is not valid. QGIS says: {}".format(error_msg),
-                            context=__class__.__name__,
-                        ),
-                    )
+                lyr = added_layer[0]
+                layer = added_layer[1]
+            elif layer_info[0] in dict_service_types:
+                added_layer = self.add_from_service(
+                    layer_label=layer_label,
+                    url=layer_info[2],
+                    layer_name=layer_info[1],
+                    service_type=layer_info[0],
+                    additional_infos=[layer_info[3], layer_info[4]],
+                )
+                lyr = added_layer[0]
+                layer = added_layer[1]
             else:
-                pass
+                raise ValueError(
+                    "The data should be a file ('vector' or 'raster') or a geo service (OGC or ESRI), not : {}".format(
+                        layer_info[0]
+                    )
+                )
 
         # If the data is a PostGIS table
         elif isinstance(layer_info, dict):
@@ -373,8 +391,10 @@ class LayerAdder:
                     ),
                 )
                 return 0
+        else:
+            pass
         # filling 'QGIS Server' tab of layer Properties
-        if lyr.isValid():
+        if layer.isValid():
             try:
                 self.md_sync.basic_sync(layer=lyr, info=layer_info)
             except IndexError as e:
