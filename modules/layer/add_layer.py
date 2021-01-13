@@ -274,6 +274,79 @@ class LayerAdder:
         else:
             return lyr, layer
 
+    def add_from_database(self, layer_info: dict):
+        """Add a layer to QGIS map canvas from a database table.
+
+        :param dict layer_info: dictionnary containing informations needed to add the layer from the database table
+        """
+
+        logger.debug("Data type: PostGIS")
+        # Give aliases to the data passed as arguement
+        base_name = layer_info.get("base_name", "")
+        schema = layer_info.get("schema", "")
+        table = layer_info.get("table", "")
+        # Retrieve the database information stored in the PostGISdict
+        uri = QgsDataSourceUri()
+        host = self.PostGISdict[base_name]["host"]
+        port = self.PostGISdict[base_name]["port"]
+        user = self.PostGISdict[base_name]["username"]
+        password = self.PostGISdict[base_name]["password"]
+        # set host name, port, database name, username and password
+        uri.setConnection(host, port, base_name, user, password)
+        # Get the geometry column name from the database connexion & table
+        # name.
+        c = pgis_con.PostGisDBConnector(uri)
+        dico = c.getTables()
+        for i in dico:
+            if i[0 == 1] and i[1] == table:
+                geometry_column = i[8]
+        # set database schema, table name, geometry column
+        uri.setDataSource(schema, table, geometry_column)
+        # Adding the layer to the map canvas
+        layer = QgsVectorLayer(uri.uri(), table, "postgres")
+        if layer.isValid():
+            lyr = QgsProject.instance().addMapLayer(layer)
+            logger.debug("Data added: {}".format(table))
+        elif (
+            not layer.isValid()
+            and plg_tools.last_error[0] == "postgis"
+            and "prim" in plg_tools.last_error[1]
+        ):
+            logger.debug(
+                "PostGIS layer may be a view, "
+                "so key column is missing. "
+                "Trying to automatically set one..."
+            )
+            # get layer fields to set as key column
+            fields = layer.dataProvider().fields()
+            fields_names = [i.name() for i in fields]
+            # sort them by name containing id to better perf
+            fields_names.sort(key=lambda x: ("id" not in x, x))
+            for field in fields_names:
+                uri.setKeyColumn(field)
+                layer = QgsVectorLayer(uri.uri(True), table, "postgres")
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    logger.debug(
+                        "PostGIS view layer added with [{}] as key column".format(field)
+                    )
+                else:
+                    continue
+        else:
+            logger.debug("Layer not valid. table = {}".format(table))
+            QMessageBox.information(
+                iface.mainWindow(),
+                self.tr("Error", context=__class__.__name__),
+                self.tr(
+                    "The PostGIS layer is not valid."
+                    " Reason: {}".format(plg_tools.last_error),
+                    context=__class__.__name__,
+                ),
+            )
+            return 0
+
+        return lyr, layer
+
     def adding(self, layer_info):
         """Add a layer to QGIS map canvas.
 
@@ -296,13 +369,12 @@ class LayerAdder:
         logger.info("Adding a layer from those parameters :{}".format(layer_info))
 
         if type(layer_info) == list:
-            # If the layer to be added is a vector file
+            # If the layer to be added is from a file
             if layer_info[0] in li_datafile_types:
                 added_layer = self.add_from_file(
                     layer_label=layer_label, path=layer_info[1], data_type=layer_info[0]
                 )
-                lyr = added_layer[0]
-                layer = added_layer[1]
+            # If the layer to be added is from a geographic service
             elif layer_info[0] in dict_service_types:
                 added_layer = self.add_from_service(
                     layer_label=layer_label,
@@ -311,8 +383,6 @@ class LayerAdder:
                     service_type=layer_info[0],
                     additional_infos=[layer_info[3], layer_info[4]],
                 )
-                lyr = added_layer[0]
-                layer = added_layer[1]
             else:
                 raise ValueError(
                     "The data should be a file ('vector' or 'raster') or a geo service (OGC or ESRI), not : {}".format(
@@ -322,77 +392,12 @@ class LayerAdder:
 
         # If the data is a PostGIS table
         elif isinstance(layer_info, dict):
-            logger.debug("Data type: PostGIS")
-            # Give aliases to the data passed as arguement
-            base_name = layer_info.get("base_name", "")
-            schema = layer_info.get("schema", "")
-            table = layer_info.get("table", "")
-            # Retrieve the database information stored in the PostGISdict
-            uri = QgsDataSourceUri()
-            host = self.PostGISdict[base_name]["host"]
-            port = self.PostGISdict[base_name]["port"]
-            user = self.PostGISdict[base_name]["username"]
-            password = self.PostGISdict[base_name]["password"]
-            # set host name, port, database name, username and password
-            uri.setConnection(host, port, base_name, user, password)
-            # Get the geometry column name from the database connexion & table
-            # name.
-            c = pgis_con.PostGisDBConnector(uri)
-            dico = c.getTables()
-            for i in dico:
-                if i[0 == 1] and i[1] == table:
-                    geometry_column = i[8]
-            # set database schema, table name, geometry column
-            uri.setDataSource(schema, table, geometry_column)
-            # Adding the layer to the map canvas
-            layer = QgsVectorLayer(uri.uri(), table, "postgres")
-            if layer.isValid():
-                lyr = QgsProject.instance().addMapLayer(layer)
-                logger.debug("Data added: {}".format(table))
-            elif (
-                not layer.isValid()
-                and plg_tools.last_error[0] == "postgis"
-                and "prim" in plg_tools.last_error[1]
-            ):
-                logger.debug(
-                    "PostGIS layer may be a view, "
-                    "so key column is missing. "
-                    "Trying to automatically set one..."
-                )
-                # get layer fields to set as key column
-                fields = layer.dataProvider().fields()
-                fields_names = [i.name() for i in fields]
-                # sort them by name containing id to better perf
-                fields_names.sort(key=lambda x: ("id" not in x, x))
-                for field in fields_names:
-                    uri.setKeyColumn(field)
-                    layer = QgsVectorLayer(uri.uri(True), table, "postgres")
-                    if layer.isValid():
-                        lyr = QgsProject.instance().addMapLayer(layer)
-                        logger.debug(
-                            "PostGIS view layer added with [{}] as key column".format(
-                                field
-                            )
-                        )
-                        # filling 'QGIS Server' tab of layer Properties
-                        self.md_sync.basic_sync(layer=lyr, info=layer_info)
-                        return 1
-                    else:
-                        continue
-            else:
-                logger.debug("Layer not valid. table = {}".format(table))
-                QMessageBox.information(
-                    iface.mainWindow(),
-                    self.tr("Error", context=__class__.__name__),
-                    self.tr(
-                        "The PostGIS layer is not valid."
-                        " Reason: {}".format(plg_tools.last_error),
-                        context=__class__.__name__,
-                    ),
-                )
-                return 0
+            added_layer = self.add_from_database(layer_info=layer_info)
         else:
             pass
+
+        lyr = added_layer[0]
+        layer = added_layer[1]
         # filling 'QGIS Server' tab of layer Properties
         if layer.isValid():
             try:
