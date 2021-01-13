@@ -236,15 +236,7 @@ class ResultsManager(QObject):
             add_options_dict = {}
 
             # Build metadata portal URL if the setting is checked in "Settings" tab
-            add_portal_md_url = int(
-                qsettings.value("isogeo/settings/add_metadata_url_portal", 0)
-            )
-            portal_base_url = self.form_mng.input_portal_url.text()
-            portal_md_url = ""
-            if add_portal_md_url and portal_base_url != "":
-                portal_md_url = portal_base_url + md._id
-            else:
-                pass
+            portal_md_url = self.build_md_portal_url(md._id)
 
             # Files and PostGIS direct access
             if md.format:
@@ -497,10 +489,10 @@ class ResultsManager(QObject):
         return None
 
     # -- PRIVATE METHOD -------------------------------------------------------
-    def _filepath_builder(self, metadata_path):
+    def _filepath_builder(self, metadata_path: str):
         """Build filepath from metadata path handling various cases. See: #129.
 
-        :param dict metadata_path: path found in metadata
+        :param str metadata_path: path found in metadata
         """
         # building
         filepath = Path(metadata_path)
@@ -522,6 +514,23 @@ class ResultsManager(QObject):
         else:
             logger.debug("Path has been ignored because it's cached.")
             return False
+
+    def build_md_portal_url(self, metadata_id: str):
+        """Build the URL of the metadata into Isogeo Portal (see https://github.com/isogeo/isogeo-plugin-qgis/issues/312)
+
+        :param str metadata_id: id of the metadata
+        """
+        add_portal_md_url = int(
+            qsettings.value("isogeo/settings/add_metadata_url_portal", 0)
+        )
+        portal_base_url = self.form_mng.input_portal_url.text()
+
+        if add_portal_md_url and portal_base_url != "":
+            portal_md_url = portal_base_url + metadata_id
+        else:
+            portal_md_url = ""
+
+        return portal_md_url
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connexions."""
