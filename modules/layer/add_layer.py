@@ -231,6 +231,7 @@ class LayerAdder:
             error_msg = layer.error().message()
             layer_is_ok = 0
             # If the service type is WFS or WMS
+            logger.debug("*=====* DEBUG ADD FROM WFS : quick_url --> {}".format(url))
             if service_type in dict_classic_ogc_service:
                 build_url_method = dict_classic_ogc_service.get(service_type).get(
                     "url_builder"

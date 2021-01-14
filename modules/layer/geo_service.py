@@ -4,8 +4,8 @@
 # Standard library
 import logging
 import re
-from urllib.request import unquote
-from urllib.parse import urlencode
+# from urllib.request import unquote
+from urllib.parse import urlencode, unquote
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings
@@ -66,7 +66,6 @@ except ImportError:
     )
 try:
     import requests
-
     logger.info("Depencencies - Requests version: {}".format(requests.__version__))
 except ImportError:
     logger.warning("Depencencies - Requests not available")
@@ -163,14 +162,14 @@ class GeoServiceManager:
         geoserver = "geoserver" in wfs_url_getcap
         layer_id = api_layer.get("id")
         layer_name = re.sub("\{.*?}", "", layer_id)
-        # handling WFS namespaces
-        if "{" in layer_id:
-            first_car = layer_id.find("{") + 1
-            last_car = layer_id.find("}")
-            namespace = layer_id[first_car:last_car]
-            logging.debug("WFS - Namespace: " + namespace)
-        else:
-            namespace = ""
+        # # handling WFS namespaces
+        # if "{" in layer_id:
+        #     first_car = layer_id.find("{") + 1
+        #     last_car = layer_id.find("}")
+        #     namespace = layer_id[first_car:last_car]
+        #     logging.debug("WFS - Namespace: " + namespace)
+        # else:
+        #     namespace = ""
 
         if mode == "quicky":
             # let's try a quick & dirty url build
@@ -178,11 +177,26 @@ class GeoServiceManager:
             wfs_url_base = srv_details.get("path")
             uri = QgsDataSourceUri()
             uri.setParam("url", wfs_url_base)
-            uri.setParam("typename", layer_name)
-            uri.setParam("version", "auto")
-            uri.setParam("srsname", srs_map)
-            uri.setParam("restrictToRequestBBOX", "1")
+            uri.setParam("SERVICE", "WFS")
+            uri.setParam("REQUEST", "GetFeature")
+            uri.setParam("TYPENAME", layer_name)
+            uri.setParam("VERSION", "auto")
+            # uri.setParam("SRSNAME", srs_map)
+            # uri.setParam("restrictToRequestBBOX", "1")
             wfs_url_quicky = uri.uri()
+
+            params = {
+                "service": "WFS",
+                "request": "GetFeature",
+                "typename": "ENVIRONNEMENT:" + layer_name,
+                "version": "2.0",
+            }
+
+            if wfs_url_base.endswith("?"):
+                pass
+            else:
+                wfs_url_base += "?"
+            wfs_url_quicky = wfs_url_base + unquote(urlencode(params))
 
             btn_lbl = "WFS : {}".format(layer_title)
             return ["WFS", layer_title, wfs_url_quicky, api_layer, srv_details, btn_lbl]
