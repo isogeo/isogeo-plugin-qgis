@@ -308,6 +308,7 @@ class ResultsManager(QObject):
                     pass
             # Associated service layers
             if md.type == "vectorDataset" or md.type == "rasterDataset":
+                logger.debug("*=====* DEBUG ADD FROM EFS : md.serviceLayers --> {}".format(md.serviceLayers))
                 for layer in md.serviceLayers:
                     service = layer.get("service")
                     if service is not None:

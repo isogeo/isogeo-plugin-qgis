@@ -131,23 +131,14 @@ class GeoServiceManager:
         else:
             pass
 
-        efs_lyr_url = str(srv_details.get("path"))
+        if srv_details.get("path").endswith("/"):
+            efs_lyr_url = srv_details.get("path")
+        else:
+            efs_lyr_url = srv_details.get("path") + "/"
 
-        efs_uri = QgsDataSourceUri()
-        efs_uri.setParam("url", efs_lyr_url)
-        efs_uri.setParam("layer", layer_name)
-        efs_uri.setParam("crs", srs_map)
-        efs_uri.setParam("restrictToRequestBBOX", "1")
-
-        li_url_params = [
-            "REQUEST=GetFeatures",
-            "layer={}".format(layer_name),
-        ]
-
-        efs_url = efs_lyr_url + "&".join(li_url_params)
+        efs_url = efs_lyr_url + layer_name
 
         btn_lbl = "EFS : {}".format(efs_lyr_title)
-        # return ["EFS", efs_lyr_title, efs_uri.uri(), api_layer, srv_details, btn_lbl]
         return ["EFS", efs_lyr_title, efs_url, api_layer, srv_details, btn_lbl]
 
     def build_ems_url(
