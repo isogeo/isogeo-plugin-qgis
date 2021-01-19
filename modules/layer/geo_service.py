@@ -149,54 +149,55 @@ class GeoServiceManager:
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
-        # local variables
+
+        # retrieve and clean base url
+        wfs_url_base = srv_details.get("path")
+        if wfs_url_base.endswith("?"):
+            pass
+        else:
+            wfs_url_base += "?"
+
+        # retrieve and clean api_layer_name from api_layer_id
+        api_layer_id = api_layer.get("id")
+        api_layer_name = re.sub("\{.*?}", "", api_layer_id)
+
+        # retrieve layer title
         layer_title = "WFS Layer"
         if len(api_layer.get("titles")):
             layer_title = api_layer.get("titles")[0].get("value", "WFS Layer")
         else:
             pass
 
-        wfs_url_getcap = (
-            srv_details.get("path") + "?request=GetCapabilities&service=WFS"
-        )
+        # build GetCapabilities url
+        wfs_url_getcap = (wfs_url_base + "request=GetCapabilities&service=WFS")
         geoserver = "geoserver" in wfs_url_getcap
-        layer_id = api_layer.get("id")
-        layer_name = re.sub("\{.*?}", "", layer_id)
-        # # handling WFS namespaces
-        # if "{" in layer_id:
-        #     first_car = layer_id.find("{") + 1
-        #     last_car = layer_id.find("}")
-        #     namespace = layer_id[first_car:last_car]
-        #     logging.debug("WFS - Namespace: " + namespace)
-        # else:
-        #     namespace = ""
+
+        # retrieve the wfs layer id (the real one)
+        wfs = WebFeatureService(
+            url=srv_details.get("path"),
+            version=srv_details.get("formatVersion")
+        )
+        logger.debug("*=====* DEBUG ADD FROM WFS : layer_name --> {}".format(api_layer_name))
+        logger.debug("*=====* DEBUG ADD FROM WFS : typenames --> {}".format(list(wfs.contents.keys())))
+        layer_typename = ""
+        for wfs_typename in list(wfs.contents.keys()):
+            if api_layer_name in wfs_typename:
+                layer_typename = wfs_typename
+            else:
+                pass
+        logger.debug("*=====* DEBUG ADD FROM WFS : layer_typename --> {}".format(layer_typename))
 
         if mode == "quicky":
-            # let's try a quick & dirty url build
-            srs_map = plg_tools.get_map_crs()
-            wfs_url_base = srv_details.get("path")
-            uri = QgsDataSourceUri()
-            uri.setParam("url", wfs_url_base)
-            uri.setParam("SERVICE", "WFS")
-            uri.setParam("REQUEST", "GetFeature")
-            uri.setParam("TYPENAME", layer_name)
-            uri.setParam("VERSION", "auto")
-            # uri.setParam("SRSNAME", srs_map)
-            # uri.setParam("restrictToRequestBBOX", "1")
-            wfs_url_quicky = uri.uri()
 
-            params = {
-                "service": "WFS",
-                "request": "GetFeature",
-                "typename": "ENVIRONNEMENT:" + layer_name,
-                "version": "2.0",
-            }
+            li_url_params = [
+                "REQUEST=GetFeatures",
+                "SERVICE=WFS",
+                "VERSION=auto",
+                "TYPENAME={}".format(layer_typename),
+            ]
 
-            if wfs_url_base.endswith("?"):
-                pass
-            else:
-                wfs_url_base += "?"
-            wfs_url_quicky = wfs_url_base + unquote(urlencode(params))
+            wfs_url_quicky = wfs_url_base + "&".join(li_url_params)
+            logger.debug("*=====* DEBUG ADD FROM WFS : wfs_url_quicky --> {}".format(wfs_url_quicky))
 
             btn_lbl = "WFS : {}".format(layer_title)
             return ["WFS", layer_title, wfs_url_quicky, api_layer, srv_details, btn_lbl]
@@ -248,28 +249,26 @@ class GeoServiceManager:
 
             # check if required layer is present
             try:
-                wfs_lyr = wfs[layer_name]
+                wfs_lyr = wfs[api_layer_name]
             except KeyError as e:
                 logger.error(
                     "Layer {} not found in WFS service: {}".format(
-                        layer_name, wfs_url_getcap
+                        api_layer_name, wfs_url_getcap
                     )
                 )
-                if geoserver and layer_name in [
-                    lyr.split(":")[1] for lyr in list(wfs.contents)
+                if geoserver and api_layer_name in [
+                    l.split(":")[1] for l in list(wfs.contents)
                 ]:
-                    layer_name = list(wfs.contents)[
-                        [lyr.split(":")[1] for lyr in list(wfs.contents)].index(
-                            layer_name
-                        )
+                    api_layer_name = list(wfs.contents)[
+                        [l.split(":")[1] for l in list(wfs.contents)].index(api_layer_name)
                     ]
                     try:
-                        wfs_lyr = wfs[layer_name]
+                        wfs_lyr = wfs[api_layer_name]
                     except KeyError as e:
                         return (
                             0,
                             "Layer {} not found in WFS service: {}".format(
-                                layer_name, wfs_url_getcap
+                                api_layer_name, wfs_url_getcap
                             ),
                             e,
                         )
@@ -277,7 +276,7 @@ class GeoServiceManager:
                     return (
                         0,
                         "Layer {} not found in WFS service: {}".format(
-                            layer_name, wfs_url_getcap
+                            api_layer_name, wfs_url_getcap
                         ),
                         e,
                     )
@@ -343,7 +342,7 @@ class GeoServiceManager:
                 wfs_url_params = {
                     "SERVICE": "WFS",
                     "VERSION": "1.0.0",
-                    "TYPENAME": layer_name,
+                    "TYPENAME": api_layer_name,
                     "SRSNAME": srs,
                 }
                 wfs_url_final = wfs_lyr_url + unquote(urlencode(wfs_url_params, "utf8"))
@@ -351,7 +350,7 @@ class GeoServiceManager:
                 wfs_url_params = {
                     "SERVICE": "WFS",
                     "VERSION": "1.0.0",
-                    "TYPENAME": layer_name.decode("latin1"),
+                    "TYPENAME": api_layer_name.decode("latin1"),
                     "SRSNAME": srs,
                 }
                 wfs_url_final = wfs_lyr_url + unquote(urlencode(wfs_url_params))
