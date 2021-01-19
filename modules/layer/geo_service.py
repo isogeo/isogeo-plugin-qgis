@@ -120,6 +120,8 @@ class GeoServiceManager:
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
+        logger.debug("*=====* DEBUG ADD FROM EFS : api_layer --> {}".format(api_layer))
+        logger.debug("*=====* DEBUG ADD FROM EFS : srv_details --> {}".format(srv_details))
         srs_map = plg_tools.get_map_crs()
         layer_name = api_layer.get("id")
 
@@ -137,8 +139,16 @@ class GeoServiceManager:
         efs_uri.setParam("crs", srs_map)
         efs_uri.setParam("restrictToRequestBBOX", "1")
 
+        li_url_params = [
+            "REQUEST=GetFeatures",
+            "layer={}".format(layer_name),
+        ]
+
+        efs_url = efs_lyr_url + "&".join(li_url_params)
+
         btn_lbl = "EFS : {}".format(efs_lyr_title)
-        return ["EFS", efs_lyr_title, efs_uri.uri(), api_layer, srv_details, btn_lbl]
+        # return ["EFS", efs_lyr_title, efs_uri.uri(), api_layer, srv_details, btn_lbl]
+        return ["EFS", efs_lyr_title, efs_url, api_layer, srv_details, btn_lbl]
 
     def build_ems_url(
         self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
