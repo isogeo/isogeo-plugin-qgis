@@ -358,10 +358,9 @@ class ResultsManager(QObject):
                             ] = params
                         else:
                             logger.warning(
-                                "Faile to build service URL for {} layer {} of {} metadata ({}): {}".format(
-                                    service.get("format"),
-                                    layer,
-                                    md.type,
+                                "Faile to build service URL for {} layer '{}' (of metadata {}): {}".format(
+                                    service.get("format").upper(),
+                                    layer.get("id"),
                                     md._id,
                                     params[1],
                                 )
@@ -399,8 +398,8 @@ class ResultsManager(QObject):
                                 add_options_dict[name_url[5]] = name_url
                             else:
                                 logger.warning(
-                                    "Faile to build service URL for layer {} of {} service metadata ({}): {}".format(
-                                        layer, md.format, md._id, params[1]
+                                    "Faile to build service URL for layer {} of {} service (of metadata {}): {}".format(
+                                        layer.get("id"), md.format.upper(), md._id, name_url[1]
                                     )
                                 )
                                 continue
