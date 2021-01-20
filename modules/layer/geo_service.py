@@ -4,6 +4,7 @@
 # Standard library
 import logging
 import re
+
 # from urllib.request import unquote
 from urllib.parse import urlencode, unquote
 
@@ -66,6 +67,7 @@ except ImportError:
     )
 try:
     import requests
+
     logger.info("Depencencies - Requests version: {}".format(requests.__version__))
 except ImportError:
     logger.warning("Depencencies - Requests not available")
@@ -85,32 +87,227 @@ class GeoServiceManager:
         self.cached_wms = dict()
         self.cached_wmts = dict()
 
+    def check_ogc_service(
+        self, service_type: str, service_url: str, service_version: str
+    ):
+        """Try to acces to the service from the given service_url and store the
+        capabilities into cached_wfs dict.
+        """
+        # Set local variables depending on service type
+        if service_type == "WFS":
+            cache_dict = self.cached_wfs
+            main_op_name = "GetFeature"
+            service_connector = WebFeatureService
+        elif service_type == "WMS":
+            cache_dict = self.cached_wms
+            main_op_name = "GetMap"
+            service_connector = WebMapService
+        elif service_type == "WMTS":
+            cache_dict = self.cached_wmts
+            main_op_name = "GetMap"
+            service_connector = WebMapTileService
+        else:
+            raise ValueError(
+                "'service_type' argument value should be 'WFS', 'WMS' or 'WMTS', not {}".format(
+                    service_type
+                )
+            )
+
+        cache_dict[service_url] = {}
+
+        # Basic checks on service reachability
+        try:
+            service = service_connector(url=service_url, version=service_version)
+            cache_dict[service_url]["reachable"] = 1
+        except ServiceException as e:
+            logger.error(str(e))
+            cache_dict[service_url]["reachable"] = 0
+            cache_dict[service_url]["error"] = "{} - Bad operation ({}): {}".format(
+                service_type, service_url, str(e)
+            )
+            return (
+                cache_dict[service_url]["reachable"],
+                cache_dict[service_url]["error"],
+            )
+        except HTTPError as e:
+            logger.error(str(e))
+            cache_dict[service_url]["reachable"] = 0
+            cache_dict[service_url][
+                "error"
+            ] = "{} - Service ({}) not reached: {}".format(
+                service_type, service_url, str(e)
+            )
+            return (
+                cache_dict[service_url]["reachable"],
+                cache_dict[service_url]["error"],
+            )
+        except Exception as e:
+            cache_dict[service_url]["reachable"] = 0
+            cache_dict[service_url][
+                "error"
+            ] = "{} - Connection to service ({}) failed: {}".format(
+                service_type, service_url, str(e)
+            )
+            return (
+                cache_dict[service_url]["reachable"],
+                cache_dict[service_url]["error"],
+            )
+
+        # Store several informations about the service
+        cache_dict[service_url][service_type] = service
+        cache_dict[service_url]["typenames"] = list(service.contents.keys())
+        cache_dict[service_url]["version"] = service.version
+        cache_dict[service_url]["operations"] = [op.name for op in service.operations]
+
+        if service_url.endswith("?"):
+            cache_dict[service_url]["base_url"] = service_url
+        else:
+            cache_dict[service_url]["base_url"] = service_url + "?"
+
+        cache_dict[service_url]["getCap_url"] = (
+            cache_dict[service_url]["base_url"]
+            + "request=GetCapabilities&service="
+            + service_type
+        )
+
+        main_op_key = "{}_url".format(main_op_name)
+        if service.getOperationByName(main_op_name).methods[0].get("url").endswith("?"):
+            cache_dict[service_url][main_op_key] = (
+                service.getOperationByName(main_op_name).methods[0].get("url")
+            )
+        else:
+            cache_dict[service_url][main_op_key] = (
+                service.getOperationByName(main_op_name).methods[0].get("url") + "?"
+            )
+
+        cache_dict[service_url]["formatOptions"] = [
+            f.split(";", 1)[0]
+            for f in service.getOperationByName(main_op_name).formatOptions
+        ]
+
+        return 1, cache_dict[service_url]
+
     def check_wfs(self, service_url: str, service_version: str):
         """Try to acces to the service from the given service_url and store the
         capabilities into cached_wfs dict.
         """
+        self.cached_wfs[service_url] = {}
+
         # basic checks on service url
         try:
-            wfs = WebFeatureService(
-                url=service_url,
-                version=service_version
-            )
+            wfs = WebFeatureService(url=service_url, version=service_version)
+            self.cached_wfs[service_url]["reachable"] = 1
         except ServiceException as e:
             logger.error(str(e))
-            return 0, "WFS - Bad operation: " + service_url, str(e)
+            self.cached_wfs[service_url]["reachable"] = 0
+            self.cached_wfs[service_url][
+                "error"
+            ] = "WFS - Bad operation ({}): {}".format(service_url, str(e))
+            return (
+                self.cached_wfs[service_url]["reachable"],
+                self.cached_wfs[service_url]["error"],
+            )
         except HTTPError as e:
             logger.error(str(e))
-            return 0, "WFS - Service not reached: " + service_url, str(e)
+            self.cached_wfs[service_url]["reachable"] = 0
+            self.cached_wfs[service_url][
+                "error"
+            ] = "WFS - Service ({}) not reached: {}".format(service_url, str(e))
+            return (
+                self.cached_wfs[service_url]["reachable"],
+                self.cached_wfs[service_url]["error"],
+            )
         except Exception as e:
-            return 0, "WFS - Connection to service failed: " + service_url, str(e)
+            self.cached_wfs[service_url]["reachable"] = 0
+            self.cached_wfs[service_url][
+                "error"
+            ] = "WFS - Connection to service ({}) failed: {}".format(
+                service_url, str(e)
+            )
+            return (
+                self.cached_wfs[service_url]["reachable"],
+                self.cached_wfs[service_url]["error"],
+            )
 
-        self.cached_wfs[service_url] = {}
         self.cached_wfs[service_url]["wfs"] = wfs
         self.cached_wfs[service_url]["typenames"] = list(wfs.contents.keys())
         self.cached_wfs[service_url]["version"] = wfs.version
-        self.cached_wfs[service_url]["operations"] = wfs.operations
+        self.cached_wfs[service_url]["operations"] = [op.name for op in wfs.operations]
 
         return 1, self.cached_wfs[service_url]
+
+    def check_wms(self, service_url: str, service_version: str):
+        """Try to acces to the service from the given service_url and store the
+        capabilities into cached_wms dict.
+        """
+        self.cached_wms[service_url] = {}
+
+        # basic checks on service url
+        try:
+            wms = WebMapService(url=service_url, version=service_version)
+            self.cached_wms[service_url]["reachable"] = 1
+        except ServiceException as e:
+            logger.error(str(e))
+            self.cached_wms[service_url]["reachable"] = 0
+            self.cached_wms[service_url][
+                "error"
+            ] = "WMS - Bad operation ({}): {}".format(service_url, str(e))
+            return (
+                self.cached_wms[service_url]["reachable"],
+                self.cached_wms[service_url]["error"],
+            )
+        except HTTPError as e:
+            logger.error(str(e))
+            self.cached_wms[service_url]["reachable"] = 0
+            self.cached_wms[service_url][
+                "error"
+            ] = "WMS - Service ({}) not reached: {}".format(service_url, str(e))
+            return (
+                self.cached_wms[service_url]["reachable"],
+                self.cached_wms[service_url]["error"],
+            )
+        except Exception as e:
+            self.cached_wms[service_url]["reachable"] = 0
+            self.cached_wms[service_url][
+                "error"
+            ] = "WMS - Connection to service ({}) failed: {}".format(
+                service_url, str(e)
+            )
+            return (
+                self.cached_wms[service_url]["reachable"],
+                self.cached_wms[service_url]["error"],
+            )
+
+        # Store several informations about the service
+        self.cached_wms[service_url]["wms"] = wms
+        self.cached_wms[service_url]["typenames"] = list(wms.contents.keys())
+        self.cached_wms[service_url]["version"] = wms.version
+        self.cached_wms[service_url]["operations"] = [op.name for op in wms.operations]
+
+        if service_url.endswith("?"):
+            self.cached_wms[service_url]["base_url"] = service_url
+        else:
+            self.cached_wms[service_url]["base_url"] = service_url + "?"
+
+        self.cached_wms[service_url]["getCap_url"] = (
+            self.cached_wms[service_url]["base_url"]
+            + "request=GetCapabilities&service=WMS"
+        )
+
+        if wms.getOperationByName("GetMap").methods[0].get("url").endswith("?"):
+            self.cached_wms[service_url]["getMap_url"] = (
+                wms.getOperationByName("GetMap").methods[0].get("url")
+            )
+        else:
+            self.cached_wms[service_url]["getMap_url"] = (
+                wms.getOperationByName("GetMap").methods[0].get("url") + "?"
+            )
+
+        self.cached_wms[service_url]["formatOptions"] = [
+            f.split(";", 1)[0] for f in wms.getOperationByName("GetMap").formatOptions
+        ]
+
+        return 1, self.cached_wms[service_url]
 
     def build_efs_url(
         self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
@@ -121,7 +318,9 @@ class GeoServiceManager:
         then build the url in the syntax understood by QGIS.
         """
         logger.debug("*=====* DEBUG ADD FROM EFS : api_layer --> {}".format(api_layer))
-        logger.debug("*=====* DEBUG ADD FROM EFS : srv_details --> {}".format(srv_details))
+        logger.debug(
+            "*=====* DEBUG ADD FROM EFS : srv_details --> {}".format(srv_details)
+        )
         srs_map = plg_tools.get_map_crs()
         layer_name = api_layer.get("id")
 
@@ -179,22 +378,25 @@ class GeoServiceManager:
         """
         # chef the service accessibility and retrieve informations
         if srv_details.get("path") not in self.cached_wfs:
-            check = self.check_wfs(
+            check = self.check_ogc_service(
+                service_type="WFS",
                 service_url=srv_details.get("path"),
-                service_version=srv_details.get("formatVersion")
+                service_version=srv_details.get("formatVersion"),
             )
             if check[0]:
                 wfs_dict = check[1]
             else:
                 return check
+        elif not self.cached_wfs.get(srv_details.get("path")).get("reachable"):
+            return (
+                self.cached_wfs.get(srv_details.get("path")).get("reachable"),
+                self.cached_wfs.get(srv_details.get("path")).get("error"),
+            )
         else:
             wfs_dict = self.cached_wfs[srv_details.get("path")]
 
-        # retrieve and clean base url
-        if srv_details.get("path").endswith("?"):
-            wfs_url_base = srv_details.get("path")
-        else:
-            wfs_url_base = srv_details.get("path") + "?"
+        # retrieve base url
+        wms_url_base = wfs_dict.get("base_url")
 
         # retrieve and clean api_layer_name from api_layer_id
         api_layer_id = api_layer.get("id")
@@ -207,29 +409,49 @@ class GeoServiceManager:
             layer_title = api_layer_name
 
         # build GetCapabilities url
-        wfs_url_getcap = (wfs_url_base + "request=GetCapabilities&service=WFS")
+        wfs_url_getcap = wfs_dict.get("getCap_url")
 
         # retrieve the wfs layer id (the real one) for "TYPENAME" URL parameter
-        logger.debug("*=====* DEBUG ADD FROM WFS : layer_name --> {}".format(api_layer_name))
-        logger.debug("*=====* DEBUG ADD FROM WFS : typenames --> {}".format(wfs_dict.get("typenames")))
+        logger.debug(
+            "*=====* DEBUG ADD FROM WFS : layer_name --> {}".format(api_layer_name)
+        )
+        logger.debug(
+            "*=====* DEBUG ADD FROM WFS : typenames --> {}".format(
+                wfs_dict.get("typenames")
+            )
+        )
+        logger.debug("*=====* DEBUG ADD FROM WFS : wfs_dict --> {}".format(wfs_dict))
 
-        layer_typename = [wfs_typename for wfs_typename in wfs_dict.get("typenames") if api_layer_name in wfs_typename]
+        layer_typename = [
+            wfs_typename
+            for wfs_typename in wfs_dict.get("typenames")
+            if api_layer_name in wfs_typename
+        ]
         if len(layer_typename) == 1:
             layer_typename = layer_typename[0]
         elif len(layer_typename) > 1:
             layer_typename = layer_typename[0]
-            logger.warning("WFS {} - Multiple typenames matched for {} layer, {} the first one will be choosed.".format(
-                srv_details.get("path"), api_layer_name, layer_typename
-            )
+            logger.warning(
+                "WFS {} - Multiple typenames matched for {} layer, {} the first one will be choosed.".format(
+                    srv_details.get("path"), api_layer_name, layer_typename
+                )
             )
         else:
-            logger.error("WFS {} - No typename found for {} layer, the layer may not be available anymore.".format(
-                srv_details.get("path"), api_layer_name
+            logger.error(
+                "WFS {} - No typename found for {} layer, the layer may not be available anymore.".format(
+                    srv_details.get("path"), api_layer_name
+                )
             )
+            return (
+                0,
+                "WFS - Layer '{}' not found in service {}".format(
+                    api_layer_name, srv_details.get("path")
+                ),
             )
-            return 0, "WFS - Layer not found: " + srv_details.get("path"), api_layer_name
 
-        logger.debug("*=====* DEBUG ADD FROM WFS : layer_typename --> {}".format(layer_typename))
+        logger.debug(
+            "*=====* DEBUG ADD FROM WFS : layer_typename --> {}".format(layer_typename)
+        )
 
         if mode == "quicky":
             li_url_params = [
@@ -240,17 +462,21 @@ class GeoServiceManager:
             ]
 
             wfs_url_quicky = wfs_url_base + "&".join(li_url_params)
-            logger.debug("*=====* DEBUG ADD FROM WFS : wfs_url_quicky --> {}".format(wfs_url_quicky))
+            logger.debug(
+                "*=====* DEBUG ADD FROM WFS : wfs_url_quicky --> {}".format(
+                    wfs_url_quicky
+                )
+            )
 
             btn_lbl = "WFS : {}".format(layer_title)
             return ["WFS", layer_title, wfs_url_quicky, api_layer, srv_details, btn_lbl]
         elif mode == "complete":
             # Clean, complete but slower way - OWSLib -------------------------
-            wfs = wfs_dict.get("wfs")
+            wfs = wfs_dict.get("WFS")
             # check if GetFeature and DescribeFeatureType operation are available
-            if not hasattr(wfs, "getfeature") or "GetFeature" not in [
-                op.name for op in wfs_dict.get("operations")
-            ]:
+            if not hasattr(wfs, "getfeature") or "GetFeature" not in wfs_dict.get(
+                "operations"
+            ):
                 return (
                     0,
                     "Required GetFeature operation not available in: " + wfs_url_getcap,
@@ -259,8 +485,7 @@ class GeoServiceManager:
                 logger.info("GetFeature available")
                 pass
 
-            if "DescribeFeatureType" not in [op.name for op in wfs_dict.get("operations")]:
-                self.cached_wfs["DescribeFeatureType"] = 0
+            if "DescribeFeatureType" not in wfs_dict.get("operations"):
                 return (
                     0,
                     "Required DescribeFeatureType operation not available in: "
@@ -269,7 +494,7 @@ class GeoServiceManager:
             else:
                 logger.info("DescribeFeatureType available")
                 pass
-            
+
             wfs_lyr = wfs[layer_typename]
 
             # SRS definition
@@ -294,7 +519,11 @@ class GeoServiceManager:
             if srs_map in wfs_lyr_crs_epsg:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
                 srs = srs_map
-            elif (srs_qgs_new in wfs_lyr_crs_epsg and srs_qgs_otf_on == "false" and srs_qgs_otf_auto == "false"):
+            elif (
+                srs_qgs_new in wfs_lyr_crs_epsg
+                and srs_qgs_otf_on == "false"
+                and srs_qgs_otf_auto == "false"
+            ):
                 logger.debug(
                     "It's a SRS match! With default new project: " + srs_qgs_new
                 )
@@ -315,12 +544,7 @@ class GeoServiceManager:
             # print(lyr_style)
 
             # GetFeature URL
-            wfs_lyr_url = wfs.getOperationByName("GetFeature").methods
-            wfs_lyr_url = wfs_lyr_url[0].get("url")
-            if wfs_lyr_url[-1] != "&":
-                wfs_lyr_url = wfs_lyr_url + "&"
-            else:
-                pass
+            wfs_dict.get("GetFeature_url")
 
             # url construction
             li_url_params = [
@@ -328,11 +552,15 @@ class GeoServiceManager:
                 "SERVICE=WFS",
                 "VERSION={}".format(wfs_dict.get("version")),
                 "TYPENAME={}".format(layer_typename),
-                "SRSNAME=srs",
+                "SRSNAME={}".format(srs),
             ]
-            wfs_url_final = wfs_url_base + "&".join(li_url_params)
+            wfs_url_final = wfs_lyr_url + "&".join(li_url_params)
             # method ending
-            logger.debug("*=====* DEBUG ADD FROM WFS : wfs_url_final --> {}".format(wfs_url_final))
+            logger.debug(
+                "*=====* DEBUG ADD FROM WFS : wfs_url_final --> {}".format(
+                    wfs_url_final
+                )
+            )
             return ["WFS", layer_title, wfs_url_final]
         else:
             return None
@@ -345,115 +573,103 @@ class GeoServiceManager:
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
-        # local variables
-        layer_name = api_layer.get("id")
+        # chef the service accessibility and store service informations
+        if srv_details.get("path") not in self.cached_wms:
+            check = self.check_ogc_service(
+                service_type="WMS",
+                service_url=srv_details.get("path"),
+                service_version=srv_details.get("formatVersion"),
+            )
+            if check[0]:
+                wms_dict = check[1]
+            else:
+                return check
+        elif not self.cached_wms.get(srv_details.get("path")).get("reachable"):
+            return (
+                self.cached_wms.get(srv_details.get("path")).get("reachable"),
+                self.cached_wms.get(srv_details.get("path")).get("error"),
+            )
+        else:
+            wms_dict = self.cached_wms[srv_details.get("path")]
 
-        layer_title = "WMS Layer"
+        # retrieve base url
+        wms_url_base = wms_dict.get("base_url")
+
+        # local variables
+        api_layer_id = api_layer.get("id")
+
+        # build layer title
         if len(api_layer.get("titles")):
-            layer_title = api_layer.get("titles")[0].get("value", "WMS Layer")
+            layer_title = api_layer.get("titles")[0].get("value", api_layer_id)
+        else:
+            layer_title = api_layer_id
+
+        # build GetCapabilities url
+        wms_url_getcap = wms_dict.get("getCap_url")
+
+        # check if we can find the api_layer_id into wms service reachable layers typenames
+        logger.debug(
+            "*=====* DEBUG ADD FROM WMS : layer_name --> {}".format(api_layer_id)
+        )
+        logger.debug(
+            "*=====* DEBUG ADD FROM WMS : typenames --> {}".format(
+                wms_dict.get("typenames")
+            )
+        )
+        logger.debug("*=====* DEBUG ADD FROM WMS : wms_dict --> {}".format(wms_dict))
+        if api_layer_id not in wms_dict.get("typenames"):
+            logger.error(
+                "WMS {} - No typename found for {} layer, the layer may not be available anymore.".format(
+                    srv_details.get("path"), api_layer_id
+                )
+            )
+            return (
+                0,
+                "WMS - Layer '{}' not found in service {}".format(
+                    api_layer_id, srv_details.get("path")
+                ),
+            )
         else:
             pass
-
-        wms_url_getcap = (
-            srv_details.get("path") + "?request=GetCapabilities&service=WMS"
-        )
 
         if mode == "quicky":
             # let's try a quick & dirty url build
             srs_map = plg_tools.get_map_crs()
-            wms_url_base = srv_details.get("path")
-            if "?" not in wms_url_base:
-                wms_url_base = wms_url_base + "?"
-            else:
-                pass
             # url construction
             wms_url_params = {
                 "SERVICE": "WMS",
-                "VERSION": srv_details.get("formatVersion", "1.3.0"),
+                "VERSION": wms_dict.get("version"),
                 "REQUEST": "GetMap",
-                "layers": layer_name,
+                "layers": api_layer_id,
                 "crs": srs_map,
                 "format": "image/png",
                 "styles": "",
                 "url": wms_url_base,
             }
             wms_url_quicky = unquote(urlencode(wms_url_params, "utf8"))
+            logger.debug(
+                "*=====* DEBUG ADD FROM WMS : wfs_url_quicky --> {}".format(
+                    wms_url_quicky
+                )
+            )
             # prevent encoding errors (#102)
-            try:
-                btn_lbl = "WMS : {}".format(layer_title)
-                return [
-                    "WMS",
-                    layer_title,
-                    wms_url_quicky,
-                    api_layer,
-                    srv_details,
-                    btn_lbl,
-                ]
-            except UnicodeEncodeError as e:
-                btn_lbl = "WMS : {}".format(layer_name)
-                logger.debug(e)
-                return [
-                    "WMS",
-                    layer_title,
-                    wms_url_quicky,
-                    api_layer,
-                    srv_details,
-                    btn_lbl,
-                ]
+            btn_lbl = "WMS : {}".format(layer_title)
+            return ["WMS", layer_title, wms_url_quicky, api_layer, srv_details, btn_lbl]
 
         elif mode == "complete":
             # Clean, complete but slower way - OWSLib -------------------------
-            if srv_details.get("path") == self.cached_wms.get("srv_path"):
-                logger.debug("WMS: already in cache")
-            else:
-                self.cached_wms["srv_path"] = srv_details.get("path")
-                logger.debug("WMS: new service")
-                pass
-            # basic checks on service url
-            try:
-                wms = WebMapService(wms_url_getcap)
-                self.cached_wms["Reachable"] = 1
-            except ServiceException as e:
-                logger.error(str(e))
-                self.cached_wms["Reachable"] = 0
-                return 0, "WMS - Bad operation: " + wms_url_getcap, str(e)
-            except HTTPError as e:
-                self.cached_wms["Reachable"] = 0
-                logger.error(str(e))
-                return 0, "WMS - Service not reached: " + wms_url_getcap, str(e)
-            except Exception as e:
-                self.cached_wms["Reachable"] = 0
-                logger.error(str(e))
-                return 0, e
-
+            wms = wms_dict.get("WMS")
             # check if GetMap operation is available
-            if not hasattr(wms, "getmap") or "GetMap" not in [
-                op.name for op in wms.operations
-            ]:
-                self.cached_wms["GetMap"] = 1
+            if not hasattr(wms, "getmap") or "GetMap" not in wms_dict.get("operations"):
                 return (
                     0,
                     "Required GetMap operation not available in: " + wms_url_getcap,
                 )
             else:
-                self.cached_wms["GetMap"] = 0
+                logger.info("GetMap available")
                 pass
-            # check if layer is present and queryable
-            try:
-                wms_lyr = wms[layer_name]
-            except KeyError as e:
-                logger.error(
-                    "Layer {} not found in WMS service: {}".format(
-                        layer_name, wms_url_getcap
-                    )
-                )
-                return (
-                    0,
-                    "Layer {} not found in WMS service: {}".format(
-                        layer_name, wms_url_getcap
-                    ),
-                    e,
-                )
+
+            wms_lyr = wms[api_layer_id]
 
             # SRS definition
             srs_map = plg_tools.get_map_crs()
@@ -470,7 +686,6 @@ class GeoServiceManager:
             #       "OTF enabled: " + srs_qgs_otf_on,
             #       "OTF smart enabled: " + srs_qgs_otf_auto,
             #       "Map canvas SRS:" + plg_tools.get_map_crs())
-            self.cached_wms["CRS"] = wms_lyr.crsOptions
             if srs_map in wms_lyr.crsOptions:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
                 srs = srs_map
@@ -494,11 +709,9 @@ class GeoServiceManager:
                 srs = wms_lyr.crsOptions[0]
 
             # Format definition
-            wms_lyr_formats = wms.getOperationByName("GetMap").formatOptions
             formats_image = [
-                f.split(" ", 1)[0] for f in wms_lyr_formats if f in qgis_wms_formats
+                f for f in wms_dict.get("formatOptions") if f in qgis_wms_formats
             ]
-            self.cached_wms["formats"] = formats_image
             if "image/png" in formats_image:
                 layer_format = "image/png"
             elif "image/jpeg" in formats_image:
@@ -510,21 +723,15 @@ class GeoServiceManager:
             # lyr_style = list(wms_lyr.styles.keys())[0]
 
             # GetMap URL
-            wms_lyr_url = wms.getOperationByName("GetMap").methods
-            wms_lyr_url = wms_lyr_url[0].get("url")
-            if wms_lyr_url[-1] == "&":
-                wms_lyr_url = wms_lyr_url[:-1]
-            else:
-                pass
-            self.cached_wms["url"] = wms_lyr_url
+            wms_lyr_url = wms_dict.get("GetMap_url")
 
             # url construction
             try:
                 wms_url_params = {
                     "SERVICE": "WMS",
-                    "VERSION": srv_details.get("formatVersion", "1.3.0"),
+                    "VERSION": wms_dict.get("version"),
                     "REQUEST": "GetMap",
-                    "layers": layer_name,
+                    "layers": api_layer_id,
                     "crs": srs,
                     "format": layer_format,
                     "styles": "",
@@ -536,9 +743,9 @@ class GeoServiceManager:
             except UnicodeEncodeError:
                 wms_url_params = {
                     "SERVICE": "WMS",
-                    "VERSION": srv_details.get("formatVersion", "1.3.0"),
+                    "VERSION": wms_dict.get("version"),
                     "REQUEST": "GetMap",
-                    "layers": layer_name.decode("latin1"),
+                    "layers": api_layer_id.decode("latin1"),
                     "crs": srs,
                     "format": layer_format,
                     "styles": "",
@@ -579,13 +786,19 @@ class GeoServiceManager:
             logger.error("WMTS - OWSLib mixing str and unicode args :{}".format(e))
         except ServiceException as e:
             logger.error(e)
-            return 0, "WMTS - Bad operation: " + wmts_url_getcap, str(e)
+            return 0, "WMTS - Bad operation ({}): {}".format(wmts_url_getcap, str(e))
         except HTTPError as e:
             logger.error(e)
-            return 0, "WMTS - Service not reached: " + wmts_url_getcap, e
+            return (
+                0,
+                "WMS - Service ({}) not reached: {}".format(wmts_url_getcap, str(e)),
+            )
         except Exception as e:
             logger.error("WMTS - {}: {}".format(wmts_url_getcap, e))
-            return 0, "WMTS - Service not reached: " + wmts_url_getcap, e
+            return (
+                0,
+                "WMS - Service ({}) not reached: {}".format(wmts_url_getcap, str(e)),
+            )
 
         # check if GetTile operation is available
         if not hasattr(wmts, "gettile") or "GetTile" not in [
