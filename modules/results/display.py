@@ -308,7 +308,11 @@ class ResultsManager(QObject):
                     pass
             # Associated service layers
             if md.type == "vectorDataset" or md.type == "rasterDataset":
-                logger.debug("*=====* DEBUG ADD FROM EFS : md.serviceLayers --> {}".format(md.serviceLayers))
+                logger.debug(
+                    "*=====* DEBUG ADD FROM EFS : md.serviceLayers --> {}".format(
+                        md.serviceLayers
+                    )
+                )
                 for layer in md.serviceLayers:
                     service = layer.get("service")
                     if service is not None:
@@ -353,6 +357,15 @@ class ResultsManager(QObject):
                                 "{} : {}".format(params[0], params[1])
                             ] = params
                         else:
+                            logger.warning(
+                                "Faile to build service URL for {} layer {} of {} metadata ({}): {}".format(
+                                    service.get("format"),
+                                    layer,
+                                    md.type,
+                                    md._id,
+                                    params[1],
+                                )
+                            )
                             pass
             # New association mode. For services metadata sheet, the layers
             # are stored in the purposely named include: "layers".
@@ -385,6 +398,11 @@ class ResultsManager(QObject):
                             if name_url[0] != 0:
                                 add_options_dict[name_url[5]] = name_url
                             else:
+                                logger.warning(
+                                    "Faile to build service URL for layer {} of {} service metadata ({}): {}".format(
+                                        layer, md.format, md._id, params[1]
+                                    )
+                                )
                                 continue
                     else:
                         pass
