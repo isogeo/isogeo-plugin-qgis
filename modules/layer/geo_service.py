@@ -316,7 +316,7 @@ class GeoServiceManager:
             # Clean, complete but slower way - OWSLib -------------------------
             wfs = wfs_dict.get("WFS")
             # check if GetFeature and DescribeFeatureType operation are available
-            if not hasattr(wfs, "getfeature") or not wfs_dict.get("GetFeature_available"):
+            if not hasattr(wfs, "getfeature") or not wfs_dict.get("GetFeature_isAvailable"):
                 return 0, "GetFeature operation not available in: {}".format(wfs_url_getcap)
             else:
                 logger.info("GetFeature available")
@@ -417,8 +417,7 @@ class GeoServiceManager:
 
         if mode == "quicky":
             # let's try a quick & dirty url build
-            # srs_map = plg_tools.get_map_crs()
-            srs = self.choose_appropriate_srs(crs_options=wms_dict.get("WMS")[api_layer_id].crsOptions)
+            srs_map = plg_tools.get_map_crs()
             # url construction
             # just for QGIS server WMS
             if "&" in wms_url_base:
@@ -427,8 +426,7 @@ class GeoServiceManager:
                     "VERSION={}".format(wms_dict.get("version")),
                     "REQUEST=GetMap",
                     "layers={}".format(api_layer_id),
-                    # "crs".format(srs_map),
-                    "crs={}".format(srs),
+                    "crs".format(srs_map),
                     "format=image/png",
                     "styles="
                 ]
@@ -440,8 +438,7 @@ class GeoServiceManager:
                     "VERSION": wms_dict.get("version"),
                     "REQUEST": "GetMap",
                     "layers": api_layer_id,
-                    # "crs": srs_map,
-                    "crs": srs,
+                    "crs": srs_map,
                     "format": "image/png",
                     "styles": "",
                     "url": wms_url_base.split("?")[0] + "?",
@@ -461,7 +458,7 @@ class GeoServiceManager:
             # Clean, complete but slower way - OWSLib -------------------------
             wms = wms_dict.get("WMS")
             # check if GetMap operation is available
-            if not hasattr(wms, "getmap") or not wms_dict.get("GetMap_available"):
+            if not hasattr(wms, "getmap") or not wms_dict.get("GetMap_isAvailable"):
                 return (
                     0,
                     "Required GetMap operation not available in: " + wms_url_getcap,
@@ -517,12 +514,8 @@ class GeoServiceManager:
                     "url": wms_lyr_url,
                 }
                 wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
+            logger.debug("*=====* DEBUG ADD FROM WMS : wms_url_final --> {}".format(str(wms_url_final)))
             # method ending
-            logger.debug(
-                "*=====* DEBUG ADD FROM WMS : wms_url_final --> {}".format(
-                    wms_url_final
-                )
-            )
             return ["WMS", layer_title, wms_url_final]
         else:
             raise ValueError(
