@@ -232,36 +232,48 @@ class LayerAdder:
             layer_is_ok = 0
             # If the service type is WFS or WMS
             if service_type in dict_classic_ogc_service:
-                build_url_method = dict_classic_ogc_service.get(service_type).get(
-                    "url_builder"
-                )
                 QgsLayer = dict_classic_ogc_service.get(service_type).get("QgsLayer")
-                # Rebuild the URL in 'complete' mode using 'additional_infos'
-                name_url = build_url_method(
-                    additional_infos[0], additional_infos[1], mode="complete"
-                )
-                # Then try to add
-                if name_url[0] != 0:
-                    url = name_url[2]
-                    layer = QgsLayer(
-                        name_url[2], layer_label, dict_service_types.get(service_type)
+                layer = QgsLayer(url, layer_label)
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    QgsMessageLog.logMessage(
+                        message="{} service layer added: {}".format(
+                            service_type, url
+                        ),
+                        tag="Isogeo",
+                        level=0,
                     )
-                    if layer.isValid():
-                        lyr = QgsProject.instance().addMapLayer(layer)
-                        QgsMessageLog.logMessage(
-                            message="{} service layer added: {}".format(
-                                service_type, url
-                            ),
-                            tag="Isogeo",
-                            level=0,
-                        )
-                        logger.debug("{} layer added: {}".format(service_type, url))
-                        layer_is_ok = 1
-                    else:
-                        error_msg = layer.error().message()
-                # If the layer is still not valid, inform the user
+                    logger.debug("{} layer added: {}".format(service_type, url))
+                    layer_is_ok = 1
                 else:
-                    pass
+                    build_url_method = dict_classic_ogc_service.get(service_type).get("url_builder")
+                    # Rebuild the URL in 'complete' mode using 'additional_infos'
+                    name_url = build_url_method(
+                        additional_infos[0], additional_infos[1], mode="complete"
+                    )
+                    # Then try to add
+                    if name_url[0] != 0:
+                        url = name_url[2]
+                        layer = QgsLayer(
+                            name_url[2], layer_label, dict_service_types.get(service_type)
+                        )
+                        if layer.isValid():
+                            lyr = QgsProject.instance().addMapLayer(layer)
+                            QgsMessageLog.logMessage(
+                                message="{} service layer added: {}".format(
+                                    service_type, url
+                                ),
+                                tag="Isogeo",
+                                level=0,
+                            )
+                            logger.debug("{} layer added: {}".format(service_type, url))
+                            layer_is_ok = 1
+                        else:
+                            error_msg = layer.error().message()
+                    # If the layer is still not valid, inform the user
+                    else:
+                        logger.warning(name_url[1])
+                        pass
             # If the service type is not WFS or WMS, just inform the user
             else:
                 pass
