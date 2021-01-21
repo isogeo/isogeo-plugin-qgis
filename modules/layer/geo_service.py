@@ -5,8 +5,7 @@
 import logging
 import re
 
-# from urllib.request import unquote
-from urllib.parse import urlencode, unquote
+from urllib.parse import urlencode, unquote, quote
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings
@@ -87,7 +86,25 @@ class GeoServiceManager:
         self.cached_wms = dict()
         self.cached_wmts = dict()
 
-    def choose_appropriate_srs(self, crs_options:list):
+        self.ogc_infos_dict = {
+            "WFS": [
+                "GetFeature",
+                self.cached_wfs,
+                WebFeatureService
+            ],
+            "WMS": [
+                "GetMap",
+                self.cached_wms,
+                WebMapService
+            ],
+            "WMTS": [
+                "GetMap",
+                self.cached_wmts,
+                WebMapTileService
+            ]
+        }
+
+    def choose_appropriate_srs(self, crs_options: list):
         """Return an appropriate srs depending on QGIS configuration and available
         service layer crs options.
         """
@@ -102,11 +119,7 @@ class GeoServiceManager:
         if srs_map in crs_options:
             logger.debug("It's a SRS match! With map canvas: " + srs_map)
             srs = srs_map
-        elif (
-            srs_qgs_new in crs_options
-            and srs_qgs_otf_on == "false"
-            and srs_qgs_otf_auto == "false"
-        ):
+        elif srs_qgs_new in crs_options and srs_qgs_otf_on == "false" and srs_qgs_otf_auto == "false":
             logger.debug(
                 "It's a SRS match! With default new project: " + srs_qgs_new
             )
@@ -118,7 +131,7 @@ class GeoServiceManager:
             logger.debug("It's a SRS match! With standard WGS 84 (EPSG:4326)")
             srs = "EPSG:4326"
         else:
-            logger.debug("Map Canvas SRS not available within service CRS.")
+            logger.debug("Map Canvas SRS not available within service CRS. One of the following ones gonna be choosed : {}".format(crs_options))
             srs = crs_options[0]
 
         return srs
@@ -129,141 +142,97 @@ class GeoServiceManager:
         """Try to acces to the service from the given service_url and store the
         capabilities into cached_wfs dict.
         """
-        # Set local variables depending on service type
-        if service_type == "WFS":
-            cache_dict = self.cached_wfs
-            main_op_name = "GetFeature"
-            service_connector = WebFeatureService
-        elif service_type == "WMS":
-            cache_dict = self.cached_wms
-            main_op_name = "GetMap"
-            service_connector = WebMapService
-        elif service_type == "WMTS":
-            cache_dict = self.cached_wmts
-            main_op_name = "GetMap"
-            service_connector = WebMapTileService
-        else:
+        # If service_type argument value is invalid, raise error
+        if service_type not in self.ogc_infos_dict:
             raise ValueError(
-                "'service_type' argument value should be 'WFS', 'WMS' or 'WMTS', not {}".format(
+                "'service_type' argument value should be one of {} not {}".format(
+                    list(self.ogc_infos_dict.keys()),
                     service_type
                 )
             )
+        # It it's valid, set local variables depending on it
+        else:
+            main_op_name = self.ogc_infos_dict.get(service_type)[0]
+            cache_dict = self.ogc_infos_dict.get(service_type)[1]
+            service_connector = self.ogc_infos_dict.get(service_type)[2]
+
         cache_dict[service_url] = {}
+        service_dict = cache_dict[service_url]
 
         # Basic checks on service reachability
         try:
             service = service_connector(url=service_url, version=service_version)
-            cache_dict[service_url]["reachable"] = 1
+            service_dict["reachable"] = 1
         except ServiceException as e:
             error_msg = "{} - Bad operation ({}): {}".format(
                 service_type, service_url, str(e)
             )
             logger.error(error_msg)
-            cache_dict[service_url]["reachable"] = 0
-            cache_dict[service_url]["error"] = error_msg
-            return cache_dict[service_url]["reachable"], cache_dict[service_url]["error"]
+            service_dict["reachable"] = 0
+            service_dict["error"] = error_msg
+            return service_dict["reachable"], service_dict["error"]
         except HTTPError as e:
             error_msg = "{} - Service ({}) not reached: {}".format(
                 service_type, service_url, str(e)
             )
             logger.error(error_msg)
-            cache_dict[service_url]["reachable"] = 0
-            cache_dict[service_url]["error"] = error_msg
-            return cache_dict[service_url]["reachable"], cache_dict[service_url]["error"]
-        except Exception as e:
+            service_dict["reachable"] = 0
+            service_dict["error"] = error_msg
+            return service_dict["reachable"], service_dict["error"]
+        except Exception:
             try:
                 service = service_connector(url=service_url)
-                cache_dict[service_url]["reachable"] = 1
+                service_dict["reachable"] = 1
             except Exception as e:
                 error_msg = "{} - Connection to service ({}) failed: {}".format(
                     service_type, service_url, str(e)
                 )
                 logger.error(error_msg)
-                cache_dict[service_url]["reachable"] = 0
-                cache_dict[service_url]["error"] = error_msg
-                return cache_dict[service_url]["reachable"], cache_dict[service_url]["error"]
+                service_dict["reachable"] = 0
+                service_dict["error"] = error_msg
+                return service_dict["reachable"], service_dict["error"]
 
-        # Store several informations about the service
-        cache_dict[service_url][service_type] = service
-        cache_dict[service_url]["typenames"] = list(service.contents.keys())
-        cache_dict[service_url]["version"] = service.version
-        cache_dict[service_url]["operations"] = [op.name for op in service.operations]
+        # Store several basic informations about the service
+        service_dict[service_type] = service
+        service_dict["typenames"] = list(service.contents.keys())
+        service_dict["version"] = service.version
+        service_dict["operations"] = [op.name for op in service.operations]
 
+        # retrieve, clean and store service base URL
         if service_url.endswith("?"):
-            cache_dict[service_url]["base_url"] = service_url
+            service_dict["base_url"] = service_url
+        elif service_url.endswith("&"):
+            service_dict["base_url"] = service_url[:-1]
+        elif "&" in service_url:
+            service_dict["base_url"] = service_url + "&"
         else:
-            cache_dict[service_url]["base_url"] = service_url + "?"
+            service_dict["base_url"] = service_url + "?"
 
-        cache_dict[service_url]["getCap_url"] = cache_dict[service_url]["base_url"] + "request=GetCapabilities&service=" + service_type
+        # build URL of "GetCapabilities" operation
+        service_dict["getCap_url"] = service_dict["base_url"] + "request=GetCapabilities&service=" + service_type
 
-        main_op_key = "{}_url".format(main_op_name)
-        if service.getOperationByName(main_op_name).methods[0].get("url").endswith("?"):
-            cache_dict[service_url][main_op_key] = service.getOperationByName(main_op_name).methods[0].get("url")
+        # check if main operation ("GetMap" or "GetFeature" depending on service type) is available
+        # if it do, retrieve, clean and store the corresponding URL
+        if main_op_name in service_dict["operations"]:
+            row_main_op_url = service.getOperationByName(main_op_name).methods[0].get("url")
+            # retrieve, clean and store URL of "GetMap" or "GetFeature" (depending on service type) operation
+            if row_main_op_url.endswith("?"):
+                main_op_url = row_main_op_url
+            elif row_main_op_url.endswith("&"):
+                main_op_url = row_main_op_url[:-1]
+            elif "&" in row_main_op_url:
+                main_op_url = row_main_op_url + "&"
+            else:
+                main_op_url = row_main_op_url + "?"
+            main_op_key = "{}_url".format(main_op_name)
+            service_dict[main_op_key] = main_op_url
+            service_dict["{}_isAvailable".format(main_op_name)] = 1
         else:
-            cache_dict[service_url][main_op_key] = service.getOperationByName(main_op_name).methods[0].get("url") + "?"
+            service_dict["{}_isAvailable".format(main_op_name)] = 0
 
-        cache_dict[service_url]["formatOptions"] = [f.split(";", 1)[0]for f in service.getOperationByName(main_op_name).formatOptions]
+        service_dict["formatOptions"] = [f.split(";", 1)[0]for f in service.getOperationByName(main_op_name).formatOptions]
 
-        return 1, cache_dict[service_url]
-
-    def build_efs_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
-    ):
-        """Reformat the input Esri Feature Service url so it fits QGIS criterias.
-
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
-        """
-        logger.debug("*=====* DEBUG ADD FROM EFS : api_layer --> {}".format(api_layer))
-        logger.debug(
-            "*=====* DEBUG ADD FROM EFS : srv_details --> {}".format(srv_details)
-        )
-        srs_map = plg_tools.get_map_crs()
-        layer_name = api_layer.get("id")
-
-        efs_lyr_title = "EFS Layer"
-        if len(api_layer.get("titles")):
-            efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
-        else:
-            pass
-
-        if srv_details.get("path").endswith("/"):
-            efs_lyr_url = srv_details.get("path")
-        else:
-            efs_lyr_url = srv_details.get("path") + "/"
-
-        efs_url = efs_lyr_url + layer_name
-
-        btn_lbl = "EFS : {}".format(efs_lyr_title)
-        return ["EFS", efs_lyr_title, efs_url, api_layer, srv_details, btn_lbl]
-
-    def build_ems_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
-    ):
-        """Reformat the input Esri Map Service url so it fits QGIS criterias.
-
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
-        """
-        srs_map = plg_tools.get_map_crs()
-        layer_name = api_layer.get("id")
-
-        ems_lyr_title = "EMS Layer"
-        if len(api_layer.get("titles")):
-            ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
-        else:
-            pass
-
-        ems_lyr_url = str(srv_details.get("path"))
-
-        ems_uri = QgsDataSourceUri()
-        ems_uri.setParam("url", ems_lyr_url)
-        ems_uri.setParam("layer", layer_name)
-        ems_uri.setParam("crs", srs_map)
-        # ems_uri.setParam("restrictToRequestBBOX", "1")
-
-        btn_lbl = "EMS : {}".format(ems_lyr_title)
-        return ["EMS", ems_lyr_title, ems_uri.uri(), api_layer, srv_details, btn_lbl]
+        return 1, service_dict
 
     def build_wfs_url(
         self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
@@ -331,7 +300,7 @@ class GeoServiceManager:
 
         if mode == "quicky":
             li_url_params = [
-                "REQUEST=GetFeatures",
+                "REQUEST=GetFeature",
                 "SERVICE=WFS",
                 "VERSION={}".format(wfs_dict.get("version")),
                 "TYPENAME={}".format(layer_typename),
@@ -347,7 +316,7 @@ class GeoServiceManager:
             # Clean, complete but slower way - OWSLib -------------------------
             wfs = wfs_dict.get("WFS")
             # check if GetFeature and DescribeFeatureType operation are available
-            if not hasattr(wfs, "getfeature") or "GetFeature" not in wfs_dict.get("operations"):
+            if not hasattr(wfs, "getfeature") or not wfs_dict.get("GetFeature_available"):
                 return 0, "GetFeature operation not available in: {}".format(wfs_url_getcap)
             else:
                 logger.info("GetFeature available")
@@ -360,16 +329,16 @@ class GeoServiceManager:
                 pass
 
             # SRS definition
-            available_crs_options =["{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions]
+            available_crs_options = ["{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions]
 
             srs = self.choose_appropriate_srs(crs_options=available_crs_options)
 
             # GetFeature URL
-            wfs_dict.get("GetFeature_url")
+            wfs_lyr_url = wfs_dict.get("GetFeature_url")
 
             # url construction
             li_url_params = [
-                "REQUEST=GetFeatures",
+                "REQUEST=GetFeature",
                 "SERVICE=WFS",
                 "VERSION={}".format(wfs_dict.get("version")),
                 "TYPENAME={}".format(layer_typename),
@@ -448,19 +417,37 @@ class GeoServiceManager:
 
         if mode == "quicky":
             # let's try a quick & dirty url build
-            srs_map = plg_tools.get_map_crs()
+            # srs_map = plg_tools.get_map_crs()
+            srs = self.choose_appropriate_srs(crs_options=wms_dict.get("WMS")[api_layer_id].crsOptions)
             # url construction
-            wms_url_params = {
-                "SERVICE": "WMS",
-                "VERSION": wms_dict.get("version"),
-                "REQUEST": "GetMap",
-                "layers": api_layer_id,
-                "crs": srs_map,
-                "format": "image/png",
-                "styles": "",
-                "url": wms_url_base,
-            }
-            wms_url_quicky = unquote(urlencode(wms_url_params, "utf8"))
+            # just for QGIS server WMS
+            if "&" in wms_url_base:
+                li_params = [
+                    "SERVICE=WMS",
+                    "VERSION={}".format(wms_dict.get("version")),
+                    "REQUEST=GetMap",
+                    "layers={}".format(api_layer_id),
+                    # "crs".format(srs_map),
+                    "crs={}".format(srs),
+                    "format=image/png",
+                    "styles="
+                ]
+                wms_url_quicky = wms_url_base + "&".join(li_params)
+            # for other service servers
+            else:
+                wms_url_params = {
+                    "SERVICE": "WMS",
+                    "VERSION": wms_dict.get("version"),
+                    "REQUEST": "GetMap",
+                    "layers": api_layer_id,
+                    # "crs": srs_map,
+                    "crs": srs,
+                    "format": "image/png",
+                    "styles": "",
+                    "url": wms_url_base.split("?")[0] + "?",
+                }
+                wms_url_quicky = unquote(urlencode(wms_url_params, "utf8", quote_via=quote))
+
             logger.debug(
                 "*=====* DEBUG ADD FROM WMS : wms_url_quicky --> {}".format(
                     wms_url_quicky
@@ -474,7 +461,7 @@ class GeoServiceManager:
             # Clean, complete but slower way - OWSLib -------------------------
             wms = wms_dict.get("WMS")
             # check if GetMap operation is available
-            if not hasattr(wms, "getmap") or "GetMap" not in wms_dict.get("operations"):
+            if not hasattr(wms, "getmap") or not wms_dict.get("GetMap_available"):
                 return (
                     0,
                     "Required GetMap operation not available in: " + wms_url_getcap,
@@ -482,9 +469,6 @@ class GeoServiceManager:
             else:
                 logger.info("GetMap available")
                 pass
-
-            # SRS definition
-            srs = self.choose_appropriate_srs(crs_options=wms[api_layer_id].crsOptions)
 
             # Format definition
             formats_image = [
@@ -503,6 +487,9 @@ class GeoServiceManager:
             # GetMap URL
             wms_lyr_url = wms_dict.get("GetMap_url")
 
+            # SRS definition
+            srs = self.choose_appropriate_srs(crs_options=wms[api_layer_id].crsOptions)
+
             # url construction
             try:
                 wms_url_params = {
@@ -510,11 +497,10 @@ class GeoServiceManager:
                     "VERSION": wms_dict.get("version"),
                     "REQUEST": "GetMap",
                     "layers": api_layer_id,
-                    "crs": srs,
+                    # "crs": srs,
                     "format": layer_format,
                     "styles": "",
                     # "styles": lyr_style,
-                    # "url": srv_details.get("path"),
                     "url": wms_lyr_url,
                 }
                 wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
@@ -528,11 +514,15 @@ class GeoServiceManager:
                     "format": layer_format,
                     "styles": "",
                     # "styles": lyr_style,
-                    # "url": srv_details.get("path"),
                     "url": wms_lyr_url,
                 }
                 wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
             # method ending
+            logger.debug(
+                "*=====* DEBUG ADD FROM WMS : wms_url_final --> {}".format(
+                    wms_url_final
+                )
+            )
             return ["WMS", layer_title, wms_url_final]
         else:
             raise ValueError(
@@ -669,9 +659,70 @@ class GeoServiceManager:
             "tileMatrixSet": tile_matrix_set,
             "url": wmts_lyr_url,
         }
-        wmts_url_final = unquote(urlencode(wmts_url_params, "utf8"))
+        wmts_url_final = unquote(urlencode(wmts_url_params, "utf8", safe=" "))
         logger.debug(wmts_url_final)
 
         # method ending
         return ["WMTS", layer_title, wmts_url_final, "", ""]
         # return QgsRasterLayer(wms_url_final, layer_title, 'wms')
+
+    def build_efs_url(
+        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
+    ):
+        """Reformat the input Esri Feature Service url so it fits QGIS criterias.
+
+        Tests weither all the needed information is provided in the url, and
+        then build the url in the syntax understood by QGIS.
+        """
+        logger.debug("*=====* DEBUG ADD FROM EFS : api_layer --> {}".format(api_layer))
+        logger.debug(
+            "*=====* DEBUG ADD FROM EFS : srv_details --> {}".format(srv_details)
+        )
+        srs_map = plg_tools.get_map_crs()
+        layer_name = api_layer.get("id")
+
+        efs_lyr_title = "EFS Layer"
+        if len(api_layer.get("titles")):
+            efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
+        else:
+            pass
+
+        if srv_details.get("path").endswith("/"):
+            efs_lyr_url = srv_details.get("path")
+        else:
+            efs_lyr_url = srv_details.get("path") + "/"
+
+        efs_url = efs_lyr_url + layer_name
+
+        btn_lbl = "EFS : {}".format(efs_lyr_title)
+        return ["EFS", efs_lyr_title, efs_url, api_layer, srv_details, btn_lbl]
+
+    def build_ems_url(
+        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
+    ):
+        """Reformat the input Esri Map Service url so it fits QGIS criterias.
+
+        Tests weither all the needed information is provided in the url, and
+        then build the url in the syntax understood by QGIS.
+        """
+        srs_map = plg_tools.get_map_crs()
+        layer_name = api_layer.get("id")
+
+        ems_lyr_title = "EMS Layer"
+        if len(api_layer.get("titles")):
+            ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
+        else:
+            pass
+
+        ems_lyr_url = str(srv_details.get("path"))
+
+        ems_uri = QgsDataSourceUri()
+        ems_uri.setParam("url", ems_lyr_url)
+        ems_uri.setParam("layer", layer_name)
+        ems_uri.setParam("crs", srs_map)
+        # ems_uri.setParam("restrictToRequestBBOX", "1")
+
+        btn_lbl = "EMS : {}".format(ems_lyr_title)
+        return ["EMS", ems_lyr_title, ems_uri.uri(), api_layer, srv_details, btn_lbl]
+
+    
