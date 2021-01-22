@@ -307,7 +307,6 @@ class GeoServiceManager:
             ]
 
             wfs_url_quicky = wfs_url_base + "&".join(li_url_params)
-            logger.debug("*=====* DEBUG ADD FROM WFS : wfs_url_quicky --> {}".format(wfs_url_quicky))
             btn_lbl = "WFS : {}".format(layer_title)
 
             return ["WFS", layer_title, wfs_url_quicky, api_layer, srv_details, btn_lbl]
@@ -444,13 +443,7 @@ class GeoServiceManager:
                     "url": wms_url_base.split("?")[0] + "?",
                 }
                 wms_url_quicky = unquote(urlencode(wms_url_params, "utf8", quote_via=quote))
-
-            logger.debug(
-                "*=====* DEBUG ADD FROM WMS : wms_url_quicky --> {}".format(
-                    wms_url_quicky
-                )
-            )
-            # prevent encoding errors (#102)
+            # method ending
             btn_lbl = "WMS : {}".format(layer_title)
             return ["WMS", layer_title, wms_url_quicky, api_layer, srv_details, btn_lbl]
 
@@ -532,6 +525,7 @@ class GeoServiceManager:
         Retrieve GetCapabilities from information transmitted by Isogeo API
         to complete URL syntax.
         """
+        logger.debug("*=====* DEBUG ADD FROM WMTS : srv_details --> {}".format(str(srv_details)))
         # local variables
         layer_name = api_layer.get("id")
 
@@ -556,13 +550,13 @@ class GeoServiceManager:
             logger.error(e)
             return (
                 0,
-                "WMS - Service ({}) not reached: {}".format(wmts_url_getcap, str(e)),
+                "WMTS - Service ({}) not reached: {}".format(wmts_url_getcap, str(e)),
             )
         except Exception as e:
             logger.error("WMTS - {}: {}".format(wmts_url_getcap, e))
             return (
                 0,
-                "WMS - Service ({}) not reached: {}".format(wmts_url_getcap, str(e)),
+                "WMTS - Service ({}) not reached: {}".format(wmts_url_getcap, str(e)),
             )
 
         # check if GetTile operation is available
@@ -587,7 +581,7 @@ class GeoServiceManager:
             )
             return (
                 0,
-                "Layer {} not found in WMS service: {}".format(
+                "Layer {} not found in WMTS service: {}".format(
                     layer_name, wmts_url_getcap
                 ),
                 e,
@@ -653,7 +647,8 @@ class GeoServiceManager:
             "url": wmts_lyr_url,
         }
         wmts_url_final = unquote(urlencode(wmts_url_params, "utf8", safe=" "))
-        logger.debug(wmts_url_final)
+        wmts_url_final = "service=WMTS&request=GetCapabilities&crs=EPSG:3857&format=image/jpeg&layers=global_jpeg&styles=default&tileMatrixSet=GoogleMapsCompatible&version=1.0.0&url=https://sigtest.caenlamer.fr/adws/service/wmts/e320529d-fe70-11ea-a0b9-7d7b07f756ee?version%3D1.0.0%26service%3DWMTS%26request%3DGetCapabilities%26"
+        logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_url_final --> {}".format(str(wmts_url_final)))
 
         # method ending
         return ["WMTS", layer_title, wmts_url_final, "", ""]
@@ -718,4 +713,3 @@ class GeoServiceManager:
         btn_lbl = "EMS : {}".format(ems_lyr_title)
         return ["EMS", ems_lyr_title, ems_uri.uri(), api_layer, srv_details, btn_lbl]
 
-    
