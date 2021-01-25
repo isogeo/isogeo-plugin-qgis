@@ -98,7 +98,7 @@ class GeoServiceManager:
                 WebMapService
             ],
             "WMTS": [
-                "GetTiles",
+                "GetTile",
                 self.cached_wmts,
                 WebMapTileService
             ]
@@ -108,33 +108,36 @@ class GeoServiceManager:
         """Return an appropriate srs depending on QGIS configuration and available
         service layer crs options.
         """
-        # SRS definition
-        srs_map = plg_tools.get_map_crs()
-        srs_lyr_new = qsettings.value("/Projections/defaultBehaviour")
-        srs_lyr_crs = qsettings.value("/Projections/layerDefaultCrs")
-        srs_qgs_new = qsettings.value("/Projections/projectDefaultCrs")
-        srs_qgs_otf_on = qsettings.value("/Projections/otfTransformEnabled")
-        srs_qgs_otf_auto = qsettings.value("/Projections/otfTransformAutoEnable")
 
-        if srs_map in crs_options:
-            logger.debug("It's a SRS match! With map canvas: " + srs_map)
-            srs = srs_map
-        elif srs_qgs_new in crs_options and srs_qgs_otf_on == "false" and srs_qgs_otf_auto == "false":
-            logger.debug(
-                "It's a SRS match! With default new project: " + srs_qgs_new
-            )
-            srs = srs_qgs_new
-        elif srs_lyr_crs in crs_options and srs_lyr_new == "useGlobal":
-            logger.debug("It's a SRS match! With default new layer: " + srs_lyr_crs)
-            srs = srs_lyr_crs
-        elif "EPSG:4326" in crs_options:
-            logger.debug("It's a SRS match! With standard WGS 84 (EPSG:4326)")
-            srs = "EPSG:4326"
+        if len(crs_options):
+            # SRS definition
+            srs_map = plg_tools.get_map_crs()
+            srs_lyr_new = qsettings.value("/Projections/defaultBehaviour")
+            srs_lyr_crs = qsettings.value("/Projections/layerDefaultCrs")
+            srs_qgs_new = qsettings.value("/Projections/projectDefaultCrs")
+            srs_qgs_otf_on = qsettings.value("/Projections/otfTransformEnabled")
+            srs_qgs_otf_auto = qsettings.value("/Projections/otfTransformAutoEnable")
+
+            if srs_map in crs_options:
+                logger.debug("It's a SRS match! With map canvas: " + srs_map)
+                srs = srs_map
+            elif srs_qgs_new in crs_options and srs_qgs_otf_on == "false" and srs_qgs_otf_auto == "false":
+                logger.debug(
+                    "It's a SRS match! With default new project: " + srs_qgs_new
+                )
+                srs = srs_qgs_new
+            elif srs_lyr_crs in crs_options and srs_lyr_new == "useGlobal":
+                logger.debug("It's a SRS match! With default new layer: " + srs_lyr_crs)
+                srs = srs_lyr_crs
+            elif "EPSG:4326" in crs_options:
+                logger.debug("It's a SRS match! With standard WGS 84 (EPSG:4326)")
+                srs = "EPSG:4326"
+            else:
+                logger.debug("Map Canvas SRS not available within service CRS. One of the following ones gonna be choosed : {}".format(crs_options))
+                srs = crs_options[0]
+            return srs
         else:
-            logger.debug("Map Canvas SRS not available within service CRS. One of the following ones gonna be choosed : {}".format(crs_options))
-            srs = crs_options[0]
-
-        return srs
+            return 0
 
     def check_ogc_service(
         self, service_type: str, service_url: str, service_version: str
@@ -159,45 +162,6 @@ class GeoServiceManager:
         cache_dict[service_url] = {}
         service_dict = cache_dict[service_url]
 
-        # Basic checks on service reachability
-        try:
-            service = service_connector(url=service_url, version=service_version)
-            service_dict["reachable"] = 1
-        except ServiceException as e:
-            error_msg = "{} - Bad operation ({}): {}".format(
-                service_type, service_url, str(e)
-            )
-            logger.error(error_msg)
-            service_dict["reachable"] = 0
-            service_dict["error"] = error_msg
-            return service_dict["reachable"], service_dict["error"]
-        except HTTPError as e:
-            error_msg = "{} - Service ({}) not reached: {}".format(
-                service_type, service_url, str(e)
-            )
-            logger.error(error_msg)
-            service_dict["reachable"] = 0
-            service_dict["error"] = error_msg
-            return service_dict["reachable"], service_dict["error"]
-        except Exception:
-            try:
-                service = service_connector(url=service_url)
-                service_dict["reachable"] = 1
-            except Exception as e:
-                error_msg = "{} - Connection to service ({}) failed: {}".format(
-                    service_type, service_url, str(e)
-                )
-                logger.error(error_msg)
-                service_dict["reachable"] = 0
-                service_dict["error"] = error_msg
-                return service_dict["reachable"], service_dict["error"]
-
-        # Store several basic informations about the service
-        service_dict[service_type] = service
-        service_dict["typenames"] = list(service.contents.keys())
-        service_dict["version"] = service.version
-        service_dict["operations"] = [op.name for op in service.operations]
-
         # retrieve, clean and store service base URL
         if service_url.endswith("?"):
             service_dict["base_url"] = service_url
@@ -211,26 +175,75 @@ class GeoServiceManager:
         # build URL of "GetCapabilities" operation
         service_dict["getCap_url"] = service_dict["base_url"] + "request=GetCapabilities&service=" + service_type
 
+        if service_type == "WMTS":
+            url = service_dict.get("getCap_url")
+        else:
+            url = service_dict.get("base_url")
+
+        # Basic checks on service reachability
+        try:
+            service = service_connector(url=url, version=service_version)
+            service_dict["reachable"] = 1
+        except ServiceException as e:
+            error_msg = "{} - Bad operation ({}): {}".format(
+                service_type, url, str(e)
+            )
+            logger.error(error_msg)
+            service_dict["reachable"] = 0
+            service_dict["error"] = error_msg
+            return service_dict["reachable"], service_dict["error"]
+        except HTTPError as e:
+            error_msg = "{} - Service ({}) not reached: {}".format(
+                service_type, url, str(e)
+            )
+            logger.error(error_msg)
+            service_dict["reachable"] = 0
+            service_dict["error"] = error_msg
+            return service_dict["reachable"], service_dict["error"]
+        except Exception:
+            try:
+                service = service_connector(url=url)
+                service_dict["reachable"] = 1
+            except Exception as e:
+                error_msg = "{} - Connection to service ({}) failed: {}".format(
+                    service_type, url, str(e)
+                )
+                logger.error(error_msg)
+                service_dict["reachable"] = 0
+                service_dict["error"] = error_msg
+                return service_dict["reachable"], service_dict["error"]
+
+        # Store several basic informations about the service
+        service_dict[service_type] = service
+        service_dict["typenames"] = list(service.contents.keys())
+        service_dict["version"] = service.version
+        service_dict["operations"] = [op.name for op in service.operations]
+        service_dict["formatOptions"] = [f.split(";", 1)[0]for f in service.getOperationByName(main_op_name).formatOptions]
+
         # check if main operation ("GetMap" or "GetFeature" depending on service type) is available
         # if it do, retrieve, clean and store the corresponding URL
         if main_op_name in service_dict["operations"]:
             row_main_op_url = service.getOperationByName(main_op_name).methods[0].get("url")
-            # retrieve, clean and store URL of "GetMap" or "GetFeature" (depending on service type) operation
-            if row_main_op_url.endswith("?"):
-                main_op_url = row_main_op_url
-            elif row_main_op_url.endswith("&"):
-                main_op_url = row_main_op_url[:-1]
-            elif "&" in row_main_op_url and not row_main_op_url.endswith("&"):
-                main_op_url = row_main_op_url + "&"
+            if "&" in row_main_op_url:
+                if service_type == "WMTS":
+                    main_op_url = row_main_op_url.split("?")[0] + "?"
+                    additional_params = [part for part in row_main_op_url.split("?")[1].split("&") if part != ""]
+                    for param in additional_params:
+                        main_op_url += quote("{}&".format(param))
+                elif row_main_op_url.endswith("&"):
+                    main_op_url = row_main_op_url[:-1]
+                else:
+                    main_op_url = row_main_op_url + "&"
             else:
-                main_op_url = row_main_op_url + "?"
+                if row_main_op_url.endswith("?"):
+                    main_op_url = row_main_op_url
+                else:
+                    main_op_url = row_main_op_url + "?"
             main_op_key = "{}_url".format(main_op_name)
             service_dict[main_op_key] = main_op_url
             service_dict["{}_isAvailable".format(main_op_name)] = 1
         else:
             service_dict["{}_isAvailable".format(main_op_name)] = 0
-
-        service_dict["formatOptions"] = [f.split(";", 1)[0]for f in service.getOperationByName(main_op_name).formatOptions]
 
         # only for WMTS
         if service_type == "WMTS":
@@ -256,7 +269,7 @@ class GeoServiceManager:
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
-        # chef the service accessibility and retrieve informations
+        # check the service accessibility and retrieve informations
         if srv_details.get("path") not in self.cached_wfs:
             check = self.check_ogc_service(
                 service_type="WFS",
@@ -376,7 +389,7 @@ class GeoServiceManager:
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
-        # chef the service accessibility and store service informations
+        # check the service accessibility and store service informations
         if srv_details.get("path") not in self.cached_wms:
             check = self.check_ogc_service(
                 service_type="WMS",
@@ -539,123 +552,76 @@ class GeoServiceManager:
         Retrieve GetCapabilities from information transmitted by Isogeo API
         to complete URL syntax.
         """
-        logger.debug("*=====* DEBUG ADD FROM WMTS : srv_details --> {}".format(str(srv_details)))
-        # local variables
-        layer_name = api_layer.get("id")
-
-        layer_title = "WMTS Layer"
-        if len(api_layer.get("titles")):
-            layer_title = api_layer.get("titles")[0].get("value", "WMTS Layer")
+        # check the service accessibility and store service informations
+        if srv_details.get("path") not in self.cached_wmts:
+            check = self.check_ogc_service(
+                service_type="WMTS",
+                service_url=srv_details.get("path"),
+                service_version=srv_details.get("formatVersion"),
+            )
+            if check[0]:
+                wmts_dict = check[1]
+            else:
+                return check
+        elif not self.cached_wmts.get(srv_details.get("path")).get("reachable"):
+            return (
+                self.cached_wmts.get(srv_details.get("path")).get("reachable"),
+                self.cached_wmts.get(srv_details.get("path")).get("error"),
+            )
         else:
-            pass
+            wmts_dict = self.cached_wmts[srv_details.get("path")]
 
-        wmts_url_getcap = (
-            srv_details.get("path") + "?request=GetCapabilities&service=WMTS"
-        )
-        # basic checks on service url
-        try:
-            wmts = WebMapTileService(wmts_url_getcap)
-        except TypeError as e:
-            logger.error("WMTS - OWSLib mixing str and unicode args :{}".format(e))
-        except ServiceException as e:
-            logger.error(e)
-            return 0, "WMTS - Bad operation ({}): {}".format(wmts_url_getcap, str(e))
-        except HTTPError as e:
-            logger.error(e)
-            return (
-                0,
-                "WMTS - Service ({}) not reached: {}".format(wmts_url_getcap, str(e)),
-            )
-        except Exception as e:
-            logger.error("WMTS - {}: {}".format(wmts_url_getcap, e))
-            return (
-                0,
-                "WMTS - Service ({}) not reached: {}".format(wmts_url_getcap, str(e)),
-            )
+        logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_dict --> {}".format(wmts_dict))
+
+        # local variables
+        api_layer_id = api_layer.get("id")
+        wmts = wmts_dict.get("WMTS")
 
         # check if GetTile operation is available
-        if not hasattr(wmts, "gettile") or "GetTile" not in [
-            op.name for op in wmts.operations
-        ]:
-            return 0, "Required GetTile operation not available in: " + wmts_url_getcap
+        if not hasattr(wmts, "gettile") or not wmts_dict.get("GetTile_isAvailable"):
+            return 0, "Required GetTile operation not available in: " + wmts_dict.get("getCap_url")
         else:
             logger.debug("GetTile available")
-            pass
 
-        # check if layer is present and queryable
-        try:
-            wmts_lyr = wmts[layer_name]
-            layer_title = wmts_lyr.title
-            layer_id = wmts_lyr.id
-        except KeyError as e:
+        # check if we can find the api_layer_id into wmts service reachable layers typenames
+        logger.debug("*=====* DEBUG ADD FROM WMTS : layer_name --> {}".format(api_layer_id))
+        logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_dict --> {}".format(wmts_dict))
+        if api_layer_id not in wmts_dict.get("typenames"):
             logger.error(
-                "Layer {} not found in WMTS service: {}".format(
-                    layer_name, wmts_url_getcap
+                "WMTS {} - No typename found for {} layer, the layer may not be available anymore.".format(
+                    srv_details.get("path"), api_layer_id
                 )
             )
             return (
                 0,
-                "Layer {} not found in WMTS service: {}".format(
-                    layer_name, wmts_url_getcap
+                "WMTS - Layer '{}' not found in service {}".format(
+                    api_layer_id, srv_details.get("path")
                 ),
-                e,
             )
-
-        # Tile Matrix Set & SRS
-        # srs_map = plg_tools.get_map_crs()
-        # def_tile_matrix_set = wmts_lyr._tilematrixsets[0]
-        # if srs_map in wmts_lyr._tilematrixsets:
-        #     logger.debug("WMTS - It's a SRS match! With map canvas: " + srs_map)
-        #     tile_matrix_set = wmts.tilematrixsets.get(srs_map).identifier
-        #     srs = srs_map
-        # elif "EPSG:4326" in wmts_lyr._tilematrixsets:
-        #     logger.debug("WMTS - It's a SRS match! With standard WGS 84 (4326)")
-        #     tile_matrix_set = wmts.tilematrixsets.get("EPSG:4326").identifier
-        #     srs = "EPSG:4326"
-        # elif "EPSG:900913" in wmts_lyr._tilematrixsets:
-        #     logger.debug("WMTS - It's a SRS match! With Google (900913)")
-        #     tile_matrix_set = wmts.tilematrixsets.get("EPSG:900913").identifier
-        #     srs = "EPSG:900913"
-        # else:
-        #     logger.debug("WMTS - Searched SRS not available within service CRS.")
-        #     tile_matrix_set = wmts.tilematrixsets.get(def_tile_matrix_set).identifier
-        #     srs = tile_matrix_set
-
-        # Tile Matrix Set & SRS
-        srs_map = plg_tools.get_map_crs()
-        tms_dict = {}
-        for tms in wmts.tilematrixsets:
-            crs_elem = wmts.tilematrixsets.get(tms).crs.split(":")
-            if len(crs_elem) == 2:
-                key = wmts.tilematrixsets.get(tms).crs
-            else:
-                key = "EPSG:" + crs_elem[-1]
-            tms_dict[key] = wmts.tilematrixsets.get(tms).identifier
-        available_crs = [crs for crs, tms in tms_dict.items() if tms in wmts_lyr._tilematrixsets]
-        if len(wmts_lyr._tilematrixsets) == 1:
-            logger.debug("WMTS - Let's choose the SRS corresponding to the only available TileMatrixSet for this layer")
-            tile_matrix_set = wmts_lyr._tilematrixsets[0]
-            srs = [k for k, v in tms_dict.items() if tile_matrix_set in v][0]
-        elif srs_map in available_crs:
-            logger.debug("WMTS - It's a SRS match! With map canvas: " + srs_map)
-            tile_matrix_set = tms_dict.get(srs_map)
-            srs = srs_map
-        elif "EPSG:4326" in available_crs:
-            logger.debug("WMTS - It's a SRS match! With standard WGS 84 (4326)")
-            tile_matrix_set = tms_dict.get("EPSG:4326")
-            srs = "EPSG:4326"
-        elif "EPSG:900913" in available_crs:
-            logger.debug("WMTS - It's a SRS match! With Google (900913)")
-            tile_matrix_set = tms_dict.get("EPSG:900913")
-            srs = "EPSG:900913"
         else:
-            logger.debug("WMTS - Searched SRS not available within service CRS.")
+            wmts_lyr = wmts[api_layer_id]
+
+        # build layer title
+        if len(api_layer.get("titles")):
+            layer_title = api_layer.get("titles")[0].get("value", "WMTS Layer")
+        elif wmts_lyr.title:
+            layer_title = wmts_lyr.title
+        else:
+            layer_title = "WMTS Layer"
+
+        # retrieve Tile Matrix Set & SRS
+        tms_dict = wmts_dict.get("wmts_tms")
+        available_crs = [crs for crs, tms in tms_dict.items() if tms in wmts_lyr._tilematrixsets]
+        srs = self.choose_appropriate_srs(available_crs)
+
+        if srs:
+            tile_matrix_set = tms_dict.get(srs)
+        else:
+            logger.debug("WMTS - Let's choose the SRS corresponding to the only available Tile Matrix Set for this layer")
             tile_matrix_set = wmts_lyr._tilematrixsets[0]
             srs = [k for k, v in tms_dict.items() if tile_matrix_set in v][0]
 
         # Format definition
-        wmts_lyr_formats = wmts.getOperationByName("GetTile").formatOptions
-        formats_image = [f.split(";", 1)[0]for f in wmts_lyr_formats]
         formats_image = wmts_lyr.formats
         if len(formats_image):
             if "image/png" in formats_image:
@@ -665,7 +631,7 @@ class GeoServiceManager:
             else:
                 layer_format = formats_image[0]
         else:
-            logger.debug("WMTS - No format available among preferred by QGIS.")
+            logger.debug("WMTS - No format specified, let's try with 'image/png'.")
             layer_format = "image/png"
 
         # Style definition
@@ -675,36 +641,13 @@ class GeoServiceManager:
             lyr_style = ""
 
         # GetTile URL
-        wmts_lyr_url = wmts.getOperationByName("GetTile").methods
-        wmts_lyr_url = wmts_lyr_url[0].get("url")
-        if "&" in wmts_lyr_url:
-            base_url = wmts_lyr_url.split("?")[0] + "?"
-            additional_params = [part for part in wmts_lyr_url.split("?")[1].split("&") if part != ""]
-            wmts_lyr_url = base_url
-            for param in additional_params:
-                wmts_lyr_url += quote("{}&".format(param))
-        else:
-            if wmts_lyr_url.endswith("?"):
-                pass
-            else:
-                wmts_lyr_url += "?"
+        wmts_lyr_url = wmts_dict.get("GetTile_url")
 
         # construct URL
-        wmts_url_params = {
-            "SERVICE": "WMTS",
-            "VERSION": "1.0.0",
-            "REQUEST": "GetCapabilities",
-            "layers": layer_id,
-            "crs": srs,
-            "format": layer_format,
-            "styles": "",
-            "tileMatrixSet": tile_matrix_set,
-            "url": wmts_lyr_url,
-        }
         li_uri_params = [
             "crs={}&".format(srs),
             "format={}&".format(layer_format),
-            "layers={}&".format(layer_id),
+            "layers={}&".format(api_layer_id),
             "styles={}&".format(lyr_style),
             "tileMatrixSet={}&".format(tile_matrix_set),
             "url={}".format(wmts_lyr_url),
@@ -712,15 +655,11 @@ class GeoServiceManager:
             quote("VERSION={}&".format(wmts.version)),
             quote("REQUEST=GetCapabilities"),
         ]
-        wmts_url_final = unquote(urlencode(wmts_url_params, "utf8", safe=" "))
         wmts_url_final = "".join(li_uri_params)
-
-        # wmts_url_final = "service=WMTS&request=GetCapabilities&crs=EPSG:3857&format=image/jpeg&layers=global_jpeg&styles=default&tileMatrixSet=GoogleMapsCompatible&version=1.0.0&url=https://sigtest.caenlamer.fr/adws/service/wmts/e320529d-fe70-11ea-a0b9-7d7b07f756ee?version%3D1.0.0%26service%3DWMTS%26request%3DGetCapabilities%26"
         logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_url_final --> {}".format(str(wmts_url_final)))
 
         # method ending
         return ["WMTS", layer_title, wmts_url_final, "", ""]
-        # return QgsRasterLayer(wms_url_final, layer_title, 'wms')
 
     def build_efs_url(
         self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
