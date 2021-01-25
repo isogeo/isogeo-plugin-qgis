@@ -98,7 +98,7 @@ class GeoServiceManager:
                 WebMapService
             ],
             "WMTS": [
-                "GetMap",
+                "GetTiles",
                 self.cached_wmts,
                 WebMapTileService
             ]
@@ -231,6 +231,20 @@ class GeoServiceManager:
             service_dict["{}_isAvailable".format(main_op_name)] = 0
 
         service_dict["formatOptions"] = [f.split(";", 1)[0]for f in service.getOperationByName(main_op_name).formatOptions]
+
+        # only for WMTS
+        if service_type == "WMTS":
+            service_dict["wmts_tms"] = {}
+            for tms in service.tilematrixsets:
+                crs_elem = service.tilematrixsets.get(tms).crs.split(":")
+                if len(crs_elem) == 2:
+                    key = service.tilematrixsets.get(tms).crs
+                else:
+                    key = "EPSG:" + crs_elem[-1]
+                value = service.tilematrixsets.get(tms).identifier
+                service_dict["wmts_tms"][key] = value
+        else:
+            pass
 
         return 1, service_dict
 
@@ -425,7 +439,7 @@ class GeoServiceManager:
                     "VERSION={}".format(wms_dict.get("version")),
                     "REQUEST=GetMap",
                     "layers={}".format(api_layer_id),
-                    "crs".format(srs_map),
+                    "crs={}".format(srs_map),
                     "format=image/png",
                     "styles="
                 ]
@@ -588,30 +602,61 @@ class GeoServiceManager:
             )
 
         # Tile Matrix Set & SRS
+        # srs_map = plg_tools.get_map_crs()
+        # def_tile_matrix_set = wmts_lyr._tilematrixsets[0]
+        # if srs_map in wmts_lyr._tilematrixsets:
+        #     logger.debug("WMTS - It's a SRS match! With map canvas: " + srs_map)
+        #     tile_matrix_set = wmts.tilematrixsets.get(srs_map).identifier
+        #     srs = srs_map
+        # elif "EPSG:4326" in wmts_lyr._tilematrixsets:
+        #     logger.debug("WMTS - It's a SRS match! With standard WGS 84 (4326)")
+        #     tile_matrix_set = wmts.tilematrixsets.get("EPSG:4326").identifier
+        #     srs = "EPSG:4326"
+        # elif "EPSG:900913" in wmts_lyr._tilematrixsets:
+        #     logger.debug("WMTS - It's a SRS match! With Google (900913)")
+        #     tile_matrix_set = wmts.tilematrixsets.get("EPSG:900913").identifier
+        #     srs = "EPSG:900913"
+        # else:
+        #     logger.debug("WMTS - Searched SRS not available within service CRS.")
+        #     tile_matrix_set = wmts.tilematrixsets.get(def_tile_matrix_set).identifier
+        #     srs = tile_matrix_set
+
+        # Tile Matrix Set & SRS
         srs_map = plg_tools.get_map_crs()
-        def_tile_matrix_set = wmts_lyr.tilematrixsets[0]
-        if srs_map in wmts_lyr.tilematrixsets:
+        tms_dict = {}
+        for tms in wmts.tilematrixsets:
+            crs_elem = wmts.tilematrixsets.get(tms).crs.split(":")
+            if len(crs_elem) == 2:
+                key = wmts.tilematrixsets.get(tms).crs
+            else:
+                key = "EPSG:" + crs_elem[-1]
+            tms_dict[key] = wmts.tilematrixsets.get(tms).identifier
+        available_crs = [crs for crs, tms in tms_dict.items() if tms in wmts_lyr._tilematrixsets]
+        if len(wmts_lyr._tilematrixsets) == 1:
+            logger.debug("WMTS - Let's choose the SRS corresponding to the only available TileMatrixSet for this layer")
+            tile_matrix_set = wmts_lyr._tilematrixsets[0]
+            srs = [k for k, v in tms_dict.items() if tile_matrix_set in v][0]
+        elif srs_map in available_crs:
             logger.debug("WMTS - It's a SRS match! With map canvas: " + srs_map)
-            tile_matrix_set = wmts.tilematrixsets.get(srs_map).identifier
+            tile_matrix_set = tms_dict.get(srs_map)
             srs = srs_map
-        elif "EPSG:4326" in wmts_lyr.tilematrixsets:
+        elif "EPSG:4326" in available_crs:
             logger.debug("WMTS - It's a SRS match! With standard WGS 84 (4326)")
-            tile_matrix_set = wmts.tilematrixsets.get("EPSG:4326").identifier
+            tile_matrix_set = tms_dict.get("EPSG:4326")
             srs = "EPSG:4326"
-        elif "EPSG:900913" in wmts_lyr.tilematrixsets:
+        elif "EPSG:900913" in available_crs:
             logger.debug("WMTS - It's a SRS match! With Google (900913)")
-            tile_matrix_set = wmts.tilematrixsets.get("EPSG:900913").identifier
+            tile_matrix_set = tms_dict.get("EPSG:900913")
             srs = "EPSG:900913"
         else:
             logger.debug("WMTS - Searched SRS not available within service CRS.")
-            tile_matrix_set = wmts.tilematrixsets.get(def_tile_matrix_set).identifier
-            srs = tile_matrix_set
+            tile_matrix_set = wmts_lyr._tilematrixsets[0]
+            srs = [k for k, v in tms_dict.items() if tile_matrix_set in v][0]
 
         # Format definition
         wmts_lyr_formats = wmts.getOperationByName("GetTile").formatOptions
-        formats_image = [
-            f.split(" ", 1)[0] for f in wmts_lyr_formats if f in qgis_wms_formats
-        ]
+        formats_image = [f.split(";", 1)[0]for f in wmts_lyr_formats]
+        formats_image = wmts_lyr.formats
         if len(formats_image):
             if "image/png" in formats_image:
                 layer_format = "image/png"
@@ -624,7 +669,10 @@ class GeoServiceManager:
             layer_format = "image/png"
 
         # Style definition
-        # lyr_style = wmts_lyr.styles.keys()[0]
+        if len(wmts_lyr.styles):
+            lyr_style = list(wmts_lyr.styles.keys())[0]
+        else:
+            lyr_style = ""
 
         # GetTile URL
         wmts_lyr_url = wmts.getOperationByName("GetTile").methods
@@ -646,8 +694,21 @@ class GeoServiceManager:
             "tileMatrixSet": tile_matrix_set,
             "url": wmts_lyr_url,
         }
+        li_uri_params = [
+            "crs={}&".format(srs),
+            "format={}&".format(layer_format),
+            "layers={}&".format(layer_id),
+            "styles={}&".format(lyr_style),
+            "tileMatrixSet={}&".format(tile_matrix_set),
+            "url={}".format(wmts_lyr_url),
+            quote("SERVICE=WMTS&"),
+            quote("VERSION={}&".format(wmts.version)),
+            quote("REQUEST=GetCapabilities"),
+        ]
         wmts_url_final = unquote(urlencode(wmts_url_params, "utf8", safe=" "))
-        wmts_url_final = "service=WMTS&request=GetCapabilities&crs=EPSG:3857&format=image/jpeg&layers=global_jpeg&styles=default&tileMatrixSet=GoogleMapsCompatible&version=1.0.0&url=https://sigtest.caenlamer.fr/adws/service/wmts/e320529d-fe70-11ea-a0b9-7d7b07f756ee?version%3D1.0.0%26service%3DWMTS%26request%3DGetCapabilities%26"
+        wmts_url_final = "".join(li_uri_params)
+
+        # wmts_url_final = "service=WMTS&request=GetCapabilities&crs=EPSG:3857&format=image/jpeg&layers=global_jpeg&styles=default&tileMatrixSet=GoogleMapsCompatible&version=1.0.0&url=https://sigtest.caenlamer.fr/adws/service/wmts/e320529d-fe70-11ea-a0b9-7d7b07f756ee?version%3D1.0.0%26service%3DWMTS%26request%3DGetCapabilities%26"
         logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_url_final --> {}".format(str(wmts_url_final)))
 
         # method ending
