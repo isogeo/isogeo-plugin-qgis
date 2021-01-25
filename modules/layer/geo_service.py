@@ -220,7 +220,7 @@ class GeoServiceManager:
                 main_op_url = row_main_op_url
             elif row_main_op_url.endswith("&"):
                 main_op_url = row_main_op_url[:-1]
-            elif "&" in row_main_op_url:
+            elif "&" in row_main_op_url and not row_main_op_url.endswith("&"):
                 main_op_url = row_main_op_url + "&"
             else:
                 main_op_url = row_main_op_url + "?"
@@ -677,10 +677,17 @@ class GeoServiceManager:
         # GetTile URL
         wmts_lyr_url = wmts.getOperationByName("GetTile").methods
         wmts_lyr_url = wmts_lyr_url[0].get("url")
-        if wmts_lyr_url[-1] == "&":
-            wmts_lyr_url = wmts_lyr_url[:-1]
+        if "&" in wmts_lyr_url:
+            base_url = wmts_lyr_url.split("?")[0] + "?"
+            additional_params = [part for part in wmts_lyr_url.split("?")[1].split("&") if part != ""]
+            wmts_lyr_url = base_url
+            for param in additional_params:
+                wmts_lyr_url += quote("{}&".format(param))
         else:
-            pass
+            if wmts_lyr_url.endswith("?"):
+                pass
+            else:
+                wmts_lyr_url += "?"
 
         # construct URL
         wmts_url_params = {
