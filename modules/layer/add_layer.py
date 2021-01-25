@@ -195,9 +195,9 @@ class LayerAdder:
     ):
         """Add a layer to QGIS map canvas from a Geographic Service Layer.
 
-        :param str layer_label: the name that gonna be given to layer into QGIS layers manager
+        :param str layer_label: the name of the metadata
         :param list url: the URL/URI of the Geographic Service Layer
-        :param str layer_name: the name of the Geographic Service Layer
+        :param str layer_name: the name that gonna be given to layer into QGIS layers manager
         :param str data_type: the type of the service ("WFS", "WMS", "EFS", "EMS" or "WMTS")
         :param list additional_infos: infos needed to call WMS or WFS URL builder in 'complete' mode
         """
@@ -205,11 +205,11 @@ class LayerAdder:
         # Create the vector layer or the raster layer depending on service_type
         if service_type == "WFS" or service_type == "EFS":
             layer = QgsVectorLayer(
-                url, layer_label, dict_service_types.get(service_type)
+                url, layer_name, dict_service_types.get(service_type)
             )
         elif service_type == "WMS" or service_type == "EMS" or service_type == "WMTS":
             layer = QgsRasterLayer(
-                url, layer_label, dict_service_types.get(service_type)
+                url, layer_name, dict_service_types.get(service_type)
             )
         else:
             raise ValueError(
@@ -233,7 +233,7 @@ class LayerAdder:
             # If the service type is WFS or WMS
             if service_type in dict_classic_ogc_service:
                 QgsLayer = dict_classic_ogc_service.get(service_type).get("QgsLayer")
-                layer = QgsLayer(url, layer_label)
+                layer = QgsLayer(url, layer_name)
                 if layer.isValid():
                     lyr = QgsProject.instance().addMapLayer(layer)
                     QgsMessageLog.logMessage(
@@ -255,7 +255,7 @@ class LayerAdder:
                     if name_url[0] != 0:
                         url = name_url[2]
                         layer = QgsLayer(
-                            name_url[2], layer_label, dict_service_types.get(service_type)
+                            name_url[2], layer_name, dict_service_types.get(service_type)
                         )
                         if layer.isValid():
                             lyr = QgsProject.instance().addMapLayer(layer)
