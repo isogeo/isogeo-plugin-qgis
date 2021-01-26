@@ -4,6 +4,7 @@
 # Standard library
 import logging
 import re
+import requests
 
 from urllib.parse import urlencode, unquote, quote
 
@@ -85,6 +86,8 @@ class GeoServiceManager:
         self.cached_wfs = dict()
         self.cached_wms = dict()
         self.cached_wmts = dict()
+        self.cached_efs = dict()
+        self.cached_ems = dict()
 
         self.ogc_infos_dict = {
             "WFS": [
@@ -673,24 +676,52 @@ class GeoServiceManager:
         logger.debug(
             "*=====* DEBUG ADD FROM EFS : srv_details --> {}".format(srv_details)
         )
-        srs_map = plg_tools.get_map_crs()
-        layer_name = api_layer.get("id")
 
-        efs_lyr_title = "EFS Layer"
+        # retrieve layer id
+        api_layer_id = api_layer.get("id")
+
+        # build layer title
         if len(api_layer.get("titles")):
             efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
         else:
-            pass
+            efs_lyr_title = "EFS Layer"
 
+        # retrieve and clean service efs_base_url
         if srv_details.get("path").endswith("/"):
-            efs_lyr_url = srv_details.get("path")
+            efs_base_url = srv_details.get("path")
         else:
-            efs_lyr_url = srv_details.get("path") + "/"
+            efs_base_url = srv_details.get("path") + "/"
 
-        efs_url = efs_lyr_url + layer_name
+        # equivalent to "GetCapabilities" URL for EFS
+        efs_getCap_url = efs_base_url + "?f=json"
+        # sending "GetCapabilities" equivalent request to retrieve appropriate srs
+        try:
+            efs_cap = requests.get(efs_getCap_url).json()
+            # retrieve available srs
+            srs = "EPSG:" + str(efs_cap.get("spatialReference").get("latestWkid"))
+        except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
+            logger.error("EFS {} - Server connection failure: {}".format(srv_details.get("path"), e))
+            srs = ""
+        except Exception as e:
+            logger.error(
+                "EFS {} - Unable to retrieve appropriate srs for layer '{}'. Let's try without specifing any srs.".format(
+                    srv_details.get("path"), api_layer_id
+                )
+            )
+            logger.error(str(e))
+            srs = ""
+
+        # build EFS layer URI
+        efs_uri = "crs='{}' ".format(srs)
+        efs_uri += "filter='' "
+        efs_uri += "url='{}{}' ".format(efs_base_url, api_layer_id)
+        efs_uri += "table'' "
+        efs_uri += "sql=''"
+
+        logger.debug("*=====* DEBUG ADD FROM EFS : efs_uri --> {}".format(str(efs_uri)))
 
         btn_lbl = "EFS : {}".format(efs_lyr_title)
-        return ["EFS", efs_lyr_title, efs_url, api_layer, srv_details, btn_lbl]
+        return ["EFS", efs_lyr_title, efs_uri, api_layer, srv_details, btn_lbl]
 
     def build_ems_url(
         self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
@@ -700,8 +731,7 @@ class GeoServiceManager:
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
-        srs_map = plg_tools.get_map_crs()
-        layer_name = api_layer.get("id")
+        api_layer_id = api_layer.get("id")
 
         ems_lyr_title = "EMS Layer"
         if len(api_layer.get("titles")):
@@ -711,12 +741,31 @@ class GeoServiceManager:
 
         ems_lyr_url = str(srv_details.get("path"))
 
+        # equivalent to "GetCapabilities" URL for EMS
+        ems_getCap_url = ems_lyr_url + "?f=json"
+        # sending "GetCapabilities" equivalent request to retrieve appropriate srs
+        try:
+            ems_cap = requests.get(ems_getCap_url).json()
+            # retrieve available srs
+            srs = "EPSG:" + str(ems_cap.get("spatialReference").get("wkid"))
+        except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
+            logger.error("EMS {} - Server connection failure: {}".format(srv_details.get("path"), e))
+            srs = plg_tools.get_map_crs()
+        except Exception as e:
+            logger.error(
+                "EMS {} - Unable to retrieve appropriate srs for layer '{}'. Let's try with map canvas current one.".format(
+                    srv_details.get("path"), api_layer_id
+                )
+            )
+            logger.error(str(e))
+            srs = plg_tools.get_map_crs()
+
         ems_uri = QgsDataSourceUri()
         ems_uri.setParam("url", ems_lyr_url)
-        ems_uri.setParam("layer", layer_name)
-        ems_uri.setParam("crs", srs_map)
-        # ems_uri.setParam("restrictToRequestBBOX", "1")
+        ems_uri.setParam("layer", api_layer_id)
+        ems_uri.setParam("crs", srs)
+
+        logger.debug("*=====* DEBUG ADD FROM EMS : ems_uri --> {}".format(str(ems_uri)))
 
         btn_lbl = "EMS : {}".format(ems_lyr_title)
         return ["EMS", ems_lyr_title, ems_uri.uri(), api_layer, srv_details, btn_lbl]
-
