@@ -4,7 +4,6 @@
 # Standard library
 import logging
 import re
-import requests
 
 from urllib.parse import urlencode, unquote, quote
 
@@ -67,7 +66,6 @@ except ImportError:
     )
 try:
     import requests
-
     logger.info("Depencencies - Requests version: {}".format(requests.__version__))
 except ImportError:
     logger.warning("Depencencies - Requests not available")
@@ -104,6 +102,17 @@ class GeoServiceManager:
                 "GetTile",
                 self.cached_wmts,
                 WebMapTileService
+            ]
+        }
+
+        self.esri_infos_dict = {
+            "EFS": [
+                self.cached_efs,
+                "latestWkid"
+            ],
+            "EMS": [
+                self.cached_ems,
+                "wkid"
             ]
         }
 
@@ -664,6 +673,68 @@ class GeoServiceManager:
         # method ending
         return ["WMTS", layer_title, wmts_url_final, "", ""]
 
+    def check_esri_service(
+        self, service_type: str, service_url: str
+    ):
+        """Try to acces to the service from the given service_url and store the
+        capabilities into cached_wfs dict.
+        """
+        logger.debug("*=====* DEBUG ADD FROM ESRI : service_url --> {}".format(str(service_url)))
+        # If service_type argument value is invalid, raise error
+        if service_type not in self.esri_infos_dict:
+            raise ValueError(
+                "'service_type' argument value should be one of {} not {}".format(
+                    list(self.esri_infos_dict.keys()),
+                    service_type
+                )
+            )
+        # It it's valid, set local variables depending on it
+        else:
+            cache_dict = self.esri_infos_dict.get(service_type)[0]
+            srs_entry_name = self.esri_infos_dict.get(service_type)[1]
+
+        cache_dict[service_url] = {}
+        service_dict = cache_dict[service_url]
+
+        # retrieve, clean and store service base URL
+        if service_url.endswith("/"):
+            service_dict["base_url"] = service_url
+        else:
+            service_dict["base_url"] = service_url + "/"
+
+        # build URL of "GetCapabilities" operation
+        service_dict["getCap_url"] = service_dict["base_url"] + "?f=json"
+
+        # sending "GetCapabilities" equivalent request
+        try:
+            getCap_request = requests.get(service_dict["getCap_url"])
+            getCap_content = getCap_request.json()
+            service_dict["reachable"] = 1
+        except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
+            error_msg = "{} {} - Server connection failure: {}".format(service_type, service_dict["getCap_url"], e)
+            logger.error(error_msg)
+            service_dict["reachable"] = 0
+            service_dict["error"] = error_msg
+            return service_dict["reachable"], service_dict["error"]
+        except Exception as e:
+            error_msg = "{} {} - Unable to access service capabilities: {}".format(service_type, service_dict["getCap_url"], e)
+            logger.error(error_msg)
+            service_dict["reachable"] = 0
+            service_dict["error"] = error_msg
+            return service_dict["reachable"], service_dict["error"]
+
+        # retrieve appropriate srs from service capabilities
+        try:
+            service_dict["appropriate_srs"] = "EPSG:" + str(getCap_content.get("spatialReference").get(srs_entry_name))
+        except Exception as e:
+            warning_msg = "{} {} - Unable to retrieve information about appropriate srs from service capabilities: {}".format(
+                service_type, service_dict["getCap_url"], e
+            )
+            logger.warning(warning_msg)
+            service_dict["appropriate_srs"] = ""
+
+        return 1, service_dict
+
     def build_efs_url(
         self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
     ):
@@ -672,10 +743,23 @@ class GeoServiceManager:
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
-        logger.debug("*=====* DEBUG ADD FROM EFS : api_layer --> {}".format(api_layer))
-        logger.debug(
-            "*=====* DEBUG ADD FROM EFS : srv_details --> {}".format(srv_details)
-        )
+        # check the service accessibility and store service informations
+        if srv_details.get("path") not in self.cached_efs or not self.cached_efs.get(srv_details.get("path")).get("reachable"):
+            check = self.check_esri_service(
+                service_type="EFS",
+                service_url=srv_details.get("path"),
+            )
+            if check[0]:
+                efs_dict = check[1]
+            else:
+                return check
+        elif not self.cached_efs.get(srv_details.get("path")).get("reachable"):
+            return (
+                self.cached_efs.get(srv_details.get("path")).get("reachable"),
+                self.cached_efs.get(srv_details.get("path")).get("error"),
+            )
+        else:
+            efs_dict = self.cached_efs[srv_details.get("path")]
 
         # retrieve layer id
         api_layer_id = api_layer.get("id")
@@ -687,29 +771,10 @@ class GeoServiceManager:
             efs_lyr_title = "EFS Layer"
 
         # retrieve and clean service efs_base_url
-        if srv_details.get("path").endswith("/"):
-            efs_base_url = srv_details.get("path")
-        else:
-            efs_base_url = srv_details.get("path") + "/"
+        efs_base_url = efs_dict.get("base_url")
 
-        # equivalent to "GetCapabilities" URL for EFS
-        efs_getCap_url = efs_base_url + "?f=json"
-        # sending "GetCapabilities" equivalent request to retrieve appropriate srs
-        try:
-            efs_cap = requests.get(efs_getCap_url).json()
-            # retrieve available srs
-            srs = "EPSG:" + str(efs_cap.get("spatialReference").get("latestWkid"))
-        except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
-            logger.error("EFS {} - Server connection failure: {}".format(srv_details.get("path"), e))
-            srs = ""
-        except Exception as e:
-            logger.error(
-                "EFS {} - Unable to retrieve appropriate srs for layer '{}'. Let's try without specifing any srs.".format(
-                    srv_details.get("path"), api_layer_id
-                )
-            )
-            logger.error(str(e))
-            srs = ""
+        # retrieve appropriate srs
+        srs = efs_dict.get("appropriate_srs")
 
         # build EFS layer URI
         efs_uri = "crs='{}' ".format(srs)
@@ -719,7 +784,6 @@ class GeoServiceManager:
         efs_uri += "sql=''"
 
         logger.debug("*=====* DEBUG ADD FROM EFS : efs_uri --> {}".format(str(efs_uri)))
-
         btn_lbl = "EFS : {}".format(efs_lyr_title)
         return ["EFS", efs_lyr_title, efs_uri, api_layer, srv_details, btn_lbl]
 
@@ -731,41 +795,45 @@ class GeoServiceManager:
         Tests weither all the needed information is provided in the url, and
         then build the url in the syntax understood by QGIS.
         """
+        # check the service accessibility and store service informations
+        if srv_details.get("path") not in self.cached_ems or not self.cached_ems.get(srv_details.get("path")).get("reachable"):
+            check = self.check_esri_service(
+                service_type="EMS",
+                service_url=srv_details.get("path"),
+            )
+            if check[0]:
+                ems_dict = check[1]
+            else:
+                return check
+        elif not self.cached_ems.get(srv_details.get("path")).get("reachable"):
+            return (
+                self.cached_ems.get(srv_details.get("path")).get("reachable"),
+                self.cached_ems.get(srv_details.get("path")).get("error"),
+            )
+        else:
+            ems_dict = self.cached_ems[srv_details.get("path")]
+
+        # retrieve layer id
         api_layer_id = api_layer.get("id")
 
-        ems_lyr_title = "EMS Layer"
+        # build layer title
         if len(api_layer.get("titles")):
             ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
         else:
-            pass
+            ems_lyr_title = "EMS Layer"
 
-        ems_lyr_url = str(srv_details.get("path"))
+        # retrieve and clean service ems_base_url
+        ems_base_url = ems_dict.get("base_url")
 
-        # equivalent to "GetCapabilities" URL for EMS
-        ems_getCap_url = ems_lyr_url + "?f=json"
-        # sending "GetCapabilities" equivalent request to retrieve appropriate srs
-        try:
-            ems_cap = requests.get(ems_getCap_url).json()
-            # retrieve available srs
-            srs = "EPSG:" + str(ems_cap.get("spatialReference").get("wkid"))
-        except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
-            logger.error("EMS {} - Server connection failure: {}".format(srv_details.get("path"), e))
-            srs = plg_tools.get_map_crs()
-        except Exception as e:
-            logger.error(
-                "EMS {} - Unable to retrieve appropriate srs for layer '{}'. Let's try with map canvas current one.".format(
-                    srv_details.get("path"), api_layer_id
-                )
-            )
-            logger.error(str(e))
-            srs = plg_tools.get_map_crs()
+        # retrieve appropriate srs
+        srs = ems_dict.get("appropriate_srs")
 
+        # build EMS layer URI
         ems_uri = QgsDataSourceUri()
-        ems_uri.setParam("url", ems_lyr_url)
+        ems_uri.setParam("url", ems_base_url)
         ems_uri.setParam("layer", api_layer_id)
         ems_uri.setParam("crs", srs)
 
         logger.debug("*=====* DEBUG ADD FROM EMS : ems_uri --> {}".format(str(ems_uri)))
-
         btn_lbl = "EMS : {}".format(ems_lyr_title)
         return ["EMS", ems_lyr_title, ems_uri.uri(), api_layer, srv_details, btn_lbl]
