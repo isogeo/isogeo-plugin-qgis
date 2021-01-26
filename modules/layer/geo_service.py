@@ -744,7 +744,7 @@ class GeoServiceManager:
         then build the url in the syntax understood by QGIS.
         """
         # check the service accessibility and store service informations
-        if srv_details.get("path") not in self.cached_efs or not self.cached_efs.get(srv_details.get("path")).get("reachable"):
+        if srv_details.get("path") not in self.cached_efs:
             check = self.check_esri_service(
                 service_type="EFS",
                 service_url=srv_details.get("path"),
@@ -796,7 +796,7 @@ class GeoServiceManager:
         then build the url in the syntax understood by QGIS.
         """
         # check the service accessibility and store service informations
-        if srv_details.get("path") not in self.cached_ems or not self.cached_ems.get(srv_details.get("path")).get("reachable"):
+        if srv_details.get("path") not in self.cached_ems:
             check = self.check_esri_service(
                 service_type="EMS",
                 service_url=srv_details.get("path"),
