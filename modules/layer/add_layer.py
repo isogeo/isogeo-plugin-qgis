@@ -39,16 +39,26 @@ geo_srv_mng = GeoServiceManager()
 li_datafile_types = ["vector", "raster"]
 
 dict_service_types = {
-    "WFS": "WFS",
-    "WMS": "wms",
-    "EFS": "arcgisfeatureserver",
-    "EMS": "arcgismapserver",
-    "WMTS": "wms",
-}
-
-dict_classic_ogc_service = {
-    "WFS": {"QgsLayer": QgsVectorLayer, "url_builder": geo_srv_mng.build_wfs_url},
-    "WMS": {"QgsLayer": QgsRasterLayer, "url_builder": geo_srv_mng.build_wms_url},
+    "WFS": [
+        "WFS",
+        QgsVectorLayer
+    ],
+    "WMS": [
+        "wms",
+        QgsRasterLayer
+    ],
+    "EFS": [
+        "arcgisfeatureserver",
+        QgsVectorLayer
+    ],
+    "EMS": [
+        "arcgismapserver",
+        QgsRasterLayer
+    ],
+    "WMTS": [
+        "wms",
+        QgsRasterLayer
+    ]
 }
 
 qgis_wms_formats = (
@@ -203,14 +213,10 @@ class LayerAdder:
         """
 
         # Create the vector layer or the raster layer depending on service_type
-        if service_type == "WFS" or service_type == "EFS":
-            layer = QgsVectorLayer(
-                url, layer_name, dict_service_types.get(service_type)
-            )
-        elif service_type == "WMS" or service_type == "EMS" or service_type == "WMTS":
-            layer = QgsRasterLayer(
-                url, layer_name, dict_service_types.get(service_type)
-            )
+        if service_type in dict_service_types:
+            QgsLayer = dict_service_types.get(service_type)[1]
+            data_provider = dict_service_types.get(service_type)[0]
+            layer = QgsLayer(url, layer_name, data_provider)
         else:
             raise ValueError(
                 "'service_type' argument value should be 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
@@ -230,53 +236,22 @@ class LayerAdder:
         else:
             error_msg = layer.error().message()
             layer_is_ok = 0
-            # If the service type is WFS or WMS
-            if service_type in dict_classic_ogc_service:
-                QgsLayer = dict_classic_ogc_service.get(service_type).get("QgsLayer")
-                layer = QgsLayer(url, layer_name)
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    QgsMessageLog.logMessage(
-                        message="{} service layer added: {}".format(
-                            service_type, url
-                        ),
-                        tag="Isogeo",
-                        level=0,
-                    )
-                    logger.debug("{} layer added: {}".format(service_type, url))
-                    layer_is_ok = 1
-                else:
-                    build_url_method = dict_classic_ogc_service.get(service_type).get("url_builder")
-                    # Rebuild the URL in 'complete' mode using 'additional_infos'
-                    name_url = build_url_method(
-                        additional_infos[0], additional_infos[1], mode="complete"
-                    )
-                    # Then try to add
-                    if name_url[0] != 0:
-                        url = name_url[2]
-                        layer = QgsLayer(
-                            name_url[2], layer_name, dict_service_types.get(service_type)
-                        )
-                        if layer.isValid():
-                            lyr = QgsProject.instance().addMapLayer(layer)
-                            QgsMessageLog.logMessage(
-                                message="{} service layer added: {}".format(
-                                    service_type, url
-                                ),
-                                tag="Isogeo",
-                                level=0,
-                            )
-                            logger.debug("{} layer added: {}".format(service_type, url))
-                            layer_is_ok = 1
-                        else:
-                            error_msg = layer.error().message()
-                    # If the layer is still not valid, inform the user
-                    else:
-                        logger.warning(name_url[1])
-                        pass
-            # If the service type is not WFS or WMS, just inform the user
+            # Try to create it again without specifying data provider
+            layer = QgsLayer(url, layer_name)
+            if layer.isValid():
+                lyr = QgsProject.instance().addMapLayer(layer)
+                QgsMessageLog.logMessage(
+                    message="{} service layer added: {}".format(
+                        service_type, url
+                    ),
+                    tag="Isogeo",
+                    level=0,
+                )
+                logger.debug("{} layer added without specifying the data provider: {}".format(service_type, url))
+                layer_is_ok = 1
             else:
-                pass
+                error_msg = layer.error().message()
+                layer_is_ok = 0
 
         if not layer_is_ok:
             self.invalid_layer_inform(

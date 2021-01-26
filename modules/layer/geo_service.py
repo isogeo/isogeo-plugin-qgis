@@ -274,7 +274,7 @@ class GeoServiceManager:
         return 1, service_dict
 
     def build_wfs_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
+        self, api_layer, srv_details
     ):
         """Reformat the input WFS url so it fits QGIS criterias.
 
@@ -299,10 +299,12 @@ class GeoServiceManager:
             )
         else:
             wfs_dict = self.cached_wfs[srv_details.get("path")]
+        logger.debug("*=====* DEBUG ADD FROM WFS : wfs_dict --> {}".format(wfs_dict))
 
-        # retrieve base url
+        # local variables
+        wfs_url_getcap = wfs_dict.get("getCap_url")
         wfs_url_base = wfs_dict.get("base_url")
-
+        wfs = wfs_dict.get("WFS")
         # retrieve and clean api_layer_name from api_layer_id
         api_layer_id = api_layer.get("id")
         api_layer_name = re.sub("\{.*?}", "", api_layer_id)
@@ -313,12 +315,7 @@ class GeoServiceManager:
         else:
             layer_title = api_layer_name
 
-        # build GetCapabilities url
-        wfs_url_getcap = wfs_dict.get("getCap_url")
-
         # retrieve the wfs layer id (the real one) for "TYPENAME" URL parameter
-        logger.debug("*=====* DEBUG ADD FROM WFS : layer_name --> {}".format(api_layer_name))
-        logger.debug("*=====* DEBUG ADD FROM WFS : wfs_dict --> {}".format(wfs_dict))
         layer_typename = [typename for typename in wfs_dict.get("typenames") if api_layer_name in typename]
         if len(layer_typename) == 1:
             layer_typename = layer_typename[0]
@@ -337,64 +334,38 @@ class GeoServiceManager:
             )
             return 0, "WFS - Layer '{}' not found in service {}".format(api_layer_name, srv_details.get("path"))
 
-        if mode == "quicky":
-            li_url_params = [
-                "REQUEST=GetFeature",
-                "SERVICE=WFS",
-                "VERSION={}".format(wfs_dict.get("version")),
-                "TYPENAME={}".format(layer_typename),
-            ]
-
-            wfs_url_quicky = wfs_url_base + "&".join(li_url_params)
-            btn_lbl = "WFS : {}".format(layer_title)
-
-            return ["WFS", layer_title, wfs_url_quicky, api_layer, srv_details, btn_lbl]
-
-        elif mode == "complete":
-            # Clean, complete but slower way - OWSLib -------------------------
-            wfs = wfs_dict.get("WFS")
-            # check if GetFeature and DescribeFeatureType operation are available
-            if not hasattr(wfs, "getfeature") or not wfs_dict.get("GetFeature_isAvailable"):
-                return 0, "GetFeature operation not available in: {}".format(wfs_url_getcap)
-            else:
-                logger.info("GetFeature available")
-                pass
-
-            if "DescribeFeatureType" not in wfs_dict.get("operations"):
-                return 0, "DescribeFeatureType operation not available in: {}".format(wfs_url_getcap)
-            else:
-                logger.info("DescribeFeatureType available")
-                pass
-
-            # SRS definition
-            available_crs_options = ["{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions]
-
-            srs = self.choose_appropriate_srs(crs_options=available_crs_options)
-
-            # GetFeature URL
-            wfs_lyr_url = wfs_dict.get("GetFeature_url")
-
-            # url construction
-            li_url_params = [
-                "REQUEST=GetFeature",
-                "SERVICE=WFS",
-                "VERSION={}".format(wfs_dict.get("version")),
-                "TYPENAME={}".format(layer_typename),
-                "SRSNAME={}".format(srs),
-            ]
-            wfs_url_final = wfs_lyr_url + "&".join(li_url_params)
-
-            logger.debug("*=====* DEBUG ADD FROM WFS : wfs_url_final --> {}".format(wfs_url_final))
-            return ["WFS", layer_title, wfs_url_final]
+        # check if GetFeature and DescribeFeatureType operation are available
+        if not hasattr(wfs, "getfeature") or not wfs_dict.get("GetFeature_isAvailable"):
+            return 0, "GetFeature operation not available in: {}".format(wfs_url_getcap)
         else:
-            raise ValueError(
-                "'mode' argument value should be 'quicky', 'complete', not {}".format(
-                    mode
-                )
-            )
+            logger.info("GetFeature available")
+            pass
+        if "DescribeFeatureType" not in wfs_dict.get("operations"):
+            return 0, "DescribeFeatureType operation not available in: {}".format(wfs_url_getcap)
+        else:
+            logger.info("DescribeFeatureType available")
+            pass
+
+        # SRS definition
+        available_crs_options = ["{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions]
+        srs = self.choose_appropriate_srs(crs_options=available_crs_options)
+
+        # build URL
+        li_url_params = [
+            "REQUEST=GetFeature",
+            "SERVICE=WFS",
+            "VERSION={}".format(wfs_dict.get("version")),
+            "TYPENAME={}".format(layer_typename),
+            "SRSNAME={}".format(srs),
+        ]
+
+        wfs_url_final = wfs_url_base + "&".join(li_url_params)
+        btn_lbl = "WFS : {}".format(layer_title)
+
+        return ["WFS", layer_title, wfs_url_final, api_layer, srv_details, btn_lbl]
 
     def build_wms_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
+        self, api_layer, srv_details
     ):
         """Reformat the input WMS url so it fits QGIS criterias.
 
@@ -419,12 +390,13 @@ class GeoServiceManager:
             )
         else:
             wms_dict = self.cached_wms[srv_details.get("path")]
-
-        # retrieve base url
-        wms_url_base = wms_dict.get("base_url")
+        logger.debug("*=====* DEBUG ADD FROM WMS : wms_dict --> {}".format(wms_dict))
 
         # local variables
         api_layer_id = api_layer.get("id")
+        wms_url_getcap = wms_dict.get("getCap_url")
+        wms_url_base = wms_dict.get("base_url")
+        wms = wms_dict.get("WMS")
 
         # build layer title
         if len(api_layer.get("titles")):
@@ -432,12 +404,7 @@ class GeoServiceManager:
         else:
             layer_title = api_layer_id
 
-        # build GetCapabilities url
-        wms_url_getcap = wms_dict.get("getCap_url")
-
         # check if we can find the api_layer_id into wms service reachable layers typenames
-        logger.debug("*=====* DEBUG ADD FROM WMS : layer_name --> {}".format(api_layer_id))
-        logger.debug("*=====* DEBUG ADD FROM WMS : wms_dict --> {}".format(wms_dict))
         if api_layer_id not in wms_dict.get("typenames"):
             logger.error(
                 "WMS {} - No typename found for {} layer, the layer may not be available anymore.".format(
@@ -453,84 +420,64 @@ class GeoServiceManager:
         else:
             pass
 
-        if mode == "quicky":
-            # let's try a quick & dirty url build
-            srs_map = plg_tools.get_map_crs()
-            # url construction
-            # just for QGIS server WMS
-            if "&" in wms_url_base:
-                li_params = [
-                    "SERVICE=WMS",
-                    "VERSION={}".format(wms_dict.get("version")),
-                    "REQUEST=GetMap",
-                    "layers={}".format(api_layer_id),
-                    "crs={}".format(srs_map),
-                    "format=image/png",
-                    "styles="
-                ]
-                wms_url_quicky = wms_url_base + "&".join(li_params)
-            # for other service servers
-            else:
-                wms_url_params = {
-                    "SERVICE": "WMS",
-                    "VERSION": wms_dict.get("version"),
-                    "REQUEST": "GetMap",
-                    "layers": api_layer_id,
-                    "crs": srs_map,
-                    "format": "image/png",
-                    "styles": "",
-                    "url": wms_url_base.split("?")[0] + "?",
-                }
-                wms_url_quicky = unquote(urlencode(wms_url_params, "utf8", quote_via=quote))
-            # method ending
-            btn_lbl = "WMS : {}".format(layer_title)
-            return ["WMS", layer_title, wms_url_quicky, api_layer, srv_details, btn_lbl]
+        # check if GetMap operation is available
+        if not hasattr(wms, "getmap") or not wms_dict.get("GetMap_isAvailable"):
+            return (
+                0,
+                "Required GetMap operation not available in: " + wms_url_getcap,
+            )
+        else:
+            logger.info("GetMap available")
+            pass
 
-        elif mode == "complete":
-            # Clean, complete but slower way - OWSLib -------------------------
-            wms = wms_dict.get("WMS")
-            # check if GetMap operation is available
-            if not hasattr(wms, "getmap") or not wms_dict.get("GetMap_isAvailable"):
-                return (
-                    0,
-                    "Required GetMap operation not available in: " + wms_url_getcap,
-                )
-            else:
-                logger.info("GetMap available")
-                pass
+        # Style definition
+        if len(wms[api_layer_id].styles):
+            lyr_style = list(wms[api_layer_id].styles.keys())[0]
+        else:
+            lyr_style = ""
 
-            # Format definition
-            formats_image = [
-                f for f in wms_dict.get("formatOptions") if f in qgis_wms_formats
+        # Format definition
+        formats_image = [
+            f for f in wms_dict.get("formatOptions") if f in qgis_wms_formats
+        ]
+        if "image/png" in formats_image:
+            layer_format = "image/png"
+        elif "image/jpeg" in formats_image:
+            layer_format = "image/jpeg"
+        else:
+            layer_format = formats_image[0]
+
+        # SRS definition
+        srs = self.choose_appropriate_srs(crs_options=wms[api_layer_id].crsOptions)
+
+        # let's try a quick & dirty url build
+        srs_map = plg_tools.get_map_crs()
+
+        # url construction
+        # just for QGIS server WMS
+        if "&" in wms_url_base:
+            li_params = [
+                "SERVICE=WMS",
+                "VERSION={}".format(wms_dict.get("version")),
+                "REQUEST=GetMap",
+                "layers={}".format(api_layer_id),
+                "crs={}".format(srs_map),
+                "format=image/png",
+                "styles="
             ]
-            if "image/png" in formats_image:
-                layer_format = "image/png"
-            elif "image/jpeg" in formats_image:
-                layer_format = "image/jpeg"
-            else:
-                layer_format = formats_image[0]
-
-            # Style definition
-            # lyr_style = list(wms[api_layer_id].styles.keys())[0]
-
-            # GetMap URL
-            wms_lyr_url = wms_dict.get("GetMap_url")
-
-            # SRS definition
-            srs = self.choose_appropriate_srs(crs_options=wms[api_layer_id].crsOptions)
-
-            # url construction
+            wms_url_final = wms_url_base + "&".join(li_params)
+        # for other WMS server types
+        else:
             try:
                 wms_url_params = {
                     "SERVICE": "WMS",
                     "VERSION": wms_dict.get("version"),
                     "REQUEST": "GetMap",
                     "layers": api_layer_id,
-                    # "crs": srs,
+                    "crs": srs,
                     "format": layer_format,
-                    "styles": "",
-                    # "styles": lyr_style,
-                    "url": wms_lyr_url,
+                    "styles": lyr_style,
+                    "url": wms_url_base.split("?")[0] + "?",
                 }
                 wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
             except UnicodeEncodeError:
@@ -541,23 +488,16 @@ class GeoServiceManager:
                     "layers": api_layer_id.decode("latin1"),
                     "crs": srs,
                     "format": layer_format,
-                    "styles": "",
-                    # "styles": lyr_style,
-                    "url": wms_lyr_url,
+                    "styles": lyr_style,
+                    "url": wms_url_base.split("?")[0] + "?",
                 }
                 wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
-            logger.debug("*=====* DEBUG ADD FROM WMS : wms_url_final --> {}".format(str(wms_url_final)))
-            # method ending
-            return ["WMS", layer_title, wms_url_final]
-        else:
-            raise ValueError(
-                "'mode' argument value should be 'quicky', 'complete', not {}".format(
-                    mode
-                )
-            )
+        # method ending
+        btn_lbl = "WMS : {}".format(layer_title)
+        return ["WMS", layer_title, wms_url_final, api_layer, srv_details, btn_lbl]
 
     def build_wmts_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
+        self, api_layer, srv_details
     ):
         """Format the input WMTS URL to fit QGIS criterias.
 
@@ -582,7 +522,6 @@ class GeoServiceManager:
             )
         else:
             wmts_dict = self.cached_wmts[srv_details.get("path")]
-
         logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_dict --> {}".format(wmts_dict))
 
         # local variables
@@ -596,8 +535,6 @@ class GeoServiceManager:
             logger.debug("GetTile available")
 
         # check if we can find the api_layer_id into wmts service reachable layers typenames
-        logger.debug("*=====* DEBUG ADD FROM WMTS : layer_name --> {}".format(api_layer_id))
-        logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_dict --> {}".format(wmts_dict))
         if api_layer_id not in wmts_dict.get("typenames"):
             logger.error(
                 "WMTS {} - No typename found for {} layer, the layer may not be available anymore.".format(
@@ -736,7 +673,7 @@ class GeoServiceManager:
         return 1, service_dict
 
     def build_efs_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
+        self, api_layer, srv_details
     ):
         """Reformat the input Esri Feature Service url so it fits QGIS criterias.
 
@@ -788,7 +725,7 @@ class GeoServiceManager:
         return ["EFS", efs_lyr_title, efs_uri, api_layer, srv_details, btn_lbl]
 
     def build_ems_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
+        self, api_layer, srv_details
     ):
         """Reformat the input Esri Map Service url so it fits QGIS criterias.
 

@@ -323,19 +323,14 @@ class ResultsManager(QObject):
                         # WMTS
                         if service.get("format") == "wmts":
                             params = geo_srv_mng.build_wmts_url(
-                                layer, srv_details, rsc_type="ds_dyn_lyr_srv"
+                                layer, srv_details,
                             )
                         # EFS, EMS, WMS or WFS
                         elif service.get("format") in list(self.service_dict.keys()):
                             url_builder = self.service_dict.get(
                                 service.get("format")
                             ).get("url_builder")
-                            params = url_builder(
-                                layer,
-                                srv_details,
-                                rsc_type="ds_dyn_lyr_srv",
-                                mode="quicky",
-                            )
+                            params = url_builder(layer, srv_details)
                         else:
                             params = [0]
                             logger.debug(
@@ -378,7 +373,7 @@ class ResultsManager(QObject):
                     if md.format == "wmts":
                         for layer in md.layers:
                             name_url = geo_srv_mng.build_wmts_url(
-                                layer, srv_details, rsc_type="service"
+                                layer, srv_details
                             )
                             if name_url[0] != 0:
                                 btn_label = "WMTS : {}".format(name_url[1])
@@ -391,9 +386,7 @@ class ResultsManager(QObject):
                             "url_builder"
                         )
                         for layer in md.layers:
-                            name_url = url_builder(
-                                layer, srv_details, rsc_type="service", mode="quicky"
-                            )
+                            name_url = url_builder(layer, srv_details)
                             if name_url[0] != 0:
                                 add_options_dict[name_url[5]] = name_url
                             else:
