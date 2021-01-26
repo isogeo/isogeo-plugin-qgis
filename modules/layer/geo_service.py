@@ -119,6 +119,8 @@ class GeoServiceManager:
     def choose_appropriate_srs(self, crs_options: list):
         """Return an appropriate srs depending on QGIS configuration and available
         service layer crs options.
+
+        :param list crs_options: service layer available crs options (for example : ["EPSG:2154", "WGS84:4326"])
         """
 
         if len(crs_options):
@@ -151,11 +153,14 @@ class GeoServiceManager:
         else:
             return 0
 
-    def check_ogc_service(
-        self, service_type: str, service_url: str, service_version: str
-    ):
-        """Try to acces to the service from the given service_url and store the
-        capabilities into cached_wfs dict.
+    def check_ogc_service(self, service_type: str, service_url: str, service_version: str):
+        """Try to acces to the given OGC service URL (using owslib library modules) and
+        store various informations into cached_wfs, cached_wms or cached_wmts dict
+        depending on service_type.
+
+        :param str service_type: type of OGC service ("WFS", "WMS", or "WMTS")
+        :param str service_url: the OGC service base URL
+        :param str service_version: the OGC service version
         """
         # If service_type argument value is invalid, raise error
         if service_type not in self.ogc_infos_dict:
@@ -273,13 +278,12 @@ class GeoServiceManager:
 
         return 1, service_dict
 
-    def build_wfs_url(
-        self, api_layer, srv_details
-    ):
-        """Reformat the input WFS url so it fits QGIS criterias.
+    def build_wfs_url(self, api_layer: dict, srv_details: dict):
+        """Build a WFS layer URL -according to QGIS expectations- using informations
+        provided by Isogeo API.
 
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
+        :param dict api_layer: dict object containing Isogeo API informations about the layer
+        :param dict srv_details: dict object containing Isogeo API informations about the service
         """
         # check the service accessibility and retrieve informations
         if srv_details.get("path") not in self.cached_wfs:
@@ -364,13 +368,12 @@ class GeoServiceManager:
 
         return ["WFS", layer_title, wfs_url_final, api_layer, srv_details, btn_lbl]
 
-    def build_wms_url(
-        self, api_layer, srv_details
-    ):
-        """Reformat the input WMS url so it fits QGIS criterias.
+    def build_wms_url(self, api_layer, srv_details):
+        """Build a WMS layer URL -according to QGIS expectations- using informations
+        provided by Isogeo API.
 
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
+        :param dict api_layer: dict object containing Isogeo API informations about the layer
+        :param dict srv_details: dict object containing Isogeo API informations about the service
         """
         # check the service accessibility and store service informations
         if srv_details.get("path") not in self.cached_wms:
@@ -496,13 +499,12 @@ class GeoServiceManager:
         btn_lbl = "WMS : {}".format(layer_title)
         return ["WMS", layer_title, wms_url_final, api_layer, srv_details, btn_lbl]
 
-    def build_wmts_url(
-        self, api_layer, srv_details
-    ):
-        """Format the input WMTS URL to fit QGIS criterias.
+    def build_wmts_url(self, api_layer, srv_details):
+        """Build a WMTS layer URL -according to QGIS expectations- using informations
+        provided by Isogeo API.
 
-        Retrieve GetCapabilities from information transmitted by Isogeo API
-        to complete URL syntax.
+        :param dict api_layer: dict object containing Isogeo API informations about the layer
+        :param dict srv_details: dict object containing Isogeo API informations about the service
         """
         # check the service accessibility and store service informations
         if srv_details.get("path") not in self.cached_wmts:
@@ -610,11 +612,13 @@ class GeoServiceManager:
         # method ending
         return ["WMTS", layer_title, wmts_url_final, "", ""]
 
-    def check_esri_service(
-        self, service_type: str, service_url: str
-    ):
-        """Try to acces to the service from the given service_url and store the
-        capabilities into cached_wfs dict.
+    def check_esri_service(self, service_type: str, service_url: str):
+        """Try to acces to the given ESRI service URL (using request library) and store
+        various informations into cached_efs or cached_ems dict depending on
+        service_type.
+
+        :param str service_type: type of ESRI service ("EFS" or "EMS")
+        :param str service_url: the ESRI service base URL
         """
         logger.debug("*=====* DEBUG ADD FROM ESRI : service_url --> {}".format(str(service_url)))
         # If service_type argument value is invalid, raise error
@@ -672,13 +676,12 @@ class GeoServiceManager:
 
         return 1, service_dict
 
-    def build_efs_url(
-        self, api_layer, srv_details
-    ):
-        """Reformat the input Esri Feature Service url so it fits QGIS criterias.
+    def build_efs_url(self, api_layer, srv_details):
+        """Build a EFS layer URL -according to QGIS expectations- using informations
+        provided by Isogeo API.
 
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
+        :param dict api_layer: dict object containing Isogeo API informations about the layer
+        :param dict srv_details: dict object containing Isogeo API informations about the service
         """
         # check the service accessibility and store service informations
         if srv_details.get("path") not in self.cached_efs:
@@ -724,13 +727,12 @@ class GeoServiceManager:
         btn_lbl = "EFS : {}".format(efs_lyr_title)
         return ["EFS", efs_lyr_title, efs_uri, api_layer, srv_details, btn_lbl]
 
-    def build_ems_url(
-        self, api_layer, srv_details
-    ):
-        """Reformat the input Esri Map Service url so it fits QGIS criterias.
+    def build_ems_url(self, api_layer, srv_details):
+        """Build a EMS layer URL -according to QGIS expectations- using informations
+        provided by Isogeo API.
 
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
+        :param dict api_layer: dict object containing Isogeo API informations about the layer
+        :param dict srv_details: dict object containing Isogeo API informations about the service
         """
         # check the service accessibility and store service informations
         if srv_details.get("path") not in self.cached_ems:
