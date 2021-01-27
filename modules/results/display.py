@@ -113,9 +113,11 @@ class ResultsManager(QObject):
             line_list: {"tooltip": "Line", "pix": pix_line},
             multi_list: {"tooltip": "MultiPolygon", "pix": pix_multi},
         }
-
+        # set instanciate and load JSON file cache content
         self.cache_mng = CacheManager()
+        self.cache_mng.loader()
         self.cache_mng.tr = self.tr
+
         self.geo_srv_mng = GeoServiceManager(self.cache_mng)
 
         self.service_dict = {

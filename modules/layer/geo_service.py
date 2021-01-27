@@ -4,6 +4,7 @@
 # Standard library
 import logging
 import re
+from copy import copy
 
 from urllib.parse import urlencode, unquote, quote
 
@@ -80,43 +81,69 @@ class GeoServiceManager:
 
     def __init__(self, cache_manager: object):
         """Class constructor."""
-        # cache manager to integrate cache into JSON file
-        self.cache_mng = cache_manager
-        # cache dicts
-        self.cached_wfs = dict()
-        self.cached_wms = dict()
-        self.cached_wmts = dict()
-        self.cached_efs = dict()
-        self.cached_ems = dict()
-        # specific infos depending on OGC service type
+
+        # specific infos related to OGC service type
         self.ogc_infos_dict = {
             "WFS": [
                 "GetFeature",
-                self.cached_wfs,
-                WebFeatureService
+                WebFeatureService,
             ],
             "WMS": [
                 "GetMap",
-                self.cached_wms,
-                WebMapService
+                WebMapService,
             ],
             "WMTS": [
                 "GetTile",
-                self.cached_wmts,
-                WebMapTileService
+                WebMapTileService,
             ]
         }
-        # specific infos depending on ESRI service type
+        # specific infos related to ESRI service type
         self.esri_infos_dict = {
-            "EFS": [
-                self.cached_efs,
-                "latestWkid"
-            ],
-            "EMS": [
-                self.cached_ems,
-                "wkid"
-            ]
+            "EFS": "latestWkid",
+            "EMS": "wkid"
         }
+
+        # set local cache dict
+        self.service_cached_dict = {
+            "WFS": dict(),
+            "WMS": dict(),
+            "WMTS": dict(),
+            "EFS": dict(),
+            "EMS": dict()
+        }
+        # instanciate cache manager to integrate cache into JSON file
+        self.cache_mng = cache_manager
+        # load cache from JSON file using CacheManager module to load local cache dict
+        for service_type in self.service_cached_dict:
+            self.service_cached_dict[service_type] = self.load_service_cache(service_type)
+
+    def load_service_cache(self, service_type: str):
+        """Load cache for a specific service type from JSON file using CacheManager module and store
+        it into dedicated class dict
+
+        :param str service_type: type of OGC service ("WFS", "WMS", or "WMTS")
+        """
+
+        # If service_type argument value is invalid, raise error
+        accepted_values = list(self.service_cached_dict.keys())
+        if service_type not in accepted_values:
+            error_msg = "'service_type' argument value should be one of {} not {}".format(accepted_values, service_type)
+            raise ValueError(error_msg)
+        # It it's valid, set local shortcut depending on it
+        else:
+            json_cache_dict = self.cache_mng.cached_service.get(service_type)
+        # Browse all service that was registered into JOSN cache file
+        for service, infos in json_cache_dict.items():
+            # Check service validity and build its the local cache dict
+            if service_type in self.ogc_infos_dict:
+                self.check_ogc_service(service_type, service, infos.get("version"))
+            else:
+                self.check_esri_service(service_type, service)
+            # update JSON cache file futur content
+            service_dict = self.service_cached_dict.get(service_type).get(service)
+            self.cache_mng.cached_service[service_type][service] = service_dict
+
+        return self.cache_mng.cached_service[service_type]
 
     def choose_appropriate_srs(self, crs_options: list):
         """Return an appropriate srs depending on QGIS configuration and available
@@ -124,7 +151,6 @@ class GeoServiceManager:
 
         :param list crs_options: service layer available crs options (for example : ["EPSG:2154", "WGS84:4326"])
         """
-
         if len(crs_options):
             # SRS definition
             srs_map = plg_tools.get_map_crs()
@@ -174,9 +200,9 @@ class GeoServiceManager:
             )
         # It it's valid, set local variables depending on it
         else:
+            cache_dict = self.service_cached_dict.get(service_type)
             main_op_name = self.ogc_infos_dict.get(service_type)[0]
-            cache_dict = self.ogc_infos_dict.get(service_type)[1]
-            service_connector = self.ogc_infos_dict.get(service_type)[2]
+            service_connector = self.ogc_infos_dict.get(service_type)[1]
 
         cache_dict[service_url] = {}
         service_dict = cache_dict[service_url]
@@ -284,8 +310,9 @@ class GeoServiceManager:
         :param dict api_layer: dict object containing Isogeo API informations about the layer
         :param dict srv_details: dict object containing Isogeo API informations about the service
         """
+        wfs_cached_dict = self.service_cached_dict.get("WFS")
         # check the service accessibility and retrieve informations
-        if srv_details.get("path") not in self.cached_wfs:
+        if srv_details.get("path") not in wfs_cached_dict:
             check = self.check_ogc_service(
                 service_type="WFS",
                 service_url=srv_details.get("path"),
@@ -295,13 +322,13 @@ class GeoServiceManager:
                 wfs_dict = check[1]
             else:
                 return check
-        elif not self.cached_wfs.get(srv_details.get("path")).get("reachable"):
+        elif not wfs_cached_dict.get(srv_details.get("path")).get("reachable"):
             return (
-                self.cached_wfs.get(srv_details.get("path")).get("reachable"),
-                self.cached_wfs.get(srv_details.get("path")).get("error"),
+                wfs_cached_dict.get(srv_details.get("path")).get("reachable"),
+                wfs_cached_dict.get(srv_details.get("path")).get("error"),
             )
         else:
-            wfs_dict = self.cached_wfs[srv_details.get("path")]
+            wfs_dict = wfs_cached_dict[srv_details.get("path")]
         logger.debug("*=====* DEBUG ADD FROM WFS : wfs_dict --> {}".format(wfs_dict))
 
         # local variables
@@ -323,7 +350,7 @@ class GeoServiceManager:
         elif any(api_layer_name in typename for typename in wfs_dict.get("typenames")):
             layer_typenames = [typename for typename in wfs_dict.get("typenames") if api_layer_name in typename]
             if len(layer_typenames) > 1:
-                warning_msg = "WFS {} - Multiple typenames matched for {} layer, the first one will be choosed: {}".format(
+                warning_msg = "WFS {} - Multiple typenames matched for '{}' layer, the first one will be choosed: {}".format(
                     wfs_url_base, api_layer_name, layer_typenames[0]
                 )
                 logger.warning(warning_msg)
@@ -331,7 +358,7 @@ class GeoServiceManager:
                 pass
             layer_typename = layer_typenames[0]
         else:
-            error_msg = "WFS {} - Unable to find {} layer, the layer may not be available anymore.".format(
+            error_msg = "WFS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
                 wfs_url_base, api_layer_name
             )
             return 0, error_msg
@@ -368,8 +395,9 @@ class GeoServiceManager:
         :param dict api_layer: dict object containing Isogeo API informations about the layer
         :param dict srv_details: dict object containing Isogeo API informations about the service
         """
+        wms_cached_dict = self.service_cached_dict.get("WMS")
         # check the service accessibility and store service informations
-        if srv_details.get("path") not in self.cached_wms:
+        if srv_details.get("path") not in wms_cached_dict:
             check = self.check_ogc_service(
                 service_type="WMS",
                 service_url=srv_details.get("path"),
@@ -379,13 +407,13 @@ class GeoServiceManager:
                 wms_dict = check[1]
             else:
                 return check
-        elif not self.cached_wms.get(srv_details.get("path")).get("reachable"):
+        elif not wms_cached_dict.get(srv_details.get("path")).get("reachable"):
             return (
-                self.cached_wms.get(srv_details.get("path")).get("reachable"),
-                self.cached_wms.get(srv_details.get("path")).get("error"),
+                wms_cached_dict.get(srv_details.get("path")).get("reachable"),
+                wms_cached_dict.get(srv_details.get("path")).get("error"),
             )
         else:
-            wms_dict = self.cached_wms[srv_details.get("path")]
+            wms_dict = self.service_cached_dict.get("WMS")[srv_details.get("path")]
         logger.debug("*=====* DEBUG ADD FROM WMS : wms_dict --> {}".format(wms_dict))
 
         # local variables
@@ -402,7 +430,7 @@ class GeoServiceManager:
 
         # check layer availability
         if not api_layer_id in wms_dict.get("typenames"):
-            error_msg = "WMS {} - Unable to find {} layer, the layer may not be available anymore.".format(
+            error_msg = "WMS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
                 wms_url_base, api_layer_id
             )
             return 0, error_msg
@@ -488,8 +516,9 @@ class GeoServiceManager:
         :param dict api_layer: dict object containing Isogeo API informations about the layer
         :param dict srv_details: dict object containing Isogeo API informations about the service
         """
+        wmts_cached_dict = self.service_cached_dict.get("WMTS")
         # check the service accessibility and store service informations
-        if srv_details.get("path") not in self.cached_wmts:
+        if srv_details.get("path") not in wmts_cached_dict:
             check = self.check_ogc_service(
                 service_type="WMTS",
                 service_url=srv_details.get("path"),
@@ -499,13 +528,13 @@ class GeoServiceManager:
                 wmts_dict = check[1]
             else:
                 return check
-        elif not self.cached_wmts.get(srv_details.get("path")).get("reachable"):
+        elif not wmts_cached_dict.get(srv_details.get("path")).get("reachable"):
             return (
-                self.cached_wmts.get(srv_details.get("path")).get("reachable"),
-                self.cached_wmts.get(srv_details.get("path")).get("error"),
+                wmts_cached_dict.get(srv_details.get("path")).get("reachable"),
+                wmts_cached_dict.get(srv_details.get("path")).get("error"),
             )
         else:
-            wmts_dict = self.cached_wmts[srv_details.get("path")]
+            wmts_dict = wmts_cached_dict.get(srv_details.get("path"))
         logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_dict --> {}".format(wmts_dict))
 
         # local variables
@@ -524,7 +553,7 @@ class GeoServiceManager:
 
         # check layer availability
         if not api_layer_id in wmts_dict.get("typenames"):
-            error_msg = "WMTS {} - Unable to find {} layer, the layer may not be available anymore.".format(
+            error_msg = "WMTS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
                 wmts_lyr_url, api_layer_id
             )
             return 0, error_msg
@@ -604,8 +633,8 @@ class GeoServiceManager:
             )
         # It it's valid, set local variables depending on it
         else:
-            cache_dict = self.esri_infos_dict.get(service_type)[0]
-            srs_entry_name = self.esri_infos_dict.get(service_type)[1]
+            cache_dict = self.service_cached_dict.get(service_type)
+            srs_entry_name = self.esri_infos_dict.get(service_type)
 
         cache_dict[service_url] = {}
         service_dict = cache_dict[service_url]
@@ -654,8 +683,9 @@ class GeoServiceManager:
         :param dict api_layer: dict object containing Isogeo API informations about the layer
         :param dict srv_details: dict object containing Isogeo API informations about the service
         """
+        efs_cached_dict = self.service_cached_dict.get("EFS")
         # check the service accessibility and store service informations
-        if srv_details.get("path") not in self.cached_efs:
+        if srv_details.get("path") not in efs_cached_dict:
             check = self.check_esri_service(
                 service_type="EFS",
                 service_url=srv_details.get("path"),
@@ -664,13 +694,13 @@ class GeoServiceManager:
                 efs_dict = check[1]
             else:
                 return check
-        elif not self.cached_efs.get(srv_details.get("path")).get("reachable"):
+        elif not efs_cached_dict.get(srv_details.get("path")).get("reachable"):
             return (
-                self.cached_efs.get(srv_details.get("path")).get("reachable"),
-                self.cached_efs.get(srv_details.get("path")).get("error"),
+                efs_cached_dict.get(srv_details.get("path")).get("reachable"),
+                efs_cached_dict.get(srv_details.get("path")).get("error"),
             )
         else:
-            efs_dict = self.cached_efs[srv_details.get("path")]
+            efs_dict = efs_cached_dict[srv_details.get("path")]
 
         # retrieve layer id
         api_layer_id = api_layer.get("id")
@@ -705,8 +735,9 @@ class GeoServiceManager:
         :param dict api_layer: dict object containing Isogeo API informations about the layer
         :param dict srv_details: dict object containing Isogeo API informations about the service
         """
+        ems_cached_dict = self.service_cached_dict.get("EMS")
         # check the service accessibility and store service informations
-        if srv_details.get("path") not in self.cached_ems:
+        if srv_details.get("path") not in ems_cached_dict:
             check = self.check_esri_service(
                 service_type="EMS",
                 service_url=srv_details.get("path"),
@@ -715,13 +746,13 @@ class GeoServiceManager:
                 ems_dict = check[1]
             else:
                 return check
-        elif not self.cached_ems.get(srv_details.get("path")).get("reachable"):
+        elif not ems_cached_dict.get(srv_details.get("path")).get("reachable"):
             return (
-                self.cached_ems.get(srv_details.get("path")).get("reachable"),
-                self.cached_ems.get(srv_details.get("path")).get("error"),
+                ems_cached_dict.get(srv_details.get("path")).get("reachable"),
+                ems_cached_dict.get(srv_details.get("path")).get("error"),
             )
         else:
-            ems_dict = self.cached_ems[srv_details.get("path")]
+            ems_dict = ems_cached_dict[srv_details.get("path")]
 
         # retrieve layer id
         api_layer_id = api_layer.get("id")

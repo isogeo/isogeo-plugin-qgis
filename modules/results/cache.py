@@ -32,7 +32,13 @@ class CacheManager:
         self.cached_dict = dict()
         self.cached_unreach_paths = list()
         self.cached_unreach_postgis = list()
-        self.cached_service = dict()
+        self.cached_service = {
+            "WFS": {},
+            "WMS": {},
+            "WMTS": {},
+            "EFS": {},
+            "EMS": {}
+        }
         # Translator
         self.tr = object
 
@@ -44,10 +50,19 @@ class CacheManager:
 
         :rtype: dict
         """
+        # clean service related dict content
+        for service_type in self.cached_service:
+            for service in self.cached_service.get(service_type):
+                # remove owslib object that we don't want to write into JSON cache file
+                if service_type in self.cached_service.get(service_type).get(service):
+                    del self.cached_service.get(service_type).get(service)[service_type]
+                else:
+                    pass
+        # prepare JSON file content
         self.cached_dict = {
             "files": list(set(self.cached_unreach_paths)),
             "PostGIS": list(set(self.cached_unreach_postgis)),
-            "services": list(set(self.cached_service)),
+            "services": self.cached_service,
         }
         with open(self.cache_file, "w") as cache:
             json.dump([self.cached_dict], cache, indent=4)
@@ -80,7 +95,7 @@ class CacheManager:
         """Removes the stored elements and empties the JSON cache file."""
         self.cached_unreach_paths = []
         self.cached_unreach_postgis = []
-        self.cached_service = []
+        self.cached_service = {}
         self.dumper()
         logger.debug("Cache has been cleaned")
         msgBar.pushMessage(
