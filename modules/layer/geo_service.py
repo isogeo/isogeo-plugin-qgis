@@ -321,7 +321,7 @@ class GeoServiceManager:
         else:
             layer_title = api_layer_name
 
-        # retrieve the wfs layer id (the real one) for "TYPENAME" URL parameter
+        # check layer availability + retrieve its real id for "TYPENAME" URL parameter
         if api_layer_name in wfs_dict.get("typenames"):
             layer_typename = api_layer_name
         elif any(api_layer_name in typename for typename in wfs_dict.get("typenames")):
@@ -404,25 +404,24 @@ class GeoServiceManager:
         else:
             layer_title = api_layer_id
 
-        # check the layer availability
-        if api_layer_id not in wms_dict.get("typenames"):
+        # check layer availability
+        if not api_layer_id in wms_dict.get("typenames"):
             error_msg = "WMS {} - Unable to find {} layer, the layer may not be available anymore.".format(
-                wms_url_base, api_layer_name
+                wms_url_base, api_layer_id
             )
             return 0, error_msg
         else:
-            pass
+            wms_lyr = wms[api_layer_id]
 
         # check if GetMap operation is available
         if not hasattr(wms, "getmap") or not wms_dict.get("GetMap_isAvailable"):
             return 0, "Required GetMap operation not available in: {}".format(wms_url_getcap)
         else:
             logger.info("GetMap available")
-            pass
 
         # Style definition
-        if len(wms[api_layer_id].styles):
-            lyr_style = list(wms[api_layer_id].styles.keys())[0]
+        if len(wms_lyr.styles):
+            lyr_style = list(wms_lyr.styles.keys())[0]
         else:
             lyr_style = ""
 
@@ -438,7 +437,7 @@ class GeoServiceManager:
             layer_format = formats_image[0]
 
         # SRS definition
-        srs = self.choose_appropriate_srs(crs_options=wms[api_layer_id].crsOptions)
+        srs = self.choose_appropriate_srs(crs_options=wms_lyr.crsOptions)
 
         # let's try a quick & dirty url build
         srs_map = plg_tools.get_map_crs()
@@ -516,28 +515,8 @@ class GeoServiceManager:
         # local variables
         api_layer_id = api_layer.get("id")
         wmts = wmts_dict.get("WMTS")
-
-        # check if GetTile operation is available
-        if not hasattr(wmts, "gettile") or not wmts_dict.get("GetTile_isAvailable"):
-            return 0, "Required GetTile operation not available in: " + wmts_dict.get("getCap_url")
-        else:
-            logger.debug("GetTile available")
-
-        # check if we can find the api_layer_id into wmts service reachable layers typenames
-        if api_layer_id not in wmts_dict.get("typenames"):
-            logger.error(
-                "WMTS {} - No typename found for {} layer, the layer may not be available anymore.".format(
-                    srv_details.get("path"), api_layer_id
-                )
-            )
-            return (
-                0,
-                "WMTS - Layer '{}' not found in service {}".format(
-                    api_layer_id, srv_details.get("path")
-                ),
-            )
-        else:
-            wmts_lyr = wmts[api_layer_id]
+        tms_dict = wmts_dict.get("wmts_tms")
+        wmts_lyr_url = wmts_dict.get("GetTile_url")
 
         # build layer title
         if len(api_layer.get("titles")):
@@ -547,11 +526,24 @@ class GeoServiceManager:
         else:
             layer_title = "WMTS Layer"
 
+        # check layer availability
+        if not api_layer_id in wmts_dict.get("typenames"):
+            error_msg = "WMTS {} - Unable to find {} layer, the layer may not be available anymore.".format(
+                wmts_lyr_url, api_layer_id
+            )
+            return 0, error_msg
+        else:
+            wmts_lyr = wmts[api_layer_id]
+
+        # check if GetTile operation is available
+        if not hasattr(wmts, "gettile") or not wmts_dict.get("GetTile_isAvailable"):
+            return 0, "Required GetTile operation not available in: " + wmts_dict.get("getCap_url")
+        else:
+            logger.debug("GetTile available")
+
         # retrieve Tile Matrix Set & SRS
-        tms_dict = wmts_dict.get("wmts_tms")
         available_crs = [crs for crs, tms in tms_dict.items() if tms in wmts_lyr._tilematrixsets]
         srs = self.choose_appropriate_srs(available_crs)
-
         if srs:
             tile_matrix_set = tms_dict.get(srs)
         else:
@@ -577,9 +569,6 @@ class GeoServiceManager:
             lyr_style = list(wmts_lyr.styles.keys())[0]
         else:
             lyr_style = ""
-
-        # GetTile URL
-        wmts_lyr_url = wmts_dict.get("GetTile_url")
 
         # construct URL
         li_uri_params = [
