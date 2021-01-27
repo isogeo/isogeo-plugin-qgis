@@ -24,7 +24,6 @@ from qgis.utils import iface
 # Plugin modules
 from ..tools import IsogeoPlgTools
 from .metadata_sync import MetadataSynchronizer
-from .geo_service import GeoServiceManager
 
 # ############################################################################
 # ########## Globals ###############
@@ -34,7 +33,6 @@ qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_tools = IsogeoPlgTools()
-geo_srv_mng = GeoServiceManager()
 
 li_datafile_types = ["vector", "raster"]
 
