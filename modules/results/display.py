@@ -27,7 +27,6 @@ from ..isogeo_pysdk import Metadata
 # ##################################
 
 plg_tools = IsogeoPlgTools()
-geo_srv_mng = GeoServiceManager()
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
@@ -115,17 +114,17 @@ class ResultsManager(QObject):
             multi_list: {"tooltip": "MultiPolygon", "pix": pix_multi},
         }
 
-        self.service_dict = {
-            "efs": {"url_builder": geo_srv_mng.build_efs_url, "ico": ico_efs},
-            "ems": {"url_builder": geo_srv_mng.build_ems_url, "ico": ico_ems},
-            "wfs": {"url_builder": geo_srv_mng.build_wfs_url, "ico": ico_wfs},
-            "wms": {"url_builder": geo_srv_mng.build_wms_url, "ico": ico_wms},
-            "wmts": {"url_builder": None, "ico": ico_wmts},
-        }
-
         self.cache_mng = CacheManager()
         self.cache_mng.tr = self.tr
-        geo_srv_mng.cache_mng = self.cache_mng
+        self.geo_srv_mng = GeoServiceManager(self.cache_mng)
+
+        self.service_dict = {
+            "efs": {"url_builder": self.geo_srv_mng.build_efs_url, "ico": ico_efs},
+            "ems": {"url_builder": self.geo_srv_mng.build_ems_url, "ico": ico_ems},
+            "wfs": {"url_builder": self.geo_srv_mng.build_wfs_url, "ico": ico_wfs},
+            "wms": {"url_builder": self.geo_srv_mng.build_wms_url, "ico": ico_wms},
+            "wmts": {"url_builder": self.geo_srv_mng.build_wmts_url, "ico": ico_wmts},
+        }
 
     def show_results(self, api_results, pg_connections=dict()):
         """Display the results in a table."""
@@ -321,13 +320,7 @@ class ResultsManager(QObject):
                             "path": service.get("path", "NR"),
                             "formatVersion": service.get("formatVersion"),
                         }
-                        # WMTS
-                        if service.get("format") == "wmts":
-                            params = geo_srv_mng.build_wmts_url(
-                                layer, srv_details,
-                            )
-                        # EFS, EMS, WMS or WFS
-                        elif service.get("format") in list(self.service_dict.keys()):
+                        if service.get("format") in self.service_dict:
                             url_builder = self.service_dict.get(
                                 service.get("format")
                             ).get("url_builder")
@@ -335,11 +328,11 @@ class ResultsManager(QObject):
                         else:
                             params = [0]
                             logger.debug(
-                                "Service with no format detected for '{}' metadata : {}".format(
+                                "Unexpected service format detected for '{}' metadata : {}".format(
                                     md._id, service
                                 )
                             )
-                            pass
+                            continue
 
                         if params[0] != 0:
                             basic_md = [
@@ -370,19 +363,7 @@ class ResultsManager(QObject):
                         "path": md.path,
                         "formatVersion": md.formatVersion,
                     }
-                    # WMTS
-                    if md.format == "wmts":
-                        for layer in md.layers:
-                            name_url = geo_srv_mng.build_wmts_url(
-                                layer, srv_details
-                            )
-                            if name_url[0] != 0:
-                                btn_label = "WMTS : {}".format(name_url[1])
-                                add_options_dict[btn_label] = name_url
-                            else:
-                                continue
-                    # EFS, EMS, WMS or WFS
-                    elif md.format in list(self.service_dict.keys()):
+                    if md.format in self.service_dict:
                         url_builder = self.service_dict.get(md.format).get(
                             "url_builder"
                         )
@@ -424,7 +405,7 @@ class ResultsManager(QObject):
                     params = add_options_dict.get(text)
                     option_type = text.split(" : ")[0]
                     # services
-                    if option_type.lower() in list(self.service_dict.keys()):
+                    if option_type.lower() in self.service_dict:
                         icon = self.service_dict.get(option_type.lower()).get("ico")
                     # PostGIS table
                     elif option_type.startswith(
@@ -458,7 +439,7 @@ class ResultsManager(QObject):
                     for option in add_options_dict:
                         option_type = option.split(" : ")[0]
                         # services
-                        if option_type.lower() in list(self.service_dict.keys()):
+                        if option_type.lower() in self.service_dict:
                             icon = self.service_dict.get(option_type.lower()).get("ico")
                         # PostGIS table
                         elif option.startswith(

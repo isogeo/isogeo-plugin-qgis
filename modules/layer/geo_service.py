@@ -78,10 +78,10 @@ except ImportError:
 class GeoServiceManager:
     """Basic class that holds methods used to add layers to canvas."""
 
-    def __init__(self):
+    def __init__(self, cache_manager: object):
         """Class constructor."""
         # cache manager to integrate cache into JSON file
-        self.cache_mng = object
+        self.cache_mng = cache_manager
         # cache dicts
         self.cached_wfs = dict()
         self.cached_wms = dict()
@@ -207,7 +207,6 @@ class GeoServiceManager:
             error_msg = "{} - Bad operation ({}): {}".format(
                 service_type, url, str(e)
             )
-            logger.error(error_msg)
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
             return service_dict["reachable"], service_dict["error"]
@@ -215,7 +214,6 @@ class GeoServiceManager:
             error_msg = "{} - Service ({}) not reached: {}".format(
                 service_type, url, str(e)
             )
-            logger.error(error_msg)
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
             return service_dict["reachable"], service_dict["error"]
@@ -227,7 +225,6 @@ class GeoServiceManager:
                 error_msg = "{} - Connection to service ({}) failed: {}".format(
                     service_type, url, str(e)
                 )
-                logger.error(error_msg)
                 service_dict["reachable"] = 0
                 service_dict["error"] = error_msg
                 return service_dict["reachable"], service_dict["error"]
@@ -311,9 +308,8 @@ class GeoServiceManager:
         wfs_url_getcap = wfs_dict.get("getCap_url")
         wfs_url_base = wfs_dict.get("base_url")
         wfs = wfs_dict.get("WFS")
-        # retrieve and clean api_layer_name from api_layer_id
         api_layer_id = api_layer.get("id")
-        api_layer_name = re.sub("\{.*?}", "", api_layer_id)
+        api_layer_name = re.sub("\{.*?}", "", api_layer_id)  # celan api_layer_id
 
         # build layer title
         if len(api_layer.get("titles")):
@@ -586,7 +582,8 @@ class GeoServiceManager:
         logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_url_final --> {}".format(str(wmts_url_final)))
 
         # method ending
-        return ["WMTS", layer_title, wmts_url_final, "", ""]
+        btn_lbl = "WMS : {}".format(layer_title)
+        return ["WMTS", layer_title, wmts_url_final, api_layer, srv_details, btn_lbl]
 
     def check_esri_service(self, service_type: str, service_url: str):
         """Try to acces to the given ESRI service URL (using request library) and store
@@ -629,13 +626,11 @@ class GeoServiceManager:
             service_dict["reachable"] = 1
         except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
             error_msg = "{} {} - Server connection failure: {}".format(service_type, service_dict["getCap_url"], e)
-            logger.error(error_msg)
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
             return service_dict["reachable"], service_dict["error"]
         except Exception as e:
             error_msg = "{} {} - Unable to access service capabilities: {}".format(service_type, service_dict["getCap_url"], e)
-            logger.error(error_msg)
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
             return service_dict["reachable"], service_dict["error"]
