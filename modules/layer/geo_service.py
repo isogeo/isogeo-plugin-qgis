@@ -80,13 +80,15 @@ class GeoServiceManager:
 
     def __init__(self):
         """Class constructor."""
-        # cache
+        # cache manager to integrate cache into JSON file
+        self.cache_mng = object
+        # cache dicts
         self.cached_wfs = dict()
         self.cached_wms = dict()
         self.cached_wmts = dict()
         self.cached_efs = dict()
         self.cached_ems = dict()
-
+        # specific infos depending on OGC service type
         self.ogc_infos_dict = {
             "WFS": [
                 "GetFeature",
@@ -104,7 +106,7 @@ class GeoServiceManager:
                 WebMapTileService
             ]
         }
-
+        # specific infos depending on ESRI service type
         self.esri_infos_dict = {
             "EFS": [
                 self.cached_efs,
@@ -320,34 +322,29 @@ class GeoServiceManager:
             layer_title = api_layer_name
 
         # retrieve the wfs layer id (the real one) for "TYPENAME" URL parameter
-        layer_typename = [typename for typename in wfs_dict.get("typenames") if api_layer_name in typename]
-        if len(layer_typename) == 1:
-            layer_typename = layer_typename[0]
-        elif len(layer_typename) > 1:
-            layer_typename = layer_typename[0]
-            logger.warning(
-                "WFS {} - Multiple typenames matched for {} layer, {} the first one will be choosed.".format(
-                    srv_details.get("path"), api_layer_name, layer_typename
+        if api_layer_name in wfs_dict.get("typenames"):
+            layer_typename = api_layer_name
+        elif any(api_layer_name in typename for typename in wfs_dict.get("typenames")):
+            layer_typenames = [typename for typename in wfs_dict.get("typenames") if api_layer_name in typename]
+            if len(layer_typenames) > 1:
+                warning_msg = "WFS {} - Multiple typenames matched for {} layer, the first one will be choosed: {}".format(
+                    wfs_url_base, api_layer_name, layer_typenames[0]
                 )
-            )
+                logger.warning(warning_msg)
+            else:
+                pass
+            layer_typename = layer_typenames[0]
         else:
-            logger.error(
-                "WFS {} - No typename found for {} layer, the layer may not be available anymore.".format(
-                    srv_details.get("path"), api_layer_name
-                )
+            error_msg = "WFS {} - Unable to find {} layer, the layer may not be available anymore.".format(
+                wfs_url_base, api_layer_name
             )
-            return 0, "WFS - Layer '{}' not found in service {}".format(api_layer_name, srv_details.get("path"))
+            return 0, error_msg
 
         # check if GetFeature and DescribeFeatureType operation are available
         if not hasattr(wfs, "getfeature") or not wfs_dict.get("GetFeature_isAvailable"):
             return 0, "GetFeature operation not available in: {}".format(wfs_url_getcap)
         else:
             logger.info("GetFeature available")
-            pass
-        if "DescribeFeatureType" not in wfs_dict.get("operations"):
-            return 0, "DescribeFeatureType operation not available in: {}".format(wfs_url_getcap)
-        else:
-            logger.info("DescribeFeatureType available")
             pass
 
         # SRS definition
@@ -407,28 +404,18 @@ class GeoServiceManager:
         else:
             layer_title = api_layer_id
 
-        # check if we can find the api_layer_id into wms service reachable layers typenames
+        # check the layer availability
         if api_layer_id not in wms_dict.get("typenames"):
-            logger.error(
-                "WMS {} - No typename found for {} layer, the layer may not be available anymore.".format(
-                    srv_details.get("path"), api_layer_id
-                )
+            error_msg = "WMS {} - Unable to find {} layer, the layer may not be available anymore.".format(
+                wms_url_base, api_layer_name
             )
-            return (
-                0,
-                "WMS - Layer '{}' not found in service {}".format(
-                    api_layer_id, srv_details.get("path")
-                ),
-            )
+            return 0, error_msg
         else:
             pass
 
         # check if GetMap operation is available
         if not hasattr(wms, "getmap") or not wms_dict.get("GetMap_isAvailable"):
-            return (
-                0,
-                "Required GetMap operation not available in: " + wms_url_getcap,
-            )
+            return 0, "Required GetMap operation not available in: {}".format(wms_url_getcap)
         else:
             logger.info("GetMap available")
             pass
