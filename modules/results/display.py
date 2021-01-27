@@ -125,6 +125,7 @@ class ResultsManager(QObject):
 
         self.cache_mng = CacheManager()
         self.cache_mng.tr = self.tr
+        geo_srv_mng.cache_mng = self.cache_mng
 
     def show_results(self, api_results, pg_connections=dict()):
         """Display the results in a table."""
@@ -391,7 +392,7 @@ class ResultsManager(QObject):
                                 add_options_dict[name_url[5]] = name_url
                             else:
                                 logger.warning(
-                                    "Faile to build service URL for layer {} of {} service (of metadata {}): {}".format(
+                                    "Faile to build service URL for '{}' layer of {} service metadata ({}): {}".format(
                                         layer.get("id"), md.format.upper(), md._id, name_url[1]
                                     )
                                 )

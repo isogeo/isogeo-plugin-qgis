@@ -29,10 +29,10 @@ class CacheManager:
         # Path to JSON cache file
         self.cache_file = Path(__file__).parents[2] / "_user" / "cache.json"
         # Objects for storing inaccessible elements
-        self.cached_dict = {}
-        self.cached_unreach_paths = []
-        self.cached_unreach_postgis = []
-        self.cached_unreach_srv = []
+        self.cached_dict = dict()
+        self.cached_unreach_paths = list()
+        self.cached_unreach_postgis = list()
+        self.cached_service = dict()
         # Translator
         self.tr = object
 
@@ -47,7 +47,7 @@ class CacheManager:
         self.cached_dict = {
             "files": list(set(self.cached_unreach_paths)),
             "PostGIS": list(set(self.cached_unreach_postgis)),
-            "services": list(set(self.cached_unreach_srv)),
+            "services": list(set(self.cached_service)),
         }
         with open(self.cache_file, "w") as cache:
             json.dump([self.cached_dict], cache, indent=4)
@@ -63,7 +63,7 @@ class CacheManager:
             elif isinstance(cache_loaded[0], dict):
                 self.cached_unreach_paths = cache_loaded[0].get("files")
                 self.cached_unreach_postgis = cache_loaded[0].get("PostGIS")
-                self.cached_unreach_srv = cache_loaded[0].get("services")
+                self.cached_service = cache_loaded[0].get("services")
                 logger.debug("Cache file has been loaded.")
             else:
                 logger.debug("Old cache file format detected.")
@@ -80,7 +80,7 @@ class CacheManager:
         """Removes the stored elements and empties the JSON cache file."""
         self.cached_unreach_paths = []
         self.cached_unreach_postgis = []
-        self.cached_unreach_srv = []
+        self.cached_service = []
         self.dumper()
         logger.debug("Cache has been cleaned")
         msgBar.pushMessage(
