@@ -3,11 +3,11 @@
         "files": [],
         "PostGIS": [],
         "services": {
-            "WFS": {},
-            "WMS": {},
-            "WMTS": {},
-            "EFS": {},
-            "EMS": {}
+            "WFS": [],
+            "WMS": [],
+            "WMTS": [],
+            "EFS": [],
+            "EMS": []
         }
     }
 ]
