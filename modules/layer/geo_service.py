@@ -113,15 +113,15 @@ class GeoServiceManager:
         }
         # instanciate cache manager to integrate cache into JSON file
         self.cache_mng = cache_manager
-        # load cache from JSON file using CacheManager module to load local cache dict
+        # load unreachable services from JSON cache file using CacheManager
         for service_type in self.service_cached_dict:
-            self.service_cached_dict[service_type] = self.load_service_cache(service_type)
+            self.load_unreachable_cached_service(service_type)
 
-    def load_service_cache(self, service_type: str):
-        """Load cache for a specific service type from JSON file using CacheManager module and store
-        it into dedicated class dict
+    def load_unreachable_cached_service(self, service_type: str):
+        """Load cached unreachable services for a specific service type from JSON file
+        using CacheManager module and store them into local cache dict
 
-        :param str service_type: type of OGC service ("WFS", "WMS", or "WMTS")
+        :param str service_type: type of OGC or ESRI service ("WFS", "WMS", "WMTS", "EFS" or "EMS") 
         """
 
         # If service_type argument value is invalid, raise error
@@ -131,19 +131,20 @@ class GeoServiceManager:
             raise ValueError(error_msg)
         # It it's valid, set local shortcut depending on it
         else:
-            json_cache_dict = self.cache_mng.cached_service.get(service_type)
+            json_cache_list = self.cache_mng.cached_unreach_service.get(service_type)
         # Browse all service that was registered into JOSN cache file
-        for service, infos in json_cache_dict.items():
+        for service_infos in json_cache_list:
             # Check service validity and build its the local cache dict
             if service_type in self.ogc_infos_dict:
-                self.check_ogc_service(service_type, service, infos.get("version"))
+                check = self.check_ogc_service(service_type, service_infos[0], service_infos[1])
             else:
-                self.check_esri_service(service_type, service)
-            # update JSON cache file futur content
-            service_dict = self.service_cached_dict.get(service_type).get(service)
-            self.cache_mng.cached_service[service_type][service] = service_dict
-
-        return self.cache_mng.cached_service[service_type]
+                check = self.check_esri_service(service_type, service_infos[0])
+            # if the service is reachable, remove it from JSON cache file futur content
+            if check[0]:
+                self.cache_mng.cached_unreach_service[service_type].remove(service_infos)
+            else:
+                pass
+        return
 
     def choose_appropriate_srs(self, crs_options: list):
         """Return an appropriate srs depending on QGIS configuration and available
@@ -235,14 +236,12 @@ class GeoServiceManager:
             )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
-            return service_dict["reachable"], service_dict["error"]
         except HTTPError as e:
             error_msg = "{} - Service ({}) not reached: {}".format(
                 service_type, url, str(e)
             )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
-            return service_dict["reachable"], service_dict["error"]
         except Exception:
             try:
                 service = service_connector(url=url)
@@ -253,7 +252,16 @@ class GeoServiceManager:
                 )
                 service_dict["reachable"] = 0
                 service_dict["error"] = error_msg
-                return service_dict["reachable"], service_dict["error"]
+        # if the service can't be reached, add it to JSON cache and return the error
+        if not service_dict.get("reachable"):
+            unreached_service = (service_url, service_version)
+            if unreached_service not in self.cache_mng.cached_unreach_service.get(service_type):
+                self.cache_mng.cached_unreach_service[service_type].append(unreached_service)
+            else:
+                pass
+            return service_dict["reachable"], service_dict["error"]
+        else:
+            pass
 
         # Store several basic informations about the service
         service_dict[service_type] = service
@@ -657,12 +665,20 @@ class GeoServiceManager:
             error_msg = "{} {} - Server connection failure: {}".format(service_type, service_dict["getCap_url"], e)
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
-            return service_dict["reachable"], service_dict["error"]
         except Exception as e:
             error_msg = "{} {} - Unable to access service capabilities: {}".format(service_type, service_dict["getCap_url"], e)
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
+        # if the service can't be reached, add it to JSON cache and return the error
+        if not service_dict.get("reachable"):
+            unreached_service = (service_url,)
+            if unreached_service not in self.cache_mng.cached_unreach_service.get(service_type):
+                self.cache_mng.cached_unreach_service[service_type].append(unreached_service)
+            else:
+                pass
             return service_dict["reachable"], service_dict["error"]
+        else:
+            pass
 
         # retrieve appropriate srs from service capabilities
         try:

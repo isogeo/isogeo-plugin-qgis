@@ -32,12 +32,12 @@ class CacheManager:
         self.cached_dict = dict()
         self.cached_unreach_paths = list()
         self.cached_unreach_postgis = list()
-        self.cached_service = {
-            "WFS": {},
-            "WMS": {},
-            "WMTS": {},
-            "EFS": {},
-            "EMS": {}
+        self.cached_unreach_service = {
+            "WFS": [],
+            "WMS": [],
+            "WMTS": [],
+            "EFS": [],
+            "EMS": [],
         }
         # Translator
         self.tr = object
@@ -50,19 +50,17 @@ class CacheManager:
 
         :rtype: dict
         """
-        # clean service related dict content
-        for service_type in self.cached_service:
-            for service in self.cached_service.get(service_type):
-                # remove owslib object that we don't want to write into JSON cache file
-                if service_type in self.cached_service.get(service_type).get(service):
-                    del self.cached_service.get(service_type).get(service)[service_type]
-                else:
-                    pass
         # prepare JSON file content
         self.cached_dict = {
             "files": list(set(self.cached_unreach_paths)),
             "PostGIS": list(set(self.cached_unreach_postgis)),
-            "services": self.cached_service,
+            "services": {
+                "WFS": self.cached_unreach_service.get("WFS"),
+                "WMS": self.cached_unreach_service.get("WMS"),
+                "WMTS": self.cached_unreach_service.get("WMTS"),
+                "EFS": self.cached_unreach_service.get("EFS"),
+                "EMS": self.cached_unreach_service.get("EMS"),
+            }
         }
         with open(self.cache_file, "w") as cache:
             json.dump([self.cached_dict], cache, indent=4)
@@ -78,7 +76,7 @@ class CacheManager:
             elif isinstance(cache_loaded[0], dict):
                 self.cached_unreach_paths = cache_loaded[0].get("files")
                 self.cached_unreach_postgis = cache_loaded[0].get("PostGIS")
-                self.cached_service = cache_loaded[0].get("services")
+                self.cached_unreach_service = cache_loaded[0].get("services")
                 logger.debug("Cache file has been loaded.")
             else:
                 logger.debug("Old cache file format detected.")
@@ -95,7 +93,13 @@ class CacheManager:
         """Removes the stored elements and empties the JSON cache file."""
         self.cached_unreach_paths = []
         self.cached_unreach_postgis = []
-        self.cached_service = {}
+        self.cached_unreach_service = {
+            "WFS": [],
+            "WMS": [],
+            "WMTS": [],
+            "EFS": [],
+            "EMS": [],
+        }
         self.dumper()
         logger.debug("Cache has been cleaned")
         msgBar.pushMessage(
