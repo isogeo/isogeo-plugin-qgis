@@ -114,6 +114,7 @@ class GeoServiceManager:
         # instanciate cache manager to integrate cache into JSON file
         self.cache_mng = cache_manager
         # load unreachable services from JSON cache file using CacheManager
+        logger.info("Cached unreachable services are going to be checked again.")
         for service_type in self.service_cached_dict:
             self.load_unreachable_cached_service(service_type)
 
@@ -121,7 +122,7 @@ class GeoServiceManager:
         """Load cached unreachable services for a specific service type from JSON file
         using CacheManager module and store them into local cache dict
 
-        :param str service_type: type of OGC or ESRI service ("WFS", "WMS", "WMTS", "EFS" or "EMS") 
+        :param str service_type: type of OGC or ESRI service ("WFS", "WMS", "WMTS", "EFS" or "EMS")
         """
 
         # If service_type argument value is invalid, raise error
@@ -259,8 +260,10 @@ class GeoServiceManager:
                 self.cache_mng.cached_unreach_service[service_type].append(unreached_service)
             else:
                 pass
+            logger.info("Can't reach {} service '{}'".format(service_url, service_type))
             return service_dict["reachable"], service_dict["error"]
         else:
+            logger.info("Successfuly reached {} service '{}'".format(service_url, service_type))
             pass
 
         # Store several basic informations about the service
@@ -354,6 +357,8 @@ class GeoServiceManager:
 
         # check layer availability + retrieve its real id for "TYPENAME" URL parameter
         if api_layer_name in wfs_dict.get("typenames"):
+            layer_typename = api_layer_name
+        elif any(api_layer_name in typename.split(":") for typename in wfs_dict.get("typenames")):
             layer_typename = api_layer_name
         elif any(api_layer_name in typename for typename in wfs_dict.get("typenames")):
             layer_typenames = [typename for typename in wfs_dict.get("typenames") if api_layer_name in typename]
@@ -630,7 +635,6 @@ class GeoServiceManager:
         :param str service_type: type of ESRI service ("EFS" or "EMS")
         :param str service_url: the ESRI service base URL
         """
-        logger.debug("*=====* DEBUG ADD FROM ESRI : service_url --> {}".format(str(service_url)))
         # If service_type argument value is invalid, raise error
         if service_type not in self.esri_infos_dict:
             raise ValueError(
@@ -676,9 +680,10 @@ class GeoServiceManager:
                 self.cache_mng.cached_unreach_service[service_type].append(unreached_service)
             else:
                 pass
+            logger.info("Can't reach {} service '{}'".format(service_url, service_type))
             return service_dict["reachable"], service_dict["error"]
         else:
-            pass
+            logger.info("Successfuly reached {} service '{}'".format(service_url, service_type))
 
         # retrieve appropriate srs from service capabilities
         try:
