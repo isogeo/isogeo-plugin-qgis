@@ -79,7 +79,8 @@ except ImportError:
 class GeoServiceManager:
     """Basic class that holds methods used to add layers to canvas."""
 
-    def __init__(self, cache_manager: object):
+    # def __init__(self, cache_manager: object):
+    def __init__(self):
         """Class constructor."""
 
         # specific infos related to OGC service type
@@ -111,41 +112,40 @@ class GeoServiceManager:
             "EFS": dict(),
             "EMS": dict()
         }
-        # instanciate cache manager to integrate cache into JSON file
-        self.cache_mng = cache_manager
-        # load unreachable services from JSON cache file using CacheManager
-        logger.info("Cached unreachable services are going to be checked again.")
-        for service_type in self.service_cached_dict:
-            self.load_unreachable_cached_service(service_type)
+        # # instanciate cache manager to integrate cache into JSON file
+        # self.cache_mng = cache_manager
+        # # load unreachable services from JSON cache file using CacheManager
+        # for service_type in self.service_cached_dict:
+        #     self.load_unreachable_cached_service(service_type)
 
-    def load_unreachable_cached_service(self, service_type: str):
-        """Load cached unreachable services for a specific service type from JSON file
-        using CacheManager module and store them into local cache dict
+    # def load_unreachable_cached_service(self, service_type: str):
+    #     """Load cached unreachable services for a specific service type from JSON file
+    #     using CacheManager module and store them into local cache dict
 
-        :param str service_type: type of OGC or ESRI service ("WFS", "WMS", "WMTS", "EFS" or "EMS")
-        """
+    #     :param str service_type: type of OGC or ESRI service ("WFS", "WMS", "WMTS", "EFS" or "EMS")
+    #     """
 
-        # If service_type argument value is invalid, raise error
-        accepted_values = list(self.service_cached_dict.keys())
-        if service_type not in accepted_values:
-            error_msg = "'service_type' argument value should be one of {} not {}".format(accepted_values, service_type)
-            raise ValueError(error_msg)
-        # It it's valid, set local shortcut depending on it
-        else:
-            json_cache_list = self.cache_mng.cached_unreach_service.get(service_type)
-        # Browse all service that was registered into JOSN cache file
-        for service_infos in json_cache_list:
-            # Check service validity and build its the local cache dict
-            if service_type in self.ogc_infos_dict:
-                check = self.check_ogc_service(service_type, service_infos[0], service_infos[1])
-            else:
-                check = self.check_esri_service(service_type, service_infos[0])
-            # if the service is reachable, remove it from JSON cache file futur content
-            if check[0]:
-                self.cache_mng.cached_unreach_service[service_type].remove(service_infos)
-            else:
-                pass
-        return
+    #     # If service_type argument value is invalid, raise error
+    #     accepted_values = list(self.service_cached_dict.keys())
+    #     if service_type not in accepted_values:
+    #         error_msg = "'service_type' argument value should be one of {} not {}".format(accepted_values, service_type)
+    #         raise ValueError(error_msg)
+    #     # It it's valid, set local shortcut depending on it
+    #     else:
+    #         json_cache_list = self.cache_mng.cached_unreach_service.get(service_type)
+    #     # Browse all service that was registered into JOSN cache file
+    #     for service_infos in json_cache_list:
+    #         # Check service validity and build its the local cache dict
+    #         if service_type in self.ogc_infos_dict:
+    #             check = self.check_ogc_service(service_type, service_infos[0], service_infos[1])
+    #         else:
+    #             check = self.check_esri_service(service_type, service_infos[0])
+    #         # if the service is reachable, remove it from JSON cache file futur content
+    #         if check[0]:
+    #             self.cache_mng.cached_unreach_service[service_type].remove(service_infos)
+    #         else:
+    #             pass
+    #     return
 
     def choose_appropriate_srs(self, crs_options: list):
         """Return an appropriate srs depending on QGIS configuration and available
@@ -182,6 +182,41 @@ class GeoServiceManager:
             return srs
         else:
             return 0
+
+    def build_layer_title(self, service_type: str, api_layer: dict):
+        """Build the title of the layer according to informations provided by Isogeo API
+        and specific service type.
+
+        :param str service_type: type of OGC or ESRI service ("WFS", "WMS", "WMTS", "EFS" or "EMS")
+        :param dict api_layer: dict object containing Isogeo API informations about the layer
+
+        """
+        # If service_type argument value is invalid, raise error
+        accepted_values = list(self.service_cached_dict.keys())
+        if service_type not in accepted_values:
+            error_msg = "'service_type' argument value should be one of {} not {}".format(accepted_values, service_type)
+            raise ValueError(error_msg)
+            # If it's valid, let's build this layer title
+        else:
+            if service_type in self.esri_infos_dict:
+                generic_title = "{} layer ({})".format(service_type, api_layer.get("id"))
+                if len(api_layer.get("titles")):
+                    layer_title = api_layer.get("titles")[0].get("value", generic_title)
+                else:
+                    layer_title = generic_title
+            else:
+                if service_type == "WFS":
+                    api_layer_id = re.sub("\{.*?}", "", api_layer.get("id"))
+                else:
+                    api_layer_id = api_layer.get("id")
+                generic_title = api_layer_id
+
+                if len(api_layer.get("titles")):
+                    layer_title = api_layer.get("titles")[0].get("value", generic_title)
+                else:
+                    layer_title = generic_title
+
+            return layer_title
 
     def check_ogc_service(self, service_type: str, service_url: str, service_version: str):
         """Try to acces to the given OGC service URL (using owslib library modules) and
@@ -255,15 +290,13 @@ class GeoServiceManager:
                 service_dict["error"] = error_msg
         # if the service can't be reached, add it to JSON cache and return the error
         if not service_dict.get("reachable"):
-            unreached_service = (service_url, service_version)
-            if unreached_service not in self.cache_mng.cached_unreach_service.get(service_type):
-                self.cache_mng.cached_unreach_service[service_type].append(unreached_service)
-            else:
-                pass
-            logger.info("Can't reach {} service '{}'".format(service_url, service_type))
+            # unreached_service = (service_url, service_version)
+            # if unreached_service not in self.cache_mng.cached_unreach_service.get(service_type):
+            #     self.cache_mng.cached_unreach_service[service_type].append(unreached_service)
+            # else:
+            #     pass
             return service_dict["reachable"], service_dict["error"]
         else:
-            logger.info("Successfuly reached {} service '{}'".format(service_url, service_type))
             pass
 
         # Store several basic informations about the service
@@ -350,16 +383,13 @@ class GeoServiceManager:
         api_layer_name = re.sub("\{.*?}", "", api_layer_id)  # celan api_layer_id
 
         # build layer title
-        if len(api_layer.get("titles")):
-            layer_title = api_layer.get("titles")[0].get("value", api_layer_name)
-        else:
-            layer_title = api_layer_name
+        layer_title = self.build_layer_title("WFS", api_layer)
 
         # check layer availability + retrieve its real id for "TYPENAME" URL parameter
         if api_layer_name in wfs_dict.get("typenames"):
             layer_typename = api_layer_name
         elif any(api_layer_name in typename.split(":") for typename in wfs_dict.get("typenames")):
-            layer_typename = api_layer_name
+            layer_typename = [typename for typename in wfs_dict.get("typenames") if api_layer_name in typename.split(":")][0]
         elif any(api_layer_name in typename for typename in wfs_dict.get("typenames")):
             layer_typenames = [typename for typename in wfs_dict.get("typenames") if api_layer_name in typename]
             if len(layer_typenames) > 1:
@@ -401,7 +431,7 @@ class GeoServiceManager:
 
         return ["WFS", layer_title, wfs_url_final, api_layer, srv_details, btn_lbl]
 
-    def build_wms_url(self, api_layer, srv_details):
+    def build_wms_url(self, api_layer: dict, srv_details: dict):
         """Build a WMS layer URL -according to QGIS expectations- using informations
         provided by Isogeo API.
 
@@ -436,13 +466,10 @@ class GeoServiceManager:
         wms = wms_dict.get("WMS")
 
         # build layer title
-        if len(api_layer.get("titles")):
-            layer_title = api_layer.get("titles")[0].get("value", api_layer_id)
-        else:
-            layer_title = api_layer_id
+        layer_title = self.build_layer_title("WMS", api_layer)
 
         # check layer availability
-        if not api_layer_id in wms_dict.get("typenames"):
+        if api_layer_id not in wms_dict.get("typenames"):
             error_msg = "WMS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
                 wms_url_base, api_layer_id
             )
@@ -522,7 +549,7 @@ class GeoServiceManager:
         btn_lbl = "WMS : {}".format(layer_title)
         return ["WMS", layer_title, wms_url_final, api_layer, srv_details, btn_lbl]
 
-    def build_wmts_url(self, api_layer, srv_details):
+    def build_wmts_url(self, api_layer: dict, srv_details: dict):
         """Build a WMTS layer URL -according to QGIS expectations- using informations
         provided by Isogeo API.
 
@@ -557,21 +584,17 @@ class GeoServiceManager:
         wmts_lyr_url = wmts_dict.get("GetTile_url")
 
         # build layer title
-        if len(api_layer.get("titles")):
-            layer_title = api_layer.get("titles")[0].get("value", "WMTS Layer")
-        elif wmts_lyr.title:
-            layer_title = wmts_lyr.title
-        else:
-            layer_title = "WMTS Layer"
+        layer_title = self.build_layer_title("WMTS", api_layer)
 
         # check layer availability
-        if not api_layer_id in wmts_dict.get("typenames"):
+        if api_layer_id not in wmts_dict.get("typenames"):
             error_msg = "WMTS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
                 wmts_lyr_url, api_layer_id
             )
             return 0, error_msg
         else:
             wmts_lyr = wmts[api_layer_id]
+
 
         # check if GetTile operation is available
         if not hasattr(wmts, "gettile") or not wmts_dict.get("GetTile_isAvailable"):
@@ -675,15 +698,14 @@ class GeoServiceManager:
             service_dict["error"] = error_msg
         # if the service can't be reached, add it to JSON cache and return the error
         if not service_dict.get("reachable"):
-            unreached_service = (service_url,)
-            if unreached_service not in self.cache_mng.cached_unreach_service.get(service_type):
-                self.cache_mng.cached_unreach_service[service_type].append(unreached_service)
-            else:
-                pass
-            logger.info("Can't reach {} service '{}'".format(service_url, service_type))
+            # unreached_service = (service_url,)
+            # if unreached_service not in self.cache_mng.cached_unreach_service.get(service_type):
+            #     self.cache_mng.cached_unreach_service[service_type].append(unreached_service)
+            # else:
+            #     pass
             return service_dict["reachable"], service_dict["error"]
         else:
-            logger.info("Successfuly reached {} service '{}'".format(service_url, service_type))
+            pass
 
         # retrieve appropriate srs from service capabilities
         try:
@@ -697,7 +719,7 @@ class GeoServiceManager:
 
         return 1, service_dict
 
-    def build_efs_url(self, api_layer, srv_details):
+    def build_efs_url(self, api_layer: dict, srv_details: dict):
         """Build a EFS layer URL -according to QGIS expectations- using informations
         provided by Isogeo API.
 
@@ -727,10 +749,7 @@ class GeoServiceManager:
         api_layer_id = api_layer.get("id")
 
         # build layer title
-        if len(api_layer.get("titles")):
-            efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
-        else:
-            efs_lyr_title = "EFS Layer"
+        layer_title = self.build_layer_title("EFS", api_layer)
 
         # retrieve and clean service efs_base_url
         efs_base_url = efs_dict.get("base_url")
@@ -746,10 +765,10 @@ class GeoServiceManager:
         efs_uri += "sql=''"
 
         logger.debug("*=====* DEBUG ADD FROM EFS : efs_uri --> {}".format(str(efs_uri)))
-        btn_lbl = "EFS : {}".format(efs_lyr_title)
-        return ["EFS", efs_lyr_title, efs_uri, api_layer, srv_details, btn_lbl]
+        btn_lbl = "EFS : {}".format(layer_title)
+        return ["EFS", layer_title, efs_uri, api_layer, srv_details, btn_lbl]
 
-    def build_ems_url(self, api_layer, srv_details):
+    def build_ems_url(self, api_layer: dict, srv_details: dict):
         """Build a EMS layer URL -according to QGIS expectations- using informations
         provided by Isogeo API.
 
@@ -779,10 +798,7 @@ class GeoServiceManager:
         api_layer_id = api_layer.get("id")
 
         # build layer title
-        if len(api_layer.get("titles")):
-            ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
-        else:
-            ems_lyr_title = "EMS Layer"
+        layer_title = self.build_layer_title("EMS", api_layer)
 
         # retrieve and clean service ems_base_url
         ems_base_url = ems_dict.get("base_url")
@@ -797,5 +813,5 @@ class GeoServiceManager:
         ems_uri.setParam("crs", srs)
 
         logger.debug("*=====* DEBUG ADD FROM EMS : ems_uri --> {}".format(str(ems_uri)))
-        btn_lbl = "EMS : {}".format(ems_lyr_title)
-        return ["EMS", ems_lyr_title, ems_uri.uri(), api_layer, srv_details, btn_lbl]
+        btn_lbl = "EMS : {}".format(layer_title)
+        return ["EMS", layer_title, ems_uri.uri(), api_layer, srv_details, btn_lbl]

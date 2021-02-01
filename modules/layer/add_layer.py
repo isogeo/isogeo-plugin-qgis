@@ -24,6 +24,7 @@ from qgis.utils import iface
 # Plugin modules
 from ..tools import IsogeoPlgTools
 from .metadata_sync import MetadataSynchronizer
+from ..layer.geo_service import GeoServiceManager
 
 # ############################################################################
 # ########## Globals ###############
@@ -33,29 +34,35 @@ qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_tools = IsogeoPlgTools()
+geo_srv_mng = GeoServiceManager()
 
 li_datafile_types = ["vector", "raster"]
 
 dict_service_types = {
     "WFS": [
         "WFS",
-        QgsVectorLayer
+        QgsVectorLayer,
+        geo_srv_mng.build_wfs_url
     ],
     "WMS": [
         "wms",
-        QgsRasterLayer
+        QgsRasterLayer,
+        geo_srv_mng.build_wms_url
     ],
     "EFS": [
         "arcgisfeatureserver",
-        QgsVectorLayer
+        QgsVectorLayer,
+        geo_srv_mng.build_efs_url
     ],
     "EMS": [
         "arcgismapserver",
-        QgsRasterLayer
+        QgsRasterLayer,
+        geo_srv_mng.build_ems_url
     ],
     "WMTS": [
         "wms",
-        QgsRasterLayer
+        QgsRasterLayer,
+        geo_srv_mng.build_wmts_url
     ]
 }
 
@@ -94,9 +101,11 @@ class LayerAdder:
         self.tbl_result = None
         self.tr = object
         self.md_sync = MetadataSynchronizer()
+        # self.geo_srv_mng = GeoServiceManager(self.cache_mng)
 
-        # add layer from PostGIS table
+        # prepare layer adding from PostGIS table
         self.PostGISdict = dict()
+
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
         QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
 
@@ -193,32 +202,51 @@ class LayerAdder:
         else:
             return lyr, layer
 
+    # def add_from_service(
+    #     self,
+    #     layer_label: str,
+    #     url: list,
+    #     layer_name: str,
+    #     service_type: str,
+    #     additional_infos: list,
+    # ):
     def add_from_service(
         self,
-        layer_label: str,
-        url: list,
-        layer_name: str,
         service_type: str,
-        additional_infos: list,
+        api_layer: dict,
+        service_details: dict,
     ):
         """Add a layer to QGIS map canvas from a Geographic Service Layer.
 
-        :param str layer_label: the name of the metadata
-        :param list url: the URL/URI of the Geographic Service Layer
-        :param str layer_name: the name that gonna be given to layer into QGIS layers manager
-        :param str data_type: the type of the service ("WFS", "WMS", "EFS", "EMS" or "WMTS")
-        :param list additional_infos: infos needed to call WMS or WFS URL builder in 'complete' mode
+        :param str service_type: the type of the service ("WFS", "WMS", "EFS", "EMS" or "WMTS")
+        :param dict api_layer: dict object containing Isogeo API informations about the layer
+        :param dict service_details: dict object containing Isogeo API informations about the service
         """
-
-        # Create the vector layer or the raster layer depending on service_type
-        if service_type in dict_service_types:
-            QgsLayer = dict_service_types.get(service_type)[1]
-            data_provider = dict_service_types.get(service_type)[0]
-            layer = QgsLayer(url, layer_name, data_provider)
-        else:
+        # If service_type argument value is invalid, raise error
+        if service_type not in dict_service_types:
             raise ValueError(
                 "'service_type' argument value should be 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
             )
+        # It it's valid, set local variables depending on it
+        else:
+            data_provider = dict_service_types.get(service_type)[0]
+            QgsLayer = dict_service_types.get(service_type)[1]
+            url_builder = dict_service_types.get(service_type)[2]
+
+        # use GeoServiceManager to retrieve all the infos we need to add the layer to the canvas
+        layer_infos = url_builder(api_layer, service_details)
+        # If everything is ok, let's create the layer that we gonna try to add to the canvas
+        if layer_infos[0]:
+            url = layer_infos[2]
+            layer_title = layer_infos[1]
+            layer = QgsLayer(url, layer_title, data_provider)
+        # else, informe the user about what went wrong #############################################################################
+        else:
+            error_msg = layer_infos[1]
+            self.invalid_layer_inform(
+                data_type=service_type, data_source=url, error_msg=error_msg
+            )
+            return 0
 
         # If the layer is valid, add it to the map canvas and inform the user
         if layer.isValid():
@@ -235,7 +263,7 @@ class LayerAdder:
             error_msg = layer.error().message()
             layer_is_ok = 0
             # Try to create it again without specifying data provider
-            layer = QgsLayer(url, layer_name)
+            layer = QgsLayer(url, layer_title)
             if layer.isValid():
                 lyr = QgsProject.instance().addMapLayer(layer)
                 QgsMessageLog.logMessage(
@@ -361,12 +389,17 @@ class LayerAdder:
                 )
             # If the layer to be added is from a geographic service
             elif layer_info[0] in dict_service_types:
+                # added_layer = self.add_from_service(
+                #     layer_label=layer_label,
+                #     url=layer_info[2],
+                #     layer_name=layer_info[1],
+                #     service_type=layer_info[0],
+                #     additional_infos=[layer_info[3], layer_info[4]],
+                # )
                 added_layer = self.add_from_service(
-                    layer_label=layer_label,
-                    url=layer_info[2],
-                    layer_name=layer_info[1],
                     service_type=layer_info[0],
-                    additional_infos=[layer_info[3], layer_info[4]],
+                    api_layer=layer_info[1],
+                    service_details=layer_info[2]
                 )
             else:
                 raise ValueError(

@@ -16,8 +16,8 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QPushButton, QLabel
 from .cache import CacheManager
 from ..tools import IsogeoPlgTools
 from ..layer.add_layer import LayerAdder
-from ..layer.geo_service import GeoServiceManager
 from ..layer.limitations_checker import LimitationsChecker
+from ..layer.geo_service import GeoServiceManager
 
 # isogeo-pysdk
 from ..isogeo_pysdk import Metadata
@@ -27,6 +27,7 @@ from ..isogeo_pysdk import Metadata
 # ##################################
 
 plg_tools = IsogeoPlgTools()
+geo_srv_mng = GeoServiceManager()
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
@@ -118,14 +119,21 @@ class ResultsManager(QObject):
         self.cache_mng.loader()
         self.cache_mng.tr = self.tr
 
-        self.geo_srv_mng = GeoServiceManager(self.cache_mng)
+        # self.geo_srv_mng = GeoServiceManager(self.cache_mng)
 
-        self.service_dict = {
-            "efs": {"url_builder": self.geo_srv_mng.build_efs_url, "ico": ico_efs},
-            "ems": {"url_builder": self.geo_srv_mng.build_ems_url, "ico": ico_ems},
-            "wfs": {"url_builder": self.geo_srv_mng.build_wfs_url, "ico": ico_wfs},
-            "wms": {"url_builder": self.geo_srv_mng.build_wms_url, "ico": ico_wms},
-            "wmts": {"url_builder": self.geo_srv_mng.build_wmts_url, "ico": ico_wmts},
+        # self.service_dict = {
+        #     "efs": {"url_builder": self.geo_srv_mng.build_efs_url, "ico": ico_efs},
+        #     "ems": {"url_builder": self.geo_srv_mng.build_ems_url, "ico": ico_ems},
+        #     "wfs": {"url_builder": self.geo_srv_mng.build_wfs_url, "ico": ico_wfs},
+        #     "wms": {"url_builder": self.geo_srv_mng.build_wms_url, "ico": ico_wms},
+        #     "wmts": {"url_builder": self.geo_srv_mng.build_wmts_url, "ico": ico_wmts},
+        # }
+        self.service_ico_dict = {
+            "efs": ico_efs,
+            "ems": ico_ems,
+            "wfs": ico_wfs,
+            "wms": ico_wms,
+            "wmts": ico_wmts,
         }
 
     def show_results(self, api_results, pg_connections=dict()):
@@ -322,11 +330,12 @@ class ResultsManager(QObject):
                             "path": service.get("path", "NR"),
                             "formatVersion": service.get("formatVersion"),
                         }
-                        if service.get("format") in self.service_dict:
-                            url_builder = self.service_dict.get(
-                                service.get("format")
-                            ).get("url_builder")
-                            params = url_builder(layer, srv_details)
+                        if service.get("format") in self.service_ico_dict:
+                            # url_builder = self.service_dict.get(
+                            #     service.get("format")
+                            # ).get("url_builder")
+                            # params = url_builder(layer, srv_details)
+                            params = [service.get("format").upper(), layer, srv_details]
                         else:
                             params = [0]
                             logger.debug(
@@ -365,26 +374,29 @@ class ResultsManager(QObject):
                         "path": md.path,
                         "formatVersion": md.formatVersion,
                     }
-                    if md.format in self.service_dict:
-                        url_builder = self.service_dict.get(md.format).get(
-                            "url_builder"
-                        )
+                    if md.format in self.service_ico_dict:
+                        # url_builder = self.service_dict.get(md.format).get(
+                        #     "url_builder"
+                        # )
+                        service_type = md.format.upper()
                         for layer in md.layers:
-                            name_url = url_builder(layer, srv_details)
-                            if name_url[0] != 0:
-                                add_options_dict[name_url[5]] = name_url
-                            else:
-                                logger.warning(
-                                    "Faile to build service URL for '{}' layer of {} service metadata ({}): {}".format(
-                                        layer.get("id"), md.format.upper(), md._id, name_url[1]
-                                    )
-                                )
-                                continue
+                            # name_url = url_builder(layer, srv_details)
+                            # if name_url[0] != 0:
+                            #     add_options_dict[name_url[5]] = name_url
+                            # else:
+                            #     logger.warning(
+                            #         "Faile to build service URL for '{}' layer of {} service metadata ({}): {}".format(
+                            #             layer.get("id"), md.format.upper(), md._id, name_url[1]
+                            #         )
+                            #     )
+                            #     continue
+                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                            btn_label = "{} : {}".format(service_type, layer_title)
+                            add_options_dict[btn_label] = [service_type, layer, srv_details]
                     else:
                         pass
             else:
                 pass
-
             # Now the plugin has tested every possibility for the layer to be
             # added. The "Add" column has to be filled accordingly.
 
@@ -407,8 +419,9 @@ class ResultsManager(QObject):
                     params = add_options_dict.get(text)
                     option_type = text.split(" : ")[0]
                     # services
-                    if option_type.lower() in self.service_dict:
-                        icon = self.service_dict.get(option_type.lower()).get("ico")
+                    if option_type.lower() in self.service_ico_dict:
+                        # icon = self.service_dict.get(option_type.lower()).get("ico")
+                        icon = self.service_ico_dict.get(option_type.lower())
                     # PostGIS table
                     elif option_type.startswith(
                         self.tr("PostGIS table", context=__class__.__name__)
@@ -441,8 +454,9 @@ class ResultsManager(QObject):
                     for option in add_options_dict:
                         option_type = option.split(" : ")[0]
                         # services
-                        if option_type.lower() in self.service_dict:
-                            icon = self.service_dict.get(option_type.lower()).get("ico")
+                        if option_type.lower() in self.service_ico_dict:
+                            # icon = self.service_dict.get(option_type.lower()).get("ico")
+                            icon = self.service_ico_dict.get(option_type.lower())
                         # PostGIS table
                         elif option.startswith(
                             self.tr("PostGIS table", context=__class__.__name__)
@@ -500,10 +514,10 @@ class ResultsManager(QObject):
             try:
                 with open(filepath) as f:
                     return str(filepath)
-            except:
+            except Exception as e:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
                 logger.info(
-                    "Path is not reachable and has been cached:{}".format(dir_file)
+                    "Path is not reachable and has been cached:{} / {}".format(dir_file, e)
                 )
                 return False
         else:
