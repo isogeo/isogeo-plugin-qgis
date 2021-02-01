@@ -115,7 +115,7 @@ class ResultsManager(QObject):
             multi_list: {"tooltip": "MultiPolygon", "pix": pix_multi},
         }
         # set instanciate and load JSON file cache content
-        self.cache_mng = CacheManager()
+        self.cache_mng = CacheManager(self.layer_adder.geo_srv_mng)
         self.cache_mng.loader()
         self.cache_mng.tr = self.tr
 
@@ -215,7 +215,7 @@ class ResultsManager(QObject):
                         count,
                         2,
                         QTableWidgetItem(
-                            self.tr("Unknown geometry", context=__class__.__name__)
+                            "?"
                         ),
                     )
             else:
@@ -309,11 +309,6 @@ class ResultsManager(QObject):
                     pass
             # Associated service layers
             if md.type == "vectorDataset" or md.type == "rasterDataset":
-                logger.debug(
-                    "*=====* DEBUG ADD FROM EFS : md.serviceLayers --> {}".format(
-                        md.serviceLayers
-                    )
-                )
                 for layer in md.serviceLayers:
                     service = layer.get("service")
                     if service is not None:
@@ -341,9 +336,9 @@ class ResultsManager(QObject):
                                 portal_md_url,
                             ]
                             params.append(basic_md)
-                            add_options_dict[
-                                "{} : {}".format(params[0], geo_srv_mng.build_layer_title(service_type, layer))
-                            ] = params
+                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                            btn_label = "{} : {}".format(service_type, layer_title)
+                            add_options_dict[btn_label] = params
                         else:
                             logger.warning(
                                 "Faile to build service URL for {} layer '{}' (of metadata {}): {}".format(
