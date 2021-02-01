@@ -199,7 +199,7 @@ class LayerAdder:
             self.invalid_layer_inform(
                 data_type=data_type, data_source=path, error_msg=error_msg
             )
-            return 0, layer
+            return 0
         else:
             return lyr, layer
 
@@ -239,7 +239,7 @@ class LayerAdder:
             self.invalid_layer_inform(
                 data_type=service_type, data_source=api_layer.get("id"), error_msg=error_msg
             )
-            return 0, ""
+            return 0
 
         # If the layer is valid, add it to the map canvas and inform the user
         if layer.isValid():
@@ -266,7 +266,7 @@ class LayerAdder:
                     tag="Isogeo",
                     level=0,
                 )
-                logger.debug("{} layer added without specifying the data provider: {}".format(service_type, url))
+                logger.warning("{} layer added without specifying the data provider: {}".format(service_type, url))
                 layer_is_ok = 1
             else:
                 error_msg = layer.error().message()
@@ -276,7 +276,7 @@ class LayerAdder:
             self.invalid_layer_inform(
                 data_type=service_type, data_source=url, error_msg=error_msg
             )
-            return 0, layer
+            return 0
         else:
             return lyr, layer
 
@@ -400,19 +400,15 @@ class LayerAdder:
         else:
             pass
 
-        # filling 'QGIS Server' tab of layer Properties
-        if added_layer[0]:
+        # If the layer haven't been added return
+        if not added_layer:
+            return 0
+            # else fil 'QGIS Server' tab of layer Properties using MetadataSynchronizer
+        else:
             lyr = added_layer[0]
             layer = added_layer[1]
             if layer.isValid():
-                try:
-                    self.md_sync.basic_sync(layer=lyr, info=layer_info)
-                except IndexError as e:
-                    logger.debug(
-                        "Not supported 'layer_info' format causes this error : {}".format(e)
-                    )
+                self.md_sync.basic_sync(layer=lyr, info=layer_info)
             else:
                 pass
-        else:
-            pass
-        return 1
+            return 1
