@@ -321,8 +321,9 @@ class ResultsManager(QObject):
                             "path": service.get("path", "NR"),
                             "formatVersion": service.get("formatVersion"),
                         }
+                        service_type = service.get("format").upper()
                         if service.get("format") in self.service_ico_dict:
-                            params = [service.get("format").upper(), layer, srv_details]
+                            params = [service_type, layer, srv_details]
                         else:
                             params = [0]
                             logger.debug(
@@ -341,7 +342,7 @@ class ResultsManager(QObject):
                             ]
                             params.append(basic_md)
                             add_options_dict[
-                                "{} : {}".format(params[0], params[1])
+                                "{} : {}".format(params[0], geo_srv_mng.build_layer_title(service_type, layer))
                             ] = params
                         else:
                             logger.warning(
