@@ -362,7 +362,15 @@ class ResultsManager(QObject):
                         for layer in md.layers:
                             layer_title = geo_srv_mng.build_layer_title(service_type, layer)
                             btn_label = "{} : {}".format(service_type, layer_title)
-                            add_options_dict[btn_label] = [service_type, layer, srv_details]
+                            params = [service_type, layer, srv_details]
+                            basic_md = [
+                                md.title,
+                                md.abstract,
+                                md.keywords,
+                                portal_md_url,
+                            ]
+                            params.append(basic_md)
+                            add_options_dict[btn_label] = params
                     else:
                         pass
             else:

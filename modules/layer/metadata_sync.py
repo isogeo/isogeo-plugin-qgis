@@ -44,7 +44,7 @@ class MetadataSynchronizer:
             # services
             elif layer_type in srv_types:
                 self.filling_field(
-                    layer, info[6][0], info[6][1], info[6][2], info[6][3]
+                    layer, info[3][0], info[3][1], info[3][2], info[3][3]
                 )
             else:
                 pass
