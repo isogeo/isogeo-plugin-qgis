@@ -112,40 +112,6 @@ class GeoServiceManager:
             "EFS": dict(),
             "EMS": dict()
         }
-        # # instanciate cache manager to integrate cache into JSON file
-        # self.cache_mng = cache_manager
-        # # load unreachable services from JSON cache file using CacheManager
-        # for service_type in self.service_cached_dict:
-        #     self.load_unreachable_cached_service(service_type)
-
-    # def load_unreachable_cached_service(self, service_type: str):
-    #     """Load cached unreachable services for a specific service type from JSON file
-    #     using CacheManager module and store them into local cache dict
-
-    #     :param str service_type: type of OGC or ESRI service ("WFS", "WMS", "WMTS", "EFS" or "EMS")
-    #     """
-
-    #     # If service_type argument value is invalid, raise error
-    #     accepted_values = list(self.service_cached_dict.keys())
-    #     if service_type not in accepted_values:
-    #         error_msg = "'service_type' argument value should be one of {} not {}".format(accepted_values, service_type)
-    #         raise ValueError(error_msg)
-    #     # It it's valid, set local shortcut depending on it
-    #     else:
-    #         json_cache_list = self.cache_mng.cached_unreach_service.get(service_type)
-    #     # Browse all service that was registered into JOSN cache file
-    #     for service_infos in json_cache_list:
-    #         # Check service validity and build its the local cache dict
-    #         if service_type in self.ogc_infos_dict:
-    #             check = self.check_ogc_service(service_type, service_infos[0], service_infos[1])
-    #         else:
-    #             check = self.check_esri_service(service_type, service_infos[0])
-    #         # if the service is reachable, remove it from JSON cache file futur content
-    #         if check[0]:
-    #             self.cache_mng.cached_unreach_service[service_type].remove(service_infos)
-    #         else:
-    #             pass
-    #     return
 
     def choose_appropriate_srs(self, crs_options: list):
         """Return an appropriate srs depending on QGIS configuration and available
@@ -288,13 +254,9 @@ class GeoServiceManager:
                 )
                 service_dict["reachable"] = 0
                 service_dict["error"] = error_msg
-        # if the service can't be reached, add it to JSON cache and return the error
+        logger.debug("*=====* DEBUG CHECK OGC SERVICE : {} reachability --> {}".format(service_url, service_dict["reachable"]))
+        # if the service can't be reached, return the error
         if not service_dict.get("reachable"):
-            # unreached_service = (service_url, service_version)
-            # if unreached_service not in self.cache_mng.cached_unreach_service.get(service_type):
-            #     self.cache_mng.cached_unreach_service[service_type].append(unreached_service)
-            # else:
-            #     pass
             return service_dict["reachable"], service_dict["error"]
         else:
             pass
@@ -586,15 +548,37 @@ class GeoServiceManager:
         # build layer title
         layer_title = self.build_layer_title("WMTS", api_layer)
 
-        # check layer availability
-        if api_layer_id not in wmts_dict.get("typenames"):
+        # # check layer availability
+        # if api_layer_id not in wmts_dict.get("typenames"):
+        #     error_msg = "WMTS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
+        #         wmts_lyr_url, api_layer_id
+        #     )
+        #     return 0, error_msg
+        # else:
+        #     wmts_lyr = wmts[api_layer_id]
+
+        # check layer availability + retrieve its real id for "layers" URL parameter
+        if api_layer_id in wmts_dict.get("typenames"):
+            layer_typename = api_layer_id
+        elif any(api_layer_id in typename.split(":") for typename in wmts_dict.get("typenames")):
+            layer_typename = [typename for typename in wmts_dict.get("typenames") if api_layer_id in typename.split(":")][0]
+        elif any(api_layer_id in typename for typename in wmts_dict.get("typenames")):
+            layer_typenames = [typename for typename in wmts_dict.get("typenames") if api_layer_id in typename]
+            if len(layer_typenames) > 1:
+                warning_msg = "WMTS {} - Multiple typenames matched for '{}' layer, the first one will be choosed: {}".format(
+                    wmts_lyr_url, api_layer_id, layer_typenames[0]
+                )
+                logger.warning(warning_msg)
+            else:
+                pass
+            layer_typename = layer_typenames[0]
+        else:
             error_msg = "WMTS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
                 wmts_lyr_url, api_layer_id
             )
             return 0, error_msg
-        else:
-            wmts_lyr = wmts[api_layer_id]
 
+        wmts_lyr = wmts[layer_typename]
 
         # check if GetTile operation is available
         if not hasattr(wmts, "gettile") or not wmts_dict.get("GetTile_isAvailable"):
@@ -610,7 +594,11 @@ class GeoServiceManager:
         else:
             logger.debug("WMTS - Let's choose the SRS corresponding to the only available Tile Matrix Set for this layer")
             tile_matrix_set = wmts_lyr._tilematrixsets[0]
-            srs = [k for k, v in tms_dict.items() if tile_matrix_set in v][0]
+            srs = [k for k in tms_dict if tile_matrix_set in k][0]
+            # try:
+            #     srs = [k for k, v in tms_dict.items() if tile_matrix_set in v][0]
+            # except IndexError:
+            #     srs = [v for k, v in tms_dict.items() if tile_matrix_set in k][0]
 
         # Format definition
         formats_image = wmts_lyr.formats
@@ -635,7 +623,7 @@ class GeoServiceManager:
         li_uri_params = [
             "crs={}&".format(srs),
             "format={}&".format(layer_format),
-            "layers={}&".format(api_layer_id),
+            "layers={}&".format(layer_typename),
             "styles={}&".format(lyr_style),
             "tileMatrixSet={}&".format(tile_matrix_set),
             "url={}".format(wmts_lyr_url),
@@ -696,16 +684,12 @@ class GeoServiceManager:
             error_msg = "{} {} - Unable to access service capabilities: {}".format(service_type, service_dict["getCap_url"], e)
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
-        # if the service can't be reached, add it to JSON cache and return the error
+        # if the service can't be reached, return the error
         if not service_dict.get("reachable"):
-            # unreached_service = (service_url,)
-            # if unreached_service not in self.cache_mng.cached_unreach_service.get(service_type):
-            #     self.cache_mng.cached_unreach_service[service_type].append(unreached_service)
-            # else:
-            #     pass
             return service_dict["reachable"], service_dict["error"]
         else:
             pass
+        logger.debug("*=====* DEBUG CHECK ESRI SERVICE : {} reachability --> {}".format(service_url, service_dict["reachable"]))
 
         # retrieve appropriate srs from service capabilities
         try:

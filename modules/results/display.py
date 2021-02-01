@@ -119,15 +119,6 @@ class ResultsManager(QObject):
         self.cache_mng.loader()
         self.cache_mng.tr = self.tr
 
-        # self.geo_srv_mng = GeoServiceManager(self.cache_mng)
-
-        # self.service_dict = {
-        #     "efs": {"url_builder": self.geo_srv_mng.build_efs_url, "ico": ico_efs},
-        #     "ems": {"url_builder": self.geo_srv_mng.build_ems_url, "ico": ico_ems},
-        #     "wfs": {"url_builder": self.geo_srv_mng.build_wfs_url, "ico": ico_wfs},
-        #     "wms": {"url_builder": self.geo_srv_mng.build_wms_url, "ico": ico_wms},
-        #     "wmts": {"url_builder": self.geo_srv_mng.build_wmts_url, "ico": ico_wmts},
-        # }
         self.service_ico_dict = {
             "efs": ico_efs,
             "ems": ico_ems,
@@ -331,10 +322,6 @@ class ResultsManager(QObject):
                             "formatVersion": service.get("formatVersion"),
                         }
                         if service.get("format") in self.service_ico_dict:
-                            # url_builder = self.service_dict.get(
-                            #     service.get("format")
-                            # ).get("url_builder")
-                            # params = url_builder(layer, srv_details)
                             params = [service.get("format").upper(), layer, srv_details]
                         else:
                             params = [0]
@@ -375,21 +362,8 @@ class ResultsManager(QObject):
                         "formatVersion": md.formatVersion,
                     }
                     if md.format in self.service_ico_dict:
-                        # url_builder = self.service_dict.get(md.format).get(
-                        #     "url_builder"
-                        # )
                         service_type = md.format.upper()
                         for layer in md.layers:
-                            # name_url = url_builder(layer, srv_details)
-                            # if name_url[0] != 0:
-                            #     add_options_dict[name_url[5]] = name_url
-                            # else:
-                            #     logger.warning(
-                            #         "Faile to build service URL for '{}' layer of {} service metadata ({}): {}".format(
-                            #             layer.get("id"), md.format.upper(), md._id, name_url[1]
-                            #         )
-                            #     )
-                            #     continue
                             layer_title = geo_srv_mng.build_layer_title(service_type, layer)
                             btn_label = "{} : {}".format(service_type, layer_title)
                             add_options_dict[btn_label] = [service_type, layer, srv_details]
@@ -420,7 +394,6 @@ class ResultsManager(QObject):
                     option_type = text.split(" : ")[0]
                     # services
                     if option_type.lower() in self.service_ico_dict:
-                        # icon = self.service_dict.get(option_type.lower()).get("ico")
                         icon = self.service_ico_dict.get(option_type.lower())
                     # PostGIS table
                     elif option_type.startswith(
@@ -455,7 +428,6 @@ class ResultsManager(QObject):
                         option_type = option.split(" : ")[0]
                         # services
                         if option_type.lower() in self.service_ico_dict:
-                            # icon = self.service_dict.get(option_type.lower()).get("ico")
                             icon = self.service_ico_dict.get(option_type.lower())
                         # PostGIS table
                         elif option.startswith(

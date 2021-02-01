@@ -140,7 +140,7 @@ class LayerAdder:
             iface.mainWindow(),
             self.tr("Error", context=__class__.__name__),
             self.tr(
-                "<strong>{} {} is not valid</strong> {}.<br><br><strong>QGIS says:</strong>{}".format(
+                "<strong>{} {} is not valid</strong> {}.<br><br><strong>Error:</strong> {}".format(
                     data_type, layer_type, data_name, error_msg
                 ),
                 context=__class__.__name__,
@@ -202,14 +202,6 @@ class LayerAdder:
         else:
             return lyr, layer
 
-    # def add_from_service(
-    #     self,
-    #     layer_label: str,
-    #     url: list,
-    #     layer_name: str,
-    #     service_type: str,
-    #     additional_infos: list,
-    # ):
     def add_from_service(
         self,
         service_type: str,
@@ -240,13 +232,13 @@ class LayerAdder:
             url = layer_infos[2]
             layer_title = layer_infos[1]
             layer = QgsLayer(url, layer_title, data_provider)
-        # else, informe the user about what went wrong #############################################################################
+        # else, informe the user about what went wrong
         else:
             error_msg = layer_infos[1]
             self.invalid_layer_inform(
-                data_type=service_type, data_source=url, error_msg=error_msg
+                data_type=service_type, data_source=api_layer.get("id"), error_msg=error_msg
             )
-            return 0
+            return 0, ""
 
         # If the layer is valid, add it to the map canvas and inform the user
         if layer.isValid():
@@ -389,13 +381,6 @@ class LayerAdder:
                 )
             # If the layer to be added is from a geographic service
             elif layer_info[0] in dict_service_types:
-                # added_layer = self.add_from_service(
-                #     layer_label=layer_label,
-                #     url=layer_info[2],
-                #     layer_name=layer_info[1],
-                #     service_type=layer_info[0],
-                #     additional_infos=[layer_info[3], layer_info[4]],
-                # )
                 added_layer = self.add_from_service(
                     service_type=layer_info[0],
                     api_layer=layer_info[1],
@@ -414,16 +399,19 @@ class LayerAdder:
         else:
             pass
 
-        lyr = added_layer[0]
-        layer = added_layer[1]
         # filling 'QGIS Server' tab of layer Properties
-        if layer.isValid():
-            try:
-                self.md_sync.basic_sync(layer=lyr, info=layer_info)
-            except IndexError as e:
-                logger.debug(
-                    "Not supported 'layer_info' format causes this error : {}".format(e)
-                )
+        if added_layer[0]:
+            lyr = added_layer[0]
+            layer = added_layer[1]
+            if layer.isValid():
+                try:
+                    self.md_sync.basic_sync(layer=lyr, info=layer_info)
+                except IndexError as e:
+                    logger.debug(
+                        "Not supported 'layer_info' format causes this error : {}".format(e)
+                    )
+            else:
+                pass
         else:
             pass
         return 1
