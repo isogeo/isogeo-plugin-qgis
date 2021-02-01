@@ -469,51 +469,48 @@ class GeoServiceManager:
         # SRS definition
         srs = self.choose_appropriate_srs(crs_options=wms_lyr.crsOptions)
 
-        # let's try a quick & dirty url build
-        srs_map = plg_tools.get_map_crs()
+        # BBOX parameter
+        if any(txt in srs for txt in ["WGS84", "4326"]) and hasattr(wms_lyr, "boundingBoxWGS84"):
+            li_coords = [str(coord) for coord in wms_lyr.boundingBoxWGS84]
+            bbox = ",".join(li_coords)
+            logger.info("Let's use WGS84 bbox : {}".format(bbox))
+        elif any(srs in str(elem) for elem in wms_lyr.boundingBox):
+            li_coords = [str(coord) for coord in wms_lyr.boundingBox if isinstance(coord, int) or isinstance(coord, float)]
+            bbox = ",".join(li_coords)
+            logger.info("Let's use {} bbox : {}".format(srs, bbox))
+        else:
+            bbox = ""
+            logger.warning("BBOX parameter cannot be set")
 
         # url construction
-        # just for QGIS server WMS
-        if "&" in wms_url_base:
+        if "&" in wms_url_base:  # for case when there is already params into base url
             li_params = [
                 "SERVICE=WMS",
                 "VERSION={}".format(wms_dict.get("version")),
                 "REQUEST=GetMap",
                 "layers={}".format(api_layer_id),
-                "crs={}".format(srs_map),
+                "crs={}".format(srs),
                 "format=image/png",
                 "styles={}".format(lyr_style),
-                "TRANSPARENT=TRUE"
+                "TRANSPARENT=TRUE",
+                "BBOX={}".format(bbox),
+                "url={}?{}".format(wms_url_base.split("?")[0], quote(wms_url_base.split("?")[1])),
             ]
-            wms_url_final = wms_url_base + "&".join(li_params)
-        # for other WMS server types
-        else:
-            try:
-                wms_url_params = {
-                    "SERVICE": "WMS",
-                    "VERSION": wms_dict.get("version"),
-                    "REQUEST": "GetMap",
-                    "layers": api_layer_id,
-                    "crs": srs,
-                    "format": layer_format,
-                    "styles": lyr_style,
-                    "url": wms_url_base.split("?")[0] + "?",
-                    "TRANSPARENT": "TRUE"
-                }
-                wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
-            except UnicodeEncodeError:
-                wms_url_params = {
-                    "SERVICE": "WMS",
-                    "VERSION": wms_dict.get("version"),
-                    "REQUEST": "GetMap",
-                    "layers": api_layer_id.decode("latin1"),
-                    "crs": srs,
-                    "format": layer_format,
-                    "styles": lyr_style,
-                    "url": wms_url_base.split("?")[0] + "?",
-                    "TRANSPARENT": "TRUE"
-                }
-                wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
+            wms_url_final = "&".join(li_params)
+        else:  # for "easy" base url
+            wms_url_params = {
+                "SERVICE": "WMS",
+                "VERSION": wms_dict.get("version"),
+                "REQUEST": "GetMap",
+                "layers": api_layer_id,
+                "crs": srs,
+                "format": layer_format,
+                "styles": lyr_style,
+                "TRANSPARENT": "TRUE",
+                "BBOX": bbox,
+                "url": wms_url_base.split("?")[0] + "?",
+            }
+            wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
         # method ending
         btn_lbl = "WMS : {}".format(layer_title)
         return ["WMS", layer_title, wms_url_final, api_layer, srv_details, btn_lbl]
@@ -554,15 +551,6 @@ class GeoServiceManager:
 
         # build layer title
         layer_title = self.build_layer_title("WMTS", api_layer)
-
-        # # check layer availability
-        # if api_layer_id not in wmts_dict.get("typenames"):
-        #     error_msg = "WMTS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
-        #         wmts_lyr_url, api_layer_id
-        #     )
-        #     return 0, error_msg
-        # else:
-        #     wmts_lyr = wmts[api_layer_id]
 
         # check layer availability + retrieve its real id for "layers" URL parameter
         if api_layer_id in wmts_dict.get("typenames"):
