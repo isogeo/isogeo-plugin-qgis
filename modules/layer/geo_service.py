@@ -482,7 +482,8 @@ class GeoServiceManager:
                 "layers={}".format(api_layer_id),
                 "crs={}".format(srs_map),
                 "format=image/png",
-                "styles={}".format(lyr_style)
+                "styles={}".format(lyr_style),
+                "TRANSPARENT=TRUE"
             ]
             wms_url_final = wms_url_base + "&".join(li_params)
         # for other WMS server types
@@ -497,6 +498,7 @@ class GeoServiceManager:
                     "format": layer_format,
                     "styles": lyr_style,
                     "url": wms_url_base.split("?")[0] + "?",
+                    "TRANSPARENT": "TRUE"
                 }
                 wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
             except UnicodeEncodeError:
@@ -509,6 +511,7 @@ class GeoServiceManager:
                     "format": layer_format,
                     "styles": lyr_style,
                     "url": wms_url_base.split("?")[0] + "?",
+                    "TRANSPARENT": "TRUE"
                 }
                 wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
         # method ending
