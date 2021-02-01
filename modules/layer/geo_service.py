@@ -211,12 +211,16 @@ class GeoServiceManager:
         service_dict = cache_dict[service_url]
 
         # retrieve, clean and store service base URL
-        if service_url.endswith("?"):
-            service_dict["base_url"] = service_url
-        elif service_url.endswith("&"):
-            service_dict["base_url"] = service_url[:-1]
+        if "?" in service_url:
+            if service_url.endswith("?"):
+                service_dict["base_url"] = service_url
+            else:
+                service_dict["base_url"] = service_url + "&"
         elif "&" in service_url:
-            service_dict["base_url"] = service_url + "&"
+            if service_url.endswith("&"):
+                service_dict["base_url"] = service_url[:-1]
+            else:
+                service_dict["base_url"] = service_url + "&"
         else:
             service_dict["base_url"] = service_url + "?"
 
@@ -478,7 +482,7 @@ class GeoServiceManager:
                 "layers={}".format(api_layer_id),
                 "crs={}".format(srs_map),
                 "format=image/png",
-                "styles="
+                "styles={}".format(lyr_style)
             ]
             wms_url_final = wms_url_base + "&".join(li_params)
         # for other WMS server types
