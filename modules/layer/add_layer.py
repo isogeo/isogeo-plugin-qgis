@@ -34,37 +34,8 @@ qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_tools = IsogeoPlgTools()
-geo_srv_mng = GeoServiceManager()
 
 li_datafile_types = ["vector", "raster"]
-
-dict_service_types = {
-    "WFS": [
-        "WFS",
-        QgsVectorLayer,
-        geo_srv_mng.build_wfs_url
-    ],
-    "WMS": [
-        "wms",
-        QgsRasterLayer,
-        geo_srv_mng.build_wms_url
-    ],
-    "EFS": [
-        "arcgisfeatureserver",
-        QgsVectorLayer,
-        geo_srv_mng.build_efs_url
-    ],
-    "EMS": [
-        "arcgismapserver",
-        QgsRasterLayer,
-        geo_srv_mng.build_ems_url
-    ],
-    "WMTS": [
-        "wms",
-        QgsRasterLayer,
-        geo_srv_mng.build_wmts_url
-    ]
-}
 
 qgis_wms_formats = (
     "image/png",
@@ -101,10 +72,40 @@ class LayerAdder:
         self.tbl_result = None
         self.tr = object
         self.md_sync = MetadataSynchronizer()
-        # self.geo_srv_mng = GeoServiceManager(self.cache_mng)
 
         # prepare layer adding from PostGIS table
         self.PostGISdict = dict()
+
+        # prepare layer adding from geo service datas
+        self.geo_srv_mng = GeoServiceManager()
+
+        self.dict_service_types = {
+            "WFS": [
+                "WFS",
+                QgsVectorLayer,
+                self.geo_srv_mng.build_wfs_url
+            ],
+            "WMS": [
+                "wms",
+                QgsRasterLayer,
+                self.geo_srv_mng.build_wms_url
+            ],
+            "EFS": [
+                "arcgisfeatureserver",
+                QgsVectorLayer,
+                self.geo_srv_mng.build_efs_url
+            ],
+            "EMS": [
+                "arcgismapserver",
+                QgsRasterLayer,
+                self.geo_srv_mng.build_ems_url
+            ],
+            "WMTS": [
+                "wms",
+                QgsRasterLayer,
+                self.geo_srv_mng.build_wmts_url
+            ]
+        }
 
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
         QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
@@ -118,7 +119,7 @@ class LayerAdder:
         """
 
         # Retrieving 'layer specific' informations
-        if data_type in dict_service_types:
+        if data_type in self.dict_service_types:
             layer_type = "service layer"
             data_name = data_source
         elif data_type in li_datafile_types:
@@ -215,15 +216,15 @@ class LayerAdder:
         :param dict service_details: dict object containing Isogeo API informations about the service
         """
         # If service_type argument value is invalid, raise error
-        if service_type not in dict_service_types:
+        if service_type not in self.dict_service_types:
             raise ValueError(
                 "'service_type' argument value should be 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
             )
         # It it's valid, set local variables depending on it
         else:
-            data_provider = dict_service_types.get(service_type)[0]
-            QgsLayer = dict_service_types.get(service_type)[1]
-            url_builder = dict_service_types.get(service_type)[2]
+            data_provider = self.dict_service_types.get(service_type)[0]
+            QgsLayer = self.dict_service_types.get(service_type)[1]
+            url_builder = self.dict_service_types.get(service_type)[2]
 
         # use GeoServiceManager to retrieve all the infos we need to add the layer to the canvas
         layer_infos = url_builder(api_layer, service_details)
@@ -380,7 +381,7 @@ class LayerAdder:
                     layer_label=layer_label, path=layer_info[1], data_type=layer_info[0]
                 )
             # If the layer to be added is from a geographic service
-            elif layer_info[0] in dict_service_types:
+            elif layer_info[0] in self.dict_service_types:
                 added_layer = self.add_from_service(
                     service_type=layer_info[0],
                     api_layer=layer_info[1],

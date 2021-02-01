@@ -25,7 +25,7 @@ msgBar = iface.messageBar()
 class CacheManager:
     """Basic class to manage the cache system of the layer addition."""
 
-    def __init__(self):
+    def __init__(self, geo_service_manager: object):
         # Path to JSON cache file
         self.cache_file = Path(__file__).parents[2] / "_user" / "cache.json"
         # Objects for storing inaccessible elements
@@ -41,6 +41,8 @@ class CacheManager:
         }
         # Translator
         self.tr = object
+        # GeoServiceManagerModule used by LayerAdder wich temporary cache has to be cleaned
+        self.geo_srv_mng = geo_service_manager
 
     def dumper(self):
         """Builds a dict from the stored inaccessible elements
@@ -65,6 +67,13 @@ class CacheManager:
         with open(self.cache_file, "w") as cache:
             json.dump([self.cached_dict], cache, indent=4)
         logger.debug("Cache has been dumped")
+        self.geo_srv_mng.service_cached_dict = {
+            "WFS": dict(),
+            "WMS": dict(),
+            "WMTS": dict(),
+            "EFS": dict(),
+            "EMS": dict(),
+        }
 
     def loader(self):
         """Load and store ignored elements from the JSON cache file."""
@@ -108,6 +117,13 @@ class CacheManager:
         }
         self.dumper()
         logger.debug("Cache has been cleaned")
+        self.geo_srv_mng.service_cached_dict = {
+            "WFS": dict(),
+            "WMS": dict(),
+            "WMTS": dict(),
+            "EFS": dict(),
+            "EMS": dict(),
+        }
         msgBar.pushMessage(
             self.tr("Cache has been cleaned.", context=__class__.__name__), duration=3
         )
