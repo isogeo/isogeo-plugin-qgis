@@ -268,7 +268,7 @@ class GeoServiceManager:
         # Store several basic informations about the service
         service_dict[service_type] = service
         service_dict["typenames"] = list(service.contents.keys())
-        service_dict["version"] = service.version
+        service_dict["version"] = service_version
         service_dict["operations"] = [op.name for op in service.operations]
         service_dict["formatOptions"] = [f.split(";", 1)[0]for f in service.getOperationByName(main_op_name).formatOptions]
 
@@ -449,6 +449,18 @@ class GeoServiceManager:
         else:
             logger.info("GetMap available")
 
+        # Update 'layers' param value in the case of multi-layer
+        if hasattr(wms_lyr, "layers"):
+            li_layers_names = [layer.name for layer in wms_lyr.layers]
+            if len(li_layers_names) > 1:
+                api_layer_id = ",".join(li_layers_names)
+            elif len(li_layers_names) == 1:
+                api_layer_id = li_layers_names[0]
+            else:
+                pass
+        else:
+            pass
+
         # Style definition
         if len(wms_lyr.styles):
             lyr_style = list(wms_lyr.styles.keys())[0]
@@ -483,35 +495,32 @@ class GeoServiceManager:
             logger.warning("BBOX parameter cannot be set")
 
         # url construction
+        wms_url_params = {
+            "SERVICE": "WMS",
+            "VERSION": wms_dict.get("version"),
+            "REQUEST": "GetMap",
+            "layers": api_layer_id,
+            "crs": srs,
+            "format": layer_format,
+            "styles": lyr_style,
+            "TRANSPARENT": "TRUE",
+            "BBOX": bbox,
+        }
+
         if "&" in wms_url_base:  # for case when there is already params into base url
-            li_params = [
-                "SERVICE=WMS",
-                "VERSION={}".format(wms_dict.get("version")),
-                "REQUEST=GetMap",
-                "layers={}".format(api_layer_id),
-                "crs={}".format(srs),
-                "format=image/png",
-                "styles={}".format(lyr_style),
-                "TRANSPARENT=TRUE",
-                "BBOX={}".format(bbox),
-                "url={}?{}".format(wms_url_base.split("?")[0], quote(wms_url_base.split("?")[1])),
-            ]
-            wms_url_final = "&".join(li_params)
+            wms_url_params["url"] = "{}?{}".format(wms_url_base.split("?")[0], quote(wms_url_base.split("?")[1]))
         else:  # for "easy" base url
-            wms_url_params = {
-                "SERVICE": "WMS",
-                "VERSION": wms_dict.get("version"),
-                "REQUEST": "GetMap",
-                "layers": api_layer_id,
-                "crs": srs,
-                "format": layer_format,
-                "styles": lyr_style,
-                "TRANSPARENT": "TRUE",
-                "BBOX": bbox,
-                "url": wms_url_base.split("?")[0] + "?",
-            }
-            wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
-        # method ending
+            wms_url_params["url"] = wms_url_base.split("?")[0] + "?"
+        wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
+        url_for_requests = unquote(wms_url_params.get("url")) + "&".join(["{}={}".format(k, v) for k, v in wms_url_params.items() if k != "url" and v != ""])
+        check_requests = requests.get(url_for_requests)
+        logger.debug("*=====* DEBUG ADD FROM WMS : check_requests --> {} / {}:{}".format(url_for_requests, check_requests.status_code, check_requests.reason))
+        if check_requests.status_code == 400:
+            wms_url_final = url_for_requests
+        else:
+            pass
+        logger.debug("*=====* DEBUG ADD FROM WMS : wms_url_final --> {}".format(wms_url_final))
+
         btn_lbl = "WMS : {}".format(layer_title)
         return ["WMS", layer_title, wms_url_final, api_layer, srv_details, btn_lbl]
 
