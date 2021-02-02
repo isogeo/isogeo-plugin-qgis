@@ -393,9 +393,8 @@ class GeoServiceManager:
         ]
 
         wfs_url_final = wfs_url_base + "&".join(li_url_params)
-        btn_lbl = "WFS : {}".format(layer_title)
 
-        return ["WFS", layer_title, wfs_url_final, api_layer, srv_details, btn_lbl]
+        return ("WFS", layer_title, wfs_url_final)
 
     def build_wms_url(self, api_layer: dict, srv_details: dict):
         """Build a WMS layer URL -according to QGIS expectations- using informations
@@ -450,12 +449,15 @@ class GeoServiceManager:
             logger.info("GetMap available")
 
         # Update 'layers' param value in the case of multi-layer
+        li_layer_name = [api_layer_id]
+        li_layer_title = [layer_title]
         if hasattr(wms_lyr, "layers"):
-            li_layers_names = [layer.name for layer in wms_lyr.layers]
-            if len(li_layers_names) > 1:
-                api_layer_id = ",".join(li_layers_names)
-            elif len(li_layers_names) == 1:
-                api_layer_id = li_layers_names[0]
+            if len(wms_lyr.layers):
+                li_layer_name = []
+                li_layer_title = []
+                for layer in wms_lyr.layers:
+                    li_layer_name.append(layer.name)
+                    li_layer_title.append(layer.title)
             else:
                 pass
         else:
@@ -494,35 +496,36 @@ class GeoServiceManager:
             bbox = ""
             logger.warning("BBOX parameter cannot be set")
 
-        # url construction
-        wms_url_params = {
-            "SERVICE": "WMS",
-            "VERSION": wms_dict.get("version"),
-            "REQUEST": "GetMap",
-            "layers": api_layer_id,
-            "crs": srs,
-            "format": layer_format,
-            "styles": lyr_style,
-            "TRANSPARENT": "TRUE",
-            "BBOX": bbox,
-        }
+        li_url = []
+        for layer_name in li_layer_name:
+            # url construction
+            wms_url_params = {
+                "SERVICE": "WMS",
+                "VERSION": wms_dict.get("version"),
+                "REQUEST": "GetMap",
+                "layers": layer_name,
+                "crs": srs,
+                "format": layer_format,
+                "styles": lyr_style,
+                "TRANSPARENT": "TRUE",
+                "BBOX": bbox,
+            }
 
-        if "&" in wms_url_base:  # for case when there is already params into base url
-            wms_url_params["url"] = "{}?{}".format(wms_url_base.split("?")[0], quote(wms_url_base.split("?")[1]))
-        else:  # for "easy" base url
-            wms_url_params["url"] = wms_url_base.split("?")[0] + "?"
-        wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
-        url_for_requests = unquote(wms_url_params.get("url")) + "&".join(["{}={}".format(k, v) for k, v in wms_url_params.items() if k != "url" and v != ""])
-        check_requests = requests.get(url_for_requests)
-        logger.debug("*=====* DEBUG ADD FROM WMS : check_requests --> {} / {}:{}".format(url_for_requests, check_requests.status_code, check_requests.reason))
-        if check_requests.status_code == 400:
-            wms_url_final = url_for_requests
-        else:
-            pass
-        logger.debug("*=====* DEBUG ADD FROM WMS : wms_url_final --> {}".format(wms_url_final))
+            if "&" in wms_url_base:  # for case when there is already params into base url
+                wms_url_params["url"] = "{}?{}".format(wms_url_base.split("?")[0], quote(wms_url_base.split("?")[1]))
+            else:  # for "easy" base url
+                wms_url_params["url"] = wms_url_base.split("?")[0] + "?"
+            url_for_requests = unquote(wms_url_params.get("url")) + "&".join(["{}={}".format(k, v) for k, v in wms_url_params.items() if k != "url" and v != ""])
+            check_requests = requests.get(url_for_requests)
+            logger.debug("*=====* DEBUG ADD FROM WMS : check_requests --> {}:{} ({})".format(check_requests.status_code, check_requests.reason, url_for_requests))
+            if check_requests.status_code == 400:
+                wms_url_final = url_for_requests
+            else:
+                wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
+            logger.debug("*=====* DEBUG ADD FROM WMS : wms_url_final --> {}".format(wms_url_final))
+            li_url.append(wms_url_final)
 
-        btn_lbl = "WMS : {}".format(layer_title)
-        return ["WMS", layer_title, wms_url_final, api_layer, srv_details, btn_lbl]
+        return ("WMS", li_layer_title, li_url)
 
     def build_wmts_url(self, api_layer: dict, srv_details: dict):
         """Build a WMTS layer URL -according to QGIS expectations- using informations
@@ -639,8 +642,7 @@ class GeoServiceManager:
         logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_url_final --> {}".format(str(wmts_url_final)))
 
         # method ending
-        btn_lbl = "WMS : {}".format(layer_title)
-        return ["WMTS", layer_title, wmts_url_final, api_layer, srv_details, btn_lbl]
+        return ("WMTS", layer_title, wmts_url_final)
 
     def check_esri_service(self, service_type: str, service_url: str):
         """Try to acces to the given ESRI service URL (using request library) and store
@@ -753,8 +755,7 @@ class GeoServiceManager:
         efs_uri += "sql=''"
 
         logger.debug("*=====* DEBUG ADD FROM EFS : efs_uri --> {}".format(str(efs_uri)))
-        btn_lbl = "EFS : {}".format(layer_title)
-        return ["EFS", layer_title, efs_uri, api_layer, srv_details, btn_lbl]
+        return ("EFS", layer_title, efs_uri)
 
     def build_ems_url(self, api_layer: dict, srv_details: dict):
         """Build a EMS layer URL -according to QGIS expectations- using informations
@@ -801,5 +802,4 @@ class GeoServiceManager:
         ems_uri.setParam("crs", srs)
 
         logger.debug("*=====* DEBUG ADD FROM EMS : ems_uri --> {}".format(str(ems_uri)))
-        btn_lbl = "EMS : {}".format(layer_title)
-        return ["EMS", layer_title, ems_uri.uri(), api_layer, srv_details, btn_lbl]
+        return ("EMS", layer_title, ems_uri.uri())

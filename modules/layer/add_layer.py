@@ -203,6 +203,62 @@ class LayerAdder:
         else:
             return lyr, layer
 
+    def add_service_layer(
+        self,
+        layer_url: str,
+        layer_title: str,
+        service_type: str,
+    ):
+        """Add a geo service layer from its URL. Usefull for WMS multi-layer
+
+        :param str layer_url: the url of the geo service layer
+        :param str layer_title: the title to give to the added layer
+        :param str service_type: the type of the geo service ("WFS", "WMS", "EFS", "EMS" or "WMTS")
+        """
+        # retrieve geo service type specific informations
+        data_provider = self.dict_service_types.get(service_type)[0]
+        QgsLayer = self.dict_service_types.get(service_type)[1]
+        # create the layer
+        layer = QgsLayer(layer_url, layer_title, data_provider)
+        # If the layer is valid, add it to the map canvas and inform the user
+        if layer.isValid():
+            lyr = QgsProject.instance().addMapLayer(layer)
+            QgsMessageLog.logMessage(
+                message="{} service layer added: {}".format(service_type, layer_url),
+                tag="Isogeo",
+                level=0,
+            )
+            logger.debug("{} layer added: {}".format(service_type, layer_url))
+            layer_is_ok = 1
+        # If the layer is not valid
+        else:
+            error_msg = layer.error().message()
+            layer_is_ok = 0
+            # Try to create it again without specifying data provider
+            layer = QgsLayer(layer_url, layer_title)
+            if layer.isValid():
+                lyr = QgsProject.instance().addMapLayer(layer)
+                QgsMessageLog.logMessage(
+                    message="{} service layer added: {}".format(
+                        service_type, layer_url
+                    ),
+                    tag="Isogeo",
+                    level=0,
+                )
+                logger.warning("{} layer added without specifying the data provider: {}".format(service_type, layer_url))
+                layer_is_ok = 1
+            else:
+                error_msg = layer.error().message()
+                layer_is_ok = 0
+
+        if not layer_is_ok:
+            self.invalid_layer_inform(
+                data_type=service_type, data_source=layer_url, error_msg=error_msg
+            )
+            return 0
+        else:
+            return lyr, layer
+
     def add_from_service(
         self,
         service_type: str,
@@ -222,17 +278,14 @@ class LayerAdder:
             )
         # It it's valid, set local variables depending on it
         else:
-            data_provider = self.dict_service_types.get(service_type)[0]
-            QgsLayer = self.dict_service_types.get(service_type)[1]
             url_builder = self.dict_service_types.get(service_type)[2]
 
         # use GeoServiceManager to retrieve all the infos we need to add the layer to the canvas
         layer_infos = url_builder(api_layer, service_details)
         # If everything is ok, let's create the layer that we gonna try to add to the canvas
         if layer_infos[0]:
-            url = layer_infos[2]
+            layer_url = layer_infos[2]
             layer_title = layer_infos[1]
-            layer = QgsLayer(url, layer_title, data_provider)
         # else, informe the user about what went wrong
         else:
             error_msg = layer_infos[1]
@@ -240,45 +293,23 @@ class LayerAdder:
                 data_type=service_type, data_source=api_layer.get("id"), error_msg=error_msg
             )
             return 0
-
-        # If the layer is valid, add it to the map canvas and inform the user
-        if layer.isValid():
-            lyr = QgsProject.instance().addMapLayer(layer)
-            QgsMessageLog.logMessage(
-                message="{} service layer added: {}".format(service_type, url),
-                tag="Isogeo",
-                level=0,
-            )
-            logger.debug("{} layer added: {}".format(service_type, url))
-            layer_is_ok = 1
-        # If the layer is not valid
-        else:
-            error_msg = layer.error().message()
-            layer_is_ok = 0
-            # Try to create it again without specifying data provider
-            layer = QgsLayer(url, layer_title)
-            if layer.isValid():
-                lyr = QgsProject.instance().addMapLayer(layer)
-                QgsMessageLog.logMessage(
-                    message="{} service layer added: {}".format(
-                        service_type, url
-                    ),
-                    tag="Isogeo",
-                    level=0,
+        if isinstance(layer_url, list):
+            added_layer = []
+            for url in layer_url:
+                index = layer_url.index(url)
+                added = self.add_service_layer(
+                    url,
+                    layer_title[index],
+                    service_type
                 )
-                logger.warning("{} layer added without specifying the data provider: {}".format(service_type, url))
-                layer_is_ok = 1
-            else:
-                error_msg = layer.error().message()
-                layer_is_ok = 0
-
-        if not layer_is_ok:
-            self.invalid_layer_inform(
-                data_type=service_type, data_source=url, error_msg=error_msg
-            )
-            return 0
+                added_layer.append(added)
         else:
-            return lyr, layer
+            added_layer = self.add_service_layer(
+                layer_url,
+                layer_title,
+                service_type
+            )
+        return added_layer
 
     def add_from_database(self, layer_info: dict):
         """Add a layer to QGIS map canvas from a database table.
@@ -400,9 +431,24 @@ class LayerAdder:
         else:
             pass
 
+        # method ending for for WMS multi-layer
+        if isinstance(added_layer, list):
+            return_value = 0
+            for added in added_layer:
+                if not added:
+                    pass
+                else:
+                    lyr = added[0]
+                    layer = added[1]
+                    if layer.isValid():
+                        self.md_sync.basic_sync(layer=lyr, info=layer_info)
+                    else:
+                        pass
+                    return_value = 1
+        # method ending for other layers
         # If the layer haven't been added return
-        if not added_layer:
-            return 0
+        elif not added_layer:
+            return_value = 0
             # else fil 'QGIS Server' tab of layer Properties using MetadataSynchronizer
         else:
             lyr = added_layer[0]
@@ -411,4 +457,6 @@ class LayerAdder:
                 self.md_sync.basic_sync(layer=lyr, info=layer_info)
             else:
                 pass
-            return 1
+            return_value = 1
+
+        return return_value
