@@ -559,7 +559,7 @@ class GeoServiceManager:
         api_layer_id = api_layer.get("id")
         wmts = wmts_dict.get("WMTS")
         tms_dict = wmts_dict.get("wmts_tms")
-        wmts_lyr_url = wmts_dict.get("GetTile_url")
+        wmts_lyr_url = wmts_dict.get("base_url")
 
         # build layer title
         layer_title = self.build_layer_title("WMTS", api_layer)
