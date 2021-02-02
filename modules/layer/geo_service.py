@@ -4,7 +4,6 @@
 # Standard library
 import logging
 import re
-from copy import copy
 
 from urllib.parse import urlencode, unquote, quote
 
@@ -237,13 +236,13 @@ class GeoServiceManager:
             service = service_connector(url=url, version=service_version)
             service_dict["reachable"] = 1
         except ServiceException as e:
-            error_msg = "{} - Bad operation ({}): {}".format(
+            error_msg = "{} <i>{}</i> - <b>Bad operation</b>: {}".format(
                 service_type, url, str(e)
             )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
         except HTTPError as e:
-            error_msg = "{} - Service ({}) not reached: {}".format(
+            error_msg = "{} <i>{}</i> - <b>Service not reached</b>: {}".format(
                 service_type, url, str(e)
             )
             service_dict["reachable"] = 0
@@ -253,7 +252,7 @@ class GeoServiceManager:
                 service = service_connector(url=url)
                 service_dict["reachable"] = 1
             except Exception as e:
-                error_msg = "{} - Connection to service ({}) failed: {}".format(
+                error_msg = "{} <i>{}</i> - <b>Connection to service failed</b>: {}".format(
                     service_type, url, str(e)
                 )
                 service_dict["reachable"] = 0
@@ -367,7 +366,7 @@ class GeoServiceManager:
                 pass
             layer_typename = layer_typenames[0]
         else:
-            error_msg = "WFS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
+            error_msg = "WFS <i>{}</i> - <b>Unable to find '{}' layer</b>, the layer may not be available anymore.".format(
                 wfs_url_base, api_layer_name
             )
             return 0, error_msg
@@ -435,7 +434,7 @@ class GeoServiceManager:
 
         # check layer availability
         if api_layer_id not in wms_dict.get("typenames"):
-            error_msg = "WMS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
+            error_msg = "WMS <i>{}</i> - <b>Unable to find '{}' layer</b>, the layer may not be available anymore.".format(
                 wms_url_base, api_layer_id
             )
             return 0, error_msg
@@ -580,7 +579,7 @@ class GeoServiceManager:
                 pass
             layer_typename = layer_typenames[0]
         else:
-            error_msg = "WMTS {} - Unable to find '{}' layer, the layer may not be available anymore.".format(
+            error_msg = "WMTS <i>{}</i> - <b>Unable to find '{}' layer</b>, the layer may not be available anymore.".format(
                 wmts_lyr_url, api_layer_id
             )
             return 0, error_msg
@@ -610,10 +609,10 @@ class GeoServiceManager:
         # Format definition
         formats_image = wmts_lyr.formats
         if len(formats_image):
-            if "image/png" in formats_image:
-                layer_format = "image/png"
-            elif "image/jpeg" in formats_image:
+            if "image/jpeg" in formats_image:
                 layer_format = "image/jpeg"
+            elif "image/png" in formats_image:
+                layer_format = "image/png"
             else:
                 layer_format = formats_image[0]
         else:
@@ -677,25 +676,43 @@ class GeoServiceManager:
         # build URL of "GetCapabilities" operation
         service_dict["getCap_url"] = service_dict["base_url"] + "?f=json"
 
-        # sending "GetCapabilities" equivalent request
+        # try to send "GetCapabilities" equivalent request
         try:
             getCap_request = requests.get(service_dict["getCap_url"])
             getCap_content = getCap_request.json()
             service_dict["reachable"] = 1
         except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
-            error_msg = "{} {} - Server connection failure: {}".format(service_type, service_dict["getCap_url"], e)
+            error_msg = "{} <i>{}</i> - <b>Server connection failure</b>: {}".format(service_type, service_dict["getCap_url"], e)
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
         except Exception as e:
-            error_msg = "{} {} - Unable to access service capabilities: {}".format(service_type, service_dict["getCap_url"], e)
+            error_msg = "{} <i>{}</i> - <b>Unable to access service capabilities</b>: {}".format(service_type, service_dict["getCap_url"], e)
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
+
+        # if the service is an ETS provided as EMS by Isogeo API
+        if "tileInfo" in getCap_content:
+            error_msg = "{} <i>{}</i> - This <b>service is an EsriTileService</b> provided as {} by Isogeo API. No layer will be added.".format(service_type, service_dict["getCap_url"], service_type)
+            service_dict["reachable"] = 0
+            service_dict["error"] = error_msg
+            return service_dict["reachable"], service_dict["error"]
+        # if a token is needed
+        elif "error" in getCap_content:
+            if getCap_content.get("error").get("code") == 499:
+                error_msg = "{} <i>{}</i> - This <b>service is private</b>. You cannot access its content from Isogeo plugin.".format(service_type, service_dict["getCap_url"])
+                service_dict["reachable"] = 0
+                service_dict["error"] = error_msg
+            else:
+                pass
+        else:
+            pass
+
         # if the service can't be reached, return the error
         if not service_dict.get("reachable"):
             return service_dict["reachable"], service_dict["error"]
         else:
+            logger.debug("*=====* DEBUG CHECK ESRI SERVICE : {} reachability --> {}".format(service_dict["getCap_url"], service_dict["reachable"]))
             pass
-        logger.debug("*=====* DEBUG CHECK ESRI SERVICE : {} reachability --> {}".format(service_url, service_dict["reachable"]))
 
         # retrieve appropriate srs from service capabilities
         try:
@@ -801,5 +818,5 @@ class GeoServiceManager:
         ems_uri.setParam("layer", api_layer_id)
         ems_uri.setParam("crs", srs)
 
-        logger.debug("*=====* DEBUG ADD FROM EMS : ems_uri --> {}".format(str(ems_uri)))
+        logger.debug("*=====* DEBUG ADD FROM EMS : ems_uri --> {}".format(str(ems_uri.uri())))
         return ("EMS", layer_title, ems_uri.uri())
