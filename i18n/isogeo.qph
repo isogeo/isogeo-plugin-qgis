@@ -242,7 +242,7 @@ You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
     <target>Problème de proxy:
 Un proxy est configuré dans le système d&apos;exploitation {} mais pas dans QGIS.
- Veuillez le paramétrer dans &apos;Préférences/Options/Réseau&apos; puis rédémarez le plugin.</target>
+ Veuillez le paramétrer dans &quot;Préférences/Options/Réseau&quot; puis rédémarez le plugin.</target>
 </phrase>
 <phrase>
     <source>Error</source>
@@ -266,7 +266,7 @@ Un proxy est configuré dans le système d&apos;exploitation {} mais pas dans QG
 </phrase>
 <phrase>
     <source>Error:</source>
-    <target>Erreur</target>
+    <target>Erreur :</target>
 </phrase>
 <phrase>
     <source>This data is subject to a security limitation :</source>

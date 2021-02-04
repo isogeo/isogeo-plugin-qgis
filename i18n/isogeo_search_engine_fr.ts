@@ -317,40 +317,40 @@ You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation>Problème de proxy:
 Un proxy est configuré dans le système d&apos;exploitation {} mais pas dans QGIS.
- Veuillez le paramétrer dans &apos;Préférences/Options/Réseau&apos; puis rédémarez le plugin.</translation>
+ Veuillez le paramétrer dans &quot;Préférences/Options/Réseau&quot; puis rédémarez le plugin.</translation>
     </message>
 </context>
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="372"/>
+        <location filename="../modules/layer/add_layer.py" line="350"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="372"/>
+        <location filename="../modules/layer/add_layer.py" line="350"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation>Couche PostGIS invalide. QGIS renvoie : {}</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="123"/>
+        <location filename="../modules/layer/add_layer.py" line="107"/>
         <source>Service layer</source>
         <translation>La couche de service</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="126"/>
+        <location filename="../modules/layer/add_layer.py" line="110"/>
         <source>Data file layer</source>
         <translation>La couche</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="141"/>
+        <location filename="../modules/layer/add_layer.py" line="125"/>
         <source>is not valid</source>
         <translation>n&apos;est pas valide</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="144"/>
+        <location filename="../modules/layer/add_layer.py" line="128"/>
         <source>Error:</source>
-        <translation>Erreur</translation>
+        <translation>Erreur :</translation>
     </message>
 </context>
 <context>

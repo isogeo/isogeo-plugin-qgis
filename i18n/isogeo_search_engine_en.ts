@@ -320,32 +320,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="372"/>
+        <location filename="../modules/layer/add_layer.py" line="350"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="372"/>
+        <location filename="../modules/layer/add_layer.py" line="350"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="123"/>
+        <location filename="../modules/layer/add_layer.py" line="107"/>
         <source>Service layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="126"/>
+        <location filename="../modules/layer/add_layer.py" line="110"/>
         <source>Data file layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="141"/>
+        <location filename="../modules/layer/add_layer.py" line="125"/>
         <source>is not valid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="144"/>
+        <location filename="../modules/layer/add_layer.py" line="128"/>
         <source>Error:</source>
         <translation type="unfinished"></translation>
     </message>
