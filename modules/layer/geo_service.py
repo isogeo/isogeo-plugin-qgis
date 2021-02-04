@@ -257,7 +257,6 @@ class GeoServiceManager:
                 )
                 service_dict["reachable"] = 0
                 service_dict["error"] = error_msg
-        logger.debug("*=====* DEBUG CHECK OGC SERVICE : {} reachability --> {}".format(service_url, service_dict["reachable"]))
         # if the service can't be reached, return the error
         if not service_dict.get("reachable"):
             return service_dict["reachable"], service_dict["error"]
@@ -338,7 +337,6 @@ class GeoServiceManager:
             )
         else:
             wfs_dict = wfs_cached_dict[srv_details.get("path")]
-        logger.debug("*=====* DEBUG ADD FROM WFS : wfs_dict --> {}".format(wfs_dict))
 
         # local variables
         wfs_url_getcap = wfs_dict.get("getCap_url")
@@ -421,7 +419,6 @@ class GeoServiceManager:
             )
         else:
             wms_dict = self.service_cached_dict.get("WMS")[srv_details.get("path")]
-        logger.debug("*=====* DEBUG ADD FROM WMS : wms_dict --> {}".format(wms_dict))
 
         # local variables
         api_layer_id = api_layer.get("id")
@@ -514,14 +511,14 @@ class GeoServiceManager:
                 wms_url_params["url"] = "{}?{}".format(wms_url_base.split("?")[0], quote(wms_url_base.split("?")[1]))
             else:  # for "easy" base url
                 wms_url_params["url"] = wms_url_base.split("?")[0] + "?"
+
             url_for_requests = unquote(wms_url_params.get("url")) + "&".join(["{}={}".format(k, v) for k, v in wms_url_params.items() if k != "url" and v != ""])
+
             check_requests = requests.get(url_for_requests)
-            logger.debug("*=====* DEBUG ADD FROM WMS : check_requests --> {}:{} ({})".format(check_requests.status_code, check_requests.reason, url_for_requests))
             if check_requests.status_code == 400:
                 wms_url_final = url_for_requests
             else:
                 wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
-            logger.debug("*=====* DEBUG ADD FROM WMS : wms_url_final --> {}".format(wms_url_final))
             li_url.append(wms_url_final)
 
         return ("WMS", li_layer_title, li_url)
@@ -552,7 +549,6 @@ class GeoServiceManager:
             )
         else:
             wmts_dict = wmts_cached_dict.get(srv_details.get("path"))
-        logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_dict --> {}".format(wmts_dict))
 
         # local variables
         api_layer_id = api_layer.get("id")
@@ -601,10 +597,6 @@ class GeoServiceManager:
             logger.debug("WMTS - Let's choose the SRS corresponding to the only available Tile Matrix Set for this layer")
             tile_matrix_set = wmts_lyr._tilematrixsets[0]
             srs = [k for k in tms_dict if tile_matrix_set in k][0]
-            # try:
-            #     srs = [k for k, v in tms_dict.items() if tile_matrix_set in v][0]
-            # except IndexError:
-            #     srs = [v for k, v in tms_dict.items() if tile_matrix_set in k][0]
 
         # Format definition
         formats_image = wmts_lyr.formats
@@ -638,7 +630,6 @@ class GeoServiceManager:
             quote("REQUEST=GetCapabilities"),
         ]
         wmts_url_final = "".join(li_uri_params)
-        logger.debug("*=====* DEBUG ADD FROM WMTS : wmts_url_final --> {}".format(str(wmts_url_final)))
 
         # method ending
         return ("WMTS", layer_title, wmts_url_final)
@@ -711,7 +702,6 @@ class GeoServiceManager:
         if not service_dict.get("reachable"):
             return service_dict["reachable"], service_dict["error"]
         else:
-            logger.debug("*=====* DEBUG CHECK ESRI SERVICE : {} reachability --> {}".format(service_dict["getCap_url"], service_dict["reachable"]))
             pass
 
         # retrieve appropriate srs from service capabilities
@@ -771,7 +761,6 @@ class GeoServiceManager:
         efs_uri += "table'' "
         efs_uri += "sql=''"
 
-        logger.debug("*=====* DEBUG ADD FROM EFS : efs_uri --> {}".format(str(efs_uri)))
         return ("EFS", layer_title, efs_uri)
 
     def build_ems_url(self, api_layer: dict, srv_details: dict):
@@ -818,5 +807,4 @@ class GeoServiceManager:
         ems_uri.setParam("layer", api_layer_id)
         ems_uri.setParam("crs", srs)
 
-        logger.debug("*=====* DEBUG ADD FROM EMS : ems_uri --> {}".format(str(ems_uri.uri())))
         return ("EMS", layer_title, ems_uri.uri())
