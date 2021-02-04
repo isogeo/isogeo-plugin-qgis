@@ -320,12 +320,12 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="374"/>
+        <location filename="../modules/layer/add_layer.py" line="372"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="374"/>
+        <location filename="../modules/layer/add_layer.py" line="372"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -340,8 +340,13 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="140"/>
-        <source>&lt;b&gt;{} ({}) is not valid&lt;/b&gt;: &lt;i&gt;{}&lt;/i&gt;.&lt;br&gt;&lt;b&gt;Error:&lt;/b&gt; {}</source>
+        <location filename="../modules/layer/add_layer.py" line="141"/>
+        <source>is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/layer/add_layer.py" line="144"/>
+        <source>Error:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

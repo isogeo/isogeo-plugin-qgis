@@ -315,20 +315,20 @@
         <source>Proxy issue:
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
-        <translation>Proxy issue:
-You have a proxy set up on your OS {} but none in QGIS.
- Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</translation>
+        <translation>Problème de proxy:
+Un proxy est configuré dans le système d&apos;exploitation {} mais pas dans QGIS.
+ Veuillez le paramétrer dans &apos;Préférences/Options/Réseau&apos; puis rédémarez le plugin.</translation>
     </message>
 </context>
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="374"/>
+        <location filename="../modules/layer/add_layer.py" line="372"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="374"/>
+        <location filename="../modules/layer/add_layer.py" line="372"/>
         <source>The PostGIS layer is not valid. Reason: {}</source>
         <translation>Couche PostGIS invalide. QGIS renvoie : {}</translation>
     </message>
@@ -343,9 +343,14 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation>La couche</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="140"/>
-        <source>&lt;b&gt;{} ({}) is not valid&lt;/b&gt;: &lt;i&gt;{}&lt;/i&gt;.&lt;br&gt;&lt;b&gt;Error:&lt;/b&gt; {}</source>
-        <translation>&lt;b&gt;{} ({}) n&apos;est pas valide&lt;/b&gt; : &lt;i&gt;{}&lt;/i&gt;.&lt;br&gt;&lt;b&gt;Erreur:&lt;/b&gt; {}</translation>
+        <location filename="../modules/layer/add_layer.py" line="141"/>
+        <source>is not valid</source>
+        <translation>n&apos;est pas valide</translation>
+    </message>
+    <message>
+        <location filename="../modules/layer/add_layer.py" line="144"/>
+        <source>Error:</source>
+        <translation>Erreur</translation>
     </message>
 </context>
 <context>
