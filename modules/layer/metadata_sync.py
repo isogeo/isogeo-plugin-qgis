@@ -43,16 +43,9 @@ class MetadataSynchronizer:
                 self.filling_field(layer, info[2], info[3], info[4], info[5])
             # services
             elif layer_type in srv_types:
-                # WMS, WFS, EMS or EFS
-                if layer_type != "WMTS":
-                    self.filling_field(
-                        layer, info[6][0], info[6][1], info[6][2], info[6][3]
-                    )
-                # WMTS
-                else:
-                    self.filling_field(
-                        layer, info[3][0], info[3][1], info[3][2], info[3][3]
-                    )
+                self.filling_field(
+                    layer, info[3][0], info[3][1], info[3][2], info[3][3]
+                )
             else:
                 pass
         return

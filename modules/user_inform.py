@@ -161,19 +161,21 @@ class UserInformer:
             "lim_sig emitted, passing {} to UserInformer lim_slot".format(lim_sig)
         )
         if isinstance(lim_sig, list):
-            msg = (
+            msg = "<b>" + (
                 self.tr("This data is subject to ", context=__class__.__name__)
                 + str(len(lim_sig))
                 + self.tr(" legal limitation(s) :", context=__class__.__name__)
-            )
+            ) + "</b>"
             for lim in lim_sig:
-                msg += " / "
+                msg += "<br>- "
                 if lim.description != "":
                     msg += lim.description
                 else:
+                    msg += "<i>"
                     msg += self.tr(
                         "No description provided", context=__class__.__name__
                     )
+                    msg += "</i>"
             self.display(message=msg, duration=14, level=0)
         else:
             raise TypeError

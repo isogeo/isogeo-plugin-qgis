@@ -170,8 +170,8 @@ class MetadataDisplayer:
             item = ctact.get("contact")
 
             if ctact.get("role", "NR") == "pointOfContact":
-                content = "<b>{1}</b> ({2})<br><a href='mailto:{3}' target='_top'>{3}</a><br>{4}" "<br>{5} {6}<br>{7} {8}<br>{8}<br>{9}".format(
-                    isogeo_tr.tr("roles", ctact.get("role")),
+                content = "<b>{0}</b> ({1})<br><a href='mailto:{2}' target='_top'>{2}</a><br>{3}" "<br>{4} {5}<br>{6} {7}<br>{7}<br>{8}".format(
+                    # isogeo_tr.tr("roles", ctact.get("role")),
                     item.get("name", "NR"),
                     item.get("organization", "NR"),
                     item.get("email", "NR"),
@@ -209,10 +209,10 @@ class MetadataDisplayer:
         # -- HISTORY ---------------------------------------------------------
         # Data creation and last update dates
         self.complete_md.val_data_crea.setText(
-            plg_tools.handle_date(md.get("_created", "NR"))
+            plg_tools.handle_date(md.get("created", "NR"))
         )
         self.complete_md.val_data_update.setText(
-            plg_tools.handle_date(md.get("_modified", "NR"))
+            plg_tools.handle_date(md.get("modified", "NR"))
         )
         # Update frequency information
         if md.get("updateFrequency", None):
@@ -405,10 +405,10 @@ class MetadataDisplayer:
         # Metadata
         self.complete_md.val_md_lang.setText(md.get("language", "NR"))
         self.complete_md.val_md_date_crea.setText(
-            plg_tools.handle_date(md.get("_modified")[:19])
+            plg_tools.handle_date(md.get("_created")[:19])
         )
         self.complete_md.val_md_date_update.setText(
-            plg_tools.handle_date(md.get("_created")[:19])
+            plg_tools.handle_date(md.get("_modified")[:19])
         )
 
         # -- EDIT LINK -------------------------------------------------------

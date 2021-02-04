@@ -336,15 +336,31 @@ class IsogeoUtils(object):
     def get_url_base_from_url_token(
         self, url_api_token: str = "https://id.api.isogeo.com/oauth/token"
     ):
-        """Returns the Isogeo API root URL (which is not included into
-        credentials file) from the token URL (which is always included).
+        """Returns the Isogeo API root URL (not included into credentials file) from the token or
+        the auth URL (always included).
 
         :param url_api_token str: url to Isogeo API ID token generator
+
+        :rtype: str
+
+        :Example:
+
+        .. code-block:: python
+
+            IsogeoUtils.get_url_base_from_url_token()
+            >>> "https://api.isogeo.com"
+            IsogeoUtils.get_url_base_from_url_token(url_api_token="https://id.api.qa.isogeo.com/oauth/token")
+            >>> "https://api.qa.isogeo.com"
         """
         in_parsed = urlparse(url_api_token)
-        api_url_base = in_parsed._replace(
-            path="", netloc=in_parsed.netloc.replace("id.", "")
-        )
+        if "qa" in url_api_token:
+            api_url_base = in_parsed._replace(
+                path="", netloc=in_parsed.netloc.replace("id.", "")
+            )
+        else:
+            api_url_base = in_parsed._replace(
+                path="", netloc=in_parsed.netloc.replace("id.", "v1.")
+            )
         return api_url_base.geturl()
 
     # -- SEARCH  --------------------------------------------------------------

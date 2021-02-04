@@ -17,6 +17,7 @@ from .cache import CacheManager
 from ..tools import IsogeoPlgTools
 from ..layer.add_layer import LayerAdder
 from ..layer.limitations_checker import LimitationsChecker
+from ..layer.geo_service import GeoServiceManager
 
 # isogeo-pysdk
 from ..isogeo_pysdk import Metadata
@@ -26,6 +27,7 @@ from ..isogeo_pysdk import Metadata
 # ##################################
 
 plg_tools = IsogeoPlgTools()
+geo_srv_mng = GeoServiceManager()
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
@@ -112,17 +114,18 @@ class ResultsManager(QObject):
             line_list: {"tooltip": "Line", "pix": pix_line},
             multi_list: {"tooltip": "MultiPolygon", "pix": pix_multi},
         }
-
-        self.service_dict = {
-            "efs": {"url_builder": self.layer_adder.build_efs_url, "ico": ico_efs},
-            "ems": {"url_builder": self.layer_adder.build_ems_url, "ico": ico_ems},
-            "wfs": {"url_builder": self.layer_adder.build_wfs_url, "ico": ico_wfs},
-            "wms": {"url_builder": self.layer_adder.build_wms_url, "ico": ico_wms},
-            "wmts": {"url_builder": None, "ico": ico_wmts},
-        }
-
-        self.cache_mng = CacheManager()
+        # set instanciate and load JSON file cache content
+        self.cache_mng = CacheManager(self.layer_adder.geo_srv_mng)
+        self.cache_mng.loader()
         self.cache_mng.tr = self.tr
+
+        self.service_ico_dict = {
+            "efs": ico_efs,
+            "ems": ico_ems,
+            "wfs": ico_wfs,
+            "wms": ico_wms,
+            "wmts": ico_wmts,
+        }
 
     def show_results(self, api_results, pg_connections=dict()):
         """Display the results in a table."""
@@ -212,7 +215,7 @@ class ResultsManager(QObject):
                         count,
                         2,
                         QTableWidgetItem(
-                            self.tr("Unknown geometry", context=__class__.__name__)
+                            "?"
                         ),
                     )
             else:
@@ -234,15 +237,7 @@ class ResultsManager(QObject):
             add_options_dict = {}
 
             # Build metadata portal URL if the setting is checked in "Settings" tab
-            add_portal_md_url = int(
-                qsettings.value("isogeo/settings/add_metadata_url_portal", 0)
-            )
-            portal_base_url = self.form_mng.input_portal_url.text()
-            portal_md_url = ""
-            if add_portal_md_url and portal_base_url != "":
-                portal_md_url = portal_base_url + md._id
-            else:
-                pass
+            portal_md_url = self.build_md_portal_url(md._id)
 
             # Files and PostGIS direct access
             if md.format:
@@ -321,30 +316,17 @@ class ResultsManager(QObject):
                             "path": service.get("path", "NR"),
                             "formatVersion": service.get("formatVersion"),
                         }
-                        # WMTS
-                        if service.get("format") == "wmts":
-                            params = self.layer_adder.build_wmts_url(
-                                layer, srv_details, rsc_type="ds_dyn_lyr_srv"
-                            )
-                        # EFS, EMS, WMS or WFS
-                        elif service.get("format") in list(self.service_dict.keys()):
-                            url_builder = self.service_dict.get(
-                                service.get("format")
-                            ).get("url_builder")
-                            params = url_builder(
-                                layer,
-                                srv_details,
-                                rsc_type="ds_dyn_lyr_srv",
-                                mode="quicky",
-                            )
+                        service_type = service.get("format").upper()
+                        if service.get("format") in self.service_ico_dict:
+                            params = [service_type, layer, srv_details]
                         else:
                             params = [0]
                             logger.debug(
-                                "Service with no format detected for '{}' metadata : {}".format(
+                                "Unexpected service format detected for '{}' metadata : {}".format(
                                     md._id, service
                                 )
                             )
-                            pass
+                            continue
 
                         if params[0] != 0:
                             basic_md = [
@@ -354,10 +336,18 @@ class ResultsManager(QObject):
                                 portal_md_url,
                             ]
                             params.append(basic_md)
-                            add_options_dict[
-                                "{} : {}".format(params[0], params[1])
-                            ] = params
+                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                            btn_label = "{} : {}".format(service_type, layer_title)
+                            add_options_dict[btn_label] = params
                         else:
+                            logger.warning(
+                                "Faile to build service URL for {} layer '{}' (of metadata {}): {}".format(
+                                    service.get("format").upper(),
+                                    layer.get("id"),
+                                    md._id,
+                                    params[1],
+                                )
+                            )
                             pass
             # New association mode. For services metadata sheet, the layers
             # are stored in the purposely named include: "layers".
@@ -367,35 +357,24 @@ class ResultsManager(QObject):
                         "path": md.path,
                         "formatVersion": md.formatVersion,
                     }
-                    # WMTS
-                    if md.format == "wmts":
+                    if md.format in self.service_ico_dict:
+                        service_type = md.format.upper()
                         for layer in md.layers:
-                            name_url = self.layer_adder.build_wmts_url(
-                                layer, srv_details, rsc_type="service"
-                            )
-                            if name_url[0] != 0:
-                                btn_label = "WMTS : {}".format(name_url[1])
-                                add_options_dict[btn_label] = name_url
-                            else:
-                                continue
-                    # EFS, EMS, WMS or WFS
-                    elif md.format in list(self.service_dict.keys()):
-                        url_builder = self.service_dict.get(md.format).get(
-                            "url_builder"
-                        )
-                        for layer in md.layers:
-                            name_url = url_builder(
-                                layer, srv_details, rsc_type="service", mode="quicky"
-                            )
-                            if name_url[0] != 0:
-                                add_options_dict[name_url[5]] = name_url
-                            else:
-                                continue
+                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                            btn_label = "{} : {}".format(service_type, layer_title)
+                            params = [service_type, layer, srv_details]
+                            basic_md = [
+                                md.title,
+                                md.abstract,
+                                md.keywords,
+                                portal_md_url,
+                            ]
+                            params.append(basic_md)
+                            add_options_dict[btn_label] = params
                     else:
                         pass
             else:
                 pass
-
             # Now the plugin has tested every possibility for the layer to be
             # added. The "Add" column has to be filled accordingly.
 
@@ -418,8 +397,8 @@ class ResultsManager(QObject):
                     params = add_options_dict.get(text)
                     option_type = text.split(" : ")[0]
                     # services
-                    if option_type.lower() in list(self.service_dict.keys()):
-                        icon = self.service_dict.get(option_type.lower()).get("ico")
+                    if option_type.lower() in self.service_ico_dict:
+                        icon = self.service_ico_dict.get(option_type.lower())
                     # PostGIS table
                     elif option_type.startswith(
                         self.tr("PostGIS table", context=__class__.__name__)
@@ -452,8 +431,8 @@ class ResultsManager(QObject):
                     for option in add_options_dict:
                         option_type = option.split(" : ")[0]
                         # services
-                        if option_type.lower() in list(self.service_dict.keys()):
-                            icon = self.service_dict.get(option_type.lower()).get("ico")
+                        if option_type.lower() in self.service_ico_dict:
+                            icon = self.service_ico_dict.get(option_type.lower())
                         # PostGIS table
                         elif option.startswith(
                             self.tr("PostGIS table", context=__class__.__name__)
@@ -495,10 +474,10 @@ class ResultsManager(QObject):
         return None
 
     # -- PRIVATE METHOD -------------------------------------------------------
-    def _filepath_builder(self, metadata_path):
+    def _filepath_builder(self, metadata_path: str):
         """Build filepath from metadata path handling various cases. See: #129.
 
-        :param dict metadata_path: path found in metadata
+        :param str metadata_path: path found in metadata
         """
         # building
         filepath = Path(metadata_path)
@@ -511,15 +490,32 @@ class ResultsManager(QObject):
             try:
                 with open(filepath) as f:
                     return str(filepath)
-            except:
+            except Exception as e:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
                 logger.info(
-                    "Path is not reachable and has been cached:{}".format(dir_file)
+                    "Path is not reachable and has been cached:{} / {}".format(dir_file, e)
                 )
                 return False
         else:
             logger.debug("Path has been ignored because it's cached.")
             return False
+
+    def build_md_portal_url(self, metadata_id: str):
+        """Build the URL of the metadata into Isogeo Portal (see https://github.com/isogeo/isogeo-plugin-qgis/issues/312)
+
+        :param str metadata_id: id of the metadata
+        """
+        add_portal_md_url = int(
+            qsettings.value("isogeo/settings/add_metadata_url_portal", 0)
+        )
+        portal_base_url = self.form_mng.input_portal_url.text()
+
+        if add_portal_md_url and portal_base_url != "":
+            portal_md_url = portal_base_url + metadata_id
+        else:
+            portal_md_url = ""
+
+        return portal_md_url
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connexions."""

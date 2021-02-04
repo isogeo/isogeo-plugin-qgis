@@ -1,6 +1,7 @@
 {
     "_default": {
         "contacts": null,
+        "datatype": "type:dataset",
         "favorite": null,
         "formats": null,
         "geofilter": null,
@@ -15,7 +16,6 @@
         "show": true,
         "srs": null,
         "text": "",
-        "types": "type:dataset",
-        "url": "https://api.isogeo.com/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers&_limit=10&_offset=0&_lang=fr"
+        "url": "https://api.isogeo.com/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0&_lang=fr"
     }
 }

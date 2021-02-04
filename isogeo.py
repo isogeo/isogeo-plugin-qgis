@@ -776,6 +776,7 @@ class Isogeo:
             if self.form_mng is None:
                 # Create the dockwidget (after translation) and keep reference
                 self.form_mng = SearchFormManager(self.tr)
+
                 self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
                 self.form_mng.qs_mng.lang = self.lang
                 logger.debug(
@@ -895,8 +896,6 @@ class Isogeo:
         self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
         # self.form_mng.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.form_mng.txt_input.setFocus()
-        # load cache file
-        self.form_mng.results_mng.cache_mng.loader()
         # connect limitations checker to user informer
         self.form_mng.results_mng.lim_checker.lim_sig.connect(self.informer.lim_slot)
         # launch authentication

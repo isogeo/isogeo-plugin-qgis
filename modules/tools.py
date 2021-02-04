@@ -72,8 +72,8 @@ class IsogeoPlgTools(IsogeoUtils):
         """
         words = title.split(" ")
         if len(words) == 1:
-            if len(words[0]) > 28:
-                final_text = words[0][:25] + "..."
+            if len(words[0]) > 22:
+                final_text = words[0][:20] + "..."
             else:
                 final_text = words[0]
             return final_text
