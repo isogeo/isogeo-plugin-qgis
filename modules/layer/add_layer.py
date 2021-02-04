@@ -120,10 +120,10 @@ class LayerAdder:
 
         # Retrieving 'layer specific' informations
         if data_type in self.dict_service_types:
-            layer_type = self.tr("service layer", context=__class__.__name__)
+            layer_type = self.tr("Service layer", context=__class__.__name__)
             data_name = data_source
         elif data_type in li_datafile_types:
-            layer_type = self.tr("data file layer", context=__class__.__name__)
+            layer_type = self.tr("Data file layer", context=__class__.__name__)
             data_type = data_type.capitalize()
             data_name = os.path.basename(data_source).split(".")[0]
         else:
@@ -141,8 +141,8 @@ class LayerAdder:
             iface.mainWindow(),
             self.tr("Error", context=__class__.__name__),
             self.tr(
-                "<b>{} {} is not valid</b>: <i>{}</i>.<br><b>Error:</b> {}".format(
-                    data_type, layer_type, data_name, error_msg
+                "<b>{} ({}) is not valid</b>: <i>{}</i>.<br><b>Error:</b> {}".format(
+                    layer_type, data_type, data_name, error_msg
                 ),
                 context=__class__.__name__,
             ),
