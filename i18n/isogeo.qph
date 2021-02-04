@@ -225,6 +225,10 @@
     <target>Veuillez indiquer la base de l&apos;URL du Portail Isogeo :</target>
 </phrase>
 <phrase>
+    <source>---- Keywords ----</source>
+    <target>---- Mots-clés ----</target>
+</phrase>
+<phrase>
     <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
     <target>Le {} style de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</target>
 </phrase>
@@ -233,10 +237,10 @@
     <target>Alerte</target>
 </phrase>
 <phrase>
-    <source>Proxy issue: 
+    <source>Proxy issue:
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
-    <target>Proxy issue: 
+    <target>Proxy issue:
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</target>
 </phrase>
@@ -245,50 +249,36 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>Erreur</target>
 </phrase>
 <phrase>
-    <source>Vector not valid {}. QGIS says: {}</source>
-    <target>Couche vecteur {}  invalide. QGIS renvoie : {}</target>
-</phrase>
-<phrase>
-    <source>Raster not valid {}. QGIS says: {}</source>
-    <target>Couche raster {}  invalide. QGIS renvoie : {}</target>
-</phrase>
-<phrase>
-    <source>EFS not valid. QGIS says: {}</source>
-    <target>EFS invalide. QGIS renvoie : {}</target>
-</phrase>
-<phrase>
-    <source>EMS not valid. QGIS says: {}</source>
-    <target>EMS invalide. QGIS renvoie : {}</target>
-</phrase>
-<phrase>
-    <source>WFS is not valid. QGIS says: {}</source>
-    <target>WFS invalide. QGIS renvoie : {}</target>
-</phrase>
-<phrase>
-    <source>WMS is not valid. QGIS says: {}</source>
-    <target>WMS invalide. QGIS renvoie : {}</target>
-</phrase>
-<phrase>
-    <source>WMTS is not valid. QGIS says: {}</source>
-    <target>WMTS invalide. QGIS renvoie : {}</target>
-</phrase>
-<phrase>
     <source>The PostGIS layer is not valid. Reason: {}</source>
     <target>Couche PostGIS invalide. QGIS renvoie : {}</target>
+</phrase>
+<phrase>
+    <source>Service layer</source>
+    <target>La couche de service</target>
+</phrase>
+<phrase>
+    <source>Data file layer</source>
+    <target>La couche</target>
+</phrase>
+<phrase>
+    <source>&lt;b&gt;{} ({}) is not valid&lt;/b&gt;: &lt;i&gt;{}&lt;/i&gt;.&lt;br&gt;&lt;b&gt;Error:&lt;/b&gt; {}</source>
+    <target>&lt;b&gt;{} ({}) n&apos;est pas valide&lt;/b&gt; : &lt;i&gt;{}&lt;/i&gt;.&lt;br&gt;&lt;b&gt;Erreur:&lt;/b&gt; {}</target>
 </phrase>
 <phrase>
     <source>This data is subject to a security limitation :</source>
     <target>Cette donnée est soumise à une limitation de type &quot;sécurité&quot; :</target>
 </phrase>
 <phrase>
-    <source>
- - No description provided</source>
-    <target>
- - Aucune description fournie</target>
-</phrase>
-<phrase>
     <source>Do you want to add the layer to the canvas anyway ?</source>
     <target>Voulez-vous quand même ajouter la couche au canevas ?</target>
+</phrase>
+<phrase>
+    <source>No description provided</source>
+    <target>Aucune description fournie</target>
+</phrase>
+<phrase>
+    <source>Undefined</source>
+    <target>Non renseigné</target>
 </phrase>
 <phrase>
     <source>{} successfully saved: {}</source>
@@ -375,10 +365,6 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>Ascendant</target>
 </phrase>
 <phrase>
-    <source>Keywords</source>
-    <target>Mots-clés</target>
-</phrase>
-<phrase>
     <source>Selected keywords:</source>
     <target>Mots-clés sélectionnés :</target>
 </phrase>
@@ -459,14 +445,16 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin et vérifiez votre connexion Internet. Si l&apos;erreur persiste, merci de signaler ce problème dans le bug tracker.</target>
 </phrase>
 <phrase>
-    <source>This data is subject to {} legal limitation(s) :</source>
-    <target>Cette données est soumise à {} limitation(s) de type &quot;légal&quot; :</target>
+    <source>This data is subject to </source>
+    <target>Cette donnée est soumise à </target>
 </phrase>
 <phrase>
-    <source>
- - No description provided</source>
-    <target>
- - Aucune description fournie</target>
+    <source> legal limitation(s) :</source>
+    <target> limitation(s) de type &quot;légal&quot; :</target>
+</phrase>
+<phrase>
+    <source>No description provided</source>
+    <target>Aucune description renseignée</target>
 </phrase>
 <phrase>
     <source>Credits</source>
@@ -495,10 +483,6 @@ You have a proxy set up on your OS {} but none in QGIS.
 <phrase>
     <source>Isogeo authentication settings</source>
     <target>Paramètres d&apos;authentification du plugin</target>
-</phrase>
-<phrase>
-    <source>Request plugin access</source>
-    <target>Demander un accès</target>
 </phrase>
 <phrase>
     <source>Application ID:</source>
@@ -549,28 +533,16 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>URL de l&apos;API :</target>
 </phrase>
 <phrase>
-    <source>Check access validity</source>
-    <target></target>
+    <source>Make an appointment with Isogeo team</source>
+    <target>Prendre RDV avec la Team Isogeo</target>
 </phrase>
 <phrase>
-    <source>Check</source>
-    <target></target>
+    <source>Test the Isogeo QGIS Plugin for free</source>
+    <target>Tester gratuitement le Plugin QGIS Isogeo</target>
 </phrase>
 <phrase>
-    <source>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;body&gt;
-
-&lt;ul&gt;
-	&lt;li&gt;Completely free to access generic Open Data&lt;/li&gt;
-	&lt;li&gt;Completely free to work with 20 of your geographic data and services (Isogeo account required)&lt;/li&gt;
-	&lt;li&gt;Ask for our annual plans to work with your whole geographic data and services !&lt;/li&gt;
-&lt;/ul&gt; 
-
-&lt;/body&gt;
-&lt;/html&gt;
-</source>
-    <target></target>
+    <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;It is simple and free to test the Isogeo QGIS Plugin on a sample of data : &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+    <target>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Il est simple et gratuit de tester le Plugin QGIS Isogeo sur un échantillon de données, n&apos;hésitez pas à nous en faire la demande&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</target>
 </phrase>
 <phrase>
     <source>Isogeo Metadata</source>
@@ -799,5 +771,41 @@ You have a proxy set up on your OS {} but none in QGIS.
 <phrase>
     <source>Quicksearch new name:</source>
     <target>Nouveau nom :</target>
+</phrase>
+<phrase>
+    <source>quality</source>
+    <target></target>
+    <definition>isConform</definition>
+</phrase>
+<phrase>
+    <source>quality</source>
+    <target></target>
+    <definition>isNotConform</definition>
+</phrase>
+<phrase>
+    <source>roles</source>
+    <target></target>
+</phrase>
+<phrase>
+    <source>frequencyTypes</source>
+    <target></target>
+    <definition>frequencyUpdateHelp</definition>
+</phrase>
+<phrase>
+    <source>frequencyShortTypes</source>
+    <target></target>
+</phrase>
+<phrase>
+    <source>conditions</source>
+    <target></target>
+    <definition>noLicense</definition>
+</phrase>
+<phrase>
+    <source>limitations</source>
+    <target></target>
+</phrase>
+<phrase>
+    <source>restrictions</source>
+    <target></target>
 </phrase>
 </QPH>
