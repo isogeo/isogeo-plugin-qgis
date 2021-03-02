@@ -10,7 +10,6 @@ from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QMessageBox
 
 # PyQGIS
-import db_manager.db_plugins.postgis.connector as pgis_con
 from qgis.core import (
     QgsDataSourceUri,
     QgsProject,
@@ -19,6 +18,15 @@ from qgis.core import (
     QgsMessageLog,
     QgsApplication,
 )
+
+try:
+    from qgis.core import Qgis
+except ImportError:
+    from qgis.core import QGis as Qgis
+
+from db_manager.db_plugins.postgis.connector import PostGisDBConnector
+from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin
+
 from qgis.utils import iface
 
 # Plugin modules
@@ -29,6 +37,8 @@ from ..layer.geo_service import GeoServiceManager
 # ############################################################################
 # ########## Globals ###############
 # ##################################
+
+qgis_version = int("".join(Qgis.QGIS_VERSION.split(".")[:2]))
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
@@ -330,9 +340,14 @@ class LayerAdder:
         password = self.PostGISdict[base_name]["password"]
         # set host name, port, database name, username and password
         uri.setConnection(host, port, base_name, user, password)
-        # Get the geometry column name from the database connexion & table
-        # name.
-        c = pgis_con.PostGisDBConnector(uri)
+        # Get the geometry column name from the database connexion & table name.
+        logger.debug("*=====* DEBUG ADD POSTGIS --> uri = {}".format(uri.uri()))
+        if qgis_version >= 316:
+            conn_name = self.PostGISdict[base_name]["name"]
+            pgis_db_plg = PostGisDBPlugin(conn_name)
+            c = PostGisDBConnector(uri, pgis_db_plg)
+        else:
+            c = PostGisDBConnector(uri)
         dico = c.getTables()
         for i in dico:
             if i[0 == 1] and i[1] == table:
