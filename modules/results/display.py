@@ -105,7 +105,8 @@ class ResultsManager(QObject):
         self.layer_adder.tr = self.tr
         self.layer_adder.tbl_result = self.tbl_result
         self.pg_connections = db_mng.pg_connections
-        self.layer_adder.PostGISdict = self.pg_connections
+        logger.debug("*=====* {}".format(self.pg_connections))
+        self.layer_adder.pg_connections = self.pg_connections
 
         self.lim_checker = LimitationsChecker(self.layer_adder, self.tr)
 
@@ -136,6 +137,9 @@ class ResultsManager(QObject):
         # connection is set up in QGIS
         if pg_connections == {}:
             pg_connections = self.pg_connections
+            available_pg_dbnames = [
+                pg_connection.get("name") for pg_connection in pg_connections
+            ]
         else:
             pass
         # Set table rows
@@ -276,26 +280,24 @@ class ResultsManager(QObject):
                 # If the data is a postGIS table and the connexion has
                 # been saved in QGIS.
                 elif md.format == "postgis":
-                    if md.path:
-                        base_name = md.path
-                    else:
-                        base_name = "No path"
-                    if base_name in pg_connections.keys():
-                        params = {}
-                        params["base_name"] = base_name
-                        schema_table = md.name
-                        if schema_table is not None and "." in schema_table:
-                            params["schema"] = schema_table.split(".")[0]
-                            params["table"] = schema_table.split(".")[1]
-                            params["abstract"] = md.abstract
-                            params["title"] = md.title
-                            params["keywords"] = md.keywords
-                            params["md_portal_url"] = portal_md_url
-                            add_options_dict[
-                                self.tr("PostGIS table", context=__class__.__name__)
-                            ] = params
-                        else:
-                            pass
+                    if (
+                        md.path
+                        and md.name
+                        and md.path in available_pg_dbnames
+                        and "." in md.name
+                    ):
+                        params = {
+                            "base_name": md.path,
+                            "schema": md.name.split(".")[0],
+                            "table": md.name.split(".")[1],
+                            "abstract": md.abstract,
+                            "title": md.title,
+                            "keywords": md.keywords,
+                            "md_portal_url": portal_md_url,
+                        }
+                        add_options_dict[
+                            self.tr("PostGIS table", context=__class__.__name__)
+                        ] = params
                     else:
                         pass
                 else:
@@ -519,59 +521,6 @@ class ResultsManager(QObject):
             portal_md_url = ""
 
         return portal_md_url
-
-    def build_postgis_dict(self, input_dict):
-        """Build the dict that stores informations about PostGIS connexions."""
-        # input_dict.beginGroup("PostgreSQL/connections")
-        final_dict = {}
-        for k in sorted(input_dict.allKeys()):
-            if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
-                if len(k.split("/")) == 4:
-                    connection_name = k.split("/")[2]
-                    password_saved = input_dict.value(
-                        "PostgreSQL/connections/" + connection_name + "/savePassword"
-                    )
-                    user_saved = input_dict.value(
-                        "PostgreSQL/connections/" + connection_name + "/saveUsername"
-                    )
-                    if password_saved == "true" and user_saved == "true":
-                        dictionary = {
-                            "name": input_dict.value(
-                                "PostgreSQL/connections/"
-                                + connection_name
-                                + "/database"
-                            ),
-                            "host": input_dict.value(
-                                "PostgreSQL/connections/" + connection_name + "/host"
-                            ),
-                            "port": input_dict.value(
-                                "PostgreSQL/connections/" + connection_name + "/port"
-                            ),
-                            "username": input_dict.value(
-                                "PostgreSQL/connections/"
-                                + connection_name
-                                + "/username"
-                            ),
-                            "password": input_dict.value(
-                                "PostgreSQL/connections/"
-                                + connection_name
-                                + "/password"
-                            ),
-                        }
-                        final_dict[
-                            input_dict.value(
-                                "PostgreSQL/connections/"
-                                + connection_name
-                                + "/database"
-                            )
-                        ] = dictionary
-                    else:
-                        continue
-                else:
-                    pass
-            else:
-                pass
-        return final_dict
 
 
 # #############################################################################

@@ -114,18 +114,18 @@ class DataBaseManager:
                 "port": service_params["port"],
                 "username": service_params["user"],
                 "password": service_params["password"],
+                "connection": connection_service,
             }
-
-        return 1, connection_dict
+            return 1, connection_dict
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connections."""
-        # input_dict.beginGroup("PostgreSQL/connections")
-        final_dict = {}
+        final_list = []
         for k in sorted(input_dict.allKeys()):
             if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
                 if len(k.split("/")) == 4:
                     connection_name = k.split("/")[2]
+                    logger.debug("*=====* {}".format(connection_name))
                     # for traditionnal connections
                     password_saved = input_dict.value(
                         "PostgreSQL/connections/" + connection_name + "/savePassword"
@@ -162,26 +162,15 @@ class DataBaseManager:
                                 + connection_name
                                 + "/password"
                             ),
+                            "connection": connection_name,
                         }
-                        final_dict[
-                            input_dict.value(
-                                "PostgreSQL/connections/"
-                                + connection_name
-                                + "/database"
-                            )
-                        ] = connection_dict
+                        final_list.append(connection_dict)
                     elif connection_service != "" and self.pg_configfile_path:
                         connection_dict = self.config_file_parser(
                             self.pg_configfile_path, connection_service
                         )
                         if connection_dict[0]:
-                            final_dict[
-                                input_dict.value(
-                                    "PostgreSQL/connections/"
-                                    + connection_name
-                                    + "/database"
-                                )
-                            ] = connection_dict
+                            final_list.append(connection_dict[1])
                         else:
                             logger.warning(connection_dict[1])
 
@@ -191,4 +180,4 @@ class DataBaseManager:
                     pass
             else:
                 pass
-        return final_dict
+        return final_list

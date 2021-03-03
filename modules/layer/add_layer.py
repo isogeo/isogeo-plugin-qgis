@@ -84,7 +84,7 @@ class LayerAdder:
         self.md_sync = MetadataSynchronizer()
 
         # prepare layer adding from PostGIS table
-        self.PostGISdict = dict()
+        self.pg_connections = dict()
 
         # prepare layer adding from geo service datas
         self.geo_srv_mng = GeoServiceManager()
@@ -308,18 +308,23 @@ class LayerAdder:
         base_name = layer_info.get("base_name", "")
         schema = layer_info.get("schema", "")
         table = layer_info.get("table", "")
-        # Retrieve the database information stored in the PostGISdict
-        uri = QgsDataSourceUri()
-        host = self.PostGISdict[base_name]["host"]
-        port = self.PostGISdict[base_name]["port"]
-        user = self.PostGISdict[base_name]["username"]
-        password = self.PostGISdict[base_name]["password"]
+        # Retrieve the database information stored in the pg_connections
+        conn_params = [
+            connection
+            for connection in self.pg_connections
+            if connection.get("name") == base_name
+        ][0]
+        host = conn_params.get("host")
+        port = conn_params.get("port")
+        user = conn_params.get("username")
+        password = conn_params.get("password")
         # set host name, port, database name, username and password
+        uri = QgsDataSourceUri()
         uri.setConnection(host, port, base_name, user, password)
         # Get the geometry column name from the database connexion & table name.
         logger.debug("*=====* DEBUG ADD POSTGIS --> uri = {}".format(uri.uri()))
         if qgis_version >= 316:
-            conn_name = self.PostGISdict[base_name]["name"]
+            conn_name = conn_params.get("connection")
             pgis_db_plg = PostGisDBPlugin(conn_name)
             c = PostGisDBConnector(uri, pgis_db_plg)
         else:
