@@ -90,31 +90,15 @@ class LayerAdder:
         self.geo_srv_mng = GeoServiceManager()
 
         self.dict_service_types = {
-            "WFS": [
-                "WFS",
-                QgsVectorLayer,
-                self.geo_srv_mng.build_wfs_url
-            ],
-            "WMS": [
-                "wms",
-                QgsRasterLayer,
-                self.geo_srv_mng.build_wms_url
-            ],
+            "WFS": ["WFS", QgsVectorLayer, self.geo_srv_mng.build_wfs_url],
+            "WMS": ["wms", QgsRasterLayer, self.geo_srv_mng.build_wms_url],
             "EFS": [
                 "arcgisfeatureserver",
                 QgsVectorLayer,
-                self.geo_srv_mng.build_efs_url
+                self.geo_srv_mng.build_efs_url,
             ],
-            "EMS": [
-                "arcgismapserver",
-                QgsRasterLayer,
-                self.geo_srv_mng.build_ems_url
-            ],
-            "WMTS": [
-                "wms",
-                QgsRasterLayer,
-                self.geo_srv_mng.build_wmts_url
-            ]
+            "EMS": ["arcgismapserver", QgsRasterLayer, self.geo_srv_mng.build_ems_url],
+            "WMTS": ["wms", QgsRasterLayer, self.geo_srv_mng.build_wmts_url],
         }
 
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
@@ -130,10 +114,10 @@ class LayerAdder:
 
         # Retrieving 'layer specific' informations
         if data_type in self.dict_service_types:
-            layer_type = "service layer"
+            layer_type = self.tr("Service layer", context=__class__.__name__)
             data_name = data_source
         elif data_type in li_datafile_types:
-            layer_type = "data file layer"
+            layer_type = self.tr("Data file layer", context=__class__.__name__)
             data_type = data_type.capitalize()
             data_name = os.path.basename(data_source).split(".")[0]
         else:
@@ -147,15 +131,15 @@ class LayerAdder:
                 data_type, layer_type, data_source, error_msg
             )
         )
-        QMessageBox.information(
-            iface.mainWindow(),
-            self.tr("Error", context=__class__.__name__),
-            self.tr(
-                "<strong>{} {} is not valid</strong> {}.<br><br><strong>Error:</strong> {}".format(
-                    data_type, layer_type, data_name, error_msg
-                ),
-                context=__class__.__name__,
-            ),
+        msg = "<b>{} ({}) ".format(layer_type, data_type)
+        msg += self.tr("is not valid", context=__class__.__name__)
+        msg += ": <i>{}</i>".format(data_name)
+        msg += ".</b><br><b>"
+        msg += self.tr("Error:", context=__class__.__name__)
+        msg += "</b>{}".format(error_msg)
+
+        QMessageBox.warning(
+            iface.mainWindow(), self.tr("Error", context=__class__.__name__), msg
         )
 
     def add_from_file(self, layer_label: str, path: str, data_type: str):
@@ -214,10 +198,7 @@ class LayerAdder:
             return lyr, layer
 
     def add_service_layer(
-        self,
-        layer_url: str,
-        layer_title: str,
-        service_type: str,
+        self, layer_url: str, layer_title: str, service_type: str,
     ):
         """Add a geo service layer from its URL. Usefull for WMS multi-layer
 
@@ -255,7 +236,11 @@ class LayerAdder:
                     tag="Isogeo",
                     level=0,
                 )
-                logger.warning("{} layer added without specifying the data provider: {}".format(service_type, layer_url))
+                logger.warning(
+                    "{} layer added without specifying the data provider: {}".format(
+                        service_type, layer_url
+                    )
+                )
                 layer_is_ok = 1
             else:
                 error_msg = layer.error().message()
@@ -270,10 +255,7 @@ class LayerAdder:
             return lyr, layer
 
     def add_from_service(
-        self,
-        service_type: str,
-        api_layer: dict,
-        service_details: dict,
+        self, service_type: str, api_layer: dict, service_details: dict,
     ):
         """Add a layer to QGIS map canvas from a Geographic Service Layer.
 
@@ -300,25 +282,19 @@ class LayerAdder:
         else:
             error_msg = layer_infos[1]
             self.invalid_layer_inform(
-                data_type=service_type, data_source=api_layer.get("id"), error_msg=error_msg
+                data_type=service_type,
+                data_source=api_layer.get("id"),
+                error_msg=error_msg,
             )
             return 0
         if isinstance(layer_url, list):
             added_layer = []
             for url in layer_url:
                 index = layer_url.index(url)
-                added = self.add_service_layer(
-                    url,
-                    layer_title[index],
-                    service_type
-                )
+                added = self.add_service_layer(url, layer_title[index], service_type)
                 added_layer.append(added)
         else:
-            added_layer = self.add_service_layer(
-                layer_url,
-                layer_title,
-                service_type
-            )
+            added_layer = self.add_service_layer(layer_url, layer_title, service_type)
         return added_layer
 
     def add_from_database(self, layer_info: dict):
@@ -431,7 +407,7 @@ class LayerAdder:
                 added_layer = self.add_from_service(
                     service_type=layer_info[0],
                     api_layer=layer_info[1],
-                    service_details=layer_info[2]
+                    service_details=layer_info[2],
                 )
             else:
                 raise ValueError(
