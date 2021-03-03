@@ -11,7 +11,7 @@
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
-        "--ignore=E24,E265,E501,W504",
+        "--ignore=E24,E265,E501,W504,W1401",
         "--verbose"
     ],
 
@@ -20,7 +20,8 @@
 
     // Set Python interpreter
     //"python.pythonPath": "${workspaceFolder}/.venv_tests/Scripts/python.exe",
-    "python.pythonPath": "C:/OSGeo4W64/bin/python-qgis-ltr.bat",
+    //"python.pythonPath": "C:/OSGeo4W64/bin/python-qgis-ltr.bat",
+    "python.pythonPath": "c:\\Program Files\\QGIS 3.10.5\\apps\\Python37\\python.exe",
 
     // Formatting with black
     "python.formatting.provider": "black",
