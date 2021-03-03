@@ -258,7 +258,6 @@ class Isogeo:
         self.showResult = False
         self.showDetails = False
         self.store = False
-        self.PostGISdict = self.form_mng.results_mng.build_postgis_dict(qsettings)
 
         self.old_text = ""
         self.page_index = 1

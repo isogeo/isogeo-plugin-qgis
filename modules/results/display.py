@@ -18,6 +18,7 @@ from ..tools import IsogeoPlgTools
 from ..layer.add_layer import LayerAdder
 from ..layer.limitations_checker import LimitationsChecker
 from ..layer.geo_service import GeoServiceManager
+from ..layer.data_base import DataBaseManager
 
 # isogeo-pysdk
 from ..isogeo_pysdk import Metadata
@@ -28,6 +29,7 @@ from ..isogeo_pysdk import Metadata
 
 plg_tools = IsogeoPlgTools()
 geo_srv_mng = GeoServiceManager()
+db_mng = DataBaseManager()
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
@@ -102,8 +104,7 @@ class ResultsManager(QObject):
         self.layer_adder = LayerAdder()
         self.layer_adder.tr = self.tr
         self.layer_adder.tbl_result = self.tbl_result
-        # self.add_layer = self.layer_adder.adding
-        self.pg_connections = self.build_postgis_dict(qsettings)
+        self.pg_connections = db_mng.pg_connections
         self.layer_adder.PostGISdict = self.pg_connections
 
         self.lim_checker = LimitationsChecker(self.layer_adder, self.tr)
@@ -212,11 +213,7 @@ class ResultsManager(QObject):
                             continue
                 else:
                     tbl_result.setItem(
-                        count,
-                        2,
-                        QTableWidgetItem(
-                            "?"
-                        ),
+                        count, 2, QTableWidgetItem("?"),
                     )
             else:
                 if "rasterDataset" in md.type:
@@ -336,7 +333,9 @@ class ResultsManager(QObject):
                                 portal_md_url,
                             ]
                             params.append(basic_md)
-                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                            layer_title = geo_srv_mng.build_layer_title(
+                                service_type, layer
+                            )
                             btn_label = "{} : {}".format(service_type, layer_title)
                             add_options_dict[btn_label] = params
                         else:
@@ -360,7 +359,9 @@ class ResultsManager(QObject):
                     if md.format in self.service_ico_dict:
                         service_type = md.format.upper()
                         for layer in md.layers:
-                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                            layer_title = geo_srv_mng.build_layer_title(
+                                service_type, layer
+                            )
                             btn_label = "{} : {}".format(service_type, layer_title)
                             params = [service_type, layer, srv_details]
                             basic_md = [
@@ -493,7 +494,9 @@ class ResultsManager(QObject):
             except Exception as e:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
                 logger.info(
-                    "Path is not reachable and has been cached:{} / {}".format(dir_file, e)
+                    "Path is not reachable and has been cached:{} / {}".format(
+                        dir_file, e
+                    )
                 )
                 return False
         else:
