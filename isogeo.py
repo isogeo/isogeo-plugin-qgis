@@ -111,21 +111,7 @@ logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 
 # icons
-ico_od_asc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-asc.svg")
-ico_od_desc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-desc.svg")
-ico_ob_relev = QIcon(":/plugins/Isogeo/resources/results/star.svg")
-ico_ob_alpha = QIcon(":/plugins/Isogeo/resources/metadata/language.svg")
-ico_ob_dcrea = QIcon(":/plugins/Isogeo/resources/datacreated.svg")
-ico_ob_dupda = QIcon(":/plugins/Isogeo/resources/datamodified.svg")
-ico_ob_mcrea = QIcon(":/plugins/Isogeo/resources/calendar-plus-o.svg")
-ico_ob_mupda = QIcon(":/plugins/Isogeo/resources/calendar_blue.svg")
-ico_bolt = QIcon(":/plugins/Isogeo/resources/search/bolt.svg")
-ico_keyw = QIcon(":/plugins/Isogeo/resources/tag.svg")
-ico_none = QIcon(":/plugins/Isogeo/resources/none.svg")
-ico_line = QIcon(":/images/themes/default/mIconLineLayer.svg")
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
-ico_poin = QIcon(":/images/themes/default/mIconPointLayer.svg")
-ico_poly = QIcon(":/images/themes/default/mIconPolygonLayer.svg")
 
 
 # ############################################################################
@@ -370,8 +356,8 @@ class Isogeo:
             except:
                 pass
             self.iface.removeToolBarIcon(action)
-            self.form_mng = None
-            logger.handlers = []
+        # stop log file stream
+        logger.removeHandler(logfile)
         # remove the toolbar
         del self.toolbar
 
