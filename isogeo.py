@@ -347,8 +347,6 @@ class Isogeo:
         self.form_mng = None
         self.pluginIsActive = False
         # stop log file stream
-        # logger.removeHandler(logfile)
-        # del logfile
         logging.shutdown()
 
     def unload(self):
