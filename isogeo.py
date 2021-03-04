@@ -103,8 +103,9 @@ log_form = logging.Formatter(
     "|| %(module)s - %(lineno)d ||"
     " %(funcName)s || %(message)s"
 )
+logfile_path = Path(plg_logdir) / "log_isogeo_plugin.log"
 logfile = RotatingFileHandler(
-    Path(plg_logdir) / "log_isogeo_plugin.log", "a", 5000000, 1
+    logfile_path, "a", 5000000, 1
 )
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
@@ -117,7 +118,6 @@ ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
 # ############################################################################
 # ########## Classes ###############
 # ##################################
-
 
 class Isogeo:
     """Isogeo plugin for QGIS LTR."""
@@ -346,6 +346,8 @@ class Isogeo:
         # when closing the docked window:
         self.form_mng = None
         self.pluginIsActive = False
+        # stop log file stream
+        logger.removeHandler(logfile)
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -356,8 +358,6 @@ class Isogeo:
             except:
                 pass
             self.iface.removeToolBarIcon(action)
-        # stop log file stream
-        logger.removeHandler(logfile)
         # remove the toolbar
         del self.toolbar
 
