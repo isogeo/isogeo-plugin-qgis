@@ -137,8 +137,6 @@ class DataBaseManager:
                     connection_service = input_dict.value(
                         "PostgreSQL/connections/" + connection_name + "/service"
                     )
-                    pgservicefile_value = environ.get("PGSERVICEFILE")
-                    config_file_path = Path(pgservicefile_value)
                     if password_saved == "true" and user_saved == "true":
                         connection_dict = {
                             "name": input_dict.value(

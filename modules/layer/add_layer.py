@@ -120,9 +120,12 @@ class LayerAdder:
             layer_type = self.tr("Data file layer", context=__class__.__name__)
             data_type = data_type.capitalize()
             data_name = os.path.basename(data_source).split(".")[0]
+        elif data_type == "PostGIS":
+            layer_type = self.tr("The table", context=__class__.__name__)
+            data_name = data_source
         else:
             raise ValueError(
-                "'data_type' argument value should be 'vector', 'raster', 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
+                "'data_type' argument value should be 'PostGIS', 'vector', 'raster', 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
             )
 
         # Let's inform the user
@@ -139,7 +142,7 @@ class LayerAdder:
         msg += "</b>{}".format(error_msg)
 
         QMessageBox.warning(
-            iface.mainWindow(), self.tr("Error", context=__class__.__name__), msg
+            iface.mainWindow(), self.tr("The layer can't be added", context=__class__.__name__), msg
         )
 
     def add_from_file(self, layer_label: str, path: str, data_type: str):
@@ -318,65 +321,77 @@ class LayerAdder:
         port = conn_params.get("port")
         user = conn_params.get("username")
         password = conn_params.get("password")
+        conn_name = conn_params.get("connection")
         # set host name, port, database name, username and password
         uri = QgsDataSourceUri()
         uri.setConnection(host, port, base_name, user, password)
         # Get the geometry column name from the database connexion & table name.
         logger.debug("*=====* DEBUG ADD POSTGIS --> uri = {}".format(uri.uri()))
         if qgis_version >= 316:
-            conn_name = conn_params.get("connection")
             pgis_db_plg = PostGisDBPlugin(conn_name)
             c = PostGisDBConnector(uri, pgis_db_plg)
         else:
             c = PostGisDBConnector(uri)
         dico = c.getTables()
+        geometry_column = ""
         for i in dico:
             if i[0 == 1] and i[1] == table:
                 geometry_column = i[8]
-        # set database schema, table name, geometry column
-        uri.setDataSource(schema, table, geometry_column)
-        # Adding the layer to the map canvas
-        layer = QgsVectorLayer(uri.uri(), table, "postgres")
-        if layer.isValid():
-            lyr = QgsProject.instance().addMapLayer(layer)
-            logger.debug("Data added: {}".format(table))
-        elif (
-            not layer.isValid()
-            and plg_tools.last_error[0] == "postgis"
-            and "prim" in plg_tools.last_error[1]
-        ):
-            logger.debug(
-                "PostGIS layer may be a view, "
-                "so key column is missing. "
-                "Trying to automatically set one..."
+        if geometry_column == "":
+            error_msg = "The table cannot be find into '{}' database using '{}' data base connection.".format(
+                base_name, conn_name
             )
-            # get layer fields to set as key column
-            fields = layer.dataProvider().fields()
-            fields_names = [i.name() for i in fields]
-            # sort them by name containing id to better perf
-            fields_names.sort(key=lambda x: ("id" not in x, x))
-            for field in fields_names:
-                uri.setKeyColumn(field)
-                layer = QgsVectorLayer(uri.uri(True), table, "postgres")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug(
-                        "PostGIS view layer added with [{}] as key column".format(field)
-                    )
-                else:
-                    continue
-        else:
-            logger.debug("Layer not valid. table = {}".format(table))
-            QMessageBox.information(
-                iface.mainWindow(),
-                self.tr("Error", context=__class__.__name__),
-                self.tr(
-                    "The PostGIS layer is not valid."
-                    " Reason: {}".format(plg_tools.last_error),
-                    context=__class__.__name__,
-                ),
+            self.invalid_layer_inform(
+                data_type="PostGIS",
+                data_source=schema + "." + table,
+                error_msg=error_msg
             )
             return 0
+        else:
+            # set database schema, table name, geometry column
+            uri.setDataSource(schema, table, geometry_column)
+            # Adding the layer to the map canvas
+            layer = QgsVectorLayer(uri.uri(), table, "postgres")
+            if layer.isValid():
+                lyr = QgsProject.instance().addMapLayer(layer)
+                logger.debug("Data added: {}".format(table))
+            elif (
+                not layer.isValid()
+                and plg_tools.last_error[0] == "postgis"
+                and "prim" in plg_tools.last_error[1]
+            ):
+                logger.debug(
+                    "PostGIS layer may be a view, "
+                    "so key column is missing. "
+                    "Trying to automatically set one..."
+                )
+                # get layer fields to set as key column
+                fields = layer.dataProvider().fields()
+                fields_names = [i.name() for i in fields]
+                # sort them by name containing id to better perf
+                fields_names.sort(key=lambda x: ("id" not in x, x))
+                for field in fields_names:
+                    uri.setKeyColumn(field)
+                    layer = QgsVectorLayer(uri.uri(True), table, "postgres")
+                    if layer.isValid():
+                        lyr = QgsProject.instance().addMapLayer(layer)
+                        logger.debug(
+                            "PostGIS view layer added with [{}] as key column".format(field)
+                        )
+                    else:
+                        continue
+            else:
+                logger.debug("Layer not valid. table = {}".format(table))
+                QMessageBox.information(
+                    iface.mainWindow(),
+                    self.tr("Error", context=__class__.__name__),
+                    self.tr(
+                        "The PostGIS layer is not valid."
+                        " Reason: {}".format(plg_tools.last_error),
+                        context=__class__.__name__,
+                    ),
+                )
+                return 0
 
         return lyr, layer
 
