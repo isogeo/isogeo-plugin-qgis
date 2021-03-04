@@ -347,8 +347,9 @@ class Isogeo:
         self.form_mng = None
         self.pluginIsActive = False
         # stop log file stream
-        logger.removeHandler(logfile)
-        del logfile
+        # logger.removeHandler(logfile)
+        # del logfile
+        logging.shutdown()
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
