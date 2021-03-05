@@ -6,6 +6,7 @@ import logging
 from configparser import ConfigParser
 from pathlib import Path
 from os import environ
+from functools import partial
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings
@@ -20,6 +21,9 @@ except ImportError:
 
 from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin
+
+# UI classes
+from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
 
 # ############################################################################
 # ########## Globals ###############
@@ -67,6 +71,8 @@ class DataBaseManager:
             self.pg_configfile_path = 0
 
         self.pg_connections = self.build_postgis_dict(qsettings)
+
+        self.db_connections_dialog = Isogeodb_connections()
 
     def config_file_parser(self, file_path: Path, connection_service: str):
         """ Retrieve connection parameters values stored into configuration fiel corresponding
@@ -189,22 +195,39 @@ class DataBaseManager:
                 pass
         return final_list
 
-    def establish_pg_connection(self, database_name: str):
+    def establish_postgis_connection(self, database_name: str, connection_name: str = ""):
         """Set the connectin to a specific PotGIS databse and return the corresponding QgsDataSourceUri and PostGisDBConnector.
 
         :param str database_name: the name of the database
+        :param str database_connection: the name of the registered connection to use (optional)
         """
-        conn_params = [
-            connection
-            for connection in self.pg_connections
-            if connection.get("name") == database_name
-        ][0]  # TO DO : add the possibility to chosse database connection
+        if connection_name != "":
+            conn_params = [
+                connection
+                for connection in self.pg_connections
+                if connection.get("name") == database_name and connection.get("connection") == connection_name
+            ]
+        else:
+            conn_params = [
+                connection
+                for connection in self.pg_connections
+                if connection.get("name") == database_name
+            ]
+
+        if not len(conn_params):
+            return 0
+        elif len(conn_params) == 1:
+            conn_params = conn_params[0]
+        else:
+            li_conn_names = [conn_param.get("connection") for conn_param in conn_params]
+            logger.debug("Several connections found for '{}' database : {}".format(database_name, li_conn_names))
+            self.ask_to_choose_connection(database_name, li_conn_names)
+
         host = conn_params.get("host")
         port = conn_params.get("port")
         user = conn_params.get("username")
         password = conn_params.get("password")
         conn_name = conn_params.get("connection")
-
         # build the connection URI and set the connection
         uri = QgsDataSourceUri()
         uri.setConnection(host, port, database_name, user, password)
@@ -215,3 +238,17 @@ class DataBaseManager:
             c = PostGisDBConnector(uri)
 
         return uri, c, conn_name
+
+    def ask_to_choose_connection(self, database_name: str, connection_names: list):
+        """
+        """
+        logger.debug("Let's ask to user to choose one of them.")
+        self.db_connections_dialog.connections_cbb.addItems(connection_names)
+        self.db_connections_dialog.accepted.connect(
+            partial(
+                self.establish_postgis_connection,
+                database_name=database_name,
+                connection_name=self.db_connections_dialog.connections_cbb.currentText()
+            )
+        )
+        self.db_connections_dialog.exec()
