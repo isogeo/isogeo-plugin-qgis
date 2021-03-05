@@ -243,6 +243,7 @@ class DataBaseManager:
         """
         """
         logger.debug("Let's ask to user to choose one of them.")
+        self.db_connections_dialog.connections_cbb.clear()
         self.db_connections_dialog.connections_cbb.addItems(connection_names)
         self.db_connections_dialog.accepted.connect(
             partial(

@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_dlg_db_connections(object):
     def setupUi(self, dlg_db_connections):
         dlg_db_connections.setObjectName("dlg_db_connections")
@@ -66,12 +67,13 @@ class Ui_dlg_db_connections(object):
         dlg_db_connections.setWindowTitle(_translate("dlg_db_connections", "db_connections"))
         self.cbb_label.setText(_translate("dlg_db_connections", "Choose the registered connection to use to add \'{}\' layer from \'{}\' database:"))
 
+
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     dlg_db_connections = QtWidgets.QDialog()
     ui = Ui_dlg_db_connections()
     ui.setupUi(dlg_db_connections)
     dlg_db_connections.show()
     sys.exit(app.exec_())
-
