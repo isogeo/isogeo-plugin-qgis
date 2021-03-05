@@ -11,12 +11,21 @@ from os import environ
 from qgis.PyQt.QtCore import QSettings
 
 # PyQGIS
+from qgis.core import QgsDataSourceUri
 
-# Plugin modules
+try:
+    from qgis.core import Qgis
+except ImportError:
+    from qgis.core import QGis as Qgis
+
+from db_manager.db_plugins.postgis.connector import PostGisDBConnector
+from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
+
+qgis_version = int("".join(Qgis.QGIS_VERSION.split(".")[:2]))
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
@@ -179,3 +188,30 @@ class DataBaseManager:
             else:
                 pass
         return final_list
+
+    def establish_pg_connection(self, database_name: str):
+        """Set the connectin to a specific PotGIS databse and return the corresponding QgsDataSourceUri and PostGisDBConnector.
+
+        :param str database_name: the name of the database
+        """
+        conn_params = [
+            connection
+            for connection in self.pg_connections
+            if connection.get("name") == database_name
+        ][0]  # TO DO : add the possibility to chosse database connection
+        host = conn_params.get("host")
+        port = conn_params.get("port")
+        user = conn_params.get("username")
+        password = conn_params.get("password")
+        conn_name = conn_params.get("connection")
+
+        # build the connection URI and set the connection
+        uri = QgsDataSourceUri()
+        uri.setConnection(host, port, database_name, user, password)
+        if qgis_version >= 316:
+            pgis_db_plg = PostGisDBPlugin(conn_name)
+            c = PostGisDBConnector(uri, pgis_db_plg)
+        else:
+            c = PostGisDBConnector(uri)
+
+        return uri, c, conn_name

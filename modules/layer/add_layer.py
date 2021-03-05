@@ -11,7 +11,6 @@ from qgis.PyQt.QtWidgets import QMessageBox
 
 # PyQGIS
 from qgis.core import (
-    QgsDataSourceUri,
     QgsProject,
     QgsVectorLayer,
     QgsRasterLayer,
@@ -19,26 +18,17 @@ from qgis.core import (
     QgsApplication,
 )
 
-try:
-    from qgis.core import Qgis
-except ImportError:
-    from qgis.core import QGis as Qgis
-
-from db_manager.db_plugins.postgis.connector import PostGisDBConnector
-from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin
-
 from qgis.utils import iface
 
 # Plugin modules
 from ..tools import IsogeoPlgTools
 from .metadata_sync import MetadataSynchronizer
 from ..layer.geo_service import GeoServiceManager
+from ..layer.data_base import DataBaseManager
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
-
-qgis_version = int("".join(Qgis.QGIS_VERSION.split(".")[:2]))
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
@@ -83,12 +73,8 @@ class LayerAdder:
         self.tr = object
         self.md_sync = MetadataSynchronizer()
 
-        # prepare layer adding from PostGIS table
-        self.pg_connections = dict()
-
         # prepare layer adding from geo service datas
         self.geo_srv_mng = GeoServiceManager()
-
         self.dict_service_types = {
             "WFS": ["WFS", QgsVectorLayer, self.geo_srv_mng.build_wfs_url],
             "WMS": ["wms", QgsRasterLayer, self.geo_srv_mng.build_wms_url],
@@ -100,6 +86,9 @@ class LayerAdder:
             "EMS": ["arcgismapserver", QgsRasterLayer, self.geo_srv_mng.build_ems_url],
             "WMTS": ["wms", QgsRasterLayer, self.geo_srv_mng.build_wmts_url],
         }
+
+        # prepare layer adding from data base tables
+        self.db_mng = DataBaseManager()
 
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
         QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
@@ -312,26 +301,10 @@ class LayerAdder:
         schema = layer_info.get("schema", "")
         table_name = layer_info.get("table", "")
 
-        # Retrieve the database information stored in the pg_connections
-        conn_params = [
-            connection
-            for connection in self.pg_connections
-            if connection.get("name") == base_name
-        ][0]  # TO DO : add the possibility to chosse database connection
-        host = conn_params.get("host")
-        port = conn_params.get("port")
-        user = conn_params.get("username")
-        password = conn_params.get("password")
-        conn_name = conn_params.get("connection")
-
-        # build the connection URI and set the connection
-        uri = QgsDataSourceUri()
-        uri.setConnection(host, port, base_name, user, password)
-        if qgis_version >= 316:
-            pgis_db_plg = PostGisDBPlugin(conn_name)
-            c = PostGisDBConnector(uri, pgis_db_plg)
-        else:
-            c = PostGisDBConnector(uri)
+        db_connection = self.db_mng.establish_pg_connection(base_name)
+        uri = db_connection[0]
+        c = db_connection[1]
+        conn_name = db_connection[2]
 
         # Retrieve information about the table or the view from the database connection
         li_table_infos = c.getTables()
