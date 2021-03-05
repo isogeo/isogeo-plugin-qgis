@@ -66,8 +66,6 @@ class Ui_dlg_db_connections(object):
         dlg_db_connections.setWindowTitle(_translate("dlg_db_connections", "db_connections"))
         self.cbb_label.setText(_translate("dlg_db_connections", "Choose the registered connection to use to add \'{}\' layer from \'{}\' database:"))
 
-import resources_rc
-
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
