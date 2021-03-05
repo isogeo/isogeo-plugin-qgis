@@ -105,8 +105,6 @@ class ResultsManager(QObject):
         self.layer_adder.tr = self.tr
         self.layer_adder.tbl_result = self.tbl_result
         self.pg_connections = db_mng.pg_connections
-        logger.debug("*=====* {}".format(self.pg_connections))
-        self.layer_adder.pg_connections = self.pg_connections
 
         self.lim_checker = LimitationsChecker(self.layer_adder, self.tr)
 
