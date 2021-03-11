@@ -251,7 +251,7 @@ class SearchFormManager(IsogeoDockWidget):
         )
         layers = QgsProject.instance().mapLayers().values()
         for layer in layers:
-            if layer.type() == 0:
+            if layer.type() == 0 and layer.name() != "Metadata envelope":
                 if layer.geometryType() == 2:
                     self.cbb_geofilter.addItem(ico_poly, layer.name())
                 elif layer.geometryType() == 1:
