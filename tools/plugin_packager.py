@@ -9,9 +9,9 @@
 
         1. Launch OSGeo4W Shell inside th Isogeo QGIS Plugin repository
         2. Run:
-            
+
             python tools\plugin_packager.py
-            
+
 
     See: https://docs.qgis.org/testing/en/docs/pyqgis_developer_cookbook/releasing.html
 
@@ -193,20 +193,23 @@ with ZipFile(PLG_FINAL_ZIP_PATH, "w") as release_zip:
 
     QUICKSEARCHES = {
         "_default": {
-            "contact": None,
+            "contacts": None,
             "datatype": "type:dataset",
             "favorite": None,
-            "format": None,
+            "formats": None,
             "geofilter": None,
             "inspire": None,
-            "license": None,
+            "lang": "fr",
+            "licenses": None,
             "ob": "relevance",
             "od": "desc",
             "operation": "intersects",
-            "owner": None,
+            "owners": None,
+            "page": 1,
+            "show": true,
             "srs": None,
             "text": "",
-            "url": "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0",
+            "url": "https://v1.api.isogeo.com/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0&_lang=fr",
         }
     }
 
