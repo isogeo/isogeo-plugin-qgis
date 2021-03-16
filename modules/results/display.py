@@ -136,7 +136,7 @@ class ResultsManager(QObject):
         if pg_connections == {}:
             pg_connections = self.pg_connections
             available_pg_dbnames = [
-                pg_connection.get("name") for pg_connection in pg_connections
+                pg_connection.get("database") for pg_connection in pg_connections
             ]
         else:
             pass

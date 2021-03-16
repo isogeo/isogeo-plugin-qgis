@@ -73,7 +73,6 @@ class DataBaseManager:
         self.pg_connections = self.build_postgis_dict(qsettings)
         self.pg_connections_connection = [conn.get("connection") for conn in self.pg_connections]
         self.pg_connections_dbname = [conn.get("name") for conn in self.pg_connections]
-        self.pg_connections_cache = {}
 
         # self.db_connections_dialog = Isogeodb_connections()
 
@@ -127,7 +126,7 @@ class DataBaseManager:
         # and retrieve its contant if it do
         else:
             connection_dict = {
-                "name": service_params["dbname"],
+                "database": service_params["dbname"],
                 "host": service_params["host"],
                 "port": service_params["port"],
                 "username": service_params["user"],
@@ -135,6 +134,37 @@ class DataBaseManager:
                 "connection": connection_name,
             }
             return 1, connection_dict
+
+    def establish_postgis_connection(
+        self, host: str, port: str, username: str, password: str, database: str, connection: str
+    ):
+        """Set the connectin to a specific PostGIS database and return the corresponding QgsDataSourceUri and PostGisDBConnector.
+        """
+        if not isinstance(host, str):
+            raise TypeError("'host' argument value should be str, not : {}".format(type(host)))
+        elif not isinstance(port, str):
+            raise TypeError("'port' argument value should be str, not : {}".format(type(port)))
+        elif not isinstance(username, str):
+            raise TypeError("'username' argument value should be str, not : {}".format(type(username)))
+        elif not isinstance(password, str):
+            raise TypeError("'password' argument value should be str, not : {}".format(type(password)))
+        elif not isinstance(database, str):
+            raise TypeError("'database' argument value should be str, not : {}".format(type(database)))
+        elif not isinstance(connection, str):
+            raise TypeError("'connection' argument value should be str, not : {}".format(type(connection)))
+        else:
+            pass
+
+        # build the connection URI and set the connection
+        uri = QgsDataSourceUri()
+        uri.setConnection(host, port, database, username, password)
+        if qgis_version >= 316:
+            pgis_db_plg = PostGisDBPlugin(connection)
+            c = PostGisDBConnector(uri, pgis_db_plg)
+        else:
+            c = PostGisDBConnector(uri)
+
+        return uri, c
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connections."""
@@ -157,7 +187,7 @@ class DataBaseManager:
                     )
                     if password_saved == "true" and user_saved == "true":
                         connection_dict = {
-                            "name": input_dict.value(
+                            "database": input_dict.value(
                                 "PostgreSQL/connections/"
                                 + connection_name
                                 + "/database"
@@ -180,13 +210,29 @@ class DataBaseManager:
                             ),
                             "connection": connection_name,
                         }
+
+                        conn = self.establish_postgis_connection(**connection_dict)
+
+                        connection_dict["uri"] = conn[0]
+                        connection_dict["c"] = conn[1]
+                        li_table_infos = [infos for infos in conn[1].getTables() if infos[0] == 1]
+                        connection_dict["tables"] = li_table_infos
+
                         final_list.append(connection_dict)
                     elif connection_service != "" and self.pg_configfile_path:
                         connection_dict = self.config_file_parser(
                             self.pg_configfile_path, connection_service, connection_name
                         )
                         if connection_dict[0]:
-                            final_list.append(connection_dict[1])
+                            connection_dict = connection_dict[1]
+                            conn = self.establish_postgis_connection(**connection_dict)
+
+                            connection_dict["uri"] = conn[0]
+                            connection_dict["c"] = conn[1]
+                            li_table_infos = [infos for infos in conn[1].getTables() if infos[0] == 1]
+                            connection_dict["tables"] = li_table_infos
+
+                            final_list.append(connection_dict)
                         else:
                             logger.warning(connection_dict[1])
 
@@ -197,72 +243,3 @@ class DataBaseManager:
             else:
                 pass
         return final_list
-
-    def establish_postgis_connection(
-        self, database_name: str, connection_name: str = ""
-    ):
-        """Set the connectin to a specific PotGIS databse and return the corresponding QgsDataSourceUri and PostGisDBConnector.
-
-        :param str database_name: the name of the database
-        :param str database_connection: the name of the registered connection to use (optional)
-        """
-        if not isinstance(database_name, str):
-            raise TypeError("'database_name' argument value should be str, not : {}".format(type(database_name)))
-        elif not isinstance(connection_name, str):
-            raise TypeError("'connection_name' argument value should be str, not : {}".format(type(connection_name)))
-        if database_name not in self.pg_connections_dbname:
-            raise ValueError("None PostGIS connection set for a database named : '{}'".format(database_name))
-        elif connection_name not in self.pg_connections_connection:
-            raise ValueError("None PostGIS connection named : '{}'".format(connection_name))
-        else:
-            conn_params = [
-                connection
-                for connection in self.pg_connections
-                if connection.get("name") == database_name and connection.get("connection") == connection_name
-            ]
-
-        if not len(conn_params):
-            return 0
-        else:
-            conn_params = conn_params[0]
-
-        host = conn_params.get("host")
-        port = conn_params.get("port")
-        user = conn_params.get("username")
-        password = conn_params.get("password")
-        conn_name = conn_params.get("connection")
-
-        if conn_name not in self.pg_connections_cache:
-            # build the connection URI and set the connection
-            uri = QgsDataSourceUri()
-            uri.setConnection(host, port, database_name, user, password)
-            if qgis_version >= 316:
-                pgis_db_plg = PostGisDBPlugin(conn_name)
-                c = PostGisDBConnector(uri, pgis_db_plg)
-            else:
-                c = PostGisDBConnector(uri)
-            self.pg_connections_cache[conn_name] = {
-                "uri": uri,
-                "c": c
-            }
-        else:
-            conn_cache = self.pg_connections_cache.get(conn_name)
-            uri = conn_cache.get("uri")
-            c = conn_cache.get("c")
-
-        return uri, c, conn_name
-
-    # def ask_to_choose_connection(self, database_name: str, connection_names: list):
-    #     """
-    #     """
-    #     logger.debug("Let's ask to user to choose one of them.")
-    #     self.db_connections_dialog.connections_cbb.clear()
-    #     self.db_connections_dialog.connections_cbb.addItems(connection_names)
-    #     self.db_connections_dialog.accepted.connect(
-    #         partial(
-    #             self.establish_postgis_connection,
-    #             database_name=database_name,
-    #             connection_name=self.db_connections_dialog.connections_cbb.currentText()
-    #         )
-    #     )
-    #     self.db_connections_dialog.exec()

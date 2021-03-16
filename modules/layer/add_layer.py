@@ -304,8 +304,8 @@ class LayerAdder:
         schema = layer_info.get("schema", "")
         table_name = layer_info.get("table", "")
 
-        db_connection = self.db_mng.establish_postgis_connection(base_name, conn_name)
-        if not db_connection:
+        db_connection = [conn for conn in self.db_mng.pg_connections if conn.get("connection") == conn_name]
+        if not len(db_connection):
             error_msg = "None registered connection could be find for '{}' database.".format(
                 base_name
             )
@@ -316,9 +316,9 @@ class LayerAdder:
             )
             return 0
         else:
-            uri = db_connection[0]
-            c = db_connection[1]
-            conn_name = db_connection[2]
+            db_connection = db_connection[0]
+            uri = db_connection.get("uri")
+            c = db_connection.get("c")
 
         # Retrieve information about the table or the view from the database connection
         li_table_infos = c.getTables()
@@ -327,6 +327,7 @@ class LayerAdder:
             for table_infos in li_table_infos
             if table_infos[0] == 1 and table_infos[1] == table_name
         ]
+        table = [infos for infos in db_connection.get("tables") if infos[1] == table_name]
 
         # Create a vector layer from retrieved infos
         layer_is_ok = 0
