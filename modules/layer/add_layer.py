@@ -299,11 +299,12 @@ class LayerAdder:
 
         logger.debug("Data type: PostGIS")
         # Give aliases to the data passed as arguement
+        conn_name = layer_info.get("connection", "")
         base_name = layer_info.get("base_name", "")
         schema = layer_info.get("schema", "")
         table_name = layer_info.get("table", "")
 
-        db_connection = self.db_mng.establish_postgis_connection(base_name)
+        db_connection = self.db_mng.establish_postgis_connection(base_name, conn_name)
         if not db_connection:
             error_msg = "None registered connection could be find for '{}' database.".format(
                 base_name

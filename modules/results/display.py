@@ -284,18 +284,23 @@ class ResultsManager(QObject):
                         and md.path in available_pg_dbnames
                         and "." in md.name
                     ):
-                        params = {
-                            "base_name": md.path,
-                            "schema": md.name.split(".")[0],
-                            "table": md.name.split(".")[1],
-                            "abstract": md.abstract,
-                            "title": md.title,
-                            "keywords": md.keywords,
-                            "md_portal_url": portal_md_url,
-                        }
-                        add_options_dict[
-                            self.tr("PostGIS table", context=__class__.__name__)
-                        ] = params
+                        available_connections = [
+                            pg_connection.get("connection") for pg_connection in self.pg_connections
+                        ]
+                        for connection in available_connections:
+                            params = {
+                                "base_name": md.path,
+                                "schema": md.name.split(".")[0],
+                                "table": md.name.split(".")[1],
+                                "connection": connection,
+                                "abstract": md.abstract,
+                                "title": md.title,
+                                "keywords": md.keywords,
+                                "md_portal_url": portal_md_url,
+                            }
+                            options_key = self.tr("PostGIS table", context=__class__.__name__)
+                            options_key += " - {}".format(connection)
+                            add_options_dict[options_key] = params
                     else:
                         pass
                 else:
