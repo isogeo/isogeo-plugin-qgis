@@ -70,7 +70,7 @@ class DataBaseManager:
         else:
             self.pg_configfile_path = 0
 
-        self.pg_connections = self.build_postgis_dict(qsettings)
+        self.pg_connections = self.build_postgis_dict()
         self.pg_connections_connection = [
             conn.get("connection") for conn in self.pg_connections
         ]
@@ -198,44 +198,44 @@ class DataBaseManager:
 
         return uri, li_table_infos
 
-    def build_postgis_dict(self, input_dict):
+    def build_postgis_dict(self):
         """Build the dict that stores informations about PostGIS connections."""
         final_list = []
-        for k in sorted(input_dict.allKeys()):
+        for k in sorted(qsettings.allKeys()):
             if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
                 if len(k.split("/")) == 4:
                     connection_name = k.split("/")[2]
                     logger.debug("*=====* {}".format(connection_name))
                     # for traditionnal connections
-                    password_saved = input_dict.value(
+                    password_saved = qsettings.value(
                         "PostgreSQL/connections/" + connection_name + "/savePassword"
                     )
-                    user_saved = input_dict.value(
+                    user_saved = qsettings.value(
                         "PostgreSQL/connections/" + connection_name + "/saveUsername"
                     )
                     # for configuration file connections
-                    connection_service = input_dict.value(
+                    connection_service = qsettings.value(
                         "PostgreSQL/connections/" + connection_name + "/service"
                     )
                     if password_saved == "true" and user_saved == "true":
                         connection_dict = {
-                            "database": input_dict.value(
+                            "database": qsettings.value(
                                 "PostgreSQL/connections/"
                                 + connection_name
                                 + "/database"
                             ),
-                            "host": input_dict.value(
+                            "host": qsettings.value(
                                 "PostgreSQL/connections/" + connection_name + "/host"
                             ),
-                            "port": input_dict.value(
+                            "port": qsettings.value(
                                 "PostgreSQL/connections/" + connection_name + "/port"
                             ),
-                            "username": input_dict.value(
+                            "username": qsettings.value(
                                 "PostgreSQL/connections/"
                                 + connection_name
                                 + "/username"
                             ),
-                            "password": input_dict.value(
+                            "password": qsettings.value(
                                 "PostgreSQL/connections/"
                                 + connection_name
                                 + "/password"
@@ -264,3 +264,9 @@ class DataBaseManager:
             else:
                 pass
         return final_list
+
+    def refresh_postgis_dict(self):
+        """Build the dict that stores informations about PostGIS connections again when
+        btn_refresh_postgis_dict is pressed and emit a signal when it's ended"""
+
+        self.pg_connections = self.build_postgis_dict()
