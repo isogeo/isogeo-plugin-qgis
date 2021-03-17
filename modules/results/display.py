@@ -285,22 +285,37 @@ class ResultsManager(QObject):
                         and "." in md.name
                     ):
                         available_connections = [
-                            pg_connection.get("connection") for pg_connection in self.pg_connections
+                            pg_connection
+                            for pg_connection in self.pg_connections
+                            if md.path == pg_connection.get("database")
                         ]
                         for connection in available_connections:
-                            params = {
-                                "base_name": md.path,
-                                "schema": md.name.split(".")[0],
-                                "table": md.name.split(".")[1],
-                                "connection": connection,
-                                "abstract": md.abstract,
-                                "title": md.title,
-                                "keywords": md.keywords,
-                                "md_portal_url": portal_md_url,
-                            }
-                            options_key = self.tr("PostGIS table", context=__class__.__name__)
-                            options_key += " - {}".format(connection)
-                            add_options_dict[options_key] = params
+                            schema = md.name.split(".")[0]
+                            table = md.name.split(".")[1]
+                            tables_infos = connection.get("tables")
+                            if any(
+                                infos[2] == schema and infos[1] == table
+                                for infos in tables_infos
+                            ):
+                                params = {
+                                    "base_name": md.path,
+                                    "schema": schema,
+                                    "table": table,
+                                    "connection": connection.get("connection"),
+                                    "abstract": md.abstract,
+                                    "title": md.title,
+                                    "keywords": md.keywords,
+                                    "md_portal_url": portal_md_url,
+                                }
+                                options_key = self.tr(
+                                    "PostGIS table", context=__class__.__name__
+                                )
+                                options_key += " - {}".format(
+                                    connection.get("connection")
+                                )
+                                add_options_dict[options_key] = params
+                            else:
+                                pass
                     else:
                         pass
                 else:

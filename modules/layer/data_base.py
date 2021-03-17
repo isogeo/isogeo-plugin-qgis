@@ -71,12 +71,16 @@ class DataBaseManager:
             self.pg_configfile_path = 0
 
         self.pg_connections = self.build_postgis_dict(qsettings)
-        self.pg_connections_connection = [conn.get("connection") for conn in self.pg_connections]
+        self.pg_connections_connection = [
+            conn.get("connection") for conn in self.pg_connections
+        ]
         self.pg_connections_dbname = [conn.get("name") for conn in self.pg_connections]
 
         # self.db_connections_dialog = Isogeodb_connections()
 
-    def config_file_parser(self, file_path: Path, connection_service: str, connection_name: str):
+    def config_file_parser(
+        self, file_path: Path, connection_service: str, connection_name: str
+    ):
         """ Retrieve connection parameters values stored into configuration fiel corresponding
         to the specified file_path.
         """
@@ -136,22 +140,48 @@ class DataBaseManager:
             return 1, connection_dict
 
     def establish_postgis_connection(
-        self, host: str, port: str, username: str, password: str, database: str, connection: str
+        self,
+        host: str,
+        port: str,
+        username: str,
+        password: str,
+        database: str,
+        connection: str,
     ):
         """Set the connectin to a specific PostGIS database and return the corresponding QgsDataSourceUri and PostGisDBConnector.
         """
         if not isinstance(host, str):
-            raise TypeError("'host' argument value should be str, not : {}".format(type(host)))
+            raise TypeError(
+                "'host' argument value should be str, not : {}".format(type(host))
+            )
         elif not isinstance(port, str):
-            raise TypeError("'port' argument value should be str, not : {}".format(type(port)))
+            raise TypeError(
+                "'port' argument value should be str, not : {}".format(type(port))
+            )
         elif not isinstance(username, str):
-            raise TypeError("'username' argument value should be str, not : {}".format(type(username)))
+            raise TypeError(
+                "'username' argument value should be str, not : {}".format(
+                    type(username)
+                )
+            )
         elif not isinstance(password, str):
-            raise TypeError("'password' argument value should be str, not : {}".format(type(password)))
+            raise TypeError(
+                "'password' argument value should be str, not : {}".format(
+                    type(password)
+                )
+            )
         elif not isinstance(database, str):
-            raise TypeError("'database' argument value should be str, not : {}".format(type(database)))
+            raise TypeError(
+                "'database' argument value should be str, not : {}".format(
+                    type(database)
+                )
+            )
         elif not isinstance(connection, str):
-            raise TypeError("'connection' argument value should be str, not : {}".format(type(connection)))
+            raise TypeError(
+                "'connection' argument value should be str, not : {}".format(
+                    type(connection)
+                )
+            )
         else:
             pass
 
@@ -164,7 +194,9 @@ class DataBaseManager:
         else:
             c = PostGisDBConnector(uri)
 
-        return uri, c
+        li_table_infos = [infos for infos in c.getTables() if infos[0] == 1]
+
+        return uri, c, li_table_infos
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connections."""
@@ -215,8 +247,7 @@ class DataBaseManager:
 
                         connection_dict["uri"] = conn[0]
                         connection_dict["c"] = conn[1]
-                        li_table_infos = [infos for infos in conn[1].getTables() if infos[0] == 1]
-                        connection_dict["tables"] = li_table_infos
+                        connection_dict["tables"] = conn[2]
 
                         final_list.append(connection_dict)
                     elif connection_service != "" and self.pg_configfile_path:
@@ -229,8 +260,7 @@ class DataBaseManager:
 
                             connection_dict["uri"] = conn[0]
                             connection_dict["c"] = conn[1]
-                            li_table_infos = [infos for infos in conn[1].getTables() if infos[0] == 1]
-                            connection_dict["tables"] = li_table_infos
+                            connection_dict["tables"] = conn[2]
 
                             final_list.append(connection_dict)
                         else:
