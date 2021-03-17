@@ -196,7 +196,7 @@ class DataBaseManager:
 
         li_table_infos = [infos for infos in c.getTables() if infos[0] == 1]
 
-        return uri, c, li_table_infos
+        return uri, li_table_infos
 
     def build_postgis_dict(self, input_dict):
         """Build the dict that stores informations about PostGIS connections."""
@@ -243,31 +243,22 @@ class DataBaseManager:
                             "connection": connection_name,
                         }
 
-                        conn = self.establish_postgis_connection(**connection_dict)
-
-                        connection_dict["uri"] = conn[0]
-                        connection_dict["c"] = conn[1]
-                        connection_dict["tables"] = conn[2]
-
-                        final_list.append(connection_dict)
                     elif connection_service != "" and self.pg_configfile_path:
                         connection_dict = self.config_file_parser(
                             self.pg_configfile_path, connection_service, connection_name
                         )
                         if connection_dict[0]:
                             connection_dict = connection_dict[1]
-                            conn = self.establish_postgis_connection(**connection_dict)
-
-                            connection_dict["uri"] = conn[0]
-                            connection_dict["c"] = conn[1]
-                            connection_dict["tables"] = conn[2]
-
-                            final_list.append(connection_dict)
                         else:
                             logger.warning(connection_dict[1])
-
+                            continue
                     else:
                         continue
+                    conn = self.establish_postgis_connection(**connection_dict)
+                    connection_dict["uri"] = conn[0]
+                    connection_dict["tables"] = conn[1]
+
+                    final_list.append(connection_dict)
                 else:
                     pass
             else:

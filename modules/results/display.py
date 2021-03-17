@@ -307,10 +307,7 @@ class ResultsManager(QObject):
                                     "keywords": md.keywords,
                                     "md_portal_url": portal_md_url,
                                 }
-                                options_key = self.tr(
-                                    "PostGIS table", context=__class__.__name__
-                                )
-                                options_key += " - {}".format(
+                                options_key = "PostGIS - {}".format(
                                     connection.get("connection")
                                 )
                                 add_options_dict[options_key] = params
@@ -421,9 +418,7 @@ class ResultsManager(QObject):
                     if option_type.lower() in self.service_ico_dict:
                         icon = self.service_ico_dict.get(option_type.lower())
                     # PostGIS table
-                    elif option_type.startswith(
-                        self.tr("PostGIS table", context=__class__.__name__)
-                    ):
+                    elif option_type.startswith("PostGIS"):
                         icon = ico_pgis
                     # Data file
                     elif option_type.startswith(
@@ -455,9 +450,7 @@ class ResultsManager(QObject):
                         if option_type.lower() in self.service_ico_dict:
                             icon = self.service_ico_dict.get(option_type.lower())
                         # PostGIS table
-                        elif option.startswith(
-                            self.tr("PostGIS table", context=__class__.__name__)
-                        ):
+                        elif option.startswith("PostGIS"):
                             icon = ico_pgis
                         # Data file
                         elif option.startswith(
@@ -468,7 +461,7 @@ class ResultsManager(QObject):
                         else:
                             logger.debug(
                                 "Undefined add option type : {}/{} --> {}".format(
-                                    option_type, text, params
+                                    option_type, option, params
                                 )
                             )
                         # add a combobox item with the icon corresponding to the add option
