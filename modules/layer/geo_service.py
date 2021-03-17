@@ -64,6 +64,14 @@ except ImportError:
         "Depencencies - HTTPError not within owslib."
         " Directly imported from urllib.error"
     )
+
+try:
+    from owslib.util import Authentication
+
+    logger.info("Depencencies - Authentication within owslib")
+except ImportError:
+    logger.warning("Depencencies - Authentication not within owslib.")
+
 try:
     import requests
 
@@ -252,6 +260,17 @@ class GeoServiceManager:
             )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
+        except requests.exceptions.SSLError:
+            try:
+                auth = Authentication(verify=False)
+                service = service_connector(url=url, version=service_version, auth=auth)
+                service_dict["reachable"] = 1
+            except Exception as e:
+                error_msg = "{} <i>{}</i> - <b>Connection to service failed</b>: {}".format(
+                    service_type, url, str(e)
+                )
+                service_dict["reachable"] = 0
+                service_dict["error"] = error_msg
         except Exception:
             try:
                 service = service_connector(url=url)
