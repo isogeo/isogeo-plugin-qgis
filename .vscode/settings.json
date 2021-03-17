@@ -21,7 +21,7 @@
     // Set Python interpreter
     //"python.pythonPath": "${workspaceFolder}/.venv_tests/Scripts/python.exe",
     //"python.pythonPath": "C:/OSGeo4W64/bin/python-qgis-ltr.bat",
-    "python.pythonPath": "c:\\Program Files\\QGIS 3.10.5\\apps\\Python37\\python.exe",
+    "python.pythonPath": "C:\\Program Files\\QGIS 3.16\\apps\\Python37\\python.exe",
 
     // Formatting with black
     "python.formatting.provider": "black",
