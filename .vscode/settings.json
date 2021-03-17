@@ -1,6 +1,6 @@
-{   
-    "editor.rulers": [88],
-    "editor.wordWrapColumn": 88,
+{
+    "editor.rulers": [100],
+    "editor.wordWrapColumn": 100,
     // PyQt Integration
     "pyqt-integration.qtdesigner.path": "C:/OSGeo4W64/bin/qgis-ltr-designer.bat",
     "pyqt-integration.pyuic.cmd": "C:\\OSGEO4~1\\apps\\Python37\\Scripts\\pyuic5.bat",
@@ -15,7 +15,7 @@
         "--verbose"
     ],
 
-    // Not working yet 
+    // Not working yet
     "python.envFile": "${workspaceFolder}/dev.env",
 
     // Set Python interpreter
