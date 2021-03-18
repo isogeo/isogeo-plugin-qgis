@@ -10,6 +10,8 @@ from functools import partial
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QLabel, QAbstractButton, QDialogButtonBox
 
 # PyQGIS
 from qgis.core import QgsDataSourceUri
@@ -23,7 +25,7 @@ from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin
 
 # UI classes
-# from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
+from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
 
 # ############################################################################
 # ########## Globals ###############
@@ -35,6 +37,8 @@ qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 connection_parameters_names = ["host", "port", "dbname", "user", "password"]
+
+ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
 
 # ############################################################################
 # ########## Classes ###############
@@ -70,13 +74,13 @@ class DataBaseManager:
         else:
             self.pg_configfile_path = 0
 
-        self.pg_connections = self.build_postgis_dict()
-        self.pg_connections_connection = [
-            conn.get("connection") for conn in self.pg_connections
-        ]
-        self.pg_connections_dbname = [conn.get("name") for conn in self.pg_connections]
+        self.pg_connections = list
+        self.build_postgis_dict()
 
-        # self.db_connections_dialog = Isogeodb_connections()
+        self.pgdb_config_dialog = Isogeodb_connections()
+        self.pgdb_config_dialog.setWindowIcon(ico_pgis)
+
+        self.pgdb_config_dialog.btnbox.clicked.connect(self.pgdb_config_dialog_slot)
 
     def config_file_parser(
         self, file_path: Path, connection_service: str, connection_name: str
@@ -198,6 +202,20 @@ class DataBaseManager:
 
         return uri, li_table_infos
 
+    def store_pgdb_config_preferences(self, connection_list: []):
+        """Called when one of the 3 dialog button box is clicked to execute appropriate operations."""
+        # for db_name in self.pg_connections_dbname:
+        #     li_connections = [conn for conn in self.pg_connections if conn.get("database") == db_name]
+        #     if any(conn.get("connection") in connection_list for conn in li_connections):
+        #         for connection in li_connections:
+        #             if connection.get("connection") not in connection_list:
+        #                 self.pg_connections.remove(connection)
+        #             else:
+        #                 pass
+        #     else:
+        #         pass      
+        # return
+
     def build_postgis_dict(self):
         """Build the dict that stores informations about PostGIS connections."""
         final_list = []
@@ -263,10 +281,89 @@ class DataBaseManager:
                     pass
             else:
                 pass
-        return final_list
 
-    def refresh_postgis_dict(self):
-        """Build the dict that stores informations about PostGIS connections again when
-        btn_refresh_postgis_dict is pressed and emit a signal when it's ended"""
+        self.pg_connections = final_list
+        self.pg_connections_connection = [conn.get("connection") for conn in final_list]
+        self.pg_connections_dbname = [conn.get("database") for conn in final_list]
 
-        self.pg_connections = self.build_postgis_dict()
+    def fill_pgdb_config_tbl(self):
+        """Fill the dialog table from informations about PostGIS database embed connection"""
+
+        li_unique_pgdb_name = set(self.pg_connections_dbname)
+        tbl = self.pgdb_config_dialog.tbl
+
+        tbl.clear()
+        li_header_labels = [
+            "Database", "Connection"
+        ]
+        tbl.setHorizontalHeaderLabels(li_header_labels)
+        tbl.setRowCount(len(li_unique_pgdb_name))
+
+        row = 0
+        for dbname in li_unique_pgdb_name:
+            # COLUMN 1
+            dbname_item = QLabel()
+            dbname_item.setText(dbname)
+            dbname_item.setMargin(5)
+            tbl.setCellWidget(row, 0, dbname_item)
+
+            # COLUMN 2
+            cbb_conn = QComboBox()
+            cbb_conn.addItem(" - ", 0)
+            li_pgdb_conn = [conn.get("connection") for conn in self.pg_connections if conn.get("database") == dbname]
+            li_pgdb_conn.sort()
+            for connection in li_pgdb_conn:
+                cbb_conn.addItem(connection, 1)
+            tbl.setCellWidget(row, 1, cbb_conn)
+
+            row += 1
+
+        hheader = tbl.horizontalHeader()
+        vheader = tbl.verticalHeader()
+        hheader.setSectionResizeMode(1)
+        # hheader.setSectionResizeMode(0, 3)
+        # hheader.setSectionResizeMode(1, 1)
+        vheader.setMinimumSectionSize(10)
+
+        self.pgdb_config_dialog.show()
+
+    def open_pgdb_config_dialog(self):
+        """Build the dialog table from informations about PostGIS database embed connection, then
+        display the dialog window to the user"""
+
+        self.fill_pgdb_config_tbl()
+        self.pgdb_config_dialog.show()
+
+    def pgdb_config_dialog_slot(self, btn: QAbstractButton):
+        """Called when one of the 3 dialog button box is clicked to execute appropriate operations."""
+
+        btn_role = self.pgdb_config_dialog.btnbox.buttonRole(btn)
+
+        # If "Save" button was clicked
+        if btn_role == 0:
+            tbl = self.pgdb_config_dialog.tbl
+
+            row_count = tbl.rowCount()
+            li_connection_name = []
+
+            # Retrieve the option selected in each combobxs
+            for i in range(0, row_count):
+                cbbox = tbl.cellWidget(i, 1)
+                current_userData = cbbox.itemData(cbbox.currentIndex())
+                if current_userData:
+                    li_connection_name.append(cbbox.currentText())
+                else:
+                    pass
+            # If options have been selected, store user preferences
+            if len(li_connection_name):
+                self.store_pgdb_config_preferences(li_connection_name)
+            else:
+                pass
+        # If "Cancel" button was clicked
+        elif btn_role == 1:
+            pass
+        # If "Reset" button was clicked
+        elif btn_role == 7:
+            self.fill_pgdb_config_tbl()
+        else:
+            logger.warning("Unexpected buttonRole : {} (https://doc.qt.io/qt-5/qdialogbuttonbox.html#ButtonRole-enum)".format(btn_role))

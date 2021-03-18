@@ -275,7 +275,7 @@ class ResultsManager(QObject):
                         ] = params
                     else:
                         pass
-                # If the data is a postGIS table and the connexion has
+                # If the data is a postGIS table and the connection has
                 # been saved in QGIS.
                 elif md.format == "postgis":
                     if (

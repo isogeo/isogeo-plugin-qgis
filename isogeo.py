@@ -113,6 +113,7 @@ logger.addHandler(logfile)
 
 # icons
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
+ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
 
 
 # ############################################################################
@@ -865,7 +866,9 @@ class Isogeo:
         # view credits - see: #52
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
 
-        # -- Settings tab - Isogeo Portal settings ------------------------
+        # -- Settings tab - layer adding settings ------------------------
+        self.form_mng.btn_open_pgdb_config_dialog.setIcon(ico_pgis)
+        self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(self.form_mng.results_mng.layer_adder.db_mng.open_pgdb_config_dialog)
         self.form_mng.input_portal_url.setText(
             qsettings.value("isogeo/settings/portal_base_url")
         )

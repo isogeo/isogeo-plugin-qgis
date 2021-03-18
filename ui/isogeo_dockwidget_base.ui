@@ -1970,7 +1970,13 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_14">
                <item>
-                <widget class="QLabel" name="label_refresh_postGIS_dict">
+                <widget class="QLabel" name="label_config_db_conn">
+                 <property name="maximumSize">
+                  <size>
+                   <width>300</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="font">
                   <font>
                    <weight>50</weight>
@@ -1978,7 +1984,7 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string>Refresh embed PostGIS data base connections</string>
+                  <string>Configure embed database connections to be used by the plugin</string>
                  </property>
                 </widget>
                </item>
@@ -1996,7 +2002,7 @@
                 </spacer>
                </item>
                <item>
-                <widget class="QPushButton" name="btn_refresh_postGIS_dict">
+                <widget class="QPushButton" name="btn_open_pgdb_config_dialog">
                  <property name="minimumSize">
                   <size>
                    <width>80</width>
@@ -2011,10 +2017,6 @@
                  </property>
                  <property name="text">
                   <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/undo.svg</normaloff>:/plugins/Isogeo/resources/undo.svg</iconset>
                  </property>
                 </widget>
                </item>

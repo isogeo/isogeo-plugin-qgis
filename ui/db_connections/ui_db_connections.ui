@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>490</width>
-    <height>200</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -23,11 +23,11 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>db_connections</string>
+   <string>PostGIS database configuration</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../resources.qrc">
-    <normaloff>:/plugins/Isogeo/resources/gavel.svg</normaloff>:/plugins/Isogeo/resources/gavel.svg</iconset>
+   <iconset>
+    <normaloff>:/plugins/Isogeo/resources/settings/gear.svg</normaloff>:/plugins/Isogeo/resources/settings/gear.svg</iconset>
   </property>
   <property name="windowOpacity">
    <double>0.950000000000000</double>
@@ -60,7 +60,7 @@
       <number>5</number>
      </property>
      <item>
-      <widget class="QLabel" name="cbb_label">
+      <widget class="QLabel" name="label">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -73,26 +73,95 @@
          <height>20</height>
         </size>
        </property>
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="text">
-        <string>Choose the registered connection to use to add '{}' layer from '{}' database:</string>
+        <string>Choose the embed connection to be used to access to each PostGIS database</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="connections_cbb">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QTableWidget" name="tbl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::CurrentChanged</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>false</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
+         <property name="rowCount">
+          <number>0</number>
+         </property>
+         <property name="columnCount">
+          <number>2</number>
+         </property>
+         <attribute name="horizontalHeaderVisible">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderCascadingSectionResizes">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>230</number>
+         </attribute>
+         <attribute name="horizontalHeaderHighlightSections">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderMinimumSectionSize">
+          <number>20</number>
+         </attribute>
+         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column/>
+         <column/>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="btn_ok_close">
+      <widget class="QDialogButtonBox" name="btnbox">
        <property name="maximumSize">
         <size>
-         <width>500</width>
+         <width>600</width>
          <height>16777215</height>
         </size>
        </property>
@@ -109,7 +178,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel</set>
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
        </property>
        <property name="centerButtons">
         <bool>true</bool>
@@ -120,9 +189,10 @@
    </item>
   </layout>
  </widget>
+ <resources/>
  <connections>
   <connection>
-   <sender>btn_ok_close</sender>
+   <sender>btnbox</sender>
    <signal>accepted()</signal>
    <receiver>dlg_db_connections</receiver>
    <slot>accept()</slot>
@@ -138,7 +208,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>btn_ok_close</sender>
+   <sender>btnbox</sender>
    <signal>rejected()</signal>
    <receiver>dlg_db_connections</receiver>
    <slot>reject()</slot>
