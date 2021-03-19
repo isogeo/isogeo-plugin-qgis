@@ -87,9 +87,6 @@ class LayerAdder:
             "WMTS": ["wms", QgsRasterLayer, self.geo_srv_mng.build_wmts_url],
         }
 
-        # prepare layer adding from data base tables
-        self.db_mng = DataBaseManager()
-
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
         QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
 
@@ -299,16 +296,12 @@ class LayerAdder:
 
         logger.debug("Data type: PostGIS")
         # Give aliases to the data passed as arguement
-        conn_name = layer_info.get("connection", "")
+        db_connection = layer_info.get("connection", "")
+        conn_name = db_connection.get("connection")
         base_name = layer_info.get("base_name", "")
         schema = layer_info.get("schema", "")
         table_name = layer_info.get("table", "")
 
-        db_connection = [
-            conn
-            for conn in self.db_mng.pg_connections
-            if conn.get("connection") == conn_name
-        ]
         if not len(db_connection):
             error_msg = "None registered connection could be find for '{}' database.".format(
                 base_name
@@ -320,7 +313,6 @@ class LayerAdder:
             )
             return 0
         else:
-            db_connection = db_connection[0]
             uri = db_connection.get("uri")
 
         # Retrieve information about the table or the view from the database connection

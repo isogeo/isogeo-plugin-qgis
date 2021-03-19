@@ -29,7 +29,6 @@ from ..isogeo_pysdk import Metadata
 
 plg_tools = IsogeoPlgTools()
 geo_srv_mng = GeoServiceManager()
-db_mng = DataBaseManager()
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
@@ -104,7 +103,8 @@ class ResultsManager(QObject):
         self.layer_adder = LayerAdder()
         self.layer_adder.tr = self.tr
         self.layer_adder.tbl_result = self.tbl_result
-        self.pg_connections = db_mng.pg_connections
+
+        self.db_mng = DataBaseManager(self.tr)
 
         self.lim_checker = LimitationsChecker(self.layer_adder, self.tr)
 
@@ -134,7 +134,7 @@ class ResultsManager(QObject):
         # Get the name (and other informations) of all databases whose
         # connection is set up in QGIS
         if pg_connections == {}:
-            pg_connections = self.pg_connections
+            pg_connections = self.db_mng.pg_connections
             available_pg_dbnames = [
                 pg_connection.get("database") for pg_connection in pg_connections
             ]
@@ -285,10 +285,20 @@ class ResultsManager(QObject):
                         and "." in md.name
                     ):
                         available_connections = [
-                            pg_connection
-                            for pg_connection in self.pg_connections
-                            if md.path == pg_connection.get("database")
+                            pg_conn
+                            for pg_conn in pg_connections
+                            if md.path == pg_conn.get("database")
+                            and pg_conn.get("prefered")
                         ]
+                        if not len(available_connections):
+                            available_connections = [
+                                pg_conn
+                                for pg_conn in pg_connections
+                                if md.path == pg_conn.get("database")
+                            ]
+                        else:
+                            pass
+
                         for connection in available_connections:
                             schema = md.name.split(".")[0]
                             table = md.name.split(".")[1]
@@ -301,7 +311,7 @@ class ResultsManager(QObject):
                                     "base_name": md.path,
                                     "schema": schema,
                                     "table": table,
-                                    "connection": connection.get("connection"),
+                                    "connection": connection,
                                     "abstract": md.abstract,
                                     "title": md.title,
                                     "keywords": md.keywords,
