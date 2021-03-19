@@ -24,7 +24,7 @@ from qgis.utils import iface
 from ..tools import IsogeoPlgTools
 from .metadata_sync import MetadataSynchronizer
 from ..layer.geo_service import GeoServiceManager
-from ..layer.data_base import DataBaseManager
+from ..layer.database import DataBaseManager
 
 # ############################################################################
 # ########## Globals ###############

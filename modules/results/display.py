@@ -18,7 +18,7 @@ from ..tools import IsogeoPlgTools
 from ..layer.add_layer import LayerAdder
 from ..layer.limitations_checker import LimitationsChecker
 from ..layer.geo_service import GeoServiceManager
-from ..layer.data_base import DataBaseManager
+from ..layer.database import DataBaseManager
 
 # isogeo-pysdk
 from ..isogeo_pysdk import Metadata
