@@ -104,9 +104,7 @@ log_form = logging.Formatter(
     " %(funcName)s || %(message)s"
 )
 logfile_path = Path(plg_logdir) / "log_isogeo_plugin.log"
-logfile = RotatingFileHandler(
-    logfile_path, "a", 5000000, 1
-)
+logfile = RotatingFileHandler(logfile_path, "a", 5000000, 1)
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
@@ -119,6 +117,7 @@ ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
 # ############################################################################
 # ########## Classes ###############
 # ##################################
+
 
 class Isogeo:
     """Isogeo plugin for QGIS LTR."""
@@ -335,6 +334,11 @@ class Isogeo:
         # save base portal URL in qsettings
         qsettings.setValue(
             "isogeo/settings/portal_base_url", self.form_mng.input_portal_url.text()
+        )
+        # save prefered PostGIS database connections
+        qsettings.setValue(
+            "isogeo/settings/pref_pgdb_conn",
+            self.form_mng.results_mng.db_mng.li_pref_pgdb_conn,
         )
         # save cache
         self.form_mng.results_mng.cache_mng.dumper()
@@ -868,7 +872,9 @@ class Isogeo:
 
         # -- Settings tab - layer adding settings ------------------------
         self.form_mng.btn_open_pgdb_config_dialog.setIcon(ico_pgis)
-        self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(self.form_mng.results_mng.layer_adder.db_mng.open_pgdb_config_dialog)
+        self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(
+            self.form_mng.results_mng.db_mng.open_pgdb_config_dialog
+        )
         self.form_mng.input_portal_url.setText(
             qsettings.value("isogeo/settings/portal_base_url")
         )
