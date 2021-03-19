@@ -11,7 +11,13 @@ from functools import partial
 # PyQT
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QLabel, QAbstractButton, QDialogButtonBox
+from qgis.PyQt.QtWidgets import (
+    QTableWidgetItem,
+    QComboBox,
+    QLabel,
+    QAbstractButton,
+    QDialogButtonBox,
+)
 
 # PyQGIS
 from qgis.core import QgsDataSourceUri
@@ -39,6 +45,11 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 connection_parameters_names = ["host", "port", "dbname", "user", "password"]
 
 ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
+btnBox_ico_dict = {
+    0: QIcon(":/plugins/Isogeo/resources/save.svg"),
+    1: QIcon(":/images/themes/default/mActionRemove.svg"),
+    7: QIcon(":/plugins/Isogeo/resources/undo.svg"),
+}
 
 # ############################################################################
 # ########## Classes ###############
@@ -52,6 +63,7 @@ class DataBaseManager:
     # def __init__(self, cache_manager: object):
     def __init__(self):
         """Class constructor."""
+        # Check PGSERVICEFILE env var value if it exists
         pgservicefile_value = environ.get("PGSERVICEFILE", None)
         if pgservicefile_value:
             self.pg_configfile_path = Path(pgservicefile_value)
@@ -74,11 +86,17 @@ class DataBaseManager:
         else:
             self.pg_configfile_path = 0
 
+        # retrieve informatyion about registered database connexions from QSettings
         self.pg_connections = list
         self.build_postgis_dict()
 
+        # set UI module
         self.pgdb_config_dialog = Isogeodb_connections()
         self.pgdb_config_dialog.setWindowIcon(ico_pgis)
+        for btn in self.pgdb_config_dialog.btnbox.buttons():
+            btn_role = self.pgdb_config_dialog.btnbox.buttonRole(btn)
+            icon = btnBox_ico_dict.get(btn_role)
+            btn.setIcon(icon)
 
         self.pgdb_config_dialog.btnbox.clicked.connect(self.pgdb_config_dialog_slot)
 
@@ -213,7 +231,7 @@ class DataBaseManager:
         #             else:
         #                 pass
         #     else:
-        #         pass      
+        #         pass
         # return
 
     def build_postgis_dict(self):
@@ -293,9 +311,7 @@ class DataBaseManager:
         tbl = self.pgdb_config_dialog.tbl
 
         tbl.clear()
-        li_header_labels = [
-            "Database", "Connection"
-        ]
+        li_header_labels = ["Database", "Connection"]
         tbl.setHorizontalHeaderLabels(li_header_labels)
         tbl.setRowCount(len(li_unique_pgdb_name))
 
@@ -310,7 +326,11 @@ class DataBaseManager:
             # COLUMN 2
             cbb_conn = QComboBox()
             cbb_conn.addItem(" - ", 0)
-            li_pgdb_conn = [conn.get("connection") for conn in self.pg_connections if conn.get("database") == dbname]
+            li_pgdb_conn = [
+                conn.get("connection")
+                for conn in self.pg_connections
+                if conn.get("database") == dbname
+            ]
             li_pgdb_conn.sort()
             for connection in li_pgdb_conn:
                 cbb_conn.addItem(connection, 1)
@@ -366,4 +386,8 @@ class DataBaseManager:
         elif btn_role == 7:
             self.fill_pgdb_config_tbl()
         else:
-            logger.warning("Unexpected buttonRole : {} (https://doc.qt.io/qt-5/qdialogbuttonbox.html#ButtonRole-enum)".format(btn_role))
+            logger.warning(
+                "Unexpected buttonRole : {} (https://doc.qt.io/qt-5/qdialogbuttonbox.html#ButtonRole-enum)".format(
+                    btn_role
+                )
+            )
