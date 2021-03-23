@@ -4,7 +4,7 @@
 # Standard library
 import logging
 import re
-
+from lxml import etree
 from urllib.parse import urlencode, unquote, quote
 
 # PyQT
@@ -65,12 +65,12 @@ except ImportError:
         " Directly imported from urllib.error"
     )
 
-# try:
-#     from owslib.util import Authentication
+try:
+    from owslib.util import Authentication
 
-#     logger.info("Depencencies - Authentication within owslib")
-# except ImportError:
-#     logger.warning("Depencencies - Authentication not within owslib.")
+    logger.info("Depencencies - Authentication within owslib")
+except ImportError:
+    logger.warning("Depencencies - Authentication not within owslib.")
 
 try:
     import requests
@@ -243,7 +243,7 @@ class GeoServiceManager:
             url = service_dict.get("getCap_url")
         else:
             url = service_dict.get("base_url")
-
+        logger.debug("*=====* '{}'".format(url))
         # Basic checks on service reachability
         try:
             service = service_connector(url=url, version=service_version)
@@ -260,17 +260,21 @@ class GeoServiceManager:
             )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
-        # except requests.exceptions.SSLError:
-        #     try:
-        #         auth = Authentication(verify=False)
-        #         service = service_connector(url=url, version=service_version, auth=auth)
-        #         service_dict["reachable"] = 1
-        #     except Exception as e:
-        #         error_msg = "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
-        #             service_type, url, str(e)
-        #         )
-        #         service_dict["reachable"] = 0
-        #         service_dict["error"] = error_msg
+        except requests.exceptions.SSLError:
+            try:
+                auth = Authentication(verify=False)
+                service = service_connector(url=url, version=service_version, auth=auth)
+                # url = service_dict.get("getCap_url")
+                # r = requests.get(url=url, verify=False)
+                # service = etree.parse(r.text)
+                # service_dict["reachable"] = 1
+                # service_dict["ssl"] = 1
+            except Exception as e:
+                error_msg = "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
+                    service_type, url, str(e)
+                )
+                service_dict["reachable"] = 0
+                service_dict["error"] = error_msg
         except Exception:
             try:
                 service = service_connector(url=url)
@@ -300,30 +304,30 @@ class GeoServiceManager:
         # check if main operation ("GetMap" or "GetFeature" depending on service type) is available
         # if it do, retrieve, clean and store the corresponding URL
         if main_op_name in service_dict["operations"]:
-            row_main_op_url = (
-                service.getOperationByName(main_op_name).methods[0].get("url")
-            )
-            if "&" in row_main_op_url:
-                if service_type == "WMTS":
-                    main_op_url = row_main_op_url.split("?")[0] + "?"
-                    additional_params = [
-                        part
-                        for part in row_main_op_url.split("?")[1].split("&")
-                        if part != ""
-                    ]
-                    for param in additional_params:
-                        main_op_url += quote("{}&".format(param))
-                elif row_main_op_url.endswith("&"):
-                    main_op_url = row_main_op_url[:-1]
-                else:
-                    main_op_url = row_main_op_url + "&"
-            else:
-                if row_main_op_url.endswith("?"):
-                    main_op_url = row_main_op_url
-                else:
-                    main_op_url = row_main_op_url + "?"
-            main_op_key = "{}_url".format(main_op_name)
-            service_dict[main_op_key] = main_op_url
+            # row_main_op_url = (
+            #     service.getOperationByName(main_op_name).methods[0].get("url")
+            # )
+            # if "&" in row_main_op_url:
+            #     if service_type == "WMTS":
+            #         main_op_url = row_main_op_url.split("?")[0] + "?"
+            #         additional_params = [
+            #             part
+            #             for part in row_main_op_url.split("?")[1].split("&")
+            #             if part != ""
+            #         ]
+            #         for param in additional_params:
+            #             main_op_url += quote("{}&".format(param))
+            #     elif row_main_op_url.endswith("&"):
+            #         main_op_url = row_main_op_url[:-1]
+            #     else:
+            #         main_op_url = row_main_op_url + "&"
+            # else:
+            #     if row_main_op_url.endswith("?"):
+            #         main_op_url = row_main_op_url
+            #     else:
+            #         main_op_url = row_main_op_url + "?"
+            # main_op_key = "{}_url".format(main_op_name)
+            # service_dict[main_op_key] = main_op_url
             service_dict["{}_isAvailable".format(main_op_name)] = 1
         else:
             service_dict["{}_isAvailable".format(main_op_name)] = 0
