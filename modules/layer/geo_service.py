@@ -4,7 +4,7 @@
 # Standard library
 import logging
 import re
-from lxml import etree
+from xml.etree import ElementTree
 from urllib.parse import urlencode, unquote, quote
 
 # PyQT
@@ -193,6 +193,73 @@ class GeoServiceManager:
 
             return layer_title
 
+    # For now, only working for a specific business geographic WFS (https://github.com/isogeo/isogeo-plugin-qgis/issues/359)
+    def parse_ogc_xml(self, service_type, service_dict: dict):
+        """Called if owslib modules can't be used to parse the xml return by GetCapabilities request.
+
+        :param str service_type: type of OGC service ("WFS", "WMS", or "WMTS")
+        :param dict service_dict: the dict to fill with infos retrieved from XML content
+        """
+        # Rirst, specify that the dict gonna fill by the risky way
+        service_dict["manual"] = 1
+
+        # Then, launch the GetCapabilities request
+        url = service_dict.get("getCap_url")
+        r = requests.get(url=url, verify=False)
+        # Finally, parse XML content returne
+        if r.status_code == 200:
+            service_dict["reachable"] = 1
+            xml_root = ElementTree.fromstring(r.text)
+            li_xml_elem = xml_root.iter()
+            service_dict[service_type] = li_xml_elem
+
+            # check if get data operation is available + retrieve formatOptions
+            main_op_name = self.ogc_infos_dict.get(service_type)[0]
+            main_op_elem = [
+                elem
+                for elem in li_xml_elem
+                if (elem.attrib and elem.get("name") == main_op_name)
+                or main_op_name in elem.tag
+            ]
+            if len(main_op_elem) == 1:
+                service_dict["{}_isAvailable".format(main_op_name)] = 1
+                main_op_elem = main_op_elem[0]
+                li_formatOptions = []
+                for subelem in main_op_elem:
+                    if subelem.tag == "Format":
+                        li_formatOptions.append(subelem.text)
+                service_dict["formatOptions"] = li_formatOptions
+            elif len(main_op_elem) == 0:
+                service_dict["{}_isAvailable".format(main_op_name)] = 0
+            else:
+                service_dict["{}_isAvailable".format(main_op_name)] = 1
+
+            # retrieving layers typenames
+            featureTypeList = [
+                elem
+                for elem in li_xml_elem
+                if elem.tag == "FeatureType" or elem.tag == "Layer"
+            ]
+            li_typenames = []
+            for featureType in featureTypeList:
+                for elem in featureType:
+                    if elem.tag == "Name":
+                        li_typenames.append(elem.text)
+                        break
+                    else:
+                        pass
+            service_dict["typenames"] = li_typenames
+            service_dict["version"] = xml_root.get("version")
+
+        else:
+            raise Exception(
+                "GetCapabilites request failed using requests: {}:{}".format(
+                    r.status_code, r.reason
+                )
+            )
+
+        return service_dict
+
     def check_ogc_service(
         self, service_type: str, service_url: str, service_version: str
     ):
@@ -239,114 +306,130 @@ class GeoServiceManager:
             service_dict["base_url"] + "request=GetCapabilities&service=" + service_type
         )
 
-        if service_type == "WMTS":
-            url = service_dict.get("getCap_url")
-        else:
-            url = service_dict.get("base_url")
-        logger.debug("*=====* '{}'".format(url))
-        # Basic checks on service reachability
         try:
-            service = service_connector(url=url, version=service_version)
-            service_dict["reachable"] = 1
-        except ServiceException as e:
-            error_msg = "{} <i>{}</i> - <b>Bad operation</b>: {}".format(
-                service_type, url, str(e)
+            service_dict = self.parse_ogc_xml(service_type, service_dict)
+            return 1, service_dict
+        except Exception as e:
+            error_msg = "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
+                service_type, service_dict["getCap_url"], str(e)
             )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
-        except HTTPError as e:
-            error_msg = "{} <i>{}</i> - <b>Service not reached</b>: {}".format(
-                service_type, url, str(e)
-            )
-            service_dict["reachable"] = 0
-            service_dict["error"] = error_msg
-        except requests.exceptions.SSLError:
-            try:
-                auth = Authentication(verify=False)
-                service = service_connector(url=url, version=service_version, auth=auth)
-                # url = service_dict.get("getCap_url")
-                # r = requests.get(url=url, verify=False)
-                # service = etree.parse(r.text)
-                # service_dict["reachable"] = 1
-                # service_dict["ssl"] = 1
-            except Exception as e:
-                error_msg = "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
-                    service_type, url, str(e)
-                )
-                service_dict["reachable"] = 0
-                service_dict["error"] = error_msg
-        except Exception:
-            try:
-                service = service_connector(url=url)
-                service_dict["reachable"] = 1
-            except Exception as e:
-                error_msg = "{} <i>{}</i> - <b>Connection to service failed</b>: {}".format(
-                    service_type, url, str(e)
-                )
-                service_dict["reachable"] = 0
-                service_dict["error"] = error_msg
-        # if the service can't be reached, return the error
-        if not service_dict.get("reachable"):
             return service_dict["reachable"], service_dict["error"]
-        else:
-            pass
+        # return 1, service_dict
+        # if service_type == "WMTS":
+        #     url = service_dict.get("getCap_url")
+        # else:
+        #     url = service_dict.get("base_url")
 
-        # Store several basic informations about the service
-        service_dict[service_type] = service
-        service_dict["typenames"] = list(service.contents.keys())
-        service_dict["version"] = service_version
-        service_dict["operations"] = [op.name for op in service.operations]
-        service_dict["formatOptions"] = [
-            f.split(";", 1)[0]
-            for f in service.getOperationByName(main_op_name).formatOptions
-        ]
+        # # Basic checks on service reachability
+        # try:
+        #     service = service_connector(url=url, version=service_version)
+        #     service_dict["reachable"] = 1
+        # except ServiceException as e:
+        #     error_msg = "{} <i>{}</i> - <b>Bad operation</b>: {}".format(
+        #         service_type, url, str(e)
+        #     )
+        #     service_dict["reachable"] = 0
+        #     service_dict["error"] = error_msg
+        # except HTTPError as e:
+        #     error_msg = "{} <i>{}</i> - <b>Service not reached</b>: {}".format(
+        #         service_type, url, str(e)
+        #     )
+        #     service_dict["reachable"] = 0
+        #     service_dict["error"] = error_msg
+        # except requests.exceptions.SSLError as e:
+        #     logger.warning("SSL Error raised trying to connect to {} service {}: {}".format(
+        #         service_type, url, e
+        #     ))
+        #     try:
+        #         auth = Authentication(verify=False)
+        #         service = service_connector(url=url, version=service_version, auth=auth)
+        #         service_dict["reachable"] = 1
+        #     except Exception as e:
+        #         logger.warning("Error raised trying to use owslib Authentication module : {}".format(e))
+        #         try:
+        #             service_dict = self.parse_ogc_xml(service_type, service_dict)
+        #             return 1, service_dict
+        #         except Exception as e:
+        #             error_msg = "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
+        #                 service_type, url, str(e)
+        #             )
+        #             service_dict["reachable"] = 0
+        #             service_dict["error"] = error_msg
+        # except Exception:
+        #     try:
+        #         service = service_connector(url=url)
+        #         service_dict["reachable"] = 1
+        #     except Exception as e:
+        #         error_msg = "{} <i>{}</i> - <b>Connection to service failed</b>: {}".format(
+        #             service_type, url, str(e)
+        #         )
+        #         service_dict["reachable"] = 0
+        #         service_dict["error"] = error_msg
 
-        # check if main operation ("GetMap" or "GetFeature" depending on service type) is available
-        # if it do, retrieve, clean and store the corresponding URL
-        if main_op_name in service_dict["operations"]:
-            # row_main_op_url = (
-            #     service.getOperationByName(main_op_name).methods[0].get("url")
-            # )
-            # if "&" in row_main_op_url:
-            #     if service_type == "WMTS":
-            #         main_op_url = row_main_op_url.split("?")[0] + "?"
-            #         additional_params = [
-            #             part
-            #             for part in row_main_op_url.split("?")[1].split("&")
-            #             if part != ""
-            #         ]
-            #         for param in additional_params:
-            #             main_op_url += quote("{}&".format(param))
-            #     elif row_main_op_url.endswith("&"):
-            #         main_op_url = row_main_op_url[:-1]
-            #     else:
-            #         main_op_url = row_main_op_url + "&"
-            # else:
-            #     if row_main_op_url.endswith("?"):
-            #         main_op_url = row_main_op_url
-            #     else:
-            #         main_op_url = row_main_op_url + "?"
-            # main_op_key = "{}_url".format(main_op_name)
-            # service_dict[main_op_key] = main_op_url
-            service_dict["{}_isAvailable".format(main_op_name)] = 1
-        else:
-            service_dict["{}_isAvailable".format(main_op_name)] = 0
+        # # if the service can't be reached, return the error
+        # if not service_dict.get("reachable"):
+        #     return service_dict["reachable"], service_dict["error"]
+        # else:
+        #     pass
 
-        # only for WMTS
-        if service_type == "WMTS":
-            service_dict["wmts_tms"] = {}
-            for tms in service.tilematrixsets:
-                crs_elem = service.tilematrixsets.get(tms).crs.split(":")
-                if len(crs_elem) == 2:
-                    key = service.tilematrixsets.get(tms).crs
-                else:
-                    key = "EPSG:" + crs_elem[-1]
-                value = service.tilematrixsets.get(tms).identifier
-                service_dict["wmts_tms"][key] = value
-        else:
-            pass
+        # # Store several basic informations about the service
+        # service_dict[service_type] = service
+        # service_dict["typenames"] = list(service.contents.keys())
+        # service_dict["version"] = service_version
+        # service_dict["operations"] = [op.name for op in service.operations]
+        # service_dict["formatOptions"] = [
+        #     f.split(";", 1)[0]
+        #     for f in service.getOperationByName(main_op_name).formatOptions
+        # ]
 
-        return 1, service_dict
+        # # check if main operation ("GetMap" or "GetFeature" depending on service type) is available
+        # # if it do, retrieve, clean and store the corresponding URL
+        # if main_op_name in service_dict["operations"]:
+        #     # row_main_op_url = (
+        #     #     service.getOperationByName(main_op_name).methods[0].get("url")
+        #     # )
+        #     # if "&" in row_main_op_url:
+        #     #     if service_type == "WMTS":
+        #     #         main_op_url = row_main_op_url.split("?")[0] + "?"
+        #     #         additional_params = [
+        #     #             part
+        #     #             for part in row_main_op_url.split("?")[1].split("&")
+        #     #             if part != ""
+        #     #         ]
+        #     #         for param in additional_params:
+        #     #             main_op_url += quote("{}&".format(param))
+        #     #     elif row_main_op_url.endswith("&"):
+        #     #         main_op_url = row_main_op_url[:-1]
+        #     #     else:
+        #     #         main_op_url = row_main_op_url + "&"
+        #     # else:
+        #     #     if row_main_op_url.endswith("?"):
+        #     #         main_op_url = row_main_op_url
+        #     #     else:
+        #     #         main_op_url = row_main_op_url + "?"
+        #     # main_op_key = "{}_url".format(main_op_name)
+        #     # service_dict[main_op_key] = main_op_url
+        #     service_dict["{}_isAvailable".format(main_op_name)] = 1
+        # else:
+        #     service_dict["{}_isAvailable".format(main_op_name)] = 0
+
+        # # only for WMTS
+        # if service_type == "WMTS":
+        #     service_dict["wmts_tms"] = {}
+        #     for tms in service.tilematrixsets:
+        #         crs_elem = service.tilematrixsets.get(tms).crs.split(":")
+        #         if len(crs_elem) == 2:
+        #             key = service.tilematrixsets.get(tms).crs
+        #         else:
+        #             key = "EPSG:" + crs_elem[-1]
+        #         value = service.tilematrixsets.get(tms).identifier
+        #         service_dict["wmts_tms"][key] = value
+        # else:
+        #     pass
+
+        # return 1, service_dict
 
     def build_wfs_url(self, api_layer: dict, srv_details: dict):
         """Build a WFS layer URL -according to QGIS expectations- using informations
@@ -374,7 +457,7 @@ class GeoServiceManager:
             )
         else:
             wfs_dict = wfs_cached_dict[srv_details.get("path")]
-
+        logger.debug("*=====* {}".format(wfs_dict))
         # local variables
         wfs_url_getcap = wfs_dict.get("getCap_url")
         wfs_url_base = wfs_dict.get("base_url")
