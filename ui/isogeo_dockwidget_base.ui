@@ -1973,7 +1973,7 @@
                 <widget class="QLabel" name="label_config_db_conn">
                  <property name="maximumSize">
                   <size>
-                   <width>300</width>
+                   <width>16777215</width>
                    <height>16777215</height>
                   </size>
                  </property>
