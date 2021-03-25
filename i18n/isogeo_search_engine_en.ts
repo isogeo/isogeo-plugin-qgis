@@ -19,37 +19,37 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="369"/>
+        <location filename="../isogeo.py" line="361"/>
         <source>&amp;Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="340"/>
+        <location filename="../isogeo.py" line="325"/>
         <source>Search within Isogeo catalogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="522"/>
+        <location filename="../isogeo.py" line="512"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="457"/>
+        <location filename="../isogeo.py" line="447"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="520"/>
+        <location filename="../isogeo.py" line="510"/>
         <source> results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="865"/>
+        <location filename="../isogeo.py" line="855"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="625"/>
+        <location filename="../isogeo.py" line="615"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
@@ -277,23 +277,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1949"/>
-        <source>Isogeo Portal settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1963"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2034"/>
         <source>Add portal metadata URL to layer&apos;s properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1987"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2058"/>
         <source>Please specify the portal base URL here:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="345"/>
         <source>---- Keywords ----</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1965"/>
+        <source>Layer adding settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1987"/>
+        <source>Configure embed database connections to be used by the plugin</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -311,7 +316,7 @@
     </message>
     <message>
         <location filename="../modules/tools.py" line="397"/>
-        <source>Proxy issue:
+        <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation type="unfinished"></translation>
@@ -320,33 +325,33 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="350"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/layer/add_layer.py" line="350"/>
-        <source>The PostGIS layer is not valid. Reason: {}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/layer/add_layer.py" line="107"/>
+        <location filename="../modules/layer/add_layer.py" line="103"/>
         <source>Service layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="110"/>
+        <location filename="../modules/layer/add_layer.py" line="106"/>
         <source>Data file layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="125"/>
+        <location filename="../modules/layer/add_layer.py" line="124"/>
         <source>is not valid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="128"/>
+        <location filename="../modules/layer/add_layer.py" line="127"/>
         <source>Error:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/layer/add_layer.py" line="110"/>
+        <source>The table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/layer/add_layer.py" line="130"/>
+        <source>The layer can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -371,7 +376,7 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>MetadataDisplayer</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="111"/>
+        <location filename="../modules/metadata_display.py" line="96"/>
         <source>Undefined</source>
         <translation type="unfinished"></translation>
     </message>
@@ -397,37 +402,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="230"/>
+        <location filename="../modules/results/display.py" line="229"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="224"/>
+        <location filename="../modules/results/display.py" line="223"/>
         <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="227"/>
+        <location filename="../modules/results/display.py" line="226"/>
         <source>Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="442"/>
+        <location filename="../modules/results/display.py" line="466"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="437"/>
-        <source>PostGIS table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/results/display.py" line="383"/>
+        <location filename="../modules/results/display.py" line="411"/>
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="174"/>
+        <location filename="../modules/results/display.py" line="177"/>
         <source>Undefined</source>
         <translation type="unfinished"></translation>
     </message>
@@ -641,6 +641,24 @@ You have a proxy set up on your OS {} but none in QGIS.
     <message>
         <location filename="../ui/credits/ui_credits.ui" line="365"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dlg_db_connections</name>
+    <message>
+        <location filename="../ui/db_connections/ui_db_connections.ui" line="26"/>
+        <source>PostGIS database configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/db_connections/ui_db_connections.ui" line="83"/>
+        <source>Choose the embed connection to be used to access to each PostGIS database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/db_connections/ui_db_connections.ui" line="190"/>
+        <source>Reload embed connection(s)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1024,46 +1042,46 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>isogeo_tr</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="287"/>
+        <location filename="../modules/metadata_display.py" line="275"/>
         <source>quality</source>
         <comment>isConform</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="289"/>
+        <location filename="../modules/metadata_display.py" line="277"/>
         <source>quality</source>
         <comment>isNotConform</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="188"/>
+        <location filename="../modules/metadata_display.py" line="176"/>
         <source>roles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="220"/>
+        <location filename="../modules/metadata_display.py" line="208"/>
         <source>frequencyTypes</source>
         <comment>frequencyUpdateHelp</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="220"/>
+        <location filename="../modules/metadata_display.py" line="208"/>
         <source>frequencyShortTypes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="348"/>
+        <location filename="../modules/metadata_display.py" line="332"/>
         <source>conditions</source>
         <comment>noLicense</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="362"/>
+        <location filename="../modules/metadata_display.py" line="346"/>
         <source>limitations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="368"/>
+        <location filename="../modules/metadata_display.py" line="352"/>
         <source>restrictions</source>
         <translation type="unfinished"></translation>
     </message>

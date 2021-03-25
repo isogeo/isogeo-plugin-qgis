@@ -372,8 +372,6 @@ class DataBaseManager:
         hheader = self.tbl.horizontalHeader()
         vheader = self.tbl.verticalHeader()
         hheader.setSectionResizeMode(1)
-        # hheader.setSectionResizeMode(0, 3)
-        # hheader.setSectionResizeMode(1, 1)
         vheader.setMinimumSectionSize(10)
 
         self.switch_widgets_on_and_off(True)
