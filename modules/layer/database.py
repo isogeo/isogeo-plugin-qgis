@@ -252,11 +252,20 @@ class DataBaseManager:
         # build the connection URI and set the connection
         uri = QgsDataSourceUri()
         uri.setConnection(host, port, database, username, password)
-        if qgis_version >= 316:
-            pgis_db_plg = PostGisDBPlugin(connection)
-            c = PostGisDBConnector(uri, pgis_db_plg)
-        else:
-            c = PostGisDBConnector(uri)
+        try:
+            if qgis_version >= 316:
+                pgis_db_plg = PostGisDBPlugin(connection)
+                c = PostGisDBConnector(uri, pgis_db_plg)
+            else:
+                c = PostGisDBConnector(uri)
+        except Exception as e:
+            logger.warning(
+                "Faile to establish connection to {} PostGIS database using those informations : host:{}, port:{}, username:{}, password:{}".format(
+                    database, host, port, username, password
+                )
+            )
+            logger.error(str(e))
+            return 0
 
         li_table_infos = [infos for infos in c.getTables() if infos[0] == 1]
 
@@ -302,8 +311,12 @@ class DataBaseManager:
                         continue
 
                     conn = self.establish_postgis_connection(**connection_dict)
-                    connection_dict["uri"] = conn[0]
-                    connection_dict["tables"] = conn[1]
+                    if not conn:
+                        connection_dict["uri"] = 0
+                        connection_dict["tables"] = 0
+                    else:
+                        connection_dict["uri"] = conn[0]
+                        connection_dict["tables"] = conn[1]
 
                     if connection_dict.get("connection") in self.li_pref_pgdb_conn:
                         connection_dict["prefered"] = 1
