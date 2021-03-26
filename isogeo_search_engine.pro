@@ -13,6 +13,7 @@ SOURCES = __init__.py \
     modules/api/shares.py \
     modules/layer/add_layer.py \
     modules/layer/limitations_checker.py \
+    modules/layer/database.py \
     modules/quick_search.py \
     modules/results/cache.py \
     modules/results/display.py \

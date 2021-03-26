@@ -18,6 +18,19 @@
     </message>
 </context>
 <context>
+    <name>DataBaseManager</name>
+    <message>
+        <location filename="../modules/layer/database.py" line="339"/>
+        <source>Database</source>
+        <translation>Base de données</translation>
+    </message>
+    <message>
+        <location filename="../modules/layer/database.py" line="339"/>
+        <source>Connection</source>
+        <translation>Connexion</translation>
+    </message>
+</context>
+<context>
     <name>Isogeo</name>
     <message>
         <location filename="../isogeo.py" line="361"/>
@@ -317,10 +330,10 @@
     </message>
     <message>
         <location filename="../modules/tools.py" line="397"/>
-        <source>Proxy issue: 
+        <source>Proxy issue:
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
-        <translation>Problème de proxy: 
+        <translation>Problème de proxy:
 Un proxy est configuré dans l&apos;OS {} mais pas dans QGIS.
  Veuillez le configurer dans &apos;Préférences/Options/Réseau&apos; avant de redémarer le plugin.</translation>
     </message>

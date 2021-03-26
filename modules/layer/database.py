@@ -335,7 +335,7 @@ class DataBaseManager:
         self.switch_widgets_on_and_off(False)
 
         self.tbl.clear()
-        li_header_labels = ["Database", "Connection"]
+        li_header_labels = [self.tr("Database"), self.tr("Connection")]
         self.tbl.setHorizontalHeaderLabels(li_header_labels)
         self.tbl.setRowCount(len(li_unique_pgdb_name))
 
