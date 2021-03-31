@@ -340,6 +340,13 @@ class Isogeo:
             "isogeo/settings/pref_pgdb_conn",
             self.form_mng.results_mng.db_mng.li_pref_pgdb_conn,
         )
+        # save invalid PostGIS database connections
+        logger.debug("*=====* {}".format(self.form_mng.results_mng.db_mng.li_invalid_pgdb_conn))
+        qsettings.setValue(
+            "isogeo/settings/invalid_pgdb_conn",
+            self.form_mng.results_mng.db_mng.li_invalid_pgdb_conn,
+        )
+        logger.debug("*=====* {}".format(qsettings.value("isogeo/settings/invalid_pgdb_conn")))
         # save cache
         self.form_mng.results_mng.cache_mng.dumper()
         # disconnects

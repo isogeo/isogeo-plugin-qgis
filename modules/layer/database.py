@@ -9,8 +9,8 @@ from os import environ
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
     QComboBox,
@@ -50,6 +50,9 @@ btnBox_ico_dict = {
     1: QIcon(":/images/themes/default/mActionRemove.svg"),
     7: QIcon(":/plugins/Isogeo/resources/undo.svg"),
 }
+
+arrow_cursor = QCursor(Qt.CursorShape(0))
+hourglass_cursor = QCursor(Qt.CursorShape(3))
 
 # ############################################################################
 # ########## Classes ###############
@@ -93,6 +96,13 @@ class DataBaseManager:
         else:
             self.li_pref_pgdb_conn = []
             qsettings.setValue("isogeo/settings/pref_pgdb_conn", self.li_pref_pgdb_conn)
+
+        # Retrieved invalid connections saved into QSettings
+        if qsettings.value("isogeo/settings/invalid_pgdb_conn"):
+            self.li_invalid_pgdb_conn = qsettings.value("isogeo/settings/invalid_pgdb_conn")
+        else:
+            self.li_invalid_pgdb_conn = []
+            qsettings.setValue("isogeo/settings/invalid_pgdb_conn", self.li_invalid_pgdb_conn)
 
         # retrieve informatyion about registered database connexions from QSettings
         self.pg_connections = list
@@ -271,7 +281,7 @@ class DataBaseManager:
 
         return uri, li_table_infos
 
-    def build_postgis_dict(self):
+    def build_postgis_dict(self, skip_invalid: bool = True):
         """Build the dict that stores informations about PostGIS connections."""
         final_list = []
         for k in sorted(qsettings.allKeys()):
@@ -310,20 +320,26 @@ class DataBaseManager:
                     else:
                         continue
 
-                    conn = self.establish_postgis_connection(**connection_dict)
-                    if not conn:
-                        connection_dict["uri"] = 0
-                        connection_dict["tables"] = 0
+                    if connection_name in self.li_invalid_pgdb_conn and skip_invalid:
+                        pass
                     else:
-                        connection_dict["uri"] = conn[0]
-                        connection_dict["tables"] = conn[1]
+                        conn = self.establish_postgis_connection(**connection_dict)
+                        if not conn:
+                            connection_dict["uri"] = 0
+                            connection_dict["tables"] = 0
+                            self.li_invalid_pgdb_conn.append(connection_name)
+                            logger.debug("*=====* '{}' connection saved as invalid".format(connection_name))
+                            continue
+                        else:
+                            connection_dict["uri"] = conn[0]
+                            connection_dict["tables"] = conn[1]
 
-                    if connection_dict.get("connection") in self.li_pref_pgdb_conn:
-                        connection_dict["prefered"] = 1
-                    else:
-                        connection_dict["prefered"] = 0
+                        if connection_dict.get("connection") in self.li_pref_pgdb_conn:
+                            connection_dict["prefered"] = 1
+                        else:
+                            connection_dict["prefered"] = 0
 
-                    final_list.append(connection_dict)
+                        final_list.append(connection_dict)
                 else:
                     pass
             else:
@@ -335,6 +351,11 @@ class DataBaseManager:
 
     def switch_widgets_on_and_off(self, mode: bool = True):
         """1 to switch widgets on and 0 to switch widgets off"""
+
+        if mode:
+            self.pgdb_config_dialog.setCursor(arrow_cursor)
+        else:
+            self.pgdb_config_dialog.setCursor(hourglass_cursor)
 
         self.pgdb_config_dialog.setEnabled(mode)
         self.pgdb_config_dialog.btnbox.setEnabled(mode)
@@ -368,19 +389,22 @@ class DataBaseManager:
             li_pgdb_conn = [
                 conn for conn in self.pg_connections if conn.get("database") == dbname
             ]
-            sorted(li_pgdb_conn, key=lambda i: i["database"])
-            current_index = 0
-            index = 1
-            for connection in li_pgdb_conn:
-                cbb_conn.addItem(connection.get("connection"), 1)
-                if connection.get("prefered"):
-                    current_index = index
-                else:
-                    pass
-                index += 1
-            cbb_conn.setCurrentIndex(current_index)
+            if len(li_pgdb_conn) > 1:
+                sorted(li_pgdb_conn, key=lambda i: i["database"])
+                current_index = 0
+                index = 1
+                for connection in li_pgdb_conn:
+                    cbb_conn.addItem(connection.get("connection"), 1)
+                    if connection.get("prefered"):
+                        current_index = index
+                    else:
+                        pass
+                    index += 1
+                cbb_conn.setCurrentIndex(current_index)
 
-            self.tbl.setCellWidget(row_index, 1, cbb_conn)
+                self.tbl.setCellWidget(row_index, 1, cbb_conn)
+            else:  # no need to choose a connection if only one exists
+                pass
 
         hheader = self.tbl.horizontalHeader()
         vheader = self.tbl.verticalHeader()
@@ -394,6 +418,7 @@ class DataBaseManager:
         display the dialog window to the user"""
 
         self.fill_pgdb_config_tbl()
+        self.pgdb_config_dialog.setWindowOpacity(1)
         self.pgdb_config_dialog.show()
 
     def pgdb_config_dialog_slot(self, btn: QAbstractButton):
@@ -431,6 +456,7 @@ class DataBaseManager:
 
     def pgdb_conn_reload_slot(self):
         """Called when 'Reload embed connection(s)' is clicked to execute appropriate operations."""
-        self.build_postgis_dict()
+        self.li_invalid_pgdb_conn = []
+        self.build_postgis_dict(skip_invalid=False)
         self.fill_pgdb_config_tbl()
         return
