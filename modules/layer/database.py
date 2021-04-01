@@ -6,7 +6,6 @@ import logging
 from configparser import ConfigParser
 from pathlib import Path
 from os import environ
-from functools import partial
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings, Qt
@@ -93,6 +92,7 @@ class DataBaseManager:
         # Retrieved prefered connections saved into QSettings
         if qsettings.value("isogeo/settings/pref_pgdb_conn"):
             self.li_pref_pgdb_conn = qsettings.value("isogeo/settings/pref_pgdb_conn")
+            logger.info("{} prefered PostgreSQL connection retrieved fro QSettings.".format(len(self.li_pref_pgdb_conn)))
         else:
             self.li_pref_pgdb_conn = []
             qsettings.setValue("isogeo/settings/pref_pgdb_conn", self.li_pref_pgdb_conn)
@@ -100,6 +100,7 @@ class DataBaseManager:
         # Retrieved invalid connections saved into QSettings
         if qsettings.value("isogeo/settings/invalid_pgdb_conn"):
             self.li_invalid_pgdb_conn = qsettings.value("isogeo/settings/invalid_pgdb_conn")
+            logger.info("{} invalid PostgreSQL connection retrieved fro QSettings.".format(len(self.li_invalid_pgdb_conn)))
         else:
             self.li_invalid_pgdb_conn = []
             qsettings.setValue("isogeo/settings/invalid_pgdb_conn", self.li_invalid_pgdb_conn)
@@ -328,7 +329,7 @@ class DataBaseManager:
                             connection_dict["uri"] = 0
                             connection_dict["tables"] = 0
                             self.li_invalid_pgdb_conn.append(connection_name)
-                            logger.debug("*=====* '{}' connection saved as invalid".format(connection_name))
+                            logger.info("'{}' connection saved as invalid".format(connection_name))
                             continue
                         else:
                             connection_dict["uri"] = conn[0]

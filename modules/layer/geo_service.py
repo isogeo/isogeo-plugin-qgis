@@ -423,7 +423,6 @@ class GeoServiceManager:
             )
         else:
             wfs_dict = wfs_cached_dict[srv_details.get("path")]
-        logger.debug("*=====* {}".format(wfs_dict))
         # local variables
         wfs_url_getcap = wfs_dict.get("getCap_url")
         wfs_url_base = wfs_dict.get("base_url")
@@ -547,7 +546,6 @@ class GeoServiceManager:
             return 0, error_msg
         elif wms_dict.get("manual"):
             wms_lyr = [elem for elem in wms.iter() if elem.tag.endswith("Layer") and any(subelem.text == api_layer_id for subelem in elem if "Name" in subelem.tag)][0]
-            logger.debug("*=====* {}".format(wms_lyr))
         else:
             wms_lyr = wms[api_layer_id]
 
@@ -597,7 +595,6 @@ class GeoServiceManager:
             srs = self.choose_appropriate_srs(crs_options=[])
         else:
             srs = self.choose_appropriate_srs(crs_options=wms_lyr.crsOptions)
-        logger.debug("*=====* {}".format(srs))
 
         # BBOX parameter
         if hasattr(wms_lyr, "boundingBoxWGS84") and any(txt in srs for txt in ["WGS84", "4326"]):
