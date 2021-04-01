@@ -3,6 +3,7 @@
 
 # Standard library
 import logging
+import processing
 from datetime import datetime
 
 # PyQGIS
@@ -16,6 +17,8 @@ from qgis.core import (
     QgsGeometry,
     QgsRasterLayer,
     QgsRenderContext,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
 )
 
 # PyQT
@@ -41,27 +44,9 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_tools = IsogeoPlgTools()
 
-osm_lbls = (
-    "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers"
-    "=Reference_Labels&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wmts"
-    "/epsg4326/best/1.0.0/WMTSCapabilities.xml"
-)
-osm_refs = (
-    "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers"
-    "=Reference_Features&styles=default&tileMatrixSet=250m&url=https://gibs.earthdata.nasa.gov/wm"
-    "ts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
-)
-blue_marble = (
-    "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/jpeg&la"
-    "yers=BlueMarble_ShadedRelief_Bathymetry&styles=default&tileMatrixSet=500m&url=https://gibs.e"
-    "arthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml"
-)
+osm_standard = r"type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png"
 
-li_lyrs_refs = [
-    QgsRasterLayer(osm_lbls, "Labels", "wms"),
-    QgsRasterLayer(osm_refs, "Refs", "wms"),
-    QgsRasterLayer(blue_marble, "Base", "wms"),
-]
+ref_lyr = QgsRasterLayer(osm_standard, "OSM_Standard", "wms")
 
 # ############################################################################
 # ########## Classes ###############
@@ -170,17 +155,20 @@ class MetadataDisplayer:
             item = ctact.get("contact")
 
             if ctact.get("role", "NR") == "pointOfContact":
-                content = "<b>{0}</b> ({1})<br><a href='mailto:{2}' target='_top'>{2}</a><br>{3}" "<br>{4} {5}<br>{6} {7}<br>{7}<br>{8}".format(
-                    # isogeo_tr.tr("roles", ctact.get("role")),
-                    item.get("name", "NR"),
-                    item.get("organization", "NR"),
-                    item.get("email", "NR"),
-                    item.get("phone", "NR"),
-                    item.get("addressLine1", ""),
-                    item.get("addressLine2", ""),
-                    item.get("zipCode", ""),
-                    item.get("city", ""),
-                    item.get("country", ""),
+                content = (
+                    "<b>{0}</b> ({1})<br><a href='mailto:{2}' target='_top'>{2}</a><br>{3}"
+                    "<br>{4} {5}<br>{6} {7}<br>{7}<br>{8}".format(
+                        # isogeo_tr.tr("roles", ctact.get("role")),
+                        item.get("name", "NR"),
+                        item.get("organization", "NR"),
+                        item.get("email", "NR"),
+                        item.get("phone", "NR"),
+                        item.get("addressLine1", ""),
+                        item.get("addressLine2", ""),
+                        item.get("zipCode", ""),
+                        item.get("city", ""),
+                        item.get("country", ""),
+                    )
                 )
                 contacts_pt_cct.append(content)
 
@@ -314,16 +302,12 @@ class MetadataDisplayer:
             self.complete_md.wid_bbox.setDisabled(0)
             # get convex hull coordinates and create the polygon
             md_lyr = self.envelope2layer(md.get("envelope"))
+            li_lyr = [md_lyr, ref_lyr]
             # add layers
-            qgs_prj.addMapLayers(
-                [md_lyr, li_lyrs_refs[0], li_lyrs_refs[1], li_lyrs_refs[2]], 0
-            )
-
+            qgs_prj.addMapLayers(li_lyr, 0)
             map_canvas_layer_list = [
                 qgs_prj.mapLayer(md_lyr.id()),
-                qgs_prj.mapLayer(li_lyrs_refs[0].id()),
-                qgs_prj.mapLayer(li_lyrs_refs[1].id()),
-                qgs_prj.mapLayer(li_lyrs_refs[2].id()),
+                qgs_prj.mapLayer(ref_lyr.id()),
             ]
 
             self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
@@ -372,11 +356,9 @@ class MetadataDisplayer:
                 pass
             # INSPIRE precision
             if "directive" in l_in:
-                lim_text += (
-                    "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
-                        l_in.get("directive").get("name"),
-                        l_in.get("directive").get("description"),
-                    )
+                lim_text += "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
+                    l_in.get("directive").get("name"),
+                    l_in.get("directive").get("description"),
                 )
             else:
                 pass
@@ -448,38 +430,61 @@ class MetadataDisplayer:
 
     def envelope2layer(self, envelope):
         """Transform metadata envelope into a QGIS layer."""
-        # layer
-        md_lyr = QgsVectorLayer("Polygon?crs=epsg:4326", "Metadata envelope", "memory")
+        # prepare geom feature
+        feature = QgsFeature()
+        # prepare coordinates transformation to match OSM WMTS srs
+        mercator = QgsCoordinateReferenceSystem(
+            4326, QgsCoordinateReferenceSystem.EpsgCrsId
+        )
+        pseudo_mercator = QgsCoordinateReferenceSystem(
+            3857, QgsCoordinateReferenceSystem.EpsgCrsId
+        )
+        coord_transformer = QgsCoordinateTransform(
+            mercator, pseudo_mercator, QgsProject.instance()
+        )
+
+        if envelope.get("type") == "Polygon":
+            md_lyr = QgsVectorLayer(
+                "Polygon?crs=epsg:3857", "Metadata envelope", "memory"
+            )
+            coords = envelope.get("coordinates")[0]
+            poly_pts = [
+                coord_transformer.transform(QgsPointXY(round(i[0], 3), round(i[1], 3)))
+                for i in coords
+            ]
+            feature.setGeometry(QgsGeometry.fromPolygonXY([poly_pts]))
+        elif envelope.get("type") == "MultiPolygon":
+            md_lyr = QgsVectorLayer(
+                "Polygon?crs=epsg:3857", "Metadata envelope", "memory"
+            )
+            coords = envelope.get("bbox")
+            poly_pts = [
+                coord_transformer.transform(QgsPointXY(round(i[0], 3), round(i[1], 3)))
+                for i in coords
+            ]
+            feature.setGeometry(QgsGeometry.fromPolygonXY([poly_pts]))
+        elif envelope.get("type") == "Point":
+            md_lyr = QgsVectorLayer(
+                "Point?crs=epsg:3857", "Metadata envelope", "memory"
+            )
+            coords = envelope.get("coordinates")
+            point = QgsPointXY(round(coords[0], 3), round(coords[1], 3))
+            feature.setGeometry(QgsGeometry.fromPointXY(point))
+        else:
+            md_lyr = QgsVectorLayer(
+                "Polygon?crs=epsg:3857", "Metadata envelope", "memory"
+            )
+            return md_lyr
+
+        # Design the feature
         symbols = md_lyr.renderer().symbols(QgsRenderContext())
         symbol = symbols[0]
         symbol.setColor(QColor.fromRgb(255, 20, 147))
         symbol.setOpacity(0.25)
 
-        if envelope.get("type") == "Polygon":
-            # parse coordinates
-            coords = envelope.get("coordinates")[0]
-            poly_pts = [QgsPointXY(round(i[0], 3), round(i[1], 3)) for i in coords]
-            # add geometry to layer
-            poly = QgsFeature()
-            poly.setGeometry(QgsGeometry.fromPolygonXY([poly_pts]))
-            md_lyr.dataProvider().addFeatures([poly])
-            md_lyr.updateExtents()
-        elif envelope.get("type") == "MultiPolygon":
-            coords = envelope.get("bbox")
-            bbox = QgsRectangle(
-                round(coords[0], 3),
-                round(coords[1], 3),
-                round(coords[2], 3),
-                round(coords[3], 3),
-            )
-            poly = QgsFeature()
-            poly.setGeometry(QgsGeometry.fromWkt(bbox.asWktPolygon()))
-            md_lyr.dataProvider().addFeatures([poly])
-            md_lyr.updateExtents()
-        elif envelope.get("type") == "Point":
-            return md_lyr
-        else:
-            pass
+        # add the feature to the layer
+        md_lyr.dataProvider().addFeatures([feature])
+        md_lyr.updateExtents()
         # method ending
         return md_lyr
 

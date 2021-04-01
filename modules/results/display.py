@@ -18,6 +18,7 @@ from ..tools import IsogeoPlgTools
 from ..layer.add_layer import LayerAdder
 from ..layer.limitations_checker import LimitationsChecker
 from ..layer.geo_service import GeoServiceManager
+from ..layer.database import DataBaseManager
 
 # isogeo-pysdk
 from ..isogeo_pysdk import Metadata
@@ -102,9 +103,8 @@ class ResultsManager(QObject):
         self.layer_adder = LayerAdder()
         self.layer_adder.tr = self.tr
         self.layer_adder.tbl_result = self.tbl_result
-        # self.add_layer = self.layer_adder.adding
-        self.pg_connections = self.build_postgis_dict(qsettings)
-        self.layer_adder.PostGISdict = self.pg_connections
+
+        self.db_mng = DataBaseManager(self.tr)
 
         self.lim_checker = LimitationsChecker(self.layer_adder, self.tr)
 
@@ -134,7 +134,10 @@ class ResultsManager(QObject):
         # Get the name (and other informations) of all databases whose
         # connection is set up in QGIS
         if pg_connections == {}:
-            pg_connections = self.pg_connections
+            pg_connections = self.db_mng.pg_connections
+            available_pg_dbnames = [
+                pg_connection.get("database") for pg_connection in pg_connections
+            ]
         else:
             pass
         # Set table rows
@@ -212,11 +215,7 @@ class ResultsManager(QObject):
                             continue
                 else:
                     tbl_result.setItem(
-                        count,
-                        2,
-                        QTableWidgetItem(
-                            "?"
-                        ),
+                        count, 2, QTableWidgetItem("?"),
                     )
             else:
                 if "rasterDataset" in md.type:
@@ -276,29 +275,57 @@ class ResultsManager(QObject):
                         ] = params
                     else:
                         pass
-                # If the data is a postGIS table and the connexion has
+                # If the data is a postGIS table and the connection has
                 # been saved in QGIS.
                 elif md.format == "postgis":
-                    if md.path:
-                        base_name = md.path
-                    else:
-                        base_name = "No path"
-                    if base_name in pg_connections.keys():
-                        params = {}
-                        params["base_name"] = base_name
-                        schema_table = md.name
-                        if schema_table is not None and "." in schema_table:
-                            params["schema"] = schema_table.split(".")[0]
-                            params["table"] = schema_table.split(".")[1]
-                            params["abstract"] = md.abstract
-                            params["title"] = md.title
-                            params["keywords"] = md.keywords
-                            params["md_portal_url"] = portal_md_url
-                            add_options_dict[
-                                self.tr("PostGIS table", context=__class__.__name__)
-                            ] = params
+                    if (
+                        md.path
+                        and md.name
+                        and md.path in available_pg_dbnames
+                        and "." in md.name
+                    ):
+                        available_connections = [
+                            pg_conn
+                            for pg_conn in pg_connections
+                            if md.path == pg_conn.get("database")
+                            and pg_conn.get("prefered")
+                        ]
+                        if not len(available_connections):
+                            available_connections = [
+                                pg_conn
+                                for pg_conn in pg_connections
+                                if md.path == pg_conn.get("database")
+                            ]
                         else:
                             pass
+
+                        for connection in available_connections:
+                            if connection.get("tables"):
+                                schema = md.name.split(".")[0]
+                                table = md.name.split(".")[1]
+                                tables_infos = connection.get("tables")
+                                if any(
+                                    infos[2] == schema and infos[1] == table
+                                    for infos in tables_infos
+                                ):
+                                    params = {
+                                        "base_name": md.path,
+                                        "schema": schema,
+                                        "table": table,
+                                        "connection": connection,
+                                        "abstract": md.abstract,
+                                        "title": md.title,
+                                        "keywords": md.keywords,
+                                        "md_portal_url": portal_md_url,
+                                    }
+                                    options_key = "PostGIS - {}".format(
+                                        connection.get("connection")
+                                    )
+                                    add_options_dict[options_key] = params
+                                else:
+                                    pass
+                            else:
+                                pass
                     else:
                         pass
                 else:
@@ -336,7 +363,9 @@ class ResultsManager(QObject):
                                 portal_md_url,
                             ]
                             params.append(basic_md)
-                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                            layer_title = geo_srv_mng.build_layer_title(
+                                service_type, layer
+                            )
                             btn_label = "{} : {}".format(service_type, layer_title)
                             add_options_dict[btn_label] = params
                         else:
@@ -360,7 +389,9 @@ class ResultsManager(QObject):
                     if md.format in self.service_ico_dict:
                         service_type = md.format.upper()
                         for layer in md.layers:
-                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                            layer_title = geo_srv_mng.build_layer_title(
+                                service_type, layer
+                            )
                             btn_label = "{} : {}".format(service_type, layer_title)
                             params = [service_type, layer, srv_details]
                             basic_md = [
@@ -400,9 +431,7 @@ class ResultsManager(QObject):
                     if option_type.lower() in self.service_ico_dict:
                         icon = self.service_ico_dict.get(option_type.lower())
                     # PostGIS table
-                    elif option_type.startswith(
-                        self.tr("PostGIS table", context=__class__.__name__)
-                    ):
+                    elif option_type.startswith("PostGIS"):
                         icon = ico_pgis
                     # Data file
                     elif option_type.startswith(
@@ -434,9 +463,7 @@ class ResultsManager(QObject):
                         if option_type.lower() in self.service_ico_dict:
                             icon = self.service_ico_dict.get(option_type.lower())
                         # PostGIS table
-                        elif option.startswith(
-                            self.tr("PostGIS table", context=__class__.__name__)
-                        ):
+                        elif option.startswith("PostGIS"):
                             icon = ico_pgis
                         # Data file
                         elif option.startswith(
@@ -447,7 +474,7 @@ class ResultsManager(QObject):
                         else:
                             logger.debug(
                                 "Undefined add option type : {}/{} --> {}".format(
-                                    option_type, text, params
+                                    option_type, option, params
                                 )
                             )
                         # add a combobox item with the icon corresponding to the add option
@@ -493,7 +520,9 @@ class ResultsManager(QObject):
             except Exception as e:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
                 logger.info(
-                    "Path is not reachable and has been cached:{} / {}".format(dir_file, e)
+                    "Path is not reachable and has been cached:{} / {}".format(
+                        dir_file, e
+                    )
                 )
                 return False
         else:
@@ -516,59 +545,6 @@ class ResultsManager(QObject):
             portal_md_url = ""
 
         return portal_md_url
-
-    def build_postgis_dict(self, input_dict):
-        """Build the dict that stores informations about PostGIS connexions."""
-        # input_dict.beginGroup("PostgreSQL/connections")
-        final_dict = {}
-        for k in sorted(input_dict.allKeys()):
-            if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
-                if len(k.split("/")) == 4:
-                    connection_name = k.split("/")[2]
-                    password_saved = input_dict.value(
-                        "PostgreSQL/connections/" + connection_name + "/savePassword"
-                    )
-                    user_saved = input_dict.value(
-                        "PostgreSQL/connections/" + connection_name + "/saveUsername"
-                    )
-                    if password_saved == "true" and user_saved == "true":
-                        dictionary = {
-                            "name": input_dict.value(
-                                "PostgreSQL/connections/"
-                                + connection_name
-                                + "/database"
-                            ),
-                            "host": input_dict.value(
-                                "PostgreSQL/connections/" + connection_name + "/host"
-                            ),
-                            "port": input_dict.value(
-                                "PostgreSQL/connections/" + connection_name + "/port"
-                            ),
-                            "username": input_dict.value(
-                                "PostgreSQL/connections/"
-                                + connection_name
-                                + "/username"
-                            ),
-                            "password": input_dict.value(
-                                "PostgreSQL/connections/"
-                                + connection_name
-                                + "/password"
-                            ),
-                        }
-                        final_dict[
-                            input_dict.value(
-                                "PostgreSQL/connections/"
-                                + connection_name
-                                + "/database"
-                            )
-                        ] = dictionary
-                    else:
-                        continue
-                else:
-                    pass
-            else:
-                pass
-        return final_dict
 
 
 # #############################################################################

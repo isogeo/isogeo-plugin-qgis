@@ -4,7 +4,7 @@
 # Standard library
 import logging
 import re
-
+from xml.etree import ElementTree
 from urllib.parse import urlencode, unquote, quote
 
 # PyQT
@@ -64,8 +64,17 @@ except ImportError:
         "Depencencies - HTTPError not within owslib."
         " Directly imported from urllib.error"
     )
+
+try:
+    from owslib.util import Authentication
+
+    logger.info("Depencencies - Authentication within owslib")
+except ImportError:
+    logger.warning("Depencencies - Authentication not within owslib.")
+
 try:
     import requests
+
     logger.info("Depencencies - Requests version: {}".format(requests.__version__))
 except ImportError:
     logger.warning("Depencencies - Requests not available")
@@ -76,7 +85,8 @@ except ImportError:
 
 
 class GeoServiceManager:
-    """Basic class that holds methods used to add layers to canvas."""
+    """Basic class that holds methods used to facilitate geographic services handling
+    for layer adding."""
 
     # def __init__(self, cache_manager: object):
     def __init__(self):
@@ -84,24 +94,12 @@ class GeoServiceManager:
 
         # specific infos related to OGC service type
         self.ogc_infos_dict = {
-            "WFS": [
-                "GetFeature",
-                WebFeatureService,
-            ],
-            "WMS": [
-                "GetMap",
-                WebMapService,
-            ],
-            "WMTS": [
-                "GetTile",
-                WebMapTileService,
-            ]
+            "WFS": ["GetFeature", WebFeatureService],
+            "WMS": ["GetMap", WebMapService],
+            "WMTS": ["GetTile", WebMapTileService],
         }
         # specific infos related to ESRI service type
-        self.esri_infos_dict = {
-            "EFS": "latestWkid",
-            "EMS": "wkid"
-        }
+        self.esri_infos_dict = {"EFS": "latestWkid", "EMS": "wkid"}
 
         # set local cache dict
         self.service_cached_dict = {
@@ -109,7 +107,7 @@ class GeoServiceManager:
             "WMS": dict(),
             "WMTS": dict(),
             "EFS": dict(),
-            "EMS": dict()
+            "EMS": dict(),
         }
 
     def choose_appropriate_srs(self, crs_options: list):
@@ -130,7 +128,11 @@ class GeoServiceManager:
             if srs_map in crs_options:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
                 srs = srs_map
-            elif srs_qgs_new in crs_options and srs_qgs_otf_on == "false" and srs_qgs_otf_auto == "false":
+            elif (
+                srs_qgs_new in crs_options
+                and srs_qgs_otf_on == "false"
+                and srs_qgs_otf_auto == "false"
+            ):
                 logger.debug(
                     "It's a SRS match! With default new project: " + srs_qgs_new
                 )
@@ -142,11 +144,15 @@ class GeoServiceManager:
                 logger.debug("It's a SRS match! With standard WGS 84 (EPSG:4326)")
                 srs = "EPSG:4326"
             else:
-                logger.debug("Map Canvas SRS not available within service CRS. One of the following ones gonna be choosed : {}".format(crs_options))
+                logger.debug(
+                    "Map Canvas SRS not available within service CRS. One of the following ones gonna be choosed : {}".format(
+                        crs_options
+                    )
+                )
                 srs = crs_options[0]
-            return srs
         else:
-            return 0
+            srs = "EPSG:4326"
+        return srs
 
     def build_layer_title(self, service_type: str, api_layer: dict):
         """Build the title of the layer according to informations provided by Isogeo API
@@ -159,12 +165,16 @@ class GeoServiceManager:
         # If service_type argument value is invalid, raise error
         accepted_values = list(self.service_cached_dict.keys())
         if service_type not in accepted_values:
-            error_msg = "'service_type' argument value should be one of {} not {}".format(accepted_values, service_type)
+            error_msg = "'service_type' argument value should be one of {} not {}".format(
+                accepted_values, service_type
+            )
             raise ValueError(error_msg)
             # If it's valid, let's build this layer title
         else:
             if service_type in self.esri_infos_dict:
-                generic_title = "{} layer ({})".format(service_type, api_layer.get("id"))
+                generic_title = "{} layer ({})".format(
+                    service_type, api_layer.get("id")
+                )
                 if len(api_layer.get("titles")):
                     layer_title = api_layer.get("titles")[0].get("value", generic_title)
                 else:
@@ -183,7 +193,77 @@ class GeoServiceManager:
 
             return layer_title
 
-    def check_ogc_service(self, service_type: str, service_url: str, service_version: str):
+    # For now, only working for a specific business geographic WFS (https://github.com/isogeo/isogeo-plugin-qgis/issues/359)
+    def parse_ogc_xml(self, service_type, service_dict: dict):
+        """Called if owslib modules can't be used to parse the xml return by GetCapabilities request.
+
+        :param str service_type: type of OGC service ("WFS", "WMS", or "WMTS")
+        :param dict service_dict: the dict to fill with infos retrieved from XML content
+        """
+        # Rirst, specify that the dict gonna fill by the risky way
+        service_dict["manual"] = 1
+
+        # Then, launch the GetCapabilities request
+        url = service_dict.get("getCap_url")
+        r = requests.get(url=url, verify=False)
+        # Finally, parse XML content returned
+        if r.status_code == 200:
+            service_dict["reachable"] = 1
+            xml_root = ElementTree.fromstring(r.text)
+
+            # retrieve basic infos
+            service_dict[service_type] = xml_root
+            service_dict["version"] = xml_root.get("version")
+
+            # check if get data operation is available + retrieve formatOptions
+            main_op_name = self.ogc_infos_dict.get(service_type)[0]
+            main_op_elem = [
+                elem
+                for elem in xml_root.iter()
+                if (elem.attrib and elem.get("name") == main_op_name)
+                or main_op_name in elem.tag
+            ]
+            if len(main_op_elem) == 1:
+                service_dict["{}_isAvailable".format(main_op_name)] = 1
+                main_op_elem = main_op_elem[0]
+                li_formatOptions = []
+                for subelem in main_op_elem:
+                    if subelem.tag.endswith("Format"):
+                        li_formatOptions.append(subelem.text)
+                service_dict["formatOptions"] = li_formatOptions
+            elif len(main_op_elem) == 0:
+                service_dict["{}_isAvailable".format(main_op_name)] = 0
+            else:
+                service_dict["{}_isAvailable".format(main_op_name)] = 1
+
+            # retrieving layers typenames
+            featureTypeList = [
+                elem
+                for elem in xml_root.iter()
+                if elem.tag.endswith("FeatureType") or elem.tag.endswith("Layer")
+            ]
+            li_typenames = []
+            for featureType in featureTypeList:
+                for elem in featureType:
+                    if elem.tag.endswith("Name"):
+                        li_typenames.append(elem.text)
+                        break
+                    else:
+                        pass
+            service_dict["typenames"] = li_typenames
+
+        else:
+            raise Exception(
+                "GetCapabilites request failed using requests: {}:{}".format(
+                    r.status_code, r.reason
+                )
+            )
+
+        return service_dict
+
+    def check_ogc_service(
+        self, service_type: str, service_url: str, service_version: str
+    ):
         """Try to acces to the given OGC service URL (using owslib library modules) and
         store various informations into cached_wfs, cached_wms or cached_wmts dict
         depending on service_type.
@@ -196,8 +276,7 @@ class GeoServiceManager:
         if service_type not in self.ogc_infos_dict:
             raise ValueError(
                 "'service_type' argument value should be one of {} not {}".format(
-                    list(self.ogc_infos_dict.keys()),
-                    service_type
+                    list(self.ogc_infos_dict.keys()), service_type
                 )
             )
         # It it's valid, set local variables depending on it
@@ -224,7 +303,9 @@ class GeoServiceManager:
             service_dict["base_url"] = service_url + "?"
 
         # build URL of "GetCapabilities" operation
-        service_dict["getCap_url"] = service_dict["base_url"] + "request=GetCapabilities&service=" + service_type
+        service_dict["getCap_url"] = (
+            service_dict["base_url"] + "request=GetCapabilities&service=" + service_type
+        )
 
         if service_type == "WMTS":
             url = service_dict.get("getCap_url")
@@ -247,6 +328,25 @@ class GeoServiceManager:
             )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
+        except requests.exceptions.SSLError as e:
+            logger.warning("SSL Error raised trying to connect to {} service {}: {}".format(
+                service_type, url, e
+            ))
+            try:
+                auth = Authentication(verify=False)
+                service = service_connector(url=url, version=service_version, auth=auth)
+                service_dict["reachable"] = 1
+            except Exception as e:
+                logger.warning("Error raised trying to use owslib Authentication module : {}".format(e))
+                try:
+                    service_dict = self.parse_ogc_xml(service_type, service_dict)
+                    return 1, service_dict
+                except Exception as e:
+                    error_msg = "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
+                        service_type, url, str(e)
+                    )
+                    service_dict["reachable"] = 0
+                    service_dict["error"] = error_msg
         except Exception:
             try:
                 service = service_connector(url=url)
@@ -257,6 +357,7 @@ class GeoServiceManager:
                 )
                 service_dict["reachable"] = 0
                 service_dict["error"] = error_msg
+
         # if the service can't be reached, return the error
         if not service_dict.get("reachable"):
             return service_dict["reachable"], service_dict["error"]
@@ -268,29 +369,14 @@ class GeoServiceManager:
         service_dict["typenames"] = list(service.contents.keys())
         service_dict["version"] = service_version
         service_dict["operations"] = [op.name for op in service.operations]
-        service_dict["formatOptions"] = [f.split(";", 1)[0]for f in service.getOperationByName(main_op_name).formatOptions]
+        service_dict["formatOptions"] = [
+            f.split(";", 1)[0]
+            for f in service.getOperationByName(main_op_name).formatOptions
+        ]
 
         # check if main operation ("GetMap" or "GetFeature" depending on service type) is available
         # if it do, retrieve, clean and store the corresponding URL
         if main_op_name in service_dict["operations"]:
-            row_main_op_url = service.getOperationByName(main_op_name).methods[0].get("url")
-            if "&" in row_main_op_url:
-                if service_type == "WMTS":
-                    main_op_url = row_main_op_url.split("?")[0] + "?"
-                    additional_params = [part for part in row_main_op_url.split("?")[1].split("&") if part != ""]
-                    for param in additional_params:
-                        main_op_url += quote("{}&".format(param))
-                elif row_main_op_url.endswith("&"):
-                    main_op_url = row_main_op_url[:-1]
-                else:
-                    main_op_url = row_main_op_url + "&"
-            else:
-                if row_main_op_url.endswith("?"):
-                    main_op_url = row_main_op_url
-                else:
-                    main_op_url = row_main_op_url + "?"
-            main_op_key = "{}_url".format(main_op_name)
-            service_dict[main_op_key] = main_op_url
             service_dict["{}_isAvailable".format(main_op_name)] = 1
         else:
             service_dict["{}_isAvailable".format(main_op_name)] = 0
@@ -337,13 +423,13 @@ class GeoServiceManager:
             )
         else:
             wfs_dict = wfs_cached_dict[srv_details.get("path")]
-
+        logger.debug("*=====* {}".format(wfs_dict))
         # local variables
         wfs_url_getcap = wfs_dict.get("getCap_url")
         wfs_url_base = wfs_dict.get("base_url")
         wfs = wfs_dict.get("WFS")
         api_layer_id = api_layer.get("id")
-        api_layer_name = re.sub("\{.*?}", "", api_layer_id)  # celan api_layer_id
+        api_layer_name = re.sub("\{.*?}", "", api_layer_id)  # clean api_layer_id
 
         # build layer title
         layer_title = self.build_layer_title("WFS", api_layer)
@@ -351,10 +437,21 @@ class GeoServiceManager:
         # check layer availability + retrieve its real id for "TYPENAME" URL parameter
         if api_layer_name in wfs_dict.get("typenames"):
             layer_typename = api_layer_name
-        elif any(api_layer_name in typename.split(":") for typename in wfs_dict.get("typenames")):
-            layer_typename = [typename for typename in wfs_dict.get("typenames") if api_layer_name in typename.split(":")][0]
+        elif any(
+            api_layer_name in typename.split(":")
+            for typename in wfs_dict.get("typenames")
+        ):
+            layer_typename = [
+                typename
+                for typename in wfs_dict.get("typenames")
+                if api_layer_name in typename.split(":")
+            ][0]
         elif any(api_layer_name in typename for typename in wfs_dict.get("typenames")):
-            layer_typenames = [typename for typename in wfs_dict.get("typenames") if api_layer_name in typename]
+            layer_typenames = [
+                typename
+                for typename in wfs_dict.get("typenames")
+                if api_layer_name in typename
+            ]
             if len(layer_typenames) > 1:
                 warning_msg = "WFS {} - Multiple typenames matched for '{}' layer, the first one will be choosed: {}".format(
                     wfs_url_base, api_layer_name, layer_typenames[0]
@@ -370,15 +467,28 @@ class GeoServiceManager:
             return 0, error_msg
 
         # check if GetFeature and DescribeFeatureType operation are available
-        if not hasattr(wfs, "getfeature") or not wfs_dict.get("GetFeature_isAvailable"):
+        if not hasattr(wfs, "getfeature") and not wfs_dict.get("GetFeature_isAvailable"):
             return 0, "GetFeature operation not available in: {}".format(wfs_url_getcap)
         else:
             logger.info("GetFeature available")
             pass
 
         # SRS definition
-        available_crs_options = ["{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions]
-        srs = self.choose_appropriate_srs(crs_options=available_crs_options)
+        if wfs_dict.get("manual"):
+            featureType_elem = [elem for elem in wfs.iter() if "FeatureType" in elem.tag and any(layer_typename in subelem.text for subelem in elem)]
+            if len(featureType_elem):
+                featureType = featureType_elem[0]
+                srs_text = [subelem.text for subelem in featureType if "DefaultSRS" in subelem.tag][0]
+                srs = "EPSG:" + srs_text.split("EPSG:")[-1]
+            else:
+                logger.warning("Unable to retrieve appropriate SRS for {} layer.".format(layer_typename))
+                srs = ""
+        else:
+            available_crs_options = [
+                "{}:{}".format(srs.authority, srs.code)
+                for srs in wfs[layer_typename].crsOptions
+            ]
+            srs = self.choose_appropriate_srs(crs_options=available_crs_options)
 
         # build URL
         li_url_params = [
@@ -435,12 +545,18 @@ class GeoServiceManager:
                 wms_url_base, api_layer_id
             )
             return 0, error_msg
+        elif wms_dict.get("manual"):
+            wms_lyr = [elem for elem in wms.iter() if elem.tag.endswith("Layer") and any(subelem.text == api_layer_id for subelem in elem if "Name" in subelem.tag)][0]
+            logger.debug("*=====* {}".format(wms_lyr))
         else:
             wms_lyr = wms[api_layer_id]
 
         # check if GetMap operation is available
-        if not hasattr(wms, "getmap") or not wms_dict.get("GetMap_isAvailable"):
-            return 0, "Required GetMap operation not available in: {}".format(wms_url_getcap)
+        if not hasattr(wms, "getmap") and not wms_dict.get("GetMap_isAvailable"):
+            return (
+                0,
+                "Required GetMap operation not available in: {}".format(wms_url_getcap),
+            )
         else:
             logger.info("GetMap available")
 
@@ -460,7 +576,7 @@ class GeoServiceManager:
             pass
 
         # Style definition
-        if len(wms_lyr.styles):
+        if hasattr(wms_lyr, "styles") and len(wms_lyr.styles):
             lyr_style = list(wms_lyr.styles.keys())[0]
         else:
             lyr_style = ""
@@ -477,15 +593,23 @@ class GeoServiceManager:
             layer_format = formats_image[0]
 
         # SRS definition
-        srs = self.choose_appropriate_srs(crs_options=wms_lyr.crsOptions)
+        if wms_dict.get("manual"):
+            srs = self.choose_appropriate_srs(crs_options=[])
+        else:
+            srs = self.choose_appropriate_srs(crs_options=wms_lyr.crsOptions)
+        logger.debug("*=====* {}".format(srs))
 
         # BBOX parameter
-        if any(txt in srs for txt in ["WGS84", "4326"]) and hasattr(wms_lyr, "boundingBoxWGS84"):
+        if hasattr(wms_lyr, "boundingBoxWGS84") and any(txt in srs for txt in ["WGS84", "4326"]):
             li_coords = [str(coord) for coord in wms_lyr.boundingBoxWGS84]
             bbox = ",".join(li_coords)
             logger.info("Let's use WGS84 bbox : {}".format(bbox))
-        elif any(srs in str(elem) for elem in wms_lyr.boundingBox):
-            li_coords = [str(coord) for coord in wms_lyr.boundingBox if isinstance(coord, int) or isinstance(coord, float)]
+        elif hasattr(wms_lyr, "boundingBox") and any(srs in str(elem) for elem in wms_lyr.boundingBox):
+            li_coords = [
+                str(coord)
+                for coord in wms_lyr.boundingBox
+                if isinstance(coord, int) or isinstance(coord, float)
+            ]
             bbox = ",".join(li_coords)
             logger.info("Let's use {} bbox : {}".format(srs, bbox))
         else:
@@ -508,11 +632,19 @@ class GeoServiceManager:
             }
 
             if "&" in wms_url_base:  # for case when there is already params into base url
-                wms_url_params["url"] = "{}?{}".format(wms_url_base.split("?")[0], quote(wms_url_base.split("?")[1]))
+                wms_url_params["url"] = "{}?{}".format(
+                    wms_url_base.split("?")[0], quote(wms_url_base.split("?")[1])
+                )
             else:  # for "easy" base url
                 wms_url_params["url"] = wms_url_base.split("?")[0] + "?"
 
-            url_for_requests = unquote(wms_url_params.get("url")) + "&".join(["{}={}".format(k, v) for k, v in wms_url_params.items() if k != "url" and v != ""])
+            url_for_requests = unquote(wms_url_params.get("url")) + "&".join(
+                [
+                    "{}={}".format(k, v)
+                    for k, v in wms_url_params.items()
+                    if k != "url" and v != ""
+                ]
+            )
 
             check_requests = requests.get(url_for_requests)
             if check_requests.status_code == 400:
@@ -562,10 +694,21 @@ class GeoServiceManager:
         # check layer availability + retrieve its real id for "layers" URL parameter
         if api_layer_id in wmts_dict.get("typenames"):
             layer_typename = api_layer_id
-        elif any(api_layer_id in typename.split(":") for typename in wmts_dict.get("typenames")):
-            layer_typename = [typename for typename in wmts_dict.get("typenames") if api_layer_id in typename.split(":")][0]
+        elif any(
+            api_layer_id in typename.split(":")
+            for typename in wmts_dict.get("typenames")
+        ):
+            layer_typename = [
+                typename
+                for typename in wmts_dict.get("typenames")
+                if api_layer_id in typename.split(":")
+            ][0]
         elif any(api_layer_id in typename for typename in wmts_dict.get("typenames")):
-            layer_typenames = [typename for typename in wmts_dict.get("typenames") if api_layer_id in typename]
+            layer_typenames = [
+                typename
+                for typename in wmts_dict.get("typenames")
+                if api_layer_id in typename
+            ]
             if len(layer_typenames) > 1:
                 warning_msg = "WMTS {} - Multiple typenames matched for '{}' layer, the first one will be choosed: {}".format(
                     wmts_lyr_url, api_layer_id, layer_typenames[0]
@@ -584,17 +727,25 @@ class GeoServiceManager:
 
         # check if GetTile operation is available
         if not hasattr(wmts, "gettile") or not wmts_dict.get("GetTile_isAvailable"):
-            return 0, "Required GetTile operation not available in: " + wmts_dict.get("getCap_url")
+            return (
+                0,
+                "Required GetTile operation not available in: "
+                + wmts_dict.get("getCap_url"),
+            )
         else:
             logger.debug("GetTile available")
 
         # retrieve Tile Matrix Set & SRS
-        available_crs = [crs for crs, tms in tms_dict.items() if tms in wmts_lyr._tilematrixsets]
+        available_crs = [
+            crs for crs, tms in tms_dict.items() if tms in wmts_lyr._tilematrixsets
+        ]
         srs = self.choose_appropriate_srs(available_crs)
         if srs:
             tile_matrix_set = tms_dict.get(srs)
         else:
-            logger.debug("WMTS - Let's choose the SRS corresponding to the only available Tile Matrix Set for this layer")
+            logger.debug(
+                "WMTS - Let's choose the SRS corresponding to the only available Tile Matrix Set for this layer"
+            )
             tile_matrix_set = wmts_lyr._tilematrixsets[0]
             srs = [k for k in tms_dict if tile_matrix_set in k][0]
 
@@ -646,8 +797,7 @@ class GeoServiceManager:
         if service_type not in self.esri_infos_dict:
             raise ValueError(
                 "'service_type' argument value should be one of {} not {}".format(
-                    list(self.esri_infos_dict.keys()),
-                    service_type
+                    list(self.esri_infos_dict.keys()), service_type
                 )
             )
         # It it's valid, set local variables depending on it
@@ -673,24 +823,32 @@ class GeoServiceManager:
             getCap_content = getCap_request.json()
             service_dict["reachable"] = 1
         except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
-            error_msg = "{} <i>{}</i> - <b>Server connection failure</b>: {}".format(service_type, service_dict["getCap_url"], e)
+            error_msg = "{} <i>{}</i> - <b>Server connection failure</b>: {}".format(
+                service_type, service_dict["getCap_url"], e
+            )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
         except Exception as e:
-            error_msg = "{} <i>{}</i> - <b>Unable to access service capabilities</b>: {}".format(service_type, service_dict["getCap_url"], e)
+            error_msg = "{} <i>{}</i> - <b>Unable to access service capabilities</b>: {}".format(
+                service_type, service_dict["getCap_url"], e
+            )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
 
         # if the service is an ETS provided as EMS by Isogeo API
         if "tileInfo" in getCap_content:
-            error_msg = "{} <i>{}</i> - This <b>service is an EsriTileService</b> provided as {} by Isogeo API. No layer will be added.".format(service_type, service_dict["getCap_url"], service_type)
+            error_msg = "{} <i>{}</i> - This <b>service is an EsriTileService</b> provided as {} by Isogeo API. No layer will be added.".format(
+                service_type, service_dict["getCap_url"], service_type
+            )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
             return service_dict["reachable"], service_dict["error"]
         # if a token is needed
         elif "error" in getCap_content:
             if getCap_content.get("error").get("code") == 499:
-                error_msg = "{} <i>{}</i> - This <b>service is private</b>. You cannot access its content from Isogeo plugin.".format(service_type, service_dict["getCap_url"])
+                error_msg = "{} <i>{}</i> - This <b>service is private</b>. You cannot access its content from Isogeo plugin.".format(
+                    service_type, service_dict["getCap_url"]
+                )
                 service_dict["reachable"] = 0
                 service_dict["error"] = error_msg
             else:
@@ -706,7 +864,9 @@ class GeoServiceManager:
 
         # retrieve appropriate srs from service capabilities
         try:
-            service_dict["appropriate_srs"] = "EPSG:" + str(getCap_content.get("spatialReference").get(srs_entry_name))
+            service_dict["appropriate_srs"] = "EPSG:" + str(
+                getCap_content.get("spatialReference").get(srs_entry_name)
+            )
         except Exception as e:
             warning_msg = "{} {} - Unable to retrieve information about appropriate srs from service capabilities: {}".format(
                 service_type, service_dict["getCap_url"], e
@@ -727,8 +887,7 @@ class GeoServiceManager:
         # check the service accessibility and store service informations
         if srv_details.get("path") not in efs_cached_dict:
             check = self.check_esri_service(
-                service_type="EFS",
-                service_url=srv_details.get("path"),
+                service_type="EFS", service_url=srv_details.get("path"),
             )
             if check[0]:
                 efs_dict = check[1]
@@ -774,8 +933,7 @@ class GeoServiceManager:
         # check the service accessibility and store service informations
         if srv_details.get("path") not in ems_cached_dict:
             check = self.check_esri_service(
-                service_type="EMS",
-                service_url=srv_details.get("path"),
+                service_type="EMS", service_url=srv_details.get("path"),
             )
             if check[0]:
                 ems_dict = check[1]

@@ -1,6 +1,6 @@
-{   
-    "editor.rulers": [88],
-    "editor.wordWrapColumn": 88,
+{
+    "editor.rulers": [100],
+    "editor.wordWrapColumn": 100,
     // PyQt Integration
     "pyqt-integration.qtdesigner.path": "C:/OSGeo4W64/bin/qgis-ltr-designer.bat",
     "pyqt-integration.pyuic.cmd": "C:\\OSGEO4~1\\apps\\Python37\\Scripts\\pyuic5.bat",
@@ -11,16 +11,17 @@
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
-        "--ignore=E24,E265,E501,W504",
+        "--ignore=E24,E265,E501,W504,W1401",
         "--verbose"
     ],
 
-    // Not working yet 
+    // Not working yet
     "python.envFile": "${workspaceFolder}/dev.env",
 
     // Set Python interpreter
     //"python.pythonPath": "${workspaceFolder}/.venv_tests/Scripts/python.exe",
-    "python.pythonPath": "C:/OSGeo4W64/bin/python-qgis-ltr.bat",
+    //"python.pythonPath": "C:/OSGeo4W64/bin/python-qgis-ltr.bat",
+    "python.pythonPath": "C:\\Program Files\\QGIS 3.16\\apps\\Python37\\python.exe",
 
     // Formatting with black
     "python.formatting.provider": "black",

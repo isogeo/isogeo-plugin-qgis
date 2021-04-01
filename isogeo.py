@@ -103,29 +103,15 @@ log_form = logging.Formatter(
     "|| %(module)s - %(lineno)d ||"
     " %(funcName)s || %(message)s"
 )
-logfile = RotatingFileHandler(
-    Path(plg_logdir) / "log_isogeo_plugin.log", "a", 5000000, 1
-)
+logfile_path = Path(plg_logdir) / "log_isogeo_plugin.log"
+logfile = RotatingFileHandler(logfile_path, "a", 5000000, 1)
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
 
 # icons
-ico_od_asc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-asc.svg")
-ico_od_desc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-desc.svg")
-ico_ob_relev = QIcon(":/plugins/Isogeo/resources/results/star.svg")
-ico_ob_alpha = QIcon(":/plugins/Isogeo/resources/metadata/language.svg")
-ico_ob_dcrea = QIcon(":/plugins/Isogeo/resources/datacreated.svg")
-ico_ob_dupda = QIcon(":/plugins/Isogeo/resources/datamodified.svg")
-ico_ob_mcrea = QIcon(":/plugins/Isogeo/resources/calendar-plus-o.svg")
-ico_ob_mupda = QIcon(":/plugins/Isogeo/resources/calendar_blue.svg")
-ico_bolt = QIcon(":/plugins/Isogeo/resources/search/bolt.svg")
-ico_keyw = QIcon(":/plugins/Isogeo/resources/tag.svg")
-ico_none = QIcon(":/plugins/Isogeo/resources/none.svg")
-ico_line = QIcon(":/images/themes/default/mIconLineLayer.svg")
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
-ico_poin = QIcon(":/images/themes/default/mIconPointLayer.svg")
-ico_poly = QIcon(":/images/themes/default/mIconPolygonLayer.svg")
+ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
 
 
 # ############################################################################
@@ -258,7 +244,6 @@ class Isogeo:
         self.showResult = False
         self.showDetails = False
         self.store = False
-        self.PostGISdict = self.form_mng.results_mng.build_postgis_dict(qsettings)
 
         self.old_text = ""
         self.page_index = 1
@@ -350,6 +335,18 @@ class Isogeo:
         qsettings.setValue(
             "isogeo/settings/portal_base_url", self.form_mng.input_portal_url.text()
         )
+        # save prefered PostGIS database connections
+        qsettings.setValue(
+            "isogeo/settings/pref_pgdb_conn",
+            self.form_mng.results_mng.db_mng.li_pref_pgdb_conn,
+        )
+        # save invalid PostGIS database connections
+        logger.debug("*=====* {}".format(self.form_mng.results_mng.db_mng.li_invalid_pgdb_conn))
+        qsettings.setValue(
+            "isogeo/settings/invalid_pgdb_conn",
+            self.form_mng.results_mng.db_mng.li_invalid_pgdb_conn,
+        )
+        logger.debug("*=====* {}".format(qsettings.value("isogeo/settings/invalid_pgdb_conn")))
         # save cache
         self.form_mng.results_mng.cache_mng.dumper()
         # disconnects
@@ -361,6 +358,8 @@ class Isogeo:
         # when closing the docked window:
         self.form_mng = None
         self.pluginIsActive = False
+        # stop log file stream
+        logging.shutdown()
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -371,8 +370,6 @@ class Isogeo:
             except:
                 pass
             self.iface.removeToolBarIcon(action)
-            self.form_mng = None
-            logger.handlers = []
         # remove the toolbar
         del self.toolbar
 
@@ -880,7 +877,11 @@ class Isogeo:
         # view credits - see: #52
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
 
-        # -- Settings tab - Isogeo Portal settings ------------------------
+        # -- Settings tab - layer adding settings ------------------------
+        self.form_mng.btn_open_pgdb_config_dialog.setIcon(ico_pgis)
+        self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(
+            self.form_mng.results_mng.db_mng.open_pgdb_config_dialog
+        )
         self.form_mng.input_portal_url.setText(
             qsettings.value("isogeo/settings/portal_base_url")
         )

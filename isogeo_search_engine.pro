@@ -1,6 +1,7 @@
 FORMS = ui/isogeo_dockwidget_base.ui \
     ui/auth/ui_authentication.ui \
     ui/credits/ui_credits.ui \
+    ui/db_connections/ui_db_connections.ui \
     ui/metadata/ui_md_details.ui \
     ui/quicksearch/ui_quicksearch_new.ui \
     ui/quicksearch/ui_quicksearch_rename.ui
@@ -12,6 +13,7 @@ SOURCES = __init__.py \
     modules/api/shares.py \
     modules/layer/add_layer.py \
     modules/layer/limitations_checker.py \
+    modules/layer/database.py \
     modules/quick_search.py \
     modules/results/cache.py \
     modules/results/display.py \
