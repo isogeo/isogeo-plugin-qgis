@@ -27,11 +27,11 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 class ApiRequester(QObject):
     """Basic class to manage direct interactions with Isogeo's API :
-        - Authentication request for tokenl
-        - Request about application's shares
-        - Request about ressources
-        - Building request URLs
-        - Parsing API's answer tags
+    - Authentication request for tokenl
+    - Request about application's shares
+    - Request about ressources
+    - Building request URLs
+    - Parsing API's answer tags
     """
 
     api_sig = pyqtSignal(str)
@@ -130,7 +130,7 @@ class ApiRequester(QObject):
         return request
 
     def send_request(self, request_type: str = "search"):
-        """ Sends a request to the Isogeo's API using QNetworkRequestManager. That's the
+        """Sends a request to the Isogeo's API using QNetworkRequestManager. That's the
         handle_reply method which get the API's response. See below.
 
         :param str request_type: type of request to send. Options:
@@ -210,6 +210,7 @@ class ApiRequester(QObject):
         try:
             parsed_content = json.loads(content)
         except ValueError as e:
+            parsed_content = content
             if "No JSON object could be decoded" in str(e):
                 logger.error("{} --> Internet connection failed".format(str(e)))
                 self.api_sig.emit("internet_issue")
@@ -404,7 +405,7 @@ class ApiRequester(QObject):
         return url
 
     def get_tags(self, tags: dict):
-        """ This parse the tags contained in API_answer[tags] and class them so
+        """This parse the tags contained in API_answer[tags] and class them so
         they are more easy to handle in other function such as update_fields()
 
         :param dict tags: a dict of tags as thez are return by the API

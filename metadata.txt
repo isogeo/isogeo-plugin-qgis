@@ -11,7 +11,7 @@ name=Isogeo
 qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 description=Isogeo search engine within QGIS
-version=3.1.0-beta1
+version=3.1.1
 author=Isogeo
 email=projects+qgis@isogeo.com
 
@@ -24,7 +24,7 @@ repository=https://github.com/isogeo/isogeo-plugin-qgis
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-changelog=- 3.0.2 : better SSL errors handling<br>- 3.0.1 : better authentication management<br>- 3.0.0 : first stable version compatible with QGIS 3<br>- 2.0.0-alpha1: first version meant to be compatible with QGIS 3
+changelog=- <strong>3.1.1:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.1.1">dedicated GitHub release</a><br>- <strong>3.1.0:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.1.0">dedicated GitHub release</a><br>- <strong>3.0.2:</strong> better SSL errors handling<br>- <strong>3.0.1:</strong> better authentication management<br>- <strong>3.0.0:</strong> first stable version compatible with QGIS 3
 
 # Tags are comma separated with spaces allowed
 tags=REST API,catalog,search,explore,webservices,metadata,open data,INSPIRE

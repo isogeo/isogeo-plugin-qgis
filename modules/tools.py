@@ -72,8 +72,8 @@ class IsogeoPlgTools(IsogeoUtils):
         """
         words = title.split(" ")
         if len(words) == 1:
-            if len(words[0]) > 28:
-                final_text = words[0][:25] + "..."
+            if len(words[0]) > 22:
+                final_text = words[0][:20] + "..."
             else:
                 final_text = words[0]
             return final_text
@@ -121,21 +121,47 @@ class IsogeoPlgTools(IsogeoUtils):
         else:
             return input_date
 
-    def mail_to_isogeo(self, lang):
-        """Open the credentials request online form in web browser.
+    def open_pipedrive_test_form(self, lang):
+        """Open the Isogeo Plugin&Widgets test online form in web browser.
 
         :param str lang: language code. If not fr (French), the English form is displayed.
         """
         if lang == "fr":
             webbrowser.open(
-                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ", new=0, autoraise=True
+                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ",
+                new=0,
+                autoraise=True,
             )
         else:
             webbrowser.open(
-                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ", new=0, autoraise=True
+                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ",
+                new=0,
+                autoraise=True,
             )
         # method ending
-        logger.debug("Isogeo Plugin&Widget test form launched in the default web browser")
+        logger.debug(
+            "Isogeo Plugin&Widget test form launched in the default web browser"
+        )
+
+    def open_pipedrive_rdv_form(self, lang):
+        """Open the rdv request online form in web browser.
+
+        :param str lang: language code. If not fr (French), the English form is displayed.
+        """
+        if lang == "fr":
+            webbrowser.open(
+                "https://isogeo.pipedrive.com/scheduler/lq0ZSm/rendez-vous-isogeo",
+                new=0,
+                autoraise=True,
+            )
+        else:
+            webbrowser.open(
+                "https://isogeo.pipedrive.com/scheduler/lq0ZSm/rendez-vous-isogeo",
+                new=0,
+                autoraise=True,
+            )
+        # method ending
+        logger.debug("Isogeo rdv request form launched in the default web browser")
 
     def open_dir_file(self, target):
         """Open a file or a directory in the explorer of the operating system.
@@ -449,9 +475,9 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def test_qgis_style(self):
         """
-            Check QGIS style applied to ensure compatibility with comboboxes.
-            Avert the user and force change if the selected is not adapted.
-            See: https://github.com/isogeo/isogeo-plugin-qgis/issues/137.
+        Check QGIS style applied to ensure compatibility with comboboxes.
+        Avert the user and force change if the selected is not adapted.
+        See: https://github.com/isogeo/isogeo-plugin-qgis/issues/137.
         """
         style_qgis = qsettings.value("qgis/style", "Default")
         if style_qgis in ("macintosh", "cleanlooks"):

@@ -16,7 +16,7 @@ from qgis.utils import iface
 # PyQT
 from qgis.PyQt.QtCore import pyqtSignal, QSettings, Qt
 from qgis.PyQt.QtWidgets import QComboBox
-from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtGui import QIcon, QStandardItem
 
 # UI classe
 from ..ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
@@ -45,8 +45,6 @@ ico_ob_dcrea = QIcon(":/plugins/Isogeo/resources/datacreated.svg")
 ico_ob_dupda = QIcon(":/plugins/Isogeo/resources/datamodified.svg")
 ico_ob_mcrea = QIcon(":/plugins/Isogeo/resources/calendar-plus-o.svg")
 ico_ob_mupda = QIcon(":/plugins/Isogeo/resources/calendar_blue.svg")
-ico_bolt = QIcon(":/plugins/Isogeo/resources/search/bolt.svg")
-ico_keyw = QIcon(":/plugins/Isogeo/resources/tag.svg")
 ico_none = QIcon(":/plugins/Isogeo/resources/none.svg")
 ico_line = QIcon(":/images/themes/default/mIconLineLayer.svg")
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
@@ -59,7 +57,7 @@ ico_poly = QIcon(":/images/themes/default/mIconPolygonLayer.svg")
 
 
 class SearchFormManager(IsogeoDockWidget):
-    """ Basic class to manage IsogeoDockwidget UI module (ui/isogeo_dockwidget.py).
+    """Basic class to manage IsogeoDockwidget UI module (ui/isogeo_dockwidget.py).
     It performs different tasks :
         - update widgets (clear, fill and set appropriate status)
         - fill the results table calling ResultsManager.show_results method
@@ -161,31 +159,16 @@ class SearchFormManager(IsogeoDockWidget):
         )
 
     def update_metadata_portal_url_setting(self):
-        """ Slot connected to self.chb_portal_url.stateChanged signal. It update
+        """Slot connected to self.chb_portal_url.stateChanged signal. It update
         "isogeo/settings/add_metadata_url_portal" qsetting value (1 if the checkBox is
         checked, 0 otherwise) and change self.input_portal_url widget status (enabled if
         the checkBox is checked, disabled otherwise)
 
         :param dict tags: 'tags' parameter of Isogeo.search_slot method.
         """
-        logger.debug(
-            "*=====* DEBUG URL --> chb_portal_url slot : is_checked = {}".format(
-                int(self.chb_portal_url.isChecked())
-            )
-        )
         is_checked = int(self.chb_portal_url.isChecked())
         qsettings.setValue("isogeo/settings/add_metadata_url_portal", is_checked)
-        logger.debug(
-            "*=====* DEBUG URL --> chb_portal_url slot : 'isogeo/settings/add_metadata_url_portal' setting = {}".format(
-                qsettings.value("isogeo/settings/add_metadata_url_portal")
-            )
-        )
         self.input_portal_url.setEnabled(is_checked)
-        logger.debug(
-            "*=====* DEBUG URL --> chb_portal_url slot : input_portal_url.isEnabled() = {}".format(
-                self.input_portal_url.isEnabled()
-            )
-        )
 
     def update_cbb_keywords(
         self, tags_keywords: dict = {}, selected_keywords: list = []
@@ -203,11 +186,21 @@ class SearchFormManager(IsogeoDockWidget):
             )
         )
 
-        model = QStandardItemModel(5, 1)  # 5 rows, 1 col
+        # shortcut
+        model = self.cbb_chck_kw.model()
+
+        # disconnect the widget before updating
+        try:
+            model.itemChanged.disconnect()
+        except TypeError:
+            pass
+
+        # clear the the combobox content
+        model.clear()
+
         # parse keywords and check selected
         i = 0  # row index
         for tag_label, tag_code in sorted(tags_keywords.items()):
-            i += 1
             item = QStandardItem(tag_label)
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setData(tag_code, 32)
@@ -219,19 +212,10 @@ class SearchFormManager(IsogeoDockWidget):
                 model.insertRow(0, item)
             else:
                 pass
-        # first item = label for the combobox.
-        first_item = QStandardItem(
-            "---- {} ----".format(self.tr("Keywords", context=__class__.__name__))
-        )
-        first_item.setIcon(ico_keyw)
-        first_item.setSelectable(False)
-        model.insertRow(0, first_item)
+            i += 1
 
         # connect keyword selected -> launch search
         model.itemChanged.connect(self.kw_sig.emit)
-
-        # add the built model to the combobox
-        self.cbb_chck_kw.setModel(model)
 
         # add tooltip with selected keywords. see: #107#issuecomment-341742142
         if selected_keywords:
@@ -244,7 +228,7 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_chck_kw.setToolTip(tooltip)
 
     def pop_as_cbbs(self, tags: dict):
-        """ Called by Isogeo.search_slot method. Clears Advanced search comboboxes
+        """Called by Isogeo.search_slot method. Clears Advanced search comboboxes
         and fills them from 'tags' parameter.
 
         :param dict tags: 'tags' parameter of Isogeo.search_slot method.
@@ -277,7 +261,7 @@ class SearchFormManager(IsogeoDockWidget):
         return
 
     def pop_qs_cbbs(self, items_list: list = None):
-        """ Called by Isogeo.search_slot method. Clears quick searches comboboxes
+        """Called by Isogeo.search_slot method. Clears quick searches comboboxes
         (also the one in settings tab) and fills them from 'items_list' parameter.
 
         :param list items_list: a list of quick searche's names
@@ -297,7 +281,7 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_quicksearch_edit.clear()
         # filling widgets from the saved searches list built above
         self.cbb_quicksearch_use.addItem(
-            ico_bolt, self.tr("Quicksearches", context=__class__.__name__)
+            self.tr("Quicksearches", context=__class__.__name__)
         )
         for qs in qs_list:
             self.cbb_quicksearch_use.addItem(qs, qs)
@@ -305,7 +289,7 @@ class SearchFormManager(IsogeoDockWidget):
         return
 
     def set_ccb_index(self, params: dict, quicksearch: str = ""):
-        """ Called by Isogeo.search_slot method. It sets the status of widgets
+        """Called by Isogeo.search_slot method. It sets the status of widgets
         according to the user's selection or the quick search performed.
 
         :param dict params: parameters saved in _user/quicksearches.json in case
@@ -354,7 +338,7 @@ class SearchFormManager(IsogeoDockWidget):
         return
 
     def fill_tbl_result(self, content: dict, page_index: int, results_count: int):
-        """ Called by Isogeo.search_slot method. It sets some widgets' statuts
+        """Called by Isogeo.search_slot method. It sets some widgets' statuts
         in order to display results.
 
         :param int page_index: results table's page index.
@@ -401,7 +385,7 @@ class SearchFormManager(IsogeoDockWidget):
             self.tab_search.setEnabled(False)
 
     def init_steps(self):
-        """ Called by Isogeo.search_slot method in case of reset or "_default"
+        """Called by Isogeo.search_slot method in case of reset or "_default"
         quicksearch. It initialise the widgets that don't need to be updated
         """
         # Geographical operator cbb
@@ -418,8 +402,7 @@ class SearchFormManager(IsogeoDockWidget):
             self.cbb_od.addItem(v[0], k, v[1])
 
     def reinit_widgets(self):
-        """ Called by Isogeo.reinitialize_search method to clear search widgets.
-        """
+        """Called by Isogeo.reinitialize_search method to clear search widgets."""
         # clear widgets
         for cbb in self.tab_search.findChildren(QComboBox):
             cbb.clear()

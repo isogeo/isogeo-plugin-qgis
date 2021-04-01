@@ -10,6 +10,8 @@ from .isogeo_sdk import Isogeo, version
 from .checker import IsogeoChecker
 from .translator import IsogeoTranslator
 from .utils import IsogeoUtils
+from .models import *
+from .enums import *
 
 __version__ = version
 VERSION = __version__

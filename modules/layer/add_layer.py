@@ -3,10 +3,7 @@
 
 # Standard library
 import logging
-import re
 import os
-from urllib.request import unquote
-from urllib.parse import urlencode
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings
@@ -27,6 +24,7 @@ from qgis.utils import iface
 # Plugin modules
 from ..tools import IsogeoPlgTools
 from .metadata_sync import MetadataSynchronizer
+from ..layer.geo_service import GeoServiceManager
 
 # ############################################################################
 # ########## Globals ###############
@@ -34,7 +32,10 @@ from .metadata_sync import MetadataSynchronizer
 
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
+
 plg_tools = IsogeoPlgTools()
+
+li_datafile_types = ["vector", "raster"]
 
 qgis_wms_formats = (
     "image/png",
@@ -50,32 +51,6 @@ qgis_wms_formats = (
 # ##### Conditional imports ########
 # ##################################
 
-try:
-    from owslib.wms import WebMapService
-    from owslib.wmts import WebMapTileService
-    from owslib.util import ServiceException
-    import owslib
-
-    logging.info("Depencencies - owslib version: {}".format(owslib.__version__))
-except ImportError:
-    logger.warning("Depencencies - owslib is not present")
-
-try:
-    from owslib.wfs import WebFeatureService
-except ImportError as e:
-    logger.warning("Depencencies - owslib WFS issue: {}".format(e))
-
-try:
-    from owslib.util import HTTPError
-
-    logger.info("Depencencies - HTTPError within owslib")
-except ImportError:
-    from urllib.error import HTTPError
-
-    logger.warning(
-        "Depencencies - HTTPError not within owslib."
-        " Directly imported from urllib.error"
-    )
 try:
     import requests
 
@@ -93,624 +68,297 @@ class LayerAdder:
 
     def __init__(self):
         """Class constructor."""
-        # cache
-        self.cached_wfs = dict()
-        self.cached_wms = dict()
-        self.cached_wmts = dict()
 
         self.tbl_result = None
         self.tr = object
         self.md_sync = MetadataSynchronizer()
 
-        # add layer from PostGIS table
-        self.PostGISdict = object
+        # prepare layer adding from PostGIS table
+        self.PostGISdict = dict()
+
+        # prepare layer adding from geo service datas
+        self.geo_srv_mng = GeoServiceManager()
+
+        self.dict_service_types = {
+            "WFS": ["WFS", QgsVectorLayer, self.geo_srv_mng.build_wfs_url],
+            "WMS": ["wms", QgsRasterLayer, self.geo_srv_mng.build_wms_url],
+            "EFS": [
+                "arcgisfeatureserver",
+                QgsVectorLayer,
+                self.geo_srv_mng.build_efs_url,
+            ],
+            "EMS": ["arcgismapserver", QgsRasterLayer, self.geo_srv_mng.build_ems_url],
+            "WMTS": ["wms", QgsRasterLayer, self.geo_srv_mng.build_wmts_url],
+        }
+
         # catch QGIS log messages - see: https://gis.stackexchange.com/a/223965/19817
         QgsApplication.messageLog().messageReceived.connect(plg_tools.error_catcher)
 
-    def build_efs_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
-    ):
-        """Reformat the input Esri Feature Service url so it fits QGIS criterias.
+    def invalid_layer_inform(self, data_type: str, data_source: str, error_msg: str):
+        """Write a Warning into log fil + inform the user that the layer can't be added to the map canevas
 
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
+        :param str data_type: the type of data ("vector", "raster", "WFS", "WMS", "EFS", "EMS" or "WMTS")
+        :param str data_source: the path to data file or the URL to geographic service layer depending on data_type
+        :param error_msg str: the QgsLayer error message
         """
-        srs_map = plg_tools.get_map_crs()
-        layer_name = api_layer.get("id")
 
-        efs_lyr_title = "EFS Layer"
-        if len(api_layer.get("titles")):
-            efs_lyr_title = api_layer.get("titles")[0].get("value", "EFS Layer")
+        # Retrieving 'layer specific' informations
+        if data_type in self.dict_service_types:
+            layer_type = self.tr("Service layer", context=__class__.__name__)
+            data_name = data_source
+        elif data_type in li_datafile_types:
+            layer_type = self.tr("Data file layer", context=__class__.__name__)
+            data_type = data_type.capitalize()
+            data_name = os.path.basename(data_source).split(".")[0]
         else:
-            pass
+            raise ValueError(
+                "'data_type' argument value should be 'vector', 'raster', 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
+            )
 
-        efs_lyr_url = str(srv_details.get("path"))
-
-        efs_uri = QgsDataSourceUri()
-        efs_uri.setParam("url", efs_lyr_url)
-        efs_uri.setParam("layer", layer_name)
-        efs_uri.setParam("crs", srs_map)
-        efs_uri.setParam("restrictToRequestBBOX", "1")
-
-        btn_lbl = "EFS : {}".format(efs_lyr_title)
-        return ["EFS", efs_lyr_title, efs_uri.uri(), api_layer, srv_details, btn_lbl]
-
-    def build_ems_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
-    ):
-        """Reformat the input Esri Map Service url so it fits QGIS criterias.
-
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
-        """
-        srs_map = plg_tools.get_map_crs()
-        layer_name = api_layer.get("id")
-
-        ems_lyr_title = "EMS Layer"
-        if len(api_layer.get("titles")):
-            ems_lyr_title = api_layer.get("titles")[0].get("value", "EMS Layer")
-        else:
-            pass
-
-        ems_lyr_url = str(srv_details.get("path"))
-
-        ems_uri = QgsDataSourceUri()
-        ems_uri.setParam("url", ems_lyr_url)
-        ems_uri.setParam("layer", layer_name)
-        ems_uri.setParam("crs", srs_map)
-        # ems_uri.setParam("restrictToRequestBBOX", "1")
-
-        btn_lbl = "EMS : {}".format(ems_lyr_title)
-        return ["EMS", ems_lyr_title, ems_uri.uri(), api_layer, srv_details, btn_lbl]
-
-    def build_wfs_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
-    ):
-        """Reformat the input WMS url so it fits QGIS criterias.
-
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
-        """
-        # local variables
-        layer_title = "WFS Layer"
-        if len(api_layer.get("titles")):
-            layer_title = api_layer.get("titles")[0].get("value", "WFS Layer")
-        else:
-            pass
-
-        wfs_url_getcap = (
-            srv_details.get("path") + "?request=GetCapabilities&service=WFS"
+        # Let's inform the user
+        logger.warning(
+            "Invalid {} {}: {}. QGIS says: {}".format(
+                data_type, layer_type, data_source, error_msg
+            )
         )
-        geoserver = "geoserver" in wfs_url_getcap
-        layer_id = api_layer.get("id")
-        layer_name = re.sub("\{.*?}", "", layer_id)
-        # handling WFS namespaces
-        if "{" in layer_id:
-            first_car = layer_id.find("{") + 1
-            last_car = layer_id.find("}")
-            namespace = layer_id[first_car:last_car]
-            logging.debug("WFS - Namespace: " + namespace)
+        msg = "<b>{} ({}) ".format(layer_type, data_type)
+        msg += self.tr("is not valid", context=__class__.__name__)
+        msg += ": <i>{}</i>".format(data_name)
+        msg += ".</b><br><b>"
+        msg += self.tr("Error:", context=__class__.__name__)
+        msg += "</b>{}".format(error_msg)
+
+        QMessageBox.warning(
+            iface.mainWindow(), self.tr("Error", context=__class__.__name__), msg
+        )
+
+    def add_from_file(self, layer_label: str, path: str, data_type: str):
+        """Add a layer to QGIS map canvas from a file.
+
+        :param str layer_label: the name that gonna be given to layer into QGIS layers manager
+        :param list path: the path to file from which the layer gonna be created
+        :param data_type str: the type of data ("vector" or "raster")
+        """
+        # retrieving the name of the data file
+        name = os.path.basename(path).split(".")[0]
+
+        # Create the vector layer or the raster layer depending on data_type
+        if data_type == "vector":
+            layer = QgsVectorLayer(path, layer_label, "ogr")
+        elif data_type == "raster":
+            layer = QgsRasterLayer(path, layer_label)
         else:
-            namespace = ""
+            raise ValueError(
+                "'data_type' argument value should be 'vector' or 'raster'"
+            )
 
-        if mode == "quicky":
-            # let's try a quick & dirty url build
-            srs_map = plg_tools.get_map_crs()
-            wfs_url_base = srv_details.get("path")
-            uri = QgsDataSourceUri()
-            uri.setParam("url", wfs_url_base)
-            uri.setParam("typename", layer_name)
-            uri.setParam("version", "auto")
-            uri.setParam("srsname", srs_map)
-            uri.setParam("restrictToRequestBBOX", "1")
-            wfs_url_quicky = uri.uri()
-
-            btn_lbl = "WFS : {}".format(layer_title)
-            return ["WFS", layer_title, wfs_url_quicky, api_layer, srv_details, btn_lbl]
-        elif mode == "complete":
-            # Clean, complete but slower way - OWSLib -------------------------
-            if srv_details.get("path") == self.cached_wfs.get("srv_path"):
-                logger.debug("WFS: already in cache")
-            else:
-                self.cached_wfs["srv_path"] = srv_details.get("path")
-                logger.debug("WFS: new service")
-                pass
-            # basic checks on service url
+        # If the layer is valid, add it to the map canvas and inform the user
+        if layer.isValid():
+            lyr = QgsProject.instance().addMapLayer(layer)
+            layer_is_ok = 1
             try:
-                wfs = WebFeatureService(wfs_url_getcap)
-            except ServiceException as e:
-                logger.error(str(e))
-                return 0, "WFS - Bad operation: " + wfs_url_getcap, str(e)
-            except HTTPError as e:
-                logger.error(str(e))
-                return 0, "WFS - Service not reached: " + wfs_url_getcap, str(e)
-            except Exception as e:
-                return 0, e
-
-            # check if GetFeature and DescribeFeatureType operation are available
-            if not hasattr(wfs, "getfeature") or "GetFeature" not in [
-                op.name for op in wfs.operations
-            ]:
-                self.cached_wfs["GetFeature"] = 0
-                return (
-                    0,
-                    "Required GetFeature operation not available in: " + wfs_url_getcap,
+                QgsMessageLog.logMessage(
+                    message="Data layer added: {}".format(name), tag="Isogeo", level=0,
                 )
-            else:
-                self.cached_wfs["GetFeature"] = 1
-                logger.info("GetFeature available")
-                pass
-
-            if "DescribeFeatureType" not in [op.name for op in wfs.operations]:
-                self.cached_wfs["DescribeFeatureType"] = 0
-                return (
-                    0,
-                    "Required DescribeFeatureType operation not available in: "
-                    + wfs_url_getcap,
-                )
-            else:
-                self.cached_wfs["DescribeFeatureType"] = 1
-                logger.info("DescribeFeatureType available")
-                pass
-
-            # check if required layer is present
-            try:
-                wfs_lyr = wfs[layer_name]
-            except KeyError as e:
-                logger.error(
-                    "Layer {} not found in WFS service: {}".format(
-                        layer_name, wfs_url_getcap
-                    )
-                )
-                if geoserver and layer_name in [
-                    l.split(":")[1] for l in list(wfs.contents)
-                ]:
-                    layer_name = list(wfs.contents)[
-                        [l.split(":")[1] for l in list(wfs.contents)].index(layer_name)
-                    ]
-                    try:
-                        wfs_lyr = wfs[layer_name]
-                    except KeyError as e:
-                        return (
-                            0,
-                            "Layer {} not found in WFS service: {}".format(
-                                layer_name, wfs_url_getcap
-                            ),
-                            e,
-                        )
-                else:
-                    return (
-                        0,
-                        "Layer {} not found in WFS service: {}".format(
-                            layer_name, wfs_url_getcap
-                        ),
-                        e,
-                    )
-
-            # SRS definition
-            srs_map = plg_tools.get_map_crs()
-            srs_lyr_new = qsettings.value("/Projections/defaultBehaviour")
-            srs_lyr_crs = qsettings.value("/Projections/layerDefaultCrs")
-            srs_qgs_new = qsettings.value("/Projections/projectDefaultCrs")
-            srs_qgs_otf_on = qsettings.value("/Projections/otfTransformEnabled")
-            srs_qgs_otf_auto = qsettings.value("/Projections/otfTransformAutoEnable")
-
-            # DEV
-            # print("CRS: ", wms_lyr.crsOptions,
-            #       "For new layers: " + srs_lyr_new + srs_lyr_crs,
-            #       "For new projects: " + srs_qgs_new,
-            #       "OTF enabled: " + srs_qgs_otf_on,
-            #       "OTF smart enabled: " + srs_qgs_otf_auto,
-            #       "Map canvas SRS:" + plg_tools.get_map_crs())
-
-            wfs_lyr_crs_epsg = [
-                "{}:{}".format(srs.authority, srs.code) for srs in wfs_lyr.crsOptions
-            ]
-            self.cached_wfs["CRS"] = wfs_lyr_crs_epsg
-            if srs_map in wfs_lyr_crs_epsg:
-                logger.debug("It's a SRS match! With map canvas: " + srs_map)
-                srs = srs_map
-            elif (
-                srs_qgs_new in wfs_lyr_crs_epsg
-                and srs_qgs_otf_on == "false"
-                and srs_qgs_otf_auto == "false"
-            ):
-                logger.debug(
-                    "It's a SRS match! With default new project: " + srs_qgs_new
-                )
-                srs = srs_qgs_new
-            elif srs_lyr_crs in wfs_lyr_crs_epsg and srs_lyr_new == "useGlobal":
-                logger.debug("It's a SRS match! With default new layer: " + srs_lyr_crs)
-                srs = srs_lyr_crs
-            elif "EPSG:4326" in wfs_lyr_crs_epsg:
-                logger.debug("It's a SRS match! With standard WGS 84 (EPSG:4326)")
-                srs = "EPSG:4326"
-            else:
-                logger.debug("Map Canvas SRS not available within service CRS.")
-                srs = wfs_lyr_crs_epsg[0]
-
-            # Style definition
-            # print("Styles: ", wms_lyr.styles, type(wms_lyr.styles))
-            # lyr_style = wfs_lyr.styles.keys()[0]
-            # print(lyr_style)
-
-            # GetFeature URL
-            wfs_lyr_url = wfs.getOperationByName("GetFeature").methods
-            wfs_lyr_url = wfs_lyr_url[0].get("url")
-            if wfs_lyr_url[-1] != "&":
-                wfs_lyr_url = wfs_lyr_url + "&"
-            else:
-                pass
-            self.cached_wfs["url"] = wfs_lyr_url
-
-            # url construction
-            try:
-                wfs_url_params = {
-                    "SERVICE": "WFS",
-                    "VERSION": "1.0.0",
-                    "TYPENAME": layer_name,
-                    "SRSNAME": srs,
-                }
-                wfs_url_final = wfs_lyr_url + unquote(urlencode(wfs_url_params, "utf8"))
+                logger.debug("{} layer added: {}".format(data_type.capitalize(), path))
             except UnicodeEncodeError:
-                wfs_url_params = {
-                    "SERVICE": "WFS",
-                    "VERSION": "1.0.0",
-                    "TYPENAME": layer_name.decode("latin1"),
-                    "SRSNAME": srs,
-                }
-                wfs_url_final = wfs_lyr_url + unquote(urlencode(wfs_url_params))
-            # method ending
-            logger.debug(wfs_url_final)
-            # logger.debug(uri)
-            return ["WFS", layer_title, wfs_url_final]
-            # return ["WFS", layer_title, uri.uri()]
-        else:
-            return None
-
-    def build_wms_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
-    ):
-        """Reformat the input WMS url so it fits QGIS criterias.
-
-        Tests weither all the needed information is provided in the url, and
-        then build the url in the syntax understood by QGIS.
-        """
-        # local variables
-        layer_name = api_layer.get("id")
-
-        layer_title = "WMS Layer"
-        if len(api_layer.get("titles")):
-            layer_title = api_layer.get("titles")[0].get("value", "WMS Layer")
-        else:
-            pass
-
-        wms_url_getcap = (
-            srv_details.get("path") + "?request=GetCapabilities&service=WMS"
-        )
-
-        if mode == "quicky":
-            # let's try a quick & dirty url build
-            srs_map = plg_tools.get_map_crs()
-            wms_url_base = srv_details.get("path")
-            if "?" not in wms_url_base:
-                wms_url_base = wms_url_base + "?"
-            else:
-                pass
-            # url construction
-            wms_url_params = {
-                "SERVICE": "WMS",
-                "VERSION": srv_details.get("formatVersion", "1.3.0"),
-                "REQUEST": "GetMap",
-                "layers": layer_name,
-                "crs": srs_map,
-                "format": "image/png",
-                "styles": "",
-                "url": wms_url_base,
-            }
-            wms_url_quicky = unquote(urlencode(wms_url_params, "utf8"))
-            # prevent encoding errors (#102)
-            try:
-                btn_lbl = "WMS : {}".format(layer_title)
-                return [
-                    "WMS",
-                    layer_title,
-                    wms_url_quicky,
-                    api_layer,
-                    srv_details,
-                    btn_lbl,
-                ]
-            except UnicodeEncodeError as e:
-                btn_lbl = "WMS : {}".format(layer_name)
-                logger.debug(e)
-                return [
-                    "WMS",
-                    layer_title,
-                    wms_url_quicky,
-                    api_layer,
-                    srv_details,
-                    btn_lbl,
-                ]
-
-        elif mode == "complete":
-            # Clean, complete but slower way - OWSLib -------------------------
-            if srv_details.get("path") == self.cached_wms.get("srv_path"):
-                logger.debug("WMS: already in cache")
-            else:
-                self.cached_wms["srv_path"] = srv_details.get("path")
-                logger.debug("WMS: new service")
-                pass
-            # basic checks on service url
-            try:
-                wms = WebMapService(wms_url_getcap)
-                self.cached_wms["Reachable"] = 1
-            except ServiceException as e:
-                logger.error(str(e))
-                self.cached_wms["Reachable"] = 0
-                return 0, "WMS - Bad operation: " + wms_url_getcap, str(e)
-            except HTTPError as e:
-                self.cached_wms["Reachable"] = 0
-                logger.error(str(e))
-                return 0, "WMS - Service not reached: " + wms_url_getcap, str(e)
-            except Exception as e:
-                self.cached_wms["Reachable"] = 0
-                logger.error(str(e))
-                return 0, e
-
-            # check if GetMap operation is available
-            if not hasattr(wms, "getmap") or "GetMap" not in [
-                op.name for op in wms.operations
-            ]:
-                self.cached_wms["GetMap"] = 1
-                return (
-                    0,
-                    "Required GetMap operation not available in: " + wms_url_getcap,
-                )
-            else:
-                self.cached_wms["GetMap"] = 0
-                pass
-            # check if layer is present and queryable
-            try:
-                wms_lyr = wms[layer_name]
-            except KeyError as e:
-                logger.error(
-                    "Layer {} not found in WMS service: {}".format(
-                        layer_name, wms_url_getcap
-                    )
-                )
-                return (
-                    0,
-                    "Layer {} not found in WMS service: {}".format(
-                        layer_name, wms_url_getcap
+                QgsMessageLog.logMessage(
+                    message="{} layer added:: {}".format(
+                        data_type.capitalize(), name.decode("latin1")
                     ),
-                    e,
+                    tag="Isogeo",
+                    level=0,
                 )
-
-            # SRS definition
-            srs_map = plg_tools.get_map_crs()
-            srs_lyr_new = qsettings.value("/Projections/defaultBehaviour")
-            srs_lyr_crs = qsettings.value("/Projections/layerDefaultCrs")
-            srs_qgs_new = qsettings.value("/Projections/projectDefaultCrs")
-            srs_qgs_otf_on = qsettings.value("/Projections/otfTransformEnabled")
-            srs_qgs_otf_auto = qsettings.value("/Projections/otfTransformAutoEnable")
-
-            # DEV
-            # print("CRS: ", wms_lyr.crsOptions,
-            #       "For new layers: " + srs_lyr_new + srs_lyr_crs,
-            #       "For new projects: " + srs_qgs_new,
-            #       "OTF enabled: " + srs_qgs_otf_on,
-            #       "OTF smart enabled: " + srs_qgs_otf_auto,
-            #       "Map canvas SRS:" + plg_tools.get_map_crs())
-            self.cached_wms["CRS"] = wms_lyr.crsOptions
-            if srs_map in wms_lyr.crsOptions:
-                logger.debug("It's a SRS match! With map canvas: " + srs_map)
-                srs = srs_map
-            elif (
-                srs_qgs_new in wms_lyr.crsOptions
-                and srs_qgs_otf_on == "false"
-                and srs_qgs_otf_auto == "false"
-            ):
                 logger.debug(
-                    "It's a SRS match! With default new project: " + srs_qgs_new
+                    "{} layer added: {}".format(
+                        data_type.capitalize(), name.decode("latin1")
+                    )
                 )
-                srs = srs_qgs_new
-            elif srs_lyr_crs in wms_lyr.crsOptions and srs_lyr_new == "useGlobal":
-                logger.debug("It's a SRS match! With default new layer: " + srs_lyr_crs)
-                srs = srs_lyr_crs
-            elif "EPSG:4326" in wms_lyr.crsOptions:
-                logger.debug("It's a SRS match! With standard WGS 84 (EPSG:4326)")
-                srs = "EPSG:4326"
-            else:
-                logger.debug("Map Canvas SRS not available within service CRS.")
-                srs = wms_lyr.crsOptions[0]
-
-            # Format definition
-            wms_lyr_formats = wms.getOperationByName("GetMap").formatOptions
-            formats_image = [
-                f.split(" ", 1)[0] for f in wms_lyr_formats if f in qgis_wms_formats
-            ]
-            self.cached_wms["formats"] = formats_image
-            if "image/png" in formats_image:
-                layer_format = "image/png"
-            elif "image/jpeg" in formats_image:
-                layer_format = "image/jpeg"
-            else:
-                layer_format = formats_image[0]
-
-            # Style definition
-            # lyr_style = list(wms_lyr.styles.keys())[0]
-
-            # GetMap URL
-            wms_lyr_url = wms.getOperationByName("GetMap").methods
-            wms_lyr_url = wms_lyr_url[0].get("url")
-            if wms_lyr_url[-1] == "&":
-                wms_lyr_url = wms_lyr_url[:-1]
-            else:
-                pass
-            self.cached_wms["url"] = wms_lyr_url
-
-            # url construction
-            try:
-                wms_url_params = {
-                    "SERVICE": "WMS",
-                    "VERSION": srv_details.get("formatVersion", "1.3.0"),
-                    "REQUEST": "GetMap",
-                    "layers": layer_name,
-                    "crs": srs,
-                    "format": layer_format,
-                    "styles": "",
-                    # "styles": lyr_style,
-                    # "url": srv_details.get("path"),
-                    "url": wms_lyr_url,
-                }
-                wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
-            except UnicodeEncodeError:
-                wms_url_params = {
-                    "SERVICE": "WMS",
-                    "VERSION": srv_details.get("formatVersion", "1.3.0"),
-                    "REQUEST": "GetMap",
-                    "layers": layer_name.decode("latin1"),
-                    "crs": srs,
-                    "format": layer_format,
-                    "styles": "",
-                    # "styles": lyr_style,
-                    # "url": srv_details.get("path"),
-                    "url": wms_lyr_url,
-                }
-                wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
-            # method ending
-            return ["WMS", layer_title, wms_url_final]
+        # If it's not, just inform the user
         else:
-            return None
+            error_msg = layer.error().message()
+            layer_is_ok = 0
 
-    def build_wmts_url(
-        self, api_layer, srv_details, rsc_type="ds_dyn_lyr_srv", mode="complete"
+        if not layer_is_ok:
+            self.invalid_layer_inform(
+                data_type=data_type, data_source=path, error_msg=error_msg
+            )
+            return 0
+        else:
+            return lyr, layer
+
+    def add_service_layer(
+        self, layer_url: str, layer_title: str, service_type: str,
     ):
-        """Format the input WMTS URL to fit QGIS criterias.
+        """Add a geo service layer from its URL. Usefull for WMS multi-layer
 
-        Retrieve GetCapabilities from information transmitted by Isogeo API
-        to complete URL syntax.
+        :param str layer_url: the url of the geo service layer
+        :param str layer_title: the title to give to the added layer
+        :param str service_type: the type of the geo service ("WFS", "WMS", "EFS", "EMS" or "WMTS")
         """
-        # local variables
-        layer_name = api_layer.get("id")
-
-        layer_title = "WMTS Layer"
-        if len(api_layer.get("titles")):
-            layer_title = api_layer.get("titles")[0].get("value", "WMTS Layer")
+        # retrieve geo service type specific informations
+        data_provider = self.dict_service_types.get(service_type)[0]
+        QgsLayer = self.dict_service_types.get(service_type)[1]
+        # create the layer
+        layer = QgsLayer(layer_url, layer_title, data_provider)
+        # If the layer is valid, add it to the map canvas and inform the user
+        if layer.isValid():
+            lyr = QgsProject.instance().addMapLayer(layer)
+            QgsMessageLog.logMessage(
+                message="{} service layer added: {}".format(service_type, layer_url),
+                tag="Isogeo",
+                level=0,
+            )
+            logger.debug("{} layer added: {}".format(service_type, layer_url))
+            layer_is_ok = 1
+        # If the layer is not valid
         else:
-            pass
-
-        wmts_url_getcap = (
-            srv_details.get("path") + "?request=GetCapabilities&service=WMTS"
-        )
-        # basic checks on service url
-        try:
-            wmts = WebMapTileService(wmts_url_getcap)
-        except TypeError as e:
-            logger.error("WMTS - OWSLib mixing str and unicode args", e)
-        except ServiceException as e:
-            logger.error(e)
-            return 0, "WMTS - Bad operation: " + wmts_url_getcap, str(e)
-        except HTTPError as e:
-            logger.error(e)
-            return 0, "WMTS - Service not reached: " + wmts_url_getcap, e
-        except Exception as e:
-            logger.error("WMTS - {}: {}".format(wmts_url_getcap, e))
-            return 0, "WMTS - Service not reached: " + wmts_url_getcap, e
-
-        # check if GetTile operation is available
-        if not hasattr(wmts, "gettile") or "GetTile" not in [
-            op.name for op in wmts.operations
-        ]:
-            return 0, "Required GetTile operation not available in: " + wmts_url_getcap
-        else:
-            logger.debug("GetTile available")
-            pass
-
-        # check if layer is present and queryable
-        try:
-            wmts_lyr = wmts[layer_name]
-            layer_title = wmts_lyr.title
-            layer_id = wmts_lyr.id
-        except KeyError as e:
-            logger.error(
-                "Layer {} not found in WMTS service: {}".format(
-                    layer_name, wmts_url_getcap
+            error_msg = layer.error().message()
+            layer_is_ok = 0
+            # Try to create it again without specifying data provider
+            layer = QgsLayer(layer_url, layer_title)
+            if layer.isValid():
+                lyr = QgsProject.instance().addMapLayer(layer)
+                QgsMessageLog.logMessage(
+                    message="{} service layer added: {}".format(
+                        service_type, layer_url
+                    ),
+                    tag="Isogeo",
+                    level=0,
                 )
-            )
-            return (
-                0,
-                "Layer {} not found in WMS service: {}".format(
-                    layer_name, wmts_url_getcap
-                ),
-                e,
-            )
-
-        # Tile Matrix Set & SRS
-        srs_map = plg_tools.get_map_crs()
-        def_tile_matrix_set = wmts_lyr.tilematrixsets[0]
-        if srs_map in wmts_lyr.tilematrixsets:
-            logger.debug("WMTS - It's a SRS match! With map canvas: " + srs_map)
-            tile_matrix_set = wmts.tilematrixsets.get(srs_map).identifier
-            srs = srs_map
-        elif "EPSG:4326" in wmts_lyr.tilematrixsets:
-            logger.debug("WMTS - It's a SRS match! With standard WGS 84 (4326)")
-            tile_matrix_set = wmts.tilematrixsets.get("EPSG:4326").identifier
-            srs = "EPSG:4326"
-        elif "EPSG:900913" in wmts_lyr.tilematrixsets:
-            logger.debug("WMTS - It's a SRS match! With Google (900913)")
-            tile_matrix_set = wmts.tilematrixsets.get("EPSG:900913").identifier
-            srs = "EPSG:900913"
-        else:
-            logger.debug("WMTS - Searched SRS not available within service CRS.")
-            tile_matrix_set = wmts.tilematrixsets.get(def_tile_matrix_set).identifier
-            srs = tile_matrix_set
-
-        # Format definition
-        wmts_lyr_formats = wmts.getOperationByName("GetTile").formatOptions
-        formats_image = [
-            f.split(" ", 1)[0] for f in wmts_lyr_formats if f in qgis_wms_formats
-        ]
-        if len(formats_image):
-            if "image/png" in formats_image:
-                layer_format = "image/png"
-            elif "image/jpeg" in formats_image:
-                layer_format = "image/jpeg"
+                logger.warning(
+                    "{} layer added without specifying the data provider: {}".format(
+                        service_type, layer_url
+                    )
+                )
+                layer_is_ok = 1
             else:
-                layer_format = formats_image[0]
+                error_msg = layer.error().message()
+                layer_is_ok = 0
+
+        if not layer_is_ok:
+            self.invalid_layer_inform(
+                data_type=service_type, data_source=layer_url, error_msg=error_msg
+            )
+            return 0
         else:
-            logger.debug("WMTS - No format available among preferred by QGIS.")
-            layer_format = "image/png"
+            return lyr, layer
 
-        # Style definition
-        # lyr_style = wmts_lyr.styles.keys()[0]
+    def add_from_service(
+        self, service_type: str, api_layer: dict, service_details: dict,
+    ):
+        """Add a layer to QGIS map canvas from a Geographic Service Layer.
 
-        # GetTile URL
-        wmts_lyr_url = wmts.getOperationByName("GetTile").methods
-        wmts_lyr_url = wmts_lyr_url[0].get("url")
-        if wmts_lyr_url[-1] == "&":
-            wmts_lyr_url = wmts_lyr_url[:-1]
+        :param str service_type: the type of the service ("WFS", "WMS", "EFS", "EMS" or "WMTS")
+        :param dict api_layer: dict object containing Isogeo API informations about the layer
+        :param dict service_details: dict object containing Isogeo API informations about the service
+        """
+        # If service_type argument value is invalid, raise error
+        if service_type not in self.dict_service_types:
+            raise ValueError(
+                "'service_type' argument value should be 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
+            )
+        # It it's valid, set local variables depending on it
         else:
-            pass
+            url_builder = self.dict_service_types.get(service_type)[2]
 
-        # construct URL
-        wmts_url_params = {
-            "SERVICE": "WMTS",
-            "VERSION": "1.0.0",
-            "REQUEST": "GetCapabilities",
-            "layers": layer_id,
-            "crs": srs,
-            "format": layer_format,
-            "styles": "",
-            "tileMatrixSet": tile_matrix_set,
-            "url": wmts_lyr_url,
-        }
-        wmts_url_final = unquote(urlencode(wmts_url_params, "utf8"))
-        logger.debug(wmts_url_final)
+        # use GeoServiceManager to retrieve all the infos we need to add the layer to the canvas
+        layer_infos = url_builder(api_layer, service_details)
+        # If everything is ok, let's create the layer that we gonna try to add to the canvas
+        if layer_infos[0]:
+            layer_url = layer_infos[2]
+            layer_title = layer_infos[1]
+        # else, informe the user about what went wrong
+        else:
+            error_msg = layer_infos[1]
+            self.invalid_layer_inform(
+                data_type=service_type,
+                data_source=api_layer.get("id"),
+                error_msg=error_msg,
+            )
+            return 0
+        if isinstance(layer_url, list):
+            added_layer = []
+            for url in layer_url:
+                index = layer_url.index(url)
+                added = self.add_service_layer(url, layer_title[index], service_type)
+                added_layer.append(added)
+        else:
+            added_layer = self.add_service_layer(layer_url, layer_title, service_type)
+        return added_layer
 
-        # method ending
-        return ["WMTS", layer_title, wmts_url_final]
-        # return QgsRasterLayer(wms_url_final, layer_title, 'wms')
+    def add_from_database(self, layer_info: dict):
+        """Add a layer to QGIS map canvas from a database table.
+
+        :param dict layer_info: dictionnary containing informations needed to add the layer from the database table
+        """
+
+        logger.debug("Data type: PostGIS")
+        # Give aliases to the data passed as arguement
+        base_name = layer_info.get("base_name", "")
+        schema = layer_info.get("schema", "")
+        table = layer_info.get("table", "")
+        # Retrieve the database information stored in the PostGISdict
+        uri = QgsDataSourceUri()
+        host = self.PostGISdict[base_name]["host"]
+        port = self.PostGISdict[base_name]["port"]
+        user = self.PostGISdict[base_name]["username"]
+        password = self.PostGISdict[base_name]["password"]
+        # set host name, port, database name, username and password
+        uri.setConnection(host, port, base_name, user, password)
+        # Get the geometry column name from the database connexion & table
+        # name.
+        c = pgis_con.PostGisDBConnector(uri)
+        dico = c.getTables()
+        for i in dico:
+            if i[0 == 1] and i[1] == table:
+                geometry_column = i[8]
+        # set database schema, table name, geometry column
+        uri.setDataSource(schema, table, geometry_column)
+        # Adding the layer to the map canvas
+        layer = QgsVectorLayer(uri.uri(), table, "postgres")
+        if layer.isValid():
+            lyr = QgsProject.instance().addMapLayer(layer)
+            logger.debug("Data added: {}".format(table))
+        elif (
+            not layer.isValid()
+            and plg_tools.last_error[0] == "postgis"
+            and "prim" in plg_tools.last_error[1]
+        ):
+            logger.debug(
+                "PostGIS layer may be a view, "
+                "so key column is missing. "
+                "Trying to automatically set one..."
+            )
+            # get layer fields to set as key column
+            fields = layer.dataProvider().fields()
+            fields_names = [i.name() for i in fields]
+            # sort them by name containing id to better perf
+            fields_names.sort(key=lambda x: ("id" not in x, x))
+            for field in fields_names:
+                uri.setKeyColumn(field)
+                layer = QgsVectorLayer(uri.uri(True), table, "postgres")
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    logger.debug(
+                        "PostGIS view layer added with [{}] as key column".format(field)
+                    )
+                else:
+                    continue
+        else:
+            logger.debug("Layer not valid. table = {}".format(table))
+            QMessageBox.information(
+                iface.mainWindow(),
+                self.tr("Error", context=__class__.__name__),
+                self.tr(
+                    "The PostGIS layer is not valid."
+                    " Reason: {}".format(plg_tools.last_error),
+                    context=__class__.__name__,
+                ),
+            )
+            return 0
+
+        return lyr, layer
 
     def adding(self, layer_info):
         """Add a layer to QGIS map canvas.
@@ -734,297 +382,57 @@ class LayerAdder:
         logger.info("Adding a layer from those parameters :{}".format(layer_info))
 
         if type(layer_info) == list:
-            # If the layer to be added is a vector file
-            if layer_info[0] == "vector":
-                path = layer_info[1]
-                name = os.path.basename(path).split(".")[0]
-                layer = QgsVectorLayer(path, layer_label, "ogr")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    try:
-                        QgsMessageLog.logMessage(
-                            message="Data layer added: {}".format(name),
-                            tag="Isogeo",
-                            level=0,
-                        )
-                        logger.debug("Vector layer added: {}".format(path))
-                    except UnicodeEncodeError:
-                        QgsMessageLog.logMessage(
-                            message="Vector layer added:: {}".format(
-                                name.decode("latin1")
-                            ),
-                            tag="Isogeo",
-                            level=0,
-                        )
-                        logger.debug(
-                            "Vector layer added: {}".format(name.decode("latin1"))
-                        )
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning(
-                        "Invalid vector layer: {}. QGIS says: {}".format(
-                            path, error_msg
-                        )
-                    )
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", context=__class__.__name__),
-                        self.tr(
-                            "Vector not valid {}. QGIS says: {}",
-                            context=__class__.__name__,
-                        ).format(path, error_msg),
-                    )
-            # If raster file
-            elif layer_info[0] == "raster":
-                path = layer_info[1]
-                name = os.path.basename(path).split(".")[0]
-                layer = QgsRasterLayer(path, layer_label)
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    try:
-                        QgsMessageLog.logMessage(
-                            message="Data layer added: {}".format(name),
-                            tag="Isogeo",
-                            level=0,
-                        )
-                        logger.debug("Raster layer added: {}".format(path))
-                    except UnicodeEncodeError:
-                        QgsMessageLog.logMessage(
-                            message="Raster layer added:: {}".format(
-                                name.decode("latin1")
-                            ),
-                            tag="Isogeo",
-                            level=0,
-                        )
-                        logger.debug(
-                            "Raster layer added: {}".format(name.decode("latin1"))
-                        )
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning(
-                        "Invalid raster layer: {}. QGIS says: {}".format(
-                            path, error_msg
-                        )
-                    )
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", context=__class__.__name__),
-                        self.tr(
-                            "Raster not valid {}. QGIS says: {}",
-                            context=__class__.__name__,
-                        ).format(path, error_msg),
-                    )
-            # If EFS link
-            elif layer_info[0] == "EFS":
-                name = layer_info[1]
-                uri = layer_info[2]
-                layer = QgsVectorLayer(uri, layer_label, "arcgisfeatureserver")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("EFS layer added: {}".format(uri))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning(
-                        "Invalid service: {}. QGIS says: {}".format(uri, error_msg)
-                    )
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", context=__class__.__name__),
-                        self.tr(
-                            "EFS not valid. QGIS says: {}", context=__class__.__name__
-                        ).format(error_msg),
-                    )
-            # If EMS link
-            elif layer_info[0] == "EMS":
-                name = layer_info[1]
-                uri = layer_info[2]
-                layer = QgsRasterLayer(uri, layer_label, "arcgismapserver")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("EMS layer added: {}".format(uri))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning(
-                        "Invalid service: {}. QGIS says: {}".format(uri, error_msg)
-                    )
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", context=__class__.__name__),
-                        self.tr(
-                            "EMS not valid. QGIS says: {}", context=__class__.__name__
-                        ).format(error_msg),
-                    )
-            # If WFS link
-            elif layer_info[0] == "WFS":
-                url = layer_info[2]
-                name = layer_info[1]
-                layer = QgsVectorLayer(url, layer_label, "WFS")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WFS layer added: {}".format(url))
-                else:
-                    error_msg = layer.error().message()
-                    name_url = self.build_wfs_url(
-                        layer_info[3], layer_info[4], mode="complete"
-                    )
-                    if name_url[0] != 0:
-                        layer = QgsVectorLayer(name_url[2], layer_label, "WFS")
-                        if layer.isValid():
-                            lyr = QgsProject.instance().addMapLayer(layer)
-                            logger.debug("WFS layer added: {}".format(url))
-                        else:
-                            error_msg = layer.error().message()
-                            logger.warning(
-                                "Invalid service: {}. QGIS says: {}".format(
-                                    url, error_msg
-                                )
-                            )
-                    else:
-                        QMessageBox.information(
-                            iface.mainWindow(),
-                            self.tr("Error", context=__class__.__name__),
-                            self.tr(
-                                "WFS is not valid. QGIS says: {}",
-                                context=__class__.__name__,
-                            ).format(error_msg),
-                        )
-                        pass
-            # If WMS link
-            elif layer_info[0] == "WMS":
-                url = layer_info[2]
-                name = layer_info[1]
-                layer = QgsRasterLayer(url, layer_label, "wms")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WMS layer added: {}".format(url))
-                else:
-                    error_msg = layer.error().message()
-                    name_url = self.build_wms_url(
-                        layer_info[3], layer_info[4], mode="complete"
-                    )
-                    if name_url[0] != 0:
-                        layer = QgsRasterLayer(name_url[2], layer_label, "wms")
-                        if layer.isValid():
-                            lyr = QgsProject.instance().addMapLayer(layer)
-                            logger.debug("WMS layer added: {}".format(url))
-                        else:
-                            error_msg = layer.error().message()
-                            logger.warning(
-                                "Invalid service: {}. QGIS says: {}".format(
-                                    url, error_msg
-                                )
-                            )
-                    else:
-                        QMessageBox.information(
-                            iface.mainWindow(),
-                            self.tr("Error", context=__class__.__name__),
-                            self.tr(
-                                "WMS is not valid. QGIS says: {}",
-                                context=__class__.__name__,
-                            ).format(error_msg),
-                        )
-            # If WMTS link
-            elif layer_info[0] == "WMTS":
-                url = layer_info[2]
-                name = layer_info[1]
-                layer = QgsRasterLayer(url, layer_label, "wms")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug("WMTS service layer added: {}".format(url))
-                else:
-                    error_msg = layer.error().message()
-                    logger.warning(
-                        "Invalid service: {}. QGIS says: {}".format(url, error_msg)
-                    )
-                    QMessageBox.information(
-                        iface.mainWindow(),
-                        self.tr("Error", context=__class__.__name__),
-                        self.tr(
-                            "WMTS is not valid. QGIS says: {}",
-                            context=__class__.__name__,
-                        ).format(error_msg),
-                    )
+            # If the layer to be added is from a file
+            if layer_info[0] in li_datafile_types:
+                added_layer = self.add_from_file(
+                    layer_label=layer_label, path=layer_info[1], data_type=layer_info[0]
+                )
+            # If the layer to be added is from a geographic service
+            elif layer_info[0] in self.dict_service_types:
+                added_layer = self.add_from_service(
+                    service_type=layer_info[0],
+                    api_layer=layer_info[1],
+                    service_details=layer_info[2],
+                )
             else:
-                pass
+                raise ValueError(
+                    "The data should be a file ('vector' or 'raster') or a geo service (OGC or ESRI), not : {}".format(
+                        layer_info[0]
+                    )
+                )
 
         # If the data is a PostGIS table
         elif isinstance(layer_info, dict):
-            logger.debug("Data type: PostGIS")
-            # Give aliases to the data passed as arguement
-            base_name = layer_info.get("base_name", "")
-            schema = layer_info.get("schema", "")
-            table = layer_info.get("table", "")
-            # Retrieve the database information stored in the PostGISdict
-            uri = QgsDataSourceUri()
-            host = self.PostGISdict[base_name]["host"]
-            port = self.PostGISdict[base_name]["port"]
-            user = self.PostGISdict[base_name]["username"]
-            password = self.PostGISdict[base_name]["password"]
-            # set host name, port, database name, username and password
-            uri.setConnection(host, port, base_name, user, password)
-            # Get the geometry column name from the database connexion & table
-            # name.
-            c = pgis_con.PostGisDBConnector(uri)
-            dico = c.getTables()
-            for i in dico:
-                if i[0 == 1] and i[1] == table:
-                    geometry_column = i[8]
-            # set database schema, table name, geometry column
-            uri.setDataSource(schema, table, geometry_column)
-            # Adding the layer to the map canvas
-            layer = QgsVectorLayer(uri.uri(), table, "postgres")
-            if layer.isValid():
-                lyr = QgsProject.instance().addMapLayer(layer)
-                logger.debug("Data added: {}".format(table))
-            elif (
-                not layer.isValid()
-                and plg_tools.last_error[0] == "postgis"
-                and "prim" in plg_tools.last_error[1]
-            ):
-                logger.debug(
-                    "PostGIS layer may be a view, "
-                    "so key column is missing. "
-                    "Trying to automatically set one..."
-                )
-                # get layer fields to set as key column
-                fields = layer.dataProvider().fields()
-                fields_names = [i.name() for i in fields]
-                # sort them by name containing id to better perf
-                fields_names.sort(key=lambda x: ("id" not in x, x))
-                for field in fields_names:
-                    uri.setKeyColumn(field)
-                    layer = QgsVectorLayer(uri.uri(True), table, "postgres")
-                    if layer.isValid():
-                        lyr = QgsProject.instance().addMapLayer(layer)
-                        logger.debug(
-                            "PostGIS view layer added with [{}] as key column".format(
-                                field
-                            )
-                        )
-                        # filling 'QGIS Server' tab of layer Properties
-                        self.md_sync.basic_sync(layer=lyr, info=layer_info)
-                        return 1
-                    else:
-                        continue
-            else:
-                logger.debug("Layer not valid. table = {}".format(table))
-                QMessageBox.information(
-                    iface.mainWindow(),
-                    self.tr("Error", context=__class__.__name__),
-                    self.tr(
-                        "The PostGIS layer is not valid." " Reason: {}",
-                        context=__class__.__name__,
-                    ).format(plg_tools.last_error),
-                )
-                return 0
-        # filling 'QGIS Server' tab of layer Properties
-        if layer.isValid():
-            try:
-                self.md_sync.basic_sync(layer=lyr, info=layer_info)
-            except IndexError as e:
-                logger.debug(
-                    "Not supported 'layer_info' format causes this error : {}".format(e)
-                )
+            added_layer = self.add_from_database(layer_info=layer_info)
         else:
             pass
-        return 1
+
+        # method ending for for WMS multi-layer
+        if isinstance(added_layer, list):
+            return_value = 0
+            for added in added_layer:
+                if not added:
+                    pass
+                else:
+                    lyr = added[0]
+                    layer = added[1]
+                    if layer.isValid():
+                        self.md_sync.basic_sync(layer=lyr, info=layer_info)
+                    else:
+                        pass
+                    return_value = 1
+        # method ending for other layers
+        # If the layer haven't been added return
+        elif not added_layer:
+            return_value = 0
+            # else fil 'QGIS Server' tab of layer Properties using MetadataSynchronizer
+        else:
+            lyr = added_layer[0]
+            layer = added_layer[1]
+            if layer.isValid():
+                self.md_sync.basic_sync(layer=lyr, info=layer_info)
+            else:
+                pass
+            return_value = 1
+
+        return return_value

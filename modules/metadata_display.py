@@ -86,6 +86,8 @@ class MetadataDisplayer:
             lambda: plg_tools.open_webpage(link=self.url_edition)
         )
 
+        self.tr = object
+
     def show_complete_md(self, md: dict, tags: dict):
         """Open the pop up window that shows the metadata sheet details.
 
@@ -100,8 +102,16 @@ class MetadataDisplayer:
         self.complete_md.wid_bbox.refresh()
 
         # -- GENERAL ---------------------------------------------------------
-        title = md.get("title", "NR")
-        self.complete_md.lbl_title.setText(md.get("title", "NR"))
+        if md.get("title"):
+            self.complete_md.lbl_title.setText(md.get("title"))
+        elif md.get("name"):
+            self.complete_md.lbl_title.setText(md.get("name"))
+        else:
+            self.complete_md.lbl_title.setTextFormat(Qt.TextFormat(1))
+            self.complete_md.lbl_title.setText(
+                "<i>{}</i>".format(self.tr("Undefined", context=__class__.__name__))
+            )
+
         self.complete_md.val_owner.setText(
             md.get("_creator").get("contact").get("name", "NR")
         )
@@ -160,20 +170,17 @@ class MetadataDisplayer:
             item = ctact.get("contact")
 
             if ctact.get("role", "NR") == "pointOfContact":
-                content = (
-                    "<b>{1}</b> ({2})<br><a href='mailto:{3}' target='_top'>{3}</a><br>{4}"
-                    "<br>{5} {6}<br>{7} {8}<br>{8}<br>{9}".format(
-                        isogeo_tr.tr("roles", ctact.get("role")),
-                        item.get("name", "NR"),
-                        item.get("organization", "NR"),
-                        item.get("email", "NR"),
-                        item.get("phone", "NR"),
-                        item.get("addressLine1", ""),
-                        item.get("addressLine2", ""),
-                        item.get("zipCode", ""),
-                        item.get("city", ""),
-                        item.get("country", ""),
-                    )
+                content = "<b>{0}</b> ({1})<br><a href='mailto:{2}' target='_top'>{2}</a><br>{3}" "<br>{4} {5}<br>{6} {7}<br>{7}<br>{8}".format(
+                    # isogeo_tr.tr("roles", ctact.get("role")),
+                    item.get("name", "NR"),
+                    item.get("organization", "NR"),
+                    item.get("email", "NR"),
+                    item.get("phone", "NR"),
+                    item.get("addressLine1", ""),
+                    item.get("addressLine2", ""),
+                    item.get("zipCode", ""),
+                    item.get("city", ""),
+                    item.get("country", ""),
                 )
                 contacts_pt_cct.append(content)
 
@@ -202,10 +209,10 @@ class MetadataDisplayer:
         # -- HISTORY ---------------------------------------------------------
         # Data creation and last update dates
         self.complete_md.val_data_crea.setText(
-            plg_tools.handle_date(md.get("_created", "NR"))
+            plg_tools.handle_date(md.get("created", "NR"))
         )
         self.complete_md.val_data_update.setText(
-            plg_tools.handle_date(md.get("_modified", "NR"))
+            plg_tools.handle_date(md.get("modified", "NR"))
         )
         # Update frequency information
         if md.get("updateFrequency", None):
@@ -259,7 +266,7 @@ class MetadataDisplayer:
         )
         # Set the data format
         if tags.get("formats") != {}:
-            self.complete_md.val_format.setText(list(tags.get("formats").values())[0])
+            self.complete_md.val_format.setText(list(tags.get("formats").keys())[0])
         else:
             self.complete_md.val_format.setText("NR")
 
@@ -281,10 +288,13 @@ class MetadataDisplayer:
             else:
                 s_conformity = isogeo_tr.tr("quality", "isNotConform")
             # make data human readable
-            s_date = datetime.strptime(
-                s_in.get("specification").get("published"), "%Y-%m-%dT%H:%M:%S"
-            )
-            s_date = s_date.strftime("%Y-%m-%d")
+            if s_in.get("specification").get("published"):
+                s_date = datetime.strptime(
+                    s_in.get("specification").get("published"), "%Y-%m-%dT%H:%M:%S"
+                )
+                s_date = s_date.strftime("%Y-%m-%d")
+            else:
+                s_date = "<i>Date de publication non renseignée</i>"
             # prepare text
             spec_text = "<a href='{1}'><b>{0} ({2})</b></a>: {3}".format(
                 s_in.get("specification").get("name", "NR"),
@@ -362,9 +372,11 @@ class MetadataDisplayer:
                 pass
             # INSPIRE precision
             if "directive" in l_in:
-                lim_text += "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
-                    l_in.get("directive").get("name"),
-                    l_in.get("directive").get("description"),
+                lim_text += (
+                    "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
+                        l_in.get("directive").get("name"),
+                        l_in.get("directive").get("description"),
+                    )
                 )
             else:
                 pass
@@ -393,10 +405,10 @@ class MetadataDisplayer:
         # Metadata
         self.complete_md.val_md_lang.setText(md.get("language", "NR"))
         self.complete_md.val_md_date_crea.setText(
-            plg_tools.handle_date(md.get("_modified")[:19])
+            plg_tools.handle_date(md.get("_created")[:19])
         )
         self.complete_md.val_md_date_update.setText(
-            plg_tools.handle_date(md.get("_created")[:19])
+            plg_tools.handle_date(md.get("_modified")[:19])
         )
 
         # -- EDIT LINK -------------------------------------------------------
@@ -419,13 +431,17 @@ class MetadataDisplayer:
         self.complete_md.show()
         try:
             QgsMessageLog.logMessage(
-                message="Detailed metadata displayed: {}".format(title),
+                message="Detailed metadata displayed: {}".format(
+                    self.complete_md.lbl_title.text()
+                ),
                 tag="Isogeo",
                 level=0,
             )
         except UnicodeEncodeError:
             QgsMessageLog.logMessage(
-                message="Detailed metadata displayed: {}".format(title),
+                message="Detailed metadata displayed: {}".format(
+                    self.complete_md.lbl_title.text()
+                ),
                 tag="Isogeo",
                 level=0,
             )
