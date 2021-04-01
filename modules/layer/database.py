@@ -90,7 +90,7 @@ class DataBaseManager:
         # Retrieved prefered connections saved into QSettings
         if qsettings.value("isogeo/settings/pref_pgdb_conn"):
             self.li_pref_pgdb_conn = qsettings.value("isogeo/settings/pref_pgdb_conn")
-            logger.info("{} prefered PostgreSQL connection retrieved fro QSettings.".format(len(self.li_pref_pgdb_conn)))
+            logger.info("{} prefered PostgreSQL connection retrieved from QSettings.".format(len(self.li_pref_pgdb_conn)))
         else:
             self.li_pref_pgdb_conn = []
             qsettings.setValue("isogeo/settings/pref_pgdb_conn", self.li_pref_pgdb_conn)
@@ -98,7 +98,7 @@ class DataBaseManager:
         # Retrieved invalid connections saved into QSettings
         if qsettings.value("isogeo/settings/invalid_pgdb_conn"):
             self.li_invalid_pgdb_conn = qsettings.value("isogeo/settings/invalid_pgdb_conn")
-            logger.info("{} invalid PostgreSQL connection retrieved fro QSettings.".format(len(self.li_invalid_pgdb_conn)))
+            logger.info("{} invalid PostgreSQL connection retrieved from QSettings.".format(len(self.li_invalid_pgdb_conn)))
         else:
             self.li_invalid_pgdb_conn = []
             qsettings.setValue("isogeo/settings/invalid_pgdb_conn", self.li_invalid_pgdb_conn)
