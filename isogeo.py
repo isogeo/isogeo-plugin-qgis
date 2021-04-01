@@ -365,7 +365,7 @@ class Isogeo:
             self.iface.removePluginWebMenu(self.tr("&Isogeo"), action)
             try:
                 self.iface.mainWindow().statusBar().removeWidget(self.bar)
-            except:
+            except Exception:
                 pass
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
