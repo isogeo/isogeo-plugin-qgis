@@ -10,21 +10,21 @@ from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QMessageBox
 
 # PyQGIS
-import db_manager.db_plugins.postgis.connector as pgis_con
 from qgis.core import (
-    QgsDataSourceUri,
     QgsProject,
     QgsVectorLayer,
     QgsRasterLayer,
     QgsMessageLog,
     QgsApplication,
 )
+
 from qgis.utils import iface
 
 # Plugin modules
 from ..tools import IsogeoPlgTools
 from .metadata_sync import MetadataSynchronizer
 from ..layer.geo_service import GeoServiceManager
+from ..layer.database import DataBaseManager
 
 # ############################################################################
 # ########## Globals ###############
@@ -73,12 +73,8 @@ class LayerAdder:
         self.tr = object
         self.md_sync = MetadataSynchronizer()
 
-        # prepare layer adding from PostGIS table
-        self.PostGISdict = dict()
-
         # prepare layer adding from geo service datas
         self.geo_srv_mng = GeoServiceManager()
-
         self.dict_service_types = {
             "WFS": ["WFS", QgsVectorLayer, self.geo_srv_mng.build_wfs_url],
             "WMS": ["wms", QgsRasterLayer, self.geo_srv_mng.build_wms_url],
@@ -110,9 +106,12 @@ class LayerAdder:
             layer_type = self.tr("Data file layer", context=__class__.__name__)
             data_type = data_type.capitalize()
             data_name = os.path.basename(data_source).split(".")[0]
+        elif data_type == "PostGIS":
+            layer_type = self.tr("The table", context=__class__.__name__)
+            data_name = data_source
         else:
             raise ValueError(
-                "'data_type' argument value should be 'vector', 'raster', 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
+                "'data_type' argument value should be 'PostGIS', 'vector', 'raster', 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
             )
 
         # Let's inform the user
@@ -129,7 +128,9 @@ class LayerAdder:
         msg += "</b>{}".format(error_msg)
 
         QMessageBox.warning(
-            iface.mainWindow(), self.tr("Error", context=__class__.__name__), msg
+            iface.mainWindow(),
+            self.tr("The layer can't be added", context=__class__.__name__),
+            msg,
         )
 
     def add_from_file(self, layer_label: str, path: str, data_type: str):
@@ -295,70 +296,102 @@ class LayerAdder:
 
         logger.debug("Data type: PostGIS")
         # Give aliases to the data passed as arguement
+        db_connection = layer_info.get("connection", "")
+        conn_name = db_connection.get("connection")
         base_name = layer_info.get("base_name", "")
         schema = layer_info.get("schema", "")
-        table = layer_info.get("table", "")
-        # Retrieve the database information stored in the PostGISdict
-        uri = QgsDataSourceUri()
-        host = self.PostGISdict[base_name]["host"]
-        port = self.PostGISdict[base_name]["port"]
-        user = self.PostGISdict[base_name]["username"]
-        password = self.PostGISdict[base_name]["password"]
-        # set host name, port, database name, username and password
-        uri.setConnection(host, port, base_name, user, password)
-        # Get the geometry column name from the database connexion & table
-        # name.
-        c = pgis_con.PostGisDBConnector(uri)
-        dico = c.getTables()
-        for i in dico:
-            if i[0 == 1] and i[1] == table:
-                geometry_column = i[8]
-        # set database schema, table name, geometry column
-        uri.setDataSource(schema, table, geometry_column)
-        # Adding the layer to the map canvas
-        layer = QgsVectorLayer(uri.uri(), table, "postgres")
-        if layer.isValid():
-            lyr = QgsProject.instance().addMapLayer(layer)
-            logger.debug("Data added: {}".format(table))
-        elif (
-            not layer.isValid()
-            and plg_tools.last_error[0] == "postgis"
-            and "prim" in plg_tools.last_error[1]
-        ):
-            logger.debug(
-                "PostGIS layer may be a view, "
-                "so key column is missing. "
-                "Trying to automatically set one..."
+        table_name = layer_info.get("table", "")
+
+        if not len(db_connection):
+            error_msg = "None registered connection could be find for '{}' database.".format(
+                base_name
             )
-            # get layer fields to set as key column
-            fields = layer.dataProvider().fields()
-            fields_names = [i.name() for i in fields]
-            # sort them by name containing id to better perf
-            fields_names.sort(key=lambda x: ("id" not in x, x))
-            for field in fields_names:
-                uri.setKeyColumn(field)
-                layer = QgsVectorLayer(uri.uri(True), table, "postgres")
-                if layer.isValid():
-                    lyr = QgsProject.instance().addMapLayer(layer)
-                    logger.debug(
-                        "PostGIS view layer added with [{}] as key column".format(field)
-                    )
-                else:
-                    continue
-        else:
-            logger.debug("Layer not valid. table = {}".format(table))
-            QMessageBox.information(
-                iface.mainWindow(),
-                self.tr("Error", context=__class__.__name__),
-                self.tr(
-                    "The PostGIS layer is not valid."
-                    " Reason: {}".format(plg_tools.last_error),
-                    context=__class__.__name__,
-                ),
+            self.invalid_layer_inform(
+                data_type="PostGIS",
+                data_source=schema + "." + table_name,
+                error_msg=error_msg,
             )
             return 0
+        else:
+            uri = db_connection.get("uri")
 
-        return lyr, layer
+        # Retrieve information about the table or the view from the database connection
+        table = [
+            tab
+            for tab in db_connection.get("tables")
+            if tab[1] == table_name and tab[2] == schema
+        ]
+
+        # Create a vector layer from retrieved infos
+        layer_is_ok = 0
+        if len(table) == 1:
+            table = table[0]
+            # set database schema, table name, geometry column
+            uri.setDataSource(table[2], table[1], table[8])
+            # Building the layer
+            layer = QgsVectorLayer(uri.uri(), table[1], "postgres")
+
+            # If the layer is valid that's find
+            if layer.isValid():
+                layer_is_ok = 1
+            # If it's not and the table seems to be a view, let's try to handle that
+            elif (
+                not layer.isValid()
+                and plg_tools.last_error[0] == "postgis"
+                and "prim" in plg_tools.last_error[1]
+            ):
+                logger.debug(
+                    "PostGIS layer may be a view, so key column is missing. Trying to automatically set one..."
+                )
+                # get layer fields name to set as key column
+                fields_names = [i.name() for i in layer.dataProvider().fields()]
+                # sort them by name containing id to better perf
+                fields_names.sort(key=lambda x: ("id" not in x, x))
+                for field in fields_names:
+                    uri.setKeyColumn(field)
+                    layer = QgsVectorLayer(uri.uri(True), table[1], "postgres")
+                    if layer.isValid():
+                        layer_is_ok = 1
+                        logger.debug(
+                            "'{}' chose as key column to add PostGIS view".format(field)
+                        )
+                        break
+                    else:
+                        continue
+                # let's prepare error message for the user just in case none field could be used as key column
+                error_msg = "The '{}' database view retrieved using '{}' data base connection is not valid : {}".format(
+                    base_name, conn_name, plg_tools.last_error[1]
+                )
+            # If it's just not, let's prepare error message for the user
+            else:
+                logger.debug(
+                    "Layer not valid. table = {} : {}".format(
+                        table, plg_tools.last_error
+                    )
+                )
+                error_msg = "The '{}' database table retrieved using '{}' data base connection is not valid : {}".format(
+                    base_name, conn_name, plg_tools.last_error[1]
+                )
+
+        # If none information could be find for this table, let's prepare error message for the user
+        else:
+            error_msg = "The table cannot be find into '{}' database using '{}' data base connection.".format(
+                base_name, conn_name
+            )
+
+        # If the vector layer could be properly created, let's add it to the canvas
+        if layer_is_ok:
+            logger.debug("Data added: {}".format(table_name))
+            lyr = QgsProject.instance().addMapLayer(layer)
+            return lyr, layer
+        # else, let's inform the user
+        else:
+            self.invalid_layer_inform(
+                data_type="PostGIS",
+                data_source=schema + "." + table_name,
+                error_msg=error_msg,
+            )
+            return 0
 
     def adding(self, layer_info):
         """Add a layer to QGIS map canvas.
@@ -422,17 +455,17 @@ class LayerAdder:
                         pass
                     return_value = 1
         # method ending for other layers
-        # If the layer haven't been added return
+        # If the layer haven't been added return 0
         elif not added_layer:
             return_value = 0
-            # else fil 'QGIS Server' tab of layer Properties using MetadataSynchronizer
+        # else fil 'QGIS Server' tab of layer Properties using MetadataSynchronizer
         else:
             lyr = added_layer[0]
             layer = added_layer[1]
             if layer.isValid():
                 self.md_sync.basic_sync(layer=lyr, info=layer_info)
+                return_value = 1
             else:
-                pass
-            return_value = 1
+                return_value = 0
 
         return return_value

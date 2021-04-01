@@ -9,6 +9,14 @@
     <target>Le cache a été vidé.</target>
 </phrase>
 <phrase>
+    <source>Database</source>
+    <target>Base de données</target>
+</phrase>
+<phrase>
+    <source>Connection</source>
+    <target>Connexion</target>
+</phrase>
+<phrase>
     <source>&amp;Isogeo</source>
     <target>&amp;Isogeo</target>
 </phrase>
@@ -213,10 +221,6 @@
     <target>Vider le cache des chemins de fichiers</target>
 </phrase>
 <phrase>
-    <source>Isogeo Portal settings</source>
-    <target>Paramètres du Portail Isogeo</target>
-</phrase>
-<phrase>
     <source>Add portal metadata URL to layer&apos;s properties</source>
     <target>Ajouter l&apos;URL de la métadonnée du portail Isogeo aux propriétés des couches ajoutées</target>
 </phrase>
@@ -227,6 +231,14 @@
 <phrase>
     <source>---- Keywords ----</source>
     <target>---- Mots-clés ----</target>
+</phrase>
+<phrase>
+    <source>Layer adding settings</source>
+    <target>Paramètres d&apos;ajout de couche</target>
+</phrase>
+<phrase>
+    <source>Configure embed database connections to be used by the plugin</source>
+    <target>Choix des connexions aux bases de données à utiliser pour accéder aux tables</target>
 </phrase>
 <phrase>
     <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
@@ -241,16 +253,8 @@
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
     <target>Problème de proxy:
-Un proxy est configuré dans le système d&apos;exploitation {} mais pas dans QGIS.
- Veuillez le paramétrer dans &quot;Préférences/Options/Réseau&quot; puis rédémarez le plugin.</target>
-</phrase>
-<phrase>
-    <source>Error</source>
-    <target>Erreur</target>
-</phrase>
-<phrase>
-    <source>The PostGIS layer is not valid. Reason: {}</source>
-    <target>Couche PostGIS invalide. QGIS renvoie : {}</target>
+Un proxy est configuré dans l&apos;OS {} mais pas dans QGIS.
+ Veuillez le configurer dans &apos;Préférences/Options/Réseau&apos; avant de redémarer le plugin.</target>
 </phrase>
 <phrase>
     <source>Service layer</source>
@@ -267,6 +271,14 @@ Un proxy est configuré dans le système d&apos;exploitation {} mais pas dans QG
 <phrase>
     <source>Error:</source>
     <target>Erreur :</target>
+</phrase>
+<phrase>
+    <source>The table</source>
+    <target>La table</target>
+</phrase>
+<phrase>
+    <source>The layer can&apos;t be added</source>
+    <target>La couche ne peut pas être ajoutée</target>
 </phrase>
 <phrase>
     <source>This data is subject to a security limitation :</source>
@@ -311,10 +323,6 @@ Un proxy est configuré dans le système d&apos;exploitation {} mais pas dans QG
 <phrase>
     <source>Data file</source>
     <target>Donnée fichier</target>
-</phrase>
-<phrase>
-    <source>PostGIS table</source>
-    <target>Table PostGIS</target>
 </phrase>
 <phrase>
     <source>Can&apos;t be added</source>
@@ -483,6 +491,18 @@ Un proxy est configuré dans le système d&apos;exploitation {} mais pas dans QG
 <phrase>
     <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
     <target>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hébergé sur Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</target>
+</phrase>
+<phrase>
+    <source>PostGIS database configuration</source>
+    <target>Configuration des connexions PostGIS</target>
+</phrase>
+<phrase>
+    <source>Choose the embed connection to be used to access to each PostGIS database</source>
+    <target>Choisir la connexion enregistrée qui sera utilisée pour accéder à chaque base de données</target>
+</phrase>
+<phrase>
+    <source>Reload embed connection(s)</source>
+    <target>Recharger les connexions</target>
 </phrase>
 <phrase>
     <source>Isogeo authentication settings</source>
