@@ -3,6 +3,7 @@
 
 # Standard library
 import logging
+import processing
 from datetime import datetime
 
 # PyQGIS
@@ -11,6 +12,7 @@ from qgis.core import (
     QgsMessageLog,
     QgsVectorLayer,
     QgsPointXY,
+    QgsRectangle,
     QgsFeature,
     QgsGeometry,
     QgsRasterLayer,
