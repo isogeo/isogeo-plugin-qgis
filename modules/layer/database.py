@@ -93,30 +93,16 @@ class DataBaseManager:
         # Retrieved prefered connections saved into QSettings
         if qsettings.value("isogeo/settings/pref_pgdb_conn"):
             self.li_pref_pgdb_conn = qsettings.value("isogeo/settings/pref_pgdb_conn")
-            logger.info(
-                "{} prefered PostgreSQL connection retrieved from QSettings.".format(
-                    len(self.li_pref_pgdb_conn)
-                )
-            )
         else:
             self.li_pref_pgdb_conn = []
             qsettings.setValue("isogeo/settings/pref_pgdb_conn", self.li_pref_pgdb_conn)
 
         # Retrieved invalid connections saved into QSettings
         if qsettings.value("isogeo/settings/invalid_pgdb_conn"):
-            self.li_invalid_pgdb_conn = qsettings.value(
-                "isogeo/settings/invalid_pgdb_conn"
-            )
-            logger.info(
-                "{} invalid PostgreSQL connection retrieved from QSettings.".format(
-                    len(self.li_invalid_pgdb_conn)
-                )
-            )
+            self.li_invalid_pgdb_conn = qsettings.value("isogeo/settings/invalid_pgdb_conn")
         else:
             self.li_invalid_pgdb_conn = []
-            qsettings.setValue(
-                "isogeo/settings/invalid_pgdb_conn", self.li_invalid_pgdb_conn
-            )
+            qsettings.setValue("isogeo/settings/invalid_pgdb_conn", self.li_invalid_pgdb_conn)
 
         # retrieve informatyion about registered database connexions from QSettings
         self.pg_connections = list
@@ -342,11 +328,7 @@ class DataBaseManager:
                             connection_dict["uri"] = 0
                             connection_dict["tables"] = 0
                             self.li_invalid_pgdb_conn.append(connection_name)
-                            logger.info(
-                                "'{}' connection saved as invalid".format(
-                                    connection_name
-                                )
-                            )
+                            logger.debug("*=====* '{}' connection saved as invalid".format(connection_name))
                             continue
                         else:
                             connection_dict["uri"] = conn[0]
@@ -366,9 +348,6 @@ class DataBaseManager:
         self.pg_connections = final_list
         self.pg_connections_connection = [conn.get("connection") for conn in final_list]
         self.pg_connections_dbname = [conn.get("database") for conn in final_list]
-        qsettings.setValue(
-            "isogeo/settings/invalid_pgdb_conn", self.li_invalid_pgdb_conn,
-        )
 
     def switch_widgets_on_and_off(self, mode: bool = True):
         """1 to switch widgets on and 0 to switch widgets off"""
@@ -389,31 +368,28 @@ class DataBaseManager:
         li_unique_pgdb_name = list(set(self.pg_connections_dbname))
         self.switch_widgets_on_and_off(False)
 
-        # Clean and initiate the tab
         self.tbl.clear()
         li_header_labels = [self.tr("Database"), self.tr("Connection")]
         self.tbl.setHorizontalHeaderLabels(li_header_labels)
-        self.tbl.setRowCount(0)
+        self.tbl.setRowCount(len(li_unique_pgdb_name))
 
-        # Fill the tab
-        row_index = 0
         for dbname in li_unique_pgdb_name:
+            row_index = li_unique_pgdb_name.index(dbname)
+
+            # COLUMN 1 - database name
+            dbname_item = QLabel()
+            dbname_item.setText(dbname)
+            dbname_item.setMargin(5)
+
+            self.tbl.setCellWidget(row_index, 0, dbname_item)
+
+            # COLUMN 2 - connections ComboBox
+            cbb_conn = QComboBox()
+            cbb_conn.addItem(" - ", 0)
             li_pgdb_conn = [
                 conn for conn in self.pg_connections if conn.get("database") == dbname
             ]
-            # Add a line to the tab only if there is several connections
             if len(li_pgdb_conn) > 1:
-                self.tbl.insertRow(row_index)
-                # COLUMN 1 - database name
-                dbname_item = QLabel()
-                dbname_item.setText(dbname)
-                dbname_item.setMargin(5)
-                self.tbl.setCellWidget(row_index, 0, dbname_item)
-
-                # COLUMN 2 - connections ComboBox
-                cbb_conn = QComboBox()
-                cbb_conn.addItem(" - ", 0)
-                # fill combobox
                 sorted(li_pgdb_conn, key=lambda i: i["database"])
                 current_index = 0
                 index = 1
@@ -425,10 +401,9 @@ class DataBaseManager:
                         pass
                     index += 1
                 cbb_conn.setCurrentIndex(current_index)
+
                 self.tbl.setCellWidget(row_index, 1, cbb_conn)
-                row_index += 1
-            else:
-                # self.tbl.removeRow(row_index)
+            else:  # no need to choose a connection if only one exists
                 pass
 
         hheader = self.tbl.horizontalHeader()
@@ -466,9 +441,6 @@ class DataBaseManager:
             # If options have been selected, store user preferences
             self.li_pref_pgdb_conn = li_connection_name
             self.build_postgis_dict()
-            qsettings.setValue(
-                "isogeo/settings/pref_pgdb_conn", self.li_pref_pgdb_conn,
-            )
         # If "Cancel" button was clicked
         elif btn_role == 1:
             pass
