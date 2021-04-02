@@ -6,14 +6,17 @@ import logging
 from configparser import ConfigParser
 from pathlib import Path
 from os import environ
+from functools import partial
 
 # PyQT
 from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import (
+    QTableWidgetItem,
     QComboBox,
     QLabel,
     QAbstractButton,
+    QDialogButtonBox,
 )
 
 # PyQGIS
