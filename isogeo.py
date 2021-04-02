@@ -335,18 +335,6 @@ class Isogeo:
         qsettings.setValue(
             "isogeo/settings/portal_base_url", self.form_mng.input_portal_url.text()
         )
-        # save prefered PostGIS database connections
-        qsettings.setValue(
-            "isogeo/settings/pref_pgdb_conn",
-            self.form_mng.results_mng.db_mng.li_pref_pgdb_conn,
-        )
-        # save invalid PostGIS database connections
-        logger.debug("*=====* {}".format(self.form_mng.results_mng.db_mng.li_invalid_pgdb_conn))
-        qsettings.setValue(
-            "isogeo/settings/invalid_pgdb_conn",
-            self.form_mng.results_mng.db_mng.li_invalid_pgdb_conn,
-        )
-        logger.debug("*=====* {}".format(qsettings.value("isogeo/settings/invalid_pgdb_conn")))
         # save cache
         self.form_mng.results_mng.cache_mng.dumper()
         # disconnects
@@ -367,7 +355,7 @@ class Isogeo:
             self.iface.removePluginWebMenu(self.tr("&Isogeo"), action)
             try:
                 self.iface.mainWindow().statusBar().removeWidget(self.bar)
-            except:
+            except Exception:
                 pass
             self.iface.removeToolBarIcon(action)
         # remove the toolbar

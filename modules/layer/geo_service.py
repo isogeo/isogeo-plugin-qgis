@@ -329,15 +329,21 @@ class GeoServiceManager:
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
         except requests.exceptions.SSLError as e:
-            logger.warning("SSL Error raised trying to connect to {} service {}: {}".format(
-                service_type, url, e
-            ))
+            logger.warning(
+                "SSL Error raised trying to connect to {} service {}: {}".format(
+                    service_type, url, e
+                )
+            )
             try:
                 auth = Authentication(verify=False)
                 service = service_connector(url=url, version=service_version, auth=auth)
                 service_dict["reachable"] = 1
             except Exception as e:
-                logger.warning("Error raised trying to use owslib Authentication module : {}".format(e))
+                logger.warning(
+                    "Error raised trying to use owslib Authentication module : {}".format(
+                        e
+                    )
+                )
                 try:
                     service_dict = self.parse_ogc_xml(service_type, service_dict)
                     return 1, service_dict
@@ -423,7 +429,6 @@ class GeoServiceManager:
             )
         else:
             wfs_dict = wfs_cached_dict[srv_details.get("path")]
-        logger.debug("*=====* {}".format(wfs_dict))
         # local variables
         wfs_url_getcap = wfs_dict.get("getCap_url")
         wfs_url_base = wfs_dict.get("base_url")
@@ -467,7 +472,9 @@ class GeoServiceManager:
             return 0, error_msg
 
         # check if GetFeature and DescribeFeatureType operation are available
-        if not hasattr(wfs, "getfeature") and not wfs_dict.get("GetFeature_isAvailable"):
+        if not hasattr(wfs, "getfeature") and not wfs_dict.get(
+            "GetFeature_isAvailable"
+        ):
             return 0, "GetFeature operation not available in: {}".format(wfs_url_getcap)
         else:
             logger.info("GetFeature available")
@@ -475,13 +482,26 @@ class GeoServiceManager:
 
         # SRS definition
         if wfs_dict.get("manual"):
-            featureType_elem = [elem for elem in wfs.iter() if "FeatureType" in elem.tag and any(layer_typename in subelem.text for subelem in elem)]
+            featureType_elem = [
+                elem
+                for elem in wfs.iter()
+                if "FeatureType" in elem.tag
+                and any(layer_typename in subelem.text for subelem in elem)
+            ]
             if len(featureType_elem):
                 featureType = featureType_elem[0]
-                srs_text = [subelem.text for subelem in featureType if "DefaultSRS" in subelem.tag][0]
+                srs_text = [
+                    subelem.text
+                    for subelem in featureType
+                    if "DefaultSRS" in subelem.tag
+                ][0]
                 srs = "EPSG:" + srs_text.split("EPSG:")[-1]
             else:
-                logger.warning("Unable to retrieve appropriate SRS for {} layer.".format(layer_typename))
+                logger.warning(
+                    "Unable to retrieve appropriate SRS for {} layer.".format(
+                        layer_typename
+                    )
+                )
                 srs = ""
         else:
             available_crs_options = [
@@ -546,8 +566,16 @@ class GeoServiceManager:
             )
             return 0, error_msg
         elif wms_dict.get("manual"):
-            wms_lyr = [elem for elem in wms.iter() if elem.tag.endswith("Layer") and any(subelem.text == api_layer_id for subelem in elem if "Name" in subelem.tag)][0]
-            logger.debug("*=====* {}".format(wms_lyr))
+            wms_lyr = [
+                elem
+                for elem in wms.iter()
+                if elem.tag.endswith("Layer")
+                and any(
+                    subelem.text == api_layer_id
+                    for subelem in elem
+                    if "Name" in subelem.tag
+                )
+            ][0]
         else:
             wms_lyr = wms[api_layer_id]
 
@@ -597,14 +625,17 @@ class GeoServiceManager:
             srs = self.choose_appropriate_srs(crs_options=[])
         else:
             srs = self.choose_appropriate_srs(crs_options=wms_lyr.crsOptions)
-        logger.debug("*=====* {}".format(srs))
 
         # BBOX parameter
-        if hasattr(wms_lyr, "boundingBoxWGS84") and any(txt in srs for txt in ["WGS84", "4326"]):
+        if hasattr(wms_lyr, "boundingBoxWGS84") and any(
+            txt in srs for txt in ["WGS84", "4326"]
+        ):
             li_coords = [str(coord) for coord in wms_lyr.boundingBoxWGS84]
             bbox = ",".join(li_coords)
             logger.info("Let's use WGS84 bbox : {}".format(bbox))
-        elif hasattr(wms_lyr, "boundingBox") and any(srs in str(elem) for elem in wms_lyr.boundingBox):
+        elif hasattr(wms_lyr, "boundingBox") and any(
+            srs in str(elem) for elem in wms_lyr.boundingBox
+        ):
             li_coords = [
                 str(coord)
                 for coord in wms_lyr.boundingBox
@@ -631,7 +662,9 @@ class GeoServiceManager:
                 "BBOX": bbox,
             }
 
-            if "&" in wms_url_base:  # for case when there is already params into base url
+            if (
+                "&" in wms_url_base
+            ):  # for case when there is already params into base url
                 wms_url_params["url"] = "{}?{}".format(
                     wms_url_base.split("?")[0], quote(wms_url_base.split("?")[1])
                 )
