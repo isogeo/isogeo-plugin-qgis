@@ -188,6 +188,7 @@ class DataBaseManager:
         # and retrieve its contant if it do
         else:
             connection_dict = {
+                "service": connection_service,
                 "database": service_params["dbname"],
                 "host": service_params["host"],
                 "port": service_params["port"],
@@ -215,6 +216,7 @@ class DataBaseManager:
         )
 
         connection_dict = {
+            "service": "",
             "database": database,
             "host": host,
             "port": port,
@@ -226,18 +228,23 @@ class DataBaseManager:
 
     def establish_postgis_connection(
         self,
-        host: str,
-        port: str,
-        username: str,
-        password: str,
-        database: str,
-        connection: str,
+        service: str = "",
+        host: str = "",
+        port: str = "",
+        username: str = "",
+        password: str = "",
+        database: str = "",
+        connection: str = "",
     ):
         """Set the connectin to a specific PostGIS database and return the corresponding QgsDataSourceUri and PostGisDBConnector.
         """
         if not isinstance(host, str):
             raise TypeError(
                 "'host' argument value should be str, not : {}".format(type(host))
+            )
+        elif not isinstance(service, str):
+            raise TypeError(
+                "'service' argument value should be str, not : {}".format(type(service))
             )
         elif not isinstance(port, str):
             raise TypeError(
@@ -272,7 +279,13 @@ class DataBaseManager:
 
         # build the connection URI and set the connection
         uri = QgsDataSourceUri()
-        uri.setConnection(host, port, database, username, password)
+        if service == "":
+            logger.debug("*=====* tradi connection")
+            uri.setConnection(aHost=host, aPort=port, aDatabase=database, aUsername=username, aPassword=password)
+        else:
+            logger.debug("*=====* service connection")
+            uri.setConnection(aService=service, aDatabase=database, aUsername=username, aPassword=password)
+
         try:
             if qgis_version >= 316:
                 pgis_db_plg = PostGisDBPlugin(connection)
@@ -281,8 +294,8 @@ class DataBaseManager:
                 c = PostGisDBConnector(uri)
         except Exception as e:
             logger.warning(
-                "Faile to establish connection to {} PostGIS database using those informations : host:{}, port:{}, username:{}, password:{}".format(
-                    database, host, port, username, password
+                "Faile to establish connection to {} PostGIS database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
+                    database, service, host, port, username, password
                 )
             )
             logger.error(str(e))
@@ -319,7 +332,8 @@ class DataBaseManager:
                             logger.warning(connection_dict[1])
 
                     # For connections configured using config file and service
-                    elif connection_service != "" and self.pg_configfile_path:
+                    # elif connection_service != "" and self.pg_configfile_path:
+                    elif connection_service != "":
                         connection_dict = self.config_file_parser(
                             self.pg_configfile_path, connection_service, connection_name
                         )
