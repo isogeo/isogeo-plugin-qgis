@@ -340,10 +340,8 @@ class Isogeo:
         # disconnects
         self.form_mng.closingPlugin.disconnect(self.onClosePlugin)
 
-        # remove this statement if dockwidget is to remain
-        # for reuse if plugin is reopened
-        # Commented next statement since it causes QGIS crashe
-        # when closing the docked window:
+        # remove this statement if dockwidget is to remain for reuse if plugin is reopened
+        # Commented next statement since it causes QGIS crashe when closing the docked window:
         self.form_mng = None
         self.pluginIsActive = False
         # stop log file stream
