@@ -51,6 +51,9 @@ btnBox_ico_dict = {
     7: QIcon(":/plugins/Isogeo/resources/undo.svg"),
 }
 
+ora_sys_tables = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200')"
+ora_geom_column_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_tables tab on col.owner = tab.owner and col.table_name = tab.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(ora_sys_tables)
+
 arrow_cursor = QCursor(Qt.CursorShape(0))
 hourglass_cursor = QCursor(Qt.CursorShape(3))
 
@@ -371,6 +374,7 @@ class DataBaseManager:
         try:
             if qgis_version >= 316:
                 ora_db_plg = OracleDBPlugin(connection)
+                ora_db_plg = connection
                 c = OracleDBConnector(uri, ora_db_plg)
             else:
                 c = OracleDBConnector(uri)
@@ -383,9 +387,9 @@ class DataBaseManager:
             logger.error(str(e))
             return 0
 
-        # li_table_infos = [infos for infos in c.getTables() if infos[0] == 1]
+        li_table_infos = c._fetchall(c._execute(None, ora_geom_column_request))
 
-        return uri
+        return uri, li_table_infos
 
     def build_postgis_dict(self, skip_invalid: bool = True):
         """Build the dict that stores informations about PostGIS connections."""
@@ -508,8 +512,8 @@ class DataBaseManager:
                     else:
                         conn = self.establish_oracle_connection(**connection_dict)
                         if not conn:
-                            connection_dict["uri"] = 0
-                            connection_dict["tables"] = 0
+                            connection_dict["uri"] = conn[0]
+                            connection_dict["tables"] = conn[1]
                             self.li_invalid_ora_conn.append(connection_name)
                             logger.info(
                                 "'{}' connection saved as invalid".format(
@@ -518,10 +522,8 @@ class DataBaseManager:
                             )
                             continue
                         else:
-                            # connection_dict["uri"] = conn[0]
-                            # connection_dict["tables"] = conn[1]
-                            connection_dict["uri"] = conn
-                            connection_dict["tables"] = 0
+                            connection_dict["uri"] = conn[0]
+                            connection_dict["tables"] = conn[1]
 
                         if connection_dict.get("connection") in self.li_pref_pgdb_conn:
                             connection_dict["prefered"] = 1
