@@ -532,7 +532,7 @@ class LayerAdder:
 
         # If the data is a PostGIS table
         elif isinstance(layer_info, dict):
-            if layer_info.get("sgbd") == "PostgreSQL":
+            if layer_info.get("dbms") == "PostgreSQL":
                 added_layer = self.add_from_database(layer_info=layer_info)
             else:
                 added_layer = self.add_from_ora_database(layer_info=layer_info)

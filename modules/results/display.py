@@ -325,7 +325,7 @@ class ResultsManager(QObject):
                                         "title": md.title,
                                         "keywords": md.keywords,
                                         "md_portal_url": portal_md_url,
-                                        "sgbd": "PostgreSQL"
+                                        "dbms": "PostgreSQL"
                                     }
                                     options_key = "PostGIS - {}".format(
                                         connection.get("connection")
@@ -380,7 +380,7 @@ class ResultsManager(QObject):
                                         "title": md.title,
                                         "keywords": md.keywords,
                                         "md_portal_url": portal_md_url,
-                                        "sgbd": "Oracle"
+                                        "dbms": "Oracle"
                                     }
                                     options_key = "Oracle - {}".format(
                                         connection.get("connection")
