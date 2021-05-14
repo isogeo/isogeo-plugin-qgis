@@ -140,7 +140,8 @@ class Isogeo:
                 screenNbr + 1, screens_count, sizeObject.height(), sizeObject.width()
             )
         )
-    del screens_count, sizeObject
+    del screens_count
+    del sizeObject
 
     def __init__(self, iface):
         """Constructor.
