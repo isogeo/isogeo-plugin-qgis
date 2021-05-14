@@ -62,6 +62,8 @@ class IsogeoPlgTools(IsogeoUtils):
             self.last_error = ["wfs", msg]
         elif tag == "PostGIS" and level != 0:
             self.last_error = ["postgis", msg]
+        elif tag == "Oracle" and level != 0:
+            self.last_error = ["oracle", msg]
         else:
             pass
 

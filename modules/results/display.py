@@ -80,6 +80,7 @@ ico_wfs = QIcon(":/images/themes/default/mIconWfs.svg")
 ico_wms = QIcon(":/images/themes/default/mIconWms.svg")
 ico_wmts = QIcon(":/images/themes/default/mIconWcs.svg")
 ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
+ico_ora = QIcon(":/images/themes/default/mIconOracle.svg")
 ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 
 # ############################################################################
@@ -127,7 +128,7 @@ class ResultsManager(QObject):
             "wmts": ico_wmts,
         }
 
-    def show_results(self, api_results, pg_connections=dict()):
+    def show_results(self, api_results, pg_connections=dict(), ora_connections=dict()):
         """Display the results in a table."""
         logger.info("Results manager called. Displaying the results")
         tbl_result = self.tbl_result
@@ -137,6 +138,13 @@ class ResultsManager(QObject):
             pg_connections = self.db_mng.pg_connections
             available_pg_dbnames = [
                 pg_connection.get("database") for pg_connection in pg_connections
+            ]
+        else:
+            pass
+        if ora_connections == {}:
+            ora_connections = self.db_mng.ora_connections
+            available_pg_dbnames = [
+                ora_connection.get("database") for ora_connection in ora_connections
             ]
         else:
             pass
@@ -317,6 +325,7 @@ class ResultsManager(QObject):
                                         "title": md.title,
                                         "keywords": md.keywords,
                                         "md_portal_url": portal_md_url,
+                                        "sgbd": "PostgreSQL"
                                     }
                                     options_key = "PostGIS - {}".format(
                                         connection.get("connection")
@@ -326,6 +335,51 @@ class ResultsManager(QObject):
                                     pass
                             else:
                                 pass
+                    else:
+                        pass
+
+                # If the data is a Oracle table and the connection has
+                # been saved in QGIS.
+                elif md.format == "oracle":
+                    if (
+                        md.path
+                        and md.name
+                        and md.path in available_pg_dbnames
+                        and "." in md.name
+                    ):
+                        available_connections = [
+                            ora_conn
+                            for ora_conn in ora_connections
+                            if md.path == ora_conn.get("database")
+                            and ora_conn.get("prefered")
+                        ]
+                        if not len(available_connections):
+                            available_connections = [
+                                ora_conn
+                                for ora_conn in ora_connections
+                                if md.path == ora_conn.get("database")
+                            ]
+                        else:
+                            pass
+
+                        for connection in available_connections:
+                            schema = md.name.split(".")[0]
+                            table = md.name.split(".")[1]
+                            params = {
+                                "base_name": md.path,
+                                "schema": schema,
+                                "table": table,
+                                "connection": connection,
+                                "abstract": md.abstract,
+                                "title": md.title,
+                                "keywords": md.keywords,
+                                "md_portal_url": portal_md_url,
+                                "sgbd": "Oracle"
+                            }
+                            options_key = "Oracle - {}".format(
+                                connection.get("connection")
+                            )
+                            add_options_dict[options_key] = params
                     else:
                         pass
                 else:
@@ -465,6 +519,9 @@ class ResultsManager(QObject):
                         # PostGIS table
                         elif option.startswith("PostGIS"):
                             icon = ico_pgis
+                        # PostGIS table
+                        elif option.startswith("Oracle"):
+                            icon = ico_ora
                         # Data file
                         elif option.startswith(
                             self.tr("Data file", context=__class__.__name__)

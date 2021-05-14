@@ -105,12 +105,12 @@ class LayerAdder:
             layer_type = self.tr("Data file layer", context=__class__.__name__)
             data_type = data_type.capitalize()
             data_name = os.path.basename(data_source).split(".")[0]
-        elif data_type == "PostGIS":
+        elif data_type == "PostGIS" or data_type == "Oracle":
             layer_type = self.tr("The table", context=__class__.__name__)
             data_name = data_source
         else:
             raise ValueError(
-                "'data_type' argument value should be 'PostGIS', 'vector', 'raster', 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
+                "'data_type' argument value should be 'PostGIS', 'Oracle, 'vector', 'raster', 'WFS', 'WMS', 'EMS', 'EFS' or 'WMTS'"
             )
 
         # Let's inform the user
@@ -392,6 +392,114 @@ class LayerAdder:
             )
             return 0
 
+    def add_from_ora_database(self, layer_info: dict):
+        """Add a layer to QGIS map canvas from a database table.
+
+        :param dict layer_info: dictionnary containing informations needed to add the layer from the database table
+        """
+
+        logger.debug("Data type: Oracle")
+        # Give aliases to the data passed as arguement
+        db_connection = layer_info.get("connection", "")
+        conn_name = db_connection.get("connection")
+        base_name = layer_info.get("base_name", "")
+        schema = layer_info.get("schema", "")
+        table_name = layer_info.get("table", "")
+
+        if not len(db_connection):
+            error_msg = "None registered connection could be find for '{}' database.".format(
+                base_name
+            )
+            self.invalid_layer_inform(
+                data_type="Oracle",
+                data_source=schema + "." + table_name,
+                error_msg=error_msg,
+            )
+            return 0
+        else:
+            uri = db_connection.get("uri")
+
+        # Retrieve information about the table or the view from the database connection
+        table = [schema, table_name, "GEOM"]
+        # Create a vector layer from retrieved infos
+        layer_is_ok = 0
+        # set database schema, table name, geometry column
+        uri.setDataSource(table[0], table[1], table[2])
+        # Building the layer
+        layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
+        # If the layer is valid that's find
+        if layer.isValid():
+            layer_is_ok = 1
+        else:
+            # Retrieve information about the table or the view from the database connection
+            table = [schema, table_name, "GEOMETRY"]
+            # Create a vector layer from retrieved infos
+            layer_is_ok = 0
+            # set database schema, table name, geometry column
+            uri.setDataSource(table[0], table[1], table[2])
+            # Building the layer
+            layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
+
+        if layer.isValid():
+            layer_is_ok = 1
+        # If it's not and the table seems to be a view, let's try to handle that
+        elif (
+            not layer.isValid()
+            and plg_tools.last_error[0] == "oracle"
+        ):
+            logger.debug(
+                "Oracle layer may be a view, so key column is missing. Trying to automatically set one..."
+            )
+            # get layer fields name to set as key column
+            fields_names = [i.name() for i in layer.dataProvider().fields()]
+            # sort them by name containing id to better perf
+            fields_names.sort(key=lambda x: ("id" not in x, x))
+            for field in fields_names:
+                uri.setKeyColumn(field)
+                layer = QgsVectorLayer(uri.uri(True), table[1], "oracle")
+                if layer.isValid():
+                    layer_is_ok = 1
+                    logger.debug(
+                        "'{}' chose as key column to add Oracle view".format(field)
+                    )
+                    break
+                else:
+                    continue
+            # let's prepare error message for the user just in case none field could be used as key column
+            error_msg = "The '{}' database view retrieved using '{}' data base connection is not valid : {}".format(
+                base_name, conn_name, plg_tools.last_error[1]
+            )
+        # If it's just not, let's prepare error message for the user
+        else:
+            logger.debug(
+                "Layer not valid. table = {} : {}".format(
+                    table, plg_tools.last_error
+                )
+            )
+            error_msg = "The '{}' database table retrieved using '{}' data base connection is not valid : {}".format(
+                base_name, conn_name, plg_tools.last_error[1]
+            )
+
+        # # If none information could be find for this table, let's prepare error message for the user
+        # else:
+        #     error_msg = "The table cannot be find into '{}' database using '{}' data base connection.".format(
+        #         base_name, conn_name
+        #     )
+
+        # If the vector layer could be properly created, let's add it to the canvas
+        if layer_is_ok:
+            logger.debug("Data added: {}".format(table_name))
+            lyr = QgsProject.instance().addMapLayer(layer)
+            return lyr, layer
+        # else, let's inform the user
+        else:
+            self.invalid_layer_inform(
+                data_type="Oracle",
+                data_source=schema + "." + table_name,
+                error_msg=error_msg,
+            )
+            return 0
+
     def adding(self, layer_info):
         """Add a layer to QGIS map canvas.
 
@@ -435,7 +543,11 @@ class LayerAdder:
 
         # If the data is a PostGIS table
         elif isinstance(layer_info, dict):
-            added_layer = self.add_from_database(layer_info=layer_info)
+            if layer_info.get("sgbd") == "PostgreSQL":
+                added_layer = self.add_from_database(layer_info=layer_info)
+            else:
+                added_layer = self.add_from_ora_database(layer_info=layer_info)
+
         else:
             pass
 
