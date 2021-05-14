@@ -420,7 +420,8 @@ class LayerAdder:
             uri = db_connection.get("uri")
 
         # Retrieve information about the table or the view from the database connection
-        table = [schema, table_name, "GEOM"]
+        geometry_column = [tab[2] for tab in db_connection.get("tables") if tab[0] == schema and tab[1] == table_name][0]
+        table = [schema, table_name, geometry_column]
         # Create a vector layer from retrieved infos
         layer_is_ok = 0
         # set database schema, table name, geometry column
@@ -428,18 +429,6 @@ class LayerAdder:
         # Building the layer
         layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
         # If the layer is valid that's find
-        if layer.isValid():
-            layer_is_ok = 1
-        else:
-            # Retrieve information about the table or the view from the database connection
-            table = [schema, table_name, "GEOMETRY"]
-            # Create a vector layer from retrieved infos
-            layer_is_ok = 0
-            # set database schema, table name, geometry column
-            uri.setDataSource(table[0], table[1], table[2])
-            # Building the layer
-            layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
-
         if layer.isValid():
             layer_is_ok = 1
         # If it's not and the table seems to be a view, let's try to handle that
