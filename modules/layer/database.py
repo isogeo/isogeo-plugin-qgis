@@ -51,6 +51,7 @@ btnBox_ico_dict = {
     7: QIcon(":/plugins/Isogeo/resources/undo.svg"),
 }
 
+# https://dataedo.com/kb/query/oracle/find-all-spatial-columns
 ora_sys_tables = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200')"
 ora_geom_column_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_tables tab on col.owner = tab.owner and col.table_name = tab.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(ora_sys_tables)
 
@@ -69,7 +70,9 @@ class DataBaseManager:
     # def __init__(self, cache_manager: object):
     def __init__(self, tr):
         """Class constructor."""
+
         self.tr = tr
+
         # Check PGSERVICEFILE env var value if it exists
         pgservicefile_value = environ.get("PGSERVICEFILE", None)
         if pgservicefile_value:
@@ -106,28 +109,26 @@ class DataBaseManager:
             qsettings.setValue("isogeo/settings/pref_pgdb_conn", self.li_pref_pgdb_conn)
 
         # Retrieved invalid connections saved into QSettings
-        if qsettings.value("isogeo/settings/invalid_pgdb_conn"):
-            self.li_invalid_pgdb_conn = qsettings.value(
-                "isogeo/settings/invalid_pgdb_conn"
-            )
-            logger.info(
-                "{} invalid PostgreSQL connection retrieved from QSettings.".format(
-                    len(self.li_invalid_pgdb_conn)
-                )
-            )
-        else:
-            self.li_invalid_pgdb_conn = []
-            qsettings.setValue(
-                "isogeo/settings/invalid_pgdb_conn", self.li_invalid_pgdb_conn
-            )
-        self.li_invalid_ora_conn = []
-        # retrieve information about registered PostgreSQL database connections from QSettings
-        self.pg_connections = list
-        self.build_postgis_dict()
+        self.invalid_connections_dict = {
+            "PostgreSQL": [],
+            "Oracle": []
+        }
+        self.fetch_invalid_connections(dbms="PostgreSQL")
+        self.fetch_invalid_connections(dbms="Oracle")
 
+        # retrieve informations about registered database connections
+        self.connections_dict = {
+            "PostgreSQL": [],
+            "Oracle": []
+        }
+        self.db_names_dict = {
+            "PostgreSQL": [],
+            "Oracle": []
+        }
+        # retrieve information about registered PostgreSQL database connections from QSettings
+        self.build_connection_dict(dbms="PostgreSQL")
         # retrieve informatyion about registered Oracle database connections from QSettings
-        self.ora_connections = list
-        self.build_oracle_dict()
+        self.build_connection_dict(dbms="Oracle")
 
         # set UI module
         self.pgdb_config_dialog = Isogeodb_connections()
@@ -145,6 +146,43 @@ class DataBaseManager:
         self.pgdb_config_dialog.btnbox.clicked.connect(self.pgdb_config_dialog_slot)
 
         self.tbl = self.pgdb_config_dialog.tbl
+
+    def fetch_invalid_connections(self, dbms: str):
+        """ Retrieve the list of invalid connections saved in QSettings
+        """
+
+        if dbms == "PostgreSQL":
+            if qsettings.value("isogeo/settings/invalid_pgdb_conn"):
+                self.invalid_connections_dict[dbms] = qsettings.value(
+                    "isogeo/settings/invalid_pgdb_conn"
+                )
+                logger.info(
+                    "{} invalid PostgreSQL connection retrieved from QSettings.".format(
+                        len(self.li_invalid_pgdb_conn)
+                    )
+                )
+            else:
+                self.li_invalid_pgdb_conn = []
+                qsettings.setValue(
+                    "isogeo/settings/invalid_pgdb_conn", self.li_invalid_pgdb_conn
+                )
+        elif dbms == "Oracle":
+            if qsettings.value("isogeo/settings/invalid_ora_conn"):
+                self.invalid_connections_dict[dbms] = qsettings.value(
+                    "isogeo/settings/invalid_ora_conn"
+                )
+                logger.info(
+                    "{} invalid Oracle connection retrieved from QSettings.".format(
+                        len(self.li_invalid_ora_conn)
+                    )
+                )
+            else:
+                self.li_invalid_ora_conn = []
+                qsettings.setValue(
+                    "isogeo/settings/invalid_ora_conn", self.li_invalid_ora_conn
+                )
+        else:
+            raise ValueError("'dbms' argument value should be 'PostgreSQL' or 'Oracle, not : {}".format(dbms))
 
     def config_file_parser(
         self, file_path: Path, connection_service: str, connection_name: str
@@ -208,12 +246,12 @@ class DataBaseManager:
             }
             return 1, connection_dict
 
-    def qsettings_content_parser(self, sgbd: str, connection_name: str):
+    def qsettings_content_parser(self, dbms: str, connection_name: str):
         """ Retrieve connection parameters values stored into QSettings corresponding to specific
-        sgbd and connection.
+        dbms and connection.
         """
 
-        conn_prefix = "{}/connections/{}".format(sgbd, connection_name)
+        conn_prefix = "{}/connections/{}".format(dbms, connection_name)
 
         database = qsettings.value(conn_prefix + "/database")
         host = qsettings.value(conn_prefix + "/host")
@@ -232,6 +270,65 @@ class DataBaseManager:
         }
         return 1, connection_dict
 
+    def check_connection_params_type(
+        self,
+        service: str = "",
+        host: str = "",
+        port: str = "",
+        username: str = "",
+        password: str = "",
+        database: str = "",
+        connection: str = "",
+    ):
+        """Check connection parameters given as arguments to methods :
+            * establish_oracle_connection
+            * establish_postgis_connection
+        """
+
+        error_msg = ""
+        if not isinstance(host, str):
+            error_msg = "'host' argument value should be str, not : {}".format(type(host))
+        elif not isinstance(service, str):
+            error_msg = "'service' argument value should be str, not : {}".format(type(service))
+        elif not isinstance(port, str):
+            error_msg = "'port' argument value should be str, not : {}".format(type(port))
+        elif not isinstance(username, str):
+            error_msg = "'username' argument value should be str, not : {}".format(type(username))
+        elif not isinstance(password, str):
+            error_msg = "'password' argument value should be str, not : {}".format(type(password))
+        elif not isinstance(database, str):
+            error_msg = "'database' argument value should be str, not : {}".format(type(database))
+        elif not isinstance(connection, str):
+            error_msg = "'connection' argument value should be str, not : {}".format(type(connection))
+        else:
+            return 1
+
+        return error_msg
+
+    def build_connection_uri(
+        self,
+        service: str = "",
+        host: str = "",
+        port: str = "",
+        username: str = "",
+        password: str = "",
+        database: str = ""
+    ):
+        """Build connection URI used by methods :
+            * establish_oracle_connection
+            * establish_postgis_connection
+        """
+
+        uri = QgsDataSourceUri()
+        if service == "":
+            logger.debug("*=====* tradi connection")
+            uri.setConnection(aHost=host, aPort=port, aDatabase=database, aUsername=username, aPassword=password)
+        else:
+            logger.debug("*=====* service connection")
+            uri.setConnection(aService=service, aDatabase=database, aUsername=username, aPassword=password)
+
+        return uri
+
     def establish_postgis_connection(
         self,
         service: str = "",
@@ -244,53 +341,14 @@ class DataBaseManager:
     ):
         """Set the connection to a specific PostGIS database and return the corresponding QgsDataSourceUri and tables infos.
         """
-        if not isinstance(host, str):
-            raise TypeError(
-                "'host' argument value should be str, not : {}".format(type(host))
-            )
-        elif not isinstance(service, str):
-            raise TypeError(
-                "'service' argument value should be str, not : {}".format(type(service))
-            )
-        elif not isinstance(port, str):
-            raise TypeError(
-                "'port' argument value should be str, not : {}".format(type(port))
-            )
-        elif not isinstance(username, str):
-            raise TypeError(
-                "'username' argument value should be str, not : {}".format(
-                    type(username)
-                )
-            )
-        elif not isinstance(password, str):
-            raise TypeError(
-                "'password' argument value should be str, not : {}".format(
-                    type(password)
-                )
-            )
-        elif not isinstance(database, str):
-            raise TypeError(
-                "'database' argument value should be str, not : {}".format(
-                    type(database)
-                )
-            )
-        elif not isinstance(connection, str):
-            raise TypeError(
-                "'connection' argument value should be str, not : {}".format(
-                    type(connection)
-                )
-            )
-        else:
+        check_params = self.check_connection_params_type(service, host, port, username, password, database, connection)
+        if check_params == 1:
             pass
+        else:
+            raise TypeError(check_params)
 
         # build the connection URI and set the connection
-        uri = QgsDataSourceUri()
-        if service == "":
-            logger.debug("*=====* tradi connection")
-            uri.setConnection(aHost=host, aPort=port, aDatabase=database, aUsername=username, aPassword=password)
-        else:
-            logger.debug("*=====* service connection")
-            uri.setConnection(aService=service, aDatabase=database, aUsername=username, aPassword=password)
+        uri = self.build_connection_uri(service, host, port, username, password, database)
 
         try:
             if qgis_version >= 316:
@@ -323,57 +381,18 @@ class DataBaseManager:
     ):
         """Set the connection to a specific Oracle database and return the corresponding QgsDataSourceUri and tables infos.
         """
-        if not isinstance(host, str):
-            raise TypeError(
-                "'host' argument value should be str, not : {}".format(type(host))
-            )
-        elif not isinstance(service, str):
-            raise TypeError(
-                "'service' argument value should be str, not : {}".format(type(service))
-            )
-        elif not isinstance(port, str):
-            raise TypeError(
-                "'port' argument value should be str, not : {}".format(type(port))
-            )
-        elif not isinstance(username, str):
-            raise TypeError(
-                "'username' argument value should be str, not : {}".format(
-                    type(username)
-                )
-            )
-        elif not isinstance(password, str):
-            raise TypeError(
-                "'password' argument value should be str, not : {}".format(
-                    type(password)
-                )
-            )
-        elif not isinstance(database, str):
-            raise TypeError(
-                "'database' argument value should be str, not : {}".format(
-                    type(database)
-                )
-            )
-        elif not isinstance(connection, str):
-            raise TypeError(
-                "'connection' argument value should be str, not : {}".format(
-                    type(connection)
-                )
-            )
-        else:
+
+        check_params = self.check_connection_params_type(service, host, port, username, password, database, connection)
+        if check_params == 1:
             pass
+        else:
+            raise TypeError(check_params)
 
         # build the connection URI and set the connection
-        uri = QgsDataSourceUri()
-        if service == "":
-            logger.debug("*=====* tradi connection")
-            uri.setConnection(aHost=host, aPort=port, aDatabase=database, aUsername=username, aPassword=password)
-        else:
-            logger.debug("*=====* service connection")
-            uri.setConnection(aService=service, aDatabase=database, aUsername=username, aPassword=password)
+        uri = self.build_connection_uri(service, host, port, username, password, database)
 
         try:
             if qgis_version >= 316:
-                ora_db_plg = OracleDBPlugin(connection)
                 ora_db_plg = connection
                 c = OracleDBConnector(uri, ora_db_plg)
             else:
@@ -391,27 +410,42 @@ class DataBaseManager:
 
         return uri, li_table_infos
 
-    def build_postgis_dict(self, skip_invalid: bool = True):
-        """Build the dict that stores informations about PostGIS connections."""
-        final_list = []
+    def build_connection_dict(self, dbms: str, skip_invalid: bool = True):
+        """Build the dict that stores informations about PostgreSQL or Oracle connections."""
+
+        if not isinstance(dbms, str):
+            raise TypeError("'dbms' argument value should be str, not : {}".format(type(dbms)))
+        elif dbms not in ["PostgreSQL", "Oracle"]:
+            raise TypeError("'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(dbms))
+        else:
+            dbms_prefix = "{}/connections/".format(dbms)
+            if dbms == "PostgreSQL":
+                li_invalid_conn = self.li_invalid_pgdb_conn
+                establish_conn_func = self.establish_postgis_connection
+            else:
+                li_invalid_conn = self.li_invalid_ora_conn
+                establish_conn_func = self.establish_oracle_connection
+
+        li_connections = []
+        li_db_names = []
         for k in sorted(qsettings.allKeys()):
-            if k.startswith("PostgreSQL/connections/") and k.endswith("/database"):
+            if k.startswith(dbms_prefix) and k.endswith("/database"):
                 if len(k.split("/")) == 4:
                     connection_name = k.split("/")[2]
 
                     password_saved = qsettings.value(
-                        "PostgreSQL/connections/" + connection_name + "/savePassword"
+                        dbms_prefix + connection_name + "/savePassword"
                     )
                     user_saved = qsettings.value(
-                        "PostgreSQL/connections/" + connection_name + "/saveUsername"
+                        dbms_prefix + connection_name + "/saveUsername"
                     )
                     connection_service = qsettings.value(
-                        "PostgreSQL/connections/" + connection_name + "/service"
+                        dbms_prefix + connection_name + "/service"
                     )
 
                     # For "traditionnaly" registered connections
                     if password_saved == "true" and user_saved == "true":
-                        connection_dict = self.qsettings_content_parser(sgbd="PostgreSQL", connection_name=connection_name)
+                        connection_dict = self.qsettings_content_parser(dbms=dbms, connection_name=connection_name)
                         if connection_dict[0]:
                             connection_dict = connection_dict[1]
                         else:
@@ -431,14 +465,14 @@ class DataBaseManager:
                     else:
                         continue
 
-                    if connection_name in self.li_invalid_pgdb_conn and skip_invalid:
+                    if connection_name in li_invalid_conn and skip_invalid:
                         pass
                     else:
-                        conn = self.establish_postgis_connection(**connection_dict)
+                        conn = establish_conn_func(**connection_dict)
                         if not conn:
                             connection_dict["uri"] = 0
                             connection_dict["tables"] = 0
-                            self.li_invalid_pgdb_conn.append(connection_name)
+                            li_invalid_conn.append(connection_name)
                             logger.info(
                                 "'{}' connection saved as invalid".format(
                                     connection_name
@@ -454,94 +488,28 @@ class DataBaseManager:
                         else:
                             connection_dict["prefered"] = 0
 
-                        final_list.append(connection_dict)
+                        li_connections.append(connection_dict)
+
+                        if connection_dict.get("database") not in li_db_names:
+                            li_db_names.appedn(connection_dict.get("database"))
+                        else:
+                            pass
                 else:
                     pass
             else:
                 pass
 
-        self.pg_connections = final_list
-        self.pg_connections_connection = [conn.get("connection") for conn in final_list]
-        self.pg_connections_dbname = [conn.get("database") for conn in final_list]
-        qsettings.setValue(
-            "isogeo/settings/invalid_pgdb_conn", self.li_invalid_pgdb_conn,
-        )
+        self.connections_dict[dbms] = li_connections
+        self.db_names_dict[dbms] = li_db_names
 
-    def build_oracle_dict(self, skip_invalid: bool = True):
-        """Build the dict that stores informations about Oracle connections."""
-        final_list = []
-        for k in sorted(qsettings.allKeys()):
-            if k.startswith("Oracle/connections/") and k.endswith("/database"):
-                if len(k.split("/")) == 4:
-                    connection_name = k.split("/")[2]
-
-                    password_saved = qsettings.value(
-                        "Oracle/connections/" + connection_name + "/savePassword"
-                    )
-                    user_saved = qsettings.value(
-                        "Oracle/connections/" + connection_name + "/saveUsername"
-                    )
-                    connection_service = qsettings.value(
-                        "Oracle/connections/" + connection_name + "/service"
-                    )
-
-                    # For "traditionnaly" registered connections
-                    if password_saved == "true" and user_saved == "true":
-                        connection_dict = self.qsettings_content_parser(sgbd="Oracle", connection_name=connection_name)
-                        if connection_dict[0]:
-                            connection_dict = connection_dict[1]
-                        else:
-                            logger.warning(connection_dict[1])
-
-                    # For connections configured using config file and service
-                    # elif connection_service != "" and self.pg_configfile_path:
-                    elif connection_service != "":
-                        connection_dict = self.config_file_parser(
-                            self.pg_configfile_path, connection_service, connection_name
-                        )
-                        if connection_dict[0]:
-                            connection_dict = connection_dict[1]
-                        else:
-                            logger.warning(connection_dict[1])
-                            continue
-                    else:
-                        continue
-
-                    if connection_name in self.li_invalid_ora_conn and skip_invalid:
-                        pass
-                    else:
-                        conn = self.establish_oracle_connection(**connection_dict)
-                        if not conn:
-                            connection_dict["uri"] = conn[0]
-                            connection_dict["tables"] = conn[1]
-                            self.li_invalid_ora_conn.append(connection_name)
-                            logger.info(
-                                "'{}' connection saved as invalid".format(
-                                    connection_name
-                                )
-                            )
-                            continue
-                        else:
-                            connection_dict["uri"] = conn[0]
-                            connection_dict["tables"] = conn[1]
-
-                        if connection_dict.get("connection") in self.li_pref_pgdb_conn:
-                            connection_dict["prefered"] = 1
-                        else:
-                            connection_dict["prefered"] = 0
-
-                        final_list.append(connection_dict)
-                else:
-                    pass
-            else:
-                pass
-
-        self.ora_connections = final_list
-        self.ora_connections_connection = [conn.get("connection") for conn in final_list]
-        self.ora_connections_dbname = [conn.get("database") for conn in final_list]
-        qsettings.setValue(
-            "isogeo/settings/invalid_ora_conn", self.li_invalid_ora_conn,
-        )
+        if dbms == "PostgreSQL":
+            qsettings.setValue(
+                "isogeo/settings/invalid_pgdb_conn", self.li_invalid_pgdb_conn,
+            )
+        else:
+            qsettings.setValue(
+                "isogeo/settings/invalid_ora_conn", self.li_invalid_pgdb_conn,
+            )
 
     def switch_widgets_on_and_off(self, mode: bool = True):
         """1 to switch widgets on and 0 to switch widgets off"""
@@ -638,7 +606,7 @@ class DataBaseManager:
                     pass
             # If options have been selected, store user preferences
             self.li_pref_pgdb_conn = li_connection_name
-            self.build_postgis_dict()
+            self.build_connection_dict(dbms="PostgreSQL")
             qsettings.setValue(
                 "isogeo/settings/pref_pgdb_conn", self.li_pref_pgdb_conn,
             )
@@ -658,6 +626,6 @@ class DataBaseManager:
     def pgdb_conn_reload_slot(self):
         """Called when 'Reload embed connection(s)' is clicked to execute appropriate operations."""
         self.li_invalid_pgdb_conn = []
-        self.build_postgis_dict(skip_invalid=False)
+        self.build_connection_dict(dbms="PostgreSQL", skip_invalid=False)
         self.fill_pgdb_config_tbl()
         return
