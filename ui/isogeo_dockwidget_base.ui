@@ -1414,6 +1414,9 @@
                    <height>30</height>
                   </size>
                  </property>
+                 <property name="toolTip">
+                  <string>Oracle databases</string>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -1432,6 +1435,9 @@
                    <width>100</width>
                    <height>30</height>
                   </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Postgis databases</string>
                  </property>
                  <property name="text">
                   <string/>

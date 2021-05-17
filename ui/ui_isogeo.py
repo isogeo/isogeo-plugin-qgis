@@ -1108,6 +1108,12 @@ class Ui_IsogeoDockWidgetBase(object):
                 "Configure embed database connections to be used by the plugin",
             )
         )
+        self.btn_open_ora_config_dialog.setToolTip(
+            _translate("IsogeoDockWidgetBase", "Oracle databases")
+        )
+        self.btn_open_pgdb_config_dialog.setToolTip(
+            _translate("IsogeoDockWidgetBase", "Postgis databases")
+        )
         self.chb_portal_url.setText(
             _translate(
                 "IsogeoDockWidgetBase", "Add portal metadata URL to layer's properties"

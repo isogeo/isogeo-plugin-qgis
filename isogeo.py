@@ -112,6 +112,7 @@ logger.addHandler(logfile)
 # icons
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
 ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
+ico_ora = QIcon(":/images/themes/default/mIconOracle.svg")
 
 
 # ############################################################################
@@ -869,6 +870,7 @@ class Isogeo:
         self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(
             self.form_mng.results_mng.db_mng.open_pgdb_config_dialog
         )
+        self.form_mng.btn_open_ora_config_dialog.setIcon(ico_ora)
         self.form_mng.input_portal_url.setText(
             qsettings.value("isogeo/settings/portal_base_url")
         )
