@@ -2,9 +2,10 @@
 
 # Form implementation generated from reading ui file 'ui\isogeo_dockwidget_base.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -693,6 +694,67 @@ class Ui_IsogeoDockWidgetBase(object):
         self.tab_settings.setObjectName("tab_settings")
         self.gridLayout_7 = QtWidgets.QGridLayout(self.tab_settings)
         self.gridLayout_7.setObjectName("gridLayout_7")
+        self.groupBox_4 = QtWidgets.QGroupBox(self.tab_settings)
+        self.groupBox_4.setObjectName("groupBox_4")
+        self.gridLayout_3 = QtWidgets.QGridLayout(self.groupBox_4)
+        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayout_14 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_14.setObjectName("horizontalLayout_14")
+        self.label_config_db_conn = QtWidgets.QLabel(self.groupBox_4)
+        self.label_config_db_conn.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.label_config_db_conn.setFont(font)
+        self.label_config_db_conn.setObjectName("label_config_db_conn")
+        self.horizontalLayout_14.addWidget(self.label_config_db_conn)
+        spacerItem12 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
+        self.horizontalLayout_14.addItem(spacerItem12)
+        self.btn_open_ora_config_dialog = QtWidgets.QPushButton(self.groupBox_4)
+        self.btn_open_ora_config_dialog.setMinimumSize(QtCore.QSize(80, 25))
+        self.btn_open_ora_config_dialog.setMaximumSize(QtCore.QSize(100, 30))
+        self.btn_open_ora_config_dialog.setText("")
+        self.btn_open_ora_config_dialog.setObjectName("btn_open_ora_config_dialog")
+        self.horizontalLayout_14.addWidget(self.btn_open_ora_config_dialog)
+        self.btn_open_pgdb_config_dialog = QtWidgets.QPushButton(self.groupBox_4)
+        self.btn_open_pgdb_config_dialog.setMinimumSize(QtCore.QSize(80, 25))
+        self.btn_open_pgdb_config_dialog.setMaximumSize(QtCore.QSize(100, 30))
+        self.btn_open_pgdb_config_dialog.setText("")
+        self.btn_open_pgdb_config_dialog.setObjectName("btn_open_pgdb_config_dialog")
+        self.horizontalLayout_14.addWidget(self.btn_open_pgdb_config_dialog)
+        self.verticalLayout.addLayout(self.horizontalLayout_14)
+        self.chb_portal_url = QtWidgets.QCheckBox(self.groupBox_4)
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.chb_portal_url.setFont(font)
+        self.chb_portal_url.setCheckable(True)
+        self.chb_portal_url.setChecked(False)
+        self.chb_portal_url.setObjectName("chb_portal_url")
+        self.verticalLayout.addWidget(self.chb_portal_url)
+        self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
+        self.label_portal_url = QtWidgets.QLabel(self.groupBox_4)
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.label_portal_url.setFont(font)
+        self.label_portal_url.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_portal_url.setObjectName("label_portal_url")
+        self.horizontalLayout_7.addWidget(self.label_portal_url)
+        self.input_portal_url = QtWidgets.QLineEdit(self.groupBox_4)
+        self.input_portal_url.setEnabled(False)
+        self.input_portal_url.setInputMask("")
+        self.input_portal_url.setText("")
+        self.input_portal_url.setObjectName("input_portal_url")
+        self.horizontalLayout_7.addWidget(self.input_portal_url)
+        self.verticalLayout.addLayout(self.horizontalLayout_7)
+        self.gridLayout_3.addLayout(self.verticalLayout, 1, 0, 1, 1)
+        self.gridLayout_7.addWidget(self.groupBox_4, 7, 0, 1, 1)
         self.groupBox_2 = QtWidgets.QGroupBox(self.tab_settings)
         self.groupBox_2.setMinimumSize(QtCore.QSize(0, 121))
         self.groupBox_2.setObjectName("groupBox_2")
@@ -706,10 +768,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_quicksearch_edit.setMinimumSize(QtCore.QSize(221, 24))
         self.cbb_quicksearch_edit.setObjectName("cbb_quicksearch_edit")
         self.horizontalLayout_9.addWidget(self.cbb_quicksearch_edit)
-        spacerItem12 = QtWidgets.QSpacerItem(
+        spacerItem13 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.horizontalLayout_9.addItem(spacerItem12)
+        self.horizontalLayout_9.addItem(spacerItem13)
         self.btn_rename_sr = QtWidgets.QPushButton(self.groupBox_2)
         self.btn_rename_sr.setMinimumSize(QtCore.QSize(111, 25))
         self.btn_rename_sr.setMaximumSize(QtCore.QSize(115, 25))
@@ -753,10 +815,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_default.setFont(font)
         self.lbl_default.setObjectName("lbl_default")
         self.horizontalLayout_10.addWidget(self.lbl_default)
-        spacerItem13 = QtWidgets.QSpacerItem(
+        spacerItem14 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.horizontalLayout_10.addItem(spacerItem13)
+        self.horizontalLayout_10.addItem(spacerItem14)
         self.btn_default_save = QtWidgets.QPushButton(self.groupBox_2)
         self.btn_default_save.setMinimumSize(QtCore.QSize(111, 25))
         self.btn_default_save.setMaximumSize(QtCore.QSize(115, 25))
@@ -781,10 +843,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_geo_op.setFont(font)
         self.lbl_geo_op.setObjectName("lbl_geo_op")
         self.horizontalLayout_11.addWidget(self.lbl_geo_op)
-        spacerItem14 = QtWidgets.QSpacerItem(
+        spacerItem15 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.horizontalLayout_11.addItem(spacerItem14)
+        self.horizontalLayout_11.addItem(spacerItem15)
         self.cbb_geo_op = QtWidgets.QComboBox(self.groupBox_2)
         self.cbb_geo_op.setMinimumSize(QtCore.QSize(176, 25))
         self.cbb_geo_op.setMaximumSize(QtCore.QSize(250, 25))
@@ -804,10 +866,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_cache.setFont(font)
         self.lbl_cache.setObjectName("lbl_cache")
         self.horizontalLayout_13.addWidget(self.lbl_cache)
-        spacerItem15 = QtWidgets.QSpacerItem(
+        spacerItem16 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.horizontalLayout_13.addItem(spacerItem15)
+        self.horizontalLayout_13.addItem(spacerItem16)
         self.btn_cache_trash = QtWidgets.QPushButton(self.groupBox_2)
         self.btn_cache_trash.setMinimumSize(QtCore.QSize(80, 25))
         self.btn_cache_trash.setMaximumSize(QtCore.QSize(60, 25))
@@ -836,10 +898,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_auth.setFont(font)
         self.lbl_auth.setObjectName("lbl_auth")
         self.horizontalLayout_21.addWidget(self.lbl_auth)
-        spacerItem16 = QtWidgets.QSpacerItem(
+        spacerItem17 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.horizontalLayout_21.addItem(spacerItem16)
+        self.horizontalLayout_21.addItem(spacerItem17)
         self.btn_change_user = QtWidgets.QPushButton(self.groupBox)
         self.btn_change_user.setMinimumSize(QtCore.QSize(80, 25))
         self.btn_change_user.setText("")
@@ -869,10 +931,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_report.setFont(font)
         self.lbl_report.setObjectName("lbl_report")
         self.horizontalLayout_24.addWidget(self.lbl_report)
-        spacerItem17 = QtWidgets.QSpacerItem(
+        spacerItem18 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.horizontalLayout_24.addItem(spacerItem17)
+        self.horizontalLayout_24.addItem(spacerItem18)
         self.btn_log_dir = QtWidgets.QPushButton(self.groupBox_3)
         self.btn_log_dir.setMinimumSize(QtCore.QSize(80, 25))
         self.btn_log_dir.setMaximumSize(QtCore.QSize(100, 30))
@@ -912,10 +974,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_help.setFont(font)
         self.lbl_help.setObjectName("lbl_help")
         self.horizontalLayout_23.addWidget(self.lbl_help)
-        spacerItem18 = QtWidgets.QSpacerItem(
+        spacerItem19 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.horizontalLayout_23.addItem(spacerItem18)
+        self.horizontalLayout_23.addItem(spacerItem19)
         self.btn_help = QtWidgets.QPushButton(self.groupBox_3)
         self.btn_help.setMinimumSize(QtCore.QSize(80, 25))
         self.btn_help.setMaximumSize(QtCore.QSize(100, 30))
@@ -941,10 +1003,10 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_credits.setFont(font)
         self.lbl_credits.setObjectName("lbl_credits")
         self.horizontalLayout_22.addWidget(self.lbl_credits)
-        spacerItem19 = QtWidgets.QSpacerItem(
+        spacerItem20 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.horizontalLayout_22.addItem(spacerItem19)
+        self.horizontalLayout_22.addItem(spacerItem20)
         self.btn_credits = QtWidgets.QPushButton(self.groupBox_3)
         self.btn_credits.setMinimumSize(QtCore.QSize(80, 25))
         self.btn_credits.setMaximumSize(QtCore.QSize(100, 30))
@@ -962,65 +1024,6 @@ class Ui_IsogeoDockWidgetBase(object):
         self.verticalLayout_12.addLayout(self.horizontalLayout_22)
         self.gridLayout_6.addLayout(self.verticalLayout_12, 0, 0, 1, 1)
         self.gridLayout_7.addWidget(self.groupBox_3, 8, 0, 1, 1)
-        spacerItem20 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
-        self.gridLayout_7.addItem(spacerItem20, 10, 0, 1, 1)
-        self.groupBox_4 = QtWidgets.QGroupBox(self.tab_settings)
-        self.groupBox_4.setObjectName("groupBox_4")
-        self.gridLayout_3 = QtWidgets.QGridLayout(self.groupBox_4)
-        self.gridLayout_3.setObjectName("gridLayout_3")
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.horizontalLayout_14 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_14.setObjectName("horizontalLayout_14")
-        self.label_config_db_conn = QtWidgets.QLabel(self.groupBox_4)
-        self.label_config_db_conn.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        font = QtGui.QFont()
-        font.setBold(False)
-        font.setWeight(50)
-        self.label_config_db_conn.setFont(font)
-        self.label_config_db_conn.setObjectName("label_config_db_conn")
-        self.horizontalLayout_14.addWidget(self.label_config_db_conn)
-        spacerItem21 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
-        self.horizontalLayout_14.addItem(spacerItem21)
-        self.btn_open_pgdb_config_dialog = QtWidgets.QPushButton(self.groupBox_4)
-        self.btn_open_pgdb_config_dialog.setMinimumSize(QtCore.QSize(80, 25))
-        self.btn_open_pgdb_config_dialog.setMaximumSize(QtCore.QSize(100, 30))
-        self.btn_open_pgdb_config_dialog.setText("")
-        self.btn_open_pgdb_config_dialog.setObjectName("btn_open_pgdb_config_dialog")
-        self.horizontalLayout_14.addWidget(self.btn_open_pgdb_config_dialog)
-        self.verticalLayout.addLayout(self.horizontalLayout_14)
-        self.chb_portal_url = QtWidgets.QCheckBox(self.groupBox_4)
-        font = QtGui.QFont()
-        font.setBold(False)
-        font.setWeight(50)
-        self.chb_portal_url.setFont(font)
-        self.chb_portal_url.setCheckable(True)
-        self.chb_portal_url.setChecked(False)
-        self.chb_portal_url.setObjectName("chb_portal_url")
-        self.verticalLayout.addWidget(self.chb_portal_url)
-        self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-        self.label_portal_url = QtWidgets.QLabel(self.groupBox_4)
-        font = QtGui.QFont()
-        font.setBold(False)
-        font.setWeight(50)
-        self.label_portal_url.setFont(font)
-        self.label_portal_url.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.label_portal_url.setObjectName("label_portal_url")
-        self.horizontalLayout_7.addWidget(self.label_portal_url)
-        self.input_portal_url = QtWidgets.QLineEdit(self.groupBox_4)
-        self.input_portal_url.setEnabled(False)
-        self.input_portal_url.setInputMask("")
-        self.input_portal_url.setText("")
-        self.input_portal_url.setObjectName("input_portal_url")
-        self.horizontalLayout_7.addWidget(self.input_portal_url)
-        self.verticalLayout.addLayout(self.horizontalLayout_7)
-        self.gridLayout_3.addLayout(self.verticalLayout, 1, 0, 1, 1)
-        self.gridLayout_7.addWidget(self.groupBox_4, 7, 0, 1, 1)
         icon14 = QtGui.QIcon()
         icon14.addPixmap(
             QtGui.QPixmap(":/plugins/Isogeo/resources/settings/gear.svg"),
@@ -1096,6 +1099,25 @@ class Ui_IsogeoDockWidgetBase(object):
             self.tabWidget.indexOf(self.tab_search),
             _translate("IsogeoDockWidgetBase", "Search"),
         )
+        self.groupBox_4.setTitle(
+            _translate("IsogeoDockWidgetBase", "Layer adding settings")
+        )
+        self.label_config_db_conn.setText(
+            _translate(
+                "IsogeoDockWidgetBase",
+                "Configure embed database connections to be used by the plugin",
+            )
+        )
+        self.chb_portal_url.setText(
+            _translate(
+                "IsogeoDockWidgetBase", "Add portal metadata URL to layer's properties"
+            )
+        )
+        self.label_portal_url.setText(
+            _translate(
+                "IsogeoDockWidgetBase", "Please specify the portal base URL here:"
+            )
+        )
         self.groupBox_2.setTitle(_translate("IsogeoDockWidgetBase", "Search settings"))
         self.cbb_quicksearch_edit.setToolTip(
             _translate("IsogeoDockWidgetBase", "Edit quicksearch")
@@ -1138,25 +1160,6 @@ class Ui_IsogeoDockWidgetBase(object):
         )
         self.btn_credits.setToolTip(
             _translate("IsogeoDockWidgetBase", "Open credits popup")
-        )
-        self.groupBox_4.setTitle(
-            _translate("IsogeoDockWidgetBase", "Layer adding settings")
-        )
-        self.label_config_db_conn.setText(
-            _translate(
-                "IsogeoDockWidgetBase",
-                "Configure embed database connections to be used by the plugin",
-            )
-        )
-        self.chb_portal_url.setText(
-            _translate(
-                "IsogeoDockWidgetBase", "Add portal metadata URL to layer's properties"
-            )
-        )
-        self.label_portal_url.setText(
-            _translate(
-                "IsogeoDockWidgetBase", "Please specify the portal base URL here:"
-            )
         )
         self.tabWidget.setTabText(
             self.tabWidget.indexOf(self.tab_settings),

@@ -2102,8 +2102,5 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
  <connections/>
 </ui>
