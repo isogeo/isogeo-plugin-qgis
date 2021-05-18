@@ -45,8 +45,8 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 connection_parameters_names = ["host", "port", "dbname", "user", "password"]
 
 dbms_specifics_keys = {
-    "Oracle": "isogeo/settings/invalid_pgdb_conn",
-    "PostgreSQL": "isogeo/settings/invalid_ora_conn"
+    "Oracle": "isogeo/settings/invalid_ora_conn",
+    "PostgreSQL": "isogeo/settings/invalid_pgdb_conn"
 }
 
 ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
