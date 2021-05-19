@@ -123,7 +123,7 @@ stages:
         pyuic5 -x "ui\isogeo_dockwidget_base.ui" -o "ui\ui_isogeo.py"
         pyuic5 -x "ui\auth\ui_authentication.ui" -o "ui\auth\ui_authentication.py"
         pyuic5 -x "ui\credits\ui_credits.ui" -o "ui\credits\ui_credits.py"
-        pyuic5 -x "ui\db_connections\ui_db_connections.ui" -o "ui\db_connections\ui_db_connections.py"
+        pyuic5 -x "ui\db_connections\ui_pgdb_connections.ui" -o "ui\db_connections\ui_pgdb_connections.py"
         pyuic5 -x "ui\metadata\ui_md_details.ui" -o "ui\metadata\ui_md_details.py"
         pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicksearch_rename.py"
         pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"

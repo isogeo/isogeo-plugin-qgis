@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dlg_db_connections</class>
- <widget class="QDialog" name="dlg_db_connections">
+ <class>dlg_pgdb_connections</class>
+ <widget class="QDialog" name="dlg_pgdb_connections">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -249,7 +249,7 @@
   <connection>
    <sender>btnbox</sender>
    <signal>accepted()</signal>
-   <receiver>dlg_db_connections</receiver>
+   <receiver>dlg_pgdb_connections</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -265,7 +265,7 @@
   <connection>
    <sender>btnbox</sender>
    <signal>rejected()</signal>
-   <receiver>dlg_db_connections</receiver>
+   <receiver>dlg_pgdb_connections</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

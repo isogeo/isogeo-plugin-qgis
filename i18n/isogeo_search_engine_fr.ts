@@ -661,19 +661,19 @@ Un proxy est configuré dans l&apos;OS {} mais pas dans QGIS.
     </message>
 </context>
 <context>
-    <name>dlg_db_connections</name>
+    <name>dlg_pgdb_connections</name>
     <message>
-        <location filename="../ui/db_connections/ui_db_connections.ui" line="26"/>
+        <location filename="../ui/db_connections/ui_pgdb_connections.ui" line="26"/>
         <source>PostGIS database configuration</source>
         <translation>Configuration des connexions PostGIS</translation>
     </message>
     <message>
-        <location filename="../ui/db_connections/ui_db_connections.ui" line="83"/>
+        <location filename="../ui/db_connections/ui_pgdb_connections.ui" line="83"/>
         <source>Choose the embed connection to be used to access to each PostGIS database</source>
         <translation>Choisir la connexion enregistrée qui sera utilisée pour accéder à chaque base de données</translation>
     </message>
     <message>
-        <location filename="../ui/db_connections/ui_db_connections.ui" line="190"/>
+        <location filename="../ui/db_connections/ui_pgdb_connections.ui" line="190"/>
         <source>Reload embed connection(s)</source>
         <translation>Recharger les connexions</translation>
     </message>
