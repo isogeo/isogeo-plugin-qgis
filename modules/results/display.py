@@ -276,19 +276,19 @@ class ResultsManager(QObject):
                     if (
                         md.path
                         and md.name
-                        and md.path in self.db_mng.db_names_dict.get("PostgreSQL")
+                        and md.path in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
                         and "." in md.name
                     ):
                         available_connections = [
                             pg_conn
-                            for pg_conn in self.db_mng.connections_dict.get("PostgreSQL")
+                            for pg_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("connections")
                             if md.path == pg_conn.get("database")
                             and pg_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
                                 pg_conn
-                                for pg_conn in self.db_mng.connections_dict.get("PostgreSQL")
+                                for pg_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("connections")
                                 if md.path == pg_conn.get("database")
                             ]
                         else:
@@ -331,19 +331,19 @@ class ResultsManager(QObject):
                     if (
                         md.path
                         and md.name
-                        and md.path in self.db_mng.db_names_dict.get("Oracle")
+                        and md.path in self.db_mng.dbms_specifics_infos.get("Oracle").get("db_names")
                         and "." in md.name
                     ):
                         available_connections = [
                             ora_conn
-                            for ora_conn in self.db_mng.connections_dict.get("Oracle")
+                            for ora_conn in self.db_mng.dbms_specifics_infos.get("Oracle").get("connections")
                             if md.path == ora_conn.get("database")
                             and ora_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
                                 ora_conn
-                                for ora_conn in self.db_mng.connections_dict.get("Oracle")
+                                for ora_conn in self.db_mng.dbms_specifics_infos.get("Oracle").get("connections")
                                 if md.path == ora_conn.get("database")
                             ]
                         else:

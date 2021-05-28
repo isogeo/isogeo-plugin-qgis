@@ -44,12 +44,24 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 connection_parameters_names = ["host", "port", "dbname", "user", "password"]
 
-dbms_specifics_keys = {
-    "Oracle": "isogeo/settings/invalid_ora_conn",
-    "PostgreSQL": "isogeo/settings/invalid_pgdb_conn"
+ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
+ico_ora = QIcon(":/images/themes/default/mIconOracle.svg")
+
+dbms_specifics_resources = {
+    "Oracle": {
+        "invalid_key": "isogeo/settings/invalid_ora_conn",
+        "prefered_key": "isogeo/settings/prefered_ora_conn",
+        "label": "Oracle",
+        "windowIcon": ico_ora
+    },
+    "PostgreSQL": {
+        "invalid_key": "isogeo/settings/invalid_pgdb_conn",
+        "prefered_key": "isogeo/settings/prefered_pgdb_conn",
+        "label": "PostGIS",
+        "windowIcon": ico_pgis
+    }
 }
 
-ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
 btnBox_ico_dict = {
     0: QIcon(":/plugins/Isogeo/resources/save.svg"),
     1: QIcon(":/images/themes/default/mActionRemove.svg"),
@@ -101,44 +113,36 @@ class DataBaseManager:
         else:
             self.pg_configfile_path = 0
 
+        self.dbms_specifics_infos = {
+            "Oracle": {
+                "prefered_connections": [],
+                "invalid_connections": [],
+                "connections": [],
+                "db_names": []
+            },
+            "PostgreSQL": {
+                "prefered_connections": [],
+                "invalid_connections": [],
+                "connections": [],
+                "db_names": []
+            }
+        }
+
         # Retrieved prefered connections saved into QSettings
-        if qsettings.value("isogeo/settings/pref_pgdb_conn"):
-            self.li_pref_pgdb_conn = qsettings.value("isogeo/settings/pref_pgdb_conn")
-            logger.info(
-                "{} prefered PostgreSQL connection retrieved from QSettings.".format(
-                    len(self.li_pref_pgdb_conn)
-                )
-            )
-        else:
-            self.li_pref_pgdb_conn = []
-            qsettings.setValue("isogeo/settings/pref_pgdb_conn", self.li_pref_pgdb_conn)
+        self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="prefered")
+        self.fetch_qsettings_connections(dbms="Oracle", connections_kind="prefered")
 
         # Retrieved invalid connections saved into QSettings
-        self.invalid_connections_dict = {
-            "PostgreSQL": [],
-            "Oracle": []
-        }
-        self.fetch_invalid_connections(dbms="PostgreSQL")
-        self.fetch_invalid_connections(dbms="Oracle")
+        self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="invalid")
+        self.fetch_qsettings_connections(dbms="Oracle", connections_kind="invalid")
 
-        # retrieve informations about registered database connections
-        self.connections_dict = {
-            "PostgreSQL": [],
-            "Oracle": []
-        }
-        self.db_names_dict = {
-            "PostgreSQL": [],
-            "Oracle": []
-        }
-        # retrieve information about registered PostgreSQL database connections from QSettings
+        # retrieve informations about registered database connections from QSettings
         self.build_connection_dict(dbms="PostgreSQL")
-        # retrieve informatyion about registered Oracle database connections from QSettings
         self.build_connection_dict(dbms="Oracle")
 
         # set UI module
         self.pgdb_config_dialog = Isogeodb_connections()
 
-        self.pgdb_config_dialog.setWindowIcon(ico_pgis)
         for btn in self.pgdb_config_dialog.btnbox.buttons():
             btn_role = self.pgdb_config_dialog.btnbox.buttonRole(btn)
             icon = btnBox_ico_dict.get(btn_role)
@@ -152,46 +156,54 @@ class DataBaseManager:
 
         self.tbl = self.pgdb_config_dialog.tbl
 
-    def set_invalid_connections(self, dbms: str, li_invalid_connections: list):
+    def set_qsettings_connections(self, dbms: str, connections_kind: str, li_connections: list):
         """ Save the list of invalid connections in QSettings
         """
 
-        if not isinstance(li_invalid_connections, list):
-            raise TypeError("'li_invalid_connections' argument value should be a list, not : {}".format(type(li_invalid_connections)))
+        if not isinstance(li_connections, list):
+            raise TypeError("'li_connections' argument value should be a list, not : {}".format(type(li_connections)))
         elif not isinstance(dbms, str):
             raise TypeError("'dbms' argument value should be a str, not : {}".format(type(dbms)))
         elif dbms not in ["PostgreSQL", "Oracle"]:
             raise ValueError("'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(dbms))
+        elif not isinstance(connections_kind, str):
+            raise TypeError("'connections_kind' argument value should be a str, not : {}".format(type(connections_kind)))
+        elif connections_kind not in ["invalid", "prefered"]:
+            raise ValueError("'connections_kind' argument value should be 'invalid' or 'prefered', not : {}".format(connections_kind))
         else:
-            qsettings_key = dbms_specifics_keys.get(dbms)
+            qsettings_key = dbms_specifics_resources.get(dbms).get("{}_key".format(connections_kind))
 
         qsettings.setValue(
-            qsettings_key, li_invalid_connections
+            qsettings_key, li_connections
         )
 
-    def fetch_invalid_connections(self, dbms: str):
-        """ Retrieve the list of invalid connections saved in QSettings
+    def fetch_qsettings_connections(self, dbms: str, connections_kind: str):
+        """ Retrieve the list of invalid or prefered (depending on connections_kind) connections saved in QSettings
         """
 
         if not isinstance(dbms, str):
             raise TypeError("'dbms' argument value should be str, not : {}".format(type(dbms)))
         elif dbms not in ["PostgreSQL", "Oracle"]:
             raise ValueError("'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(dbms))
+        elif not isinstance(connections_kind, str):
+            raise TypeError("'connections_kind' argument value should be a str, not : {}".format(type(connections_kind)))
+        elif connections_kind not in ["invalid", "prefered"]:
+            raise ValueError("'connections_kind' argument value should be 'invalid' or 'prefered', not : {}".format(connections_kind))
         else:
-            qsettings_key = dbms_specifics_keys.get(dbms)
+            qsettings_key = dbms_specifics_resources.get(dbms).get("{}_key".format(connections_kind))
 
         if qsettings.value(qsettings_key):
-            self.invalid_connections_dict[dbms] = qsettings.value(
+            self.dbms_specifics_infos[dbms]["invalid_connections"] = qsettings.value(
                 qsettings_key
             )
             logger.info(
-                "{} invalid {} connection retrieved from QSettings.".format(
-                    len(self.invalid_connections_dict[dbms]), dbms
+                "{} connections_kind {} connection retrieved from QSettings.".format(
+                    len(self.dbms_specifics_infos.get(dbms).get("invalid_connections")), dbms
                 )
             )
         else:
-            self.invalid_connections_dict[dbms] = []
-            self.set_invalid_connections(dbms, [])
+            self.dbms_specifics_infos[dbms]["invalid_connections"] = []
+            self.set_qsettings_connections(dbms, connections_kind, [])
 
     def config_file_parser(
         self, file_path: Path, connection_service: str, connection_name: str
@@ -472,14 +484,14 @@ class DataBaseManager:
                     else:
                         continue
 
-                    if connection_name in self.invalid_connections_dict[dbms] and skip_invalid:
+                    if connection_name in self.dbms_specifics_infos.get(dbms).get("invalid_connections") and skip_invalid:
                         pass
                     else:
                         conn = establish_conn_func(**connection_dict)
                         if not conn:
                             connection_dict["uri"] = 0
                             connection_dict["tables"] = 0
-                            self.invalid_connections_dict[dbms].append(connection_name)
+                            self.dbms_specifics_infos[dbms]["invalid_connections"].append(connection_name)
                             logger.info(
                                 "'{}' connection saved as invalid".format(
                                     connection_name
@@ -490,7 +502,7 @@ class DataBaseManager:
                             connection_dict["uri"] = conn[0]
                             connection_dict["tables"] = conn[1]
 
-                        if connection_dict.get("connection") in self.li_pref_pgdb_conn:
+                        if connection_dict.get("connection") in self.dbms_specifics_infos.get(dbms).get("prefered_connections"):
                             connection_dict["prefered"] = 1
                         else:
                             connection_dict["prefered"] = 0
@@ -506,10 +518,10 @@ class DataBaseManager:
             else:
                 pass
 
-        self.connections_dict[dbms] = li_connections
-        self.db_names_dict[dbms] = li_db_names
+        self.dbms_specifics_infos[dbms]["connections"] = li_connections
+        self.dbms_specifics_infos[dbms]["db_names"] = li_db_names
 
-        self.set_invalid_connections(dbms, self.invalid_connections_dict[dbms])
+        self.set_qsettings_connections(dbms, "invalid", self.dbms_specifics_infos.get(dbms).get("invalid_connections"))
 
     def switch_widgets_on_and_off(self, mode: bool = 1):
         """1 to switch widgets on and 0 to switch widgets off"""
@@ -524,8 +536,15 @@ class DataBaseManager:
         self.pgdb_config_dialog.btn_reload_conn.setEnabled(mode)
         self.tbl.setEnabled(mode)
 
-    def fill_pgdb_config_tbl(self):
+    def fill_pgdb_config_tbl(self, dbms):
         """Fill the dialog table from informations about PostGIS database embed connection"""
+
+        if not isinstance(dbms, str):
+            raise TypeError("'dbms' argument value should be str, not : {}".format(type(dbms)))
+        elif dbms not in ["PostgreSQL", "Oracle"]:
+            raise ValueError("'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(dbms))
+        else:
+            pass
 
         self.switch_widgets_on_and_off(0)
 
@@ -537,9 +556,9 @@ class DataBaseManager:
 
         # Fill the tab
         row_index = 0
-        for dbname in self.db_names_dict.get("PostgreSQL"):
+        for dbname in self.dbms_specifics_infos.get(dbms).get("db_names"):
             li_pgdb_conn = [
-                conn for conn in self.connections_dict.get("PostgreSQL") if conn.get("database") == dbname
+                conn for conn in self.dbms_specifics_infos.get(dbms).get("connections") if conn.get("database") == dbname
             ]
             # Add a line to the tab only if there is several connections
             if len(li_pgdb_conn) > 1:
@@ -578,16 +597,32 @@ class DataBaseManager:
 
         self.switch_widgets_on_and_off(1)
 
-    def open_pgdb_config_dialog(self):
+    def open_db_config_dialog(self, dbms: str):
         """Build the dialog table from informations about PostGIS database embed connection, then
         display the dialog window to the user"""
 
-        self.fill_pgdb_config_tbl()
+        if not isinstance(dbms, str):
+            raise TypeError("'dbms' argument value should be str, not : {}".format(type(dbms)))
+        elif dbms not in ["PostgreSQL", "Oracle"]:
+            raise ValueError("'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(dbms))
+        else:
+            label = dbms_specifics_resources.get(dbms).get("label")
+            windowIcon = dbms_specifics_resources.get(dbms).get("windowIcon")
+
+        self.pgdb_config_dialog.setWindowIcon(windowIcon)
+        self.pgdb_config_dialog.setWindowTitle(self.tr("{} database configuration".format(label)))
+        self.pgdb_config_dialog.label.setText(self.tr("Choose the embed connection to be used to access to each {} database".format(label)))
+        self.fill_pgdb_config_tbl(dbms)
         self.pgdb_config_dialog.setWindowOpacity(1)
         self.pgdb_config_dialog.show()
 
     def pgdb_config_dialog_slot(self, btn: QAbstractButton):
         """Called when one of the 3 dialog button box is clicked to execute appropriate operations."""
+
+        if "Oracle" in self.pgdb_config_dialog.windowTitle():
+            dbms = "Oracle"
+        else:
+            dbms = "PostgreSQL"
 
         btn_role = self.pgdb_config_dialog.btnbox.buttonRole(btn)
 
@@ -604,17 +639,15 @@ class DataBaseManager:
                 else:
                     pass
             # If options have been selected, store user preferences
-            self.li_pref_pgdb_conn = li_connection_name
-            self.build_connection_dict(dbms="PostgreSQL")
-            qsettings.setValue(
-                "isogeo/settings/pref_pgdb_conn", self.li_pref_pgdb_conn,
-            )
+            self.dbms_specifics_infos[dbms]["prefered_connections"] = li_connection_name
+            self.build_connection_dict(dbms=dbms)
+            self.set_qsettings_connections(dbms, "prefered", li_connection_name)
         # If "Cancel" button was clicked
         elif btn_role == 1:
             pass
         # If "Reset" button was clicked
         elif btn_role == 7:
-            self.fill_pgdb_config_tbl()
+            self.fill_pgdb_config_tbl(dbms)
         else:
             logger.warning(
                 "Unexpected buttonRole : {} (https://doc.qt.io/qt-5/qdialogbuttonbox.html#ButtonRole-enum)".format(
@@ -624,7 +657,13 @@ class DataBaseManager:
 
     def pgdb_conn_reload_slot(self):
         """Called when 'Reload embed connection(s)' is clicked to execute appropriate operations."""
-        self.invalid_connections_dict["PostgreSQL"] = []
-        self.build_connection_dict(dbms="PostgreSQL", skip_invalid=False)
-        self.fill_pgdb_config_tbl()
+
+        if "Oracle" in self.pgdb_config_dialog.windowTitle():
+            dbms = "Oracle"
+        else:
+            dbms = "PostgreSQL"
+
+        self.dbms_specifics_infos[dbms]["invalid_connections"] = []
+        self.build_connection_dict(dbms=dbms, skip_invalid=False)
+        self.fill_pgdb_config_tbl(dbms)
         return

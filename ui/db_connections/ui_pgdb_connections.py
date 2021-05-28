@@ -13,9 +13,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_dlg_pgdb_connections(object):
     def setupUi(self, dlg_pgdb_connections):
         dlg_pgdb_connections.setObjectName("dlg_pgdb_connections")
-        dlg_pgdb_connections.resize(490, 300)
-        dlg_pgdb_connections.setMinimumSize(QtCore.QSize(490, 200))
-        dlg_pgdb_connections.setMaximumSize(QtCore.QSize(500, 300))
+        dlg_pgdb_connections.resize(600, 300)
+        dlg_pgdb_connections.setMinimumSize(QtCore.QSize(600, 200))
+        dlg_pgdb_connections.setMaximumSize(QtCore.QSize(600, 300))
         icon = QtGui.QIcon()
         icon.addPixmap(
             QtGui.QPixmap(":/plugins/Isogeo/resources/settings/gear.svg"),
@@ -43,7 +43,7 @@ class Ui_dlg_pgdb_connections(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
-        self.label.setMaximumSize(QtCore.QSize(490, 20))
+        self.label.setMaximumSize(QtCore.QSize(600, 20))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -122,9 +122,6 @@ class Ui_dlg_pgdb_connections(object):
 
     def retranslateUi(self, dlg_pgdb_connections):
         _translate = QtCore.QCoreApplication.translate
-        dlg_pgdb_connections.setWindowTitle(
-            _translate("dlg_pgdb_connections", "PostGIS database configuration")
-        )
         self.label.setText(
             _translate(
                 "dlg_pgdb_connections",

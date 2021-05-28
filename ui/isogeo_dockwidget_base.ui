@@ -64,7 +64,7 @@
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_search">
        <property name="maximumSize">
@@ -1437,7 +1437,7 @@
                   </size>
                  </property>
                  <property name="toolTip">
-                  <string>Postgis databases</string>
+                  <string>PostGIS databases</string>
                  </property>
                  <property name="text">
                   <string/>

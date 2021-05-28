@@ -868,9 +868,12 @@ class Isogeo:
         # -- Settings tab - layer adding settings ------------------------
         self.form_mng.btn_open_pgdb_config_dialog.setIcon(ico_pgis)
         self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(
-            self.form_mng.results_mng.db_mng.open_pgdb_config_dialog
+            partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "PostgreSQL")
         )
         self.form_mng.btn_open_ora_config_dialog.setIcon(ico_ora)
+        self.form_mng.btn_open_ora_config_dialog.pressed.connect(
+            partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "Oracle")
+        )
         self.form_mng.input_portal_url.setText(
             qsettings.value("isogeo/settings/portal_base_url")
         )
