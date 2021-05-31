@@ -31,7 +31,7 @@ from db_manager.db_plugins.oracle.connector import OracleDBConnector
 from db_manager.db_plugins.oracle.plugin import OracleDBPlugin
 
 # UI classes
-from ...ui.db_connections.dlg_pgdb_connections import Isogeodb_connections
+from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
 
 # ############################################################################
 # ########## Globals ###############

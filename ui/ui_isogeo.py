@@ -1035,7 +1035,7 @@ class Ui_IsogeoDockWidgetBase(object):
         IsogeoDockWidgetBase.setWidget(self.dockWidgetContents)
 
         self.retranslateUi(IsogeoDockWidgetBase)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(IsogeoDockWidgetBase)
 
     def retranslateUi(self, IsogeoDockWidgetBase):
@@ -1175,6 +1175,7 @@ class Ui_IsogeoDockWidgetBase(object):
 
 from qgscheckablecombobox import QgsCheckableComboBox
 from qgscollapsiblegroupbox import QgsCollapsibleGroupBox
+
 
 if __name__ == "__main__":
     import sys

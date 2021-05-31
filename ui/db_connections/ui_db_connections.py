@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui\db_connections\ui_pgdb_connections.ui'
+# Form implementation generated from reading ui file 'ui\db_connections\ui_db_connections.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.0
 #
@@ -11,31 +11,32 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_dlg_pgdb_connections(object):
-    def setupUi(self, dlg_pgdb_connections):
-        dlg_pgdb_connections.setObjectName("dlg_pgdb_connections")
-        dlg_pgdb_connections.resize(600, 300)
-        dlg_pgdb_connections.setMinimumSize(QtCore.QSize(600, 200))
-        dlg_pgdb_connections.setMaximumSize(QtCore.QSize(600, 300))
+    def setupUi(self, dlg_db_connections):
+        dlg_db_connections.setObjectName("dlg_db_connections")
+        dlg_db_connections.resize(600, 299)
+        dlg_db_connections.setMinimumSize(QtCore.QSize(600, 200))
+        dlg_db_connections.setMaximumSize(QtCore.QSize(600, 300))
+        dlg_db_connections.setWindowTitle("")
         icon = QtGui.QIcon()
         icon.addPixmap(
             QtGui.QPixmap(":/plugins/Isogeo/resources/settings/gear.svg"),
             QtGui.QIcon.Normal,
             QtGui.QIcon.Off,
         )
-        dlg_pgdb_connections.setWindowIcon(icon)
-        dlg_pgdb_connections.setWindowOpacity(0.95)
-        dlg_pgdb_connections.setLocale(
+        dlg_db_connections.setWindowIcon(icon)
+        dlg_db_connections.setWindowOpacity(0.95)
+        dlg_db_connections.setLocale(
             QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
         )
-        dlg_pgdb_connections.setSizeGripEnabled(False)
-        self.gridLayout = QtWidgets.QGridLayout(dlg_pgdb_connections)
+        dlg_db_connections.setSizeGripEnabled(False)
+        self.gridLayout = QtWidgets.QGridLayout(dlg_db_connections)
         self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
         self.verticalLayout.setContentsMargins(5, 5, 5, 5)
         self.verticalLayout.setSpacing(12)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.label = QtWidgets.QLabel(dlg_pgdb_connections)
+        self.label = QtWidgets.QLabel(dlg_db_connections)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
         )
@@ -54,7 +55,7 @@ class Ui_dlg_pgdb_connections(object):
         self.verticalLayout.addWidget(self.label)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.tbl = QtWidgets.QTableWidget(dlg_pgdb_connections)
+        self.tbl = QtWidgets.QTableWidget(dlg_db_connections)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
         )
@@ -87,7 +88,7 @@ class Ui_dlg_pgdb_connections(object):
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
         self.horizontalLayout_2.addItem(spacerItem)
-        self.btn_reload_conn = QtWidgets.QPushButton(dlg_pgdb_connections)
+        self.btn_reload_conn = QtWidgets.QPushButton(dlg_db_connections)
         self.btn_reload_conn.setMinimumSize(QtCore.QSize(200, 0))
         self.btn_reload_conn.setMaximumSize(QtCore.QSize(200, 16777215))
         self.btn_reload_conn.setObjectName("btn_reload_conn")
@@ -97,7 +98,7 @@ class Ui_dlg_pgdb_connections(object):
             20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
         )
         self.verticalLayout.addItem(spacerItem1)
-        self.btnbox = QtWidgets.QDialogButtonBox(dlg_pgdb_connections)
+        self.btnbox = QtWidgets.QDialogButtonBox(dlg_db_connections)
         self.btnbox.setMaximumSize(QtCore.QSize(600, 16777215))
         self.btnbox.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btnbox.setAutoFillBackground(False)
@@ -115,22 +116,22 @@ class Ui_dlg_pgdb_connections(object):
         self.verticalLayout.addWidget(self.btnbox)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
 
-        self.retranslateUi(dlg_pgdb_connections)
-        self.btnbox.accepted.connect(dlg_pgdb_connections.accept)
-        self.btnbox.rejected.connect(dlg_pgdb_connections.reject)
-        QtCore.QMetaObject.connectSlotsByName(dlg_pgdb_connections)
+        self.retranslateUi(dlg_db_connections)
+        self.btnbox.accepted.connect(dlg_db_connections.accept)
+        self.btnbox.rejected.connect(dlg_db_connections.reject)
+        QtCore.QMetaObject.connectSlotsByName(dlg_db_connections)
 
-    def retranslateUi(self, dlg_pgdb_connections):
+    def retranslateUi(self, dlg_db_connections):
         _translate = QtCore.QCoreApplication.translate
         self.label.setText(
             _translate(
-                "dlg_pgdb_connections",
+                "dlg_db_connections",
                 "Choose the embed connection to be used to access to each PostGIS database",
             )
         )
         self.tbl.setSortingEnabled(False)
         self.btn_reload_conn.setText(
-            _translate("dlg_pgdb_connections", "Reload embed connection(s)")
+            _translate("dlg_db_connections", "Reload embed connection(s)")
         )
 
 
@@ -138,8 +139,8 @@ if __name__ == "__main__":
     import sys
 
     app = QtWidgets.QApplication(sys.argv)
-    dlg_pgdb_connections = QtWidgets.QDialog()
+    dlg_db_connections = QtWidgets.QDialog()
     ui = Ui_dlg_pgdb_connections()
-    ui.setupUi(dlg_pgdb_connections)
-    dlg_pgdb_connections.show()
+    ui.setupUi(dlg_db_connections)
+    dlg_db_connections.show()
     sys.exit(app.exec_())
