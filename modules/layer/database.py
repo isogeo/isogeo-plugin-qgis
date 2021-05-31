@@ -136,25 +136,26 @@ class DataBaseManager:
         self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="invalid")
         self.fetch_qsettings_connections(dbms="Oracle", connections_kind="invalid")
 
+        logger.debug("*=====* {}".format(self.dbms_specifics_infos))
         # retrieve informations about registered database connections from QSettings
         self.build_connection_dict(dbms="PostgreSQL")
         self.build_connection_dict(dbms="Oracle")
 
         # set UI module
-        self.pgdb_config_dialog = Isogeodb_connections()
+        self.db_config_dialog = Isogeodb_connections()
 
-        for btn in self.pgdb_config_dialog.btnbox.buttons():
-            btn_role = self.pgdb_config_dialog.btnbox.buttonRole(btn)
+        for btn in self.db_config_dialog.btnbox.buttons():
+            btn_role = self.db_config_dialog.btnbox.buttonRole(btn)
             icon = btnBox_ico_dict.get(btn_role)
             btn.setIcon(icon)
 
-        self.pgdb_config_dialog.btn_reload_conn.clicked.connect(
-            self.pgdb_conn_reload_slot
+        self.db_config_dialog.btn_reload_conn.clicked.connect(
+            self.db_conn_reload_slot
         )
 
-        self.pgdb_config_dialog.btnbox.clicked.connect(self.pgdb_config_dialog_slot)
+        self.db_config_dialog.btnbox.clicked.connect(self.db_config_dialog_slot)
 
-        self.tbl = self.pgdb_config_dialog.tbl
+        self.tbl = self.db_config_dialog.tbl
 
     def set_qsettings_connections(self, dbms: str, connections_kind: str, li_connections: list):
         """ Save the list of invalid connections in QSettings
@@ -191,18 +192,19 @@ class DataBaseManager:
             raise ValueError("'connections_kind' argument value should be 'invalid' or 'prefered', not : {}".format(connections_kind))
         else:
             qsettings_key = dbms_specifics_resources.get(dbms).get("{}_key".format(connections_kind))
+            dict_key = "{}_connections".format(connections_kind)
 
         if qsettings.value(qsettings_key):
-            self.dbms_specifics_infos[dbms]["invalid_connections"] = qsettings.value(
+            self.dbms_specifics_infos[dbms][dict_key] = qsettings.value(
                 qsettings_key
             )
             logger.info(
-                "{} connections_kind {} connection retrieved from QSettings.".format(
-                    len(self.dbms_specifics_infos.get(dbms).get("invalid_connections")), dbms
+                "{} {} {} connection retrieved from QSettings.".format(
+                    len(self.dbms_specifics_infos.get(dbms).get(dict_key)), connections_kind, dbms
                 )
             )
         else:
-            self.dbms_specifics_infos[dbms]["invalid_connections"] = []
+            self.dbms_specifics_infos[dbms][dict_key] = []
             self.set_qsettings_connections(dbms, connections_kind, [])
 
     def config_file_parser(
@@ -502,6 +504,9 @@ class DataBaseManager:
                             connection_dict["uri"] = conn[0]
                             connection_dict["tables"] = conn[1]
 
+                        logger.debug("*=====* {}".format(connection_dict.get("connection")))
+                        logger.debug("*=====* {}".format(self.dbms_specifics_infos.get(dbms).get("prefered_connections")))
+
                         if connection_dict.get("connection") in self.dbms_specifics_infos.get(dbms).get("prefered_connections"):
                             connection_dict["prefered"] = 1
                         else:
@@ -527,16 +532,16 @@ class DataBaseManager:
         """1 to switch widgets on and 0 to switch widgets off"""
 
         if mode:
-            self.pgdb_config_dialog.setCursor(arrow_cursor)
+            self.db_config_dialog.setCursor(arrow_cursor)
         else:
-            self.pgdb_config_dialog.setCursor(hourglass_cursor)
+            self.db_config_dialog.setCursor(hourglass_cursor)
 
-        self.pgdb_config_dialog.setEnabled(mode)
-        self.pgdb_config_dialog.btnbox.setEnabled(mode)
-        self.pgdb_config_dialog.btn_reload_conn.setEnabled(mode)
+        self.db_config_dialog.setEnabled(mode)
+        self.db_config_dialog.btnbox.setEnabled(mode)
+        self.db_config_dialog.btn_reload_conn.setEnabled(mode)
         self.tbl.setEnabled(mode)
 
-    def fill_pgdb_config_tbl(self, dbms):
+    def fill_db_config_tbl(self, dbms):
         """Fill the dialog table from informations about PostGIS database embed connection"""
 
         if not isinstance(dbms, str):
@@ -557,11 +562,11 @@ class DataBaseManager:
         # Fill the tab
         row_index = 0
         for dbname in self.dbms_specifics_infos.get(dbms).get("db_names"):
-            li_pgdb_conn = [
+            li_db_conn = [
                 conn for conn in self.dbms_specifics_infos.get(dbms).get("connections") if conn.get("database") == dbname
             ]
             # Add a line to the tab only if there is several connections
-            if len(li_pgdb_conn) > 1:
+            if len(li_db_conn) > 1:
                 self.tbl.insertRow(row_index)
                 # COLUMN 1 - database name
                 dbname_item = QLabel()
@@ -573,10 +578,10 @@ class DataBaseManager:
                 cbb_conn = QComboBox()
                 cbb_conn.addItem(" - ", 0)
                 # fill combobox
-                sorted(li_pgdb_conn, key=lambda i: i["database"])
+                sorted(li_db_conn, key=lambda i: i["database"])
                 current_index = 0
                 index = 1
-                for connection in li_pgdb_conn:
+                for connection in li_db_conn:
                     cbb_conn.addItem(connection.get("connection"), 1)
                     if connection.get("prefered"):
                         current_index = index
@@ -609,22 +614,22 @@ class DataBaseManager:
             label = dbms_specifics_resources.get(dbms).get("label")
             windowIcon = dbms_specifics_resources.get(dbms).get("windowIcon")
 
-        self.pgdb_config_dialog.setWindowIcon(windowIcon)
-        self.pgdb_config_dialog.setWindowTitle(self.tr("{} database configuration".format(label)))
-        self.pgdb_config_dialog.label.setText(self.tr("Choose the embed connection to be used to access to each {} database".format(label)))
-        self.fill_pgdb_config_tbl(dbms)
-        self.pgdb_config_dialog.setWindowOpacity(1)
-        self.pgdb_config_dialog.exec()
+        self.db_config_dialog.setWindowIcon(windowIcon)
+        self.db_config_dialog.setWindowTitle(self.tr("{} database configuration".format(label)))
+        self.db_config_dialog.label.setText(self.tr("Choose the embed connection to be used to access to each {} database".format(label)))
+        self.fill_db_config_tbl(dbms)
+        self.db_config_dialog.setWindowOpacity(1)
+        self.db_config_dialog.exec()
 
-    def pgdb_config_dialog_slot(self, btn: QAbstractButton):
+    def db_config_dialog_slot(self, btn: QAbstractButton):
         """Called when one of the 3 dialog button box is clicked to execute appropriate operations."""
 
-        if "Oracle" in self.pgdb_config_dialog.windowTitle():
+        if "Oracle" in self.db_config_dialog.windowTitle():
             dbms = "Oracle"
         else:
             dbms = "PostgreSQL"
 
-        btn_role = self.pgdb_config_dialog.btnbox.buttonRole(btn)
+        btn_role = self.db_config_dialog.btnbox.buttonRole(btn)
 
         # If "Save" button was clicked
         if btn_role == 0:
@@ -647,7 +652,7 @@ class DataBaseManager:
             pass
         # If "Reset" button was clicked
         elif btn_role == 7:
-            self.fill_pgdb_config_tbl(dbms)
+            self.fill_db_config_tbl(dbms)
         else:
             logger.warning(
                 "Unexpected buttonRole : {} (https://doc.qt.io/qt-5/qdialogbuttonbox.html#ButtonRole-enum)".format(
@@ -655,15 +660,15 @@ class DataBaseManager:
                 )
             )
 
-    def pgdb_conn_reload_slot(self):
+    def db_conn_reload_slot(self):
         """Called when 'Reload embed connection(s)' is clicked to execute appropriate operations."""
 
-        if "Oracle" in self.pgdb_config_dialog.windowTitle():
+        if "Oracle" in self.db_config_dialog.windowTitle():
             dbms = "Oracle"
         else:
             dbms = "PostgreSQL"
 
         self.dbms_specifics_infos[dbms]["invalid_connections"] = []
         self.build_connection_dict(dbms=dbms, skip_invalid=False)
-        self.fill_pgdb_config_tbl(dbms)
+        self.fill_db_config_tbl(dbms)
         return
