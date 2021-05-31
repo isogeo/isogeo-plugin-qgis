@@ -614,7 +614,7 @@ class DataBaseManager:
         self.pgdb_config_dialog.label.setText(self.tr("Choose the embed connection to be used to access to each {} database".format(label)))
         self.fill_pgdb_config_tbl(dbms)
         self.pgdb_config_dialog.setWindowOpacity(1)
-        self.pgdb_config_dialog.show()
+        self.pgdb_config_dialog.exec()
 
     def pgdb_config_dialog_slot(self, btn: QAbstractButton):
         """Called when one of the 3 dialog button box is clicked to execute appropriate operations."""
