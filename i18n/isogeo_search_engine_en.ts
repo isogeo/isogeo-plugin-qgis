@@ -30,12 +30,17 @@
     </message>
     <message>
         <location filename="../modules/layer/database.py" line="731"/>
-        <source>{} database configuration</source>
+        <source> - Configuration of database connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="734"/>
-        <source>Choose the embed connection to be used to access to each {} database</source>
+        <location filename="../modules/layer/database.py" line="733"/>
+        <source>Choose the embed connection to be used to access to each </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/layer/database.py" line="733"/>
+        <source> database</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -349,7 +354,7 @@
     </message>
     <message>
         <location filename="../modules/tools.py" line="397"/>
-        <source>Proxy issue: 
+        <source>Proxy issue:
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation type="unfinished"></translation>
