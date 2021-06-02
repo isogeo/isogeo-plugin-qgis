@@ -14,8 +14,8 @@ class Ui_dlg_pgdb_connections(object):
     def setupUi(self, dlg_db_connections):
         dlg_db_connections.setObjectName("dlg_db_connections")
         dlg_db_connections.resize(600, 299)
-        dlg_db_connections.setMinimumSize(QtCore.QSize(600, 200))
-        dlg_db_connections.setMaximumSize(QtCore.QSize(600, 300))
+        dlg_db_connections.setMinimumSize(QtCore.QSize(650, 200))
+        dlg_db_connections.setMaximumSize(QtCore.QSize(700, 300))
         dlg_db_connections.setWindowTitle("")
         icon = QtGui.QIcon()
         icon.addPixmap(
