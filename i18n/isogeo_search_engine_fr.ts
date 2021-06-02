@@ -42,7 +42,7 @@
     <message>
         <location filename="../modules/layer/database.py" line="733"/>
         <source> database</source>
-        <translation></translation>
+        <translation> </translation>
     </message>
 </context>
 <context>
