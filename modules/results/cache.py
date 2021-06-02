@@ -62,7 +62,7 @@ class CacheManager:
                 "WMTS": list(set(self.cached_unreach_service.get("WMTS"))),
                 "EFS": list(set(self.cached_unreach_service.get("EFS"))),
                 "EMS": list(set(self.cached_unreach_service.get("EMS"))),
-            }
+            },
         }
         with open(self.cache_file, "w") as cache:
             json.dump([self.cached_dict], cache, indent=4)
@@ -84,12 +84,19 @@ class CacheManager:
                 logger.debug("Empty cache file.")
             elif isinstance(cache_loaded[0], dict):
                 self.cached_unreach_paths = cache_loaded[0].get("files")
-                logger.debug("Cached unreachable file path has been successfuly loaded.")
+                logger.debug(
+                    "Cached unreachable file path has been successfuly loaded."
+                )
                 self.cached_unreach_postgis = cache_loaded[0].get("PostGIS")
                 self.cached_unreach_service = cache_loaded[0].get("services")
-                for srv_type, li_unreachable_srv in cache_loaded[0].get("services").items():
+                for srv_type, li_unreachable_srv in (
+                    cache_loaded[0].get("services").items()
+                ):
                     if len(li_unreachable_srv):
-                        cached_srv_content = [tuple(unreachable_srv) for unreachable_srv in li_unreachable_srv]
+                        cached_srv_content = [
+                            tuple(unreachable_srv)
+                            for unreachable_srv in li_unreachable_srv
+                        ]
                         self.cached_unreach_service[srv_type] = cached_srv_content
                     else:
                         self.cached_unreach_service[srv_type] = []

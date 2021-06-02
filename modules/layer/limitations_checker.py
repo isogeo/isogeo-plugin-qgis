@@ -68,10 +68,14 @@ class LimitationsChecker(QObject):
                     popup = QMessageBox()
                     popup.setWindowTitle("Limitations")
 
-                    popup_txt = "<b>" + self.tr(
-                        "This data is subject to a security limitation :",
-                        __class__.__name__,
-                    ) + "</b>"
+                    popup_txt = (
+                        "<b>"
+                        + self.tr(
+                            "This data is subject to a security limitation :",
+                            __class__.__name__,
+                        )
+                        + "</b>"
+                    )
                     if lim.description != "":
                         popup_txt += "<br>{}".format(lim.description)
                     else:
@@ -83,10 +87,12 @@ class LimitationsChecker(QObject):
                     popup.setText(popup_txt)
 
                     popup.setInformativeText(
-                        "<b>" + self.tr(
+                        "<b>"
+                        + self.tr(
                             "Do you want to add the layer to the canvas anyway ?",
                             context=__class__.__name__,
-                        ) + "</b>"
+                        )
+                        + "</b>"
                     )
                     popup.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
                     popup.setDefaultButton(QMessageBox.No)

@@ -153,20 +153,17 @@ class MetadataDisplayer:
             item = ctact.get("contact")
 
             if ctact.get("role", "NR") == "pointOfContact":
-                content = (
-                    "<b>{0}</b> ({1})<br><a href='mailto:{2}' target='_top'>{2}</a><br>{3}"
-                    "<br>{4} {5}<br>{6} {7}<br>{7}<br>{8}".format(
-                        # isogeo_tr.tr("roles", ctact.get("role")),
-                        item.get("name", "NR"),
-                        item.get("organization", "NR"),
-                        item.get("email", "NR"),
-                        item.get("phone", "NR"),
-                        item.get("addressLine1", ""),
-                        item.get("addressLine2", ""),
-                        item.get("zipCode", ""),
-                        item.get("city", ""),
-                        item.get("country", ""),
-                    )
+                content = "<b>{0}</b> ({1})<br><a href='mailto:{2}' target='_top'>{2}</a><br>{3}" "<br>{4} {5}<br>{6} {7}<br>{7}<br>{8}".format(
+                    # isogeo_tr.tr("roles", ctact.get("role")),
+                    item.get("name", "NR"),
+                    item.get("organization", "NR"),
+                    item.get("email", "NR"),
+                    item.get("phone", "NR"),
+                    item.get("addressLine1", ""),
+                    item.get("addressLine2", ""),
+                    item.get("zipCode", ""),
+                    item.get("city", ""),
+                    item.get("country", ""),
                 )
                 contacts_pt_cct.append(content)
 
@@ -354,9 +351,11 @@ class MetadataDisplayer:
                 pass
             # INSPIRE precision
             if "directive" in l_in:
-                lim_text += "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
-                    l_in.get("directive").get("name"),
-                    l_in.get("directive").get("description"),
+                lim_text += (
+                    "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
+                        l_in.get("directive").get("name"),
+                        l_in.get("directive").get("description"),
+                    )
                 )
             else:
                 pass

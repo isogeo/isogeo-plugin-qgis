@@ -210,7 +210,9 @@ class ResultsManager(QObject):
                             continue
                 else:
                     tbl_result.setItem(
-                        count, 2, QTableWidgetItem("?"),
+                        count,
+                        2,
+                        QTableWidgetItem("?"),
                     )
             else:
                 if "rasterDataset" in md.type:
@@ -276,19 +278,26 @@ class ResultsManager(QObject):
                     if (
                         md.path
                         and md.name
-                        and md.path in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
+                        and md.path
+                        in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
+                            "db_names"
+                        )
                         and "." in md.name
                     ):
                         available_connections = [
                             pg_conn
-                            for pg_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("connections")
+                            for pg_conn in self.db_mng.dbms_specifics_infos.get(
+                                "PostgreSQL"
+                            ).get("connections")
                             if md.path == pg_conn.get("database")
                             and pg_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
                                 pg_conn
-                                for pg_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("connections")
+                                for pg_conn in self.db_mng.dbms_specifics_infos.get(
+                                    "PostgreSQL"
+                                ).get("connections")
                                 if md.path == pg_conn.get("database")
                             ]
                         else:
@@ -312,7 +321,7 @@ class ResultsManager(QObject):
                                         "title": md.title,
                                         "keywords": md.keywords,
                                         "md_portal_url": portal_md_url,
-                                        "dbms": "PostgreSQL"
+                                        "dbms": "PostgreSQL",
                                     }
                                     options_key = "PostGIS - {}".format(
                                         connection.get("connection")
@@ -331,19 +340,26 @@ class ResultsManager(QObject):
                     if (
                         md.path
                         and md.name
-                        and md.path in self.db_mng.dbms_specifics_infos.get("Oracle").get("db_names")
+                        and md.path
+                        in self.db_mng.dbms_specifics_infos.get("Oracle").get(
+                            "db_names"
+                        )
                         and "." in md.name
                     ):
                         available_connections = [
                             ora_conn
-                            for ora_conn in self.db_mng.dbms_specifics_infos.get("Oracle").get("connections")
+                            for ora_conn in self.db_mng.dbms_specifics_infos.get(
+                                "Oracle"
+                            ).get("connections")
                             if md.path == ora_conn.get("database")
                             and ora_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
                                 ora_conn
-                                for ora_conn in self.db_mng.dbms_specifics_infos.get("Oracle").get("connections")
+                                for ora_conn in self.db_mng.dbms_specifics_infos.get(
+                                    "Oracle"
+                                ).get("connections")
                                 if md.path == ora_conn.get("database")
                             ]
                         else:
@@ -367,7 +383,7 @@ class ResultsManager(QObject):
                                         "title": md.title,
                                         "keywords": md.keywords,
                                         "md_portal_url": portal_md_url,
-                                        "dbms": "Oracle"
+                                        "dbms": "Oracle",
                                     }
                                     options_key = "Oracle - {}".format(
                                         connection.get("connection")
