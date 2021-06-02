@@ -660,7 +660,7 @@ class DataBaseManager:
 
         # Clean and initiate the tab
         self.tbl.clear()
-        li_header_labels = [self.tr("Database"), self.tr("Connection")]
+        li_header_labels = [self.tr("Database", context=__class__.__name__,), self.tr("Connection", context=__class__.__name__,)]
         self.tbl.setHorizontalHeaderLabels(li_header_labels)
         self.tbl.setRowCount(0)
 
@@ -728,16 +728,10 @@ class DataBaseManager:
             windowIcon = dbms_specifics_resources.get(dbms).get("windowIcon")
 
         self.db_config_dialog.setWindowIcon(windowIcon)
-        self.db_config_dialog.setWindowTitle(
-            self.tr("{} database configuration".format(label))
-        )
-        self.db_config_dialog.label.setText(
-            self.tr(
-                "Choose the embed connection to be used to access to each {} database".format(
-                    label
-                )
-            )
-        )
+        windowTitle = label + self.tr(" - Configuration of database connections", context=__class__.__name__)
+        self.db_config_dialog.setWindowTitle(windowTitle)
+        dialog_label = self.tr("Choose the embed connection to be used to access to each ", context=__class__.__name__) + label + self.tr(" database", context=__class__.__name__)
+        self.db_config_dialog.label.setText(dialog_label)
         self.fill_db_config_tbl(dbms)
         self.db_config_dialog.setWindowOpacity(1)
         self.db_config_dialog.exec()
