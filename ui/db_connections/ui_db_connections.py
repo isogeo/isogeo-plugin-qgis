@@ -13,7 +13,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_dlg_pgdb_connections(object):
     def setupUi(self, dlg_db_connections):
         dlg_db_connections.setObjectName("dlg_db_connections")
-        dlg_db_connections.resize(600, 299)
+        dlg_db_connections.setEnabled(1)
+        dlg_db_connections.resize(650, 299)
         dlg_db_connections.setMinimumSize(QtCore.QSize(650, 200))
         dlg_db_connections.setMaximumSize(QtCore.QSize(700, 300))
         dlg_db_connections.setWindowTitle("")
@@ -24,11 +25,13 @@ class Ui_dlg_pgdb_connections(object):
             QtGui.QIcon.Off,
         )
         dlg_db_connections.setWindowIcon(icon)
-        dlg_db_connections.setWindowOpacity(0.95)
+        dlg_db_connections.setWindowOpacity(1)
+        dlg_db_connections.setAutoFillBackground(1)
         dlg_db_connections.setLocale(
             QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
         )
         dlg_db_connections.setSizeGripEnabled(False)
+        dlg_db_connections.setModal(True)
         self.gridLayout = QtWidgets.QGridLayout(dlg_db_connections)
         self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout = QtWidgets.QVBoxLayout()

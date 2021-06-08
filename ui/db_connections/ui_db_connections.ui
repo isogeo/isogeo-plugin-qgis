@@ -2,11 +2,14 @@
 <ui version="4.0">
  <class>dlg_db_connections</class>
  <widget class="QDialog" name="dlg_db_connections">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>650</width>
     <height>299</height>
    </rect>
   </property>
@@ -30,13 +33,19 @@
     <normaloff>:/plugins/Isogeo/resources/settings/gear.svg</normaloff>:/plugins/Isogeo/resources/settings/gear.svg</iconset>
   </property>
   <property name="windowOpacity">
-   <double>0.950000000000000</double>
+   <double>1.000000000000000</double>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
