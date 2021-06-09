@@ -75,7 +75,7 @@ ora_geom_column_request = "select col.owner, col.table_name, column_name, data_t
 )
 
 arrow_cursor = QCursor(Qt.CursorShape(0))
-hourglass_cursor = QCursor(Qt.CursorShape(3))
+hourglass_cursor = QCursor(Qt.CursorShape(16))
 
 # ############################################################################
 # ########## Classes ###############
@@ -627,19 +627,6 @@ class DataBaseManager:
             self.dbms_specifics_infos.get(dbms).get("invalid_connections"),
         )
 
-    def switch_widgets_on_and_off(self, mode: bool = 1):
-        """1 to switch widgets on and 0 to switch widgets off"""
-
-        if mode:
-            self.db_config_dialog.setCursor(arrow_cursor)
-        else:
-            self.db_config_dialog.setCursor(hourglass_cursor)
-
-        self.db_config_dialog.setEnabled(mode)
-        self.db_config_dialog.btnbox.setEnabled(mode)
-        self.db_config_dialog.btn_reload_conn.setEnabled(mode)
-        self.tbl.setEnabled(mode)
-
     def fill_db_config_tbl(self, dbms):
         """Fill the dialog table from informations about PostGIS database embed connection"""
 
@@ -655,8 +642,6 @@ class DataBaseManager:
             )
         else:
             pass
-
-        self.switch_widgets_on_and_off(0)
 
         # Clean and initiate the tab
         self.tbl.clear()
@@ -707,8 +692,6 @@ class DataBaseManager:
         hheader.setSectionResizeMode(1)
         vheader.setMinimumSectionSize(10)
 
-        self.switch_widgets_on_and_off(1)
-
     def open_db_config_dialog(self, dbms: str):
         """Build the dialog table from informations about PostGIS database embed connection, then
         display the dialog window to the user"""
@@ -733,11 +716,12 @@ class DataBaseManager:
         dialog_label = self.tr("Choose the embed connection to be used to access to each ", context=__class__.__name__) + label + self.tr(" database", context=__class__.__name__)
         self.db_config_dialog.label.setText(dialog_label)
         self.fill_db_config_tbl(dbms)
-        self.db_config_dialog.setWindowOpacity(1)
-        self.db_config_dialog.exec()
+        self.db_config_dialog.open()
 
     def db_config_dialog_slot(self, btn: QAbstractButton):
         """Called when one of the 3 dialog button box is clicked to execute appropriate operations."""
+
+        self.db_config_dialog.setCursor(hourglass_cursor)
 
         if "Oracle" in self.db_config_dialog.windowTitle():
             dbms = "Oracle"
@@ -774,9 +758,12 @@ class DataBaseManager:
                     btn_role
                 )
             )
+        self.db_config_dialog.setCursor(arrow_cursor)
 
     def db_conn_reload_slot(self):
         """Called when 'Reload embed connection(s)' is clicked to execute appropriate operations."""
+
+        self.db_config_dialog.setCursor(hourglass_cursor)
 
         if "Oracle" in self.db_config_dialog.windowTitle():
             dbms = "Oracle"
@@ -786,4 +773,7 @@ class DataBaseManager:
         self.dbms_specifics_infos[dbms]["invalid_connections"] = []
         self.build_connection_dict(dbms=dbms, skip_invalid=False)
         self.fill_db_config_tbl(dbms)
+
+        self.db_config_dialog.setCursor(arrow_cursor)
+
         return
