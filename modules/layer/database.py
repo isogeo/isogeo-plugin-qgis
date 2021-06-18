@@ -482,11 +482,8 @@ class DataBaseManager:
         )
 
         try:
-            if qgis_version >= 316:
-                ora_db_plg = connection
-                c = OracleDBConnector(uri, ora_db_plg)
-            else:
-                c = OracleDBConnector(uri)
+            ora_db_plg = connection
+            c = OracleDBConnector(uri, ora_db_plg)
         except Exception as e:
             logger.warning(
                 "Faile to establish connection to {} Oracle database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
