@@ -384,19 +384,17 @@ class Authenticator(QObject):
 
         # mave new credentials file to the _auth subfolder
         try:
-            selected_file.rename(dest_path)  # using pathlib.Path (= os.rename)
+            shutil.copyfile(
+                str(selected_file), str(dest_path)
+            )  # using pathlib.Path (= os.rename)
             logger.debug(
                 "Selected credentials file has been moved into plugin _auth subfolder"
             )
-        except OSError as exc:
+        except OSError as e:
             logger.error(
                 "Move new file raised: {}. Maybe because of moving from a "
-                "different disk drive. Trying with lower-level lib... "
-                "See: https://github.com/isogeo/isogeo-plugin-qgis/issues/291 ".format(
-                    exc
-                )
+                "different disk drive.".format(e)
             )
-            shutil.move(selected_file, dest_path)
         except Exception as exc:
             logger.error("Failed to move authentication file: {}".format(exc))
             self.auth_sig.emit("path")
