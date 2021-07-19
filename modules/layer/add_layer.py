@@ -287,7 +287,7 @@ class LayerAdder:
             added_layer = self.add_service_layer(layer_url, layer_title, service_type)
         return added_layer
 
-    def add_from_database(self, layer_info: dict):
+    def add_from_pg_database(self, layer_info: dict):
         """Add a layer to QGIS map canvas from a database table.
 
         :param dict layer_info: dictionnary containing informations needed to add the layer from the database table
@@ -533,7 +533,7 @@ class LayerAdder:
         # If the data is a PostGIS table
         elif isinstance(layer_info, dict):
             if layer_info.get("dbms") == "PostgreSQL":
-                added_layer = self.add_from_database(layer_info=layer_info)
+                added_layer = self.add_from_pg_database(layer_info=layer_info)
             else:
                 added_layer = self.add_from_ora_database(layer_info=layer_info)
 
