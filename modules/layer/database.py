@@ -28,7 +28,6 @@ from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin
 
 from db_manager.db_plugins.oracle.connector import OracleDBConnector
-from db_manager.db_plugins.oracle.plugin import OracleDBPlugin
 
 # UI classes
 from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
@@ -410,6 +409,7 @@ class DataBaseManager:
                 aUsername=username,
                 aPassword=password,
             )
+            uri.setParam("username", "")
 
         return uri
 
@@ -520,98 +520,95 @@ class DataBaseManager:
         li_connections = []
         li_db_names = []
         for k in sorted(qsettings.allKeys()):
-            if k.startswith(dbms_prefix) and k.endswith("/database"):
-                if len(k.split("/")) == 4:
-                    connection_name = k.split("/")[2]
+            if k.startswith(dbms_prefix) and k.endswith("/database") and len(k.split("/")) == 4:
+                connection_name = k.split("/")[2]
 
-                    password_saved = qsettings.value(
-                        dbms_prefix + connection_name + "/savePassword"
-                    )
-                    user_saved = qsettings.value(
-                        dbms_prefix + connection_name + "/saveUsername"
-                    )
-                    connection_service = qsettings.value(
-                        dbms_prefix + connection_name + "/service"
-                    )
+                password_saved = qsettings.value(
+                    dbms_prefix + connection_name + "/savePassword"
+                )
+                user_saved = qsettings.value(
+                    dbms_prefix + connection_name + "/saveUsername"
+                )
+                connection_service = qsettings.value(
+                    dbms_prefix + connection_name + "/service"
+                )
 
-                    # For "traditionnaly" registered connections
-                    if password_saved == "true" and user_saved == "true":
-                        connection_dict = self.qsettings_content_parser(
-                            dbms=dbms, connection_name=connection_name
-                        )
-                        if connection_dict[0]:
-                            connection_dict = connection_dict[1]
-                        else:
-                            logger.warning(connection_dict[1])
-
-                    # For connections configured using config file and service
-                    # elif connection_service != "" and self.pg_configfile_path:
-                    elif connection_service != "":
-                        connection_dict = self.config_file_parser(
-                            self.pg_configfile_path, connection_service, connection_name
-                        )
-                        if connection_dict[0]:
-                            connection_dict = connection_dict[1]
-                        else:
-                            logger.warning(connection_dict[1])
-                            continue
+                # For "traditionnaly" registered connections
+                if password_saved == "true" and user_saved == "true":
+                    connection_dict = self.qsettings_content_parser(
+                        dbms=dbms, connection_name=connection_name
+                    )
+                    if connection_dict[0]:
+                        connection_dict = connection_dict[1]
                     else:
+                        logger.warning(connection_dict[1])
+
+                # For connections configured using config file and service
+                # elif connection_service != "" and self.pg_configfile_path:
+                elif connection_service != "":
+                    connection_dict = self.config_file_parser(
+                        self.pg_configfile_path, connection_service, connection_name
+                    )
+                    if connection_dict[0]:
+                        connection_dict = connection_dict[1]
+                    else:
+                        logger.warning(connection_dict[1])
                         continue
-
-                    if (
-                        connection_name
-                        in self.dbms_specifics_infos.get(dbms).get(
-                            "invalid_connections"
-                        )
-                        and skip_invalid
-                    ):
-                        pass
-                    else:
-                        conn = establish_conn_func(**connection_dict)
-                        if not conn:
-                            connection_dict["uri"] = 0
-                            connection_dict["tables"] = 0
-                            self.dbms_specifics_infos[dbms][
-                                "invalid_connections"
-                            ].append(connection_name)
-                            logger.info(
-                                "'{}' connection saved as invalid".format(
-                                    connection_name
-                                )
-                            )
-                            continue
-                        else:
-                            connection_dict["uri"] = conn[0]
-                            connection_dict["tables"] = conn[1]
-
-                        logger.debug(
-                            "*=====* {}".format(connection_dict.get("connection"))
-                        )
-                        logger.debug(
-                            "*=====* {}".format(
-                                self.dbms_specifics_infos.get(dbms).get(
-                                    "prefered_connections"
-                                )
-                            )
-                        )
-
-                        if connection_dict.get(
-                            "connection"
-                        ) in self.dbms_specifics_infos.get(dbms).get(
-                            "prefered_connections"
-                        ):
-                            connection_dict["prefered"] = 1
-                        else:
-                            connection_dict["prefered"] = 0
-
-                        li_connections.append(connection_dict)
-
-                        if connection_dict.get("database") not in li_db_names:
-                            li_db_names.append(connection_dict.get("database"))
-                        else:
-                            pass
                 else:
+                    continue
+
+                if (
+                    connection_name
+                    in self.dbms_specifics_infos.get(dbms).get(
+                        "invalid_connections"
+                    )
+                    and skip_invalid
+                ):
                     pass
+                else:
+                    conn = establish_conn_func(**connection_dict)
+                    if not conn:
+                        connection_dict["uri"] = 0
+                        connection_dict["tables"] = 0
+                        self.dbms_specifics_infos[dbms][
+                            "invalid_connections"
+                        ].append(connection_name)
+                        logger.info(
+                            "'{}' connection saved as invalid".format(
+                                connection_name
+                            )
+                        )
+                        continue
+                    else:
+                        connection_dict["uri"] = conn[0]
+                        connection_dict["tables"] = conn[1]
+
+                    logger.debug(
+                        "*=====* {}".format(connection_dict.get("connection"))
+                    )
+                    logger.debug(
+                        "*=====* {}".format(
+                            self.dbms_specifics_infos.get(dbms).get(
+                                "prefered_connections"
+                            )
+                        )
+                    )
+
+                    if connection_dict.get(
+                        "connection"
+                    ) in self.dbms_specifics_infos.get(dbms).get(
+                        "prefered_connections"
+                    ):
+                        connection_dict["prefered"] = 1
+                    else:
+                        connection_dict["prefered"] = 0
+
+                    li_connections.append(connection_dict)
+
+                    if connection_dict.get("database") not in li_db_names:
+                        li_db_names.append(connection_dict.get("database"))
+                    else:
+                        pass
             else:
                 pass
 
