@@ -137,7 +137,6 @@ class DataBaseManager:
         self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="invalid")
         self.fetch_qsettings_connections(dbms="Oracle", connections_kind="invalid")
 
-        logger.debug("*=====* {}".format(self.dbms_specifics_infos))
         # retrieve informations about registered database connections from QSettings
         self.build_connection_dict(dbms="PostgreSQL")
         self.build_connection_dict(dbms="Oracle")
@@ -258,10 +257,8 @@ class DataBaseManager:
         # Then check if a section exists into configuration file content corresponding to connection_service value
         available_connection_services = config.sections()
         if connection_service not in available_connection_services:
-            error_msg = (
-                "'{}' entry is missing into '{}' configuration file content.".format(
-                    connection_service, file_path
-                )
+            error_msg = "'{}' entry is missing into '{}' configuration file content.".format(
+                connection_service, file_path
             )
             self.pg_configfile_path = 0
             return 0, error_msg
@@ -393,7 +390,6 @@ class DataBaseManager:
 
         uri = QgsDataSourceUri()
         if service == "":
-            logger.debug("*=====* tradi connection")
             uri.setConnection(
                 aHost=host,
                 aPort=port,
@@ -402,7 +398,6 @@ class DataBaseManager:
                 aPassword=password,
             )
         else:
-            logger.debug("*=====* service connection")
             uri.setConnection(
                 aService=service,
                 aDatabase=database,
@@ -520,7 +515,11 @@ class DataBaseManager:
         li_connections = []
         li_db_names = []
         for k in sorted(qsettings.allKeys()):
-            if k.startswith(dbms_prefix) and k.endswith("/database") and len(k.split("/")) == 4:
+            if (
+                k.startswith(dbms_prefix)
+                and k.endswith("/database")
+                and len(k.split("/")) == 4
+            ):
                 connection_name = k.split("/")[2]
 
                 password_saved = qsettings.value(
@@ -559,9 +558,7 @@ class DataBaseManager:
 
                 if (
                     connection_name
-                    in self.dbms_specifics_infos.get(dbms).get(
-                        "invalid_connections"
-                    )
+                    in self.dbms_specifics_infos.get(dbms).get("invalid_connections")
                     and skip_invalid
                 ):
                     pass
@@ -570,29 +567,16 @@ class DataBaseManager:
                     if not conn:
                         connection_dict["uri"] = 0
                         connection_dict["tables"] = 0
-                        self.dbms_specifics_infos[dbms][
-                            "invalid_connections"
-                        ].append(connection_name)
+                        self.dbms_specifics_infos[dbms]["invalid_connections"].append(
+                            connection_name
+                        )
                         logger.info(
-                            "'{}' connection saved as invalid".format(
-                                connection_name
-                            )
+                            "'{}' connection saved as invalid".format(connection_name)
                         )
                         continue
                     else:
                         connection_dict["uri"] = conn[0]
                         connection_dict["tables"] = conn[1]
-
-                    logger.debug(
-                        "*=====* {}".format(connection_dict.get("connection"))
-                    )
-                    logger.debug(
-                        "*=====* {}".format(
-                            self.dbms_specifics_infos.get(dbms).get(
-                                "prefered_connections"
-                            )
-                        )
-                    )
 
                     if connection_dict.get(
                         "connection"
@@ -639,7 +623,10 @@ class DataBaseManager:
 
         # Clean and initiate the tab
         self.tbl.clear()
-        li_header_labels = [self.tr("Database", context=__class__.__name__,), self.tr("Connection", context=__class__.__name__,)]
+        li_header_labels = [
+            self.tr("Database", context=__class__.__name__,),
+            self.tr("Connection", context=__class__.__name__,),
+        ]
         self.tbl.setHorizontalHeaderLabels(li_header_labels)
         self.tbl.setRowCount(0)
 
@@ -705,9 +692,18 @@ class DataBaseManager:
             windowIcon = dbms_specifics_resources.get(dbms).get("windowIcon")
 
         self.db_config_dialog.setWindowIcon(windowIcon)
-        windowTitle = label + self.tr(" - Configuration of database connections", context=__class__.__name__)
+        windowTitle = label + self.tr(
+            " - Configuration of database connections", context=__class__.__name__
+        )
         self.db_config_dialog.setWindowTitle(windowTitle)
-        dialog_label = self.tr("Choose the embed connection to be used to access to each ", context=__class__.__name__) + label + self.tr(" database", context=__class__.__name__)
+        dialog_label = (
+            self.tr(
+                "Choose the embed connection to be used to access to each ",
+                context=__class__.__name__,
+            )
+            + label
+            + self.tr(" database", context=__class__.__name__)
+        )
         self.db_config_dialog.label.setText(dialog_label)
         self.fill_db_config_tbl(dbms)
         self.db_config_dialog.open()
