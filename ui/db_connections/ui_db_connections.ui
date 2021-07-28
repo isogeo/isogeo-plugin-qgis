@@ -2,41 +2,50 @@
 <ui version="4.0">
  <class>dlg_db_connections</class>
  <widget class="QDialog" name="dlg_db_connections">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>490</width>
-    <height>300</height>
+    <width>650</width>
+    <height>299</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>490</width>
+    <width>650</width>
     <height>200</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>500</width>
+    <width>700</width>
     <height>300</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string>PostGIS database configuration</string>
+   <string/>
   </property>
   <property name="windowIcon">
    <iconset>
     <normaloff>:/plugins/Isogeo/resources/settings/gear.svg</normaloff>:/plugins/Isogeo/resources/settings/gear.svg</iconset>
   </property>
   <property name="windowOpacity">
-   <double>0.950000000000000</double>
+   <double>1.000000000000000</double>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -62,14 +71,14 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="maximumSize">
         <size>
-         <width>490</width>
+         <width>600</width>
          <height>20</height>
         </size>
        </property>
@@ -79,8 +88,14 @@
          <bold>true</bold>
         </font>
        </property>
+       <property name="acceptDrops">
+        <bool>true</bool>
+       </property>
        <property name="text">
         <string>Choose the embed connection to be used to access to each PostGIS database</string>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

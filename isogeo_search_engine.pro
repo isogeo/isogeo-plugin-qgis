@@ -24,9 +24,10 @@ SOURCES = __init__.py \
 	ui/isogeo_dockwidget.py \
 	ui/auth/ui_authentication.py \
     ui/credits/ui_credits.py \
+    ui/db_connections/ui_db_connections.ui \
     ui/metadata/ui_md_details.py \
 	ui/quicksearch/ui_quicksearch_new.py \
-	ui/quicksearch/ui_quicksearch_rename.py
+	ui/quicksearch/ui_quicksearch_rename.py\
 
 TRANSLATIONS = i18n/isogeo_search_engine_fr.ts \
 	i18n/isogeo_search_engine_en.ts

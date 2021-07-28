@@ -112,6 +112,7 @@ logger.addHandler(logfile)
 # icons
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
 ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
+ico_ora = QIcon(":/images/themes/default/mIconOracle.svg")
 
 
 # ############################################################################
@@ -140,7 +141,8 @@ class Isogeo:
                 screenNbr + 1, screens_count, sizeObject.height(), sizeObject.width()
             )
         )
-    del screens_count, sizeObject
+    del screens_count
+    del sizeObject
 
     def __init__(self, iface):
         """Constructor.
@@ -340,10 +342,8 @@ class Isogeo:
         # disconnects
         self.form_mng.closingPlugin.disconnect(self.onClosePlugin)
 
-        # remove this statement if dockwidget is to remain
-        # for reuse if plugin is reopened
-        # Commented next statement since it causes QGIS crashe
-        # when closing the docked window:
+        # remove this statement if dockwidget is to remain for reuse if plugin is reopened
+        # Commented next statement since it causes QGIS crashe when closing the docked window:
         self.form_mng = None
         self.pluginIsActive = False
         # stop log file stream
@@ -868,7 +868,11 @@ class Isogeo:
         # -- Settings tab - layer adding settings ------------------------
         self.form_mng.btn_open_pgdb_config_dialog.setIcon(ico_pgis)
         self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(
-            self.form_mng.results_mng.db_mng.open_pgdb_config_dialog
+            partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "PostgreSQL")
+        )
+        self.form_mng.btn_open_ora_config_dialog.setIcon(ico_ora)
+        self.form_mng.btn_open_ora_config_dialog.pressed.connect(
+            partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "Oracle")
         )
         self.form_mng.input_portal_url.setText(
             qsettings.value("isogeo/settings/portal_base_url")

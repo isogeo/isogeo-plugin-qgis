@@ -4,6 +4,7 @@
     // PyQt Integration
     "pyqt-integration.qtdesigner.path": "C:/OSGeo4W64/bin/qgis-ltr-designer.bat",
     "pyqt-integration.pyuic.cmd": "C:\\OSGEO4~1\\apps\\Python37\\Scripts\\pyuic5.bat",
+    "pyqt-integration.pylupdate.cmd": "C:\\OSGEO4~1\\apps\\Python37\\Scripts\\pylupdate5.bat",
     "pyqt-integration.pyrcc.cmd": "C:\\OSGEO4~1\\apps\\Python37\\Scripts\\pyrcc5.bat",
     "pyqt-integration.pyrcc.compile.filepath": "${workspace}/${qrc_name}.py",
 
@@ -21,7 +22,7 @@
     // Set Python interpreter
     //"python.pythonPath": "${workspaceFolder}/.venv_tests/Scripts/python.exe",
     //"python.pythonPath": "C:/OSGeo4W64/bin/python-qgis-ltr.bat",
-    "python.pythonPath": "C:\\Program Files\\QGIS 3.16\\apps\\Python37\\python.exe",
+    "python.pythonPath": "c:\\OSGeo4W64\\apps\\Python37\\python.exe",
 
     // Formatting with black
     "python.formatting.provider": "black",

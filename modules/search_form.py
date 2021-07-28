@@ -200,7 +200,9 @@ class SearchFormManager(IsogeoDockWidget):
 
         # parse keywords and check selected
         i = 0  # row index
-        for tag_label, tag_code in sorted(tags_keywords.items()):
+        for tag_label, tag_code in sorted(
+            tags_keywords.items(), key=lambda item: item[1]
+        ):
             item = QStandardItem(tag_label)
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setData(tag_code, 32)

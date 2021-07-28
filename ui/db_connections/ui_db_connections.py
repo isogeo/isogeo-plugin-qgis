@@ -2,19 +2,22 @@
 
 # Form implementation generated from reading ui file 'ui\db_connections\ui_db_connections.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_dlg_db_connections(object):
+class Ui_dlg_pgdb_connections(object):
     def setupUi(self, dlg_db_connections):
         dlg_db_connections.setObjectName("dlg_db_connections")
-        dlg_db_connections.resize(490, 300)
-        dlg_db_connections.setMinimumSize(QtCore.QSize(490, 200))
-        dlg_db_connections.setMaximumSize(QtCore.QSize(500, 300))
+        dlg_db_connections.setEnabled(1)
+        dlg_db_connections.resize(650, 299)
+        dlg_db_connections.setMinimumSize(QtCore.QSize(650, 200))
+        dlg_db_connections.setMaximumSize(QtCore.QSize(700, 300))
+        dlg_db_connections.setWindowTitle("")
         icon = QtGui.QIcon()
         icon.addPixmap(
             QtGui.QPixmap(":/plugins/Isogeo/resources/settings/gear.svg"),
@@ -22,11 +25,13 @@ class Ui_dlg_db_connections(object):
             QtGui.QIcon.Off,
         )
         dlg_db_connections.setWindowIcon(icon)
-        dlg_db_connections.setWindowOpacity(0.95)
+        dlg_db_connections.setWindowOpacity(1)
+        dlg_db_connections.setAutoFillBackground(1)
         dlg_db_connections.setLocale(
             QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
         )
         dlg_db_connections.setSizeGripEnabled(False)
+        dlg_db_connections.setModal(True)
         self.gridLayout = QtWidgets.QGridLayout(dlg_db_connections)
         self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -36,17 +41,19 @@ class Ui_dlg_db_connections(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.label = QtWidgets.QLabel(dlg_db_connections)
         sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
-        self.label.setMaximumSize(QtCore.QSize(490, 20))
+        self.label.setMaximumSize(QtCore.QSize(600, 20))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
         self.label.setFont(font)
+        self.label.setAcceptDrops(True)
+        self.label.setScaledContents(True)
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -119,9 +126,6 @@ class Ui_dlg_db_connections(object):
 
     def retranslateUi(self, dlg_db_connections):
         _translate = QtCore.QCoreApplication.translate
-        dlg_db_connections.setWindowTitle(
-            _translate("dlg_db_connections", "PostGIS database configuration")
-        )
         self.label.setText(
             _translate(
                 "dlg_db_connections",
@@ -139,7 +143,7 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     dlg_db_connections = QtWidgets.QDialog()
-    ui = Ui_dlg_db_connections()
+    ui = Ui_dlg_pgdb_connections()
     ui.setupUi(dlg_db_connections)
     dlg_db_connections.show()
     sys.exit(app.exec_())
