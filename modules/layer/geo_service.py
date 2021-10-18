@@ -34,6 +34,10 @@ qgis_wms_formats = (
     "image/tiff",
 )
 
+li_wms_crs_exceptions_url = [
+    "https://wxs.ign.fr/essentiels/geoportail/r/wms",
+    "https://wxs.ign.fr/f4v4g9qykk6g8go7m4nfey4b/geoportail/r/wms"
+]
 # ############################################################################
 # ##### Conditional imports ########
 # ##################################
@@ -401,6 +405,7 @@ class GeoServiceManager:
         else:
             pass
 
+        # service_dict = self.parse_ogc_xml(service_type, service_dict)
         return 1, service_dict
 
     def build_wfs_url(self, api_layer: dict, srv_details: dict):
@@ -621,14 +626,16 @@ class GeoServiceManager:
             layer_format = formats_image[0]
 
         # SRS definition
-        if wms_dict.get("manual"):
+        if any(url_base in wms_url_base for url_base in li_wms_crs_exceptions_url):  # fix for https://github.com/isogeo/isogeo-plugin-qgis/issues/388
+            srs = self.choose_appropriate_srs(crs_options=["CRS:84"])
+        elif wms_dict.get("manual"):
             srs = self.choose_appropriate_srs(crs_options=[])
         else:
             srs = self.choose_appropriate_srs(crs_options=wms_lyr.crsOptions)
 
         # BBOX parameter
         if hasattr(wms_lyr, "boundingBoxWGS84") and any(
-            txt in srs for txt in ["WGS84", "4326"]
+            txt in srs for txt in ["WGS84", "4326", "CRS:84"]
         ):
             li_coords = [str(coord) for coord in wms_lyr.boundingBoxWGS84]
             bbox = ",".join(li_coords)
