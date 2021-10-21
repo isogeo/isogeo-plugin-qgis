@@ -214,47 +214,119 @@ class GeoServiceManager:
         if r.status_code == 200:
             service_dict["reachable"] = 1
             xml_root = ElementTree.fromstring(r.text)
+            tag_prefix = xml_root.tag.split("}")[0] + "}"
 
             # retrieve basic infos
-            service_dict[service_type] = xml_root
             service_dict["version"] = xml_root.get("version")
-
-            # check if get data operation is available + retrieve formatOptions
             main_op_name = self.ogc_infos_dict.get(service_type)[0]
-            main_op_elem = [
-                elem
-                for elem in xml_root.iter()
-                if (elem.attrib and elem.get("name") == main_op_name)
-                or main_op_name in elem.tag
-            ]
-            if len(main_op_elem) == 1:
-                service_dict["{}_isAvailable".format(main_op_name)] = 1
-                main_op_elem = main_op_elem[0]
-                li_formatOptions = []
-                for subelem in main_op_elem:
-                    if subelem.tag.endswith("Format"):
-                        li_formatOptions.append(subelem.text)
-                service_dict["formatOptions"] = li_formatOptions
-            elif len(main_op_elem) == 0:
-                service_dict["{}_isAvailable".format(main_op_name)] = 0
-            else:
-                service_dict["{}_isAvailable".format(main_op_name)] = 1
 
-            # retrieving layers typenames
-            featureTypeList = [
-                elem
-                for elem in xml_root.iter()
-                if elem.tag.endswith("FeatureType") or elem.tag.endswith("Layer")
-            ]
-            li_typenames = []
-            for featureType in featureTypeList:
-                for elem in featureType:
-                    if elem.tag.endswith("Name"):
-                        li_typenames.append(elem.text)
-                        break
+            if service_type == "WFS":
+                # check if get data operation is available + retrieve formatOptions
+                xml_operationsMetadata = [child for child in xml_root if "OperationsMetadata" in child.tag][0]
+                main_op_elem = [ope for ope in xml_operationsMetadata if "GetFeature" in ope.get("name")]
+                if len(main_op_elem) == 1:
+                    service_dict["{}_isAvailable".format(main_op_name)] = 1
+                    main_op_elem = main_op_elem[0]
+                    li_formatOptions = []
+                    for subelem in main_op_elem:
+                        if subelem.tag.endswith("Format"):
+                            li_formatOptions.append(subelem.text)
+                    service_dict["formatOptions"] = li_formatOptions
+                elif len(main_op_elem) == 0:
+                    service_dict["{}_isAvailable".format(main_op_name)] = 0
+                else:
+                    service_dict["{}_isAvailable".format(main_op_name)] = 1
+
+                # retrieving layers typenames and building layers list (crs, typename)
+                xml_featureTypelist = xml_root.find(tag_prefix + "FeatureTypeList")
+                li_typenames = []
+                li_layers = []
+                for featureType in xml_featureTypelist.findall(tag_prefix + "FeatureType"):
+                    layer_dict = {}
+                    # typename
+                    featureType_name = featureType.find(tag_prefix + "Name")
+                    if featureType_name is None:
+                        continue
                     else:
-                        pass
-            service_dict["typenames"] = li_typenames
+                        layer_dict["typename"] = featureType_name.text
+                        li_typenames.append(featureType_name.text)
+
+                    # Default CRS
+                    featureType_srs = featureType.find(tag_prefix + "DefaultSRS")
+                    featureType_crs = featureType.find(tag_prefix + "DefaultCRS")
+                    if featureType_srs is not None:
+                        layer_dict["EPSG"] = featureType_srs.text.split(":")[-1]
+                    elif featureType_crs is not None:
+                        layer_dict["EPSG"] = featureType_crs.text.split(":")[-1]
+                    else:
+                        layer_dict["EPSG"] = ""
+
+                    li_layers.append(layer_dict)
+
+                service_dict["typenames"] = li_typenames
+            else:
+                xml_cap = [child for child in xml_root if "Capability" in child.tag][0]
+
+                # check if get data operation is available + retrieve formatOptions
+                xml_request = [child for child in xml_cap if "Request" in child.tag][0]
+                main_op_elem = [child for child in xml_request.findall(tag_prefix + "GetMap")]
+                if len(main_op_elem) == 1:
+                    service_dict["{}_isAvailable".format(main_op_name)] = 1
+                    li_formatOptions = [child.text for child in main_op_elem[0].findall(tag_prefix + "Format")]
+                    service_dict["formatOptions"] = li_formatOptions
+                elif len(main_op_elem) == 0:
+                    service_dict["{}_isAvailable".format(main_op_name)] = 0
+                else:
+                    service_dict["{}_isAvailable".format(main_op_name)] = 1
+
+                # retrieving CRS options common to all layers
+                li_common_crs = [child.text for child in xml_cap.iter(tag_prefix + "CRS")]
+
+                # retrieving layers typenames and building layers list (bbox, crs, typename)
+                li_typenames = []
+                li_layers = []
+                for layer in xml_cap.find(tag_prefix + "Layer").findall(tag_prefix + "Layer"):
+                    layer_dict = {}
+                    # typename
+                    li_layer_typenames = [child.text for child in layer.findall(tag_prefix + "Name")]
+                    if not len(li_layer_typenames):
+                        continue
+                    else:
+                        li_typenames.append(li_layer_typenames[0])
+                        layer_dict["typename"] = li_layer_typenames[0]
+
+                    # CRS options
+                    li_layer_crs = [child.text for child in layer.findall(tag_prefix + "CRS")]
+                    if not len(li_layer_crs):
+                        layer_dict["crsOptions"] = li_common_crs
+                    else:
+                        layer_dict["crsOptions"] = li_common_crs + li_layer_crs
+
+                    # BBOX
+                    wgs84_bbox = layer.find(tag_prefix + "EX_GeographicBoundingBox")
+                    if len(wgs84_bbox) and "EPSG:4326" in layer_dict.get("crsOptions"):
+                        xmin = str(wgs84_bbox.find(tag_prefix + "southBoundLatitude").text)
+                        ymin = str(wgs84_bbox.find(tag_prefix + "westBoundLongitude").text)
+                        xmax = str(wgs84_bbox.find(tag_prefix + "northBoundLatitude").text)
+                        ymax = str(wgs84_bbox.find(tag_prefix + "eastBoundLongitude").text)
+                        layer_dict["crsOptions"] = ["EPSG:4326"]
+                        layer_dict["bbox"] = [xmin, ymin, xmax, ymax]
+                    else:
+                        li_other_bboxes = [elem for elem in layer.findall(tag_prefix + "BoundingBox") if elem.get("CRS") in layer_dict["crsOptions"]]
+                        if not len(li_other_bboxes):
+                            layer_dict["bbox"] = []
+                        else:
+                            xmin = str(li_other_bboxes[0].get("minx"))
+                            ymin = str(li_other_bboxes[0].get("miny"))
+                            xmax = str(li_other_bboxes[0].get("maxx"))
+                            ymax = str(li_other_bboxes[0].get("maxy"))
+
+                            layer_dict["crsOptions"] = [str(li_other_bboxes[0].get("CRS"))]
+                            layer_dict["bbox"] = [xmin, ymin, xmax, ymax]
+
+                    li_layers.append(layer_dict)
+
+                service_dict["typenames"] = li_typenames
 
         else:
             raise Exception(
@@ -262,6 +334,8 @@ class GeoServiceManager:
                     r.status_code, r.reason
                 )
             )
+
+        service_dict[service_type] = li_layers
 
         return service_dict
 
@@ -320,6 +394,7 @@ class GeoServiceManager:
         try:
             service = service_connector(url=url, version=service_version)
             service_dict["reachable"] = 1
+            service_dict["manual"] = 0
         except ServiceException as e:
             error_msg = "{} <i>{}</i> - <b>Bad operation</b>: {}".format(
                 service_type, url, str(e)
@@ -342,6 +417,7 @@ class GeoServiceManager:
                 auth = Authentication(verify=False)
                 service = service_connector(url=url, version=service_version, auth=auth)
                 service_dict["reachable"] = 1
+                service_dict["manual"] = 0
             except Exception as e:
                 logger.warning(
                     "Error raised trying to use owslib Authentication module : {}".format(
@@ -405,7 +481,6 @@ class GeoServiceManager:
         else:
             pass
 
-        # service_dict = self.parse_ogc_xml(service_type, service_dict)
         return 1, service_dict
 
     def build_wfs_url(self, api_layer: dict, srv_details: dict):
@@ -487,33 +562,14 @@ class GeoServiceManager:
 
         # SRS definition
         if wfs_dict.get("manual"):
-            featureType_elem = [
-                elem
-                for elem in wfs.iter()
-                if "FeatureType" in elem.tag
-                and any(layer_typename in subelem.text for subelem in elem)
-            ]
-            if len(featureType_elem):
-                featureType = featureType_elem[0]
-                srs_text = [
-                    subelem.text
-                    for subelem in featureType
-                    if "DefaultSRS" in subelem.tag
-                ][0]
-                srs = "EPSG:" + srs_text.split("EPSG:")[-1]
-            else:
-                logger.warning(
-                    "Unable to retrieve appropriate SRS for {} layer.".format(
-                        layer_typename
-                    )
-                )
-                srs = ""
+            wfs_lyr = [lyr for lyr in wfs if lyr.get("typename") == layer_typename][0]
+            available_crs_options = ["EPSG:" + wfs_lyr.get("EPSG")]
         else:
             available_crs_options = [
                 "{}:{}".format(srs.authority, srs.code)
                 for srs in wfs[layer_typename].crsOptions
             ]
-            srs = self.choose_appropriate_srs(crs_options=available_crs_options)
+        srs = self.choose_appropriate_srs(crs_options=available_crs_options)
 
         # build URL
         li_url_params = [
@@ -570,17 +626,8 @@ class GeoServiceManager:
                 wms_url_base, api_layer_id
             )
             return 0, error_msg
-        elif wms_dict.get("manual"):
-            wms_lyr = [
-                elem
-                for elem in wms.iter()
-                if elem.tag.endswith("Layer")
-                and any(
-                    subelem.text == api_layer_id
-                    for subelem in elem
-                    if "Name" in subelem.tag
-                )
-            ][0]
+        elif wms_dict.get("manual"):  # if the wms_lyr object was generated via parse_ogc_xml
+            wms_lyr = [lyr for lyr in wms if lyr.get("typename") == api_layer_id][0]
         else:
             wms_lyr = wms[api_layer_id]
 
@@ -628,10 +675,12 @@ class GeoServiceManager:
         # SRS definition
         if any(url_base in wms_url_base for url_base in li_wms_crs_exceptions_url):  # fix for https://github.com/isogeo/isogeo-plugin-qgis/issues/388
             srs = self.choose_appropriate_srs(crs_options=["CRS:84"])
-        elif wms_dict.get("manual"):
-            srs = self.choose_appropriate_srs(crs_options=[])
-        else:
+        elif hasattr(wms_lyr, "crsOptions"):
             srs = self.choose_appropriate_srs(crs_options=wms_lyr.crsOptions)
+        elif "crsOptions" in wms_lyr:  # if the wms_lyr object was generated via parse_ogc_xml
+            srs = self.choose_appropriate_srs(crs_options=wms_lyr.get("crsOptions"))
+        else:
+            srs = self.choose_appropriate_srs(crs_options=[])
 
         # BBOX parameter
         if hasattr(wms_lyr, "boundingBoxWGS84") and any(
@@ -650,6 +699,17 @@ class GeoServiceManager:
             ]
             bbox = ",".join(li_coords)
             logger.info("Let's use {} bbox : {}".format(srs, bbox))
+        elif "bbox" in wms_lyr and len(wms_lyr.get("bbox")):  # if the wms_lyr object was generated via parse_ogc_xml
+            if srs == "CRS:84":
+                bbox_coord = [
+                    wms_lyr.get("bbox")[1],
+                    wms_lyr.get("bbox")[0],
+                    wms_lyr.get("bbox")[3],
+                    wms_lyr.get("bbox")[2]
+                ]
+            else:
+                bbox_coord = wms_lyr.get("bbox")
+            bbox = ",".join(bbox_coord)
         else:
             bbox = ""
             logger.warning("BBOX parameter cannot be set")
