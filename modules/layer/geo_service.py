@@ -123,17 +123,18 @@ class GeoServiceManager:
         if len(crs_options):
             # SRS definition
             srs_map = plg_tools.get_map_crs()
-            srs_lyr_new = qsettings.value("/Projections/defaultBehaviour")
+            srs_lyr_new = qsettings.value("/Projections/defaultBehaviour", None)
             srs_lyr_crs = qsettings.value("/Projections/layerDefaultCrs")
-            srs_qgs_new = qsettings.value("/Projections/projectDefaultCrs")
-            srs_qgs_otf_on = qsettings.value("/Projections/otfTransformEnabled")
-            srs_qgs_otf_auto = qsettings.value("/Projections/otfTransformAutoEnable")
+            srs_qgs_new = qsettings.value("/Projections/projectDefaultCrs", None)
+            srs_qgs_otf_on = qsettings.value("/Projections/otfTransformEnabled", None)
+            srs_qgs_otf_auto = qsettings.value("/Projections/otfTransformAutoEnable", None)
 
             if srs_map in crs_options:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
                 srs = srs_map
             elif (
-                srs_qgs_new in crs_options
+                srs_qgs_new is not None
+                and srs_qgs_new in crs_options
                 and srs_qgs_otf_on == "false"
                 and srs_qgs_otf_auto == "false"
             ):
@@ -141,7 +142,7 @@ class GeoServiceManager:
                     "It's a SRS match! With default new project: " + srs_qgs_new
                 )
                 srs = srs_qgs_new
-            elif srs_lyr_crs in crs_options and srs_lyr_new == "useGlobal":
+            elif srs_lyr_crs is not None and srs_lyr_crs in crs_options and srs_lyr_new == "useGlobal":
                 logger.debug("It's a SRS match! With default new layer: " + srs_lyr_crs)
                 srs = srs_lyr_crs
             elif "EPSG:4326" in crs_options:
@@ -204,12 +205,22 @@ class GeoServiceManager:
         :param str service_type: type of OGC service ("WFS", "WMS", or "WMTS")
         :param dict service_dict: the dict to fill with infos retrieved from XML content
         """
-        # Rirst, specify that the dict gonna fill by the risky way
-        service_dict["manual"] = 1
+        # If service_type argument value is invalid, raise error
+        if service_type not in self.ogc_infos_dict:
+            raise ValueError(
+                "'service_type' argument value should be one of {} not {}".format(
+                    list(self.ogc_infos_dict.keys()), service_type
+                )
+            )
+        # It it's valid, set local variables depending on it
+        else:
+            # First, specify that the dict gonna fill by the risky way
+            service_dict["manual"] = 1
 
-        # Then, launch the GetCapabilities request
-        url = service_dict.get("getCap_url")
-        r = requests.get(url=url, verify=False)
+            # Then, launch the GetCapabilities request
+            url = service_dict.get("getCap_url")
+            r = requests.get(url=url, verify=False)
+
         # Finally, parse XML content returned
         if r.status_code == 200:
             service_dict["reachable"] = 1
@@ -223,7 +234,7 @@ class GeoServiceManager:
             if service_type == "WFS":
                 # check if get data operation is available + retrieve formatOptions
                 xml_operationsMetadata = [child for child in xml_root if "OperationsMetadata" in child.tag][0]
-                main_op_elem = [ope for ope in xml_operationsMetadata if "GetFeature" in ope.get("name")]
+                main_op_elem = [ope for ope in xml_operationsMetadata if main_op_name in ope.get("name")]
                 if len(main_op_elem) == 1:
                     service_dict["{}_isAvailable".format(main_op_name)] = 1
                     main_op_elem = main_op_elem[0]
@@ -263,13 +274,12 @@ class GeoServiceManager:
 
                     li_layers.append(layer_dict)
 
-                service_dict["typenames"] = li_typenames
-            else:
+            elif service_type == "WMS":
                 xml_cap = [child for child in xml_root if "Capability" in child.tag][0]
 
                 # check if get data operation is available + retrieve formatOptions
                 xml_request = [child for child in xml_cap if "Request" in child.tag][0]
-                main_op_elem = [child for child in xml_request.findall(tag_prefix + "GetMap")]
+                main_op_elem = [child for child in xml_request.findall(tag_prefix + main_op_name)]
                 if len(main_op_elem) == 1:
                     service_dict["{}_isAvailable".format(main_op_name)] = 1
                     li_formatOptions = [child.text for child in main_op_elem[0].findall(tag_prefix + "Format")]
@@ -326,7 +336,65 @@ class GeoServiceManager:
 
                     li_layers.append(layer_dict)
 
-                service_dict["typenames"] = li_typenames
+            else:  # WMTS
+                # check if get data operation is available + retrieve formatOptions
+                xml_operationsMetadata = [child for child in xml_root if "OperationsMetadata" in child.tag][0]
+                li_ope_names = [ope.get("name") for ope in xml_operationsMetadata]
+                if main_op_name in li_ope_names:
+                    service_dict["{}_isAvailable".format(main_op_name)] = 1
+                else:
+                    service_dict["{}_isAvailable".format(main_op_name)] = 0
+
+                # retrieving available tileMatrixSets to store them into a dict
+                dict_tms = {}
+                for tms in xml_root.find(tag_prefix + "Contents").findall(tag_prefix + "TileMatrixSet"):
+                    li_tms_id = [child.text for child in tms if child.tag.endswith("Identifier")]
+                    li_tms_crs = [child.text for child in tms if child.tag.endswith("SupportedCRS")]
+
+                    if not len(li_tms_id) or not len(li_tms_crs):
+                        continue
+                    else:
+                        dict_tms[li_tms_id[0]] = li_tms_crs[0]
+
+                # retrieving layers typenames and building layers list (typename, format, tms, styles, crs)
+                li_typenames = []
+                li_layers = []
+                for layer in xml_root.find(tag_prefix + "Contents").findall(tag_prefix + "Layer"):
+                    layer_dict = {}
+                    # typename
+                    li_layer_typenames = [child.text for child in layer if child.tag.endswith("Identifier")]
+                    if not len(li_layer_typenames):
+                        continue
+                    else:
+                        li_typenames.append(li_layer_typenames[0])
+                        layer_dict["typename"] = li_layer_typenames[0]
+                    # format
+                    li_layer_formats = [child.text for child in layer if child.tag.endswith("Format")]
+                    if not len(li_layer_formats):
+                        layer_dict["formats"] = ""
+                    else:
+                        layer_dict["formats"] = li_layer_formats
+                    # tms
+                    xml_tmsLink = [child for child in layer if child.tag.endswith("TileMatrixSetLink")][0]
+                    li_layer_tms = [child.text for child in xml_tmsLink if child.tag.endswith("TileMatrixSet")]
+                    if not len(li_layer_tms):
+                        layer_dict["tms"] = ""
+                    else:
+                        layer_dict["tms"] = li_layer_tms[0]
+                    # styles
+                    li_layer_styles = []
+                    li_xml_styles = [child for child in layer if child.tag.endswith("Style")]
+                    for style_elem in li_xml_styles:
+                        li_elem_identifier = [child.text for child in style_elem if child.tag.endswith("Identifier")]
+                        if not len(li_elem_identifier):
+                            continue
+                        else:
+                            li_layer_styles.append(li_elem_identifier[0])
+                    layer_dict["styles"] = li_layer_styles
+                    # crs
+                    layer_dict["crsOptions"] = [dict_tms.get(layer_dict.get("tms"))]
+
+                    li_layers.append(layer_dict)
 
         else:
             raise Exception(
@@ -335,6 +403,7 @@ class GeoServiceManager:
                 )
             )
 
+        service_dict["typenames"] = li_typenames
         service_dict[service_type] = li_layers
 
         return service_dict
@@ -473,10 +542,10 @@ class GeoServiceManager:
             for tms in service.tilematrixsets:
                 crs_elem = service.tilematrixsets.get(tms).crs.split(":")
                 if len(crs_elem) == 2:
-                    key = service.tilematrixsets.get(tms).crs
+                    value = service.tilematrixsets.get(tms).crs
                 else:
-                    key = "EPSG:" + crs_elem[-1]
-                value = service.tilematrixsets.get(tms).identifier
+                    value = "EPSG:" + crs_elem[-1]
+                key = service.tilematrixsets.get(tms).identifier
                 service_dict["wmts_tms"][key] = value
         else:
             pass
@@ -699,7 +768,7 @@ class GeoServiceManager:
             ]
             bbox = ",".join(li_coords)
             logger.info("Let's use {} bbox : {}".format(srs, bbox))
-        elif "bbox" in wms_lyr and len(wms_lyr.get("bbox")):  # if the wms_lyr object was generated via parse_ogc_xml
+        elif wms_dict.get("manual") and "bbox" in wms_lyr and len(wms_lyr.get("bbox")):  # if the wms_lyr object was generated via parse_ogc_xml
             if srs == "CRS:84":
                 bbox_coord = [
                     wms_lyr.get("bbox")[1],
@@ -785,7 +854,6 @@ class GeoServiceManager:
         # local variables
         api_layer_id = api_layer.get("id")
         wmts = wmts_dict.get("WMTS")
-        tms_dict = wmts_dict.get("wmts_tms")
         wmts_lyr_url = wmts_dict.get("base_url")
 
         # build layer title
@@ -823,10 +891,13 @@ class GeoServiceManager:
             )
             return 0, error_msg
 
-        wmts_lyr = wmts[layer_typename]
+        if wmts_dict.get("manual"):  # if the wms_lyr object was generated via parse_ogc_xml
+            wmts_lyr = [lyr for lyr in wmts if lyr.get("typename") == api_layer_id][0]
+        else:
+            wmts_lyr = wmts[layer_typename]
 
         # check if GetTile operation is available
-        if not hasattr(wmts, "gettile") or not wmts_dict.get("GetTile_isAvailable"):
+        if not hasattr(wmts, "gettile") and not wmts_dict.get("GetTile_isAvailable"):
             return (
                 0,
                 "Required GetTile operation not available in: "
@@ -836,21 +907,29 @@ class GeoServiceManager:
             logger.debug("GetTile available")
 
         # retrieve Tile Matrix Set & SRS
-        available_crs = [
-            crs for crs, tms in tms_dict.items() if tms in wmts_lyr._tilematrixsets
-        ]
-        srs = self.choose_appropriate_srs(available_crs)
-        if srs:
-            tile_matrix_set = tms_dict.get(srs)
+        if wmts_dict.get("manual"):
+            srs = self.choose_appropriate_srs(wmts_lyr.get("crsOptions"))
+            tile_matrix_set = wmts_lyr.get("tms")
         else:
-            logger.debug(
-                "WMTS - Let's choose the SRS corresponding to the only available Tile Matrix Set for this layer"
-            )
-            tile_matrix_set = wmts_lyr._tilematrixsets[0]
-            srs = [k for k in tms_dict if tile_matrix_set in k][0]
+            tms_dict = wmts_dict.get("wmts_tms")
+            available_crs = [
+                crs for tms, crs in tms_dict.items() if tms in wmts_lyr._tilematrixsets
+            ]
+            srs = self.choose_appropriate_srs(available_crs)
+            if srs:
+                tile_matrix_set = [tms for tms, crs in tms_dict.items() if crs == srs][0]
+            else:
+                logger.debug(
+                    "WMTS - Let's choose the SRS corresponding to the only available Tile Matrix Set for this layer"
+                )
+                tile_matrix_set = wmts_lyr._tilematrixsets[0]
+                srs = [v for k, v in tms_dict.items() if tile_matrix_set in k][0]
 
         # Format definition
-        formats_image = wmts_lyr.formats
+        if wmts_dict.get("manual"):
+            formats_image = wmts_lyr.get("formats")
+        else:
+            formats_image = wmts_lyr.formats
         if len(formats_image):
             if "image/jpeg" in formats_image:
                 layer_format = "image/jpeg"
@@ -863,8 +942,10 @@ class GeoServiceManager:
             layer_format = "image/png"
 
         # Style definition
-        if len(wmts_lyr.styles):
+        if hasattr(wmts_lyr, "styles") and len(wmts_lyr.styles):
             lyr_style = list(wmts_lyr.styles.keys())[0]
+        elif wmts_dict.get("manual") and len(wmts_lyr.get("styles")):
+            lyr_style = wmts_lyr.get("styles")[0]
         else:
             lyr_style = ""
 
@@ -877,7 +958,7 @@ class GeoServiceManager:
             "tileMatrixSet={}&".format(tile_matrix_set),
             "url={}".format(wmts_lyr_url),
             quote("SERVICE=WMTS&"),
-            quote("VERSION={}&".format(wmts.version)),
+            quote("VERSION={}&".format(wmts_dict.get("version"))),
             quote("REQUEST=GetCapabilities"),
         ]
         wmts_url_final = "".join(li_uri_params)
