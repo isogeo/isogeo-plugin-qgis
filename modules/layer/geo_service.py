@@ -405,7 +405,7 @@ class GeoServiceManager:
 
         service_dict["typenames"] = li_typenames
         service_dict[service_type] = li_layers
-
+        logger.debug("*=====* parse_ogc_xml - service dict --> {}".format(service_dict))
         return service_dict
 
     def check_ogc_service(
@@ -495,6 +495,7 @@ class GeoServiceManager:
                 )
                 try:
                     service_dict = self.parse_ogc_xml(service_type, service_dict)
+                    logger.debug("*=====* check_ogc_service - service dict --> {}".format(service_dict))
                     return 1, service_dict
                 except Exception as e:
                     error_msg = "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
@@ -651,6 +652,7 @@ class GeoServiceManager:
 
         wfs_url_final = wfs_url_base + "&".join(li_url_params)
 
+        logger.debug("*=====* build_wfs_url - wfs_url_final --> {}".format(wfs_url_final))
         return ("WFS", layer_title, wfs_url_final)
 
     def build_wms_url(self, api_layer: dict, srv_details: dict):
@@ -822,6 +824,8 @@ class GeoServiceManager:
                 wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
             li_url.append(wms_url_final)
 
+        logger.debug("*=====* build_wms_url - li_url --> {}".format(li_url))
+
         return ("WMS", li_layer_title, li_url)
 
     def build_wmts_url(self, api_layer: dict, srv_details: dict):
@@ -963,6 +967,7 @@ class GeoServiceManager:
         ]
         wmts_url_final = "".join(li_uri_params)
 
+        logger.debug("*=====* build_wmts_url - wmts_url_final --> {}".format(wmts_url_final))
         # method ending
         return ("WMTS", layer_title, wmts_url_final)
 
