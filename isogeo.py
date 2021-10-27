@@ -249,7 +249,6 @@ class Isogeo:
 
         self.old_text = ""
         self.page_index = 1
-        self.json_path = plg_basepath / "_user/quicksearches.json"
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message, context="Isogeo"):

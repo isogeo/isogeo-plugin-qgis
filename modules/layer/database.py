@@ -3,6 +3,7 @@
 
 # Standard library
 import logging
+import json
 from configparser import ConfigParser
 from pathlib import Path
 from os import environ
@@ -113,6 +114,31 @@ class DataBaseManager:
                 pass
         else:
             self.pg_configfile_path = 0
+
+        # check _user/db_connections.json file and load the content
+        self.json_content = dict
+        self.json_path = Path(__file__).parents[2] / "_user" / "db_connections.json"
+        if not self.json_path.is_file():
+            logger.warning(
+                "_user/db_connections.json file can't be used : {} is no recognized as a file.".format(
+                    str(self.json_path)
+                )
+            )
+            self.json_content = 0
+        elif not self.json_path.exists():
+            logger.warning(
+                "_user/db_connections.json file can't be used : {} doesn't exist or is not reachable.".format(
+                    str(self.json_path)
+                )
+            )
+            self.json_content = 0
+        else:
+            try:
+                with open(self.json_path, "r") as json_content:
+                    self.json_content = json.load(json_content)
+            except Exception as e:
+                logger.warning("{} file cannot be read : {}".format(self.json_path, e))
+                self.json_content = 0
 
         self.dbms_specifics_infos = {
             "Oracle": {
@@ -242,7 +268,7 @@ class DataBaseManager:
     def config_file_parser(
         self, file_path: Path, connection_service: str, connection_name: str
     ):
-        """Retrieve connection parameters values stored into configuration fiel corresponding
+        """Retrieve connection parameters values stored into configuration file corresponding
         to the specified file_path.
         """
         # First, check if the configuration file can be read
@@ -260,7 +286,6 @@ class DataBaseManager:
             error_msg = "'{}' entry is missing into '{}' configuration file content.".format(
                 connection_service, file_path
             )
-            self.pg_configfile_path = 0
             return 0, error_msg
         else:
             service_params = config[connection_service]
@@ -514,6 +539,8 @@ class DataBaseManager:
 
         li_connections = []
         li_db_names = []
+
+        # Loading connections saved into QGIS Settings
         for k in sorted(qsettings.allKeys()):
             if (
                 k.startswith(dbms_prefix)
@@ -543,8 +570,7 @@ class DataBaseManager:
                         logger.warning(connection_dict[1])
 
                 # For connections configured using config file and service
-                # elif connection_service != "" and self.pg_configfile_path:
-                elif connection_service != "":
+                elif connection_service != "" and self.pg_configfile_path:
                     connection_dict = self.config_file_parser(
                         self.pg_configfile_path, connection_service, connection_name
                     )
@@ -595,6 +621,65 @@ class DataBaseManager:
                         pass
             else:
                 pass
+
+        # Loading connections saved into _user/db_connections.json file
+        if self.json_content and dbms in self.json_content:
+            for conn_dict in self.json_content.get(dbms):
+                connection_name = conn_dict.get("connection_name")
+
+                if all(conn_dict.get(key, "") != "" for key in ["database", "host", "port", "username", "password", "connection_name"]):
+                    connection_dict = {
+                        "service": "",
+                        "database": conn_dict.get("database"),
+                        "host": conn_dict.get("host"),
+                        "port": conn_dict.get("port"),
+                        "username": conn_dict.get("username"),
+                        "password": conn_dict.get("password"),
+                        "connection": connection_name,
+                    }
+                else:
+                    logger.warning("Invalid {} connection loaded from db_connections.json file : {}".format(dbms, conn_dict))
+                    continue
+
+                if (
+                    connection_name
+                    in self.dbms_specifics_infos.get(dbms).get("invalid_connections")
+                    and skip_invalid
+                ):
+                    pass
+                else:
+                    conn = establish_conn_func(**connection_dict)
+                    if not conn:
+                        connection_dict["uri"] = 0
+                        connection_dict["tables"] = 0
+                        self.dbms_specifics_infos[dbms]["invalid_connections"].append(
+                            connection_name
+                        )
+                        logger.info(
+                            "'{}' connection saved as invalid".format(connection_name)
+                        )
+                        continue
+                    else:
+                        connection_dict["uri"] = conn[0]
+                        connection_dict["tables"] = conn[1]
+
+                    if connection_dict.get(
+                        "connection"
+                    ) in self.dbms_specifics_infos.get(dbms).get(
+                        "prefered_connections"
+                    ):
+                        connection_dict["prefered"] = 1
+                    else:
+                        connection_dict["prefered"] = 0
+
+                    li_connections.append(connection_dict)
+
+                    if connection_dict.get("database") not in li_db_names:
+                        li_db_names.append(connection_dict.get("database"))
+                    else:
+                        pass
+        else:
+            pass
 
         self.dbms_specifics_infos[dbms]["connections"] = li_connections
         self.dbms_specifics_infos[dbms]["db_names"] = li_db_names
