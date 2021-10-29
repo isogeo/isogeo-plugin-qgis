@@ -222,35 +222,35 @@ with ZipFile(PLG_FINAL_ZIP_PATH, "w") as release_zip:
         "{}/{}/{}".format(PLG_DIRNAME, "_user", "quicksearches.json"),
     )
 
-    # add default _user/db_connections.json file
-    DB_CONNECTIONS = {
-        "Oracle": [
-            {
-                "connection_name": "",
-                "host": "",
-                "port": "",
-                "database": "",
-                "username": "",
-                "password": ""
-            }
-        ],
-        "PostgreSQL": [
-            {
-                "connection_name": "",
-                "host": "",
-                "port": "",
-                "database": "",
-                "username": "",
-                "password": ""
-            }
-        ]
-    }
+    # # add default _user/db_connections.json file
+    # DB_CONNECTIONS = {
+    #     "Oracle": [
+    #         {
+    #             "connection_name": "",
+    #             "host": "",
+    #             "port": "",
+    #             "database": "",
+    #             "username": "",
+    #             "password": ""
+    #         }
+    #     ],
+    #     "PostgreSQL": [
+    #         {
+    #             "connection_name": "",
+    #             "host": "",
+    #             "port": "",
+    #             "database": "",
+    #             "username": "",
+    #             "password": ""
+    #         }
+    #     ]
+    # }
 
-    DB_CONNECTIONS_JSON = path.join(DIR_OUTPUT.resolve(), "..", "db_connections.json")
-    with open(DB_CONNECTIONS_JSON, "w") as qs:
-        json.dump(DB_CONNECTIONS, qs, sort_keys=True, indent=4)
+    # DB_CONNECTIONS_JSON = path.join(DIR_OUTPUT.resolve(), "..", "db_connections.json")
+    # with open(DB_CONNECTIONS_JSON, "w") as qs:
+    #     json.dump(DB_CONNECTIONS, qs, sort_keys=True, indent=4)
 
-    release_zip.write(
-        DB_CONNECTIONS_JSON,
-        "{}/{}/{}".format(PLG_DIRNAME, "_user", "db_connections.json"),
-    )
+    # release_zip.write(
+    #     DB_CONNECTIONS_JSON,
+    #     "{}/{}/{}".format(PLG_DIRNAME, "_user", "db_connections.json"),
+    # )

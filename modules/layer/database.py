@@ -245,28 +245,33 @@ class DataBaseManager:
             self.dbms_specifics_infos[dbms][dict_key] = []
             self.set_qsettings_connections(dbms, connections_kind, [])
 
-    def load_json_file_connections(self):
+    def load_json_file_content(self):
         """Retrieve the list of Oracle and PostgreSQL connections configured into _user/db_connections file"""
-        if not self.json_path.is_file():
-            logger.warning(
-                "_user/db_connections.json file can't be used : {} is no recognized as a file.".format(
-                    str(self.json_path)
+        try:
+            with open(self.json_path, "r") as json_content:
+                self.json_content = json.load(json_content)
+        except Exception as e:
+            if not self.json_path.exists() or not self.json_path.is_file():
+                logger.warning(
+                    "_user/db_connections.json file can't be used : {} doesn't exist or is not a file : {}".format(
+                        str(self.json_path), str(e)
+                    )
                 )
-            )
-            self.json_content = 0
-        elif not self.json_path.exists():
-            logger.warning(
-                "_user/db_connections.json file can't be used : {} doesn't exist or is not reachable.".format(
-                    str(self.json_path)
+                logger.warning(
+                    "Let's create an empty one : {}.".format(self.json_path)
                 )
-            )
-            self.json_content = 0
-        else:
-            try:
-                with open(self.json_path, "r") as json_content:
-                    self.json_content = json.load(json_content)
-            except Exception as e:
-                logger.warning("{} file cannot be read : {}".format(self.json_path, e))
+                self.json_content = {
+                    "Oracle": [],
+                    "PostgreSQL": []
+                }
+                with open(self.json_path, "w") as json_content:
+                    json.dump([self.json_content], json_content, indent=4)
+            else:
+                logger.error(
+                    "_user/db_connections.json file can't be read : {}.".format(
+                        str(e)
+                    )
+                )
                 self.json_content = 0
 
     def config_file_parser(
@@ -627,7 +632,7 @@ class DataBaseManager:
                 pass
 
         # Loading connections saved into _user/db_connections.json file
-        self.load_json_file_connections()
+        self.load_json_file_content()
         if self.json_content and dbms in self.json_content:
             for conn_dict in self.json_content.get(dbms):
                 connection_name = conn_dict.get("connection_name")
