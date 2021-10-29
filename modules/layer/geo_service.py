@@ -817,7 +817,7 @@ class GeoServiceManager:
                 ]
             )
 
-            check_requests = requests.get(url_for_requests)
+            check_requests = requests.get(url_for_requests, verify=False)
             if check_requests.status_code == 400:
                 wms_url_final = url_for_requests
             else:
@@ -1005,7 +1005,7 @@ class GeoServiceManager:
 
         # try to send "GetCapabilities" equivalent request
         try:
-            getCap_request = requests.get(service_dict["getCap_url"])
+            getCap_request = requests.get(service_dict["getCap_url"], verify=False)
             getCap_content = getCap_request.json()
             service_dict["reachable"] = 1
         except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
