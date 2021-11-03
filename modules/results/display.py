@@ -340,10 +340,7 @@ class ResultsManager(QObject):
                     if (
                         md.path
                         and md.name
-                        and md.path
-                        in self.db_mng.dbms_specifics_infos.get("Oracle").get(
-                            "db_names"
-                        )
+                        and any(md.path in self.db_mng.dbms_specifics_infos.get("Oracle").get(key) for key in ["db_names", "db_aliases"])
                         and "." in md.name
                     ):
                         available_connections = [
@@ -351,8 +348,7 @@ class ResultsManager(QObject):
                             for ora_conn in self.db_mng.dbms_specifics_infos.get(
                                 "Oracle"
                             ).get("connections")
-                            if md.path == ora_conn.get("database")
-                            and ora_conn.get("prefered")
+                            if (md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")) and ora_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
@@ -360,7 +356,7 @@ class ResultsManager(QObject):
                                 for ora_conn in self.db_mng.dbms_specifics_infos.get(
                                     "Oracle"
                                 ).get("connections")
-                                if md.path == ora_conn.get("database")
+                            if md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")
                             ]
                         else:
                             pass

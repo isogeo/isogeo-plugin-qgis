@@ -250,6 +250,28 @@ class DataBaseManager:
         try:
             with open(self.json_path, "r") as json_content:
                 self.json_content = json.load(json_content)
+
+            if not isinstance(self.json_content, dict):
+                logger.warning(
+                    "_user/db_connections.json file content is not correctly formatted : {}.".format(
+                        self.json_content
+                    )
+                )
+                self.json_content = 0
+            elif not any(dbms_name in list(self.json_content.keys()) for dbms_name in list(self.dbms_specifics_infos.keys())):
+                logger.warning(
+                    "_user/db_connections.json file content has no 'Oracle' or 'PostgreSQl' key : {}.".format(
+                        self.json_content
+                    )
+                )
+                self.json_content = 0
+            else:
+                logger.info(
+                    "_user/db_connections.json file content successfully loaded : {}.".format(
+                        self.json_content
+                    )
+                )
+
         except Exception as e:
             if not self.json_path.exists() or not self.json_path.is_file():
                 logger.warning(
@@ -450,6 +472,7 @@ class DataBaseManager:
         username: str = "",
         password: str = "",
         database: str = "",
+        database_alias: str = "",
         connection: str = "",
     ):
         """Set the connection to a specific PostGIS database and return the corresponding QgsDataSourceUri and tables infos."""
@@ -493,6 +516,7 @@ class DataBaseManager:
         username: str = "",
         password: str = "",
         database: str = "",
+        database_alias: str = "",
         connection: str = "",
     ):
         """Set the connection to a specific Oracle database and return the corresponding QgsDataSourceUri and tables infos."""
@@ -548,6 +572,7 @@ class DataBaseManager:
 
         li_connections = []
         li_db_names = []
+        li_db_aliases = []
 
         # Loading connections saved into QGIS Settings
         for k in sorted(qsettings.allKeys()):
@@ -641,6 +666,7 @@ class DataBaseManager:
                     connection_dict = {
                         "service": "",
                         "database": conn_dict.get("database"),
+                        "database_alias": conn_dict.get("database_alias", ""),
                         "host": conn_dict.get("host"),
                         "port": conn_dict.get("port"),
                         "username": conn_dict.get("username"),
@@ -688,11 +714,17 @@ class DataBaseManager:
                         li_db_names.append(connection_dict.get("database"))
                     else:
                         pass
+
+                    if connection_dict.get("database_alias", "") != "" and connection_dict.get("database_alias") not in li_db_aliases:
+                        li_db_aliases.append(connection_dict.get("database_alias"))
+                    else:
+                        pass
         else:
             pass
 
         self.dbms_specifics_infos[dbms]["connections"] = li_connections
         self.dbms_specifics_infos[dbms]["db_names"] = li_db_names
+        self.dbms_specifics_infos[dbms]["db_aliases"] = li_db_aliases
 
         self.set_qsettings_connections(
             dbms,
