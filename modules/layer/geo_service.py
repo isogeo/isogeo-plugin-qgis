@@ -11,7 +11,8 @@ from urllib.parse import urlencode, unquote, quote
 from qgis.PyQt.QtCore import QSettings
 
 # PyQGIS
-from qgis.core import QgsDataSourceUri
+from qgis.core import QgsDataSourceUri, QgsCoordinateTransform, QgsProject, QgsCoordinateReferenceSystem, QgsRectangle
+from qgis.utils import iface
 
 # Plugin modules
 from ..tools import IsogeoPlgTools
@@ -34,10 +35,6 @@ qgis_wms_formats = (
     "image/tiff",
 )
 
-li_wms_crs_exceptions_url = [
-    "https://wxs.ign.fr/essentiels/geoportail/r/wms",
-    "https://wxs.ign.fr/f4v4g9qykk6g8go7m4nfey4b/geoportail/r/wms"
-]
 # ############################################################################
 # ##### Conditional imports ########
 # ##################################
@@ -154,7 +151,11 @@ class GeoServiceManager:
                         crs_options
                     )
                 )
-                srs = crs_options[0]
+                li_srs_candidates = [crs_option for crs_option in crs_options if "EPSG" in crs_option]
+                if len(li_srs_candidates):
+                    srs = li_srs_candidates[0]
+                else:
+                    srs = crs_options[0]
         else:
             srs = "EPSG:4326"
         return srs
@@ -487,14 +488,16 @@ class GeoServiceManager:
                 service = service_connector(url=url, version=service_version, auth=auth)
                 service_dict["reachable"] = 1
                 service_dict["manual"] = 0
+                logger.info("Using owslib.Authentication module with 'verify=false' worked !")
             except Exception as e:
                 logger.warning(
-                    "Error raised trying to use owslib Authentication module : {}".format(
+                    "Error raised trying to use owslib.Authentication module : {}".format(
                         e
                     )
                 )
                 try:
                     service_dict = self.parse_ogc_xml(service_type, service_dict)
+                    logger.info("parse_ogc_xml method has to be used.")
                     logger.debug("*=====* check_ogc_service - service dict --> {}".format(service_dict))
                     return 1, service_dict
                 except Exception as e:
@@ -551,6 +554,7 @@ class GeoServiceManager:
         else:
             pass
 
+        logger.debug("*=====* check_ogc_service - service_dict --> {}".format(service_dict))
         return 1, service_dict
 
     def build_wfs_url(self, api_layer: dict, srv_details: dict):
@@ -648,7 +652,36 @@ class GeoServiceManager:
             "VERSION={}".format(wfs_dict.get("version")),
             "TYPENAME={}".format(layer_typename),
             "SRSNAME={}".format(srs),
+            "RESULTTYPE=results"
         ]
+
+        # trying to set BBOX parameter as current map canvas extent
+        if "EPSG" in srs and not wfs_dict.get("manual"):
+            srs_code = srs.split(":")[1]
+
+            logger.debug("*=====* build_wfs_url - srs_code --> {}".format(srs_code))
+            logger.debug("*=====* build_wfs_url - wfs[layer_typename].crsOptions --> {}".format(wfs[layer_typename].crsOptions))
+            srs_id = [crsOption.id for crsOption in wfs[layer_typename].crsOptions if srs_code in str(crsOption.code)][0]
+            logger.debug("*=====* build_wfs_url - srs_id --> {}".format(srs_id))
+
+            canvas_rectangle = iface.mapCanvas().extent()
+            canvas_crs = iface.mapCanvas().mapSettings().destinationCrs()
+            destination_crs = QgsCoordinateReferenceSystem(int(srs_code), QgsCoordinateReferenceSystem.EpsgCrsId)
+            coord_transformer = QgsCoordinateTransform(canvas_crs, destination_crs, QgsProject.instance())
+
+            destCrs_rectangle = coord_transformer.transform(canvas_rectangle)
+
+            bbox_parameter = "BBOX={},{},{},{},{}".format(
+                destCrs_rectangle.yMinimum(),
+                destCrs_rectangle.xMinimum(),
+                destCrs_rectangle.yMaximum(),
+                destCrs_rectangle.xMaximum(),
+                srs_id
+            )
+            li_url_params.append(bbox_parameter)
+            logger.debug("*=====* build_wfs_url - bbox_value --> {}".format(bbox_parameter))
+        else:
+            pass
 
         wfs_url_final = wfs_url_base + "&".join(li_url_params)
 
@@ -726,9 +759,20 @@ class GeoServiceManager:
         else:
             pass
 
-        # Style definition
+        # WIDTH and HEIGHT parameters
+        canvas_size = iface.mapCanvas().size()
+        width = str(canvas_size.width() - 1)
+        height = str(canvas_size.height() - 1)
+
+        # Style definition (+ WIDTH and HEIGHT)
         if hasattr(wms_lyr, "styles") and len(wms_lyr.styles):
-            lyr_style = list(wms_lyr.styles.keys())[0]
+            li_styles = list(wms_lyr.styles.keys())
+            li_style_candidates = [style for style in li_styles if "normal" in style]
+            if len(li_style_candidates):
+                lyr_style = li_style_candidates[0]
+            else:
+                lyr_style = li_styles[0]
+                lyr_style = ""
         else:
             lyr_style = ""
 
@@ -744,46 +788,57 @@ class GeoServiceManager:
             layer_format = formats_image[0]
 
         # SRS definition
-        if any(url_base in wms_url_base for url_base in li_wms_crs_exceptions_url):  # fix for https://github.com/isogeo/isogeo-plugin-qgis/issues/388
-            srs = self.choose_appropriate_srs(crs_options=["CRS:84"])
-        elif hasattr(wms_lyr, "crsOptions"):
+        if hasattr(wms_lyr, "crsOptions"):
+            logger.debug("*=====* crs options : {}".format(wms_lyr.crsOptions))
             srs = self.choose_appropriate_srs(crs_options=wms_lyr.crsOptions)
         elif "crsOptions" in wms_lyr:  # if the wms_lyr object was generated via parse_ogc_xml
+            logger.debug("*=====* crs options : {}".format(wms_lyr.get("crsOptions")))
             srs = self.choose_appropriate_srs(crs_options=wms_lyr.get("crsOptions"))
         else:
             srs = self.choose_appropriate_srs(crs_options=[])
 
+        logger.debug("*=====* srs chosen : {}".format(srs))
+
         # BBOX parameter
-        if hasattr(wms_lyr, "boundingBoxWGS84") and any(
-            txt in srs for txt in ["WGS84", "4326", "CRS:84"]
-        ):
-            li_coords = [str(coord) for coord in wms_lyr.boundingBoxWGS84]
-            bbox = ",".join(li_coords)
-            logger.info("Let's use WGS84 bbox : {}".format(bbox))
-        elif hasattr(wms_lyr, "boundingBox") and any(
-            srs in str(elem) for elem in wms_lyr.boundingBox
-        ):
-            li_coords = [
-                str(coord)
-                for coord in wms_lyr.boundingBox
-                if isinstance(coord, int) or isinstance(coord, float)
-            ]
-            bbox = ",".join(li_coords)
-            logger.info("Let's use {} bbox : {}".format(srs, bbox))
-        elif wms_dict.get("manual") and "bbox" in wms_lyr and len(wms_lyr.get("bbox")):  # if the wms_lyr object was generated via parse_ogc_xml
-            if srs == "CRS:84":
-                bbox_coord = [
-                    wms_lyr.get("bbox")[1],
-                    wms_lyr.get("bbox")[0],
-                    wms_lyr.get("bbox")[3],
-                    wms_lyr.get("bbox")[2]
-                ]
-            else:
-                bbox_coord = wms_lyr.get("bbox")
-            bbox = ",".join(bbox_coord)
-        else:
+        destination_crs = QgsCoordinateReferenceSystem(srs)
+
+        if not destination_crs.isValid():
             bbox = ""
-            logger.warning("BBOX parameter cannot be set")
+            logger.warning("BBOX parameter cannot be set because srs is not recognized : {}.".format(srs))
+        elif not hasattr(wms_lyr, "boundingBoxWGS84") and not hasattr(wms_lyr, "boundingBox"):
+            bbox = ""
+            logger.warning("BBOX parameter cannot be set because wms layer object ha no boundingBox attributes.")
+        else:
+
+            if hasattr(wms_lyr, "boundingBox"):
+                wms_lyr_bbox = wms_lyr.boundingBox
+                logger.info("Let's use {} bbox.".format(wms_lyr_bbox[4]))
+                source_crs = QgsCoordinateReferenceSystem(wms_lyr_bbox[4])
+
+            else:
+                wms_lyr_bbox = wms_lyr.boundingBoxWGS84
+                logger.info("Let's use WGS84 bbox.")
+                source_crs = QgsCoordinateReferenceSystem("EPSG:4326")
+
+            logger.debug("*=====* source bbox crs : {}".format(source_crs.authid()))
+            logger.debug("*=====* source bbox : {}".format(wms_lyr_bbox))
+            coord_transformer = QgsCoordinateTransform(source_crs, destination_crs, QgsProject.instance())
+            bbox_rectangle = QgsRectangle(
+                float(wms_lyr_bbox[0]),
+                float(wms_lyr_bbox[1]),
+                float(wms_lyr_bbox[2]),
+                float(wms_lyr_bbox[3]),
+            )
+            transformed_bbox_rectangle = coord_transformer.transform(bbox_rectangle)
+            logger.debug("*=====* bbox conversion : {} --> {}".format(bbox_rectangle, transformed_bbox_rectangle))
+
+            bbox = "{},{},{},{}".format(
+                transformed_bbox_rectangle.xMinimum(),
+                transformed_bbox_rectangle.yMinimum(),
+                transformed_bbox_rectangle.xMaximum(),
+                transformed_bbox_rectangle.yMaximum(),
+            )
+            logger.debug("*=====* final bbox : {}".format(bbox))
 
         li_url = []
         for layer_name in li_layer_name:
@@ -798,6 +853,8 @@ class GeoServiceManager:
                 "styles": lyr_style,
                 "TRANSPARENT": "TRUE",
                 "BBOX": bbox,
+                "WIDTH": width,
+                "HEIGHT": height
             }
 
             if (
@@ -813,7 +870,8 @@ class GeoServiceManager:
                 [
                     "{}={}".format(k, v)
                     for k, v in wms_url_params.items()
-                    if k != "url" and v != ""
+                    if k != "url"
+                    # if k != "url" and v != ""
                 ]
             )
 
