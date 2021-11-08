@@ -645,6 +645,8 @@ class GeoServiceManager:
             ]
         srs = self.choose_appropriate_srs(crs_options=available_crs_options)
 
+        logger.debug("*=====* srs chosen : {}".format(srs))
+
         # build URL
         li_url_params = [
             "REQUEST=GetFeature",
@@ -671,7 +673,7 @@ class GeoServiceManager:
 
             destCrs_rectangle = coord_transformer.transform(canvas_rectangle)
 
-            bbox_parameter = "BBOX={},{},{},{},{}".format(
+            bbox_parameter = "BBOX={},{},{},{},{}&restrictToRequestBBOX=1".format(
                 destCrs_rectangle.yMinimum(),
                 destCrs_rectangle.xMinimum(),
                 destCrs_rectangle.yMaximum(),
