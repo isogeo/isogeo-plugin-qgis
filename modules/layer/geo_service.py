@@ -267,8 +267,10 @@ class GeoServiceManager:
                     featureType_srs = featureType.find(tag_prefix + "DefaultSRS")
                     featureType_crs = featureType.find(tag_prefix + "DefaultCRS")
                     if featureType_srs is not None:
+                        layer_dict["srs_id"] = featureType_srs.text
                         layer_dict["EPSG"] = featureType_srs.text.split(":")[-1]
                     elif featureType_crs is not None:
+                        layer_dict["srs_id"] = featureType_crs.text
                         layer_dict["EPSG"] = featureType_crs.text.split(":")[-1]
                     else:
                         layer_dict["EPSG"] = ""
@@ -465,6 +467,7 @@ class GeoServiceManager:
             service = service_connector(url=url, version=service_version)
             service_dict["reachable"] = 1
             service_dict["manual"] = 0
+            raise requests.exceptions.SSLError
         except ServiceException as e:
             error_msg = "{} <i>{}</i> - <b>Bad operation</b>: {}".format(
                 service_type, url, str(e)
@@ -478,7 +481,7 @@ class GeoServiceManager:
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
         except requests.exceptions.SSLError as e:
-            logger.warning(
+            logger.error(
                 "SSL Error raised trying to connect to {} service {}: {}".format(
                     service_type, url, e
                 )
@@ -489,8 +492,9 @@ class GeoServiceManager:
                 service_dict["reachable"] = 1
                 service_dict["manual"] = 0
                 logger.info("Using owslib.Authentication module with 'verify=false' worked !")
+                raise Exception
             except Exception as e:
-                logger.warning(
+                logger.error(
                     "Error raised trying to use owslib.Authentication module : {}".format(
                         e
                     )
@@ -658,12 +662,14 @@ class GeoServiceManager:
         ]
 
         # trying to set BBOX parameter as current map canvas extent
-        if "EPSG" in srs and not wfs_dict.get("manual"):
+        if "EPSG" in srs:
             srs_code = srs.split(":")[1]
 
             logger.debug("*=====* build_wfs_url - srs_code --> {}".format(srs_code))
-            logger.debug("*=====* build_wfs_url - wfs[layer_typename].crsOptions --> {}".format(wfs[layer_typename].crsOptions))
-            srs_id = [crsOption.id for crsOption in wfs[layer_typename].crsOptions if srs_code in str(crsOption.code)][0]
+            if wfs_dict.get("manual"):
+                srs_id = wfs_lyr.get("srs_id")
+            else:
+                srs_id = [crsOption.id for crsOption in wfs[layer_typename].crsOptions if srs_code in str(crsOption.code)][0]
             logger.debug("*=====* build_wfs_url - srs_id --> {}".format(srs_id))
 
             canvas_rectangle = iface.mapCanvas().extent()
