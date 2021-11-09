@@ -468,7 +468,6 @@ class GeoServiceManager:
             service = service_connector(url=url, version=service_version)
             service_dict["reachable"] = 1
             service_dict["manual"] = 0
-            raise requests.exceptions.SSLError
         except ServiceException as e:
             error_msg = "{} <i>{}</i> - <b>Bad operation</b>: {}".format(
                 service_type, url, str(e)
@@ -493,7 +492,6 @@ class GeoServiceManager:
                 service_dict["reachable"] = 1
                 service_dict["manual"] = 0
                 logger.info("Using owslib.Authentication module with 'verify=false' worked !")
-                raise Exception
             except Exception as e:
                 logger.error(
                     "Error raised trying to use owslib.Authentication module : {}".format(
