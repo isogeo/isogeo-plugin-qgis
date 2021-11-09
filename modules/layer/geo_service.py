@@ -316,26 +316,27 @@ class GeoServiceManager:
                         layer_dict["crsOptions"] = li_common_crs + li_layer_crs
 
                     # BBOX
-                    wgs84_bbox = layer.find(tag_prefix + "EX_GeographicBoundingBox")
-                    if len(wgs84_bbox) and "EPSG:4326" in layer_dict.get("crsOptions"):
-                        xmin = str(wgs84_bbox.find(tag_prefix + "southBoundLatitude").text)
-                        ymin = str(wgs84_bbox.find(tag_prefix + "westBoundLongitude").text)
-                        xmax = str(wgs84_bbox.find(tag_prefix + "northBoundLatitude").text)
-                        ymax = str(wgs84_bbox.find(tag_prefix + "eastBoundLongitude").text)
-                        layer_dict["crsOptions"] = ["EPSG:4326"]
-                        layer_dict["bbox"] = [xmin, ymin, xmax, ymax]
-                    else:
-                        li_other_bboxes = [elem for elem in layer.findall(tag_prefix + "BoundingBox") if elem.get("CRS") in layer_dict["crsOptions"]]
-                        if not len(li_other_bboxes):
-                            layer_dict["bbox"] = []
-                        else:
-                            xmin = str(li_other_bboxes[0].get("minx"))
-                            ymin = str(li_other_bboxes[0].get("miny"))
-                            xmax = str(li_other_bboxes[0].get("maxx"))
-                            ymax = str(li_other_bboxes[0].get("maxy"))
+                    li_bboxes = [elem for elem in layer.findall(tag_prefix + "BoundingBox") if elem.get("CRS") in layer_dict["crsOptions"]]
+                    if len(li_bboxes):
+                        xmin = str(li_bboxes[0].get("minx"))
+                        ymin = str(li_bboxes[0].get("miny"))
+                        xmax = str(li_bboxes[0].get("maxx"))
+                        ymax = str(li_bboxes[0].get("maxy"))
+                        bbox_crs = str(li_bboxes[0].get("CRS"))
 
-                            layer_dict["crsOptions"] = [str(li_other_bboxes[0].get("CRS"))]
-                            layer_dict["bbox"] = [xmin, ymin, xmax, ymax]
+                        layer_dict["bbox"] = (xmin, ymin, xmax, ymax, bbox_crs)
+                    else:
+                        wgs84_bbox = layer.find(tag_prefix + "EX_GeographicBoundingBox")
+                        if len(wgs84_bbox) and "EPSG:4326" in layer_dict.get("crsOptions"):
+                            xmin = str(wgs84_bbox.find(tag_prefix + "southBoundLatitude").text)
+                            ymin = str(wgs84_bbox.find(tag_prefix + "westBoundLongitude").text)
+                            xmax = str(wgs84_bbox.find(tag_prefix + "northBoundLatitude").text)
+                            ymax = str(wgs84_bbox.find(tag_prefix + "eastBoundLongitude").text)
+                            bbox_crs = "EPSG:4326"
+
+                            layer_dict["bbox"] = (xmin, ymin, xmax, ymax, bbox_crs)
+                        else:
+                            layer_dict["bbox"] = ()
 
                     li_layers.append(layer_dict)
 
@@ -809,24 +810,33 @@ class GeoServiceManager:
 
         # BBOX parameter
         destination_crs = QgsCoordinateReferenceSystem(srs)
+        has_bbox = False
+        if hasattr(wms_lyr, "boundingBoxWGS84") or hasattr(wms_lyr, "boundingBox"):
+            has_bbox = True
+        elif wms_dict.get("manual") and "bbox" in wms_lyr and len(wms_lyr.get("bbox", ())) == 5:
+            has_bbox = True
+        else:
+            pass
 
         if not destination_crs.isValid():
             bbox = ""
             logger.warning("BBOX parameter cannot be set because srs is not recognized : {}.".format(srs))
-        elif not hasattr(wms_lyr, "boundingBoxWGS84") and not hasattr(wms_lyr, "boundingBox"):
+        elif not has_bbox:
             bbox = ""
-            logger.warning("BBOX parameter cannot be set because wms layer object ha no boundingBox attributes.")
+            logger.warning("BBOX parameter cannot be set because wms layer object has no boundingBox attributes.")
         else:
-
             if hasattr(wms_lyr, "boundingBox"):
                 wms_lyr_bbox = wms_lyr.boundingBox
                 logger.info("Let's use {} bbox.".format(wms_lyr_bbox[4]))
                 source_crs = QgsCoordinateReferenceSystem(wms_lyr_bbox[4])
-
-            else:
+            elif hasattr(wms_lyr, "boundingBoxWGS84"):
                 wms_lyr_bbox = wms_lyr.boundingBoxWGS84
                 logger.info("Let's use WGS84 bbox.")
                 source_crs = QgsCoordinateReferenceSystem("EPSG:4326")
+            else:
+                wms_lyr_bbox = wms_lyr.get("bbox")
+                logger.info("Let's use {} bbox.".format(wms_lyr_bbox[4]))
+                source_crs = QgsCoordinateReferenceSystem(wms_lyr_bbox[4])
 
             logger.debug("*=====* source bbox crs : {}".format(source_crs.authid()))
             logger.debug("*=====* source bbox : {}".format(wms_lyr_bbox))
