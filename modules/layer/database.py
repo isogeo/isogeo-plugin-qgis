@@ -18,7 +18,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 # PyQGIS
-from qgis.core import QgsDataSourceUri
+from qgis.core import QgsDataSourceUri, QgsCoordinateReferenceSystem
 
 try:
     from qgis.core import Qgis
@@ -546,9 +546,25 @@ class DataBaseManager:
             logger.error(str(e))
             return 0
 
-        li_table_infos = c._fetchall(c._execute(None, ora_geom_column_request))
+        geom_column_response = c._fetchall(c._execute(None, ora_geom_column_request))
 
-        return uri, li_table_infos
+        li_tables_infos = []
+        for row in geom_column_response:
+            ora_table_srid_request = "select SRID from user_sdo_geom_metadata where table_name = '{}'".format(row[1])
+
+            try:
+                table_srid_response = c._fetchall(c._execute(None, ora_table_srid_request))
+                table_srid = str(int(table_srid_response[0][0]))
+
+                table_crs = QgsCoordinateReferenceSystem("EPSG:" + table_srid)
+            except Exception as e:
+                logger.warning("'{}' Oracle table SRID could not be fetched.")
+                table_crs = QgsCoordinateReferenceSystem()
+
+            table_infos = row + [table_crs]
+            li_tables_infos.append(table_infos)
+
+        return uri, li_tables_infos
 
     def build_connection_dict(self, dbms: str, skip_invalid: bool = True):
         """Build the dict that stores informations about PostgreSQL or Oracle connections."""

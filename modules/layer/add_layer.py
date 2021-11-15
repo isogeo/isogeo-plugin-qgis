@@ -410,6 +410,7 @@ class LayerAdder:
         base_name = layer_info.get("base_name", "")
         schema = layer_info.get("schema", "")
         table_name = layer_info.get("table", "")
+        table_crs = layer_info.get("crs", "")
 
         if not len(db_connection):
             error_msg = "None registered connection could be find for '{}' database.".format(
@@ -460,7 +461,7 @@ class LayerAdder:
                 else:
                     continue
             # let's prepare error message for the user just in case none field could be used as key column
-            error_msg = "The '{}' database view retrieved using '{}' data base connection is not valid : {}".format(
+            error_msg = "The '{}' database view retrieved using '{}' database connection is not valid : {}".format(
                 base_name, conn_name, plg_tools.last_error[1]
             )
         # If it's just not, let's prepare error message for the user
@@ -470,7 +471,7 @@ class LayerAdder:
                     table, plg_tools.last_error
                 )
             )
-            error_msg = "The '{}' database table retrieved using '{}' data base connection is not valid : {}".format(
+            error_msg = "The '{}' database table retrieved using '{}' database connection is not valid : {}".format(
                 base_name, conn_name, plg_tools.last_error[1]
             )
 
@@ -483,6 +484,10 @@ class LayerAdder:
         # If the vector layer could be properly created, let's add it to the canvas
         if layer_is_ok:
             logger.debug("Data added: {}".format(table_name))
+
+            table_crs = [tab[4] for tab in db_connection.get("tables") if tab[0] == schema and tab[1] == table_name][0]
+            layer.setCrs(table_crs)
+
             lyr = QgsProject.instance().addMapLayer(layer)
             return lyr, layer
         # else, let's inform the user
