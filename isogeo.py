@@ -640,8 +640,7 @@ class Isogeo:
                     canvas.refresh()
                 else:
                     canvas = iface.mapCanvas()
-                    canvas.mapRenderer().setProjectionsEnabled(True)
-                    canvas.mapRenderer().setDestinationCrs(
+                    canvas.mapSettings().setDestinationCrs(
                         QgsCoordinateReferenceSystem(
                             search_params.get("epsg"),
                             QgsCoordinateReferenceSystem.EpsgCrsId,
