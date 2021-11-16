@@ -563,9 +563,9 @@ class DataBaseManager:
         li_tables_infos = []
         for row in geom_column_response:
             if len(row):
-                ora_table_srid_request = "select SRID from user_sdo_geom_metadata where table_name = '{}'".format(row[1])
 
                 try:
+                    ora_table_srid_request = "select SRID from user_sdo_geom_metadata where table_name = '{}'".format(row[1])
                     table_srid_response = c._fetchall(c._execute(None, ora_table_srid_request))
                     table_srid = str(int(table_srid_response[0][0]))
 
@@ -574,7 +574,16 @@ class DataBaseManager:
                     logger.warning("'{}' Oracle table SRID could not be fetched : {}".format(row[1], e))
                     table_crs = QgsCoordinateReferenceSystem()
 
-                table_infos = row + [table_crs]
+                try:
+                    ora_table_geomType_request = "select DISTINCT c.GEOM.GET_GTYPE() from {}.{} c order by c.GEOM.GET_GTYPE() desc".format(row[0], row[1])
+                    table_geomType_response = c._fetchall(c._execute(None, ora_table_geomType_request))
+                    table_geomType = [int(elem[0]) for elem in table_geomType_response]
+
+                except Exception as e:
+                    logger.warning("'{}' Oracle table geometry type could not be fetched : {}".format(row[1], e))
+                    table_geomType = []
+
+                table_infos = row + [table_crs, table_geomType]
                 li_tables_infos.append(table_infos)
             else:
                 continue
