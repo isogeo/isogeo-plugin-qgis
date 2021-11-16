@@ -549,23 +549,35 @@ class DataBaseManager:
             logger.error(str(e))
             return 0
 
-        geom_column_response = c._fetchall(c._execute(None, ora_geom_column_tab_request)) + c._fetchall(c._execute(None, ora_geom_column_v_request))
+        try:
+            geom_column_response = c._fetchall(c._execute(None, ora_geom_column_tab_request)) + c._fetchall(c._execute(None, ora_geom_column_v_request))
+        except Exception as e:
+            logger.error(
+                "Unable to retrieve tables and views from {} Oracle database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
+                    database, service, host, port, username, password
+                )
+            )
+            logger.error(str(e))
+            return uri, []
 
         li_tables_infos = []
         for row in geom_column_response:
-            ora_table_srid_request = "select SRID from user_sdo_geom_metadata where table_name = '{}'".format(row[1])
+            if len(row):
+                ora_table_srid_request = "select SRID from user_sdo_geom_metadata where table_name = '{}'".format(row[1])
 
-            try:
-                table_srid_response = c._fetchall(c._execute(None, ora_table_srid_request))
-                table_srid = str(int(table_srid_response[0][0]))
+                try:
+                    table_srid_response = c._fetchall(c._execute(None, ora_table_srid_request))
+                    table_srid = str(int(table_srid_response[0][0]))
 
-                table_crs = QgsCoordinateReferenceSystem("EPSG:" + table_srid)
-            except Exception as e:
-                logger.warning("'{}' Oracle table SRID could not be fetched.")
-                table_crs = QgsCoordinateReferenceSystem()
+                    table_crs = QgsCoordinateReferenceSystem("EPSG:" + table_srid)
+                except Exception as e:
+                    logger.warning("'{}' Oracle table SRID could not be fetched : {}".format(row[1], e))
+                    table_crs = QgsCoordinateReferenceSystem()
 
-            table_infos = row + [table_crs]
-            li_tables_infos.append(table_infos)
+                table_infos = row + [table_crs]
+                li_tables_infos.append(table_infos)
+            else:
+                continue
 
         return uri, li_tables_infos
 
