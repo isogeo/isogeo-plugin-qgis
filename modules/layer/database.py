@@ -70,7 +70,10 @@ btnBox_ico_dict = {
 
 # https://dataedo.com/kb/query/oracle/find-all-spatial-columns
 ora_sys_tables = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200')"
-ora_geom_column_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_tables tab on col.owner = tab.owner and col.table_name = tab.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(
+ora_geom_column_tab_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_tables tab on col.owner = tab.owner and col.table_name = tab.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(
+    ora_sys_tables
+)
+ora_geom_column_v_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_views v on col.owner = v.owner and col.table_name = v.view_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(
     ora_sys_tables
 )
 
@@ -546,7 +549,7 @@ class DataBaseManager:
             logger.error(str(e))
             return 0
 
-        geom_column_response = c._fetchall(c._execute(None, ora_geom_column_request))
+        geom_column_response = c._fetchall(c._execute(None, ora_geom_column_tab_request)) + c._fetchall(c._execute(None, ora_geom_column_v_request))
 
         li_tables_infos = []
         for row in geom_column_response:
