@@ -120,11 +120,11 @@ class GeoServiceManager:
         if len(crs_options):
             # SRS definition
             srs_map = plg_tools.get_map_crs()
-            srs_lyr_new = qsettings.value("/Projections/defaultBehaviour", None)
-            srs_lyr_crs = qsettings.value("/Projections/layerDefaultCrs")
-            srs_qgs_new = qsettings.value("/Projections/projectDefaultCrs", None)
-            srs_qgs_otf_on = qsettings.value("/Projections/otfTransformEnabled", None)
-            srs_qgs_otf_auto = qsettings.value("/Projections/otfTransformAutoEnable", None)
+            # srs_lyr_new = qsettings.value("projections/defaultBehaviour", None)
+            srs_lyr_crs = qsettings.value("projections/layerDefaultCrs", None)
+            srs_qgs_new = qsettings.value("app/projections/defaultProjectCrs", None)
+            # srs_qgs_otf_on = qsettings.value("app/projections/otfTransformEnabled", "false")
+            # srs_qgs_otf_auto = qsettings.value("app/projections/otfTransformAutoEnable", "false")
 
             if srs_map in crs_options:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
@@ -132,14 +132,12 @@ class GeoServiceManager:
             elif (
                 srs_qgs_new is not None
                 and srs_qgs_new in crs_options
-                and srs_qgs_otf_on == "false"
-                and srs_qgs_otf_auto == "false"
             ):
                 logger.debug(
                     "It's a SRS match! With default new project: " + srs_qgs_new
                 )
                 srs = srs_qgs_new
-            elif srs_lyr_crs is not None and srs_lyr_crs in crs_options and srs_lyr_new == "useGlobal":
+            elif srs_lyr_crs is not None and srs_lyr_crs in crs_options:
                 logger.debug("It's a SRS match! With default new layer: " + srs_lyr_crs)
                 srs = srs_lyr_crs
             elif "EPSG:4326" in crs_options:
