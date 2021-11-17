@@ -121,7 +121,6 @@ class ApiRequester(QObject):
             else:
                 logger.debug("Unkown request type asked : {}".format(request_type))
                 raise ValueError
-                return 0
             # filling request header with token
             header_value.append(self.token)
             request = QNetworkRequest(url)

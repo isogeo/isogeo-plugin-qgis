@@ -4,6 +4,7 @@
 # Standard library
 import logging
 from datetime import datetime
+from functools import partial
 
 # PyQGIS
 from qgis.core import (
@@ -54,20 +55,16 @@ ref_lyr = QgsRasterLayer(osm_standard, "OSM_Standard", "wms")
 class MetadataDisplayer:
     """Manage metadata displaying in QGIS UI."""
 
-    url_edition = "https://app.isogeo.com"
-
-    def __init__(self):
+    def __init__(self, app_base_url: str):
         """Class constructor."""
         self.complete_md = IsogeoMdDetails()
         self.complete_md.stackedWidget.setCurrentIndex(0)
 
         # some basic settings
+        self.app_base_url = app_base_url
+
         self.complete_md.wid_bbox.setCanvasColor(Qt.white)
         self.complete_md.wid_bbox.enableAntiAliasing(True)
-
-        self.complete_md.btn_md_edit.pressed.connect(
-            lambda: plg_tools.open_webpage(link=self.url_edition)
-        )
 
         self.tr = object
 
@@ -77,7 +74,16 @@ class MetadataDisplayer:
         :param md dict: Isogeo metadata dict
         """
         logger.info("Displaying the whole metadata sheet.")
-        isogeo_tr = IsogeoTranslator(qsettings.value("locale/userLocale")[0:2])
+        try:
+            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
+        except TypeError as e:
+            logger.error(
+                "Bad type in QSettings: {}. Original error: {}".format(
+                    type(qsettings.value("locale/userLocale")), e
+                )
+            )
+            locale = "fr"
+        isogeo_tr = IsogeoTranslator(locale)
 
         # clean map canvas
         vec_lyr = [i.id() for i in self.complete_md.wid_bbox.layers() if i.type() == 0]
@@ -391,11 +397,12 @@ class MetadataDisplayer:
         )
 
         # -- EDIT LINK -------------------------------------------------------
-        self.url_edition = plg_tools.get_edit_url(
-            md_id=md.get("_id"), md_type=md.get("type"), owner_id=wg_id
-        )
-
         # only if user declared himself as Isogeo editor in authentication form
+        app_md_url = "{}/groups/{}/resources/{}/identification".format(self.app_base_url, wg_id, md.get("_id"))
+
+        self.complete_md.btn_md_edit.pressed.connect(
+            partial(plg_tools.open_webpage, app_md_url)
+        )
         self.complete_md.btn_md_edit.setEnabled(
             int(qsettings.value("isogeo/user/editor", 1))
         )

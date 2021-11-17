@@ -71,7 +71,7 @@ class QuickSearchManager:
         # If the name already exists, ask for a new one. ================ TO DO
         if search_kind == "Last":
             params = saved_searches.get(
-                "_current", "https://api.isogeo.com/resources/search?&_limit=0"
+                "_current", saved_searches.get("_default")
             )
         else:
             # Write the current parameters in a dict, and store it in the saved

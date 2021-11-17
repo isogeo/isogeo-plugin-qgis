@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 # Standard library
+from configparser import Error
 import logging
 import shutil
 import time
+import json
 from functools import partial
 from pathlib import Path
 
@@ -85,15 +87,9 @@ class Authenticator(QObject):
     msgbar = QgsMessageBar(ui_auth_form)
     ui_auth_form.msgbar_vlayout.addWidget(msgbar)
 
-    # api parameters
-    api_params = {
-        "app_id": "",
-        "app_secret": "",
-        "url_base": "https://v1.api.isogeo.com/",
-        "url_auth": "https://id.api.isogeo.com/oauth/authorize",
-        "url_token": "https://id.api.isogeo.com/oauth/token",
-        "url_redirect": "http://localhost:5000/callback",
-    }
+    # set config.json file path
+    json_content = dict
+    json_path = Path(__file__).parents[2] / "config.json"
 
     # plugin credentials storage parameters
     credentials_location = {"QSettings": 0, "oAuth2_file": 0}
@@ -102,16 +98,21 @@ class Authenticator(QObject):
         # inheritance
         super().__init__()
 
-        # API URLs - Prod
-        (
-            self.platform,
-            self.api_url,
-            self.app_url,
-            self.csw_url,
-            self.mng_url,
-            self.oc_url,
-            self.ssl,
-        ) = plg_tools.set_base_url("prod")
+        # api parameters
+        self.load_json_file_content()
+        if not self.json_content:
+            raise Error("Anable to load {} file content.".format(self.json_path))
+        else:
+            self.api_params = {
+                "app_id": "",
+                "app_secret": "",
+                "url_base": self.json_content.get("api_base_url"),
+                "url_auth": "{}/oauth/authorize".format(self.json_content.get("api_base_url")),
+                "url_token": "{}/oauth/token".format(self.json_content.get("api_auth_url")),
+                "url_redirect": "http://localhost:5000/callback",
+            }
+
+        self.app_url = self.json_content.get("app_base_url")
 
         # credentials storage folder
         self.auth_folder = plugin_dir / "_auth"
@@ -125,7 +126,51 @@ class Authenticator(QObject):
         self.informer = object
         self.first_auth = bool
 
-    # MANAGER -----------------------------------------------------------------
+    # CONFIG FILE LOADER ---------------------------------------------------------------------------
+    def load_json_file_content(self):
+        """Retrieve API and app URLs from config.json file"""
+        try:
+            with open(self.json_path, "r") as json_content:
+                self.json_content = json.load(json_content)
+
+            if not isinstance(self.json_content, dict):
+                logger.warning(
+                    "config.json file content is not correctly formatted : {}.".format(
+                        self.json_content
+                    )
+                )
+                self.json_content = 0
+            elif not all(key in list(self.json_content.keys()) for key in ["api_base_url", "api_auth_url", "app_base_url"]):
+                logger.warning(
+                    "Missing key in config.json file content : {}.".format(
+                        self.json_content
+                    )
+                )
+                self.json_content = 0
+            else:
+                logger.info(
+                    "config.json file content successfully loaded : {}.".format(
+                        self.json_content
+                    )
+                )
+
+        except Exception as e:
+            if not self.json_path.exists() or not self.json_path.is_file():
+                logger.warning(
+                    "config.json file can't be used : {} doesn't exist or is not a file : {}".format(
+                        str(self.json_path), str(e)
+                    )
+                )
+                self.json_content = 0
+            else:
+                logger.error(
+                    "config.json file can't be read : {}.".format(
+                        str(e)
+                    )
+                )
+                self.json_content = 0
+
+    # MANAGER --------------------------------------------------------------------------------------
     def manage_api_initialization(self):
         """Perform several operations to use Isogeo API:
 
@@ -156,7 +201,7 @@ class Authenticator(QObject):
 
         return True, self.api_params
 
-    # CREDENTIALS LOCATORS ----------------------------------------------------
+    # CREDENTIALS LOCATORS -------------------------------------------------------------------------
     def credentials_check_qsettings(self):
         """Retrieve Isogeo API credentials within QGIS QSettings."""
 
@@ -170,25 +215,14 @@ class Authenticator(QObject):
         elif "isogeo" in qsettings.childGroups():
             # looking in child groups and clean a little if needed
             qsettings.beginGroup("isogeo")
-            if "app_auth" in qsettings.childGroups():
-                qsettings.remove("isogeo/app_auth")
-                logger.debug("QSettings clean up - app_auth")
-                pass
-            if "api_auth" in qsettings.childGroups():
-                qsettings.remove("isogeo/api_auth")
-                logger.debug("QSettings clean up - api_auth")
-                pass
-            if "auth" in qsettings.childGroups() and not qsettings.contains(
-                "auth/app_id"
-            ):
-                qsettings.remove("isogeo/auth")
-                logger.debug("QSettings clean up - bad formatted auth")
-                pass
             if "auth" in qsettings.childGroups() and qsettings.contains("auth/app_id"):
                 logger.debug("Credentials found within QGIS QSettings: isogeo/")
-                pass
-            qsettings.endGroup()
-            return True
+                qsettings.endGroup()
+                return True
+            else:
+                logger.debug("Missing 'isogeo/auth' entry within QGIS QSettings.")
+                qsettings.endGroup()
+                return False
         else:
             logger.debug("No Isogeo credentials found within QGIS QSettings.")
             pass
@@ -220,7 +254,7 @@ class Authenticator(QObject):
         # end of method
         return True
 
-    # CREDENTIALS SAVER -------------------------------------------------------
+    # CREDENTIALS SAVER ----------------------------------------------------------------------------
     def credentials_storer(self, store_location: str = "QSettings"):
         """Store class attributes (API parameters) into the specified store_location.
 
@@ -250,17 +284,15 @@ class Authenticator(QObject):
         # update class attributes
         if credentials_source == "QSettings":
             self.api_params["app_id"] = qsettings.value("isogeo/auth/app_id", "")
-            self.api_params["app_secret"] = qsettings.value(
-                "isogeo/auth/app_secret", ""
-            )
+            self.api_params["app_secret"] = qsettings.value("isogeo/auth/app_secret", "")
             self.api_params["url_base"] = qsettings.value(
-                "isogeo/auth/url_base", "https://v1.api.isogeo.com/"
+                "isogeo/auth/url_base", self.api_params["url_base"]
             )
             self.api_params["url_auth"] = qsettings.value(
-                "isogeo/auth/url_auth", "https://id.api.isogeo.com/oauth/authorize"
+                "isogeo/auth/url_auth", self.api_params["url_auth"]
             )
             self.api_params["url_token"] = qsettings.value(
-                "isogeo/auth/url_token", "https://id.api.isogeo.com/oauth/token"
+                "isogeo/auth/url_token", self.api_params["url_token"]
             )
             self.api_params["url_redirect"] = qsettings.value(
                 "isogeo/auth/url_redirect", "http://localhost:5000/callback"
@@ -269,10 +301,10 @@ class Authenticator(QObject):
             creds = plg_tools.credentials_loader(self.cred_filepath)
             self.api_params["app_id"] = creds.get("client_id")
             self.api_params["app_secret"] = creds.get("client_secret")
-            self.api_params["url_base"] = creds.get("uri_base")
-            self.api_params["url_auth"] = creds.get("uri_auth")
-            self.api_params["url_token"] = creds.get("uri_token")
-            self.api_params["url_redirect"] = creds.get("uri_redirect")
+            self.api_params["url_base"] = self.api_params["url_base"]
+            self.api_params["url_auth"] = self.api_params["url_auth"]
+            self.api_params["url_token"] = self.api_params["url_token"]
+            self.api_params["url_redirect"] = "http://localhost:5000/callback"
             self.credentials_storer(store_location="QSettings")
         else:
             pass
@@ -283,7 +315,7 @@ class Authenticator(QObject):
             )
         )
 
-    # AUTHENTICATION FORM -----------------------------------------------------
+    # AUTHENTICATION FORM --------------------------------------------------------------------------
     def display_auth_form(self):
         """Show authentication form with prefilled fields and connected widgets."""
         self.informer = UserInformer(message_bar=self.msgbar, trad=self.tr)
@@ -366,6 +398,7 @@ class Authenticator(QObject):
             )
             self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
+
         # rename existing credentials file with prefix 'old_' and datetime as suffix
         dest_path = self.cred_filepath
         if dest_path.is_file():
@@ -382,7 +415,7 @@ class Authenticator(QObject):
         else:
             pass
 
-        # mave new credentials file to the _auth subfolder
+        # move new credentials file to the _auth subfolder
         try:
             shutil.copyfile(
                 str(selected_file), str(dest_path)
@@ -403,10 +436,11 @@ class Authenticator(QObject):
             )
             self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
+
         # set form
         self.ui_auth_form.ent_app_id.setText(api_credentials.get("client_id"))
         self.ui_auth_form.ent_app_secret.setText(api_credentials.get("client_secret"))
-        self.ui_auth_form.lbl_api_url_value.setText(api_credentials.get("uri_auth"))
+        self.ui_auth_form.lbl_api_url_value.setText(self.api_params["url_auth"])
         # update class attributes from file
         self.credentials_update(credentials_source="oAuth2_file")
         # store into QSettings if existing

@@ -211,13 +211,13 @@ class Isogeo:
         # instanciating
         self.informer = UserInformer(message_bar=msgBar, trad=self.tr)
 
-        self.md_display = MetadataDisplayer()
-        self.md_display.tr = self.tr
+        self.authenticator = Authenticator()
 
-        self.approps_mng = SharesParser()
+        self.approps_mng = SharesParser(app_base_url=self.authenticator.app_url)
         self.approps_mng.tr = self.tr
 
-        self.authenticator = Authenticator()
+        self.md_display = MetadataDisplayer(app_base_url=self.authenticator.app_url)
+        self.md_display.tr = self.tr
 
         self.api_requester = ApiRequester()
         self.api_requester.tr = self.tr
@@ -883,7 +883,8 @@ class Isogeo:
         self.authenticator.tr = self.tr
         self.authenticator.lang = self.lang
         # checks
-        plg_tools.check_proxy_configuration()  # 22
+        url_to_check = self.authenticator.api_params.get("url_base").replace("https://", "").replace("http://", "")
+        plg_tools.check_proxy_configuration(url_to_check=url_to_check)  # 22
         self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
         # self.form_mng.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.form_mng.txt_input.setFocus()

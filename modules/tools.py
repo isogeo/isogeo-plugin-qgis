@@ -318,7 +318,7 @@ class IsogeoPlgTools(IsogeoUtils):
         # ending method
         return
 
-    def check_proxy_configuration(self) -> bool:
+    def check_proxy_configuration(self, url_to_check: str) -> bool:
         """Check adequation between system and QGIS proxy configuration. The goal is to\
             prevent network issues connecting to the API. See: https://github.com/isogeo/isogeo-plugin-qgis/issues/287
 
@@ -335,7 +335,7 @@ class IsogeoPlgTools(IsogeoUtils):
         :returns: True for cases 1, 3a ; False for cases 2, 3b and 4 depending if system and QGIS configs mismatch
         """
         # local connector
-        conn_to_isogeo = http.client.HTTPSConnection("api.isogeo.com")
+        conn_to_isogeo = http.client.HTTPSConnection(url_to_check)
         # -- STEP 1 --------------------------------------------------------------------
         # retrieve system proxy settings
         system_proxy_config = getproxies()
