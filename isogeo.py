@@ -225,6 +225,7 @@ class Isogeo:
         self.form_mng = SearchFormManager(self.tr)
         self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
         self.form_mng.qs_mng.lang = self.lang
+        self.form_mng.qs_mng.api_base_url = self.authenticator.api_params.get("url_base")
 
         # connecting
         self.api_requester.api_sig.connect(self.token_slot)
@@ -759,9 +760,10 @@ class Isogeo:
             if self.form_mng is None:
                 # Create the dockwidget (after translation) and keep reference
                 self.form_mng = SearchFormManager(self.tr)
-
                 self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
                 self.form_mng.qs_mng.lang = self.lang
+                self.form_mng.qs_mng.api_base_url = self.authenticator.api_params.get("url_base")
+
                 logger.debug(
                     "Plugin load time: {}".format(plugin_times.get(plg_reg_name, "NR"))
                 )

@@ -60,8 +60,11 @@ class QuickSearchManager:
         # path to json storage file for quicksearch
         self.json_path = Path(__file__).parents[1] / "_user" / "quicksearches.json"
 
-        # Getting wath the class need from ApiRequester to build search URL
+        # Getting what the class need from ApiRequester to build search URL
         self.url_builder = object
+
+        #Getting what the class need to build default search request URLs
+        self.api_base_url = str
 
     def write_params(self, search_name: str = "_default", search_kind: str = "Default"):
         """Write a new element in the json file when a search is saved."""
@@ -71,7 +74,7 @@ class QuickSearchManager:
         # If the name already exists, ask for a new one. ================ TO DO
         if search_kind == "Last":
             params = saved_searches.get(
-                "_current", saved_searches.get("_default")
+                "_current", "{}/resources/search?&_limit=0".format(self.api_base_url)
             )
         else:
             # Write the current parameters in a dict, and store it in the saved
@@ -173,8 +176,72 @@ class QuickSearchManager:
         return
 
     def load_file(self):
-        with open(self.json_path, "r") as saved_searches_file:
-            saved_searches = json.load(saved_searches_file)
+
+        try:
+            with open(self.json_path, "r") as json_content:
+                saved_searches = json.load(json_content)
+
+            if not isinstance(saved_searches, dict):
+                logger.warning(
+                    "_user/quicksearches.json file content is not correctly formatted : {}.".format(
+                        saved_searches
+                    )
+                )
+                saved_searches = 0
+            elif "_default" not in saved_searches:
+                logger.warning(
+                    "Missing '_default' quicksearch in _user/quicksearches.json file content : {}.".format(
+                        saved_searches
+                    )
+                )
+                saved_searches = 0
+            else:
+                logger.info(
+                    "_user/quicksearches.json file content successfully loaded : {}.".format(
+                        saved_searches
+                    )
+                )
+
+        except Exception as e:
+            if not self.json_path.exists() or not self.json_path.is_file():
+                logger.warning(
+                    "_user/quicksearches.json file can't be used : {} doesn't exist or is not a file : {}".format(
+                        str(self.json_path), str(e)
+                    )
+                )
+                logger.warning(
+                    "Let's create one with default values: {}.".format(self.json_path)
+                )
+                saved_searches = {
+                    "_default": {
+                        "contacts": None,
+                        "datatype": "type:dataset",
+                        "favorite": None,
+                        "formats": None,
+                        "geofilter": None,
+                        "inspire": None,
+                        "lang": "fr",
+                        "licenses": None,
+                        "ob": "relevance",
+                        "od": "desc",
+                        "operation": "intersects",
+                        "owners": None,
+                        "page": 1,
+                        "show": True,
+                        "srs": None,
+                        "text": "",
+                        "url": "{}/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0&_lang=fr".format(self.api_base_url),
+                    }
+                }
+                self.dump_file(saved_searches)
+            else:
+                logger.error(
+                    "_user/quicksearches.json file can't be read : {}.".format(
+                        str(e)
+                    )
+                )
+                saved_searches = 0
+
         logger.debug(
             "{} quicksearche(s) found : {}".format(
                 len(saved_searches.keys()), list(saved_searches.keys())
