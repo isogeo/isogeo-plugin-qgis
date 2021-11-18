@@ -401,7 +401,7 @@ class ResultsManager(QObject):
             if md.type == "vectorDataset" or md.type == "rasterDataset":
                 for layer in md.serviceLayers:
                     service = layer.get("service")
-                    if service is not None:
+                    if service is not None and service.get("format"):
                         srv_details = {
                             "path": service.get("path", "NR"),
                             "formatVersion": service.get("formatVersion"),
