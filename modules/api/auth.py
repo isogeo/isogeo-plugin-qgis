@@ -101,7 +101,7 @@ class Authenticator(QObject):
         # api parameters
         self.load_json_file_content()
         if not self.json_content:
-            raise Error("Anable to load {} file content.".format(self.json_path))
+            raise Error("Unable to load {} file content.".format(self.json_path))
         else:
             self.api_params = {
                 "app_id": "",
@@ -161,7 +161,16 @@ class Authenticator(QObject):
                         str(self.json_path), str(e)
                     )
                 )
-                self.json_content = 0
+                logger.warning(
+                    "Let's create one with default values: {}.".format(self.json_path)
+                )
+                self.json_content = {
+                    "api_base_url": "https://v1.api.isogeo.com",
+                    "api_auth_url": "https://id.api.isogeo.com",
+                    "app_base_url": "https://app.isogeo.com"
+                }
+                with open(self.json_path, "w") as json_content:
+                    json.dump(self.json_content, json_content, indent=4)
             else:
                 logger.error(
                     "config.json file can't be read : {}.".format(
@@ -262,14 +271,10 @@ class Authenticator(QObject):
             - QSettings
         """
         if store_location == "QSettings":
-            qsettings.setValue("isogeo/auth/app_id", self.api_params["app_id"])
-            qsettings.setValue("isogeo/auth/app_secret", self.api_params["app_secret"])
-            qsettings.setValue("isogeo/auth/url_base", self.api_params["url_base"])
-            qsettings.setValue("isogeo/auth/url_auth", self.api_params["url_auth"])
-            qsettings.setValue("isogeo/auth/url_token", self.api_params["url_token"])
-            qsettings.setValue(
-                "isogeo/auth/url_redirect", self.api_params["url_redirect"]
-            )
+            for param in self.api_params:
+                setting_key = "isogeo/auth/{}".format(param)
+                setting_value = self.api_params.get(param)
+                qsettings.setValue(setting_key, setting_value)
         else:
             pass
         logger.debug("Credentials stored into: {}".format(store_location))
@@ -285,26 +290,10 @@ class Authenticator(QObject):
         if credentials_source == "QSettings":
             self.api_params["app_id"] = qsettings.value("isogeo/auth/app_id", "")
             self.api_params["app_secret"] = qsettings.value("isogeo/auth/app_secret", "")
-            self.api_params["url_base"] = qsettings.value(
-                "isogeo/auth/url_base", self.api_params["url_base"]
-            )
-            self.api_params["url_auth"] = qsettings.value(
-                "isogeo/auth/url_auth", self.api_params["url_auth"]
-            )
-            self.api_params["url_token"] = qsettings.value(
-                "isogeo/auth/url_token", self.api_params["url_token"]
-            )
-            self.api_params["url_redirect"] = qsettings.value(
-                "isogeo/auth/url_redirect", "http://localhost:5000/callback"
-            )
         elif credentials_source == "oAuth2_file":
             creds = plg_tools.credentials_loader(self.cred_filepath)
             self.api_params["app_id"] = creds.get("client_id")
             self.api_params["app_secret"] = creds.get("client_secret")
-            self.api_params["url_base"] = self.api_params["url_base"]
-            self.api_params["url_auth"] = self.api_params["url_auth"]
-            self.api_params["url_token"] = self.api_params["url_token"]
-            self.api_params["url_redirect"] = "http://localhost:5000/callback"
             self.credentials_storer(store_location="QSettings")
         else:
             pass
