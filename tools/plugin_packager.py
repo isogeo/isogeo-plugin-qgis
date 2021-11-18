@@ -190,22 +190,6 @@ with ZipFile(PLG_FINAL_ZIP_PATH, "w") as release_zip:
     )
 
     # -- User settings ----------------------------------------------------------
-    # add default config.json file
-    CONFIG = {
-        "api_base_url": "https://v1.api.isogeo.com",
-        "api_auth_url": "https://id.api.isogeo.com",
-        "app_base_url": "https://app.isogeo.com"
-    }
-
-    CONFIG_JSON = path.join(DIR_OUTPUT.resolve(), "..", "config.json")
-    with open(CONFIG_JSON, "w") as qs:
-        json.dump(CONFIG, qs, sort_keys=True, indent=4)
-
-    release_zip.write(
-        CONFIG_JSON,
-        "{}/{}".format(PLG_DIRNAME, "config.json"),
-    )
-
     # add default _user/quicksearches.json file
     QUICKSEARCHES = {
         "_default": {
@@ -237,6 +221,22 @@ with ZipFile(PLG_FINAL_ZIP_PATH, "w") as release_zip:
         QUICKSEARCHES_JSON,
         "{}/{}/{}".format(PLG_DIRNAME, "_user", "quicksearches.json"),
     )
+
+    # # add default config.json file
+    # CONFIG = {
+    #     "api_base_url": "https://v1.api.isogeo.com",
+    #     "api_auth_url": "https://id.api.isogeo.com",
+    #     "app_base_url": "https://app.isogeo.com"
+    # }
+
+    # CONFIG_JSON = path.join(DIR_OUTPUT.resolve(), "..", "config.json")
+    # with open(CONFIG_JSON, "w") as qs:
+    #     json.dump(CONFIG, qs, sort_keys=True, indent=4)
+
+    # release_zip.write(
+    #     CONFIG_JSON,
+    #     "{}/{}".format(PLG_DIRNAME, "config.json"),
+    # )
 
     # # add default _user/db_connections.json file
     # DB_CONNECTIONS = {
