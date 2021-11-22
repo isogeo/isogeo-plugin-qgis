@@ -190,37 +190,37 @@ with ZipFile(PLG_FINAL_ZIP_PATH, "w") as release_zip:
     )
 
     # -- User settings ----------------------------------------------------------
-    # add default _user/quicksearches.json file
-    QUICKSEARCHES = {
-        "_default": {
-            "contacts": None,
-            "datatype": "type:dataset",
-            "favorite": None,
-            "formats": None,
-            "geofilter": None,
-            "inspire": None,
-            "lang": "fr",
-            "licenses": None,
-            "ob": "relevance",
-            "od": "desc",
-            "operation": "intersects",
-            "owners": None,
-            "page": 1,
-            "show": True,
-            "srs": None,
-            "text": "",
-            "url": "https://v1.api.isogeo.com/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0&_lang=fr",
-        }
-    }
+    # # add default _user/quicksearches.json file
+    # QUICKSEARCHES = {
+    #     "_default": {
+    #         "contacts": None,
+    #         "datatype": "type:dataset",
+    #         "favorite": None,
+    #         "formats": None,
+    #         "geofilter": None,
+    #         "inspire": None,
+    #         "lang": "fr",
+    #         "licenses": None,
+    #         "ob": "relevance",
+    #         "od": "desc",
+    #         "operation": "intersects",
+    #         "owners": None,
+    #         "page": 1,
+    #         "show": True,
+    #         "srs": None,
+    #         "text": "",
+    #         "url": "https://v1.api.isogeo.com/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0&_lang=fr",
+    #     }
+    # }
 
-    QUICKSEARCHES_JSON = path.join(DIR_OUTPUT.resolve(), "..", "quicksearches.json")
-    with open(QUICKSEARCHES_JSON, "w") as qs:
-        json.dump(QUICKSEARCHES, qs, sort_keys=True, indent=4)
+    # QUICKSEARCHES_JSON = path.join(DIR_OUTPUT.resolve(), "..", "quicksearches.json")
+    # with open(QUICKSEARCHES_JSON, "w") as qs:
+    #     json.dump(QUICKSEARCHES, qs, sort_keys=True, indent=4)
 
-    release_zip.write(
-        QUICKSEARCHES_JSON,
-        "{}/{}/{}".format(PLG_DIRNAME, "_user", "quicksearches.json"),
-    )
+    # release_zip.write(
+    #     QUICKSEARCHES_JSON,
+    #     "{}/{}/{}".format(PLG_DIRNAME, "_user", "quicksearches.json"),
+    # )
 
     # # add default config.json file
     # CONFIG = {
