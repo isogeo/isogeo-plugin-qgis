@@ -117,7 +117,8 @@ tests/fixtures
 tests/try
 
 # user settings
-_user/
+_user/*.json
+config_*.json
 # _user/cache.json
 # _user/quicksearches.json
 
