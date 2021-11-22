@@ -164,6 +164,13 @@ class Isogeo:
         else:
             pass
 
+        # requiered `_user` subfolder
+        plg_userdir = Path(plg_basepath) / "_user"
+        if not plg_userdir.exists():
+            plg_userdir.mkdir()
+        else:
+            pass
+
         # initialize locale
         try:
             locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
