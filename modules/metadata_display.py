@@ -4,7 +4,6 @@
 # Standard library
 import logging
 from datetime import datetime
-from functools import partial
 
 # PyQGIS
 from qgis.core import (
@@ -55,6 +54,8 @@ ref_lyr = QgsRasterLayer(osm_standard, "OSM_Standard", "wms")
 class MetadataDisplayer:
     """Manage metadata displaying in QGIS UI."""
 
+    md_edition_url = str
+
     def __init__(self, app_base_url: str):
         """Class constructor."""
         self.complete_md = IsogeoMdDetails()
@@ -62,6 +63,9 @@ class MetadataDisplayer:
 
         # some basic settings
         self.app_base_url = app_base_url
+        self.complete_md.btn_md_edit.pressed.connect(
+            lambda: plg_tools.open_webpage(link=self.md_edition_url)
+        )
 
         self.complete_md.wid_bbox.setCanvasColor(Qt.white)
         self.complete_md.wid_bbox.enableAntiAliasing(True)
@@ -398,11 +402,8 @@ class MetadataDisplayer:
 
         # -- EDIT LINK -------------------------------------------------------
         # only if user declared himself as Isogeo editor in authentication form
-        app_md_url = "{}/groups/{}/resources/{}/identification".format(self.app_base_url, wg_id, md.get("_id"))
+        self.md_edition_url = "{}/groups/{}/resources/{}/identification".format(self.app_base_url, wg_id, md.get("_id"))
 
-        self.complete_md.btn_md_edit.pressed.connect(
-            partial(plg_tools.open_webpage, app_md_url)
-        )
         self.complete_md.btn_md_edit.setEnabled(
             int(qsettings.value("isogeo/user/editor", 1))
         )
