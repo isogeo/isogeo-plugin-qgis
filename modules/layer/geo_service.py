@@ -821,18 +821,25 @@ class GeoServiceManager:
             bbox = ""
             logger.warning("BBOX parameter cannot be set because wms layer object has no boundingBox attributes.")
         else:
+            source_crs_id = ""
             if hasattr(wms_lyr, "boundingBox"):
                 wms_lyr_bbox = wms_lyr.boundingBox
-                logger.info("Let's use {} bbox.".format(wms_lyr_bbox[4]))
-                source_crs = QgsCoordinateReferenceSystem(wms_lyr_bbox[4])
             elif hasattr(wms_lyr, "boundingBoxWGS84"):
                 wms_lyr_bbox = wms_lyr.boundingBoxWGS84
-                logger.info("Let's use WGS84 bbox.")
-                source_crs = QgsCoordinateReferenceSystem("EPSG:4326")
+                source_crs_id = "EPSG:4326"
             else:
                 wms_lyr_bbox = wms_lyr.get("bbox")
-                logger.info("Let's use {} bbox.".format(wms_lyr_bbox[4]))
-                source_crs = QgsCoordinateReferenceSystem(wms_lyr_bbox[4])
+
+            if source_crs_id == "EPSG:4326":
+                pass
+            else:
+                if len(wms_lyr_bbox) >= 5:
+                    source_crs_id = wms_lyr_bbox[4]
+                else:  # because apparently this is not always the case : https://magosm.magellium.com/geoserver/ows?
+                    source_crs_id = srs
+
+            logger.info("Let's use {} bbox.".format(source_crs_id))
+            source_crs = QgsCoordinateReferenceSystem(source_crs_id)
 
             logger.debug("*=====* source bbox crs : {}".format(source_crs.authid()))
             logger.debug("*=====* source bbox : {}".format(wms_lyr_bbox))
