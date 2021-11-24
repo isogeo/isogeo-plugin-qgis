@@ -103,12 +103,22 @@ class Authenticator(QObject):
         if not self.json_content:
             raise Error("Unable to load {} file content.".format(self.json_path))
         else:
+            if self.json_content.get("api_base_url").endswith("/"):
+                v1_url = self.json_content.get("api_base_url")[:-1]
+            else:
+                v1_url = self.json_content.get("api_base_url")
+
+            if self.json_content.get("api_auth_url").endswith("/"):
+                id_url = self.json_content.get("api_auth_url")[:-1]
+            else:
+                id_url = self.json_content.get("api_auth_url")
+
             self.api_params = {
                 "app_id": "",
                 "app_secret": "",
-                "url_base": self.json_content.get("api_base_url"),
-                "url_auth": "{}/oauth/authorize".format(self.json_content.get("api_base_url")),
-                "url_token": "{}/oauth/token".format(self.json_content.get("api_auth_url")),
+                "url_base": v1_url,
+                "url_auth": "{}/oauth/authorize".format(id_url),
+                "url_token": "{}/oauth/token".format(id_url),
                 "url_redirect": "http://localhost:5000/callback",
             }
 
