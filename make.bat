@@ -9,6 +9,7 @@ pyuic5 -x "ui\db_connections\ui_db_connections.ui" -o "ui\db_connections\ui_db_c
 pyuic5 -x "ui\metadata\ui_md_details.ui" -o "ui\metadata\ui_md_details.py"
 pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicksearch_rename.py"
 pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
+pyuic5 -x "ui\portal\ui_portal_base_url.ui" -o "ui\portal\ui_portal_base_url.py"
 
 Echo "Updating Qt resources files (images)"
 pyrcc5 resources.qrc -o resources_rc.py

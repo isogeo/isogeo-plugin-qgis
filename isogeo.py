@@ -340,10 +340,6 @@ class Isogeo:
     # -------------------------------------------------------------------------
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed."""
-        # save base portal URL in qsettings
-        qsettings.setValue(
-            "isogeo/settings/portal_base_url", self.form_mng.input_portal_url.text()
-        )
         # save cache
         self.form_mng.results_mng.cache_mng.dumper()
         # disconnects
@@ -881,9 +877,7 @@ class Isogeo:
         self.form_mng.btn_open_ora_config_dialog.pressed.connect(
             partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "Oracle")
         )
-        self.form_mng.input_portal_url.setText(
-            qsettings.value("isogeo/settings/portal_base_url")
-        )
+        self.form_mng.btn_open_ora_config_dialog.setIcon(ico_ora)
 
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.form_mng.setWindowTitle("Isogeo - {}".format(self.plg_version))

@@ -64,7 +64,7 @@
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_search">
        <property name="maximumSize">
@@ -1447,25 +1447,6 @@
               </layout>
              </item>
              <item>
-              <widget class="QCheckBox" name="chb_portal_url">
-               <property name="font">
-                <font>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Add portal metadata URL to layer's properties</string>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
-               </property>
-               <property name="checked">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
               <layout class="QHBoxLayout" name="horizontalLayout_7">
                <item>
                 <widget class="QLabel" name="label_portal_url">
@@ -1479,20 +1460,46 @@
                   <enum>Qt::LeftToRight</enum>
                  </property>
                  <property name="text">
-                  <string>Please specify the portal base URL here:</string>
+                  <string>Configure Isogeo portal metadata URL display into layer's properties</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="input_portal_url">
-                 <property name="enabled">
-                  <bool>false</bool>
+                <spacer name="horizontalSpacer_22">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
                  </property>
-                 <property name="inputMask">
-                  <string/>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_open_portalURL_config_dialog">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>25</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Choose to add metadata portal URL to layer properties and specify portal base URL</string>
                  </property>
                  <property name="text">
                   <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../resources.qrc">
+                   <normaloff>:/plugins/Isogeo/resources/edit.svg</normaloff>:/plugins/Isogeo/resources/edit.svg</iconset>
                  </property>
                 </widget>
                </item>

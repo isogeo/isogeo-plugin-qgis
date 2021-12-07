@@ -606,7 +606,7 @@ class ResultsManager(QObject):
         add_portal_md_url = int(
             qsettings.value("isogeo/settings/add_metadata_url_portal", 0)
         )
-        portal_base_url = self.form_mng.input_portal_url.text()
+        portal_base_url = qsettings.value("isogeo/settings/portal_base_url", "")
 
         if add_portal_md_url and portal_base_url != "":
             portal_md_url = portal_base_url + metadata_id
