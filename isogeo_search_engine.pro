@@ -4,7 +4,8 @@ FORMS = ui/isogeo_dockwidget_base.ui \
     ui/db_connections/ui_db_connections.ui \
     ui/metadata/ui_md_details.ui \
     ui/quicksearch/ui_quicksearch_new.ui \
-    ui/quicksearch/ui_quicksearch_rename.ui
+    ui/quicksearch/ui_quicksearch_rename.ui \
+    ui/portal/ui_portal_base_url.ui
 
 SOURCES = __init__.py \
 	isogeo.py \
