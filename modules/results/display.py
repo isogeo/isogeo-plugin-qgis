@@ -391,10 +391,12 @@ class ResultsManager(QObject):
                                 pass
                     else:
                         pass
+                elif md.format.lower() in self.service_ico_dict:
+                    pass
                 else:
                     logger.debug(
                         "Metadata {} has a format ({}) but it's not handled hear or path is"
-                        "missing".format(md._id, md.format)
+                        " missing".format(md._id, md.format)
                     )
                     pass
             # Associated service layers
@@ -449,7 +451,7 @@ class ResultsManager(QObject):
                         "path": md.path,
                         "formatVersion": md.formatVersion,
                     }
-                    if md.format in self.service_ico_dict:
+                    if md.format.lower() in self.service_ico_dict:
                         service_type = md.format.upper()
                         for layer in md.layers:
                             layer_title = geo_srv_mng.build_layer_title(
