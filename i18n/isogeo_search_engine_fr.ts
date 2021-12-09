@@ -178,12 +178,12 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1810"/>
         <source>Authentication settings</source>
-        <translation>Paramètres d&apos;authentification</translation>
+        <translation>Authentification</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1522"/>
         <source>Search settings</source>
-        <translation>Paramètres de recherche</translation>
+        <translation>Recherche</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1702"/>
@@ -313,7 +313,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1364"/>
         <source>Layer adding settings</source>
-        <translation>Paramètres d&apos;ajout de couche</translation>
+        <translation>Ajout de couche</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1386"/>
