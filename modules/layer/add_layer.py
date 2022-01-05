@@ -46,6 +46,10 @@ qgis_wms_formats = (
     "image/tiff",
 )
 
+li_ora_multiGeom_ok = [
+    [1, 5], [2, 6], [3, 7]
+]
+
 # ############################################################################
 # ##### Conditional imports ########
 # ##################################
@@ -434,16 +438,36 @@ class LayerAdder:
         uri.setDataSource(table[0], table[1], table[2])
 
         # in case of multi-geometry table:
+        li_geomTypes = table_infos[5]
+        is_multi_geom = 0
+        # in case of point&multi-point, line&multi-line, polygone&multi-polygone,
+        # QGIS is able to handle, so let's consider that the geometry type is multiple only
+        # if there is 2 geometry types which are not [5, 1], [6, 2] or [7, 3]
+        # or if there is more than 2 differents geometry types
+        if len(li_geomTypes) <= 1:
+            pass
+        elif all(li_geomTypes != ora_multiGeom_ok for ora_multiGeom_ok in li_ora_multiGeom_ok):
+            is_multi_geom = 1
+        else:
+            pass
+        logger.debug("*=====* {} --> {}".format(li_geomTypes, is_multi_geom))
+        # Building the layer
         li_geomType_layers = []
-        if len(table_infos[5]):
-            for geomType in table_infos[5]:
+        if len(li_geomTypes) == 0:
+            logger.debug("*=====* {} --> {}".format(li_geomTypes, is_multi_geom))
+            layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
+            li_geomType_layers.append(layer)
+        elif not is_multi_geom:
+            logger.debug("*=====* {} --> {}".format(li_geomTypes, is_multi_geom))
+            uri.setWkbType(li_geomTypes[0])
+            layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
+            li_geomType_layers.append(layer)
+        else:
+            logger.debug("*=====* {} --> {}".format(li_geomTypes, is_multi_geom))
+            for geomType in li_geomTypes:
                 uri.setWkbType(geomType)
                 layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
                 li_geomType_layers.append(layer)
-        else:
-            # Building the layer
-            layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
-            li_geomType_layers.append(layer)
 
         li_layers_to_add = []
         for geomType_layer in li_geomType_layers:

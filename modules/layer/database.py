@@ -575,7 +575,7 @@ class DataBaseManager:
                     table_crs = QgsCoordinateReferenceSystem()
 
                 try:
-                    ora_table_geomType_request = "select DISTINCT c.{}.GET_GTYPE() from {}.{} c order by c.{}.GET_GTYPE() desc".format(row[2], row[0], row[1], row[2])
+                    ora_table_geomType_request = "select DISTINCT c.{}.GET_GTYPE() from {}.{} c order by c.{}.GET_GTYPE() asc".format(row[2], row[0], row[1], row[2])
                     table_geomType_response = c._fetchall(c._execute(None, ora_table_geomType_request))
                     table_geomType = [int(elem[0]) for elem in table_geomType_response]
 
