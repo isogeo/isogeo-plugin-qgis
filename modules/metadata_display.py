@@ -22,8 +22,7 @@ from qgis.core import (
 # PyQT
 from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtWidgets import QTableWidgetItem
-
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QLabel
 # 3rd party
 from .isogeo_pysdk import IsogeoTranslator
 
@@ -139,8 +138,18 @@ class MetadataDisplayer:
             tbl_attr.setRowCount(len(fields))
             idx = 0
             for i in fields:
-                tbl_attr.setItem(idx, 0, QTableWidgetItem(i.get("name", "NR")))
-                tbl_attr.setItem(idx, 1, QTableWidgetItem(i.get("alias", "")))
+                alias_text = i.get("alias", "")
+                if i.get("comment", "") != "" and alias_text == "":
+                    alias_text += "<i>{}</i>".format(i.get("comment", ""))
+                elif i.get("comment", "") != "":
+                    alias_text += "<br><i>{}</i>".format(i.get("comment", ""))
+                else:
+                    pass
+                alias_label = QLabel(alias_text)
+                alias_label.setWordWrap(True)
+
+                tbl_attr.setItem(idx, 0, QTableWidgetItem(i.get("name", "")))
+                tbl_attr.setCellWidget(idx, 1, alias_label)
                 tbl_attr.setItem(idx, 2, QTableWidgetItem(i.get("dataType", "")))
                 tbl_attr.setItem(idx, 3, QTableWidgetItem(i.get("description", "")))
                 idx += 1
@@ -148,6 +157,14 @@ class MetadataDisplayer:
             # adapt size
             tbl_attr.horizontalHeader().setStretchLastSection(True)
             tbl_attr.verticalHeader().setSectionResizeMode(3)
+
+            # adapt alias column labels width to column width
+            alias_column_width = tbl_attr.horizontalHeader().sectionSize(1)
+            for i in range(idx):
+                tbl_attr.cellWidget(i, 1).setMaximumWidth(alias_column_width)
+
+            tbl_attr.horizontalHeader().sectionResized.connect(self.resize_alias_labels)
+
         else:
             menu_list = self.complete_md.li_menu
             item = menu_list.item(1)
@@ -609,6 +626,13 @@ class MetadataDisplayer:
             # should not exist
             logger.error("Metadata type not recognized:", md_type)
             return
+
+    def resize_alias_labels(self, column_index, old_size, new_size):
+        if column_index == 1:
+            for i in range(self.complete_md.tbl_attributes.rowCount()):
+                self.complete_md.tbl_attributes.cellWidget(i, 1).setMaximumWidth(new_size)
+        else:
+            pass
 
 
 # #############################################################################
