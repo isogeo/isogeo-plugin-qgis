@@ -356,7 +356,7 @@ class ResultsManager(QObject):
                                 for ora_conn in self.db_mng.dbms_specifics_infos.get(
                                     "Oracle"
                                 ).get("connections")
-                            if md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")
+                                if md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")
                             ]
                         else:
                             pass
@@ -593,8 +593,8 @@ class ResultsManager(QObject):
             return False
         if dir_file not in self.cache_mng.cached_unreach_paths:
             try:
-                with open(filepath) as f:
-                    return str(filepath)
+                with open(filepath):
+                    pass
             except Exception as e:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
                 logger.info(
@@ -606,6 +606,7 @@ class ResultsManager(QObject):
         else:
             logger.debug("Path has been ignored because it's cached.")
             return False
+        return str(filepath)
 
     def build_md_portal_url(self, metadata_id: str):
         """Build the URL of the metadata into Isogeo Portal (see https://github.com/isogeo/isogeo-plugin-qgis/issues/312)
@@ -652,6 +653,7 @@ class ResultsManager(QObject):
         # method ending
         button.setText(final_text)
         return
+
 
 # #############################################################################
 # ##### Stand alone program ########

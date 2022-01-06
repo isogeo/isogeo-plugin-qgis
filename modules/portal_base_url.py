@@ -3,8 +3,6 @@
 
 # Standard library
 import logging
-import json
-from pathlib import Path
 
 # PyQGIS
 from qgis.utils import iface

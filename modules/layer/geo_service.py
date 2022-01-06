@@ -791,7 +791,6 @@ class GeoServiceManager:
         else:
             srs = self.choose_appropriate_srs(crs_options=[])
 
-
         # BBOX parameter
         destination_crs = QgsCoordinateReferenceSystem(srs)
         has_bbox = False
