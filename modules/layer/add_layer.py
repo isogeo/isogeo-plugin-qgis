@@ -266,12 +266,8 @@ class LayerAdder:
         else:
             url_builder = self.dict_service_types.get(service_type)[2]
 
-        logger.debug("*=====* add_from_service - service_type --> {}".format(service_type))
-        logger.debug("*=====* add_from_service - api_layer --> {}".format(api_layer))
-        logger.debug("*=====* add_from_service - service_details --> {}".format(service_details))
         # use GeoServiceManager to retrieve all the infos we need to add the layer to the canvas
         layer_infos = url_builder(api_layer, service_details)
-        logger.debug("*=====* add_from_service - layer_infos --> {}".format(layer_infos))
         # If everything is ok, let's create the layer that we gonna try to add to the canvas
         if layer_infos[0]:
             layer_url = layer_infos[2]
@@ -293,7 +289,6 @@ class LayerAdder:
                 added_layer.append(added)
         else:
             added_layer = self.add_service_layer(layer_url, layer_title, service_type)
-        logger.debug("*=====* add_from_service - added_layer --> {}".format(added_layer))
         return added_layer
 
     def add_from_pg_database(self, layer_info: dict):
@@ -450,20 +445,16 @@ class LayerAdder:
             is_multi_geom = 1
         else:
             pass
-        logger.debug("*=====* {} --> {}".format(li_geomTypes, is_multi_geom))
         # Building the layer
         li_geomType_layers = []
         if len(li_geomTypes) == 0:
-            logger.debug("*=====* {} --> {}".format(li_geomTypes, is_multi_geom))
             layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
             li_geomType_layers.append(layer)
         elif not is_multi_geom:
-            logger.debug("*=====* {} --> {}".format(li_geomTypes, is_multi_geom))
             uri.setWkbType(li_geomTypes[0])
             layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
             li_geomType_layers.append(layer)
         else:
-            logger.debug("*=====* {} --> {}".format(li_geomTypes, is_multi_geom))
             for geomType in li_geomTypes:
                 uri.setWkbType(geomType)
                 layer = QgsVectorLayer(uri.uri(), table[1], "oracle")

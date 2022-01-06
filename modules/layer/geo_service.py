@@ -407,7 +407,6 @@ class GeoServiceManager:
 
         service_dict["typenames"] = li_typenames
         service_dict[service_type] = li_layers
-        logger.debug("*=====* parse_ogc_xml - service dict --> {}".format(service_dict))
         return service_dict
 
     def check_ogc_service(
@@ -499,7 +498,6 @@ class GeoServiceManager:
                 try:
                     service_dict = self.parse_ogc_xml(service_type, service_dict)
                     logger.info("parse_ogc_xml method has to be used.")
-                    logger.debug("*=====* check_ogc_service - service dict --> {}".format(service_dict))
                     return 1, service_dict
                 except Exception as e:
                     error_msg = "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
@@ -555,7 +553,6 @@ class GeoServiceManager:
         else:
             pass
 
-        logger.debug("*=====* check_ogc_service - service_dict --> {}".format(service_dict))
         return 1, service_dict
 
     def build_wfs_url(self, api_layer: dict, srv_details: dict):
@@ -646,8 +643,6 @@ class GeoServiceManager:
             ]
         srs = self.choose_appropriate_srs(crs_options=available_crs_options)
 
-        logger.debug("*=====* srs chosen : {}".format(srs))
-
         # build URL
         li_url_params = [
             "REQUEST=GetFeature",
@@ -662,12 +657,10 @@ class GeoServiceManager:
         if "EPSG" in srs:
             srs_code = srs.split(":")[1]
 
-            logger.debug("*=====* build_wfs_url - srs_code --> {}".format(srs_code))
             if wfs_dict.get("manual"):
                 srs_id = wfs_lyr.get("srs_id")
             else:
                 srs_id = [crsOption.id for crsOption in wfs[layer_typename].crsOptions if srs_code in str(crsOption.code)][0]
-            logger.debug("*=====* build_wfs_url - srs_id --> {}".format(srs_id))
 
             canvas_rectangle = iface.mapCanvas().extent()
             canvas_crs = iface.mapCanvas().mapSettings().destinationCrs()
@@ -684,13 +677,11 @@ class GeoServiceManager:
                 srs_id
             )
             li_url_params.append(bbox_parameter)
-            logger.debug("*=====* build_wfs_url - bbox_value --> {}".format(bbox_parameter))
         else:
             pass
 
         wfs_url_final = wfs_url_base + "&".join(li_url_params)
 
-        logger.debug("*=====* build_wfs_url - wfs_url_final --> {}".format(wfs_url_final))
         return ("WFS", layer_title, wfs_url_final)
 
     def build_wms_url(self, api_layer: dict, srv_details: dict):
@@ -794,15 +785,12 @@ class GeoServiceManager:
 
         # SRS definition
         if hasattr(wms_lyr, "crsOptions"):
-            logger.debug("*=====* crs options : {}".format(wms_lyr.crsOptions))
             srs = self.choose_appropriate_srs(crs_options=wms_lyr.crsOptions)
         elif "crsOptions" in wms_lyr:  # if the wms_lyr object was generated via parse_ogc_xml
-            logger.debug("*=====* crs options : {}".format(wms_lyr.get("crsOptions")))
             srs = self.choose_appropriate_srs(crs_options=wms_lyr.get("crsOptions"))
         else:
             srs = self.choose_appropriate_srs(crs_options=[])
 
-        logger.debug("*=====* srs chosen : {}".format(srs))
 
         # BBOX parameter
         destination_crs = QgsCoordinateReferenceSystem(srs)
@@ -841,8 +829,6 @@ class GeoServiceManager:
             logger.info("Let's use {} bbox.".format(source_crs_id))
             source_crs = QgsCoordinateReferenceSystem(source_crs_id)
 
-            logger.debug("*=====* source bbox crs : {}".format(source_crs.authid()))
-            logger.debug("*=====* source bbox : {}".format(wms_lyr_bbox))
             coord_transformer = QgsCoordinateTransform(source_crs, destination_crs, QgsProject.instance())
             bbox_rectangle = QgsRectangle(
                 float(wms_lyr_bbox[0]),
@@ -851,7 +837,6 @@ class GeoServiceManager:
                 float(wms_lyr_bbox[3]),
             )
             transformed_bbox_rectangle = coord_transformer.transform(bbox_rectangle)
-            logger.debug("*=====* bbox conversion : {} --> {}".format(bbox_rectangle, transformed_bbox_rectangle))
 
             bbox = "{},{},{},{}".format(
                 transformed_bbox_rectangle.xMinimum(),
@@ -859,7 +844,6 @@ class GeoServiceManager:
                 transformed_bbox_rectangle.xMaximum(),
                 transformed_bbox_rectangle.yMaximum(),
             )
-            logger.debug("*=====* final bbox : {}".format(bbox))
 
         li_url = []
         for layer_name in li_layer_name:
@@ -902,8 +886,6 @@ class GeoServiceManager:
             else:
                 wms_url_final = unquote(urlencode(wms_url_params, "utf8"))
             li_url.append(wms_url_final)
-
-        logger.debug("*=====* build_wms_url - li_url --> {}".format(li_url))
 
         return ("WMS", li_layer_title, li_url)
 
@@ -1046,7 +1028,6 @@ class GeoServiceManager:
         ]
         wmts_url_final = "".join(li_uri_params)
 
-        logger.debug("*=====* build_wmts_url - wmts_url_final --> {}".format(wmts_url_final))
         # method ending
         return ("WMTS", layer_title, wmts_url_final)
 

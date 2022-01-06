@@ -627,10 +627,17 @@ class MetadataDisplayer:
             logger.error("Metadata type not recognized:", md_type)
             return
 
-    def resize_alias_labels(self, column_index, old_size, new_size):
+    def resize_alias_labels(self, column_index, old_width, new_width):
+        """Slot to self.complete_md.tbl_attributes.horizontalHeader().sectionResized signal. Resize
+        alias labels to fit column width
+
+        :param int column_index: index of the column
+        :param int old_width: old width of the column
+        :param int new_width: new width of the column
+        """
         if column_index == 1:
             for i in range(self.complete_md.tbl_attributes.rowCount()):
-                self.complete_md.tbl_attributes.cellWidget(i, 1).setMaximumWidth(new_size)
+                self.complete_md.tbl_attributes.cellWidget(i, 1).setMaximumWidth(new_width)
         else:
             pass
 
