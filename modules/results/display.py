@@ -167,7 +167,7 @@ class ResultsManager(QObject):
             # Displaying the metadata title inside a button
             title = md.title_or_name()
             if title:
-                btn_md_title = QPushButton(plg_tools.format_button_title(title))
+                btn_md_title = QPushButton(title)
             else:
                 btn_md_title = QPushButton(
                     self.tr("Undefined", context=__class__.__name__)
@@ -568,6 +568,13 @@ class ResultsManager(QObject):
         # the height of the row adapts to the content without falling below 30px
         vheader.setMinimumSectionSize(30)
         vheader.setSectionResizeMode(3)
+        # adapt title column button width content to column width
+        title_column_width = hheader.sectionSize(0)
+        scrollBar_width = tbl_result.verticalScrollBar().sizeHint().width()
+        max_width = title_column_width - scrollBar_width - 10
+        for i in range(tbl_result.rowCount()):
+            btn_title = tbl_result.cellWidget(i, 0)
+            self.format_button_title(btn_title, max_width)
         # method ending
         return None
 
@@ -617,6 +624,34 @@ class ResultsManager(QObject):
 
         return portal_md_url
 
+    def format_button_title(self, button, line_width):
+        """Format the title to fit the button width.
+
+        :param QPushButton button: button which text has to be formated
+        :param int width: width to fit with
+        """
+        title = button.text().strip()
+        fm = button.fontMetrics()
+
+        final_text = ""
+        words = title.split(" ")
+        if len(words) == 1:
+            word_width = fm.size(1, title).width()
+            if word_width > line_width:
+                final_text = fm.elidedText(title, 1, line_width)
+            else:
+                final_text = title
+        else:
+            for word in words:
+                current_width = fm.size(1, final_text + word).width()
+                if current_width > line_width:
+                    final_text += " \n" + word
+                else:
+                    final_text += word + " "
+        final_text = final_text.rstrip()
+        # method ending
+        button.setText(final_text)
+        return
 
 # #############################################################################
 # ##### Stand alone program ########
