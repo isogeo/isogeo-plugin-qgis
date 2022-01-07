@@ -135,11 +135,7 @@ class ResultsManager(QObject):
 
         tbl_result = self.tbl_result
 
-        # Set table rows
-        if api_results.get("total") >= 10:
-            tbl_result.setRowCount(10)
-        else:
-            tbl_result.setRowCount(api_results.get("total"))
+        tbl_result.setRowCount(len(api_results.get("results")))
 
         # dimensions (see https://github.com/isogeo/isogeo-plugin-qgis/issues/276)
         hheader = tbl_result.horizontalHeader()
