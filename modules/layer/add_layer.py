@@ -455,10 +455,11 @@ class LayerAdder:
             layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
             li_geomType_layers.append(layer)
         else:
+            li_geomTypes.sort(reverse=True)
             for geomType in li_geomTypes:
                 uri.setWkbType(geomType)
                 layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
-                li_geomType_layers.append(layer)
+                li_geomType_layers += [layer]
 
         li_layers_to_add = []
         for geomType_layer in li_geomType_layers:
