@@ -164,6 +164,13 @@ class Isogeo:
         else:
             pass
 
+        # requiered `_user` subfolder
+        plg_userdir = Path(plg_basepath) / "_user"
+        if not plg_userdir.exists():
+            plg_userdir.mkdir()
+        else:
+            pass
+
         # initialize locale
         try:
             locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
@@ -211,13 +218,13 @@ class Isogeo:
         # instanciating
         self.informer = UserInformer(message_bar=msgBar, trad=self.tr)
 
-        self.md_display = MetadataDisplayer()
-        self.md_display.tr = self.tr
+        self.authenticator = Authenticator()
 
-        self.approps_mng = SharesParser()
+        self.approps_mng = SharesParser(app_base_url=self.authenticator.app_url)
         self.approps_mng.tr = self.tr
 
-        self.authenticator = Authenticator()
+        self.md_display = MetadataDisplayer(app_base_url=self.authenticator.app_url)
+        self.md_display.tr = self.tr
 
         self.api_requester = ApiRequester()
         self.api_requester.tr = self.tr
@@ -225,6 +232,7 @@ class Isogeo:
         self.form_mng = SearchFormManager(self.tr)
         self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
         self.form_mng.qs_mng.lang = self.lang
+        self.form_mng.qs_mng.api_base_url = self.authenticator.api_params.get("url_base")
 
         # connecting
         self.api_requester.api_sig.connect(self.token_slot)
@@ -249,7 +257,6 @@ class Isogeo:
 
         self.old_text = ""
         self.page_index = 1
-        self.json_path = plg_basepath / "_user/quicksearches.json"
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message, context="Isogeo"):
@@ -333,10 +340,6 @@ class Isogeo:
     # -------------------------------------------------------------------------
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed."""
-        # save base portal URL in qsettings
-        qsettings.setValue(
-            "isogeo/settings/portal_base_url", self.form_mng.input_portal_url.text()
-        )
         # save cache
         self.form_mng.results_mng.cache_mng.dumper()
         # disconnects
@@ -641,8 +644,7 @@ class Isogeo:
                     canvas.refresh()
                 else:
                     canvas = iface.mapCanvas()
-                    canvas.mapRenderer().setProjectionsEnabled(True)
-                    canvas.mapRenderer().setDestinationCrs(
+                    canvas.mapSettings().setDestinationCrs(
                         QgsCoordinateReferenceSystem(
                             search_params.get("epsg"),
                             QgsCoordinateReferenceSystem.EpsgCrsId,
@@ -761,9 +763,10 @@ class Isogeo:
             if self.form_mng is None:
                 # Create the dockwidget (after translation) and keep reference
                 self.form_mng = SearchFormManager(self.tr)
-
                 self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
                 self.form_mng.qs_mng.lang = self.lang
+                self.form_mng.qs_mng.api_base_url = self.authenticator.api_params.get("url_base")
+
                 logger.debug(
                     "Plugin load time: {}".format(plugin_times.get(plg_reg_name, "NR"))
                 )
@@ -874,9 +877,7 @@ class Isogeo:
         self.form_mng.btn_open_ora_config_dialog.pressed.connect(
             partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "Oracle")
         )
-        self.form_mng.input_portal_url.setText(
-            qsettings.value("isogeo/settings/portal_base_url")
-        )
+        self.form_mng.btn_open_ora_config_dialog.setIcon(ico_ora)
 
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.form_mng.setWindowTitle("Isogeo - {}".format(self.plg_version))
@@ -885,7 +886,8 @@ class Isogeo:
         self.authenticator.tr = self.tr
         self.authenticator.lang = self.lang
         # checks
-        plg_tools.check_proxy_configuration()  # 22
+        url_to_check = self.authenticator.api_params.get("url_base").replace("https://", "").replace("http://", "")
+        plg_tools.check_proxy_configuration(url_to_check=url_to_check)  # 22
         self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
         # self.form_mng.cbb_chck_kw.setMaximumSize(QSize(250, 25))
         self.form_mng.txt_input.setFocus()

@@ -1,0 +1,22 @@
+{
+    "Oracle" : [
+        {
+            "connection_name" : "",
+            "host" : "",
+            "port" : "",
+            "database" : "",
+            "username" : "",
+            "password" : ""
+        }
+    ],
+    "PostgreSQL" : [
+        {
+            "connection_name" : "",
+            "host" : "",
+            "port" : "",
+            "database" : "",
+            "username" : "",
+            "password" : ""
+        }
+    ]
+}

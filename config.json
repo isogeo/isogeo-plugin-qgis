@@ -1,0 +1,5 @@
+{
+    "api_base_url": "https://v1.api.isogeo.com",
+    "api_auth_url": "https://id.api.isogeo.com",
+    "app_base_url": "https://app.isogeo.com"
+}

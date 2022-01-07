@@ -46,6 +46,10 @@ qgis_wms_formats = (
     "image/tiff",
 )
 
+li_ora_multiGeom_ok = [
+    [1, 5], [2, 6], [3, 7]
+]
+
 # ############################################################################
 # ##### Conditional imports ########
 # ##################################
@@ -420,54 +424,85 @@ class LayerAdder:
             uri = db_connection.get("uri")
 
         # Retrieve information about the table or the view from the database connection
-        geometry_column = [tab[2] for tab in db_connection.get("tables") if tab[0] == schema and tab[1] == table_name][0]
+        table_infos = [tab for tab in db_connection.get("tables") if tab[0] == schema and tab[1] == table_name][0]
+        geometry_column = table_infos[2]
         table = [schema, table_name, geometry_column]
+
         # Create a vector layer from retrieved infos
-        layer_is_ok = 0
         # set database schema, table name, geometry column
         uri.setDataSource(table[0], table[1], table[2])
-        # Building the layer
-        layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
-        # If the layer is valid that's find
-        if layer.isValid():
-            layer_is_ok = 1
-        # If it's not and the table seems to be a view, let's try to handle that
-        elif (
-            not layer.isValid()
-            and plg_tools.last_error[0] == "oracle"
-        ):
-            logger.debug(
-                "Oracle layer may be a view, so key column is missing. Trying to automatically set one..."
-            )
-            # get layer fields name to set as key column
-            fields_names = [i.name() for i in layer.dataProvider().fields()]
-            # sort them by name containing id to better perf
-            fields_names.sort(key=lambda x: ("id" not in x, x))
-            for field in fields_names:
-                uri.setKeyColumn(field)
-                layer = QgsVectorLayer(uri.uri(True), table[1], "oracle")
-                if layer.isValid():
-                    layer_is_ok = 1
-                    logger.debug(
-                        "'{}' chose as key column to add Oracle view".format(field)
-                    )
-                    break
-                else:
-                    continue
-            # let's prepare error message for the user just in case none field could be used as key column
-            error_msg = "The '{}' database view retrieved using '{}' data base connection is not valid : {}".format(
-                base_name, conn_name, plg_tools.last_error[1]
-            )
-        # If it's just not, let's prepare error message for the user
+
+        # in case of multi-geometry table:
+        li_geomTypes = table_infos[5]
+        is_multi_geom = 0
+        # in case of point&multi-point, line&multi-line, polygone&multi-polygone,
+        # QGIS is able to handle, so let's consider that the geometry type is multiple only
+        # if there is 2 geometry types which are not [5, 1], [6, 2] or [7, 3]
+        # or if there is more than 2 differents geometry types
+        if len(li_geomTypes) <= 1:
+            pass
+        elif all(li_geomTypes != ora_multiGeom_ok for ora_multiGeom_ok in li_ora_multiGeom_ok):
+            is_multi_geom = 1
         else:
-            logger.debug(
-                "Layer not valid. table = {} : {}".format(
-                    table, plg_tools.last_error
+            pass
+        # Building the layer
+        li_geomType_layers = []
+        if len(li_geomTypes) == 0:
+            layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
+            li_geomType_layers.append(layer)
+        elif not is_multi_geom:
+            uri.setWkbType(li_geomTypes[0])
+            layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
+            li_geomType_layers.append(layer)
+        else:
+            li_geomTypes.sort(reverse=True)
+            for geomType in li_geomTypes:
+                uri.setWkbType(geomType)
+                layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
+                li_geomType_layers += [layer]
+
+        li_layers_to_add = []
+        for geomType_layer in li_geomType_layers:
+            # If the layer is valid that's find
+            if geomType_layer.isValid():
+                li_layers_to_add.append(geomType_layer)
+            # If it's not and the table seems to be a view, let's try to handle that
+            elif (
+                not geomType_layer.isValid()
+                and plg_tools.last_error[0] == "oracle"
+            ):
+                logger.debug(
+                    "Oracle layer may be a view, so key column is missing. Trying to automatically set one..."
                 )
-            )
-            error_msg = "The '{}' database table retrieved using '{}' data base connection is not valid : {}".format(
-                base_name, conn_name, plg_tools.last_error[1]
-            )
+                # get layer fields name to set as key column
+                fields_names = [i.name() for i in geomType_layer.dataProvider().fields()]
+                # sort them by name containing id to better perf
+                fields_names.sort(key=lambda x: ("id" not in x, x))
+                for field in fields_names:
+                    uri.setKeyColumn(field)
+                    geomType_layer = QgsVectorLayer(uri.uri(True), table[1], "oracle")
+                    if geomType_layer.isValid():
+                        logger.debug(
+                            "'{}' chose as key column to add Oracle view".format(field)
+                        )
+                        li_layers_to_add.append(geomType_layer)
+                        break
+                    else:
+                        continue
+                # let's prepare error message for the user just in case none field could be used as key column
+                error_msg = "The '{}' database view retrieved using '{}' database connection is not valid : {}".format(
+                    base_name, conn_name, plg_tools.last_error[1]
+                )
+            # If it's just not, let's prepare error message for the user
+            else:
+                logger.debug(
+                    "Layer not valid. table = {} : {}".format(
+                        table, plg_tools.last_error
+                    )
+                )
+                error_msg = "The '{}' database table retrieved using '{}' database connection is not valid : {}".format(
+                    base_name, conn_name, plg_tools.last_error[1]
+                )
 
         # # If none information could be find for this table, let's prepare error message for the user
         # else:
@@ -476,10 +511,17 @@ class LayerAdder:
         #     )
 
         # If the vector layer could be properly created, let's add it to the canvas
-        if layer_is_ok:
-            logger.debug("Data added: {}".format(table_name))
-            lyr = QgsProject.instance().addMapLayer(layer)
-            return lyr, layer
+        added_layer = []
+        if len(li_layers_to_add):
+            for layer in li_layers_to_add:
+                logger.debug("Data added: {} (geomtype : {})".format(table_name, layer.wkbType()))
+
+                table_infos = [tab for tab in db_connection.get("tables") if tab[0] == schema and tab[1] == table_name][0]
+                layer.setCrs(table_infos[4])
+
+                lyr = QgsProject.instance().addMapLayer(layer)
+                added_layer.append([lyr, layer])
+            return added_layer
         # else, let's inform the user
         else:
             self.invalid_layer_inform(

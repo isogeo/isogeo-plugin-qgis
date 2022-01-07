@@ -3,6 +3,7 @@
 
 # Standard library
 import logging
+import json
 from configparser import ConfigParser
 from pathlib import Path
 from os import environ
@@ -17,7 +18,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 # PyQGIS
-from qgis.core import QgsDataSourceUri
+from qgis.core import QgsDataSourceUri, QgsCoordinateReferenceSystem
 
 try:
     from qgis.core import Qgis
@@ -69,7 +70,10 @@ btnBox_ico_dict = {
 
 # https://dataedo.com/kb/query/oracle/find-all-spatial-columns
 ora_sys_tables = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200')"
-ora_geom_column_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_tables tab on col.owner = tab.owner and col.table_name = tab.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(
+ora_geom_column_tab_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_tables tab on col.owner = tab.owner and col.table_name = tab.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(
+    ora_sys_tables
+)
+ora_geom_column_v_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_views v on col.owner = v.owner and col.table_name = v.view_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(
     ora_sys_tables
 )
 
@@ -114,6 +118,11 @@ class DataBaseManager:
         else:
             self.pg_configfile_path = 0
 
+        # check _user/db_connections.json file and load the content
+        self.json_content = dict
+        self.json_path = Path(__file__).parents[2] / "_user" / "db_connections.json"
+
+        # set connections infos management dict
         self.dbms_specifics_infos = {
             "Oracle": {
                 "prefered_connections": [],
@@ -239,10 +248,61 @@ class DataBaseManager:
             self.dbms_specifics_infos[dbms][dict_key] = []
             self.set_qsettings_connections(dbms, connections_kind, [])
 
+    def load_json_file_content(self):
+        """Retrieve the list of Oracle and PostgreSQL connections configured into _user/db_connections file"""
+        try:
+            with open(self.json_path, "r") as json_content:
+                self.json_content = json.load(json_content)
+
+            if not isinstance(self.json_content, dict):
+                logger.warning(
+                    "_user/db_connections.json file content is not correctly formatted : {}.".format(
+                        self.json_content
+                    )
+                )
+                self.json_content = 0
+            elif not any(dbms_name in list(self.json_content.keys()) for dbms_name in list(self.dbms_specifics_infos.keys())):
+                logger.warning(
+                    "_user/db_connections.json file content has no 'Oracle' or 'PostgreSQl' key : {}.".format(
+                        self.json_content
+                    )
+                )
+                self.json_content = 0
+            else:
+                logger.info(
+                    "_user/db_connections.json file content successfully loaded : {}.".format(
+                        self.json_content
+                    )
+                )
+
+        except Exception as e:
+            if not self.json_path.exists() or not self.json_path.is_file():
+                logger.warning(
+                    "_user/db_connections.json file can't be used : {} doesn't exist or is not a file : {}".format(
+                        str(self.json_path), str(e)
+                    )
+                )
+                logger.warning(
+                    "Let's create an empty one : {}.".format(self.json_path)
+                )
+                self.json_content = {
+                    "Oracle": [],
+                    "PostgreSQL": []
+                }
+                with open(self.json_path, "w") as json_content:
+                    json.dump([self.json_content], json_content, indent=4)
+            else:
+                logger.error(
+                    "_user/db_connections.json file can't be read : {}.".format(
+                        str(e)
+                    )
+                )
+                self.json_content = 0
+
     def config_file_parser(
         self, file_path: Path, connection_service: str, connection_name: str
     ):
-        """Retrieve connection parameters values stored into configuration fiel corresponding
+        """Retrieve connection parameters values stored into configuration file corresponding
         to the specified file_path.
         """
         # First, check if the configuration file can be read
@@ -260,7 +320,6 @@ class DataBaseManager:
             error_msg = "'{}' entry is missing into '{}' configuration file content.".format(
                 connection_service, file_path
             )
-            self.pg_configfile_path = 0
             return 0, error_msg
         else:
             service_params = config[connection_service]
@@ -416,6 +475,7 @@ class DataBaseManager:
         username: str = "",
         password: str = "",
         database: str = "",
+        database_alias: str = "",
         connection: str = "",
     ):
         """Set the connection to a specific PostGIS database and return the corresponding QgsDataSourceUri and tables infos."""
@@ -459,6 +519,7 @@ class DataBaseManager:
         username: str = "",
         password: str = "",
         database: str = "",
+        database_alias: str = "",
         connection: str = "",
     ):
         """Set the connection to a specific Oracle database and return the corresponding QgsDataSourceUri and tables infos."""
@@ -488,9 +549,46 @@ class DataBaseManager:
             logger.error(str(e))
             return 0
 
-        li_table_infos = c._fetchall(c._execute(None, ora_geom_column_request))
+        try:
+            geom_column_response = c._fetchall(c._execute(None, ora_geom_column_tab_request)) + c._fetchall(c._execute(None, ora_geom_column_v_request))
+        except Exception as e:
+            logger.error(
+                "Unable to retrieve tables and views from {} Oracle database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
+                    database, service, host, port, username, password
+                )
+            )
+            logger.error(str(e))
+            return uri, []
 
-        return uri, li_table_infos
+        li_tables_infos = []
+        for row in geom_column_response:
+            if len(row):
+
+                try:
+                    ora_table_srid_request = "select SRID from user_sdo_geom_metadata where table_name = '{}'".format(row[1])
+                    table_srid_response = c._fetchall(c._execute(None, ora_table_srid_request))
+                    table_srid = str(int(table_srid_response[0][0]))
+
+                    table_crs = QgsCoordinateReferenceSystem("EPSG:" + table_srid)
+                except Exception as e:
+                    logger.warning("'{}' Oracle table SRID could not be fetched : {}".format(row[1], e))
+                    table_crs = QgsCoordinateReferenceSystem()
+
+                try:
+                    ora_table_geomType_request = "select DISTINCT c.{}.GET_GTYPE() from {}.{} c order by c.{}.GET_GTYPE() asc".format(row[2], row[0], row[1], row[2])
+                    table_geomType_response = c._fetchall(c._execute(None, ora_table_geomType_request))
+                    table_geomType = [int(elem[0]) for elem in table_geomType_response]
+
+                except Exception as e:
+                    logger.warning("'{}' Oracle table geometry type could not be fetched : {}".format(row[1], e))
+                    table_geomType = []
+
+                table_infos = row + [table_crs, table_geomType]
+                li_tables_infos.append(table_infos)
+            else:
+                continue
+
+        return uri, li_tables_infos
 
     def build_connection_dict(self, dbms: str, skip_invalid: bool = True):
         """Build the dict that stores informations about PostgreSQL or Oracle connections."""
@@ -514,6 +612,9 @@ class DataBaseManager:
 
         li_connections = []
         li_db_names = []
+        li_db_aliases = []
+
+        # Loading connections saved into QGIS Settings
         for k in sorted(qsettings.allKeys()):
             if (
                 k.startswith(dbms_prefix)
@@ -543,8 +644,7 @@ class DataBaseManager:
                         logger.warning(connection_dict[1])
 
                 # For connections configured using config file and service
-                # elif connection_service != "" and self.pg_configfile_path:
-                elif connection_service != "":
+                elif connection_service != "" and self.pg_configfile_path:
                     connection_dict = self.config_file_parser(
                         self.pg_configfile_path, connection_service, connection_name
                     )
@@ -596,8 +696,75 @@ class DataBaseManager:
             else:
                 pass
 
+        # Loading connections saved into _user/db_connections.json file
+        self.load_json_file_content()
+        if self.json_content and dbms in self.json_content:
+            for conn_dict in self.json_content.get(dbms):
+                connection_name = conn_dict.get("connection_name")
+
+                if all(conn_dict.get(key, "") != "" for key in ["database", "host", "port", "username", "password", "connection_name"]):
+                    connection_dict = {
+                        "service": "",
+                        "database": conn_dict.get("database"),
+                        "database_alias": conn_dict.get("database_alias", ""),
+                        "host": conn_dict.get("host"),
+                        "port": conn_dict.get("port"),
+                        "username": conn_dict.get("username"),
+                        "password": conn_dict.get("password"),
+                        "connection": connection_name,
+                    }
+                else:
+                    logger.warning("Invalid {} connection loaded from db_connections.json file : {}".format(dbms, conn_dict))
+                    continue
+
+                if (
+                    connection_name
+                    in self.dbms_specifics_infos.get(dbms).get("invalid_connections")
+                    and skip_invalid
+                ):
+                    pass
+                else:
+                    conn = establish_conn_func(**connection_dict)
+                    if not conn:
+                        connection_dict["uri"] = 0
+                        connection_dict["tables"] = 0
+                        self.dbms_specifics_infos[dbms]["invalid_connections"].append(
+                            connection_name
+                        )
+                        logger.info(
+                            "'{}' connection saved as invalid".format(connection_name)
+                        )
+                        continue
+                    else:
+                        connection_dict["uri"] = conn[0]
+                        connection_dict["tables"] = conn[1]
+
+                    if connection_dict.get(
+                        "connection"
+                    ) in self.dbms_specifics_infos.get(dbms).get(
+                        "prefered_connections"
+                    ):
+                        connection_dict["prefered"] = 1
+                    else:
+                        connection_dict["prefered"] = 0
+
+                    li_connections.append(connection_dict)
+
+                    if connection_dict.get("database") not in li_db_names:
+                        li_db_names.append(connection_dict.get("database"))
+                    else:
+                        pass
+
+                    if connection_dict.get("database_alias", "") != "" and connection_dict.get("database_alias") not in li_db_aliases:
+                        li_db_aliases.append(connection_dict.get("database_alias"))
+                    else:
+                        pass
+        else:
+            pass
+
         self.dbms_specifics_infos[dbms]["connections"] = li_connections
         self.dbms_specifics_infos[dbms]["db_names"] = li_db_names
+        self.dbms_specifics_infos[dbms]["db_aliases"] = li_db_aliases
 
         self.set_qsettings_connections(
             dbms,

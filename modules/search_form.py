@@ -24,6 +24,7 @@ from ..ui.isogeo_dockwidget import IsogeoDockWidget  # main widget
 # submodule
 from .tools import IsogeoPlgTools
 from .quick_search import QuickSearchManager
+from .portal_base_url import PortalURLManager
 from .results import ResultsManager
 
 # ############################################################################
@@ -142,33 +143,13 @@ class SearchFormManager(IsogeoDockWidget):
         self.btn_delete_sr.pressed.connect(self.qs_mng.remove)
         self.btn_default_save.pressed.connect(self.qs_mng.write_params)
 
+        # Setting portal base URL manager
+        self.portalURL_mng = PortalURLManager()
+        # Connecting portal base URL configuration button to PortalURLManager's methods
+        self.btn_open_portalURL_config_dialog.pressed.connect(self.portalURL_mng.open_dialog)
+
         # Setting result manager
         self.results_mng = ResultsManager(self)
-
-        # "Isogeo portal Settings" wigets from "Settings" tab
-        # Setting and connecting checkbox
-        self.chb_portal_url.setChecked(
-            int(qsettings.value("isogeo/settings/add_metadata_url_portal", 0))
-        )
-        self.chb_portal_url.stateChanged.connect(
-            self.update_metadata_portal_url_setting
-        )
-        # Settings line edit
-        self.input_portal_url.setEnabled(
-            int(qsettings.value("isogeo/settings/add_metadata_url_portal", 0))
-        )
-
-    def update_metadata_portal_url_setting(self):
-        """Slot connected to self.chb_portal_url.stateChanged signal. It update
-        "isogeo/settings/add_metadata_url_portal" qsetting value (1 if the checkBox is
-        checked, 0 otherwise) and change self.input_portal_url widget status (enabled if
-        the checkBox is checked, disabled otherwise)
-
-        :param dict tags: 'tags' parameter of Isogeo.search_slot method.
-        """
-        is_checked = int(self.chb_portal_url.isChecked())
-        qsettings.setValue("isogeo/settings/add_metadata_url_portal", is_checked)
-        self.input_portal_url.setEnabled(is_checked)
 
     def update_cbb_keywords(
         self, tags_keywords: dict = {}, selected_keywords: list = []

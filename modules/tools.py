@@ -67,41 +67,6 @@ class IsogeoPlgTools(IsogeoUtils):
         else:
             pass
 
-    def format_button_title(self, title):
-        """Format the title to fit the button.
-
-        :param str title: title to format
-        """
-        words = title.split(" ")
-        if len(words) == 1:
-            if len(words[0]) > 22:
-                final_text = words[0][:20] + "..."
-            else:
-                final_text = words[0]
-            return final_text
-        else:
-            pass
-
-        line_length = 0
-        lines = []
-        string = ""
-        for word in words:
-            line_length += len(word)
-            if line_length < 22:
-                string += word + " "
-            else:
-                line_length = len(word)
-                lines.append(string[:-1])
-                string = word + " "
-        if string[:-1] not in lines:
-            lines.append(string[:-1])
-        final_text = ""
-        for line in lines:
-            final_text += line + "\n"
-        final_text = final_text[:-1]
-        # method ending
-        return final_text
-
     def get_map_crs(self):
         """Get QGIS map canvas current EPSG code."""
         current_crs = str(iface.mapCanvas().mapSettings().destinationCrs().authid())
@@ -318,7 +283,7 @@ class IsogeoPlgTools(IsogeoUtils):
         # ending method
         return
 
-    def check_proxy_configuration(self) -> bool:
+    def check_proxy_configuration(self, url_to_check: str) -> bool:
         """Check adequation between system and QGIS proxy configuration. The goal is to\
             prevent network issues connecting to the API. See: https://github.com/isogeo/isogeo-plugin-qgis/issues/287
 
@@ -335,7 +300,7 @@ class IsogeoPlgTools(IsogeoUtils):
         :returns: True for cases 1, 3a ; False for cases 2, 3b and 4 depending if system and QGIS configs mismatch
         """
         # local connector
-        conn_to_isogeo = http.client.HTTPSConnection("api.isogeo.com")
+        conn_to_isogeo = http.client.HTTPSConnection(url_to_check)
         # -- STEP 1 --------------------------------------------------------------------
         # retrieve system proxy settings
         system_proxy_config = getproxies()

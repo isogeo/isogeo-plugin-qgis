@@ -167,7 +167,7 @@ class ResultsManager(QObject):
             # Displaying the metadata title inside a button
             title = md.title_or_name()
             if title:
-                btn_md_title = QPushButton(plg_tools.format_button_title(title))
+                btn_md_title = QPushButton(title)
             else:
                 btn_md_title = QPushButton(
                     self.tr("Undefined", context=__class__.__name__)
@@ -340,10 +340,7 @@ class ResultsManager(QObject):
                     if (
                         md.path
                         and md.name
-                        and md.path
-                        in self.db_mng.dbms_specifics_infos.get("Oracle").get(
-                            "db_names"
-                        )
+                        and any(md.path in self.db_mng.dbms_specifics_infos.get("Oracle").get(key) for key in ["db_names", "db_aliases"])
                         and "." in md.name
                     ):
                         available_connections = [
@@ -351,8 +348,7 @@ class ResultsManager(QObject):
                             for ora_conn in self.db_mng.dbms_specifics_infos.get(
                                 "Oracle"
                             ).get("connections")
-                            if md.path == ora_conn.get("database")
-                            and ora_conn.get("prefered")
+                            if (md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")) and ora_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
@@ -360,7 +356,7 @@ class ResultsManager(QObject):
                                 for ora_conn in self.db_mng.dbms_specifics_infos.get(
                                     "Oracle"
                                 ).get("connections")
-                                if md.path == ora_conn.get("database")
+                                if md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")
                             ]
                         else:
                             pass
@@ -395,17 +391,19 @@ class ResultsManager(QObject):
                                 pass
                     else:
                         pass
+                elif md.format.lower() in self.service_ico_dict:
+                    pass
                 else:
                     logger.debug(
                         "Metadata {} has a format ({}) but it's not handled hear or path is"
-                        "missing".format(md._id, md.format)
+                        " missing".format(md._id, md.format)
                     )
                     pass
             # Associated service layers
             if md.type == "vectorDataset" or md.type == "rasterDataset":
                 for layer in md.serviceLayers:
                     service = layer.get("service")
-                    if service is not None:
+                    if service is not None and service.get("format"):
                         srv_details = {
                             "path": service.get("path", "NR"),
                             "formatVersion": service.get("formatVersion"),
@@ -453,7 +451,7 @@ class ResultsManager(QObject):
                         "path": md.path,
                         "formatVersion": md.formatVersion,
                     }
-                    if md.format in self.service_ico_dict:
+                    if md.format.lower() in self.service_ico_dict:
                         service_type = md.format.upper()
                         for layer in md.layers:
                             layer_title = geo_srv_mng.build_layer_title(
@@ -570,6 +568,13 @@ class ResultsManager(QObject):
         # the height of the row adapts to the content without falling below 30px
         vheader.setMinimumSectionSize(30)
         vheader.setSectionResizeMode(3)
+        # adapt title column button width content to column width
+        title_column_width = hheader.sectionSize(0)
+        scrollBar_width = tbl_result.verticalScrollBar().sizeHint().width()
+        max_width = title_column_width - scrollBar_width - 10
+        for i in range(tbl_result.rowCount()):
+            btn_title = tbl_result.cellWidget(i, 0)
+            self.format_button_title(btn_title, max_width)
         # method ending
         return None
 
@@ -588,8 +593,8 @@ class ResultsManager(QObject):
             return False
         if dir_file not in self.cache_mng.cached_unreach_paths:
             try:
-                with open(filepath) as f:
-                    return str(filepath)
+                with open(filepath):
+                    pass
             except Exception as e:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
                 logger.info(
@@ -601,6 +606,7 @@ class ResultsManager(QObject):
         else:
             logger.debug("Path has been ignored because it's cached.")
             return False
+        return str(filepath)
 
     def build_md_portal_url(self, metadata_id: str):
         """Build the URL of the metadata into Isogeo Portal (see https://github.com/isogeo/isogeo-plugin-qgis/issues/312)
@@ -610,7 +616,7 @@ class ResultsManager(QObject):
         add_portal_md_url = int(
             qsettings.value("isogeo/settings/add_metadata_url_portal", 0)
         )
-        portal_base_url = self.form_mng.input_portal_url.text()
+        portal_base_url = qsettings.value("isogeo/settings/portal_base_url", "")
 
         if add_portal_md_url and portal_base_url != "":
             portal_md_url = portal_base_url + metadata_id
@@ -618,6 +624,35 @@ class ResultsManager(QObject):
             portal_md_url = ""
 
         return portal_md_url
+
+    def format_button_title(self, button, line_width):
+        """Format the title to fit the button width.
+
+        :param QPushButton button: button which text has to be formated
+        :param int width: width to fit with
+        """
+        title = button.text().strip()
+        fm = button.fontMetrics()
+
+        final_text = ""
+        words = title.split(" ")
+        if len(words) == 1:
+            word_width = fm.size(1, title).width()
+            if word_width > line_width:
+                final_text = fm.elidedText(title, 1, line_width)
+            else:
+                final_text = title
+        else:
+            for word in words:
+                current_width = fm.size(1, final_text + word).width()
+                if current_width > line_width:
+                    final_text += " \n" + word
+                else:
+                    final_text += word + " "
+        final_text = final_text.rstrip()
+        # method ending
+        button.setText(final_text)
+        return
 
 
 # #############################################################################

@@ -121,7 +121,6 @@ class ApiRequester(QObject):
             else:
                 logger.debug("Unkown request type asked : {}".format(request_type))
                 raise ValueError
-                return 0
             # filling request header with token
             header_value.append(self.token)
             request = QNetworkRequest(url)
@@ -329,7 +328,7 @@ class ApiRequester(QObject):
             for error in ssl_errors:
                 logger.info("SSL error catched : '{}'".format(error.errorString()))
         else:
-            logger.info("SSL error catched : '{}'".format(error.errorString()))
+            logger.info("SSL error catched : '{}'".format(ssl_errors.errorString()))
         return
 
     def build_request_url(self, params: dict):

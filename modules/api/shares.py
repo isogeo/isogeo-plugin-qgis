@@ -27,9 +27,10 @@ class SharesParser(QObject):
 
     shares_ready = pyqtSignal(str)
 
-    def __init__(self):
+    def __init__(self, app_base_url: str):
         QObject.__init__(self)
         self.tr = object
+        self.app_base_url = app_base_url
 
     @pyqtSlot(list)
     def send_share_info(self, shares: list):
@@ -53,7 +54,7 @@ class SharesParser(QObject):
                 "<p>This plugin is authenticated as " "<a href='{}'>{}</a> and ",
                 context=__class__.__name__,
             ).format(
-                app.get("url", "https://isogeo.gitbooks.io/app-plugin-qgis/content"),
+                app.get("url", "https://help.isogeo.com/qgis/"),
                 app.get("name", "Isogeo plugin for QGIS"),
             )
             # shares feeding the application
@@ -71,8 +72,8 @@ class SharesParser(QObject):
                 creator_name = share.get("_creator").get("contact").get("name")
                 creator_email = share.get("_creator").get("contact").get("email")
                 creator_id = share.get("_creator").get("_tag")[6:]
-                share_url = "https://app.isogeo.com/groups/{}/admin/shares/{}".format(
-                    creator_id, share.get("_id")
+                share_url = "{}/groups/{}/admin/shares/{}".format(
+                    self.app_base_url, creator_id, share.get("_id")
                 )
                 # formatting text
                 text += "<p><a href='{}'><b>{}</b></a></p>".format(

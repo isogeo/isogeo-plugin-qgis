@@ -22,8 +22,7 @@ from qgis.core import (
 # PyQT
 from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtWidgets import QTableWidgetItem
-
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QLabel
 # 3rd party
 from .isogeo_pysdk import IsogeoTranslator
 
@@ -54,20 +53,21 @@ ref_lyr = QgsRasterLayer(osm_standard, "OSM_Standard", "wms")
 class MetadataDisplayer:
     """Manage metadata displaying in QGIS UI."""
 
-    url_edition = "https://app.isogeo.com"
+    md_edition_url = str
 
-    def __init__(self):
+    def __init__(self, app_base_url: str):
         """Class constructor."""
         self.complete_md = IsogeoMdDetails()
         self.complete_md.stackedWidget.setCurrentIndex(0)
 
         # some basic settings
+        self.app_base_url = app_base_url
+        self.complete_md.btn_md_edit.pressed.connect(
+            lambda: plg_tools.open_webpage(link=self.md_edition_url)
+        )
+
         self.complete_md.wid_bbox.setCanvasColor(Qt.white)
         self.complete_md.wid_bbox.enableAntiAliasing(True)
-
-        self.complete_md.btn_md_edit.pressed.connect(
-            lambda: plg_tools.open_webpage(link=self.url_edition)
-        )
 
         self.tr = object
 
@@ -77,7 +77,16 @@ class MetadataDisplayer:
         :param md dict: Isogeo metadata dict
         """
         logger.info("Displaying the whole metadata sheet.")
-        isogeo_tr = IsogeoTranslator(qsettings.value("locale/userLocale")[0:2])
+        try:
+            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
+        except TypeError as e:
+            logger.error(
+                "Bad type in QSettings: {}. Original error: {}".format(
+                    type(qsettings.value("locale/userLocale")), e
+                )
+            )
+            locale = "fr"
+        isogeo_tr = IsogeoTranslator(locale)
 
         # clean map canvas
         vec_lyr = [i.id() for i in self.complete_md.wid_bbox.layers() if i.type() == 0]
@@ -129,8 +138,18 @@ class MetadataDisplayer:
             tbl_attr.setRowCount(len(fields))
             idx = 0
             for i in fields:
-                tbl_attr.setItem(idx, 0, QTableWidgetItem(i.get("name", "NR")))
-                tbl_attr.setItem(idx, 1, QTableWidgetItem(i.get("alias", "")))
+                alias_text = i.get("alias", "")
+                if i.get("comment", "") != "" and alias_text == "":
+                    alias_text += "<i>{}</i>".format(i.get("comment", ""))
+                elif i.get("comment", "") != "":
+                    alias_text += "<br><i>{}</i>".format(i.get("comment", ""))
+                else:
+                    pass
+                alias_label = QLabel(alias_text)
+                alias_label.setWordWrap(True)
+
+                tbl_attr.setItem(idx, 0, QTableWidgetItem(i.get("name", "")))
+                tbl_attr.setCellWidget(idx, 1, alias_label)
                 tbl_attr.setItem(idx, 2, QTableWidgetItem(i.get("dataType", "")))
                 tbl_attr.setItem(idx, 3, QTableWidgetItem(i.get("description", "")))
                 idx += 1
@@ -138,6 +157,14 @@ class MetadataDisplayer:
             # adapt size
             tbl_attr.horizontalHeader().setStretchLastSection(True)
             tbl_attr.verticalHeader().setSectionResizeMode(3)
+
+            # adapt alias column labels width to column width
+            alias_column_width = tbl_attr.horizontalHeader().sectionSize(1)
+            for i in range(idx):
+                tbl_attr.cellWidget(i, 1).setMaximumWidth(alias_column_width)
+
+            tbl_attr.horizontalHeader().sectionResized.connect(self.resize_alias_labels)
+
         else:
             menu_list = self.complete_md.li_menu
             item = menu_list.item(1)
@@ -391,11 +418,9 @@ class MetadataDisplayer:
         )
 
         # -- EDIT LINK -------------------------------------------------------
-        self.url_edition = plg_tools.get_edit_url(
-            md_id=md.get("_id"), md_type=md.get("type"), owner_id=wg_id
-        )
-
         # only if user declared himself as Isogeo editor in authentication form
+        self.md_edition_url = "{}/groups/{}/resources/{}/identification".format(self.app_base_url, wg_id, md.get("_id"))
+
         self.complete_md.btn_md_edit.setEnabled(
             int(qsettings.value("isogeo/user/editor", 1))
         )
@@ -601,6 +626,20 @@ class MetadataDisplayer:
             # should not exist
             logger.error("Metadata type not recognized:", md_type)
             return
+
+    def resize_alias_labels(self, column_index, old_width, new_width):
+        """Slot to self.complete_md.tbl_attributes.horizontalHeader().sectionResized signal. Resize
+        alias labels to fit column width
+
+        :param int column_index: index of the column
+        :param int old_width: old width of the column
+        :param int new_width: new width of the column
+        """
+        if column_index == 1:
+            for i in range(self.complete_md.tbl_attributes.rowCount()):
+                self.complete_md.tbl_attributes.cellWidget(i, 1).setMaximumWidth(new_width)
+        else:
+            pass
 
 
 # #############################################################################
