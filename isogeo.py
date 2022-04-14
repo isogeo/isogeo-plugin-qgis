@@ -129,6 +129,7 @@ class Isogeo:
     logger.info("\n\n\t========== Isogeo Search Engine for QGIS ==========")
     logger.info("OS: {0}".format(platform.platform()))
     logger.info("QGIS Version: {0}".format(Qgis.QGIS_VERSION))
+    logger.info("Python version: {0}".format(platform.python_version()))
     logger.info("Plugin version: {0}".format(plg_version))
     logger.info("Log level: {0}".format(log_level))
 
