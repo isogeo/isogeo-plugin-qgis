@@ -640,11 +640,11 @@ class ResultsManager(QObject):
                 final_text = title
         else:
             for word in words:
-                current_width = fm.size(1, final_text + word).width()
+                current_width = fm.size(1, final_text + " " + word).width()
                 if current_width > line_width:
                     final_text += " \n" + word
                 else:
-                    final_text += word + " "
+                    final_text += " " + word
         final_text = final_text.rstrip()
         # method ending
         button.setText(final_text)
