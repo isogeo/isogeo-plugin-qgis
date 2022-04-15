@@ -1,13 +1,7 @@
 # -*- coding: UTF-8 -*-
-#! python3
-# ----------------------------------------------------------------------------
+#! python3  # noqa E265
 
-"""
-    Additionnal strings to be translated from Isogeo API.
-"""
-
-# Created:      18/10/2016
-# ---------------------------------------------------------------------------
+"""Additionnal strings to be translated from Isogeo API."""
 
 # ##############################################################################
 # ########## Globals ###############
@@ -42,6 +36,8 @@ dict_md_fields_fr = {
         "dataset": "Jeux de données",
         "vectorDataset": "Vecteur",
         "vector-dataset": "Vecteur",
+        "noGeoDataset": "Donnée (tabulaire non géographique)",
+        "no-geo-dataset": "Donnée (tabulaire non géographique)",
         "rasterDataset": "Raster",
         "raster-dataset": "Raster",
         "resource": "Ressources",
@@ -123,6 +119,8 @@ dict_md_fields_en = {
         "dataset": "Dataset",
         "vectorDataset": "Vector",
         "vector-dataset": "Vector",
+        "noGeoDataset": "Dataset (non-geographic tabular)",
+        "no-geo-dataset": "Dataset (non-geographic tabular)",
         "rasterDataset": "Raster",
         "raster-dataset": "Raster",
         "resource": "Resources",

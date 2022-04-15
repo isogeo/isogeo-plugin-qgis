@@ -1,14 +1,7 @@
 # -*- coding: UTF-8 -*-
-#! python3
+#! python3  # noqa E265
 
-# ----------------------------------------------------------------------------
-
-"""
-    Complementary set of tools to make some checks on requests to Isogeo API.
-"""
-
-# Created:      18/08/2017
-# ---------------------------------------------------------------------------
+"""Complementary set of tools to make some checks on requests to Isogeo API."""
 
 # #############################################################################
 # ########## Libraries #############
@@ -19,12 +12,17 @@ import logging
 import socket
 import warnings
 from collections import Counter
-from datetime import datetime
+from json import JSONDecodeError
 from uuid import UUID
+
+# modules
+from .enums import LinkActions, MetadataSubresources
 
 # ##############################################################################
 # ########## Globals ###############
 # ##################################
+
+logger = logging.getLogger(__name__)
 
 FILTER_KEYS = {
     "action": [],
@@ -45,28 +43,25 @@ FILTER_KEYS = {
     "type": [],
 }
 
-FILTER_ACTIONS = ("download", "other", "view")
-
 FILTER_PROVIDERS = ("manual", "auto")
 
 FILTER_TYPES = {
     "dataset": "dataset",
     "raster-dataset": "rasterDataset",
     "vector-dataset": "vectorDataset",
+    "no-geo-dataset": "noGeoDataset",
     "resource": "resource",
     "service": "service",
 }
 
 GEORELATIONS = ("contains", "disjoint", "equal", "intersects", "overlaps", "within")
 
-WG_KEYWORDS_CASING = ("capitalized", "lowercase", "mixedCase", "uppercase")
-
 EDIT_TABS = {
     "identification": ",".join(FILTER_TYPES),
     "history": ",".join(FILTER_TYPES),
-    "geography": "dataset, raster-dataset, vector-dataset, service",
-    "quality": "dataset, raster-dataset, vector-dataset, service",
-    "attributes": "vector-dataset, series",
+    "geography": "dataset, raster-dataset, vector-dataset, no-geo-dataset, service",
+    "quality": "dataset, raster-dataset, vector-dataset, no-geo-dataset, service",
+    "attributes": "vector-dataset, no-geo-dataset, series",
     "constraints": ",".join(FILTER_TYPES),
     "resources": ",".join(FILTER_TYPES),
     "contacts": ",".join(FILTER_TYPES),
@@ -74,24 +69,9 @@ EDIT_TABS = {
     "metadata": ",".join(FILTER_TYPES),
 }
 
-_SUBRESOURCES_MD = (
-    "_creator",
-    "conditions",
-    "contacts",
-    "coordinate-system",
-    "events",
-    "feature-attributes",
-    "keywords",
-    "layers",
-    "limitations",
-    "links",
-    "operations",
-    "serviceLayers",
-    "specifications",
-    "tags",
-)
-
 _SUBRESOURCES_KW = ("_abilities", "count", "thesaurus")
+
+_SUBRESOURCES_CT = ("count",)
 
 # ##############################################################################
 # ########## Classes ###############
@@ -99,9 +79,7 @@ _SUBRESOURCES_KW = ("_abilities", "count", "thesaurus")
 
 
 class IsogeoChecker(object):
-    """Complementary set of tools to make some checks on requests
-    to Isogeo API.
-    """
+    """Complementary set of tools to make some checks on requests to Isogeo API."""
 
     def __init__(self):
         super(IsogeoChecker, self).__init__()
@@ -129,55 +107,40 @@ class IsogeoChecker(object):
                 return True
             return False
 
-    def check_bearer_validity(self, token: dict, connect_mtd) -> dict:
-        """Check API Bearer token validity.
-
-        Isogeo ID delivers authentication bearers which are valid during
-        a certain time. So this method checks the validity of the token
-        with a 30 mn anticipation limit, and renews it if necessary.
-        See: http://tools.ietf.org/html/rfc6750#section-2
-
-        FI: 24h = 86400 seconds, 30 mn = 1800, 5 mn = 300
-
-        :param tuple token: auth bearer to check.
-         Structure: (bearer, expiration_date)
-        :param isogeo_pysdk.connect connect_mtd: method herited
-         from Isogeo PySDK to get new bearer
-        """
-        warnings.warn(
-            "Method is now executed as a decorator wihtin the main SDK class. Will be removed in future versions.",
-            DeprecationWarning,
-        )
-        if datetime.now() < token.get("expires_at"):
-            token = connect_mtd
-            logging.debug("Token was about to expire, so has been renewed.")
-        else:
-            logging.debug("Token is still valid.")
-            pass
-
-        # end of method
-        return token
-
-    def check_api_response(self, response):
+    def check_api_response(self, response) -> True or tuple:
         """Check API response and raise exceptions if needed.
 
         :param requests.models.Response response: request response to check
+
+        :rtype: True or tuple
+
+        :Example:
+        >>> checker.check_api_response(<Response [500]>)
+        (False, 500)
         """
         # check response
         if response.status_code == 200:
             return True
         elif response.status_code >= 400:
+            # ensure response got a JSON.
+            # See: https://github.com/isogeo/isogeo-api-py-minsdk/issues/136
+            try:
+                resp_error_msg = response.json().get("error")
+            except JSONDecodeError:
+                resp_error_msg = ""
+
+            # log it
             logging.error(
                 "{}: {} - {} - URL: {}".format(
                     response.status_code,
                     response.reason,
-                    response.json().get("error"),
+                    resp_error_msg,
                     response.request.url,
                 )
             )
             return False, response.status_code
 
-    def check_request_parameters(self, parameters: dict = dict):
+    def check_request_parameters(self, parameters: dict = {}):
         """Check parameters passed to avoid errors and help debug.
 
         :param dict response: search request parameters
@@ -259,9 +222,14 @@ class IsogeoChecker(object):
             raise ValueError(
                 "type value must be one of: {}".format(" | ".join(FILTER_TYPES))
             )
-        elif dico_filters.get("action", ("download",))[0].lower() not in FILTER_ACTIONS:
+        elif (
+            dico_filters.get("action", ("download",))[0].lower()
+            not in LinkActions.__members__
+        ):
             raise ValueError(
-                "action value must be one of: {}".format(" | ".join(FILTER_ACTIONS))
+                "action value must be one of: {}".format(
+                    " | ".join(LinkActions.__members__)
+                )
             )
         elif (
             dico_filters.get("provider", ("manual",))[0].lower() not in FILTER_PROVIDERS
@@ -285,6 +253,7 @@ class IsogeoChecker(object):
                 " Must be one of: {}.".format(in_rel, " | ".join(GEORELATIONS))
             )
 
+    @classmethod
     def check_is_uuid(self, uuid_str: str):
         """Check if it's an Isogeo UUID handling specific form.
 
@@ -292,7 +261,14 @@ class IsogeoChecker(object):
         """
         # check uuid type
         if not isinstance(uuid_str, str):
-            raise TypeError("'uuid_str' expected a str value.")
+            logger.debug(
+                TypeError(
+                    "'uuid_str' parameter expects a str value. Got: {}".format(
+                        type(uuid_str)
+                    )
+                )
+            )
+            return False
         else:
             pass
         # handle Isogeo specific UUID in XML exports
@@ -305,25 +281,26 @@ class IsogeoChecker(object):
             uid = UUID(uuid_str)
             return uid.hex == uuid_str.replace("-", "").replace("urn:uuid:", "")
         except ValueError as e:
-            logging.error(
-                "uuid ValueError. {} ({})  -- {}".format(type(uuid_str), uuid_str, e)
+            logging.warning(
+                "uuid ValueError. {} ({}) -- {}".format(type(uuid_str), uuid_str, e)
             )
             return False
 
     def check_edit_tab(self, tab: str, md_type: str):
-        """Check if asked tab is part of Isogeo web form and reliable
-        with metadata type.
+        """Check if asked tab is part of Isogeo web form and reliable with metadata type.
 
         :param str tab: tab to check. Must be one one of EDIT_TABS attribute
         :param str md_type: metadata type. Must be one one of FILTER_TYPES
         """
         # check parameters types
         if not isinstance(tab, str):
-            raise TypeError("'tab' expected a str value.")
+            raise TypeError("'tab' expected a str value, not {}".format(type(tab)))
         else:
             pass
         if not isinstance(md_type, str):
-            raise TypeError("'md_type' expected a str value.")
+            raise TypeError(
+                "'md_type' expected a str value, not {}".format(type(md_type))
+            )
         else:
             pass
         # check parameters values
@@ -354,24 +331,29 @@ class IsogeoChecker(object):
             return True
 
     # -- FILTERS -------------------------------------------------------------
-    def _check_filter_specific_md(self, specific_md: list):
+    def _check_filter_specific_md(self, specific_md: tuple):
         """Check if specific_md parameter is valid.
 
-        :param list specific_md: list of specific metadata UUID to check
+        :param tuple specific_md: tuple of specific metadata UUID to check
         """
-        if isinstance(specific_md, list):
+        if isinstance(specific_md, (list, tuple)):
             if len(specific_md) > 0:
                 # checking UUIDs and poping bad ones
+                specific_md = list(specific_md)
                 for md in specific_md:
                     if not self.check_is_uuid(md):
                         specific_md.remove(md)
-                        logging.error("Metadata UUID is not correct: {}".format(md))
+                        logging.warning(
+                            "Incorrect metadata UUID has been removed: {}".format(md)
+                        )
                 # joining survivors
                 specific_md = ",".join(specific_md)
             else:
                 specific_md = ""
         else:
-            raise TypeError("'specific_md' expects a list")
+            raise TypeError(
+                "'specific_md' expects a tuple, not {}".format(type(specific_md))
+            )
         return specific_md
 
     def _check_filter_specific_tag(self, specific_tag: list):
@@ -388,31 +370,57 @@ class IsogeoChecker(object):
             raise TypeError("'specific_tag' expects a list")
         return specific_tag
 
-    def _check_filter_includes(self, includes: list, resource: str = "metadata"):
+    def _check_filter_includes(self, includes: tuple, entity: str = "metadata") -> list:
         """Check if specific_resources parameter is valid.
 
-        :param list includes: sub resources to check
-        :param str resource: resource type to check sub resources.
-         Must be one of: metadata | keyword.
+        :param tuple includes: sub resources to check
+        :param str entity: entity type to check sub resources. Must be one of:
+
+          - contact
+          - metadata
+          - keyword
+
+        :rtype: list
+
+        :raises: ValueError if entity is not an accepted value
+        :raises: TypeError if includes is not a tuple or a str
         """
-        # check resource parameter
-        if resource == "metadata":
-            ref_subresources = _SUBRESOURCES_MD
-        elif resource == "keyword":
+        # check entity parameter
+        if entity == "metadata":
+            ref_subresources = [item.value for item in MetadataSubresources]
+        elif entity == "keyword":
             ref_subresources = _SUBRESOURCES_KW
+        elif entity == "contact":
+            ref_subresources = _SUBRESOURCES_CT
         else:
-            raise ValueError("Must be one of: metadata | keyword.")
+            raise ValueError("Must be one of: contact | metadata | keyword.")
 
         # sub resources manager
         if isinstance(includes, str) and includes.lower() == "all":
             includes = ",".join(ref_subresources)
-        elif isinstance(includes, list):
-            if len(includes) > 0:
+        elif isinstance(includes, (list, tuple)):
+            if len(includes):
+                for subresource in includes:
+                    if subresource not in ref_subresources:
+                        logger.warning(
+                            "'{}' is not a valid subresource to include. "
+                            "Must be one of: {}. It will be removed or ignored.".format(
+                                subresource, " | ".join(ref_subresources)
+                            )
+                        )
+                        list(includes).remove(subresource)  # removing bad subresource
+                    else:
+                        pass
+
                 includes = ",".join(includes)
             else:
                 includes = ""
         else:
-            raise TypeError("'includes' expect a list or a str='all'")
+            raise TypeError(
+                "'includes' expect a tuple or a str='all', not {}".format(
+                    type(includes)
+                )
+            )
         return includes
 
     def _check_subresource(self, subresource: str):
@@ -465,9 +473,8 @@ class IsogeoChecker(object):
         return subresource
 
     def _convert_md_type(self, type_to_convert: str):
-        """Metadata types are not consistent in Isogeo API. A vector dataset is
-         defined as vector-dataset in query filter but as vectorDataset in
-         resource (metadata) details.
+        """Metadata types are not consistent in Isogeo API. A vector dataset is defined as vector-
+        dataset in query filter but as vectorDataset in resource (metadata) details.
 
         see: https://github.com/isogeo/isogeo-api-py-minsdk/issues/29
         """
