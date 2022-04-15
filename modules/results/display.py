@@ -74,6 +74,7 @@ pix_rastr = QPixmap(":/images/themes/default/mIconRaster.svg")
 pix_multi = QPixmap(":/plugins/Isogeo/resources/multi.svg").scaledToWidth(20)
 pix_nogeo = QPixmap(":/plugins/Isogeo/resources/none.svg").scaledToWidth(20)
 pix_serv = QPixmap(":/plugins/Isogeo/resources/results/cloud.svg").scaledToWidth(20)
+pix_table = QPixmap(":/images/themes/default/mIconTableLayer.svg").scaledToWidth(15)
 ico_efs = QIcon(":/images/themes/default/mIconAfs.svg")
 ico_ems = QIcon(":/images/themes/default/mIconAms.svg")
 ico_wfs = QIcon(":/images/themes/default/mIconWfs.svg")
@@ -217,6 +218,11 @@ class ResultsManager(QObject):
                 elif "service" in md.type:
                     lbl_geom.setPixmap(pix_serv)
                     lbl_geom.setToolTip(self.tr("Service", context=__class__.__name__))
+                elif "noGeoDataset" in md.type:
+                    lbl_geom.setPixmap(pix_table)
+                    lbl_geom.setToolTip(
+                        self.tr("Table", context=__class__.__name__)
+                    )
                 else:
                     lbl_geom.setPixmap(pix_nogeo)
                     lbl_geom.setToolTip(
