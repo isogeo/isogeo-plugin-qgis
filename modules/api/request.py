@@ -474,7 +474,7 @@ class ApiRequester(QObject):
             # types
             elif tag.startswith("type"):
                 md_types[tags.get(tag)] = tag
-                if tag in ("type:vector-dataset", "type:raster-dataset"):
+                if tag in ("type:vector-dataset", "type:raster-dataset", "type:no-geo-dataset"):
                     type_dataset += 1
                 continue
             # ignored tags
@@ -483,7 +483,7 @@ class ApiRequester(QObject):
                 continue
 
         # override API tags to allow all datasets filter - see #
-        if type_dataset == 2:
+        if type_dataset > 1:
             md_types[self.tr("Dataset", context=__class__.__name__)] = "type:dataset"
         else:
             pass
