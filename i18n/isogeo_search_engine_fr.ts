@@ -4,9 +4,9 @@
 <context>
     <name>ApiRequester</name>
     <message>
-        <location filename="../modules/api/request.py" line="482"/>
+        <location filename="../modules/api/request.py" line="488"/>
         <source>Dataset</source>
-        <translation>Données (vecteurs et rasters)</translation>
+        <translation>Données (vecteurs, rasters et tabulaires)</translation>
     </message>
 </context>
 <context>
@@ -48,37 +48,37 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="359"/>
+        <location filename="../isogeo.py" line="360"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="334"/>
+        <location filename="../isogeo.py" line="335"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="510"/>
+        <location filename="../isogeo.py" line="511"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="445"/>
+        <location filename="../isogeo.py" line="446"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="508"/>
+        <location filename="../isogeo.py" line="509"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="853"/>
+        <location filename="../isogeo.py" line="854"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="613"/>
+        <location filename="../isogeo.py" line="614"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
@@ -344,17 +344,17 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="489"/>
+        <location filename="../modules/tools.py" line="452"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation>Le {} style de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="399"/>
+        <location filename="../modules/tools.py" line="362"/>
         <source>Alert</source>
         <translation>Alerte</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="399"/>
+        <location filename="../modules/tools.py" line="362"/>
         <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
@@ -366,32 +366,32 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="102"/>
+        <location filename="../modules/layer/add_layer.py" line="106"/>
         <source>Service layer</source>
         <translation>La couche de service</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="105"/>
+        <location filename="../modules/layer/add_layer.py" line="109"/>
         <source>Data file layer</source>
         <translation>La couche</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="123"/>
+        <location filename="../modules/layer/add_layer.py" line="127"/>
         <source>is not valid</source>
         <translation>n&apos;est pas valide</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="126"/>
+        <location filename="../modules/layer/add_layer.py" line="130"/>
         <source>Error:</source>
         <translation>Erreur :</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="109"/>
+        <location filename="../modules/layer/add_layer.py" line="113"/>
         <source>The table</source>
         <translation>La table</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="129"/>
+        <location filename="../modules/layer/add_layer.py" line="133"/>
         <source>The layer can&apos;t be added</source>
         <translation>La couche ne peut pas être ajoutée</translation>
     </message>
@@ -417,7 +417,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>MetadataDisplayer</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="104"/>
+        <location filename="../modules/metadata_display.py" line="103"/>
         <source>Undefined</source>
         <translation>Non renseigné</translation>
     </message>
@@ -443,34 +443,39 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="226"/>
+        <location filename="../modules/results/display.py" line="228"/>
         <source>Unknown geometry</source>
         <translation>Géométrie inconnue</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="220"/>
+        <location filename="../modules/results/display.py" line="217"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="223"/>
+        <location filename="../modules/results/display.py" line="220"/>
         <source>Service</source>
         <translation>Service</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="538"/>
+        <location filename="../modules/results/display.py" line="542"/>
         <source>Data file</source>
         <translation>Donnée fichier</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="477"/>
+        <location filename="../modules/results/display.py" line="481"/>
         <source>Can&apos;t be added</source>
         <translation>Non ajoutable</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="172"/>
+        <location filename="../modules/results/display.py" line="169"/>
         <source>Undefined</source>
         <translation>Non renseigné</translation>
+    </message>
+    <message>
+        <location filename="../modules/results/display.py" line="223"/>
+        <source>Table</source>
+        <translation>Table</translation>
     </message>
 </context>
 <context>
@@ -602,54 +607,59 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
         <translation>Le fichier d&apos;authentification est valide. Demande d&apos;autorisation envoyée à l&apos;API.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="101"/>
+        <location filename="../modules/user_inform.py" line="102"/>
         <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
         <translation>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="112"/>
+        <location filename="../modules/user_inform.py" line="113"/>
         <source>Request to Isogeo&apos;s API failed : unkown error found. Please, report it in the bug tracker.</source>
         <translation>La requête à l&apos;API Isogeo a échoué pour une raison inconnue. Merci de le signaler dans le bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="117"/>
+        <location filename="../modules/user_inform.py" line="118"/>
         <source>API authentication failed : unexpected API&apos;s reply. Please, report it in the bug tracker.</source>
         <translation>La requête à l&apos;API Isogeo a échoué. Merci de le signaler dans le bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="122"/>
+        <location filename="../modules/user_inform.py" line="123"/>
         <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
         <translation>La requête à l&apos;API Isogeo a échoué. Vérifiez votre connexion Internet et votre configuration proxy. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="96"/>
+        <location filename="../modules/user_inform.py" line="97"/>
         <source>ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
         <translation>Les paramètres d&apos;authentification (Client ID et Client Secret) semblent invalides.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="143"/>
+        <location filename="../modules/user_inform.py" line="149"/>
         <source>No share feeds the plugin. If you want to access resources via the plugin, you must share at least one catalog containing at least one metadata with it.</source>
         <translation>Aucun partage n&apos;alimente le plugin. Pour accéder à vos ressources via le plugin, au moins un catalogue contenant au moins une métadonnée doit lui être partagé.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="106"/>
+        <location filename="../modules/user_inform.py" line="107"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin and check your Internet connection. If this error keeps happening, please report it in the bug tracker.</source>
         <translation>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin et vérifiez votre connexion Internet. Si l&apos;erreur persiste, merci de signaler ce problème dans le bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="164"/>
+        <location filename="../modules/user_inform.py" line="170"/>
         <source>This data is subject to </source>
         <translation>Cette donnée est soumise à </translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="164"/>
+        <location filename="../modules/user_inform.py" line="170"/>
         <source> legal limitation(s) :</source>
         <translation> limitation(s) de type &quot;légal&quot; :</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="179"/>
+        <location filename="../modules/user_inform.py" line="185"/>
         <source>No description provided</source>
         <translation>Aucune description renseignée</translation>
+    </message>
+    <message>
+        <location filename="../modules/user_inform.py" line="129"/>
+        <source>Search request to Isogeo&apos;s API failed : please check that &apos;api_base_url&apos; and &apos;api_auth_url&apos; URLs specified into config.json file are pointing to the same API.</source>
+        <translation>La requête à l&apos;API Isogeo a échoué. Veuillez vérifier que les URLs &apos;api_base_url&apos; et &apos;api_auth_url&apos; indiqués dans le fichier config.json pointent vers la même version de &apos;API.</translation>
     </message>
 </context>
 <context>
@@ -1096,46 +1106,46 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>isogeo_tr</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="280"/>
+        <location filename="../modules/metadata_display.py" line="297"/>
         <source>quality</source>
         <comment>isConform</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="282"/>
+        <location filename="../modules/metadata_display.py" line="299"/>
         <source>quality</source>
         <comment>isNotConform</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="181"/>
+        <location filename="../modules/metadata_display.py" line="198"/>
         <source>roles</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="213"/>
+        <location filename="../modules/metadata_display.py" line="230"/>
         <source>frequencyTypes</source>
         <comment>frequencyUpdateHelp</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="213"/>
+        <location filename="../modules/metadata_display.py" line="230"/>
         <source>frequencyShortTypes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="337"/>
+        <location filename="../modules/metadata_display.py" line="354"/>
         <source>conditions</source>
         <comment>noLicense</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="351"/>
+        <location filename="../modules/metadata_display.py" line="368"/>
         <source>limitations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="357"/>
+        <location filename="../modules/metadata_display.py" line="374"/>
         <source>restrictions</source>
         <translation></translation>
     </message>

@@ -2,7 +2,7 @@
 <QPH language="fr_FR">
 <phrase>
     <source>Dataset</source>
-    <target>Données (vecteurs et rasters)</target>
+    <target>Données (vecteurs, rasters et tabulaires)</target>
 </phrase>
 <phrase>
     <source>Cache has been cleaned.</source>
