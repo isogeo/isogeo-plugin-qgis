@@ -91,6 +91,7 @@ class UserInformer:
             - 'unkown_error'
             - 'unkonw_reply'
             - 'internet_issue'
+            - 'config_issue'
         """
         msg_dict = {
             "creds_issue": self.tr(
@@ -123,6 +124,11 @@ class UserInformer:
                 "Request to Isogeo's API failed : please check your Internet connection"
                 " and your proxy configuration. If this error keeps happening, please "
                 "report it in the bug tracker.",
+                context=__class__.__name__,
+            ),
+            "config_issue": self.tr(
+                "Search request to Isogeo's API failed : please check that 'api_base_url' and "
+                "'api_auth_url' URLs specified into config.json file are pointing to the same API.",
                 context=__class__.__name__,
             ),
         }

@@ -231,8 +231,15 @@ class ApiRequester(QObject):
             # authorization needed because token expired
             elif err == 204:
                 logger.debug("Token expired. Renewing it.")
-                self.loopCount = 0
-                self.send_request("token")
+                if self.loopCount < 3:
+                    self.loopCount += 1
+                    self.send_request("token")
+                else:
+                    logger.error(
+                        "Invalid API token. 204 Error for the third time. URLs specified into "
+                        "config.json file may not be compliant."
+                    )
+                    self.api_sig.emit("config_issue")
             # proxy issue
             elif err >= 101 and err <= 105:
                 logger.error("Request to the API failed. Proxy issue code received")
@@ -305,7 +312,6 @@ class ApiRequester(QObject):
         else:
             if self.loopCount < 3:
                 self.loopCount += 1
-                reply.request().abort()
                 self.send_request("token")
             else:
                 logger.error(
