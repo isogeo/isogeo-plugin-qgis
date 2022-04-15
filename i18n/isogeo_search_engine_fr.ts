@@ -826,7 +826,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1413"/>
         <source>Geography</source>
-        <translation>Géométrie</translation>
+        <translation>Géographie</translation>
     </message>
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1517"/>
