@@ -12,17 +12,18 @@
 # ##################################
 
 # standard library
-from hashlib import sha256
 import logging
 import pprint
 import re
 import unicodedata
+from hashlib import sha256
+from typing import Union
 
 # package
 from ..enums import MetadataTypes
 
 # others models
-from .workgroup import Workgroup
+from ..models import CoordinateSystem, Workgroup
 
 
 # #############################################################################
@@ -174,6 +175,7 @@ class Metadata(object):
         "features": int,
         "format": str,
         "formatVersion": str,
+        "geoContext": str,
         "geometry": str,
         "keywords": list,
         "language": str,
@@ -191,6 +193,7 @@ class Metadata(object):
         "serviceLayers": list,
         "specifications": list,
         "tags": list,
+        "thumbnailUrl": str,
         "title": str,
         "topologicalConsistency": str,
         "type": str,
@@ -211,6 +214,7 @@ class Metadata(object):
         "features": int,
         "format": str,
         "formatVersion": str,
+        "geoContext": str,
         "geometry": str,
         "language": str,
         "name": str,
@@ -244,7 +248,8 @@ class Metadata(object):
         :rtype: Metadata
         """
         for k, v in cls.ATTR_MAP.items():
-            raw_object[k] = raw_object.pop(v, [])
+            raw_object[k] = raw_object.pop(v, None)
+
         return cls(**raw_object)
 
     # -- CLASS INSTANCIATION -----------------------------------------------------------
@@ -272,6 +277,7 @@ class Metadata(object):
         features: int = None,
         format: str = None,
         formatVersion: str = None,
+        geoContext: str = None,
         geometry: str = None,
         keywords: list = None,
         language: str = None,
@@ -289,6 +295,7 @@ class Metadata(object):
         serviceLayers: list = None,
         specifications: list = None,
         tags: list = None,
+        thumbnailUrl: str = None,
         title: str = None,
         topologicalConsistency: str = None,
         type: str = None,
@@ -296,6 +303,7 @@ class Metadata(object):
         validFrom: str = None,
         validTo: str = None,
         validityComment: str = None,
+        **kwargs,
     ):
         """Metadata model."""
 
@@ -321,6 +329,7 @@ class Metadata(object):
         self._features = None
         self._format = None
         self._formatVersion = None
+        self._geoContext = None
         self._geometry = None
         self._keywords = None
         self._language = None
@@ -338,6 +347,7 @@ class Metadata(object):
         self._serviceLayers = None
         self._specifications = None
         self._tags = None
+        self._thumbnailUrl = None
         self._title = None
         self._topologicalConsistency = None
         self._type = None
@@ -390,6 +400,8 @@ class Metadata(object):
             self._format = format
         if formatVersion is not None:
             self._formatVersion = formatVersion
+        if geoContext is not None:
+            self._geoContext = geoContext
         if geometry is not None:
             self._geometry = geometry
         if keywords is not None:
@@ -422,6 +434,8 @@ class Metadata(object):
             self._specifications = specifications
         if tags is not None:
             self._tags = tags
+        if thumbnailUrl is not None:
+            self._thumbnailUrl = thumbnailUrl
         if title is not None:
             self._title = title
         if topologicalConsistency is not None:
@@ -436,6 +450,15 @@ class Metadata(object):
             self._validTo = validTo
         if validityComment is not None:
             self._validityComment = validityComment
+
+        # warn about unsupported attributes
+        # if len(kwargs):
+        #     logger.warning(
+        #         "Folllowings fields were not expected and have been ignored. "
+        #         "Maybe consider adding them to the model: {}.".format(
+        #             " | ".join(kwargs.keys())
+        #         )
+        #     )
 
     # -- PROPERTIES --------------------------------------------------------------------
     # abilities of the user related to the metadata
@@ -596,22 +619,26 @@ class Metadata(object):
 
     # coordinateSystem
     @property
-    def coordinateSystem(self) -> dict:
+    def coordinateSystem(self) -> CoordinateSystem:
         """Gets the coordinateSystem of this Metadata.
 
         :return: The coordinateSystem of this Metadata.
-        :rtype: dict
+        :rtype: CoordinateSystem
         """
         return self._coordinateSystem
 
     @coordinateSystem.setter
-    def coordinateSystem(self, coordinateSystem: dict):
+    def coordinateSystem(self, coordinateSystem: Union[dict, CoordinateSystem]):
         """Sets the coordinate systems of this Metadata.
 
-        :param dict coordinateSystem: to be set
+        :param Union[dict, CoordinateSystem] coordinateSystem: coordinate-system to be set
         """
-
-        self._coordinateSystem = coordinateSystem
+        if isinstance(coordinateSystem, dict):
+            self._coordinateSystem = CoordinateSystem(**coordinateSystem)
+        elif isinstance(coordinateSystem, CoordinateSystem):
+            self._coordinateSystem = coordinateSystem
+        else:
+            self._coordinateSystem = None
 
     # created
     @property
@@ -796,6 +823,25 @@ class Metadata(object):
         """
 
         self._formatVersion = formatVersion
+
+    # geographical context
+    @property
+    def geoContext(self) -> str:
+        """Gets the geoContext of this Metadata.
+
+        :return: The geoContext of this Metadata.
+        :rtype: str
+        """
+        return self._geoContext
+
+    @geoContext.setter
+    def geoContext(self, geoContext: str):
+        """Sets the  of this Metadata.
+
+        :param str geoContext: to be set
+        """
+
+        self._geoContext = geoContext
 
     # geometry
     @property
@@ -1113,6 +1159,16 @@ class Metadata(object):
 
         self._tags = tags
 
+    # thumbnailUrl
+    @property
+    def thumbnailUrl(self) -> str:
+        """Gets the thumbnailUrl of this Metadata.
+
+        :return: The thumbnailUrl of this Metadata.
+        :rtype: str
+        """
+        return self._thumbnailUrl
+
     # title
     @property
     def title(self) -> str:
@@ -1247,7 +1303,7 @@ class Metadata(object):
 
     @validityComment.setter
     def validityComment(self, validityComment: str):
-        """Sets the  of this Metadata.
+        """Sets the validityComment of this Metadata.
 
         :param str validityComment: to be set
         """
@@ -1274,6 +1330,12 @@ class Metadata(object):
             return self._creator._id
         else:
             return None
+
+    @property
+    def typeFilter(self) -> str:
+        """Shortcut to get the type as expected in search filter."""
+        if self.type in MetadataTypes.__members__:
+            return MetadataTypes[self.type].value
 
     # -- METHODS -----------------------------------------------------------------------
     def admin_url(self, url_base: str = "https://app.isogeo.com") -> str:
@@ -1304,9 +1366,6 @@ class Metadata(object):
         elif self._name:
             title_or_name = self._name
         else:
-            logger.warning(
-                "Metadata has no title nor name. So this method is useless..."
-            )
             return None
 
         # slugify
@@ -1431,7 +1490,17 @@ class Metadata(object):
         for i in included_attributes:
             # because hash.update requires a
             if getattr(self, i):
-                hasher.update(getattr(self, i).encode())
+                try:
+                    attr_value = getattr(self, i)
+                    if isinstance(attr_value, str):
+                        hasher.update(attr_value.encode())
+                    elif isinstance(attr_value, dict):
+                        hasher.update(hash(frozenset(attr_value.items())))
+                    else:
+                        hasher.update(hash(attr_value))
+                        pass
+                except TypeError:
+                    pass
 
         return hasher.hexdigest()
 
