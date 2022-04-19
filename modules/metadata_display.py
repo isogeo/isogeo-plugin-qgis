@@ -127,7 +127,7 @@ class MetadataDisplayer:
         self.complete_md.val_abstract.setText(md.get("abstract", "NR"))
 
         # -- FEATURE ATTRIBUTES ----------------------------------------------
-        if md.get("type") == "vectorDataset":
+        if md.get("type") in ("vectorDataset", "noGeoDataset"):
             # display
             menu_list = self.complete_md.li_menu
             item = menu_list.item(1)
@@ -318,10 +318,10 @@ class MetadataDisplayer:
         self.complete_md.val_specifications.setText("<br><hr><br>".join(specs_out))
 
         # Geography
-        if "envelope" in md:
+        if "envelope" in md and isinstance(md.get("envelope"), dict):
             qgs_prj = QgsProject.instance()
             # display
-            self.complete_md.wid_bbox.setDisabled(0)
+            self.complete_md.grp_bbox.setDisabled(0)
             # get convex hull coordinates and create the polygon
             md_lyr = self.envelope2layer(md.get("envelope"))
             li_lyr = [md_lyr, ref_lyr]
@@ -335,8 +335,14 @@ class MetadataDisplayer:
             self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())
             self.complete_md.wid_bbox.zoomOut()
+            self.complete_md.wid_bbox.setDisabled(1)
         else:
             self.complete_md.grp_bbox.setDisabled(1)
+
+        if md.get("type") == "noGeoDataset":
+            self.complete_md.val_geoContext.setText(md.get("geoContext"))
+        else:
+            pass
 
         # -- CGUs ------------------------------------------------------------
         # Licences
@@ -536,6 +542,7 @@ class MetadataDisplayer:
             self.complete_md.grp_collect_context.setHidden(0)
             self.complete_md.grp_collect_method.setHidden(0)
             # geography
+            self.complete_md.grp_geoContext.setHidden(1)
             self.complete_md.grp_technic.setHidden(0)
             self.complete_md.ico_feat_count.setHidden(0)
             self.complete_md.lbl_feat_count.setHidden(0)
@@ -543,6 +550,64 @@ class MetadataDisplayer:
             self.complete_md.ico_geometry.setHidden(0)
             self.complete_md.lbl_geometry.setHidden(0)
             self.complete_md.val_geometry.setHidden(0)
+            self.complete_md.ico_srs.setHidden(0)
+            self.complete_md.lbl_srs.setHidden(0)
+            self.complete_md.val_srs.setHidden(0)
+            self.complete_md.ico_scale.setHidden(0)
+            self.complete_md.lbl_scale.setHidden(0)
+            self.complete_md.val_scale.setHidden(0)
+            self.complete_md.ico_resolution.setHidden(0)
+            self.complete_md.lbl_resolution.setHidden(0)
+            self.complete_md.val_resolution.setHidden(0)
+            self.complete_md.line.setHidden(0)
+            self.complete_md.grp_bbox.setHidden(0)
+            # menus
+            menu_list.item(1).setHidden(0)  # attributes
+            menu_list.item(4).setHidden(0)  # geography and technical
+            return
+
+        elif md_type == "noGeoDataset":
+            # general
+            self.complete_md.val_inspire_themes.setHidden(0)
+            self.complete_md.ico_inspire_themes.setHidden(0)
+            self.complete_md.ico_inspire_conformity.setHidden(0)
+            self.complete_md.val_feat_count.setHidden(0)
+            self.complete_md.val_geometry.setHidden(0)
+            # history
+            self.complete_md.lbl_frequency.setHidden(0)
+            self.complete_md.ico_frequency.setHidden(0)
+            self.complete_md.val_frequency.setHidden(0)
+            self.complete_md.lbl_valid_start.setHidden(0)
+            self.complete_md.ico_valid_start.setHidden(0)
+            self.complete_md.val_valid_start.setHidden(0)
+            self.complete_md.lbl_valid_end.setHidden(0)
+            self.complete_md.ico_valid_end.setHidden(0)
+            self.complete_md.val_valid_end.setHidden(0)
+            self.complete_md.lbl_valid_comment.setHidden(0)
+            self.complete_md.ico_valid_comment.setHidden(0)
+            self.complete_md.val_valid_comment.setHidden(0)
+            self.complete_md.grp_collect_context.setHidden(0)
+            self.complete_md.grp_collect_method.setHidden(0)
+            # geography
+            self.complete_md.grp_geoContext.setHidden(0)
+            self.complete_md.grp_technic.setHidden(0)
+            self.complete_md.ico_feat_count.setHidden(0)
+            self.complete_md.lbl_feat_count.setHidden(0)
+            self.complete_md.val_feat_count.setHidden(0)
+            self.complete_md.ico_geometry.setHidden(1)
+            self.complete_md.lbl_geometry.setHidden(1)
+            self.complete_md.val_geometry.setHidden(1)
+            self.complete_md.ico_srs.setHidden(1)
+            self.complete_md.lbl_srs.setHidden(1)
+            self.complete_md.val_srs.setHidden(1)
+            self.complete_md.ico_scale.setHidden(1)
+            self.complete_md.lbl_scale.setHidden(1)
+            self.complete_md.val_scale.setHidden(1)
+            self.complete_md.ico_resolution.setHidden(1)
+            self.complete_md.lbl_resolution.setHidden(1)
+            self.complete_md.val_resolution.setHidden(1)
+            self.complete_md.line.setHidden(1)
+            self.complete_md.grp_bbox.setHidden(1)
             # menus
             menu_list.item(1).setHidden(0)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -552,8 +617,27 @@ class MetadataDisplayer:
             # geography
             self.complete_md.val_feat_count.setHidden(1)
             self.complete_md.val_geometry.setHidden(1)
+            self.complete_md.grp_geoContext.setHidden(1)
             # geography
             self.complete_md.grp_technic.setHidden(0)
+            # geography
+            self.complete_md.ico_feat_count.setHidden(1)
+            self.complete_md.lbl_feat_count.setHidden(1)
+            self.complete_md.val_feat_count.setHidden(1)
+            self.complete_md.ico_geometry.setHidden(1)
+            self.complete_md.lbl_geometry.setHidden(1)
+            self.complete_md.val_geometry.setHidden(1)
+            self.complete_md.ico_srs.setHidden(0)
+            self.complete_md.lbl_srs.setHidden(0)
+            self.complete_md.val_srs.setHidden(0)
+            self.complete_md.ico_scale.setHidden(0)
+            self.complete_md.lbl_scale.setHidden(0)
+            self.complete_md.val_scale.setHidden(0)
+            self.complete_md.ico_resolution.setHidden(0)
+            self.complete_md.lbl_resolution.setHidden(0)
+            self.complete_md.val_resolution.setHidden(0)
+            self.complete_md.line.setHidden(0)
+            self.complete_md.grp_bbox.setHidden(0)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -567,6 +651,18 @@ class MetadataDisplayer:
             self.complete_md.ico_geometry.setHidden(1)
             self.complete_md.lbl_geometry.setHidden(1)
             self.complete_md.val_geometry.setHidden(1)
+            self.complete_md.ico_srs.setHidden(0)
+            self.complete_md.lbl_srs.setHidden(0)
+            self.complete_md.val_srs.setHidden(0)
+            self.complete_md.ico_scale.setHidden(0)
+            self.complete_md.lbl_scale.setHidden(0)
+            self.complete_md.val_scale.setHidden(0)
+            self.complete_md.ico_resolution.setHidden(0)
+            self.complete_md.lbl_resolution.setHidden(0)
+            self.complete_md.val_resolution.setHidden(0)
+            self.complete_md.line.setHidden(0)
+            self.complete_md.grp_bbox.setHidden(0)
+            self.complete_md.grp_geoContext.setHidden(1)
             # geography
             self.complete_md.grp_technic.setHidden(0)
             # menus
@@ -596,6 +692,7 @@ class MetadataDisplayer:
             self.complete_md.grp_collect_method.setHidden(1)
             # geography
             self.complete_md.grp_technic.setHidden(0)
+            self.complete_md.grp_geoContext.setHidden(1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -617,6 +714,7 @@ class MetadataDisplayer:
             self.complete_md.val_valid_comment.setHidden(1)
             self.complete_md.grp_collect_context.setHidden(1)
             self.complete_md.grp_collect_method.setHidden(1)
+            self.complete_md.grp_geoContext.setHidden(1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(1)  # geography and technical

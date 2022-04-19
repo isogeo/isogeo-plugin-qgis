@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>dlg_metadata_details</class>
  <widget class="QDialog" name="dlg_metadata_details">
@@ -10,13 +10,19 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>784</height>
+    <height>800</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>800</width>
-    <height>450</height>
+    <height>550</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>800</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -27,19 +33,19 @@
     <normaloff>:/plugins/Isogeo/icon.png</normaloff>:/plugins/Isogeo/icon.png</iconset>
   </property>
   <property name="windowOpacity">
-   <double>0.980000000000000</double>
+   <double>1.000000000000000</double>
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>
   <property name="locale">
-   <locale country="UnitedStates" language="English" />
+   <locale language="English" country="UnitedStates"/>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item column="0" row="0">
+   <item row="0" column="0">
     <widget class="QListWidget" name="li_menu">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -199,6 +205,15 @@ QListWidget::item::selected {
      </item>
      <item>
       <property name="text">
+       <string>Quality</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../resources.qrc">
+        <normaloff>:/plugins/Isogeo/resources/metadata/trophy_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/trophy_orange.svg</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>Licenses</string>
       </property>
       <property name="icon">
@@ -217,7 +232,7 @@ QListWidget::item::selected {
      </item>
     </widget>
    </item>
-   <item column="0" row="1">
+   <item row="1" column="0">
     <widget class="QPushButton" name="btn_md_edit">
      <property name="enabled">
       <bool>true</bool>
@@ -255,62 +270,7 @@ QListWidget::item::selected {
      </property>
     </widget>
    </item>
-   <item column="1" row="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="btn_addtomap">
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>addButton</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="btn_ok_cancel">
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>250</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
-       </property>
-       <property name="centerButtons">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item column="1" row="0">
+   <item row="0" column="1">
     <layout class="QVBoxLayout" name="verticalLayout_13">
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
@@ -341,7 +301,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>6</number>
        </property>
        <widget class="QWidget" name="md_general">
         <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -355,7 +315,7 @@ QListWidget::item::selected {
             </font>
            </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-style:italic;"&gt;No title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;No title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="textFormat">
             <enum>Qt::AutoText</enum>
@@ -370,7 +330,7 @@ QListWidget::item::selected {
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout_4">
-           <item column="0" row="0">
+           <item row="0" column="0">
             <widget class="QLabel" name="ico_owner">
              <property name="minimumSize">
               <size>
@@ -385,7 +345,7 @@ QListWidget::item::selected {
               </size>
              </property>
              <property name="text">
-              <string />
+              <string/>
              </property>
              <property name="pixmap">
               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/users_blue.svg</pixmap>
@@ -401,7 +361,7 @@ QListWidget::item::selected {
              </property>
             </widget>
            </item>
-           <item column="0" row="3">
+           <item row="3" column="0">
             <widget class="QLabel" name="ico_inspire_themes">
              <property name="minimumSize">
               <size>
@@ -422,7 +382,7 @@ QListWidget::item::selected {
               <bool>true</bool>
              </property>
              <property name="text">
-              <string />
+              <string/>
              </property>
              <property name="pixmap">
               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/leaf.svg</pixmap>
@@ -435,7 +395,7 @@ QListWidget::item::selected {
              </property>
             </widget>
            </item>
-           <item column="0" row="2">
+           <item row="2" column="0">
             <widget class="QLabel" name="ico_keywords">
              <property name="minimumSize">
               <size>
@@ -453,7 +413,7 @@ QListWidget::item::selected {
               <string>Keywords</string>
              </property>
              <property name="text">
-              <string />
+              <string/>
              </property>
              <property name="textFormat">
               <enum>Qt::PlainText</enum>
@@ -469,7 +429,7 @@ QListWidget::item::selected {
              </property>
             </widget>
            </item>
-           <item column="0" row="5">
+           <item row="5" column="0">
             <widget class="QLabel" name="ico_abstract">
              <property name="minimumSize">
               <size>
@@ -490,7 +450,7 @@ QListWidget::item::selected {
               <string>Abstract</string>
              </property>
              <property name="text">
-              <string notr="true" />
+              <string notr="true"/>
              </property>
              <property name="pixmap">
               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/bookmark_blue.svg</pixmap>
@@ -509,7 +469,7 @@ QListWidget::item::selected {
              </property>
             </widget>
            </item>
-           <item column="1" row="3">
+           <item row="3" column="1">
             <widget class="QLabel" name="val_inspire_themes">
              <property name="minimumSize">
               <size>
@@ -524,7 +484,7 @@ QListWidget::item::selected {
               <string>INSPIRE themes</string>
              </property>
              <property name="autoFillBackground">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="text">
               <string>TextLabel</string>
@@ -534,7 +494,7 @@ QListWidget::item::selected {
              </property>
             </widget>
            </item>
-           <item column="2" row="3">
+           <item row="3" column="2">
             <widget class="QLabel" name="ico_inspire_conformity">
              <property name="enabled">
               <bool>false</bool>
@@ -552,7 +512,7 @@ QListWidget::item::selected {
               <enum>QFrame::Plain</enum>
              </property>
              <property name="text">
-              <string />
+              <string/>
              </property>
              <property name="pixmap">
               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/inspire.png</pixmap>
@@ -568,7 +528,7 @@ QListWidget::item::selected {
              </property>
             </widget>
            </item>
-           <item colspan="2" column="1" row="2">
+           <item row="2" column="1" colspan="2">
             <widget class="QLabel" name="val_keywords">
              <property name="minimumSize">
               <size>
@@ -583,7 +543,7 @@ QListWidget::item::selected {
               <string>Keywords</string>
              </property>
              <property name="autoFillBackground">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="text">
               <string>TextLabel</string>
@@ -602,7 +562,7 @@ QListWidget::item::selected {
              </property>
             </widget>
            </item>
-           <item colspan="2" column="1" row="0">
+           <item row="0" column="1" colspan="2">
             <widget class="QLabel" name="val_owner">
              <property name="enabled">
               <bool>true</bool>
@@ -629,14 +589,14 @@ QListWidget::item::selected {
               <string>Metadata owner</string>
              </property>
              <property name="autoFillBackground">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="text">
               <string>TextLabel</string>
              </property>
             </widget>
            </item>
-           <item colspan="2" column="1" row="5">
+           <item row="5" column="1" colspan="2">
             <widget class="QScrollArea" name="scrollArea">
              <property name="minimumSize">
               <size>
@@ -661,8 +621,8 @@ QListWidget::item::selected {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>526</width>
-                <height>189</height>
+                <width>516</width>
+                <height>185</height>
                </rect>
               </property>
               <property name="maximumSize">
@@ -672,7 +632,7 @@ QListWidget::item::selected {
                </size>
               </property>
               <layout class="QGridLayout" name="gridLayout_17">
-               <item column="0" row="0">
+               <item row="0" column="0">
                 <widget class="QLabel" name="val_abstract">
                  <property name="minimumSize">
                   <size>
@@ -687,7 +647,7 @@ QListWidget::item::selected {
                   <string>Abstract</string>
                  </property>
                  <property name="autoFillBackground">
-                  <bool>true</bool>
+                  <bool>false</bool>
                  </property>
                  <property name="text">
                   <string>TextLabel</string>
@@ -732,7 +692,7 @@ QListWidget::item::selected {
        </widget>
        <widget class="QWidget" name="md_feat_attributes">
         <layout class="QGridLayout" name="gridLayout">
-         <item column="0" row="0">
+         <item row="0" column="0">
           <widget class="QTableWidget" name="tbl_attributes">
            <property name="minimumSize">
             <size>
@@ -793,7 +753,7 @@ QListWidget::item::selected {
        </widget>
        <widget class="QWidget" name="md_contacts">
         <layout class="QGridLayout" name="gridLayout_7">
-         <item column="0" row="0">
+         <item row="0" column="0">
           <widget class="QGroupBox" name="grp_pointof">
            <property name="font">
             <font>
@@ -805,7 +765,7 @@ QListWidget::item::selected {
             <string>Point of contact</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_12">
-            <item column="0" row="0">
+            <item row="0" column="0">
              <widget class="QScrollArea" name="scroll_ct_pointof">
               <property name="maximumSize">
                <size>
@@ -821,12 +781,12 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>534</width>
-                 <height>199</height>
+                 <width>521</width>
+                 <height>193</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_16">
-                <item column="0" row="0">
+                <item row="0" column="0">
                  <widget class="QLabel" name="val_ct_pointof">
                   <property name="minimumSize">
                    <size>
@@ -850,7 +810,7 @@ QListWidget::item::selected {
                    <cursorShape>IBeamCursor</cursorShape>
                   </property>
                   <property name="autoFillBackground">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="text">
                    <string>TextLabel</string>
@@ -876,7 +836,7 @@ QListWidget::item::selected {
            </layout>
           </widget>
          </item>
-         <item column="0" row="1">
+         <item row="1" column="0">
           <widget class="QGroupBox" name="groupBox">
            <property name="font">
             <font>
@@ -888,7 +848,7 @@ QListWidget::item::selected {
             <string>Others contacts</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_13">
-            <item column="0" row="0">
+            <item row="0" column="0">
              <widget class="QScrollArea" name="scroll_ct_other">
               <property name="maximumSize">
                <size>
@@ -904,12 +864,12 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>534</width>
-                 <height>198</height>
+                 <width>521</width>
+                 <height>194</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_15">
-                <item column="0" row="0">
+                <item row="0" column="0">
                  <widget class="QLabel" name="val_ct_other">
                   <property name="minimumSize">
                    <size>
@@ -933,10 +893,10 @@ QListWidget::item::selected {
                    <cursorShape>IBeamCursor</cursorShape>
                   </property>
                   <property name="toolTip">
-                   <string />
+                   <string/>
                   </property>
                   <property name="autoFillBackground">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="text">
                    <string>TextLabel</string>
@@ -965,7 +925,7 @@ QListWidget::item::selected {
            </layout>
           </widget>
          </item>
-         <item column="0" row="2">
+         <item row="2" column="0">
           <spacer name="verticalSpacer_2">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -1000,18 +960,18 @@ QListWidget::item::selected {
             <string>Data history</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
-            <item colspan="2" column="1" row="0" rowspan="3">
+            <item row="0" column="1" rowspan="3" colspan="2">
              <widget class="Line" name="vert_separator">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
              </widget>
             </item>
-            <item column="0" row="1" rowspan="2">
+            <item row="1" column="0" rowspan="2">
              <layout class="QVBoxLayout" name="verticalLayout_14">
               <item>
                <layout class="QGridLayout" name="gridLayout_9">
-                <item column="5" row="2">
+                <item row="2" column="5">
                  <widget class="QLabel" name="val_frequency">
                   <property name="font">
                    <font>
@@ -1024,7 +984,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="2">
+                <item row="2" column="2">
                  <widget class="QLabel" name="lbl_frequency">
                   <property name="font">
                    <font>
@@ -1037,7 +997,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="5" row="1">
+                <item row="1" column="5">
                  <widget class="QLabel" name="val_data_update">
                   <property name="font">
                    <font>
@@ -1050,7 +1010,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="1">
+                <item row="1" column="2">
                  <widget class="QLabel" name="lbl_data_update">
                   <property name="font">
                    <font>
@@ -1063,7 +1023,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="1">
+                <item row="1" column="1">
                  <widget class="QLabel" name="ico_data_update">
                   <property name="maximumSize">
                    <size>
@@ -1072,7 +1032,7 @@ QListWidget::item::selected {
                    </size>
                   </property>
                   <property name="text">
-                   <string />
+                   <string/>
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar_blue.svg</pixmap>
@@ -1085,7 +1045,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="5" row="0">
+                <item row="0" column="5">
                  <widget class="QLabel" name="val_data_crea">
                   <property name="font">
                    <font>
@@ -1098,7 +1058,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="0">
+                <item row="0" column="1">
                  <widget class="QLabel" name="ico_data_crea">
                   <property name="maximumSize">
                    <size>
@@ -1107,7 +1067,7 @@ QListWidget::item::selected {
                    </size>
                   </property>
                   <property name="text">
-                   <string />
+                   <string/>
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-plus-o.svg</pixmap>
@@ -1120,7 +1080,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="0">
+                <item row="0" column="2">
                  <widget class="QLabel" name="lbl_data_crea">
                   <property name="font">
                    <font>
@@ -1133,7 +1093,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="1">
+                <item row="1" column="3">
                  <spacer name="horizontalSpacer">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1146,7 +1106,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="3" row="0">
+                <item row="0" column="3">
                  <spacer name="horiz_spacer_data_update">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1159,7 +1119,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="3" row="2">
+                <item row="2" column="3">
                  <spacer name="horizontalSpacer_2">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1172,7 +1132,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="1" row="2">
+                <item row="2" column="1">
                  <widget class="QLabel" name="ico_frequency">
                   <property name="maximumSize">
                    <size>
@@ -1187,7 +1147,7 @@ QListWidget::item::selected {
                    </font>
                   </property>
                   <property name="text">
-                   <string />
+                   <string/>
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/refresh.svg</pixmap>
@@ -1204,11 +1164,11 @@ QListWidget::item::selected {
               </item>
              </layout>
             </item>
-            <item column="2" row="1" rowspan="2">
+            <item row="1" column="2" rowspan="2">
              <layout class="QVBoxLayout" name="verticalLayout_15">
               <item>
                <layout class="QGridLayout" name="gridLayout_11">
-                <item column="1" row="2">
+                <item row="2" column="1">
                  <widget class="QLabel" name="lbl_valid_comment">
                   <property name="font">
                    <font>
@@ -1221,7 +1181,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="2">
+                <item row="2" column="3">
                  <widget class="QLabel" name="val_valid_comment">
                   <property name="font">
                    <font>
@@ -1246,7 +1206,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="2">
+                <item row="2" column="2">
                  <spacer name="horizontalSpacer_3">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1259,7 +1219,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="0" row="2">
+                <item row="2" column="0">
                  <widget class="QLabel" name="ico_valid_comment">
                   <property name="maximumSize">
                    <size>
@@ -1277,7 +1237,7 @@ QListWidget::item::selected {
                    <bool>true</bool>
                   </property>
                   <property name="text">
-                   <string />
+                   <string/>
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/comment-o.svg</pixmap>
@@ -1296,7 +1256,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="1">
+                <item row="1" column="0">
                  <widget class="QLabel" name="ico_valid_end">
                   <property name="maximumSize">
                    <size>
@@ -1305,7 +1265,7 @@ QListWidget::item::selected {
                    </size>
                   </property>
                   <property name="text">
-                   <string />
+                   <string/>
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/calendar-times-o.svg</pixmap>
@@ -1318,7 +1278,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="1">
+                <item row="1" column="3">
                  <widget class="QLabel" name="val_valid_end">
                   <property name="font">
                    <font>
@@ -1331,7 +1291,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="0">
+                <item row="0" column="0">
                  <widget class="QLabel" name="ico_valid_start">
                   <property name="maximumSize">
                    <size>
@@ -1340,7 +1300,7 @@ QListWidget::item::selected {
                    </size>
                   </property>
                   <property name="text">
-                   <string />
+                   <string/>
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-check-o.svg</pixmap>
@@ -1353,7 +1313,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="0">
+                <item row="0" column="1">
                  <widget class="QLabel" name="lbl_valid_start">
                   <property name="font">
                    <font>
@@ -1366,7 +1326,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="0">
+                <item row="0" column="3">
                  <widget class="QLabel" name="val_valid_start">
                   <property name="font">
                    <font>
@@ -1379,7 +1339,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="1">
+                <item row="1" column="1">
                  <widget class="QLabel" name="lbl_valid_end">
                   <property name="font">
                    <font>
@@ -1392,7 +1352,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="1">
+                <item row="1" column="2">
                  <spacer name="horiz_spacer_valid_end">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1405,7 +1365,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="2" row="0">
+                <item row="0" column="2">
                  <spacer name="horiz_spacer_valid_start">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1424,8 +1384,8 @@ QListWidget::item::selected {
             </item>
            </layout>
            <zorder>vert_separator</zorder>
-           <zorder />
-           <zorder />
+           <zorder></zorder>
+           <zorder></zorder>
           </widget>
          </item>
          <item>
@@ -1440,7 +1400,7 @@ QListWidget::item::selected {
             <string>Collection context</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_14">
-            <item column="0" row="0">
+            <item row="0" column="0">
              <widget class="QLabel" name="val_context">
               <property name="minimumSize">
                <size>
@@ -1458,7 +1418,7 @@ QListWidget::item::selected {
                <cursorShape>IBeamCursor</cursorShape>
               </property>
               <property name="autoFillBackground">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="text">
                <string>TextLabel</string>
@@ -1492,7 +1452,7 @@ QListWidget::item::selected {
             <string>Collection method</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_21">
-            <item column="0" row="0">
+            <item row="0" column="0">
              <widget class="QLabel" name="val_method">
               <property name="minimumSize">
                <size>
@@ -1510,7 +1470,7 @@ QListWidget::item::selected {
                <cursorShape>IBeamCursor</cursorShape>
               </property>
               <property name="autoFillBackground">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="text">
                <string>TextLabel</string>
@@ -1575,7 +1535,7 @@ QListWidget::item::selected {
                 <string>Date</string>
                </property>
                <property name="textAlignment">
-                <set>AlignLeft|AlignBottom</set>
+                <set>AlignLeading|AlignBottom</set>
                </property>
                <property name="icon">
                 <iconset resource="../../resources.qrc">
@@ -1587,7 +1547,7 @@ QListWidget::item::selected {
                 <string>Description</string>
                </property>
                <property name="textAlignment">
-                <set>AlignLeft|AlignTop</set>
+                <set>AlignLeading|AlignTop</set>
                </property>
                <property name="icon">
                 <iconset resource="../../resources.qrc">
@@ -1630,13 +1590,210 @@ QListWidget::item::selected {
              <bold>true</bold>
             </font>
            </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
            <property name="title">
             <string>Technical informations</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_6">
-            <item column="2" row="0">
+            <item row="0" column="1">
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_20">
+              <item row="0" column="0">
+               <widget class="QLabel" name="ico_format">
+                <property name="maximumSize">
+                 <size>
+                  <width>16</width>
+                  <height>16</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cube_blue.svg</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::NoTextInteraction</set>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLabel" name="val_format">
+                <property name="font">
+                 <font>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="lbl_format">
+                <property name="font">
+                 <font>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Format:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <spacer name="horiz_spacer_format">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="ico_feat_count">
+                <property name="maximumSize">
+                 <size>
+                  <width>16</width>
+                  <height>16</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cubes.svg</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::NoTextInteraction</set>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="lbl_feat_count">
+                <property name="font">
+                 <font>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Features count:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <spacer name="horiz_spacer_feat_count">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="3">
+               <widget class="QLabel" name="val_feat_count">
+                <property name="font">
+                 <font>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="lbl_geometry">
+                <property name="font">
+                 <font>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Geometry type:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="ico_geometry">
+                <property name="maximumSize">
+                 <size>
+                  <width>16</width>
+                  <height>16</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/multi.svg</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::NoTextInteraction</set>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <spacer name="horiz_spacer_srs">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="3">
+               <widget class="QLabel" name="val_geometry">
+                <property name="font">
+                 <font>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="2">
              <layout class="QGridLayout" name="gridLayout_19">
-              <item column="0" row="1">
+              <item row="1" column="0">
                <widget class="QLabel" name="ico_scale">
                 <property name="minimumSize">
                  <size>
@@ -1654,7 +1811,7 @@ QListWidget::item::selected {
                  <bool>true</bool>
                 </property>
                 <property name="text">
-                 <string />
+                 <string/>
                 </property>
                 <property name="pixmap">
                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/arrows-h.svg</pixmap>
@@ -1667,7 +1824,7 @@ QListWidget::item::selected {
                 </property>
                </widget>
               </item>
-              <item column="3" row="1">
+              <item row="1" column="3">
                <widget class="QLabel" name="val_scale">
                 <property name="font">
                  <font>
@@ -1680,7 +1837,7 @@ QListWidget::item::selected {
                 </property>
                </widget>
               </item>
-              <item column="0" row="0">
+              <item row="0" column="0">
                <widget class="QLabel" name="ico_srs">
                 <property name="maximumSize">
                  <size>
@@ -1689,7 +1846,7 @@ QListWidget::item::selected {
                  </size>
                 </property>
                 <property name="text">
-                 <string />
+                 <string/>
                 </property>
                 <property name="pixmap">
                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/compass.svg</pixmap>
@@ -1702,7 +1859,7 @@ QListWidget::item::selected {
                 </property>
                </widget>
               </item>
-              <item column="1" row="1">
+              <item row="1" column="1">
                <widget class="QLabel" name="lbl_scale">
                 <property name="font">
                  <font>
@@ -1715,7 +1872,7 @@ QListWidget::item::selected {
                 </property>
                </widget>
               </item>
-              <item column="1" row="0">
+              <item row="0" column="1">
                <widget class="QLabel" name="lbl_srs">
                 <property name="font">
                  <font>
@@ -1728,7 +1885,7 @@ QListWidget::item::selected {
                 </property>
                </widget>
               </item>
-              <item column="2" row="0">
+              <item row="0" column="2">
                <spacer name="horizontalSpacer_5">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1741,7 +1898,7 @@ QListWidget::item::selected {
                 </property>
                </spacer>
               </item>
-              <item column="2" row="1">
+              <item row="1" column="2">
                <spacer name="horiz_spacer_geometry">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1754,7 +1911,7 @@ QListWidget::item::selected {
                 </property>
                </spacer>
               </item>
-              <item column="3" row="0">
+              <item row="0" column="3">
                <widget class="QLabel" name="val_srs">
                 <property name="font">
                  <font>
@@ -1767,7 +1924,7 @@ QListWidget::item::selected {
                 </property>
                </widget>
               </item>
-              <item column="0" row="2">
+              <item row="2" column="0">
                <widget class="QLabel" name="ico_resolution">
                 <property name="maximumSize">
                  <size>
@@ -1779,7 +1936,7 @@ QListWidget::item::selected {
                  <bool>true</bool>
                 </property>
                 <property name="text">
-                 <string />
+                 <string/>
                 </property>
                 <property name="pixmap">
                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/th.svg</pixmap>
@@ -1792,7 +1949,7 @@ QListWidget::item::selected {
                 </property>
                </widget>
               </item>
-              <item column="1" row="2">
+              <item row="2" column="1">
                <widget class="QLabel" name="lbl_resolution">
                 <property name="font">
                  <font>
@@ -1805,7 +1962,7 @@ QListWidget::item::selected {
                 </property>
                </widget>
               </item>
-              <item column="2" row="2">
+              <item row="2" column="2">
                <spacer name="horizontalSpacer_6">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1818,7 +1975,7 @@ QListWidget::item::selected {
                 </property>
                </spacer>
               </item>
-              <item column="3" row="2">
+              <item row="2" column="3">
                <widget class="QLabel" name="val_resolution">
                 <property name="font">
                  <font>
@@ -1833,205 +1990,17 @@ QListWidget::item::selected {
               </item>
              </layout>
             </item>
-            <item column="1" row="0">
-             <widget class="Line" name="line">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-             </widget>
-            </item>
-            <item column="0" row="0">
-             <layout class="QGridLayout" name="gridLayout_20">
-              <item column="0" row="0">
-               <widget class="QLabel" name="ico_format">
-                <property name="maximumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string />
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cube_blue.svg</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::NoTextInteraction</set>
-                </property>
-               </widget>
-              </item>
-              <item column="3" row="0">
-               <widget class="QLabel" name="val_format">
-                <property name="font">
-                 <font>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-              <item column="1" row="0">
-               <widget class="QLabel" name="lbl_format">
-                <property name="font">
-                 <font>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Format:</string>
-                </property>
-               </widget>
-              </item>
-              <item column="2" row="0">
-               <spacer name="horiz_spacer_format">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item column="0" row="1">
-               <widget class="QLabel" name="ico_feat_count">
-                <property name="maximumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string />
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cubes.svg</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::NoTextInteraction</set>
-                </property>
-               </widget>
-              </item>
-              <item column="1" row="1">
-               <widget class="QLabel" name="lbl_feat_count">
-                <property name="font">
-                 <font>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Features count:</string>
-                </property>
-               </widget>
-              </item>
-              <item column="2" row="1">
-               <spacer name="horiz_spacer_feat_count">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item column="3" row="1">
-               <widget class="QLabel" name="val_feat_count">
-                <property name="font">
-                 <font>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-              <item column="1" row="2">
-               <widget class="QLabel" name="lbl_geometry">
-                <property name="font">
-                 <font>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Geometry type:</string>
-                </property>
-               </widget>
-              </item>
-              <item column="0" row="2">
-               <widget class="QLabel" name="ico_geometry">
-                <property name="maximumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string />
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/multi.svg</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::NoTextInteraction</set>
-                </property>
-               </widget>
-              </item>
-              <item column="2" row="2">
-               <spacer name="horiz_spacer_srs">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item column="3" row="2">
-               <widget class="QLabel" name="val_geometry">
-                <property name="font">
-                 <font>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
            </layout>
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="grp_quality">
+          <widget class="QGroupBox" name="grp_geoContext">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>100</height>
+            </size>
+           </property>
            <property name="font">
             <font>
              <weight>75</weight>
@@ -2039,19 +2008,31 @@ QListWidget::item::selected {
             </font>
            </property>
            <property name="title">
-            <string>Quality</string>
+            <string>Geographical context</string>
            </property>
-           <layout class="QGridLayout" name="gridLayout_22">
-            <item column="1" row="3">
-             <widget class="QLabel" name="val_specifications">
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QLabel" name="val_geoContext">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>100</height>
+               </size>
+              </property>
               <property name="font">
                <font>
                 <weight>50</weight>
                 <bold>false</bold>
                </font>
               </property>
+              <property name="cursor">
+               <cursorShape>IBeamCursor</cursorShape>
+              </property>
+              <property name="toolTip">
+               <string>Geographical context</string>
+              </property>
               <property name="autoFillBackground">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="text">
                <string>TextLabel</string>
@@ -2059,92 +2040,8 @@ QListWidget::item::selected {
               <property name="scaledContents">
                <bool>true</bool>
               </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="openExternalLinks">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item column="0" row="3">
-             <widget class="QLabel" name="ico_specifications">
-              <property name="minimumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string />
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/trophy.svg</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item column="0" row="1">
-             <widget class="QLabel" name="ico_topology">
-              <property name="minimumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string />
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/puzzle-piece.svg</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item column="1" row="1">
-             <widget class="QLabel" name="val_topology">
-              <property name="font">
-               <font>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="autoFillBackground">
-               <bool>true</bool>
-              </property>
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
               </property>
               <property name="wordWrap">
                <bool>true</bool>
@@ -2152,12 +2049,8 @@ QListWidget::item::selected {
               <property name="openExternalLinks">
                <bool>true</bool>
               </property>
-             </widget>
-            </item>
-            <item colspan="2" column="0" row="2">
-             <widget class="Line" name="line_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
               </property>
              </widget>
             </item>
@@ -2169,65 +2062,30 @@ QListWidget::item::selected {
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>100</height>
+             <height>150</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="autoFillBackground">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="title">
-            <string />
+            <string>Bounding box preview</string>
            </property>
            <property name="flat">
             <bool>false</bool>
            </property>
-           <layout class="QGridLayout" name="gridLayout_18">
-            <item column="0" row="0">
-             <widget class="QLabel" name="ico_bbox">
-              <property name="minimumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="text">
-               <string />
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/map.svg</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::NoTextInteraction</set>
-              </property>
-             </widget>
-            </item>
-            <item column="1" row="0">
-             <widget class="QLabel" name="lbl_bbox">
-              <property name="text">
-               <string>Bounding box preview</string>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::NoTextInteraction</set>
-              </property>
-             </widget>
-            </item>
-            <item colspan="2" column="0" row="1">
+           <layout class="QGridLayout" name="gridLayout_18" rowstretch="0">
+            <item row="0" column="0">
              <widget class="QgsMapCanvas" name="wid_bbox" native="true">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -2238,6 +2096,12 @@ QListWidget::item::selected {
                <size>
                 <width>200</width>
                 <height>200</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
                </size>
               </property>
               <property name="cursor">
@@ -2263,6 +2127,168 @@ QListWidget::item::selected {
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="md_quality">
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QGroupBox" name="grp_quality">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="title">
+            <string>Specifications</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_22">
+            <item row="0" column="0">
+             <widget class="QScrollArea" name="scrollArea_5">
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_6">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>521</width>
+                 <height>193</height>
+                </rect>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_28">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="val_specifications">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="openExternalLinks">
+                   <bool>true</bool>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_3">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>70</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="title">
+            <string>Topological consistency</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_27">
+            <item row="0" column="0">
+             <widget class="QScrollArea" name="scrollArea_6">
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_7">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>521</width>
+                 <height>196</height>
+                </rect>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_29">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="val_topology">
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="openExternalLinks">
+                   <bool>true</bool>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
        <widget class="QWidget" name="md_cgu">
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -2274,44 +2300,72 @@ QListWidget::item::selected {
             </font>
            </property>
            <property name="autoFillBackground">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="title">
             <string>Licenses</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_23">
-            <item column="0" row="1">
-             <widget class="QLabel" name="val_licenses">
-              <property name="minimumSize">
-               <size>
-                <width>100</width>
-                <height>50</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>IBeamCursor</cursorShape>
-              </property>
-              <property name="autoFillBackground">
+            <item row="1" column="0">
+             <widget class="QScrollArea" name="scrollArea_3">
+              <property name="widgetResizable">
                <bool>true</bool>
               </property>
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="openExternalLinks">
-               <bool>true</bool>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_4">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>521</width>
+                 <height>193</height>
+                </rect>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_26">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="val_licenses">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>150</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>500</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>IBeamCursor</cursorShape>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="openExternalLinks">
+                   <bool>true</bool>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </widget>
             </item>
            </layout>
@@ -2326,7 +2380,7 @@ QListWidget::item::selected {
             </font>
            </property>
            <property name="autoFillBackground">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="title">
             <string>Limitations</string>
@@ -2335,41 +2389,69 @@ QListWidget::item::selected {
             <bool>false</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout_24">
-            <item column="0" row="0">
-             <widget class="QLabel" name="val_limitations">
-              <property name="minimumSize">
-               <size>
-                <width>100</width>
-                <height>50</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>IBeamCursor</cursorShape>
-              </property>
-              <property name="autoFillBackground">
+            <item row="0" column="0">
+             <widget class="QScrollArea" name="scrollArea_4">
+              <property name="widgetResizable">
                <bool>true</bool>
               </property>
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="openExternalLinks">
-               <bool>true</bool>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_5">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>521</width>
+                 <height>194</height>
+                </rect>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_25">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="val_limitations">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>150</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>500</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>IBeamCursor</cursorShape>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="openExternalLinks">
+                   <bool>true</bool>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </widget>
             </item>
            </layout>
@@ -2402,12 +2484,12 @@ QListWidget::item::selected {
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>554</width>
-              <height>711</height>
+              <width>545</width>
+              <height>715</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
-             <item colspan="2" column="0" row="3">
+             <item row="3" column="0" colspan="2">
               <spacer name="md_advanced_vert_spacer">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -2420,7 +2502,7 @@ QListWidget::item::selected {
                </property>
               </spacer>
              </item>
-             <item colspan="2" column="0" row="2">
+             <item row="2" column="0" colspan="2">
               <widget class="QPushButton" name="btn_xml_dl">
                <property name="text">
                 <string>Download metadata XML</string>
@@ -2437,7 +2519,7 @@ QListWidget::item::selected {
                </property>
               </widget>
              </item>
-             <item column="0" row="0">
+             <item row="0" column="0">
               <widget class="QGroupBox" name="grp_md_owner">
                <property name="minimumSize">
                 <size>
@@ -2464,7 +2546,7 @@ QListWidget::item::selected {
                 <string>Metadata owner</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_8">
-                <item column="0" row="1">
+                <item row="1" column="0">
                  <widget class="QLabel" name="val_owner_email">
                   <property name="minimumSize">
                    <size>
@@ -2486,7 +2568,7 @@ QListWidget::item::selected {
                    </font>
                   </property>
                   <property name="autoFillBackground">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="text">
                    <string>wg_email</string>
@@ -2496,7 +2578,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="3">
+                <item row="3" column="0">
                  <widget class="QLabel" name="val_owner_address">
                   <property name="minimumSize">
                    <size>
@@ -2521,7 +2603,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="2">
+                <item row="2" column="0">
                  <widget class="QLabel" name="val_owner_phone">
                   <property name="minimumSize">
                    <size>
@@ -2546,7 +2628,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="4">
+                <item row="4" column="0">
                  <widget class="QLabel" name="val_owner_city">
                   <property name="minimumSize">
                    <size>
@@ -2571,7 +2653,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="5">
+                <item row="5" column="0">
                  <widget class="QLabel" name="val_owner_country">
                   <property name="minimumSize">
                    <size>
@@ -2596,7 +2678,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="0">
+                <item row="0" column="0">
                  <widget class="QLabel" name="val_owner_name">
                   <property name="minimumSize">
                    <size>
@@ -2624,7 +2706,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="6">
+                <item row="6" column="0">
                  <spacer name="verticalSpacer_8">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -2640,7 +2722,7 @@ QListWidget::item::selected {
                </layout>
               </widget>
              </item>
-             <item column="1" row="0">
+             <item row="0" column="1">
               <widget class="QGroupBox" name="grp_md_properties">
                <property name="minimumSize">
                 <size>
@@ -2664,7 +2746,7 @@ QListWidget::item::selected {
                 <string>Metadata properties</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_10">
-                <item column="1" row="1">
+                <item row="1" column="1">
                  <widget class="QLabel" name="lbl_md_date_crea">
                   <property name="minimumSize">
                    <size>
@@ -2689,7 +2771,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="0">
+                <item row="0" column="1">
                  <widget class="QLabel" name="lbl_md_lang">
                   <property name="minimumSize">
                    <size>
@@ -2714,7 +2796,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="1">
+                <item row="1" column="2">
                  <spacer name="horiz_spacer_val_md_date_crea">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -2727,7 +2809,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="0" row="2">
+                <item row="2" column="0">
                  <widget class="QLabel" name="ico_md_date_update">
                   <property name="minimumSize">
                    <size>
@@ -2748,7 +2830,7 @@ QListWidget::item::selected {
                    </font>
                   </property>
                   <property name="text">
-                   <string />
+                   <string/>
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar_blue.svg</pixmap>
@@ -2758,7 +2840,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="1">
+                <item row="1" column="0">
                  <widget class="QLabel" name="ico_md_date_crea">
                   <property name="minimumSize">
                    <size>
@@ -2779,7 +2861,7 @@ QListWidget::item::selected {
                    </font>
                   </property>
                   <property name="text">
-                   <string />
+                   <string/>
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-plus-o.svg</pixmap>
@@ -2789,7 +2871,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="2">
+                <item row="2" column="2">
                  <spacer name="horiz_spacer_val_md_date_update">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -2802,7 +2884,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="2" row="0">
+                <item row="0" column="2">
                  <spacer name="horiz_spacer_val_md_lang">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -2815,7 +2897,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="3" row="1">
+                <item row="1" column="3">
                  <widget class="QLabel" name="val_md_date_crea">
                   <property name="font">
                    <font>
@@ -2828,7 +2910,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="2">
+                <item row="2" column="1">
                  <widget class="QLabel" name="lbl_md_date_update">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -2866,7 +2948,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="0">
+                <item row="0" column="0">
                  <widget class="QLabel" name="ico_md_lang">
                   <property name="minimumSize">
                    <size>
@@ -2887,7 +2969,7 @@ QListWidget::item::selected {
                    </font>
                   </property>
                   <property name="text">
-                   <string />
+                   <string/>
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/language.svg</pixmap>
@@ -2897,7 +2979,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="2">
+                <item row="2" column="3">
                  <widget class="QLabel" name="val_md_date_update">
                   <property name="font">
                    <font>
@@ -2910,7 +2992,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="0">
+                <item row="0" column="3">
                  <widget class="QLabel" name="val_md_lang">
                   <property name="font">
                    <font>
@@ -2923,7 +3005,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="3">
+                <item row="3" column="2">
                  <spacer name="vert_spacer_md_properties">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
@@ -2949,13 +3031,68 @@ QListWidget::item::selected {
      </item>
     </layout>
    </item>
+   <item row="1" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="btn_addtomap">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>addButton</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="btn_ok_cancel">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>250</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+       </property>
+       <property name="centerButtons">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
