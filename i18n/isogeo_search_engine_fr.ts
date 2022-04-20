@@ -956,12 +956,12 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1343"/>
         <source>Scale:</source>
-        <translation>Echelle :</translation>
+        <translation>Échelle :</translation>
     </message>
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1344"/>
         <source>SRS:</source>
-        <translation>SRS :</translation>
+        <translation>Système de coordonnées :</translation>
     </message>
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1346"/>
