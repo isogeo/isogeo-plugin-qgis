@@ -95,13 +95,16 @@ class MetadataDisplayer:
 
         # -- GENERAL ---------------------------------------------------------
         if md.get("title"):
-            self.complete_md.lbl_title.setText(md.get("title"))
+            if md.get("name"):
+                self.complete_md.lbl_title.setText("<strong>{}</strong> ({})".format(md.get("title"), md.get("name")))
+            else:
+                self.complete_md.lbl_title.setText("<strong>{}</strong>".format(md.get("title")))
         elif md.get("name"):
-            self.complete_md.lbl_title.setText(md.get("name"))
+            self.complete_md.lbl_title.setText("<strong>{}</strong>".format(md.get("name")))
         else:
             self.complete_md.lbl_title.setTextFormat(Qt.TextFormat(1))
             self.complete_md.lbl_title.setText(
-                "<i>{}</i>".format(self.tr("Undefined", context=__class__.__name__))
+                "<strong><i>{}</i></strong>".format(self.tr("Undefined", context=__class__.__name__))
             )
 
         plg_tools.format_widget_title(self.complete_md.lbl_title, self.complete_md.lbl_title.width())

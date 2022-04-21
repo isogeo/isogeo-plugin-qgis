@@ -301,7 +301,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>6</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="md_general">
         <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -310,12 +310,12 @@ QListWidget::item::selected {
            <property name="font">
             <font>
              <pointsize>12</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
+             <weight>50</weight>
+             <bold>false</bold>
             </font>
            </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;No title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string/>
            </property>
            <property name="textFormat">
             <enum>Qt::AutoText</enum>
@@ -477,6 +477,12 @@ QListWidget::item::selected {
                <height>50</height>
               </size>
              </property>
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
              <property name="cursor">
               <cursorShape>IBeamCursor</cursorShape>
              </property>
@@ -536,6 +542,12 @@ QListWidget::item::selected {
                <height>50</height>
               </size>
              </property>
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
              <property name="cursor">
               <cursorShape>IBeamCursor</cursorShape>
              </property>
@@ -581,8 +593,8 @@ QListWidget::item::selected {
              </property>
              <property name="font">
               <font>
-               <weight>75</weight>
-               <bold>true</bold>
+               <weight>50</weight>
+               <bold>false</bold>
               </font>
              </property>
              <property name="toolTip">
@@ -622,7 +634,7 @@ QListWidget::item::selected {
                 <x>0</x>
                 <y>0</y>
                 <width>516</width>
-                <height>185</height>
+                <height>187</height>
                </rect>
               </property>
               <property name="maximumSize">
@@ -639,6 +651,12 @@ QListWidget::item::selected {
                    <width>100</width>
                    <height>100</height>
                   </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
                  </property>
                  <property name="cursor">
                   <cursorShape>IBeamCursor</cursorShape>
@@ -781,8 +799,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
-                 <height>193</height>
+                 <width>98</width>
+                 <height>172</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_16">
@@ -864,8 +882,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
-                 <height>194</height>
+                 <width>98</width>
+                 <height>172</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_15">
@@ -2160,8 +2178,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
-                 <height>193</height>
+                 <width>98</width>
+                 <height>37</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_28">
@@ -2231,8 +2249,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
-                 <height>196</height>
+                 <width>98</width>
+                 <height>37</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_29">
@@ -2484,8 +2502,8 @@ QListWidget::item::selected {
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>545</width>
-              <height>715</height>
+              <width>529</width>
+              <height>214</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
