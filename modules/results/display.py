@@ -237,7 +237,7 @@ class ResultsManager(QObject):
             # Build metadata portal URL if the setting is checked in "Settings" tab
             portal_md_url = self.build_md_portal_url(md._id)
 
-            # Files and PostGIS direct access
+            # Files and tables direct access
             if md.format:
                 # If the data is a vector and the path is available, store
                 # useful information in the dict
@@ -306,7 +306,26 @@ class ResultsManager(QObject):
                             pass
 
                         for connection in available_connections:
-                            if connection.get("tables"):
+                            if "tables" in connection:
+                                pass
+                            else:
+                                conn = self.db_mng.establish_postgis_connection(**connection)
+                                if not conn:
+                                    connection["uri"] = 0
+                                    connection["tables"] = 0
+                                    self.db_mng.dbms_specifics_infos["PostgreSQL"]["invalid_connections"].append(
+                                        connection.get("connection_name")
+                                    )
+                                    logger.info(
+                                        "'{}' connection saved as invalid".format(connection.get("connection_name"))
+                                    )
+                                    continue
+                                else:
+                                    connection["uri"] = conn[0]
+                                    connection["tables"] = conn[1]
+
+                            tables_infos = connection.get("tables")
+                            if tables_infos != 0:
                                 schema = md.name.split(".")[0]
                                 table = md.name.split(".")[1]
                                 tables_infos = connection.get("tables")
@@ -325,7 +344,7 @@ class ResultsManager(QObject):
                                         "md_portal_url": portal_md_url,
                                         "dbms": "PostgreSQL",
                                     }
-                                    options_key = "PostGIS - {}".format(
+                                    options_key = "Postgre - {}".format(
                                         connection.get("connection")
                                     )
                                     add_options_dict[options_key] = params
@@ -364,10 +383,30 @@ class ResultsManager(QObject):
                             pass
 
                         for connection in available_connections:
-                            if connection.get("tables"):
+                            if "tables" in connection:
+                                pass
+                            else:
+                                conn = self.db_mng.establish_oracle_connection(**connection)
+                                if not conn:
+                                    connection["uri"] = 0
+                                    connection["tables"] = 0
+                                    self.db_mng.dbms_specifics_infos["Oracle"]["invalid_connections"].append(
+                                        connection.get("connection_name")
+                                    )
+                                    logger.info(
+                                        "'{}' connection saved as invalid".format(connection.get("connection_name"))
+                                    )
+                                    continue
+                                else:
+                                    connection["uri"] = conn[0]
+                                    connection["tables"] = conn[1]
+
+                            tables_infos = connection.get("tables")
+                            if tables_infos == 0:
+                                pass
+                            else:
                                 schema = md.name.split(".")[0]
                                 table = md.name.split(".")[1]
-                                tables_infos = connection.get("tables")
                                 if any(
                                     infos[0] == schema and infos[1] == table
                                     for infos in tables_infos
@@ -389,8 +428,6 @@ class ResultsManager(QObject):
                                     add_options_dict[options_key] = params
                                 else:
                                     pass
-                            else:
-                                pass
                     else:
                         pass
                 elif md.format.lower() in self.service_ico_dict:
@@ -497,8 +534,8 @@ class ResultsManager(QObject):
                     # services
                     if option_type.lower() in self.service_ico_dict:
                         icon = self.service_ico_dict.get(option_type.lower())
-                    # PostGIS table
-                    elif option_type.startswith("PostGIS"):
+                    # Postgre table
+                    elif option_type.startswith("Postgre"):
                         icon = ico_pgis
                     # Oracle table
                     elif option_type.startswith("Oracle"):
@@ -532,10 +569,10 @@ class ResultsManager(QObject):
                         # services
                         if option_type.lower() in self.service_ico_dict:
                             icon = self.service_ico_dict.get(option_type.lower())
-                        # PostGIS table
-                        elif option.startswith("PostGIS"):
+                        # Postgre table
+                        elif option.startswith("Postgre"):
                             icon = ico_pgis
-                        # PostGIS table
+                        # Oracle table
                         elif option.startswith("Oracle"):
                             icon = ico_ora
                         # Data file

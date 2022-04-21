@@ -469,6 +469,7 @@ class DataBaseManager:
 
     def establish_postgis_connection(
         self,
+        prefered: bool,
         service: str = "",
         host: str = "",
         port: str = "",
@@ -513,6 +514,7 @@ class DataBaseManager:
 
     def establish_oracle_connection(
         self,
+        prefered: bool,
         service: str = "",
         host: str = "",
         port: str = "",
@@ -587,7 +589,7 @@ class DataBaseManager:
                 li_tables_infos.append(table_infos)
             else:
                 continue
-
+        logger.debug("*=====* {}".format(li_tables_infos))
         return uri, li_tables_infos
 
     def build_connection_dict(self, dbms: str, skip_invalid: bool = True):
@@ -605,10 +607,10 @@ class DataBaseManager:
             )
         else:
             dbms_prefix = "{}/connections/".format(dbms)
-            if dbms == "PostgreSQL":
-                establish_conn_func = self.establish_postgis_connection
-            else:
-                establish_conn_func = self.establish_oracle_connection
+            # if dbms == "PostgreSQL":
+            #     establish_conn_func = self.establish_postgis_connection
+            # else:
+            #     establish_conn_func = self.establish_oracle_connection
 
         li_connections = []
         li_db_names = []
@@ -663,20 +665,20 @@ class DataBaseManager:
                 ):
                     pass
                 else:
-                    conn = establish_conn_func(**connection_dict)
-                    if not conn:
-                        connection_dict["uri"] = 0
-                        connection_dict["tables"] = 0
-                        self.dbms_specifics_infos[dbms]["invalid_connections"].append(
-                            connection_name
-                        )
-                        logger.info(
-                            "'{}' connection saved as invalid".format(connection_name)
-                        )
-                        continue
-                    else:
-                        connection_dict["uri"] = conn[0]
-                        connection_dict["tables"] = conn[1]
+                    # conn = establish_conn_func(**connection_dict)
+                    # if not conn:
+                    #     connection_dict["uri"] = 0
+                    #     connection_dict["tables"] = 0
+                    #     self.dbms_specifics_infos[dbms]["invalid_connections"].append(
+                    #         connection_name
+                    #     )
+                    #     logger.info(
+                    #         "'{}' connection saved as invalid".format(connection_name)
+                    #     )
+                    #     continue
+                    # else:
+                    #     connection_dict["uri"] = conn[0]
+                    #     connection_dict["tables"] = conn[1]
 
                     if connection_dict.get(
                         "connection"
@@ -724,20 +726,20 @@ class DataBaseManager:
                 ):
                     pass
                 else:
-                    conn = establish_conn_func(**connection_dict)
-                    if not conn:
-                        connection_dict["uri"] = 0
-                        connection_dict["tables"] = 0
-                        self.dbms_specifics_infos[dbms]["invalid_connections"].append(
-                            connection_name
-                        )
-                        logger.info(
-                            "'{}' connection saved as invalid".format(connection_name)
-                        )
-                        continue
-                    else:
-                        connection_dict["uri"] = conn[0]
-                        connection_dict["tables"] = conn[1]
+                    # conn = establish_conn_func(**connection_dict)
+                    # if not conn:
+                    #     connection_dict["uri"] = 0
+                    #     connection_dict["tables"] = 0
+                    #     self.dbms_specifics_infos[dbms]["invalid_connections"].append(
+                    #         connection_name
+                    #     )
+                    #     logger.info(
+                    #         "'{}' connection saved as invalid".format(connection_name)
+                    #     )
+                    #     continue
+                    # else:
+                    #     connection_dict["uri"] = conn[0]
+                    #     connection_dict["tables"] = conn[1]
 
                     if connection_dict.get(
                         "connection"
@@ -773,7 +775,7 @@ class DataBaseManager:
         )
 
     def fill_db_config_tbl(self, dbms):
-        """Fill the dialog table from informations about PostGIS database embed connection"""
+        """Fill the dialog table from informations about specified DBMS database embed connection"""
 
         if not isinstance(dbms, str):
             raise TypeError(
@@ -841,8 +843,8 @@ class DataBaseManager:
         vheader.setMinimumSectionSize(10)
 
     def open_db_config_dialog(self, dbms: str):
-        """Build the dialog table from informations about PostGIS database embed connection, then
-        display the dialog window to the user"""
+        """Build the dialog table from informations about specified DBMS database embed connection,
+        then display the dialog window to the user"""
 
         if not isinstance(dbms, str):
             raise TypeError(

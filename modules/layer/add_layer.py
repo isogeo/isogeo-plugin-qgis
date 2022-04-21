@@ -504,12 +504,6 @@ class LayerAdder:
                     base_name, conn_name, plg_tools.last_error[1]
                 )
 
-        # # If none information could be find for this table, let's prepare error message for the user
-        # else:
-        #     error_msg = "The table cannot be find into '{}' database using '{}' data base connection.".format(
-        #         base_name, conn_name
-        #     )
-
         # If the vector layer could be properly created, let's add it to the canvas
         added_layer = []
         if len(li_layers_to_add):
