@@ -104,6 +104,8 @@ class MetadataDisplayer:
                 "<i>{}</i>".format(self.tr("Undefined", context=__class__.__name__))
             )
 
+        plg_tools.format_widget_title(self.complete_md.lbl_title, self.complete_md.lbl_title.width())
+
         self.complete_md.val_owner.setText(
             md.get("_creator").get("contact").get("name", "NR")
         )

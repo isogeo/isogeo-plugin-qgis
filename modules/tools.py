@@ -67,6 +67,35 @@ class IsogeoPlgTools(IsogeoUtils):
         else:
             pass
 
+    def format_widget_title(self, widget, line_width):
+        """Format the title to fit the widget width.
+
+        :param object widget: widget which text has to be formated and has a 'setText' method
+        :param int width: width to fit with
+        """
+        title = widget.text().strip()
+        fm = widget.fontMetrics()
+
+        final_text = ""
+        words = title.split(" ")
+        if len(words) == 1:
+            word_width = fm.size(1, title).width()
+            if word_width > line_width:
+                final_text = fm.elidedText(title, 1, line_width)
+            else:
+                final_text = title
+        else:
+            for word in words:
+                current_width = fm.size(1, final_text + " " + word).width()
+                if current_width > line_width:
+                    final_text += " \n" + word
+                else:
+                    final_text += " " + word
+        final_text = final_text.rstrip()
+        # method ending
+        widget.setText(final_text)
+        return
+
     def get_map_crs(self):
         """Get QGIS map canvas current EPSG code."""
         current_crs = str(iface.mapCanvas().mapSettings().destinationCrs().authid())
