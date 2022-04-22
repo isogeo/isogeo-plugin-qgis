@@ -16,6 +16,7 @@ from qgis.core import (
     QgsRasterLayer,
     QgsMessageLog,
     QgsApplication,
+    QgsCoordinateReferenceSystem
 )
 
 from qgis.utils import iface
@@ -119,8 +120,8 @@ class LayerAdder:
 
         # Let's inform the user
         logger.warning(
-            "Invalid {} {}: {}. QGIS says: {}".format(
-                data_type, layer_type, data_source, error_msg
+            "Invalid {} layer: {}. QGIS says: {}".format(
+                data_type, data_source, error_msg
             )
         )
         msg = "<b>{} ({}) ".format(layer_type, data_type)
@@ -433,7 +434,17 @@ class LayerAdder:
         uri.setDataSource(table[0], table[1], table[2])
 
         # in case of multi-geometry table:
-        li_geomTypes = table_infos[5]
+        # first, request Oracle Db about specific table geometry types
+        try:
+            db_connector = db_connection.get("db_connector")
+            ora_table_geomType_request = "select DISTINCT c.{}.GET_GTYPE() from {}.{} c order by c.{}.GET_GTYPE() asc".format(table[2], table[0], table[1], table[2])
+            table_geomType_response = db_connector._fetchall(db_connector._execute(None, ora_table_geomType_request))
+            li_geomTypes = [int(elem[0]) for elem in table_geomType_response]
+
+        except Exception as e:
+            logger.warning("'{}.{}' Oracle table geometry type could not be fetched : {}".format(table[0], table[1], e))
+            li_geomTypes = []
+
         is_multi_geom = 0
         # in case of point&multi-point, line&multi-line, polygone&multi-polygone,
         # QGIS is able to handle, so let's consider that the geometry type is multiple only
@@ -511,7 +522,13 @@ class LayerAdder:
                 logger.debug("Data added: {} (geomtype : {})".format(table_name, layer.wkbType()))
 
                 table_infos = [tab for tab in db_connection.get("tables") if tab[0] == schema and tab[1] == table_name][0]
-                layer.setCrs(table_infos[4])
+
+                if isinstance(table_infos[4], float) or isinstance(table_infos[4], int) or isinstance(table_infos[4], str):
+                    table_srid = str(int(table_infos[4]))
+                    table_crs = QgsCoordinateReferenceSystem("EPSG:" + table_srid)
+                    layer.setCrs(table_crs)
+                else:
+                    pass
 
                 lyr = QgsProject.instance().addMapLayer(layer)
                 added_layer.append([lyr, layer])

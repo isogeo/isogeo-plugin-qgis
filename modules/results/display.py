@@ -390,6 +390,7 @@ class ResultsManager(QObject):
                                 if not conn:
                                     connection["uri"] = 0
                                     connection["tables"] = 0
+                                    connection["db_connector"] = 0
                                     self.db_mng.dbms_specifics_infos["Oracle"]["invalid_connections"].append(
                                         connection.get("connection_name")
                                     )
@@ -400,6 +401,7 @@ class ResultsManager(QObject):
                                 else:
                                     connection["uri"] = conn[0]
                                     connection["tables"] = conn[1]
+                                    connection["db_connector"] = conn[2]
 
                             tables_infos = connection.get("tables")
                             if tables_infos == 0:
@@ -420,7 +422,7 @@ class ResultsManager(QObject):
                                         "title": md.title,
                                         "keywords": md.keywords,
                                         "md_portal_url": portal_md_url,
-                                        "dbms": "Oracle",
+                                        "dbms": "Oracle"
                                     }
                                     options_key = "Oracle - {}".format(
                                         connection.get("connection")

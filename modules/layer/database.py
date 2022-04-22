@@ -18,7 +18,7 @@ from qgis.PyQt.QtWidgets import (
 )
 
 # PyQGIS
-from qgis.core import QgsDataSourceUri, QgsCoordinateReferenceSystem
+from qgis.core import QgsDataSourceUri
 
 try:
     from qgis.core import Qgis
@@ -70,10 +70,7 @@ btnBox_ico_dict = {
 
 # https://dataedo.com/kb/query/oracle/find-all-spatial-columns
 ora_sys_tables = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200')"
-ora_geom_column_tab_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_tables tab on col.owner = tab.owner and col.table_name = tab.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(
-    ora_sys_tables
-)
-ora_geom_column_v_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_views v on col.owner = v.owner and col.table_name = v.view_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(
+ora_geom_column_request = "select col.owner, col.table_name, col.column_name, col.data_type, md.srid from sys.all_tab_cols col left join user_sdo_geom_metadata md on col.table_name = md.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.table_name".format(
     ora_sys_tables
 )
 
@@ -552,7 +549,7 @@ class DataBaseManager:
             return 0
 
         try:
-            geom_column_response = c._fetchall(c._execute(None, ora_geom_column_tab_request)) + c._fetchall(c._execute(None, ora_geom_column_v_request))
+            geom_column_response = c._fetchall(c._execute(None, ora_geom_column_request))
         except Exception as e:
             logger.error(
                 "Unable to retrieve tables and views from {} Oracle database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
@@ -562,35 +559,8 @@ class DataBaseManager:
             logger.error(str(e))
             return uri, []
 
-        li_tables_infos = []
-        for row in geom_column_response:
-            if len(row):
-
-                try:
-                    ora_table_srid_request = "select SRID from user_sdo_geom_metadata where table_name = '{}'".format(row[1])
-                    table_srid_response = c._fetchall(c._execute(None, ora_table_srid_request))
-                    table_srid = str(int(table_srid_response[0][0]))
-
-                    table_crs = QgsCoordinateReferenceSystem("EPSG:" + table_srid)
-                except Exception as e:
-                    logger.warning("'{}' Oracle table SRID could not be fetched : {}".format(row[1], e))
-                    table_crs = QgsCoordinateReferenceSystem()
-
-                try:
-                    ora_table_geomType_request = "select DISTINCT c.{}.GET_GTYPE() from {}.{} c order by c.{}.GET_GTYPE() asc".format(row[2], row[0], row[1], row[2])
-                    table_geomType_response = c._fetchall(c._execute(None, ora_table_geomType_request))
-                    table_geomType = [int(elem[0]) for elem in table_geomType_response]
-
-                except Exception as e:
-                    logger.warning("'{}' Oracle table geometry type could not be fetched : {}".format(row[1], e))
-                    table_geomType = []
-
-                table_infos = row + [table_crs, table_geomType]
-                li_tables_infos.append(table_infos)
-            else:
-                continue
-        logger.debug("*=====* {}".format(li_tables_infos))
-        return uri, li_tables_infos
+        li_tables_infos = geom_column_response
+        return uri, li_tables_infos, c
 
     def build_connection_dict(self, dbms: str, skip_invalid: bool = True):
         """Build the dict that stores informations about PostgreSQL or Oracle connections."""
@@ -607,10 +577,6 @@ class DataBaseManager:
             )
         else:
             dbms_prefix = "{}/connections/".format(dbms)
-            # if dbms == "PostgreSQL":
-            #     establish_conn_func = self.establish_postgis_connection
-            # else:
-            #     establish_conn_func = self.establish_oracle_connection
 
         li_connections = []
         li_db_names = []
@@ -665,21 +631,6 @@ class DataBaseManager:
                 ):
                     pass
                 else:
-                    # conn = establish_conn_func(**connection_dict)
-                    # if not conn:
-                    #     connection_dict["uri"] = 0
-                    #     connection_dict["tables"] = 0
-                    #     self.dbms_specifics_infos[dbms]["invalid_connections"].append(
-                    #         connection_name
-                    #     )
-                    #     logger.info(
-                    #         "'{}' connection saved as invalid".format(connection_name)
-                    #     )
-                    #     continue
-                    # else:
-                    #     connection_dict["uri"] = conn[0]
-                    #     connection_dict["tables"] = conn[1]
-
                     if connection_dict.get(
                         "connection"
                     ) in self.dbms_specifics_infos.get(dbms).get(
@@ -726,21 +677,6 @@ class DataBaseManager:
                 ):
                     pass
                 else:
-                    # conn = establish_conn_func(**connection_dict)
-                    # if not conn:
-                    #     connection_dict["uri"] = 0
-                    #     connection_dict["tables"] = 0
-                    #     self.dbms_specifics_infos[dbms]["invalid_connections"].append(
-                    #         connection_name
-                    #     )
-                    #     logger.info(
-                    #         "'{}' connection saved as invalid".format(connection_name)
-                    #     )
-                    #     continue
-                    # else:
-                    #     connection_dict["uri"] = conn[0]
-                    #     connection_dict["tables"] = conn[1]
-
                     if connection_dict.get(
                         "connection"
                     ) in self.dbms_specifics_infos.get(dbms).get(
