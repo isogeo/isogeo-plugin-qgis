@@ -443,6 +443,9 @@ class MetadataDisplayer:
         # -- DISPLAY ---------------------------------------------------------
         self.fields_displayer(md.get("type"), md.get("series"))
         # Finally open the damned window
+        self.complete_md.li_menu.setCurrentRow(0)
+        self.complete_md.stackedWidget.setCurrentIndex(0)
+        self.complete_md.stackedWidget.setCurrentWidget(self.complete_md.stackedWidget.widget(0))
         self.complete_md.show()
         try:
             QgsMessageLog.logMessage(
@@ -569,6 +572,7 @@ class MetadataDisplayer:
             # menus
             menu_list.item(1).setHidden(0)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
+            menu_list.item(5).setHidden(0)  # quality
             return
 
         elif md_type == "noGeoDataset":
@@ -616,6 +620,7 @@ class MetadataDisplayer:
             # menus
             menu_list.item(1).setHidden(0)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
+            menu_list.item(5).setHidden(0)  # quality
             return
 
         elif md_type == "rasterDataset" and not series:
@@ -646,6 +651,7 @@ class MetadataDisplayer:
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
+            menu_list.item(5).setHidden(0)  # quality
             return
 
         elif md_type == "rasterDataset" and series:
@@ -673,6 +679,7 @@ class MetadataDisplayer:
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
+            menu_list.item(5).setHidden(0)  # quality
             return
 
         elif md_type == "service":
@@ -701,6 +708,7 @@ class MetadataDisplayer:
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
+            menu_list.item(5).setHidden(0)  # quality
             return
 
         elif md_type == "resource":
@@ -723,6 +731,7 @@ class MetadataDisplayer:
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(1)  # geography and technical
+            menu_list.item(5).setHidden(1)  # quality
             return
 
         else:
