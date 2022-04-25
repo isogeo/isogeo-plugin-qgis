@@ -69,8 +69,11 @@ btnBox_ico_dict = {
 }
 
 # https://dataedo.com/kb/query/oracle/find-all-spatial-columns
-ora_sys_tables = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200')"
-ora_geom_column_request = "select col.owner, col.table_name, col.column_name, col.data_type, md.srid from sys.all_tab_cols col left join user_sdo_geom_metadata md on col.table_name = md.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.table_name".format(
+ora_sys_tables = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200','GSMADMIN_INTERNAL','SDE','ORDDATA')"
+ora_geom_column_request = "select col.owner, col.table_name, col.column_name, md.srid from sys.all_tab_cols col left join user_sdo_geom_metadata md on col.table_name = md.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.table_name".format(
+    ora_sys_tables
+)
+ora_table_and_view_request = "select sys.all_tables.owner, sys.all_tables.table_name from sys.USER_TABLES join sys.ALL_TABLES on sys.user_tables.table_name = sys.all_tables.table_name where sys.all_tables.secondary = 'N' and sys.all_tables.owner not in {0} union select v.OWNER, v.VIEW_NAME from sys.all_views v where  v.owner not in {0}".format(
     ora_sys_tables
 )
 
@@ -552,6 +555,17 @@ class DataBaseManager:
             geom_column_response = c._fetchall(c._execute(None, ora_geom_column_request))
         except Exception as e:
             logger.error(
+                "Unable to retrieve spatial tables and views from {} Oracle database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
+                    database, service, host, port, username, password
+                )
+            )
+            logger.error(str(e))
+            return uri, []
+
+        try:
+            table_and_view_response = c._fetchall(c._execute(None, ora_table_and_view_request))
+        except Exception as e:
+            logger.error(
                 "Unable to retrieve tables and views from {} Oracle database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
                     database, service, host, port, username, password
                 )
@@ -559,7 +573,7 @@ class DataBaseManager:
             logger.error(str(e))
             return uri, []
 
-        li_tables_infos = geom_column_response
+        li_tables_infos = geom_column_response + [row + [None] + [None] for row in table_and_view_response if all(row[0] + row[1] != geom_column[0] + geom_column[1] for geom_column in geom_column_response)]
         return uri, li_tables_infos, c
 
     def build_connection_dict(self, dbms: str, skip_invalid: bool = True):
