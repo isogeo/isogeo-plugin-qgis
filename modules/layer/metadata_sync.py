@@ -58,7 +58,4 @@ class MetadataSynchronizer:
             layer.setDataUrl(url)
         else:
             pass
-        logger.debug(
-            "'QGIS Server' tab from 'Layer's Properties' filled with basic info"
-        )
         return
