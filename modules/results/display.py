@@ -280,27 +280,23 @@ class ResultsManager(QObject):
                     if (
                         md.path
                         and md.name
-                        and md.path
-                        in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
-                            "db_names"
-                        )
+                        and md.path in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
                         and "." in md.name
                     ):
                         available_connections = [
-                            pg_conn
-                            for pg_conn in self.db_mng.dbms_specifics_infos.get(
+                            ora_conn
+                            for ora_conn in self.db_mng.dbms_specifics_infos.get(
                                 "PostgreSQL"
                             ).get("connections")
-                            if md.path == pg_conn.get("database")
-                            and pg_conn.get("prefered")
+                            if (md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")) and ora_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
-                                pg_conn
-                                for pg_conn in self.db_mng.dbms_specifics_infos.get(
+                                ora_conn
+                                for ora_conn in self.db_mng.dbms_specifics_infos.get(
                                     "PostgreSQL"
                                 ).get("connections")
-                                if md.path == pg_conn.get("database")
+                                if md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")
                             ]
                         else:
                             pass
@@ -314,10 +310,10 @@ class ResultsManager(QObject):
                                     connection["uri"] = 0
                                     connection["tables"] = 0
                                     self.db_mng.dbms_specifics_infos["PostgreSQL"]["invalid_connections"].append(
-                                        connection.get("connection_name")
+                                        connection.get("connection")
                                     )
                                     logger.info(
-                                        "'{}' connection saved as invalid".format(connection.get("connection_name"))
+                                        "'{}' connection saved as invalid".format(connection.get("connection"))
                                     )
                                     continue
                                 else:
@@ -325,10 +321,11 @@ class ResultsManager(QObject):
                                     connection["tables"] = conn[1]
 
                             tables_infos = connection.get("tables")
-                            if tables_infos != 0:
+                            if tables_infos == 0:
+                                pass
+                            else:
                                 schema = md.name.split(".")[0]
                                 table = md.name.split(".")[1]
-                                tables_infos = connection.get("tables")
                                 if any(
                                     infos[2] == schema and infos[1] == table
                                     for infos in tables_infos
@@ -342,16 +339,19 @@ class ResultsManager(QObject):
                                         "title": md.title,
                                         "keywords": md.keywords,
                                         "md_portal_url": portal_md_url,
-                                        "dbms": "PostgreSQL",
+                                        "dbms": "PostgreSQL"
                                     }
-                                    options_key = "Postgre - {}".format(
+                                    options_key = "PostgreSQL - {}".format(
                                         connection.get("connection")
                                     )
                                     add_options_dict[options_key] = params
                                 else:
                                     pass
-                            else:
-                                pass
+                        self.db_mng.set_qsettings_connections(
+                            "PostgreSQL",
+                            "invalid",
+                            self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("invalid_connections"),
+                        )
                     else:
                         pass
 
@@ -392,10 +392,10 @@ class ResultsManager(QObject):
                                     connection["tables"] = 0
                                     connection["db_connector"] = 0
                                     self.db_mng.dbms_specifics_infos["Oracle"]["invalid_connections"].append(
-                                        connection.get("connection_name")
+                                        connection.get("connection")
                                     )
                                     logger.info(
-                                        "'{}' connection saved as invalid".format(connection.get("connection_name"))
+                                        "'{}' connection saved as invalid".format(connection.get("connection"))
                                     )
                                     continue
                                 else:
@@ -430,8 +430,14 @@ class ResultsManager(QObject):
                                     add_options_dict[options_key] = params
                                 else:
                                     pass
+                        self.db_mng.set_qsettings_connections(
+                            "Oracle",
+                            "invalid",
+                            self.db_mng.dbms_specifics_infos.get("Oracle").get("invalid_connections"),
+                        )
                     else:
                         pass
+
                 elif md.format.lower() in self.service_ico_dict:
                     pass
                 else:
