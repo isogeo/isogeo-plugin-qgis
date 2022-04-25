@@ -129,7 +129,7 @@ class LayerAdder:
         msg += ": <i>{}</i>".format(data_name)
         msg += ".</b><br><b>"
         msg += self.tr("Error:", context=__class__.__name__)
-        msg += "</b>{}".format(error_msg)
+        msg += "</b><strong>{}</strong>".format(error_msg)
 
         QMessageBox.warning(
             iface.mainWindow(),
@@ -331,7 +331,10 @@ class LayerAdder:
         if len(table) == 1:
             table = table[0]
             # set database schema, table name, geometry column
-            uri.setDataSource(table[2], table[1], table[8])
+            if table[0]:
+                uri.setDataSource(table[2], table[1], table[8])
+            else:  # table without geometry column
+                uri.setDataSource(table[2], table[1], None)
             # Building the layer
             layer = QgsVectorLayer(uri.uri(), table[1], "postgres")
 

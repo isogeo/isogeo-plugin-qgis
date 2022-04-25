@@ -505,7 +505,7 @@ class DataBaseManager:
             logger.error(str(e))
             return 0
 
-        li_table_infos = [infos for infos in c.getTables() if infos[0] == 1]
+        li_table_infos = [infos for infos in c.getTables()]
 
         return uri, li_table_infos
 
