@@ -621,6 +621,7 @@ class ResultsManager(QObject):
         max_width = title_column_width - scrollBar_width - 10
         for i in range(tbl_result.rowCount()):
             btn_title = tbl_result.cellWidget(i, 0)
+            btn_title.setToolTip(btn_title.text())
             plg_tools.format_widget_title(btn_title, max_width)
         # method ending
         return None
