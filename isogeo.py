@@ -801,6 +801,7 @@ class Isogeo:
         self.form_mng.cbb_contact.activated.connect(self.search)
         self.form_mng.cbb_format.activated.connect(self.search)
         self.form_mng.cbb_geofilter.activated.connect(self.search)
+        self.form_mng.cbb_grpTh.activated.connect(self.search)
         self.form_mng.cbb_inspire.activated.connect(self.search)
         self.form_mng.cbb_license.activated.connect(self.search)
         self.form_mng.cbb_owner.activated.connect(self.search)
@@ -890,7 +891,7 @@ class Isogeo:
         url_to_check = self.authenticator.api_params.get("url_base").replace("https://", "").replace("http://", "")
         plg_tools.check_proxy_configuration(url_to_check=url_to_check)  # 22
         self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
-        # self.form_mng.cbb_chck_kw.setMaximumSize(QSize(250, 25))
+
         self.form_mng.txt_input.setFocus()
         # connect limitations checker to user informer
         self.form_mng.results_mng.lim_checker.lim_sig.connect(self.informer.lim_slot)

@@ -76,14 +76,16 @@ class SearchFormManager(IsogeoDockWidget):
         super().__init__()
 
         self.tr = trad
-        # geofilter, type, format, owner, inspire, srs, contact and license
-        self.cbbs_search_advanced = self.grp_filters.findChildren(QComboBox)
+        # groupTheme, geofilter, type, format, owner, inspire, srs, contact and license
+        self.cbbs_search_advanced = [cbbox for cbbox in self.grp_filters.findChildren(QComboBox) if cbbox != self.cbb_chck_kw]
+
         # match between widgets and metadata fields
         self.match_widget_field = {
             self.cbb_type: "datatype",
             self.cbb_format: "formats",
             self.cbb_owner: "owners",
             self.cbb_inspire: "inspire",
+            self.cbb_grpTh: "groupTheme",
             self.cbb_srs: "srs",
             self.cbb_contact: "contacts",
             self.cbb_license: "licenses",
@@ -92,7 +94,7 @@ class SearchFormManager(IsogeoDockWidget):
         # Static dictionnaries for filling static widgets
         self.dict_operation = OrderedDict(
             [
-                (self.tr("Intersects", context=__class__.__name__), "intersects"),
+                (self.tr("intersects", context=__class__.__name__), "intersects"),
                 (self.tr("within", context=__class__.__name__), "within"),
                 (self.tr("contains", context=__class__.__name__), "contains"),
             ]
@@ -180,11 +182,22 @@ class SearchFormManager(IsogeoDockWidget):
         model.clear()
 
         # parse keywords and check selected
+        cbb_chck_kw_width = self.cbb_chck_kw.width() - 10
+        cbb_chck_kw_fm = self.cbb_chck_kw.fontMetrics()
+
         i = 0  # row index
         for tag_label, tag_code in sorted(
             tags_keywords.items(), key=lambda item: item[1]
         ):
-            item = QStandardItem(tag_label)
+            item = QStandardItem()
+            # format combobox item label fit the widget width
+            tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
+            if tag_label_width > cbb_chck_kw_width:
+                item.setText(cbb_chck_kw_fm.elidedText(tag_label, 1, cbb_chck_kw_width))
+                item.setToolTip(tag_label)
+            else:
+                item.setText(tag_label)
+
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setData(tag_code, 32)
             if len(selected_keywords) == 0 or tag_code not in selected_keywords:

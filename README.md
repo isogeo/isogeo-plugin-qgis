@@ -33,7 +33,7 @@ It's fully integrated with QGIS ecosystem:
 ### Features
 
 * [X] Text search among Isogeo shares
-* [X] Dynamic filter on keywords, INSPIRE themes, catalog owners, source coordinate system and available links
+* [X] Dynamic filter on keywords, INSPIRE themes, group themes, catalog owners, source coordinate system, license, data type (vector, raster...), source format and contacts
 * [X] Geographic filter from a layer bounding box
 * [X] Geographic filter from the map canvas bounding box
 * [X] Order results by relevance, alphabetic, last updated date (data or metadata), creation date (data or metadata)

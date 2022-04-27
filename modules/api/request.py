@@ -364,6 +364,9 @@ class ApiRequester(QObject):
         # SRS
         if params.get("srs") is not None:
             filters += params.get("srs") + " "
+        # groupTheme keywords
+        if params.get("groupTheme") is not None:
+            filters += params.get("groupTheme") + " "
         # INSPIRE keywords
         if params.get("inspire") is not None:
             filters += params.get("inspire") + " "
@@ -424,6 +427,7 @@ class ApiRequester(QObject):
         contacts = {}
         formats = {}
         inspire = {}
+        groupTheme = {}
         keywords = {}
         licenses = {}
         md_types = {}
@@ -450,6 +454,10 @@ class ApiRequester(QObject):
             # formats
             elif tag.startswith("format"):
                 formats[tags.get(tag)] = tag
+                continue
+            # group themes
+            elif tag.startswith("keyword:gr"):
+                groupTheme[tags.get(tag)] = tag
                 continue
             # INSPIRE themes
             elif tag.startswith("keyword:in"):
@@ -495,6 +503,7 @@ class ApiRequester(QObject):
             "contacts": contacts,
             "formats": formats,
             "inspire": inspire,
+            "groupTheme": groupTheme,
             "keywords": keywords,
             "licenses": licenses,
             "owners": owners,

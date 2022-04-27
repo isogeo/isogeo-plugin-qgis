@@ -185,6 +185,7 @@ class QuickSearchManager:
                 "formats": None,
                 "geofilter": None,
                 "inspire": None,
+                "groupTheme": None,
                 "lang": "fr",
                 "licenses": None,
                 "ob": "relevance",
