@@ -115,7 +115,10 @@ class MetadataDisplayer:
         # Keywords
         kwords = tags.get("keywords", {"none": "NR"})
         self.complete_md.val_keywords.setText(" ; ".join(kwords.keys()))
-        # INSPIRE themes and conformity
+        # Group themes
+        themes = tags.get("groupTheme", {"none": "NR"})
+        self.complete_md.val_group_themes.setText(" ; ".join(themes.keys()))
+        # INSPIRE themes
         themes = tags.get("inspire", {"none": "NR"})
         self.complete_md.val_inspire_themes.setText(" ; ".join(themes.keys()))
         if tags.get("compliance"):
@@ -529,6 +532,8 @@ class MetadataDisplayer:
         menu_list = self.complete_md.li_menu
         if md_type == "vectorDataset":
             # general
+            self.complete_md.val_group_themes.setHidden(0)
+            self.complete_md.ico_group_themes.setHidden(0)
             self.complete_md.val_inspire_themes.setHidden(0)
             self.complete_md.ico_inspire_themes.setHidden(0)
             self.complete_md.ico_inspire_conformity.setHidden(0)
@@ -577,6 +582,8 @@ class MetadataDisplayer:
 
         elif md_type == "noGeoDataset":
             # general
+            self.complete_md.val_group_themes.setHidden(0)
+            self.complete_md.ico_group_themes.setHidden(0)
             self.complete_md.val_inspire_themes.setHidden(0)
             self.complete_md.ico_inspire_themes.setHidden(0)
             self.complete_md.ico_inspire_conformity.setHidden(0)
