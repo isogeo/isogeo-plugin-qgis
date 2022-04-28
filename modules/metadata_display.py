@@ -574,6 +574,8 @@ class MetadataDisplayer:
             self.complete_md.val_resolution.setHidden(0)
             self.complete_md.line.setHidden(0)
             self.complete_md.grp_bbox.setHidden(0)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(0)
             # menus
             menu_list.item(1).setHidden(0)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -624,6 +626,8 @@ class MetadataDisplayer:
             self.complete_md.val_resolution.setHidden(1)
             self.complete_md.line.setHidden(1)
             self.complete_md.grp_bbox.setHidden(1)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(1)
             # menus
             menu_list.item(1).setHidden(0)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -655,6 +659,8 @@ class MetadataDisplayer:
             self.complete_md.val_resolution.setHidden(0)
             self.complete_md.line.setHidden(0)
             self.complete_md.grp_bbox.setHidden(0)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -683,6 +689,8 @@ class MetadataDisplayer:
             self.complete_md.grp_geoContext.setHidden(1)
             # geography
             self.complete_md.grp_technic.setHidden(0)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -712,6 +720,8 @@ class MetadataDisplayer:
             # geography
             self.complete_md.grp_technic.setHidden(0)
             self.complete_md.grp_geoContext.setHidden(1)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -735,6 +745,8 @@ class MetadataDisplayer:
             self.complete_md.grp_collect_context.setHidden(1)
             self.complete_md.grp_collect_method.setHidden(1)
             self.complete_md.grp_geoContext.setHidden(1)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(1)  # geography and technical

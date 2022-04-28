@@ -301,7 +301,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>5</number>
        </property>
        <widget class="QWidget" name="md_general">
         <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -2266,7 +2266,7 @@ QListWidget::item::selected {
        <widget class="QWidget" name="md_quality">
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
-          <widget class="QGroupBox" name="grp_quality">
+          <widget class="QGroupBox" name="grp_specification">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -2296,8 +2296,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>37</height>
+                 <width>521</width>
+                 <height>193</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_28">
@@ -2340,7 +2340,7 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_3">
+          <widget class="QGroupBox" name="grp_topoConsist">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -2367,8 +2367,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>37</height>
+                 <width>521</width>
+                 <height>194</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_29">
