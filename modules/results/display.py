@@ -479,7 +479,8 @@ class ResultsManager(QObject):
                                 service_type, layer
                             )
                             btn_label = "{} : {}".format(service_type, layer_title)
-                            add_options_dict[btn_label] = params
+                            dict_key = "{}-*-{}".format(btn_label, service.get("_id"))  # for #408
+                            add_options_dict[dict_key] = params
                         else:
                             logger.warning(
                                 "Faile to build service URL for {} layer '{}' (of metadata {}): {}".format(
@@ -596,7 +597,11 @@ class ResultsManager(QObject):
                                 )
                             )
                         # add a combobox item with the icon corresponding to the add option
-                        combo.addItem(icon, option, add_options_dict.get(option))
+                        if "-*-" in option:
+                            option_label = "".join(option.split("-*-")[:-1])  # for #408
+                        else:
+                            option_label = option
+                        combo.addItem(icon, option_label, add_options_dict.get(option))
                     # connect the widget to the adding method from LayerAdder class
                     data_info["layer"] = ("index", count)
                     combo.activated.connect(partial(self.lim_checker.check, data_info))
