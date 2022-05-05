@@ -312,12 +312,20 @@ class MetadataDisplayer:
             else:
                 s_date = "<i>Date de publication non renseignée</i>"
             # prepare text
-            spec_text = "<a href='{1}'><b>{0} ({2})</b></a>: {3}".format(
-                s_in.get("specification").get("name", "NR"),
-                s_in.get("specification").get("link", ""),
-                s_date,
-                s_conformity,
-            )
+            if locale == "fr":
+                spec_text = "<a href='{1}'><b>{0} ({2})</b></a> : {3}".format(
+                    s_in.get("specification").get("name", "NR"),
+                    s_in.get("specification").get("link", ""),
+                    s_date,
+                    s_conformity,
+                )
+            else:
+                spec_text = "<a href='{1}'><b>{0} ({2})</b></a>: {3}".format(
+                    s_in.get("specification").get("name", "NR"),
+                    s_in.get("specification").get("link", ""),
+                    s_date,
+                    s_conformity,
+                )
             # store into the final list
             specs_out.append(spec_text)
         # write
