@@ -106,6 +106,16 @@ class IsogeoPlgTools(IsogeoUtils):
 
         :param str input_date: input date to format
         """
+        try:
+            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
+        except TypeError as e:
+            logger.error(
+                "Bad type in QSettings: {}. Original error: {}".format(
+                    type(qsettings.value("locale/userLocale")), e
+                )
+            )
+            locale = "fr"
+
         if input_date != "NR":
             date = input_date.split("T")[0]
             year = int(date.split("-")[0])
@@ -113,7 +123,10 @@ class IsogeoPlgTools(IsogeoUtils):
             day = int(date.split("-")[2])
             new_date = datetime.date(year, month, day)
             # method ending
-            return new_date.strftime("%Y-%m-%d")
+            if locale == "fr":
+                return new_date.strftime("%d-%m-%Y")
+            else:
+                return new_date.strftime("%Y-%m-%d")
         else:
             return input_date
 
