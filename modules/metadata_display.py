@@ -256,19 +256,17 @@ class MetadataDisplayer:
         self.complete_md.val_context.setText(md.get("collectionContext", "NR"))
 
         # last modifications
-        events = md.get("events", dict())
+        events = [ev for ev in md.get("events", []) if ev.get("kind") == "update"]
         tbl_events = self.complete_md.tbl_events
+        tbl_events.clearContents()
         tbl_events.setRowCount(len(events))
         idx = 0
-        for e in events:
-            if e.get("kind") == "update":
-                tbl_events.setItem(
-                    idx, 0, QTableWidgetItem(plg_tools.handle_date(e.get("date", "NR")))
-                )
-                tbl_events.setItem(idx, 1, QTableWidgetItem(e.get("description", "")))
-                idx += 1
-            else:
-                pass
+        for event in events:
+            tbl_events.setItem(
+                idx, 0, QTableWidgetItem(plg_tools.handle_date(event.get("date", "NR")))
+            )
+            tbl_events.setItem(idx, 1, QTableWidgetItem(event.get("description", "")))
+            idx += 1
 
         # adapt size
         tbl_events.horizontalHeader().setStretchLastSection(True)
