@@ -135,6 +135,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.gridLayout_8.addLayout(self.horizontalLayout_12, 4, 0, 1, 1)
         self.tbl_result = QtWidgets.QTableWidget(self.tab_search)
         self.tbl_result.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.tbl_result.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
         self.tbl_result.setObjectName("tbl_result")
         self.tbl_result.setColumnCount(4)
         self.tbl_result.setRowCount(0)
