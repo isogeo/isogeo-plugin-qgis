@@ -186,12 +186,14 @@ class MetadataDisplayer:
 
         for ctact in sorted(contacts, key=lambda i: i.get("contact").get("name")):
             item = ctact.get("contact")
+            if item.get("organization", "NR") == "NR":
+                ctct_label = "{}</b>".format(item.get("name", "NR"))
+            else:
+                ctct_label = "{}</b> ({})".format(item.get("name", "NR"), item.get("organization"))
 
             if ctact.get("role", "NR") == "pointOfContact":
-                content = "<b>{0}</b> ({1})<br><a href='mailto:{2}' target='_top'>{2}</a><br>{3}" "<br>{4} {5}<br>{6} {7}<br>{7}<br>{8}".format(
-                    # isogeo_tr.tr("roles", ctact.get("role")),
-                    item.get("name", "NR"),
-                    item.get("organization", "NR"),
+                content = "<b>{0}<br><a href='mailto:{1}' target='_top'>{1}</a><br>{2}" "<br>{3} {4}<br>{5} {6}<br>{6}<br>{7}".format(
+                    ctct_label,
                     item.get("email", "NR"),
                     item.get("phone", "NR"),
                     item.get("addressLine1", ""),
@@ -204,11 +206,10 @@ class MetadataDisplayer:
 
             else:
                 content = (
-                    "<b>{0} - {1}</b> ({2})<br><a href='mailto:{3}' target='_blank'>{3}"
-                    "</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{9}".format(
+                    "<b>{0} - {1}<br><a href='mailto:{2}' target='_blank'>{2}"
+                    "</a><br>{3}<br>{4} {5}<br>{6} {7}<br>{8}".format(
                         isogeo_tr.tr("roles", ctact.get("role")),
-                        item.get("name", "NR"),
-                        item.get("organization", "NR"),
+                        ctct_label,
                         item.get("email", "NR"),
                         item.get("phone", ""),
                         item.get("addressLine1", ""),
