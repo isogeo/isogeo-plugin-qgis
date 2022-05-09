@@ -304,28 +304,29 @@ class SearchFormManager(IsogeoDockWidget):
             field_name = self.match_widget_field.get(cbb)
             dest_index = cbb.findData(params.get(field_name))
             cbb.setCurrentIndex(dest_index)
-        # for geo filter, use quick search, and text label if quicksearch is True
-        if quicksearch == "":
-            if params.get("geofilter") == "mapcanvas":
-                dest_index = self.cbb_geofilter.findData("mapcanvas")
-                self.cbb_geofilter.setCurrentIndex(dest_index)
-            else:
-                dest_index = self.cbb_geofilter.findText(params["geofilter"])
-                self.cbb_geofilter.setCurrentIndex(dest_index)
-            dest_index = self.cbb_quicksearch_use.findData(params.get("favorite"))
-            self.cbb_quicksearch_use.setCurrentIndex(dest_index)
+
+        # for geo filter
+        if params.get("geofilter") == "mapcanvas":
+            geof_index = self.cbb_geofilter.findData("mapcanvas")
+        elif params.get("geofilter") is None:
+            geof_index = self.cbb_geofilter.findText(" - ")
         else:
-            dest_index = self.cbb_geofilter.findData(params.get("geofilter"))
-            self.cbb_geofilter.setCurrentIndex(dest_index)
-            if quicksearch != "_default":
-                saved_index = self.cbb_quicksearch_use.findData(quicksearch)
-                self.cbb_quicksearch_use.setCurrentIndex(saved_index)
-            else:
-                pass
-            self.txt_input.setText(params.get("text"))
+            geof_index = self.cbb_geofilter.findText(params.get("geofilter"))
+        self.cbb_geofilter.setCurrentIndex(geof_index)
+
+        # for use quick search
+        if quicksearch == "" or quicksearch == "_default":
+            qs_index = 0
+        else:
+            qs_index = self.cbb_quicksearch_use.findData(quicksearch)
+        self.cbb_quicksearch_use.setCurrentIndex(qs_index)
+
+        # for text label
+        self.txt_input.setText(params.get("text"))
+
         # for geo_op
-        dest_index = self.cbb_geo_op.findData(params.get("operation"))
-        self.cbb_geo_op.setCurrentIndex(dest_index)
+        geoop_index = self.cbb_geo_op.findData(params.get("operation"))
+        self.cbb_geo_op.setCurrentIndex(geoop_index)
 
         # for sorting order and direction
         self.cbb_ob.setCurrentIndex(self.cbb_ob.findData(params.get("ob")))

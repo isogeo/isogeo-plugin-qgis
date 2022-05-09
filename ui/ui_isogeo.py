@@ -652,6 +652,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.tbl_result.raise_()
         self.tabWidget.addTab(self.tab_search, icon6, "")
         self.tab_settings = QtWidgets.QWidget()
+        self.tab_settings.setMaximumSize(QtCore.QSize(875, 2000))
         self.tab_settings.setObjectName("tab_settings")
         self.gridLayout_7 = QtWidgets.QGridLayout(self.tab_settings)
         self.gridLayout_7.setObjectName("gridLayout_7")

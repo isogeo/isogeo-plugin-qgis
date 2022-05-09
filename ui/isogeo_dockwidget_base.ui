@@ -1549,6 +1549,12 @@
        <zorder></zorder>
       </widget>
       <widget class="QWidget" name="tab_settings">
+       <property name="maximumSize">
+        <size>
+         <width>875</width>
+         <height>2000</height>
+        </size>
+       </property>
        <attribute name="icon">
         <iconset resource="../resources.qrc">
          <normaloff>:/plugins/Isogeo/resources/settings/gear.svg</normaloff>:/plugins/Isogeo/resources/settings/gear.svg</iconset>
