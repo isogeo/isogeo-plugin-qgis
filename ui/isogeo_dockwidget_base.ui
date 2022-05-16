@@ -1642,7 +1642,7 @@
                   </size>
                  </property>
                  <property name="toolTip">
-                  <string>PostGIS databases</string>
+                  <string>PostgreSQL databases</string>
                  </property>
                  <property name="text">
                   <string/>

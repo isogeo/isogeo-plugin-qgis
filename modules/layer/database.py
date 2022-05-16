@@ -25,11 +25,6 @@ try:
 except ImportError:
     from qgis.core import QGis as Qgis
 
-from db_manager.db_plugins.postgis.connector import PostGisDBConnector
-from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin
-
-from db_manager.db_plugins.oracle.connector import OracleDBConnector
-
 # UI classes
 from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
 
@@ -42,26 +37,54 @@ qgis_version = int("".join(Qgis.QGIS_VERSION.split(".")[:2]))
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
-connection_parameters_names = ["host", "port", "dbname", "user", "password"]
+# DBMS dependencies
+dbms_specifics_resources = {}
+try:
+    from db_manager.db_plugins.postgis.connector import PostGisDBConnector
+    from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin
 
-ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
-ico_ora = QIcon(":/images/themes/default/mIconOracle.svg")
-
-dbms_specifics_resources = {
-    "Oracle": {
-        "invalid_key": "isogeo/settings/invalid_ora_conn",
-        "prefered_key": "isogeo/settings/prefered_ora_conn",
-        "label": "Oracle",
-        "windowIcon": ico_ora,
-    },
-    "PostgreSQL": {
+    ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
+    dbms_specifics_resources["PostgreSQL"] = {
         "invalid_key": "isogeo/settings/invalid_pgdb_conn",
         "prefered_key": "isogeo/settings/prefered_pgdb_conn",
         "label": "PostGIS",
         "windowIcon": ico_pgis,
-    },
-}
+    }
 
+    pgis_available = 1
+    pgis_error = 0
+except Exception as e:
+    pgis_available = 0
+    pgis_error = e
+
+try:
+    from db_manager.db_plugins.oracle.connector import OracleDBConnector
+
+    ico_ora = QIcon(":/images/themes/default/mIconOracle.svg")
+    dbms_specifics_resources["Oracle"] = {
+        "invalid_key": "isogeo/settings/invalid_ora_conn",
+        "prefered_key": "isogeo/settings/prefered_ora_conn",
+        "label": "Oracle",
+        "windowIcon": ico_ora,
+    }
+
+    ora_sys_tables = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200','GSMADMIN_INTERNAL','SDE','ORDDATA')"
+    ora_geom_column_request = "select col.owner, col.table_name, col.column_name, md.srid from sys.all_tab_cols col left join user_sdo_geom_metadata md on col.table_name = md.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.table_name".format(
+        ora_sys_tables
+    )
+    ora_table_and_view_request = "select sys.all_tables.owner, sys.all_tables.table_name from sys.USER_TABLES join sys.ALL_TABLES on sys.user_tables.table_name = sys.all_tables.table_name where sys.all_tables.secondary = 'N' and sys.all_tables.owner not in {0} union select v.OWNER, v.VIEW_NAME from sys.all_views v where  v.owner not in {0}".format(
+        ora_sys_tables
+    )
+
+    ora_available = 1
+    ora_error = 0
+except Exception as e:
+    ora_available = 0
+    ora_error = e
+
+connection_parameters_names = ["host", "port", "dbname", "user", "password"]
+
+# QDialog close button icones
 btnBox_ico_dict = {
     0: QIcon(":/plugins/Isogeo/resources/save.svg"),
     1: QIcon(":/images/themes/default/mActionRemove.svg"),
@@ -69,13 +92,7 @@ btnBox_ico_dict = {
 }
 
 # https://dataedo.com/kb/query/oracle/find-all-spatial-columns
-ora_sys_tables = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200','GSMADMIN_INTERNAL','SDE','ORDDATA')"
-ora_geom_column_request = "select col.owner, col.table_name, col.column_name, md.srid from sys.all_tab_cols col left join user_sdo_geom_metadata md on col.table_name = md.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.table_name".format(
-    ora_sys_tables
-)
-ora_table_and_view_request = "select sys.all_tables.owner, sys.all_tables.table_name from sys.USER_TABLES join sys.ALL_TABLES on sys.user_tables.table_name = sys.all_tables.table_name where sys.all_tables.secondary = 'N' and sys.all_tables.owner not in {0} union select v.OWNER, v.VIEW_NAME from sys.all_views v where  v.owner not in {0}".format(
-    ora_sys_tables
-)
+
 
 arrow_cursor = QCursor(Qt.CursorShape(0))
 hourglass_cursor = QCursor(Qt.CursorShape(16))
@@ -94,6 +111,9 @@ class DataBaseManager:
         """Class constructor."""
 
         self.tr = tr
+
+        self.pgis_available = pgis_available
+        self.ora_available = ora_available
 
         # Check PGSERVICEFILE env var value if it exists
         pgservicefile_value = environ.get("PGSERVICEFILE", None)
@@ -122,33 +142,33 @@ class DataBaseManager:
         self.json_content = dict
         self.json_path = Path(__file__).parents[2] / "_user" / "db_connections.json"
 
-        # set connections infos management dict
-        self.dbms_specifics_infos = {
-            "Oracle": {
+        # Retrieved prefered and invalid connections saved into QSettings,
+        # then retrieve informations about registered database connections from QSettings
+        self.dbms_specifics_infos = {}
+        if self.pgis_available:
+            self.dbms_specifics_infos["PostgreSQL"] = {
                 "prefered_connections": [],
                 "invalid_connections": [],
                 "connections": [],
                 "db_names": [],
-            },
-            "PostgreSQL": {
+            }
+            self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="prefered")
+            self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="invalid")
+            self.build_connection_dict(dbms="PostgreSQL")
+        else:
+            logger.warning("Enable to load dependencies required to handle PostgreSQL database connections : {}".format(pgis_error))
+        if self.ora_available:
+            self.dbms_specifics_infos["Oracle"] = {
                 "prefered_connections": [],
                 "invalid_connections": [],
                 "connections": [],
                 "db_names": [],
-            },
-        }
-
-        # Retrieved prefered connections saved into QSettings
-        self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="prefered")
-        self.fetch_qsettings_connections(dbms="Oracle", connections_kind="prefered")
-
-        # Retrieved invalid connections saved into QSettings
-        self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="invalid")
-        self.fetch_qsettings_connections(dbms="Oracle", connections_kind="invalid")
-
-        # retrieve informations about registered database connections from QSettings
-        self.build_connection_dict(dbms="PostgreSQL")
-        self.build_connection_dict(dbms="Oracle")
+            }
+            self.fetch_qsettings_connections(dbms="Oracle", connections_kind="prefered")
+            self.fetch_qsettings_connections(dbms="Oracle", connections_kind="invalid")
+            self.build_connection_dict(dbms="Oracle")
+        else:
+            logger.warning("Enable to load dependencies required to handle Oracle database connections : {}".format(ora_error))
 
         # set UI module
         self.db_config_dialog = Isogeodb_connections()

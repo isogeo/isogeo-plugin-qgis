@@ -983,7 +983,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.groupBox_4.setTitle(_translate("IsogeoDockWidgetBase", "Layer adding settings"))
         self.label_config_db_conn.setText(_translate("IsogeoDockWidgetBase", "Configure embed database connections to be used by the plugin"))
         self.btn_open_ora_config_dialog.setToolTip(_translate("IsogeoDockWidgetBase", "Oracle databases"))
-        self.btn_open_pgdb_config_dialog.setToolTip(_translate("IsogeoDockWidgetBase", "PostGIS databases"))
+        self.btn_open_pgdb_config_dialog.setToolTip(_translate("IsogeoDockWidgetBase", "PostgreSQL databases"))
         self.label_portal_url.setText(_translate("IsogeoDockWidgetBase", "Configure Isogeo portal metadata URL display into layer\'s properties"))
         self.btn_open_portalURL_config_dialog.setToolTip(_translate("IsogeoDockWidgetBase", "Choose to add metadata portal URL to layer properties and specify portal base URL"))
         self.groupBox_2.setTitle(_translate("IsogeoDockWidgetBase", "Search settings"))

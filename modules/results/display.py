@@ -276,7 +276,7 @@ class ResultsManager(QObject):
                         pass
                 # If the data is a postGIS table and the connection has
                 # been saved in QGIS.
-                elif md.format == "postgis":
+                elif md.format == "postgis" and self.db_mng.pgis_available:
                     if (
                         md.path
                         and md.name
@@ -357,7 +357,7 @@ class ResultsManager(QObject):
 
                 # If the data is a Oracle table and the connection has
                 # been saved in QGIS.
-                elif md.format == "oracle":
+                elif md.format == "oracle" and self.db_mng.ora_available:
                     if (
                         md.path
                         and md.name
