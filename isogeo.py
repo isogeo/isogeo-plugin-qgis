@@ -878,6 +878,9 @@ class Isogeo:
             )
         else:
             self.form_mng.btn_open_pgdb_config_dialog.setEnabled(0)
+            self.form_mng.btn_open_pgdb_config_dialog.setToolTip(
+                self.tr("PostgreSQL databases are not supported by your QGIS installation.")
+            )
 
         self.form_mng.btn_open_ora_config_dialog.setIcon(ico_ora)
         if self.form_mng.results_mng.db_mng.ora_available:
@@ -886,6 +889,9 @@ class Isogeo:
             )
         else:
             self.form_mng.btn_open_ora_config_dialog.setEnabled(0)
+            self.form_mng.btn_open_ora_config_dialog.setToolTip(
+                self.tr("Oracle databases are not supported by your QGIS installation.")
+            )
 
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.form_mng.setWindowTitle("Isogeo - {}".format(self.plg_version))
