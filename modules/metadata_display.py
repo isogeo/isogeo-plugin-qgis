@@ -41,10 +41,6 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_tools = IsogeoPlgTools()
 
-osm_standard = r"type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png"
-
-ref_lyr = QgsRasterLayer(osm_standard, "OSM_Standard", "wms")
-
 # ############################################################################
 # ########## Classes ###############
 # ##################################
@@ -55,13 +51,14 @@ class MetadataDisplayer:
 
     md_edition_url = str
 
-    def __init__(self, app_base_url: str):
+    def __init__(self, app_base_url: str, background_map_url: str):
         """Class constructor."""
         self.complete_md = IsogeoMdDetails()
         self.complete_md.stackedWidget.setCurrentIndex(0)
 
         # some basic settings
         self.app_base_url = app_base_url
+        self.background_lyr = QgsRasterLayer(background_map_url, "OSM_Standard", "wms")
         self.complete_md.btn_md_edit.pressed.connect(
             lambda: plg_tools.open_webpage(link=self.md_edition_url)
         )
@@ -339,12 +336,12 @@ class MetadataDisplayer:
             self.complete_md.grp_bbox.setDisabled(0)
             # get convex hull coordinates and create the polygon
             md_lyr = self.envelope2layer(md.get("envelope"))
-            li_lyr = [md_lyr, ref_lyr]
+            li_lyr = [md_lyr, self.background_lyr]
             # add layers
             qgs_prj.addMapLayers(li_lyr, 0)
             map_canvas_layer_list = [
                 qgs_prj.mapLayer(md_lyr.id()),
-                qgs_prj.mapLayer(ref_lyr.id()),
+                qgs_prj.mapLayer(self.background_lyr.id()),
             ]
 
             self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)

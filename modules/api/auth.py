@@ -122,7 +122,10 @@ class Authenticator(QObject):
                 "url_redirect": "http://localhost:5000/callback",
             }
 
-        self.app_url = self.json_content.get("app_base_url")
+            if self.json_content.get("app_base_url").endswith("/"):
+                self.app_url = self.json_content.get("app_base_url")[:-1]
+            else:
+                self.app_url = self.json_content.get("app_base_url")
 
         # credentials storage folder
         self.auth_folder = plugin_dir / "_auth"
@@ -150,7 +153,7 @@ class Authenticator(QObject):
                     )
                 )
                 self.json_content = 0
-            elif not all(key in list(self.json_content.keys()) for key in ["api_base_url", "api_auth_url", "app_base_url"]):
+            elif not all(key in list(self.json_content.keys()) for key in ["api_base_url", "api_auth_url", "app_base_url", "help_base_url", "background_map_url"]):
                 logger.warning(
                     "Missing key in config.json file content : {}.".format(
                         self.json_content
@@ -177,7 +180,9 @@ class Authenticator(QObject):
                 self.json_content = {
                     "api_base_url": "https://v1.api.isogeo.com",
                     "api_auth_url": "https://id.api.isogeo.com",
-                    "app_base_url": "https://app.isogeo.com"
+                    "app_base_url": "https://app.isogeo.com",
+                    "help_base_url": "https://help.isogeo.com",
+                    "background_map_url": "type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png"
                 }
                 with open(self.json_path, "w") as json_content:
                     json.dump(self.json_content, json_content, indent=4)

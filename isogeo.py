@@ -224,7 +224,9 @@ class Isogeo:
         self.approps_mng = SharesParser(app_base_url=self.authenticator.app_url)
         self.approps_mng.tr = self.tr
 
-        self.md_display = MetadataDisplayer(app_base_url=self.authenticator.app_url)
+        self.md_display = MetadataDisplayer(
+            app_base_url=self.authenticator.app_url, background_map_url=self.authenticator.json_content.get("background_map_url")
+        )
         self.md_display.tr = self.tr
 
         self.api_requester = ApiRequester()
@@ -864,8 +866,12 @@ class Isogeo:
             )
         )
         # help button
+        if self.authenticator.json_content.get("help_base_url").endswith("/"):
+            help_url = self.authenticator.json_content.get("help_base_url") + "qgis/"
+        else:
+            help_url = self.authenticator.json_content.get("help_base_url") + "/qgis/"
         self.form_mng.btn_help.pressed.connect(
-            partial(plg_tools.open_webpage, link="http://help.isogeo.com/qgis/")
+            partial(plg_tools.open_webpage, link=help_url)
         )
         # view credits - see: #52
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
