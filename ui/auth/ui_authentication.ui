@@ -28,7 +28,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>:/plugins/Isogeo/resources/users.svg</normaloff>:/plugins/Isogeo/resources/users.svg</iconset>
+    <normaloff>:/plugins/Isogeo/resources/settings/key.svg</normaloff>:/plugins/Isogeo/resources/settings/key.svg</iconset>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
@@ -55,7 +55,7 @@
       </font>
      </property>
      <property name="autoFillBackground">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="locale">
       <locale language="English" country="UnitedStates"/>
@@ -147,7 +147,7 @@
          </font>
         </property>
         <property name="autoFillBackground">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="locale">
          <locale language="English" country="UnitedStates"/>
@@ -178,13 +178,13 @@
          </font>
         </property>
         <property name="toolTip">
-         <string>I've got the power hey yeah heh!</string>
+         <string/>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="autoFillBackground">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="text">
          <string>I've got edition rights on app.isogeo.com</string>
@@ -220,7 +220,7 @@
          </font>
         </property>
         <property name="autoFillBackground">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="text">
          <string>From a file:</string>
@@ -259,8 +259,11 @@
           <bold>false</bold>
          </font>
         </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
         <property name="autoFillBackground">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -301,7 +304,7 @@
          </font>
         </property>
         <property name="autoFillBackground">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="locale">
          <locale language="English" country="UnitedStates"/>
@@ -378,7 +381,7 @@
          <string>Only for information, the Isogeo API base URL</string>
         </property>
         <property name="autoFillBackground">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="text">
          <string>API location:</string>
@@ -455,7 +458,7 @@
          <string>Locate the Isogeo API credentials file</string>
         </property>
         <property name="filter">
-         <string notr="true">*.json;*.ini</string>
+         <string notr="true">*.json</string>
         </property>
         <property name="defaultRoot">
          <string notr="true"/>
@@ -476,7 +479,7 @@
          <cursorShape>IBeamCursor</cursorShape>
         </property>
         <property name="autoFillBackground">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
@@ -527,7 +530,7 @@
       </font>
      </property>
      <property name="autoFillBackground">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="locale">
       <locale language="English" country="UnitedStates"/>
@@ -565,14 +568,20 @@
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::NoContextMenu</enum>
+        </property>
         <property name="autoFillBackground">
          <bool>true</bool>
         </property>
         <property name="text">
          <string>Make an appointment with Isogeo team</string>
         </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
         <property name="default">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -599,14 +608,20 @@
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::NoContextMenu</enum>
+        </property>
         <property name="autoFillBackground">
          <bool>true</bool>
         </property>
         <property name="text">
          <string>Test the Isogeo QGIS Plugin for free</string>
         </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
         <property name="default">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
