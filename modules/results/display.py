@@ -628,6 +628,23 @@ class ResultsManager(QObject):
             btn_title = tbl_result.cellWidget(i, 0)
             btn_title.setToolTip(btn_title.text())
             plg_tools.format_widget_title(btn_title, max_width)
+
+            # format add_option combobox item labels to fit the combobox width
+            combo = tbl_result.cellWidget(i, 3)
+            if isinstance(combo, QComboBox):
+                combo_width = combo.width() - 50
+                combo_fm = combo.fontMetrics()
+
+                for i in range(combo.count()):
+                    item_label = combo.itemText(i)
+                    item_label_width = combo_fm.size(1, item_label).width()
+                    if item_label_width > combo_width:
+                        combo.setItemText(i, combo_fm.elidedText(item_label, 1, combo_width))
+                        combo.setItemData(i, item_label, Qt.ToolTipRole)
+                    else:
+                        pass
+            else:
+                pass
         # method ending
         return None
 
