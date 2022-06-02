@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
 <context>
     <name>ApiRequester</name>
     <message>
@@ -48,47 +47,47 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="360"/>
+        <location filename="../isogeo.py" line="362"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="335"/>
+        <location filename="../isogeo.py" line="337"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="511"/>
+        <location filename="../isogeo.py" line="513"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="446"/>
+        <location filename="../isogeo.py" line="448"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="509"/>
+        <location filename="../isogeo.py" line="511"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="855"/>
+        <location filename="../isogeo.py" line="857"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="614"/>
+        <location filename="../isogeo.py" line="616"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="883"/>
+        <location filename="../isogeo.py" line="889"/>
         <source>PostgreSQL databases are not supported by your QGIS installation.</source>
         <translation>Les bases de données PostgreSQL ne sont pas supportées par votre installation de QGIS.</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="894"/>
+        <location filename="../isogeo.py" line="900"/>
         <source>Oracle databases are not supported by your QGIS installation.</source>
         <translation>Les bases de données Oracle ne sont pas supportées par votre installation de QGIS.</translation>
     </message>
@@ -101,259 +100,274 @@
         <translation>Recherche</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="574"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="605"/>
         <source>Advanced search</source>
         <translation>Recherche avancée</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="910"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="967"/>
         <source>INSPIRE keywords</source>
         <translation>Thématiques INSPIRE</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="104"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="109"/>
         <source>Show results</source>
         <translation>Voir les résultats</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="346"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="365"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="351"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="370"/>
         <source>Modified</source>
         <translation>Modifiée</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="356"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="375"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="361"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="380"/>
         <source>Add</source>
         <translation>Ajouter</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1781"/>
-        <source>Rename</source>
-        <translation>Renommer</translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2097"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2279"/>
         <source>Report an issue on the bug tracker</source>
         <translation>Signaler un problème sur le bug tracker</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="233"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="252"/>
         <source>Save research</source>
         <translation>Enregistrer la recherche</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="196"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="215"/>
         <source>Reset all input fields</source>
         <translation>Réinitialiser la recherche</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="726"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="767"/>
         <source>Geographic filter</source>
         <translation>Filtre géographique</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1215"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1296"/>
         <source>Resource type</source>
         <translation>Type de ressource</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="101"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="106"/>
         <source>Display the results list</source>
         <translation>Afficher la liste des résultats</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="127"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="139"/>
         <source>Sorting method</source>
         <translation>Tri des résultats</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="155"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="174"/>
         <source>Sorting direction</source>
         <translation>Direction du tri</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1563"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1677"/>
         <source>Settings</source>
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2015"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2179"/>
         <source>Authentication settings</source>
         <translation>Authentification</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1727"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1853"/>
         <source>Search settings</source>
         <translation>Recherche</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1907"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2053"/>
         <source>Geographical operator applied to the filter</source>
         <translation>Opérateur géographique à appliquer au filtre</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1831"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1970"/>
         <source>Default search</source>
         <translation>Recherche par défaut</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2081"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2262"/>
         <source>Resources</source>
         <translation>Ressources</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2188"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2378"/>
         <source>Open online plugin help</source>
         <translation>Ouvrir l&apos;aide en ligne du plugin</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2250"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2441"/>
         <source>Open plugin credits</source>
         <translation>Ouvrir les crédits de l&apos;application</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="294"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="313"/>
         <source>Page x on x</source>
         <translation>Page x sur x</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2039"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2209"/>
         <source>Set plugin authentication:</source>
         <translation>Changer les paramètres d&apos;authentification du plugin :</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="394"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="419"/>
         <source>Enter your search terms</source>
         <translation>Termes de recherche</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="406"/>
-        <source>roads, habitat, cadastral parcel, transport</source>
-        <translation>routes, habitat, cadastre, transport, vélo</translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="434"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="459"/>
         <source>Launch search</source>
         <translation>Lancer la recherche</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="818"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="867"/>
         <source>Format (source)</source>
         <translation>Format source</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1000"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1066"/>
         <source>Contact</source>
         <translation>Contact</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1307"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1396"/>
         <source>Metadata owner</source>
         <translation>Propriétaire de la métadonnée</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1399"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1496"/>
         <source>Coordinate system (source)</source>
         <translation>Système de coordonnées source</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1483"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1589"/>
         <source>License</source>
         <translation>Licence</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="528"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="558"/>
         <source>Quick searches</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2132"/>
-        <source>Get the log file: &quot;log_isogeo_plugin.log&quot;</source>
-        <translation>Trouver le fichier &quot;log_isogeo_plugin.log&quot;</translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2138"/>
-        <source>LOG File</source>
-        <translation>Fichier LOG</translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2223"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2413"/>
         <source>Open online help in default browser</source>
         <translation>Consulter l&apos;aide en ligne dans le navigateur par défaut</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2285"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2476"/>
         <source>Open credits popup</source>
         <translation>Ouvre la fenêtre des crédits</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="544"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="574"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1743"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1875"/>
         <source>Edit quicksearch</source>
         <translation>Editer la quicksearch</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1959"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2112"/>
         <source>Paths cache</source>
         <translation>Chemins des fichiers en cache</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1991"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2144"/>
         <source>Empty the paths cached</source>
         <translation>Vider le cache des chemins de fichiers</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1569"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1688"/>
         <source>Layer adding settings</source>
         <translation>Ajout de couche</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1591"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1711"/>
         <source>Configure embed database connections to be used by the plugin</source>
         <translation>Choix des connexions aux bases de données à utiliser pour accéder aux tables</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1623"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1743"/>
         <source>Oracle databases</source>
         <translation>Bases de données Oracle</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1668"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1789"/>
         <source>Configure Isogeo portal metadata URL display into layer&apos;s properties</source>
         <translation>Configurer l&apos;affichage de l&apos;URL du portail Isogeo dans les propriétés des couches ajoutées</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1700"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1821"/>
         <source>Choose to add metadata portal URL to layer properties and specify portal base URL</source>
         <translation>Choisir d&apos;ajouter ou non l&apos;URL et indiquer la base de l&apos;URL du portail</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="639"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="671"/>
         <source>Group theme</source>
         <translation>Thématique</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1122"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1197"/>
         <source>Keyword</source>
         <translation>Mot-clef</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1645"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1765"/>
         <source>PostgreSQL databases</source>
         <translation>Bases de données PostgreSQL</translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="431"/>
+        <source>roads, habitat, cadastral parcel, transport...</source>
+        <translation>routes, habitats, cadastre, transport, vélo...</translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1913"/>
+        <source>Rename selected quicksearch</source>
+        <translation>Renommer la recherche rapide sélectionnée</translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1945"/>
+        <source>Delete selected quicksearch</source>
+        <translation>Supprimer la recherche rapide sélectionnée</translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2002"/>
+        <source>Save current search as default</source>
+        <translation>Sauvegarder la recherche actuelle comme recherche par défaut</translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2028"/>
+        <source>Reset default search</source>
+        <translation>Réinitialiser la recherche par défaut</translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2327"/>
+        <source>LOG</source>
+        <translation>LOG</translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2321"/>
+        <source>Open folder of &quot;log_isogeo_plugin.log&quot; file</source>
+        <translation>Ouvrir l&apos;emplacement du fichier &quot;log_isogeo_plugin.log&quot;</translation>
     </message>
 </context>
 <context>
@@ -432,7 +446,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>MetadataDisplayer</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="106"/>
+        <location filename="../modules/metadata_display.py" line="103"/>
         <source>Undefined</source>
         <translation>Non renseigné</translation>
     </message>
@@ -498,12 +512,12 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../modules/search_form.py" line="95"/>
         <source>within</source>
-        <translation>Est contenu</translation>
+        <translation>est contenu</translation>
     </message>
     <message>
         <location filename="../modules/search_form.py" line="95"/>
         <source>contains</source>
-        <translation>Contient</translation>
+        <translation>contient</translation>
     </message>
     <message>
         <location filename="../modules/search_form.py" line="102"/>
@@ -561,12 +575,12 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
         <translation>Emprise de la carte</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="279"/>
+        <location filename="../modules/search_form.py" line="293"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="363"/>
+        <location filename="../modules/search_form.py" line="377"/>
         <source>Display results</source>
         <translation>Affichage des résultats</translation>
     </message>
@@ -726,77 +740,77 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>dlg_form_auth_prompt</name>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="277"/>
+        <location filename="../ui/auth/ui_authentication.py" line="282"/>
         <source>Isogeo authentication settings</source>
         <translation>Paramètres d&apos;authentification du plugin</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="283"/>
+        <location filename="../ui/auth/ui_authentication.py" line="288"/>
         <source>Application ID:</source>
         <translation>ID :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="280"/>
+        <location filename="../ui/auth/ui_authentication.py" line="285"/>
         <source>Application SECRET:</source>
         <translation>Secret :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="288"/>
+        <location filename="../ui/auth/ui_authentication.py" line="293"/>
         <source>Don&apos;t have an account yet ?</source>
         <translation>Pas encore de compte ?</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="278"/>
+        <location filename="../ui/auth/ui_authentication.py" line="283"/>
         <source>I already have Isogeo ID and SECRET for this application</source>
         <translation>Je dispose déjà des ID et Secret pour ce plugin</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="281"/>
+        <location filename="../ui/auth/ui_authentication.py" line="286"/>
         <source>I&apos;ve got edition rights on app.isogeo.com</source>
         <translation>J&apos;ai accès aux fonctionnalités d&apos;édition sur app.isogeo.com</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="282"/>
+        <location filename="../ui/auth/ui_authentication.py" line="287"/>
         <source>From a file:</source>
         <translation>Importer depuis un fichier :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="279"/>
+        <location filename="../ui/auth/ui_authentication.py" line="284"/>
         <source>plugin-qgis-org-a1b23c4d5f6g7h8i9j10kl11mn13op14</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="286"/>
+        <location filename="../ui/auth/ui_authentication.py" line="291"/>
         <source>Pick your credentials file</source>
         <translation>Importer le fichier d&apos;authentification fourni par Isogeo ou votre administrateur</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="287"/>
+        <location filename="../ui/auth/ui_authentication.py" line="292"/>
         <source>Locate the Isogeo API credentials file</source>
         <translation>Trouver le fichier &quot;client_secrets.json&quot;</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="284"/>
+        <location filename="../ui/auth/ui_authentication.py" line="289"/>
         <source>Only for information, the Isogeo API base URL</source>
         <translation>Pour information, l&apos;URL de base de l&apos;API Isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="285"/>
+        <location filename="../ui/auth/ui_authentication.py" line="290"/>
         <source>API location:</source>
         <translation>URL de l&apos;API :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="289"/>
+        <location filename="../ui/auth/ui_authentication.py" line="294"/>
         <source>Make an appointment with Isogeo team</source>
         <translation>Prendre RDV avec la Team Isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="290"/>
+        <location filename="../ui/auth/ui_authentication.py" line="295"/>
         <source>Test the Isogeo QGIS Plugin for free</source>
         <translation>Tester gratuitement le Plugin QGIS Isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="291"/>
+        <location filename="../ui/auth/ui_authentication.py" line="296"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;It is simple and free to test the Isogeo QGIS Plugin on a sample of data : &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Il est simple et gratuit de tester le Plugin QGIS Isogeo sur un échantillon de données, n&apos;hésitez pas à nous en faire la demande&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -804,282 +818,282 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>dlg_metadata_details</name>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1321"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1422"/>
         <source>Isogeo Metadata</source>
         <translation>Fiche de métadonnée Isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1432"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1444"/>
         <source>addButton</source>
         <translation>Ajouter à la carte</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1326"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1427"/>
         <source>General</source>
         <translation>Général</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1328"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1429"/>
         <source>Feature attributes</source>
         <translation>Attributs</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1330"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1431"/>
         <source>Contacts</source>
         <translation>Contacts</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1332"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1433"/>
         <source>History</source>
         <translation>Historique</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1334"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1435"/>
         <source>Geography</source>
         <translation>Géographie</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1413"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1515"/>
         <source>Licenses</source>
         <translation>Licences</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1340"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1441"/>
         <source>Advanced</source>
         <translation>Divers</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1342"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1443"/>
         <source>Edit it on Isogeo</source>
         <translation>Editer sur Isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1351"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1453"/>
         <source>INSPIRE themes</source>
         <translation>Thématiques INSPIRE</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1348"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1450"/>
         <source>Keywords</source>
         <translation>Mots-clés</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1354"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1456"/>
         <source>Abstract</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1431"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1533"/>
         <source>TextLabel</source>
         <translation>NR</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1418"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1520"/>
         <source>Metadata owner</source>
         <translation>Propriétaire de la métadonnée</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1358"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1460"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1360"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1462"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1362"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1464"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1391"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1493"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1365"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1467"/>
         <source>Point of contact</source>
         <translation>Point(s) de contact</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1367"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1469"/>
         <source>Others contacts</source>
         <translation>Autre(s) contact(s)</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1369"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1471"/>
         <source>Data history</source>
         <translation>Historique de la donnée</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1371"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1473"/>
         <source>Updated every:</source>
         <translation>Mise à jour tous les :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1429"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1531"/>
         <source>Last update:</source>
         <translation>Dernière modification :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1375"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1477"/>
         <source>Creation date:</source>
         <translation>Date de création :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1376"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1478"/>
         <source>Validity comment:</source>
         <translation>Commentaire :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1379"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1481"/>
         <source>Validity period start:</source>
         <translation>Début de validité :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1381"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1483"/>
         <source>Validity period end:</source>
         <translation>Fin de validité :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1386"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1488"/>
         <source>Last modifications</source>
         <translation>Dernières modifications sur la donnée</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1389"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1491"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1392"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1494"/>
         <source>Technical informations</source>
         <translation>Informations techniques</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1400"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1502"/>
         <source>Scale:</source>
         <translation>Échelle :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1401"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1503"/>
         <source>SRS:</source>
         <translation>Système de coordonnées :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1403"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1505"/>
         <source>Resolution:</source>
         <translation>Résolution :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1394"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1496"/>
         <source>Format:</source>
         <translation>Format :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1395"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1497"/>
         <source>Features count:</source>
         <translation>Nombre d&apos;objets :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1397"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1499"/>
         <source>Geometry type:</source>
         <translation>Type de géométrie :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1408"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1510"/>
         <source>Bounding box preview</source>
         <translation>Aperçu de l&apos;enveloppe</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1415"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1517"/>
         <source>Limitations</source>
         <translation>Limitations</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1417"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1519"/>
         <source>Download metadata XML</source>
         <translation>Télécharger la métadonnée en XML ISO 19139</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1419"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1521"/>
         <source>wg_email</source>
         <translation>Email</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1420"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1522"/>
         <source>wg_address</source>
         <translation>Adresse</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1421"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1523"/>
         <source>wg_phone</source>
         <translation>Tél</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1422"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1524"/>
         <source>wg_pc_city</source>
         <translation>Code postal et ville</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1423"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1525"/>
         <source>wg_country</source>
         <translation>Pays</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1425"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1527"/>
         <source>Metadata properties</source>
         <translation>Détails de la métadonnée</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1426"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1528"/>
         <source>Created:</source>
         <translation>Créée le :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1382"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1484"/>
         <source>Collection context</source>
         <translation>Contexte de collecte</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1384"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1486"/>
         <source>Collection method</source>
         <translation>Méthode de collecte</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1427"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1529"/>
         <source>Language: </source>
         <translation>Langue: </translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1336"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1437"/>
         <source>Quality</source>
         <translation>Qualité des données</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1424"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1526"/>
         <source>wg_owner</source>
         <translation>Organisme</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1406"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1508"/>
         <source>Geographical context</source>
         <translation>Contexte géographique</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1409"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1511"/>
         <source>Specifications</source>
         <translation>Spécifications</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1411"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1513"/>
         <source>Topological consistency</source>
         <translation>Cohérence topologique</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1345"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1447"/>
         <source>Group themes</source>
         <translation>Thématiques</translation>
     </message>
@@ -1131,46 +1145,46 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>isogeo_tr</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="304"/>
+        <location filename="../modules/metadata_display.py" line="301"/>
         <source>quality</source>
         <comment>isConform</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="306"/>
+        <location filename="../modules/metadata_display.py" line="303"/>
         <source>quality</source>
         <comment>isNotConform</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="208"/>
+        <location filename="../modules/metadata_display.py" line="205"/>
         <source>roles</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="239"/>
+        <location filename="../modules/metadata_display.py" line="236"/>
         <source>frequencyTypes</source>
         <comment>frequencyUpdateHelp</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="239"/>
+        <location filename="../modules/metadata_display.py" line="236"/>
         <source>frequencyShortTypes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="375"/>
+        <location filename="../modules/metadata_display.py" line="372"/>
         <source>conditions</source>
         <comment>noLicense</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="389"/>
+        <location filename="../modules/metadata_display.py" line="386"/>
         <source>limitations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="395"/>
+        <location filename="../modules/metadata_display.py" line="392"/>
         <source>restrictions</source>
         <translation></translation>
     </message>
