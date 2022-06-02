@@ -97,6 +97,11 @@
               <height>30</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
             <property name="toolTip">
              <string>Display the results list</string>
             </property>
@@ -122,6 +127,13 @@
               <width>50</width>
               <height>30</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
             </property>
             <property name="toolTip">
              <string>Sorting method</string>
@@ -150,6 +162,13 @@
               <width>50</width>
               <height>30</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
             </property>
             <property name="toolTip">
              <string>Sorting direction</string>
@@ -381,14 +400,20 @@
               <property name="minimumSize">
                <size>
                 <width>275</width>
-                <height>30</height>
+                <height>25</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>275</width>
-                <height>30</height>
+                <height>25</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
               </property>
               <property name="toolTip">
                <string>Enter your search terms</string>
@@ -403,7 +428,7 @@
                <string/>
               </property>
               <property name="placeholderText">
-               <string>roads, habitat, cadastral parcel, transport</string>
+               <string>roads, habitat, cadastral parcel, transport...</string>
               </property>
              </widget>
             </item>
@@ -509,13 +534,13 @@
               <property name="minimumSize">
                <size>
                 <width>200</width>
-                <height>30</height>
+                <height>25</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>200</width>
-                <height>30</height>
+                <height>25</height>
                </size>
               </property>
               <property name="sizeIncrement">
@@ -523,6 +548,13 @@
                 <width>2</width>
                 <height>0</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
               </property>
               <property name="toolTip">
                <string>Quick searches</string>
@@ -566,6 +598,7 @@
           </property>
           <property name="font">
            <font>
+            <pointsize>9</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -631,6 +664,7 @@
                       <widget class="QLabel" name="lbl_grpTh">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
@@ -666,7 +700,7 @@
                      <property name="minimumSize">
                       <size>
                        <width>250</width>
-                       <height>25</height>
+                       <height>20</height>
                       </size>
                      </property>
                      <property name="maximumSize">
@@ -675,8 +709,16 @@
                        <height>25</height>
                       </size>
                      </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
                      <property name="currentIndex">
                       <number>-1</number>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -718,6 +760,7 @@
                       <widget class="QLabel" name="lbl_geofilter">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
@@ -761,6 +804,14 @@
                        <width>500</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -809,8 +860,8 @@
                       <widget class="QLabel" name="lbl_format">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
-                         <italic>false</italic>
                          <bold>true</bold>
                         </font>
                        </property>
@@ -853,6 +904,14 @@
                        <width>500</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -901,8 +960,8 @@
                       <widget class="QLabel" name="lbl_inspire">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
-                         <italic>false</italic>
                          <bold>true</bold>
                         </font>
                        </property>
@@ -945,6 +1004,14 @@
                        <width>500</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -992,6 +1059,7 @@
                       <widget class="QLabel" name="lbl_contact">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
@@ -1038,6 +1106,14 @@
                        <width>500</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -1114,6 +1190,7 @@
                       <widget class="QLabel" name="lbl_kw">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
@@ -1149,7 +1226,7 @@
                      <property name="minimumSize">
                       <size>
                        <width>250</width>
-                       <height>25</height>
+                       <height>20</height>
                       </size>
                      </property>
                      <property name="maximumSize">
@@ -1157,6 +1234,11 @@
                        <width>500</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
                      </property>
                      <property name="editable">
                       <bool>true</bool>
@@ -1207,6 +1289,7 @@
                       <widget class="QLabel" name="lbl_type">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
@@ -1250,6 +1333,14 @@
                        <width>500</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -1298,8 +1389,8 @@
                       <widget class="QLabel" name="lbl_owner">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
-                         <italic>false</italic>
                          <bold>true</bold>
                         </font>
                        </property>
@@ -1342,6 +1433,14 @@
                        <width>500</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -1390,8 +1489,8 @@
                       <widget class="QLabel" name="lbl_srs">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
-                         <italic>false</italic>
                          <bold>true</bold>
                         </font>
                        </property>
@@ -1435,6 +1534,14 @@
                        <height>25</height>
                       </size>
                      </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
+                     </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
                      </property>
@@ -1475,6 +1582,7 @@
                       <widget class="QLabel" name="lbl_license">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
@@ -1522,6 +1630,14 @@
                        <height>25</height>
                       </size>
                      </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
+                     </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
                      </property>
@@ -1565,6 +1681,11 @@
        <layout class="QGridLayout" name="gridLayout_7">
         <item row="7" column="0">
          <widget class="QGroupBox" name="groupBox_4">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
           <property name="title">
            <string>Layer adding settings</string>
           </property>
@@ -1583,6 +1704,7 @@
                  </property>
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -1610,12 +1732,12 @@
                  <property name="minimumSize">
                   <size>
                    <width>80</width>
-                   <height>25</height>
+                   <height>30</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>100</width>
+                   <width>80</width>
                    <height>30</height>
                   </size>
                  </property>
@@ -1632,12 +1754,12 @@
                  <property name="minimumSize">
                   <size>
                    <width>80</width>
-                   <height>25</height>
+                   <height>30</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>100</width>
+                   <width>80</width>
                    <height>30</height>
                   </size>
                  </property>
@@ -1657,6 +1779,7 @@
                 <widget class="QLabel" name="label_portal_url">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -1687,7 +1810,7 @@
                  <property name="minimumSize">
                   <size>
                    <width>80</width>
-                   <height>25</height>
+                   <height>30</height>
                   </size>
                  </property>
                  <property name="maximumSize">
@@ -1723,6 +1846,11 @@
             <height>121</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
           <property name="title">
            <string>Search settings</string>
           </property>
@@ -1735,9 +1863,15 @@
                 <widget class="QComboBox" name="cbb_quicksearch_edit">
                  <property name="minimumSize">
                   <size>
-                   <width>221</width>
-                   <height>24</height>
+                   <width>250</width>
+                   <height>25</height>
                   </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
                  </property>
                  <property name="toolTip">
                   <string>Edit quicksearch</string>
@@ -1761,14 +1895,14 @@
                 <widget class="QPushButton" name="btn_rename_sr">
                  <property name="minimumSize">
                   <size>
-                   <width>111</width>
+                   <width>80</width>
                    <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>115</width>
-                   <height>25</height>
+                   <width>80</width>
+                   <height>30</height>
                   </size>
                  </property>
                  <property name="font">
@@ -1777,8 +1911,11 @@
                    <bold>false</bold>
                   </font>
                  </property>
+                 <property name="toolTip">
+                  <string>Rename selected quicksearch</string>
+                 </property>
                  <property name="text">
-                  <string>Rename</string>
+                  <string/>
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -1796,8 +1933,8 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>60</width>
-                   <height>25</height>
+                   <width>80</width>
+                   <height>30</height>
                   </size>
                  </property>
                  <property name="font">
@@ -1805,6 +1942,9 @@
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
+                 </property>
+                 <property name="toolTip">
+                  <string>Delete selected quicksearch</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -1823,6 +1963,7 @@
                 <widget class="QLabel" name="lbl_default">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -1849,15 +1990,18 @@
                 <widget class="QPushButton" name="btn_default_save">
                  <property name="minimumSize">
                   <size>
-                   <width>111</width>
+                   <width>80</width>
                    <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>115</width>
-                   <height>25</height>
+                   <width>80</width>
+                   <height>30</height>
                   </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Save current search as default</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -1878,9 +2022,12 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>60</width>
-                   <height>25</height>
+                   <width>80</width>
+                   <height>30</height>
                   </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Reset default search</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -1899,6 +2046,7 @@
                 <widget class="QLabel" name="lbl_geo_op">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -1925,15 +2073,21 @@
                 <widget class="QComboBox" name="cbb_geo_op">
                  <property name="minimumSize">
                   <size>
-                   <width>176</width>
+                   <width>167</width>
                    <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>250</width>
-                   <height>25</height>
+                   <width>167</width>
+                   <height>30</height>
                   </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
                  </property>
                 </widget>
                </item>
@@ -1951,6 +2105,7 @@
                 <widget class="QLabel" name="lbl_cache">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -1983,8 +2138,8 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>60</width>
-                   <height>25</height>
+                   <width>80</width>
+                   <height>30</height>
                   </size>
                  </property>
                  <property name="toolTip">
@@ -2011,6 +2166,17 @@
         </item>
         <item row="6" column="0">
          <widget class="QGroupBox" name="groupBox">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>400</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
           <property name="title">
            <string>Authentication settings</string>
           </property>
@@ -2023,6 +2189,11 @@
                <height>300</height>
               </size>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
             </widget>
            </item>
            <item row="0" column="0">
@@ -2031,6 +2202,7 @@
               <widget class="QLabel" name="lbl_auth">
                <property name="font">
                 <font>
+                 <pointsize>8</pointsize>
                  <weight>50</weight>
                  <bold>false</bold>
                 </font>
@@ -2061,6 +2233,12 @@
                  <height>25</height>
                 </size>
                </property>
+               <property name="maximumSize">
+                <size>
+                 <width>80</width>
+                 <height>30</height>
+                </size>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -2077,6 +2255,11 @@
         </item>
         <item row="8" column="0">
          <widget class="QGroupBox" name="groupBox_3">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
           <property name="title">
            <string>Resources</string>
           </property>
@@ -2089,6 +2272,7 @@
                 <widget class="QLabel" name="lbl_report">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -2121,21 +2305,28 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>100</width>
+                   <width>80</width>
                    <height>30</height>
                   </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
                  </property>
                  <property name="cursor">
                   <cursorShape>PointingHandCursor</cursorShape>
                  </property>
                  <property name="toolTip">
-                  <string>Get the log file: &quot;log_isogeo_plugin.log&quot;</string>
+                  <string>Open folder of &quot;log_isogeo_plugin.log&quot; file</string>
                  </property>
                  <property name="autoFillBackground">
                   <bool>true</bool>
                  </property>
                  <property name="text">
-                  <string>LOG File</string>
+                  <string>LOG</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2180,6 +2371,7 @@
                 <widget class="QLabel" name="lbl_help">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -2242,6 +2434,7 @@
                 <widget class="QLabel" name="lbl_credits">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
