@@ -254,6 +254,20 @@ class SearchFormManager(IsogeoDockWidget):
                     self.cbb_geofilter.addItem(ico_line, layer.name())
                 elif layer.geometryType() == 0:
                     self.cbb_geofilter.addItem(ico_poin, layer.name())
+        # Format combobox tiems text to fit with widget width
+        for cbb in self.cbbs_search_advanced:
+            cbb_width = cbb.width()
+            cbb_fm = cbb.fontMetrics()
+
+            for i in range(cbb.count()):
+                item_label = cbb.itemText(i)
+                item_label_width = cbb_fm.size(1, item_label).width()
+                if item_label_width > cbb_width:
+                    cbb.setItemText(i, cbb_fm.elidedText(item_label, 1, cbb_width))
+                    cbb.setItemData(i, item_label, Qt.ToolTipRole)
+                else:
+                    pass
+            cbb.setStyleSheet("combobox-popup: 0;")
         return
 
     def pop_qs_cbbs(self, items_list: list = None):
