@@ -190,9 +190,13 @@ class IsogeoPlgTools(IsogeoUtils):
             proc = startfile(path.realpath(target))
 
         elif opersys.startswith("linux"):  # Linux:
-            proc = subprocess.Popen(
-                ["xdg-open", target], stdout=subprocess.PIPE, stderr=subprocess.PIPE
-            )
+            try:
+                proc = subprocess.Popen(
+                    ["xdg-open", target], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                )
+            except Exception as e:
+                logger.error("Unable to open log folder: {}".format(e))
+                raise SystemError("Unable to open log folder, please try to install xdg-utils with the following command: sudo apt install xdg-utils")
 
         elif opersys == "darwin":  # Mac:
             proc = subprocess.Popen(
