@@ -72,7 +72,7 @@ try:
     ora_geom_column_request = "select col.owner, col.table_name, col.column_name, md.srid from sys.all_tab_cols col left join user_sdo_geom_metadata md on col.table_name = md.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.table_name".format(
         ora_sys_tables
     )
-    ora_table_and_view_request = "select sys.all_tables.owner, sys.all_tables.table_name from sys.USER_TABLES join sys.ALL_TABLES on sys.user_tables.table_name = sys.all_tables.table_name where sys.all_tables.secondary = 'N' and sys.all_tables.owner not in {0} union select v.OWNER, v.VIEW_NAME from sys.all_views v where  v.owner not in {0}".format(
+    ora_table_and_view_request = "select sys.all_tables.owner, sys.all_tables.table_name from sys.all_TABLES where sys.all_tables.table_name not in ('SDE_LOGFILES', 'SDE_LOGFILE_DATA') and sys.all_tables.secondary = 'N' and sys.all_TABLES.owner not in {0} union select sys.all_views.owner, sys.all_views.view_name from sys.all_views where sys.all_views.owner not in {0}".format(
         ora_sys_tables
     )
 
