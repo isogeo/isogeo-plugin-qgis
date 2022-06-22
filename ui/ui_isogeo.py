@@ -349,6 +349,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_geofilter.setMaxVisibleItems(15)
         self.cbb_geofilter.setInsertPolicy(QtWidgets.QComboBox.InsertAlphabetically)
         self.cbb_geofilter.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
+        self.cbb_geofilter.setIconSize(QtCore.QSize(12, 12))
         self.cbb_geofilter.setObjectName("cbb_geofilter")
         self.lyt_vert_filter_geo.addWidget(self.cbb_geofilter)
         self.lyt_vert_filters_left.addLayout(self.lyt_vert_filter_geo)

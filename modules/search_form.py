@@ -230,11 +230,10 @@ class SearchFormManager(IsogeoDockWidget):
         :param dict tags: 'tags' parameter of Isogeo.search_slot method.
         """
         logger.debug("Filling Advanced search comboboxes from tags")
-        # clear widgets
+
+        # Clear widgets then add the "nothing selected" option
         for cbb in self.cbbs_search_advanced:
             cbb.clear()
-        # Initiating the "nothing selected"
-        for cbb in self.cbbs_search_advanced:
             cbb.addItem(" - ")
         # Filling advanced search comboboxes (except geo filter)
         for cbb in self.match_widget_field.keys():
@@ -243,7 +242,7 @@ class SearchFormManager(IsogeoDockWidget):
                 cbb.addItem(tag, field_tags.get(tag))
         # Filling geo filter combobox
         self.cbb_geofilter.addItem(
-            self.tr("Map canvas", context=__class__.__name__), "mapcanvas"
+            self.tr(" Map canvas", context=__class__.__name__), "mapcanvas"
         )
         layers = QgsProject.instance().mapLayers().values()
         for layer in layers:
@@ -442,10 +441,10 @@ class SearchFormManager(IsogeoDockWidget):
             item = cbb.itemData(cbb.currentIndex())
             params[field] = item
 
-        if self.cbb_geofilter.currentIndex() < 2:
-            params["geofilter"] = self.cbb_geofilter.itemData(
-                self.cbb_geofilter.currentIndex()
-            )
+        if self.cbb_geofilter.currentText() == " - ":
+            params["geofilter"] = None
+        elif self.cbb_geofilter.itemData(self.cbb_geofilter.currentIndex()) == "mapcanvas":
+            params["geofilter"] = "mapcanvas"
         else:
             params["geofilter"] = self.cbb_geofilter.currentText()
 
@@ -507,7 +506,7 @@ class SearchFormManager(IsogeoDockWidget):
         current_epsg = int(current_epsg.split(":")[1])
 
         if current_epsg == 4326:
-            coord = "{0},{1},{2},{3}".format(
+            coord = "{},{},{},{}".format(
                 e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()
             )
             return coord
@@ -521,7 +520,7 @@ class SearchFormManager(IsogeoDockWidget):
             xform = QgsCoordinateTransform(current_srs, wgs, QgsProject.instance())
             minimum = xform.transform(QgsPointXY(e.xMinimum(), e.yMinimum()))
             maximum = xform.transform(QgsPointXY(e.xMaximum(), e.yMaximum()))
-            coord = "{0},{1},{2},{3}".format(
+            coord = "{},{},{},{}".format(
                 minimum[0], minimum[1], maximum[0], maximum[1]
             )
             return coord
