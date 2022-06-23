@@ -166,6 +166,11 @@ class Authenticator(QObject):
                         self.json_content
                     )
                 )
+                qsettings.setValue("isogeo/env/api_base_url", self.json_content.get("api_base_url"))
+                qsettings.setValue("isogeo/env/api_auth_url", self.json_content.get("api_auth_url"))
+                qsettings.setValue("isogeo/env/app_base_url", self.json_content.get("app_base_url"))
+                qsettings.setValue("isogeo/env/help_base_url", self.json_content.get("help_base_url"))
+                qsettings.setValue("isogeo/settings/background_map_url", self.json_content.get("background_map_url"))
 
         except Exception as e:
             if not self.json_path.exists() or not self.json_path.is_file():
@@ -178,11 +183,11 @@ class Authenticator(QObject):
                     "Let's create one with default values: {}.".format(self.json_path)
                 )
                 self.json_content = {
-                    "api_base_url": "https://v1.api.isogeo.com",
-                    "api_auth_url": "https://id.api.isogeo.com",
-                    "app_base_url": "https://app.isogeo.com",
-                    "help_base_url": "https://help.isogeo.com",
-                    "background_map_url": "type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    "api_base_url": qsettings.value("isogeo/env/api_base_url", "https://v1.api.isogeo.com"),
+                    "api_auth_url": qsettings.value("isogeo/env/api_auth_url", "https://id.api.isogeo.com"),
+                    "app_base_url": qsettings.value("isogeo/env/app_base_url", "https://app.isogeo.com"),
+                    "help_base_url": qsettings.value("isogeo/env/help_base_url", "https://help.isogeo.com"),
+                    "background_map_url": qsettings.value("isogeo/settings/background_map_url", "type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png")
                 }
                 with open(self.json_path, "w") as json_content:
                     json.dump(self.json_content, json_content, indent=4)
@@ -286,10 +291,8 @@ class Authenticator(QObject):
             - QSettings
         """
         if store_location == "QSettings":
-            for param in self.api_params:
-                setting_key = "isogeo/auth/{}".format(param)
-                setting_value = self.api_params.get(param)
-                qsettings.setValue(setting_key, setting_value)
+            qsettings.setValue("isogeo/auth/app_id", self.api_params.get("app_id"))
+            qsettings.setValue("isogeo/auth/app_secret", self.api_params.get("app_secret"))
         else:
             pass
         logger.debug("Credentials stored into: {}".format(store_location))
