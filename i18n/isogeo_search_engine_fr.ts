@@ -283,7 +283,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1883"/>
         <source>Edit quicksearch</source>
-        <translation>Editer la quicksearch</translation>
+        <translation>Sélectionner une recherche rapide </translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2120"/>

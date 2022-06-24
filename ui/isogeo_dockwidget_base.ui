@@ -603,6 +603,9 @@
             <bold>true</bold>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
+          </property>
           <property name="title">
            <string>Advanced search</string>
           </property>
@@ -1685,159 +1688,89 @@
         <string>Settings</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="7" column="0">
-         <widget class="QGroupBox" name="groupBox_4">
+        <item row="6" column="0">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>450</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>9</pointsize>
            </font>
           </property>
           <property name="title">
-           <string>Layer adding settings</string>
+           <string>Authentication settings</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_3">
+          <layout class="QGridLayout" name="gridLayout_5">
            <item row="1" column="0">
-            <layout class="QVBoxLayout" name="verticalLayout">
+            <widget class="QTextBrowser" name="txt_shares">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>300</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_21">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_14">
-               <item>
-                <widget class="QLabel" name="label_config_db_conn">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Configure embed database connections to be used by the plugin</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_21">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="btn_open_ora_config_dialog">
-                 <property name="minimumSize">
-                  <size>
-                   <width>80</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>80</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>Oracle databases</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="btn_open_pgdb_config_dialog">
-                 <property name="minimumSize">
-                  <size>
-                   <width>80</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>80</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>PostgreSQL databases</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QLabel" name="lbl_auth">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Set plugin authentication:</string>
+               </property>
+              </widget>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <item>
-                <widget class="QLabel" name="label_portal_url">
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="layoutDirection">
-                  <enum>Qt::LeftToRight</enum>
-                 </property>
-                 <property name="text">
-                  <string>Configure Isogeo portal metadata URL display into layer's properties</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_22">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="btn_open_portalURL_config_dialog">
-                 <property name="minimumSize">
-                  <size>
-                   <width>80</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>Choose to add metadata portal URL to layer properties and specify portal base URL</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/edit.svg</normaloff>:/plugins/Isogeo/resources/edit.svg</iconset>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_change_user">
+               <property name="minimumSize">
+                <size>
+                 <width>80</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>80</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="../resources.qrc">
+                 <normaloff>:/plugins/Isogeo/resources/settings/key.svg</normaloff>:/plugins/Isogeo/resources/settings/key.svg</iconset>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -2170,106 +2103,28 @@
           </layout>
          </widget>
         </item>
-        <item row="6" column="0">
-         <widget class="QGroupBox" name="groupBox">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>400</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>9</pointsize>
-           </font>
-          </property>
-          <property name="title">
-           <string>Authentication settings</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_5">
-           <item row="1" column="0">
-            <widget class="QTextBrowser" name="txt_shares">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>300</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <layout class="QHBoxLayout" name="horizontalLayout_21">
-             <item>
-              <widget class="QLabel" name="lbl_auth">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Set plugin authentication:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="btn_change_user">
-               <property name="minimumSize">
-                <size>
-                 <width>80</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>80</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="../resources.qrc">
-                 <normaloff>:/plugins/Isogeo/resources/settings/key.svg</normaloff>:/plugins/Isogeo/resources/settings/key.svg</iconset>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
         <item row="8" column="0">
-         <widget class="QGroupBox" name="groupBox_3">
+         <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
           <property name="font">
            <font>
             <pointsize>9</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
           </property>
-          <property name="title">
-           <string>Resources</string>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
           </property>
-          <layout class="QGridLayout" name="gridLayout_6">
+          <property name="styleSheet">
+           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 3px;}</string>
+          </property>
+          <property name="title">
+           <string>Advanced resources</string>
+          </property>
+          <property name="collapsed">
+           <bool>false</bool>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_9">
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_12">
              <item>
@@ -2489,6 +2344,165 @@
                  <property name="icon">
                   <iconset resource="../resources.qrc">
                    <normaloff>:/plugins/Isogeo/resources/settings/info.svg</normaloff>:/plugins/Isogeo/resources/settings/info.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QGroupBox" name="groupBox_4">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="title">
+           <string>Layer adding settings</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="1" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_14">
+               <item>
+                <widget class="QLabel" name="label_config_db_conn">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>8</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Configure embed database connections to be used by the plugin</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_21">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_open_ora_config_dialog">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Oracle databases</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_open_pgdb_config_dialog">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>PostgreSQL databases</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <item>
+                <widget class="QLabel" name="label_portal_url">
+                 <property name="font">
+                  <font>
+                   <pointsize>8</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="layoutDirection">
+                  <enum>Qt::LeftToRight</enum>
+                 </property>
+                 <property name="text">
+                  <string>Configure Isogeo portal metadata URL display into layer's properties</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_22">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_open_portalURL_config_dialog">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Choose to add metadata portal URL to layer properties and specify portal base URL</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../resources.qrc">
+                   <normaloff>:/plugins/Isogeo/resources/edit.svg</normaloff>:/plugins/Isogeo/resources/edit.svg</iconset>
                  </property>
                 </widget>
                </item>
