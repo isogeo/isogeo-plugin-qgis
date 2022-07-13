@@ -514,7 +514,7 @@ class DataBaseManager:
         )
 
         try:
-            if qgis_version >= 316:
+            if qgis_version > 310:
                 pgis_db_plg = PostGisDBPlugin(connection)
                 c = PostGisDBConnector(uri, pgis_db_plg)
             else:
