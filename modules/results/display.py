@@ -173,11 +173,7 @@ class ResultsManager(QObject):
 
             # Connecting the button to the full metadata popup
             btn_md_title.pressed.connect(partial(self.md_asked.emit, md._id))
-            # Putting the abstract as a tooltip on this button
-            if md.abstract:
-                btn_md_title.setToolTip(md.abstract[:300])
-            else:
-                pass
+
             # Insert it in column 1
             tbl_result.setCellWidget(count, 0, btn_md_title)
 

@@ -88,7 +88,11 @@ class IsogeoPlgTools(IsogeoUtils):
             for word in words:
                 current_width = fm.size(1, final_text + " " + word).width()
                 if current_width > line_width:
-                    final_text += " \n" + word
+                    word_width = fm.size(1, word).width()
+                    if word_width > line_width:
+                        final_text += " \n" + fm.elidedText(word, 1, line_width)
+                    else:
+                        final_text += " \n" + word
                 else:
                     final_text += " " + word
         final_text = final_text.rstrip()
