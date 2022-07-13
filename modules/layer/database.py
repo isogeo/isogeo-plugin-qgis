@@ -593,7 +593,7 @@ class DataBaseManager:
             )
             logger.error(str(e))
             return uri, []
-        li_tables_infos = geom_column_response + [row[0].split(".") + [None] + [None] for row in available_datasets if all(row[0].split(".")[0] + row[0].split(".")[1] != geom_column[0] + geom_column[1] for geom_column in geom_column_response)]
+        li_tables_infos = geom_column_response + [row[0].split(".") + [None] + [None] for row in available_datasets if all(row[0] != ".".join(geom_column[:2]) for geom_column in geom_column_response)]
         return uri, li_tables_infos, c
 
     def build_connection_dict(self, dbms: str, skip_invalid: bool = True):
