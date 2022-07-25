@@ -17,10 +17,12 @@ pr:
 # -- GLOBAL VARIABLES ------------------------------------------------------------------
 variables:
   PLUGIN_NAME: Isogeo
-  QGIS_VERSION_TAG: release-3_4
+  QGIS_VERSION_TAG: release-3_10
   QGIS_IMAGE: qgis/qgis
   pythonVersion: "3.7"
   vmImageName: "windows-2019"
+  VERSION_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
+  VERSION_SUFIX: $[replace(variables['VERSION_NAME'], '.', '_')]
 
 # -- STAGES ----------------------------------------------------------------------------
 stages:
@@ -210,3 +212,39 @@ stages:
         tagSource: 'gitTag'
         changeLogCompareToRelease: 'lastFullRelease'
         changeLogType: 'commitBased'
+
+  # - job: 'UploadToBlobStorage'
+  #   displayName: "Upload to Blob Storage (on premises)"
+  #   pool:
+  #     vmImage: $(vmImageName)
+
+  #   steps:
+
+  #   - checkout: none
+
+  #   - task: DownloadPipelineArtifact@2
+  #     displayName: "Download artifact previously saved"
+  #     inputs:
+  #       buildType: "current"
+  #       artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+  #       targetPath: "$(System.DefaultWorkingDirectory)"
+
+  #   - task: UsePythonVersion@0
+  #     displayName: "Install Python"
+  #     inputs:
+  #       versionSpec: $(pythonVersion)
+  #       architecture: "x64"
+  #       addToPath: true
+  
+  #   - script: python ./tools/plugin_packager.py
+  #     displayName: "Packager script"
+
+  #   - script: copy 'build/latest/isogeo_search_engine.zip' '$(build.sourcesDirectory)/isogeo_search_engine-%$(VERSION_SUFIX)%.zip'
+  #     displayName: Copy search engine into root
+    
+  #   - task: AzureCLI@1
+  #     inputs:
+  #       azureSubscription: 'Isogeo - MPN(82885610-5841-4749-8d71-46f56b643ad2)'
+  #       scriptLocation: 'inlineScript'
+  #       inlineScript: |
+  #             az storage blob upload-batch -d isogeoonpremises -s $(build.sourcesDirectory) --pattern *.zip  --blob-endpoint https://isogeoonpremises.blob.core.windows.net  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"' --destination-path /plugin-qgis

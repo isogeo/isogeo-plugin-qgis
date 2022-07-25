@@ -1,0 +1,8 @@
+{
+    "release-note":"## Major changes\r* Better geographic services layers handling\r* Better Oracle Spatial datas handling\r* Adding views from Oracle Spatial tables \r* Additional way to configure database connections\r* New way to configure Isogeo Portal base URL\n## Minor improvements and fixes\r* Make Isogeo API URLs configurable into `.json` file\r* GUI improvement/tweaking",
+    "compliance":{
+        "api": {
+            "minimum": "2.21.2"
+        }
+    }
+}
