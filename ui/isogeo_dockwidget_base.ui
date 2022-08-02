@@ -83,6 +83,9 @@
        <layout class="QGridLayout" name="gridLayout_8">
         <item row="2" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_17">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <widget class="QPushButton" name="btn_show">
             <property name="minimumSize">
@@ -270,6 +273,9 @@
         </item>
         <item row="4" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <spacer name="horizontalSpacer_7">
             <property name="orientation">
@@ -311,6 +317,9 @@
             </property>
             <property name="text">
              <string>Page x on x</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -384,8 +393,14 @@
         </item>
         <item row="0" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_20">
+            <property name="spacing">
+             <number>5</number>
+            </property>
             <property name="sizeConstraint">
              <enum>QLayout::SetDefaultConstraint</enum>
             </property>
@@ -604,7 +619,7 @@
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
+           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
           </property>
           <property name="title">
            <string>Advanced search</string>
@@ -616,6 +631,21 @@
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="spacing">
+            <number>5</number>
+           </property>
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
@@ -1705,6 +1735,21 @@
            <string>Authentication settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="spacing">
+            <number>5</number>
+           </property>
            <item row="1" column="0">
             <widget class="QTextBrowser" name="txt_shares">
              <property name="maximumSize">
@@ -1722,6 +1767,9 @@
            </item>
            <item row="0" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout_21">
+             <property name="spacing">
+              <number>5</number>
+             </property>
              <item>
               <widget class="QLabel" name="lbl_auth">
                <property name="font">
@@ -1794,10 +1842,31 @@
            <string>Search settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="spacing">
+            <number>5</number>
+           </property>
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_10">
+             <property name="spacing">
+              <number>5</number>
+             </property>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QComboBox" name="cbb_quicksearch_edit">
                  <property name="minimumSize">
@@ -1898,6 +1967,9 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lbl_default">
                  <property name="font">
@@ -1981,6 +2053,9 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lbl_geo_op">
                  <property name="font">
@@ -2034,6 +2109,9 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_13">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <property name="sizeConstraint">
                 <enum>QLayout::SetDefaultConstraint</enum>
                </property>
@@ -2116,7 +2194,7 @@
            <enum>Qt::NoFocus</enum>
           </property>
           <property name="styleSheet">
-           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 3px;}</string>
+           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 3px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
           </property>
           <property name="title">
            <string>Advanced resources</string>
@@ -2125,10 +2203,34 @@
            <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="horizontalSpacing">
+            <number>5</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>2</number>
+           </property>
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_12">
+             <property name="spacing">
+              <number>5</number>
+             </property>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_24">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lbl_report">
                  <property name="font">
@@ -2228,6 +2330,9 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_23">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lbl_help">
                  <property name="font">
@@ -2291,6 +2396,9 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_22">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lbl_credits">
                  <property name="font">
@@ -2365,10 +2473,31 @@
            <string>Layer adding settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="spacing">
+            <number>5</number>
+           </property>
            <item row="1" column="0">
             <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="spacing">
+              <number>5</number>
+             </property>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_14">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_config_db_conn">
                  <property name="maximumSize">
@@ -2450,6 +2579,9 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_portal_url">
                  <property name="font">
@@ -2533,5 +2665,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
