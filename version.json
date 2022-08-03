@@ -1,5 +1,5 @@
 {
-    "release-note":"## Major changes\r* Better geographic services layers handling\r* Better Oracle Spatial datas handling\r* Adding views from Oracle Spatial tables \r* Additional way to configure database connections\r* New way to configure Isogeo Portal base URL\n## Minor improvements and fixes\r* Make Isogeo API URLs configurable into `.json` file\r* GUI improvement/tweaking",
+    "release-note":"## Version 3.4.0, publiée en Août 2022\n* Intégration des évolutions de l'API Isogeo :\r  * ajout d'un filtre sur les thématiques ;\r  * gestion des fiches relatives aux données tabulaires non géographiques.\n* Adaptations pour Isogeo *on premises* :\r  * configuration des URLs d'appel à l'API Isogeo ;\r  * premières étapes de la compatibilité avec les OS Linux.\n* Refonte légère de l'interface graphique :\r  * révision des icônes ;\r  * redimensionnement de la fenêtre principale.\n* Optimisation des performances et du fonctionnement.\n* Améliorations et corrections mineurs.\n",
     "compliance":{
         "api": {
             "minimum": "2.21.2"
