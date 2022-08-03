@@ -369,9 +369,7 @@ class Share(object):
         creator_id = self._creator.get("_tag")[6:]
         return "{}/groups/{}/admin/shares/{}".format(url_base, creator_id, self._id)
 
-    def opencatalog_url(
-        self, url_base: str = "https://open.isogeo.com"
-    ) -> str or bool or None:
+    def opencatalog_url(self, url_base: str = "https://open.isogeo.com") -> str or bool or None:
         """Returns the OpenCatalog URL for this share or None if OpenCatalog is not enabled.
 
         :param str url_base: base URL of OpenCatalog. Defaults to: https://open.isogeo.com

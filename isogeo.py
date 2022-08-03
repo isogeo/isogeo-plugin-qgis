@@ -88,9 +88,7 @@ plg_tools = IsogeoPlgTools()
 # log level depends on plugin directory name
 if plg_reg_name == plg_tools.plugin_metadata(base_path=plg_basepath, value="name"):
     log_level = logging.WARNING
-elif (
-    "beta" in plg_tools.plugin_metadata(base_path=plg_basepath) or "dev" in plg_reg_name
-):
+elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath) or "dev" in plg_reg_name:
     log_level = logging.DEBUG
 else:
     log_level = logging.INFO
@@ -99,9 +97,7 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 logging.captureWarnings(True)
 logger.setLevel(log_level)
 log_form = logging.Formatter(
-    "%(asctime)s || %(levelname)s "
-    "|| %(module)s - %(lineno)d ||"
-    " %(funcName)s || %(message)s"
+    "%(asctime)s || %(levelname)s " "|| %(module)s - %(lineno)d ||" " %(funcName)s || %(message)s"
 )
 logfile_path = Path(plg_logdir) / "log_isogeo_plugin.log"
 logfile = RotatingFileHandler(logfile_path, "a", 5000000, 1)
@@ -129,6 +125,7 @@ class Isogeo:
     logger.info("\n\n\t========== Isogeo Search Engine for QGIS ==========")
     logger.info("OS: {0}".format(platform.platform()))
     logger.info("QGIS Version: {0}".format(Qgis.QGIS_VERSION))
+    logger.info("Python version: {0}".format(platform.python_version()))
     logger.info("Plugin version: {0}".format(plg_version))
     logger.info("Log level: {0}".format(log_level))
 
@@ -182,9 +179,7 @@ class Isogeo:
             )
             locale = "fr"
         # load localized translation
-        locale_path = (
-            self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
-        )
+        locale_path = self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
         logger.info("Language applied: {0}".format(locale))
 
         if locale_path.exists():
@@ -223,7 +218,10 @@ class Isogeo:
         self.approps_mng = SharesParser(app_base_url=self.authenticator.app_url)
         self.approps_mng.tr = self.tr
 
-        self.md_display = MetadataDisplayer(app_base_url=self.authenticator.app_url)
+        self.md_display = MetadataDisplayer(
+            app_base_url=self.authenticator.app_url,
+            background_map_url=self.authenticator.json_content.get("background_map_url"),
+        )
         self.md_display.tr = self.tr
 
         self.api_requester = ApiRequester()
@@ -388,7 +386,7 @@ class Isogeo:
             pass
 
     def token_slot(self, token_signal: str):
-        """ Slot connected to ApiRequester.api_sig signal emitted when a response to
+        """Slot connected to ApiRequester.api_sig signal emitted when a response to
         a token request has been received from Isogeo's API or when the content of
         a response to any type of request can't be parsed. The 'api_sig' parameter
         correspond to the string passed by ApiRequester.handle_reply method (see
@@ -422,7 +420,7 @@ class Isogeo:
 
     # --- SEARCH --------------------------------------------------------------
     def search(self, show: bool = False, page_change: int = 0):
-        """ Slot connected to signals emitted by 'advances search', 'order' or
+        """Slot connected to signals emitted by 'advances search', 'order' or
         'keywords' comboboxes, also by 'show results', 'next page' or 'previous
         page' buttons when a user interacts with one of them. It retrieves the
         selected parameters and establishes the corresponding URL, and then sends
@@ -433,9 +431,7 @@ class Isogeo:
         :param int page_change: -1 if 'previous page' button was pressed, 1 if
         'next page' button was pressed, 0 otherwise
         """
-        logger.debug(
-            "Search function called. Building the url that is to be sent" "to the API"
-        )
+        logger.debug("Search function called. Building the url that is to be sent" "to the API")
         # Disabling all user inputs during the search function is running
         self.form_mng.switch_widgets_on_and_off(0)
 
@@ -483,7 +479,7 @@ class Isogeo:
         return
 
     def search_slot(self, result: dict, tags: dict):
-        """ Slot connected to ApiRequester.search_sig signal. It updates widgets, using
+        """Slot connected to ApiRequester.search_sig signal. It updates widgets, using
         SearchFormManager appropiate methods to fill them from 'tags' parameter and put
         them in the right status. It also display the results contained in 'result'
         parameter by calling ResultManager.show_results method if necessary.
@@ -556,22 +552,16 @@ class Isogeo:
                 # Opening the json to get quick search's params
                 search_params = self.form_mng.qs_mng.load_file().get(self.savedSearch)
                 # Putting widgets to their previous states according to the json content
-                self.form_mng.set_ccb_index(
-                    params=search_params, quicksearch=self.savedSearch
-                )
+                self.form_mng.set_ccb_index(params=search_params, quicksearch=self.savedSearch)
                 self.savedSearch = ""
                 # Updating the keywords special combobox (filling + indexing)
-                keywords_list = [
-                    v for k, v in search_params.items() if k.startswith("keyword")
-                ]
+                keywords_list = [v for k, v in search_params.items() if k.startswith("keyword")]
                 self.form_mng.update_cbb_keywords(
                     tags_keywords=tags.get("keywords"), selected_keywords=keywords_list
                 )
 
         # tweaking
-        plg_tools._ui_tweaker(
-            ui_widgets=self.form_mng.tab_search.findChildren(QComboBox)
-        )
+        plg_tools._ui_tweaker(ui_widgets=self.form_mng.tab_search.findChildren(QComboBox))
 
         # Formatting show result button according to the number of results
         if self.results_count == 0:
@@ -619,16 +609,12 @@ class Isogeo:
                     " related search params have just been loaded from."
                 )
             elif selected_search not in saved_searches and "_default" in saved_searches:
-                logger.warning(
-                    "Selected search ({}) not found." "'_default' will be used instead."
-                )
+                logger.warning("Selected search ({}) not found." "'_default' will be used instead.")
                 self.savedSearch = "_default"
                 search_params = saved_searches.get("_default")
             else:
                 logger.error(
-                    "Selected search ({}) and '_default' do not exist.".format(
-                        selected_search
-                    )
+                    "Selected search ({}) and '_default' do not exist.".format(selected_search)
                 )
                 return
 
@@ -677,10 +663,7 @@ class Isogeo:
         except AttributeError:
             pass
         if self.form_mng.txt_input.text() == self.old_text:
-            logger.debug(
-                "The lineEdit text hasn't changed."
-                " So pass without sending a request."
-            )
+            logger.debug("The lineEdit text hasn't changed." " So pass without sending a request.")
         else:
             logger.debug("The line Edit text changed." " Calls the search function.")
             if self.form_mng.txt_input.text() == "Ici c'est Isogeo !":
@@ -767,9 +750,7 @@ class Isogeo:
                 self.form_mng.qs_mng.lang = self.lang
                 self.form_mng.qs_mng.api_base_url = self.authenticator.api_params.get("url_base")
 
-                logger.debug(
-                    "Plugin load time: {}".format(plugin_times.get(plg_reg_name, "NR"))
-                )
+                logger.debug("Plugin load time: {}".format(plugin_times.get(plg_reg_name, "NR")))
             else:
                 pass
 
@@ -800,6 +781,7 @@ class Isogeo:
         self.form_mng.cbb_contact.activated.connect(self.search)
         self.form_mng.cbb_format.activated.connect(self.search)
         self.form_mng.cbb_geofilter.activated.connect(self.search)
+        self.form_mng.cbb_grpTh.activated.connect(self.search)
         self.form_mng.cbb_inspire.activated.connect(self.search)
         self.form_mng.cbb_license.activated.connect(self.search)
         self.form_mng.cbb_owner.activated.connect(self.search)
@@ -813,12 +795,8 @@ class Isogeo:
         self.form_mng.cbb_ob.activated.connect(partial(self.search, show=True))
         self.form_mng.cbb_od.activated.connect(partial(self.search, show=True))
         # pagination
-        self.form_mng.btn_next.pressed.connect(
-            partial(self.search, show=True, page_change=1)
-        )
-        self.form_mng.btn_previous.pressed.connect(
-            partial(self.search, show=True, page_change=-1)
-        )
+        self.form_mng.btn_next.pressed.connect(partial(self.search, show=True, page_change=1))
+        self.form_mng.btn_previous.pressed.connect(partial(self.search, show=True, page_change=-1))
         # metadata display
         self.form_mng.results_mng.md_asked.connect(self.send_details_request)
 
@@ -829,15 +807,11 @@ class Isogeo:
 
         # # -- Settings tab - Search --------------------------------------------
         # button to empty the cache of filepaths #135
-        self.form_mng.btn_cache_trash.pressed.connect(
-            self.form_mng.results_mng.cache_mng.cleaner
-        )
+        self.form_mng.btn_cache_trash.pressed.connect(self.form_mng.results_mng.cache_mng.cleaner)
 
         # -- Settings tab - Application authentication ------------------------
         # Change user -> see below for authentication form
-        self.form_mng.btn_change_user.pressed.connect(
-            self.authenticator.display_auth_form
-        )
+        self.form_mng.btn_change_user.pressed.connect(self.authenticator.display_auth_form)
         # share text window
         self.form_mng.txt_shares.setOpenLinks(False)
         self.form_mng.txt_shares.anchorClicked.connect(plg_tools.open_webpage)
@@ -862,22 +836,36 @@ class Isogeo:
             )
         )
         # help button
-        self.form_mng.btn_help.pressed.connect(
-            partial(plg_tools.open_webpage, link="http://help.isogeo.com/qgis/")
-        )
+        if self.authenticator.json_content.get("help_base_url").endswith("/"):
+            help_url = self.authenticator.json_content.get("help_base_url") + "qgis/"
+        else:
+            help_url = self.authenticator.json_content.get("help_base_url") + "/qgis/"
+        self.form_mng.btn_help.pressed.connect(partial(plg_tools.open_webpage, link=help_url))
         # view credits - see: #52
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
 
         # -- Settings tab - layer adding settings ------------------------
         self.form_mng.btn_open_pgdb_config_dialog.setIcon(ico_pgis)
-        self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(
-            partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "PostgreSQL")
-        )
+        if self.form_mng.results_mng.db_mng.pgis_available:
+            self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(
+                partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "PostgreSQL")
+            )
+        else:
+            self.form_mng.btn_open_pgdb_config_dialog.setEnabled(0)
+            self.form_mng.btn_open_pgdb_config_dialog.setToolTip(
+                self.tr("PostgreSQL databases are not supported by your QGIS installation.")
+            )
+
         self.form_mng.btn_open_ora_config_dialog.setIcon(ico_ora)
-        self.form_mng.btn_open_ora_config_dialog.pressed.connect(
-            partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "Oracle")
-        )
-        self.form_mng.btn_open_ora_config_dialog.setIcon(ico_ora)
+        if self.form_mng.results_mng.db_mng.ora_available:
+            self.form_mng.btn_open_ora_config_dialog.pressed.connect(
+                partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "Oracle")
+            )
+        else:
+            self.form_mng.btn_open_ora_config_dialog.setEnabled(0)
+            self.form_mng.btn_open_ora_config_dialog.setToolTip(
+                self.tr("Oracle databases are not supported by your QGIS installation.")
+            )
 
         """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
         self.form_mng.setWindowTitle("Isogeo - {}".format(self.plg_version))
@@ -886,10 +874,14 @@ class Isogeo:
         self.authenticator.tr = self.tr
         self.authenticator.lang = self.lang
         # checks
-        url_to_check = self.authenticator.api_params.get("url_base").replace("https://", "").replace("http://", "")
+        url_to_check = (
+            self.authenticator.api_params.get("url_base")
+            .replace("https://", "")
+            .replace("http://", "")
+        )
         plg_tools.check_proxy_configuration(url_to_check=url_to_check)  # 22
         self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
-        # self.form_mng.cbb_chck_kw.setMaximumSize(QSize(250, 25))
+
         self.form_mng.txt_input.setFocus()
         # connect limitations checker to user informer
         self.form_mng.results_mng.lim_checker.lim_sig.connect(self.informer.lim_slot)

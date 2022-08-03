@@ -23,6 +23,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QLabel
+
 # 3rd party
 from .isogeo_pysdk import IsogeoTranslator
 
@@ -41,10 +42,6 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_tools = IsogeoPlgTools()
 
-osm_standard = r"type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png"
-
-ref_lyr = QgsRasterLayer(osm_standard, "OSM_Standard", "wms")
-
 # ############################################################################
 # ########## Classes ###############
 # ##################################
@@ -55,13 +52,14 @@ class MetadataDisplayer:
 
     md_edition_url = str
 
-    def __init__(self, app_base_url: str):
+    def __init__(self, app_base_url: str, background_map_url: str):
         """Class constructor."""
         self.complete_md = IsogeoMdDetails()
         self.complete_md.stackedWidget.setCurrentIndex(0)
 
         # some basic settings
         self.app_base_url = app_base_url
+        self.background_lyr = QgsRasterLayer(background_map_url, "OSM_Standard", "wms")
         self.complete_md.btn_md_edit.pressed.connect(
             lambda: plg_tools.open_webpage(link=self.md_edition_url)
         )
@@ -95,22 +93,34 @@ class MetadataDisplayer:
 
         # -- GENERAL ---------------------------------------------------------
         if md.get("title"):
-            self.complete_md.lbl_title.setText(md.get("title"))
+            if md.get("name"):
+                self.complete_md.lbl_title.setText(
+                    "<strong>{}</strong> ({})".format(md.get("title"), md.get("name"))
+                )
+            else:
+                self.complete_md.lbl_title.setText("<strong>{}</strong>".format(md.get("title")))
         elif md.get("name"):
-            self.complete_md.lbl_title.setText(md.get("name"))
+            self.complete_md.lbl_title.setText("<strong>{}</strong>".format(md.get("name")))
         else:
             self.complete_md.lbl_title.setTextFormat(Qt.TextFormat(1))
             self.complete_md.lbl_title.setText(
-                "<i>{}</i>".format(self.tr("Undefined", context=__class__.__name__))
+                "<strong><i>{}</i></strong>".format(
+                    self.tr("Undefined", context=__class__.__name__)
+                )
             )
 
-        self.complete_md.val_owner.setText(
-            md.get("_creator").get("contact").get("name", "NR")
+        plg_tools.format_widget_title(
+            self.complete_md.lbl_title, self.complete_md.lbl_title.width()
         )
+
+        self.complete_md.val_owner.setText(md.get("_creator").get("contact").get("name", "NR"))
         # Keywords
         kwords = tags.get("keywords", {"none": "NR"})
         self.complete_md.val_keywords.setText(" ; ".join(kwords.keys()))
-        # INSPIRE themes and conformity
+        # Group themes
+        themes = tags.get("groupTheme", {"none": "NR"})
+        self.complete_md.val_group_themes.setText(" ; ".join(themes.keys()))
+        # INSPIRE themes
         themes = tags.get("inspire", {"none": "NR"})
         self.complete_md.val_inspire_themes.setText(" ; ".join(themes.keys()))
         if tags.get("compliance"):
@@ -127,7 +137,7 @@ class MetadataDisplayer:
         self.complete_md.val_abstract.setText(md.get("abstract", "NR"))
 
         # -- FEATURE ATTRIBUTES ----------------------------------------------
-        if md.get("type") == "vectorDataset":
+        if md.get("type") in ("vectorDataset", "noGeoDataset"):
             # display
             menu_list = self.complete_md.li_menu
             item = menu_list.item(1)
@@ -178,29 +188,33 @@ class MetadataDisplayer:
 
         for ctact in sorted(contacts, key=lambda i: i.get("contact").get("name")):
             item = ctact.get("contact")
+            if item.get("organization", "NR") == "NR":
+                ctct_label = "{}</b>".format(item.get("name", "NR"))
+            else:
+                ctct_label = "{}</b> ({})".format(item.get("name", "NR"), item.get("organization"))
 
             if ctact.get("role", "NR") == "pointOfContact":
-                content = "<b>{0}</b> ({1})<br><a href='mailto:{2}' target='_top'>{2}</a><br>{3}" "<br>{4} {5}<br>{6} {7}<br>{7}<br>{8}".format(
-                    # isogeo_tr.tr("roles", ctact.get("role")),
-                    item.get("name", "NR"),
-                    item.get("organization", "NR"),
-                    item.get("email", "NR"),
-                    item.get("phone", "NR"),
-                    item.get("addressLine1", ""),
-                    item.get("addressLine2", ""),
-                    item.get("zipCode", ""),
-                    item.get("city", ""),
-                    item.get("country", ""),
+                content = (
+                    "<b>{0}<br><a href='mailto:{1}' target='_top'>{1}</a><br>{2}"
+                    "<br>{3} {4}<br>{5} {6}<br>{6}<br>{7}".format(
+                        ctct_label,
+                        item.get("email", "NR"),
+                        item.get("phone", "NR"),
+                        item.get("addressLine1", ""),
+                        item.get("addressLine2", ""),
+                        item.get("zipCode", ""),
+                        item.get("city", ""),
+                        item.get("country", ""),
+                    )
                 )
                 contacts_pt_cct.append(content)
 
             else:
                 content = (
-                    "<b>{0} - {1}</b> ({2})<br><a href='mailto:{3}' target='_blank'>{3}"
-                    "</a><br>{4}<br>{5} {6}<br>{7} {8}<br>{9}".format(
+                    "<b>{0} - {1}<br><a href='mailto:{2}' target='_blank'>{2}"
+                    "</a><br>{3}<br>{4} {5}<br>{6} {7}<br>{8}".format(
                         isogeo_tr.tr("roles", ctact.get("role")),
-                        item.get("name", "NR"),
-                        item.get("organization", "NR"),
+                        ctct_label,
                         item.get("email", "NR"),
                         item.get("phone", ""),
                         item.get("addressLine1", ""),
@@ -218,12 +232,8 @@ class MetadataDisplayer:
 
         # -- HISTORY ---------------------------------------------------------
         # Data creation and last update dates
-        self.complete_md.val_data_crea.setText(
-            plg_tools.handle_date(md.get("created", "NR"))
-        )
-        self.complete_md.val_data_update.setText(
-            plg_tools.handle_date(md.get("modified", "NR"))
-        )
+        self.complete_md.val_data_crea.setText(plg_tools.handle_date(md.get("created", "NR")))
+        self.complete_md.val_data_update.setText(plg_tools.handle_date(md.get("modified", "NR")))
         # Update frequency information
         if md.get("updateFrequency", None):
             freq = md.get("updateFrequency")
@@ -236,31 +246,25 @@ class MetadataDisplayer:
         else:
             self.complete_md.val_frequency.setText("NR")
         # Validity
-        self.complete_md.val_valid_start.setText(
-            plg_tools.handle_date(md.get("validFrom", "NR"))
-        )
-        self.complete_md.val_valid_end.setText(
-            plg_tools.handle_date(md.get("validTo", "NR"))
-        )
+        self.complete_md.val_valid_start.setText(plg_tools.handle_date(md.get("validFrom", "NR")))
+        self.complete_md.val_valid_end.setText(plg_tools.handle_date(md.get("validTo", "NR")))
         self.complete_md.val_valid_comment.setText(md.get("validityComment", "NR"))
         # Collect information
         self.complete_md.val_method.setText(md.get("collectionMethod", "NR"))
         self.complete_md.val_context.setText(md.get("collectionContext", "NR"))
 
         # last modifications
-        events = md.get("events", dict())
+        events = [ev for ev in md.get("events", []) if ev.get("kind") == "update"]
         tbl_events = self.complete_md.tbl_events
+        tbl_events.clearContents()
         tbl_events.setRowCount(len(events))
         idx = 0
-        for e in events:
-            if e.get("kind") == "update":
-                tbl_events.setItem(
-                    idx, 0, QTableWidgetItem(plg_tools.handle_date(e.get("date", "NR")))
-                )
-                tbl_events.setItem(idx, 1, QTableWidgetItem(e.get("description", "")))
-                idx += 1
-            else:
-                pass
+        for event in events:
+            tbl_events.setItem(
+                idx, 0, QTableWidgetItem(plg_tools.handle_date(event.get("date", "NR")))
+            )
+            tbl_events.setItem(idx, 1, QTableWidgetItem(event.get("description", "")))
+            idx += 1
 
         # adapt size
         tbl_events.horizontalHeader().setStretchLastSection(True)
@@ -270,9 +274,7 @@ class MetadataDisplayer:
         # SRS
         coord_sys = md.get("coordinate-system", {"None": "NR"})
         self.complete_md.val_srs.setText(
-            "{} (EPSG:{})".format(
-                coord_sys.get("name", "NR"), coord_sys.get("code", "NR")
-            )
+            "{} (EPSG:{})".format(coord_sys.get("name", "NR"), coord_sys.get("code", "NR"))
         )
         # Set the data format
         if tags.get("formats") != {}:
@@ -306,37 +308,51 @@ class MetadataDisplayer:
             else:
                 s_date = "<i>Date de publication non renseignée</i>"
             # prepare text
-            spec_text = "<a href='{1}'><b>{0} ({2})</b></a>: {3}".format(
-                s_in.get("specification").get("name", "NR"),
-                s_in.get("specification").get("link", ""),
-                s_date,
-                s_conformity,
-            )
+            if locale == "fr":
+                spec_text = "<a href='{1}'><b>{0} ({2})</b></a> : {3}".format(
+                    s_in.get("specification").get("name", "NR"),
+                    s_in.get("specification").get("link", ""),
+                    s_date,
+                    s_conformity,
+                )
+            else:
+                spec_text = "<a href='{1}'><b>{0} ({2})</b></a>: {3}".format(
+                    s_in.get("specification").get("name", "NR"),
+                    s_in.get("specification").get("link", ""),
+                    s_date,
+                    s_conformity,
+                )
             # store into the final list
             specs_out.append(spec_text)
         # write
         self.complete_md.val_specifications.setText("<br><hr><br>".join(specs_out))
 
         # Geography
-        if "envelope" in md:
+        if "envelope" in md and isinstance(md.get("envelope"), dict):
             qgs_prj = QgsProject.instance()
             # display
-            self.complete_md.wid_bbox.setDisabled(0)
+            self.complete_md.grp_bbox.setDisabled(0)
             # get convex hull coordinates and create the polygon
             md_lyr = self.envelope2layer(md.get("envelope"))
-            li_lyr = [md_lyr, ref_lyr]
+            li_lyr = [md_lyr, self.background_lyr]
             # add layers
             qgs_prj.addMapLayers(li_lyr, 0)
             map_canvas_layer_list = [
                 qgs_prj.mapLayer(md_lyr.id()),
-                qgs_prj.mapLayer(ref_lyr.id()),
+                qgs_prj.mapLayer(self.background_lyr.id()),
             ]
 
             self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())
             self.complete_md.wid_bbox.zoomOut()
+            self.complete_md.wid_bbox.setDisabled(1)
         else:
             self.complete_md.grp_bbox.setDisabled(1)
+
+        if md.get("type") == "noGeoDataset":
+            self.complete_md.val_geoContext.setText(md.get("geoContext"))
+        else:
+            pass
 
         # -- CGUs ------------------------------------------------------------
         # Licences
@@ -371,18 +387,14 @@ class MetadataDisplayer:
             )
             # legal type
             if l_in.get("type") == "legal":
-                lim_text += "<br>" + isogeo_tr.tr(
-                    "restrictions", l_in.get("restriction")
-                )
+                lim_text += "<br>" + isogeo_tr.tr("restrictions", l_in.get("restriction"))
             else:
                 pass
             # INSPIRE precision
             if "directive" in l_in:
-                lim_text += (
-                    "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
-                        l_in.get("directive").get("name"),
-                        l_in.get("directive").get("description"),
-                    )
+                lim_text += "<br><u>INSPIRE</u><br><ul><li>{}</li><li>{}</li></ul>".format(
+                    l_in.get("directive").get("name"),
+                    l_in.get("directive").get("description"),
                 )
             else:
                 pass
@@ -410,20 +422,16 @@ class MetadataDisplayer:
 
         # Metadata
         self.complete_md.val_md_lang.setText(md.get("language", "NR"))
-        self.complete_md.val_md_date_crea.setText(
-            plg_tools.handle_date(md.get("_created")[:19])
-        )
-        self.complete_md.val_md_date_update.setText(
-            plg_tools.handle_date(md.get("_modified")[:19])
-        )
+        self.complete_md.val_md_date_crea.setText(plg_tools.handle_date(md.get("_created")[:19]))
+        self.complete_md.val_md_date_update.setText(plg_tools.handle_date(md.get("_modified")[:19]))
 
         # -- EDIT LINK -------------------------------------------------------
         # only if user declared himself as Isogeo editor in authentication form
-        self.md_edition_url = "{}/groups/{}/resources/{}/identification".format(self.app_base_url, wg_id, md.get("_id"))
-
-        self.complete_md.btn_md_edit.setEnabled(
-            int(qsettings.value("isogeo/user/editor", 1))
+        self.md_edition_url = "{}/groups/{}/resources/{}/identification".format(
+            self.app_base_url, wg_id, md.get("_id")
         )
+
+        self.complete_md.btn_md_edit.setEnabled(int(qsettings.value("isogeo/user/editor", 1)))
 
         # -- ADD OPTIONS ------------------------------------------------------
         self.complete_md.btn_addtomap.setHidden(1)
@@ -432,20 +440,19 @@ class MetadataDisplayer:
         # -- DISPLAY ---------------------------------------------------------
         self.fields_displayer(md.get("type"), md.get("series"))
         # Finally open the damned window
+        self.complete_md.li_menu.setCurrentRow(0)
+        self.complete_md.stackedWidget.setCurrentIndex(0)
+        self.complete_md.stackedWidget.setCurrentWidget(self.complete_md.stackedWidget.widget(0))
         self.complete_md.show()
         try:
             QgsMessageLog.logMessage(
-                message="Detailed metadata displayed: {}".format(
-                    self.complete_md.lbl_title.text()
-                ),
+                message="Detailed metadata displayed: {}".format(self.complete_md.lbl_title.text()),
                 tag="Isogeo",
                 level=0,
             )
         except UnicodeEncodeError:
             QgsMessageLog.logMessage(
-                message="Detailed metadata displayed: {}".format(
-                    self.complete_md.lbl_title.text()
-                ),
+                message="Detailed metadata displayed: {}".format(self.complete_md.lbl_title.text()),
                 tag="Isogeo",
                 level=0,
             )
@@ -455,20 +462,12 @@ class MetadataDisplayer:
         # prepare geom feature
         feature = QgsFeature()
         # prepare coordinates transformation to match OSM WMTS srs
-        mercator = QgsCoordinateReferenceSystem(
-            4326, QgsCoordinateReferenceSystem.EpsgCrsId
-        )
-        pseudo_mercator = QgsCoordinateReferenceSystem(
-            3857, QgsCoordinateReferenceSystem.EpsgCrsId
-        )
-        coord_transformer = QgsCoordinateTransform(
-            mercator, pseudo_mercator, QgsProject.instance()
-        )
+        mercator = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        pseudo_mercator = QgsCoordinateReferenceSystem(3857, QgsCoordinateReferenceSystem.EpsgCrsId)
+        coord_transformer = QgsCoordinateTransform(mercator, pseudo_mercator, QgsProject.instance())
 
         if envelope.get("type") == "Polygon":
-            md_lyr = QgsVectorLayer(
-                "Polygon?crs=epsg:3857", "Metadata envelope", "memory"
-            )
+            md_lyr = QgsVectorLayer("Polygon?crs=epsg:3857", "Metadata envelope", "memory")
             coords = envelope.get("coordinates")[0]
             poly_pts = [
                 coord_transformer.transform(QgsPointXY(round(i[0], 3), round(i[1], 3)))
@@ -476,9 +475,7 @@ class MetadataDisplayer:
             ]
             feature.setGeometry(QgsGeometry.fromPolygonXY([poly_pts]))
         elif envelope.get("type") == "MultiPolygon":
-            md_lyr = QgsVectorLayer(
-                "Polygon?crs=epsg:3857", "Metadata envelope", "memory"
-            )
+            md_lyr = QgsVectorLayer("Polygon?crs=epsg:3857", "Metadata envelope", "memory")
             coords = envelope.get("bbox")
             poly_pts = [
                 coord_transformer.transform(QgsPointXY(round(i[0], 3), round(i[1], 3)))
@@ -486,16 +483,12 @@ class MetadataDisplayer:
             ]
             feature.setGeometry(QgsGeometry.fromPolygonXY([poly_pts]))
         elif envelope.get("type") == "Point":
-            md_lyr = QgsVectorLayer(
-                "Point?crs=epsg:3857", "Metadata envelope", "memory"
-            )
+            md_lyr = QgsVectorLayer("Point?crs=epsg:3857", "Metadata envelope", "memory")
             coords = envelope.get("coordinates")
             point = QgsPointXY(round(coords[0], 3), round(coords[1], 3))
             feature.setGeometry(QgsGeometry.fromPointXY(point))
         else:
-            md_lyr = QgsVectorLayer(
-                "Polygon?crs=epsg:3857", "Metadata envelope", "memory"
-            )
+            md_lyr = QgsVectorLayer("Polygon?crs=epsg:3857", "Metadata envelope", "memory")
             return md_lyr
 
         # Design the feature
@@ -515,6 +508,8 @@ class MetadataDisplayer:
         menu_list = self.complete_md.li_menu
         if md_type == "vectorDataset":
             # general
+            self.complete_md.val_group_themes.setHidden(0)
+            self.complete_md.ico_group_themes.setHidden(0)
             self.complete_md.val_inspire_themes.setHidden(0)
             self.complete_md.ico_inspire_themes.setHidden(0)
             self.complete_md.ico_inspire_conformity.setHidden(0)
@@ -536,6 +531,7 @@ class MetadataDisplayer:
             self.complete_md.grp_collect_context.setHidden(0)
             self.complete_md.grp_collect_method.setHidden(0)
             # geography
+            self.complete_md.grp_geoContext.setHidden(1)
             self.complete_md.grp_technic.setHidden(0)
             self.complete_md.ico_feat_count.setHidden(0)
             self.complete_md.lbl_feat_count.setHidden(0)
@@ -543,20 +539,108 @@ class MetadataDisplayer:
             self.complete_md.ico_geometry.setHidden(0)
             self.complete_md.lbl_geometry.setHidden(0)
             self.complete_md.val_geometry.setHidden(0)
+            self.complete_md.ico_srs.setHidden(0)
+            self.complete_md.lbl_srs.setHidden(0)
+            self.complete_md.val_srs.setHidden(0)
+            self.complete_md.ico_scale.setHidden(0)
+            self.complete_md.lbl_scale.setHidden(0)
+            self.complete_md.val_scale.setHidden(0)
+            self.complete_md.ico_resolution.setHidden(0)
+            self.complete_md.lbl_resolution.setHidden(0)
+            self.complete_md.val_resolution.setHidden(0)
+            self.complete_md.line.setHidden(0)
+            self.complete_md.grp_bbox.setHidden(0)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(0)
             # menus
             menu_list.item(1).setHidden(0)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
+            menu_list.item(5).setHidden(0)  # quality
+            return
+
+        elif md_type == "noGeoDataset":
+            # general
+            self.complete_md.val_group_themes.setHidden(0)
+            self.complete_md.ico_group_themes.setHidden(0)
+            self.complete_md.val_inspire_themes.setHidden(0)
+            self.complete_md.ico_inspire_themes.setHidden(0)
+            self.complete_md.ico_inspire_conformity.setHidden(0)
+            self.complete_md.val_feat_count.setHidden(0)
+            self.complete_md.val_geometry.setHidden(0)
+            # history
+            self.complete_md.lbl_frequency.setHidden(0)
+            self.complete_md.ico_frequency.setHidden(0)
+            self.complete_md.val_frequency.setHidden(0)
+            self.complete_md.lbl_valid_start.setHidden(0)
+            self.complete_md.ico_valid_start.setHidden(0)
+            self.complete_md.val_valid_start.setHidden(0)
+            self.complete_md.lbl_valid_end.setHidden(0)
+            self.complete_md.ico_valid_end.setHidden(0)
+            self.complete_md.val_valid_end.setHidden(0)
+            self.complete_md.lbl_valid_comment.setHidden(0)
+            self.complete_md.ico_valid_comment.setHidden(0)
+            self.complete_md.val_valid_comment.setHidden(0)
+            self.complete_md.grp_collect_context.setHidden(0)
+            self.complete_md.grp_collect_method.setHidden(0)
+            # geography
+            self.complete_md.grp_geoContext.setHidden(0)
+            self.complete_md.grp_technic.setHidden(0)
+            self.complete_md.ico_feat_count.setHidden(0)
+            self.complete_md.lbl_feat_count.setHidden(0)
+            self.complete_md.val_feat_count.setHidden(0)
+            self.complete_md.ico_geometry.setHidden(1)
+            self.complete_md.lbl_geometry.setHidden(1)
+            self.complete_md.val_geometry.setHidden(1)
+            self.complete_md.ico_srs.setHidden(1)
+            self.complete_md.lbl_srs.setHidden(1)
+            self.complete_md.val_srs.setHidden(1)
+            self.complete_md.ico_scale.setHidden(1)
+            self.complete_md.lbl_scale.setHidden(1)
+            self.complete_md.val_scale.setHidden(1)
+            self.complete_md.ico_resolution.setHidden(1)
+            self.complete_md.lbl_resolution.setHidden(1)
+            self.complete_md.val_resolution.setHidden(1)
+            self.complete_md.line.setHidden(1)
+            self.complete_md.grp_bbox.setHidden(1)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(1)
+            # menus
+            menu_list.item(1).setHidden(0)  # attributes
+            menu_list.item(4).setHidden(0)  # geography and technical
+            menu_list.item(5).setHidden(0)  # quality
             return
 
         elif md_type == "rasterDataset" and not series:
             # geography
             self.complete_md.val_feat_count.setHidden(1)
             self.complete_md.val_geometry.setHidden(1)
+            self.complete_md.grp_geoContext.setHidden(1)
             # geography
             self.complete_md.grp_technic.setHidden(0)
+            # geography
+            self.complete_md.ico_feat_count.setHidden(1)
+            self.complete_md.lbl_feat_count.setHidden(1)
+            self.complete_md.val_feat_count.setHidden(1)
+            self.complete_md.ico_geometry.setHidden(1)
+            self.complete_md.lbl_geometry.setHidden(1)
+            self.complete_md.val_geometry.setHidden(1)
+            self.complete_md.ico_srs.setHidden(0)
+            self.complete_md.lbl_srs.setHidden(0)
+            self.complete_md.val_srs.setHidden(0)
+            self.complete_md.ico_scale.setHidden(0)
+            self.complete_md.lbl_scale.setHidden(0)
+            self.complete_md.val_scale.setHidden(0)
+            self.complete_md.ico_resolution.setHidden(0)
+            self.complete_md.lbl_resolution.setHidden(0)
+            self.complete_md.val_resolution.setHidden(0)
+            self.complete_md.line.setHidden(0)
+            self.complete_md.grp_bbox.setHidden(0)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
+            menu_list.item(5).setHidden(0)  # quality
             return
 
         elif md_type == "rasterDataset" and series:
@@ -567,11 +651,26 @@ class MetadataDisplayer:
             self.complete_md.ico_geometry.setHidden(1)
             self.complete_md.lbl_geometry.setHidden(1)
             self.complete_md.val_geometry.setHidden(1)
+            self.complete_md.ico_srs.setHidden(0)
+            self.complete_md.lbl_srs.setHidden(0)
+            self.complete_md.val_srs.setHidden(0)
+            self.complete_md.ico_scale.setHidden(0)
+            self.complete_md.lbl_scale.setHidden(0)
+            self.complete_md.val_scale.setHidden(0)
+            self.complete_md.ico_resolution.setHidden(0)
+            self.complete_md.lbl_resolution.setHidden(0)
+            self.complete_md.val_resolution.setHidden(0)
+            self.complete_md.line.setHidden(0)
+            self.complete_md.grp_bbox.setHidden(0)
+            self.complete_md.grp_geoContext.setHidden(1)
             # geography
             self.complete_md.grp_technic.setHidden(0)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
+            menu_list.item(5).setHidden(0)  # quality
             return
 
         elif md_type == "service":
@@ -596,9 +695,13 @@ class MetadataDisplayer:
             self.complete_md.grp_collect_method.setHidden(1)
             # geography
             self.complete_md.grp_technic.setHidden(0)
+            self.complete_md.grp_geoContext.setHidden(1)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
+            menu_list.item(5).setHidden(0)  # quality
             return
 
         elif md_type == "resource":
@@ -617,9 +720,13 @@ class MetadataDisplayer:
             self.complete_md.val_valid_comment.setHidden(1)
             self.complete_md.grp_collect_context.setHidden(1)
             self.complete_md.grp_collect_method.setHidden(1)
+            self.complete_md.grp_geoContext.setHidden(1)
+            # quality
+            self.complete_md.grp_topoConsist.setHidden(1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(1)  # geography and technical
+            menu_list.item(5).setHidden(1)  # quality
             return
 
         else:

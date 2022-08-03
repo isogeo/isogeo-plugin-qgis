@@ -59,9 +59,7 @@ class SharesParser(QObject):
             )
             # shares feeding the application
             if len(content) == 1:
-                text += self.tr(
-                    " powered by 1 share:</p></br>", context=__class__.__name__
-                )
+                text += self.tr(" powered by 1 share:</p></br>", context=__class__.__name__)
             else:
                 text += self.tr(
                     " powered by {} shares:</p></br>", context=__class__.__name__
@@ -76,15 +74,13 @@ class SharesParser(QObject):
                     self.app_base_url, creator_id, share.get("_id")
                 )
                 # formatting text
-                text += "<p><a href='{}'><b>{}</b></a></p>".format(
-                    share_url, share.get("name")
+                text += "<p><a href='{}'><b>{}</b></a></p>".format(share_url, share.get("name"))
+                text += self.tr("<p>Updated: {}</p>", context=__class__.__name__).format(
+                    plg_tools.handle_date(share.get("_modified"))
                 )
-                text += self.tr(
-                    "<p>Updated: {}</p>", context=__class__.__name__
-                ).format(plg_tools.handle_date(share.get("_modified")))
-                text += self.tr(
-                    "<p>Contact: {} - {}</p>", context=__class__.__name__
-                ).format(creator_name, creator_email)
+                text += self.tr("<p>Contact: {} - {}</p>", context=__class__.__name__).format(
+                    creator_name, creator_email
+                )
 
                 text += "<p><hr></p>"
             text += "</html>"

@@ -52,8 +52,7 @@ class BulkReport(object):
 
     @ignored.setter
     def ignored(self, ignored: dict):
-        """Sets the ignored of this Bulk Request.
-        """
+        """Sets the ignored of this Bulk Request."""
 
         self._ignored = ignored
 

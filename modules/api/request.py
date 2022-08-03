@@ -138,9 +138,7 @@ class ApiRequester(QObject):
             - 'details'
             - 'shares'
         """
-        logger.info(
-            "-------------- Sending a '{}' request --------------".format(request_type)
-        )
+        logger.info("-------------- Sending a '{}' request --------------".format(request_type))
         # creating the QNetworkRequest appropriate to the request_type
         request = self.create_request(request_type)
         # post request for 'token' request
@@ -201,11 +199,7 @@ class ApiRequester(QObject):
         httpStatusMessage = reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
 
         logger.info("API answer from {}".format(url))
-        logger.info(
-            "Status code: {} - Response message: {}".format(
-                httpStatus, httpStatusMessage
-            )
-        )
+        logger.info("Status code: {} - Response message: {}".format(httpStatus, httpStatusMessage))
         try:
             parsed_content = json.loads(content)
         except ValueError as e:
@@ -216,9 +210,7 @@ class ApiRequester(QObject):
                 return
             else:
                 try:
-                    logger.error(
-                        "API's response content cannot be loaded : {}".format(content)
-                    )
+                    logger.error("API's response content cannot be loaded : {}".format(content))
                 except Exception as e:
                     logger.error("API's response content issue : {}".format(e))
         # error detected
@@ -231,8 +223,15 @@ class ApiRequester(QObject):
             # authorization needed because token expired
             elif err == 204:
                 logger.debug("Token expired. Renewing it.")
-                self.loopCount = 0
-                self.send_request("token")
+                if self.loopCount < 3:
+                    self.loopCount += 1
+                    self.send_request("token")
+                else:
+                    logger.error(
+                        "Invalid API token. 204 Error for the third time. URLs specified into "
+                        "config.json file may not be compliant."
+                    )
+                    self.api_sig.emit("config_issue")
             # proxy issue
             elif err >= 101 and err <= 105:
                 logger.error("Request to the API failed. Proxy issue code received")
@@ -291,21 +290,16 @@ class ApiRequester(QObject):
                     self.shares_sig.emit(parsed_content)
                 elif "resources/search?" in url:
                     logger.debug("Handling reply to a 'search' request")
-                    self.search_sig.emit(
-                        parsed_content, self.get_tags(parsed_content.get("tags"))
-                    )
+                    self.search_sig.emit(parsed_content, self.get_tags(parsed_content.get("tags")))
                 elif "resources/" in reply.url().toString():
                     logger.debug("Handling reply to a 'details' request")
-                    self.details_sig.emit(
-                        parsed_content, self.get_tags(parsed_content.get("tags"))
-                    )
+                    self.details_sig.emit(parsed_content, self.get_tags(parsed_content.get("tags")))
                 else:
                     logger.debug("Unkown reply type : {}".format(parsed_content))
         # no errors detected but empty API's reply content
         else:
             if self.loopCount < 3:
                 self.loopCount += 1
-                reply.request().abort()
                 self.send_request("token")
             else:
                 logger.error(
@@ -358,6 +352,9 @@ class ApiRequester(QObject):
         # SRS
         if params.get("srs") is not None:
             filters += params.get("srs") + " "
+        # groupTheme keywords
+        if params.get("groupTheme") is not None:
+            filters += params.get("groupTheme") + " "
         # INSPIRE keywords
         if params.get("inspire") is not None:
             filters += params.get("inspire") + " "
@@ -379,9 +376,7 @@ class ApiRequester(QObject):
         # Geographical filter
         if params.get("geofilter") is not None:
             if params.get("coord") is not False:
-                filters += "&box={0}&rel={1}".format(
-                    params.get("coord"), params.get("operation")
-                )
+                filters += "&box={0}&rel={1}".format(params.get("coord"), params.get("operation"))
             else:
                 pass
         else:
@@ -418,6 +413,7 @@ class ApiRequester(QObject):
         contacts = {}
         formats = {}
         inspire = {}
+        groupTheme = {}
         keywords = {}
         licenses = {}
         md_types = {}
@@ -445,6 +441,10 @@ class ApiRequester(QObject):
             elif tag.startswith("format"):
                 formats[tags.get(tag)] = tag
                 continue
+            # group themes
+            elif tag.startswith("keyword:gr"):
+                groupTheme[tags.get(tag)] = tag
+                continue
             # INSPIRE themes
             elif tag.startswith("keyword:in"):
                 inspire[tags.get(tag)] = tag
@@ -468,7 +468,7 @@ class ApiRequester(QObject):
             # types
             elif tag.startswith("type"):
                 md_types[tags.get(tag)] = tag
-                if tag in ("type:vector-dataset", "type:raster-dataset"):
+                if tag in ("type:vector-dataset", "type:raster-dataset", "type:no-geo-dataset"):
                     type_dataset += 1
                 continue
             # ignored tags
@@ -477,7 +477,7 @@ class ApiRequester(QObject):
                 continue
 
         # override API tags to allow all datasets filter - see #
-        if type_dataset == 2:
+        if type_dataset > 1:
             md_types[self.tr("Dataset", context=__class__.__name__)] = "type:dataset"
         else:
             pass
@@ -489,6 +489,7 @@ class ApiRequester(QObject):
             "contacts": contacts,
             "formats": formats,
             "inspire": inspire,
+            "groupTheme": groupTheme,
             "keywords": keywords,
             "licenses": licenses,
             "owners": owners,

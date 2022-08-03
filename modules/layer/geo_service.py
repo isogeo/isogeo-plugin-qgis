@@ -11,7 +11,13 @@ from urllib.parse import urlencode, unquote, quote
 from qgis.PyQt.QtCore import QSettings
 
 # PyQGIS
-from qgis.core import QgsDataSourceUri, QgsCoordinateTransform, QgsProject, QgsCoordinateReferenceSystem, QgsRectangle
+from qgis.core import (
+    QgsDataSourceUri,
+    QgsCoordinateTransform,
+    QgsProject,
+    QgsCoordinateReferenceSystem,
+    QgsRectangle,
+)
 from qgis.utils import iface
 
 # Plugin modules
@@ -62,8 +68,7 @@ except ImportError:
     from urllib.error import HTTPError
 
     logger.warning(
-        "Depencencies - HTTPError not within owslib."
-        " Directly imported from urllib.error"
+        "Depencencies - HTTPError not within owslib." " Directly imported from urllib.error"
     )
 
 try:
@@ -129,13 +134,8 @@ class GeoServiceManager:
             if srs_map in crs_options:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
                 srs = srs_map
-            elif (
-                srs_qgs_new is not None
-                and srs_qgs_new in crs_options
-            ):
-                logger.debug(
-                    "It's a SRS match! With default new project: " + srs_qgs_new
-                )
+            elif srs_qgs_new is not None and srs_qgs_new in crs_options:
+                logger.debug("It's a SRS match! With default new project: " + srs_qgs_new)
                 srs = srs_qgs_new
             elif srs_lyr_crs is not None and srs_lyr_crs in crs_options:
                 logger.debug("It's a SRS match! With default new layer: " + srs_lyr_crs)
@@ -149,7 +149,9 @@ class GeoServiceManager:
                         crs_options
                     )
                 )
-                li_srs_candidates = [crs_option for crs_option in crs_options if "EPSG" in crs_option]
+                li_srs_candidates = [
+                    crs_option for crs_option in crs_options if "EPSG" in crs_option
+                ]
                 if len(li_srs_candidates):
                     srs = li_srs_candidates[0]
                 else:
@@ -176,9 +178,7 @@ class GeoServiceManager:
             # If it's valid, let's build this layer title
         else:
             if service_type in self.esri_infos_dict:
-                generic_title = "{} layer ({})".format(
-                    service_type, api_layer.get("id")
-                )
+                generic_title = "{} layer ({})".format(service_type, api_layer.get("id"))
                 if len(api_layer.get("titles")):
                     layer_title = api_layer.get("titles")[0].get("value", generic_title)
                 else:
@@ -232,8 +232,12 @@ class GeoServiceManager:
 
             if service_type == "WFS":
                 # check if get data operation is available + retrieve formatOptions
-                xml_operationsMetadata = [child for child in xml_root if "OperationsMetadata" in child.tag][0]
-                main_op_elem = [ope for ope in xml_operationsMetadata if main_op_name in ope.get("name")]
+                xml_operationsMetadata = [
+                    child for child in xml_root if "OperationsMetadata" in child.tag
+                ][0]
+                main_op_elem = [
+                    ope for ope in xml_operationsMetadata if main_op_name in ope.get("name")
+                ]
                 if len(main_op_elem) == 1:
                     service_dict["{}_isAvailable".format(main_op_name)] = 1
                     main_op_elem = main_op_elem[0]
@@ -283,7 +287,9 @@ class GeoServiceManager:
                 main_op_elem = [child for child in xml_request.findall(tag_prefix + main_op_name)]
                 if len(main_op_elem) == 1:
                     service_dict["{}_isAvailable".format(main_op_name)] = 1
-                    li_formatOptions = [child.text for child in main_op_elem[0].findall(tag_prefix + "Format")]
+                    li_formatOptions = [
+                        child.text for child in main_op_elem[0].findall(tag_prefix + "Format")
+                    ]
                     service_dict["formatOptions"] = li_formatOptions
                 elif len(main_op_elem) == 0:
                     service_dict["{}_isAvailable".format(main_op_name)] = 0
@@ -299,7 +305,9 @@ class GeoServiceManager:
                 for layer in xml_cap.find(tag_prefix + "Layer").findall(tag_prefix + "Layer"):
                     layer_dict = {}
                     # typename
-                    li_layer_typenames = [child.text for child in layer.findall(tag_prefix + "Name")]
+                    li_layer_typenames = [
+                        child.text for child in layer.findall(tag_prefix + "Name")
+                    ]
                     if not len(li_layer_typenames):
                         continue
                     else:
@@ -314,7 +322,11 @@ class GeoServiceManager:
                         layer_dict["crsOptions"] = li_common_crs + li_layer_crs
 
                     # BBOX
-                    li_bboxes = [elem for elem in layer.findall(tag_prefix + "BoundingBox") if elem.get("CRS") in layer_dict["crsOptions"]]
+                    li_bboxes = [
+                        elem
+                        for elem in layer.findall(tag_prefix + "BoundingBox")
+                        if elem.get("CRS") in layer_dict["crsOptions"]
+                    ]
                     if len(li_bboxes):
                         xmin = str(li_bboxes[0].get("minx"))
                         ymin = str(li_bboxes[0].get("miny"))
@@ -340,7 +352,9 @@ class GeoServiceManager:
 
             else:  # WMTS
                 # check if get data operation is available + retrieve formatOptions
-                xml_operationsMetadata = [child for child in xml_root if "OperationsMetadata" in child.tag][0]
+                xml_operationsMetadata = [
+                    child for child in xml_root if "OperationsMetadata" in child.tag
+                ][0]
                 li_ope_names = [ope.get("name") for ope in xml_operationsMetadata]
                 if main_op_name in li_ope_names:
                     service_dict["{}_isAvailable".format(main_op_name)] = 1
@@ -349,7 +363,9 @@ class GeoServiceManager:
 
                 # retrieving available tileMatrixSets to store them into a dict
                 dict_tms = {}
-                for tms in xml_root.find(tag_prefix + "Contents").findall(tag_prefix + "TileMatrixSet"):
+                for tms in xml_root.find(tag_prefix + "Contents").findall(
+                    tag_prefix + "TileMatrixSet"
+                ):
                     li_tms_id = [child.text for child in tms if child.tag.endswith("Identifier")]
                     li_tms_crs = [child.text for child in tms if child.tag.endswith("SupportedCRS")]
 
@@ -364,21 +380,29 @@ class GeoServiceManager:
                 for layer in xml_root.find(tag_prefix + "Contents").findall(tag_prefix + "Layer"):
                     layer_dict = {}
                     # typename
-                    li_layer_typenames = [child.text for child in layer if child.tag.endswith("Identifier")]
+                    li_layer_typenames = [
+                        child.text for child in layer if child.tag.endswith("Identifier")
+                    ]
                     if not len(li_layer_typenames):
                         continue
                     else:
                         li_typenames.append(li_layer_typenames[0])
                         layer_dict["typename"] = li_layer_typenames[0]
                     # format
-                    li_layer_formats = [child.text for child in layer if child.tag.endswith("Format")]
+                    li_layer_formats = [
+                        child.text for child in layer if child.tag.endswith("Format")
+                    ]
                     if not len(li_layer_formats):
                         layer_dict["formats"] = ""
                     else:
                         layer_dict["formats"] = li_layer_formats
                     # tms
-                    xml_tmsLink = [child for child in layer if child.tag.endswith("TileMatrixSetLink")][0]
-                    li_layer_tms = [child.text for child in xml_tmsLink if child.tag.endswith("TileMatrixSet")]
+                    xml_tmsLink = [
+                        child for child in layer if child.tag.endswith("TileMatrixSetLink")
+                    ][0]
+                    li_layer_tms = [
+                        child.text for child in xml_tmsLink if child.tag.endswith("TileMatrixSet")
+                    ]
                     if not len(li_layer_tms):
                         layer_dict["tms"] = ""
                     else:
@@ -387,7 +411,9 @@ class GeoServiceManager:
                     li_layer_styles = []
                     li_xml_styles = [child for child in layer if child.tag.endswith("Style")]
                     for style_elem in li_xml_styles:
-                        li_elem_identifier = [child.text for child in style_elem if child.tag.endswith("Identifier")]
+                        li_elem_identifier = [
+                            child.text for child in style_elem if child.tag.endswith("Identifier")
+                        ]
                         if not len(li_elem_identifier):
                             continue
                         else:
@@ -409,9 +435,7 @@ class GeoServiceManager:
         service_dict[service_type] = li_layers
         return service_dict
 
-    def check_ogc_service(
-        self, service_type: str, service_url: str, service_version: str
-    ):
+    def check_ogc_service(self, service_type: str, service_url: str, service_version: str):
         """Try to acces to the given OGC service URL (using owslib library modules) and
         store various informations into cached_wfs, cached_wms or cached_wmts dict
         depending on service_type.
@@ -466,9 +490,7 @@ class GeoServiceManager:
             service_dict["reachable"] = 1
             service_dict["manual"] = 0
         except ServiceException as e:
-            error_msg = "{} <i>{}</i> - <b>Bad operation</b>: {}".format(
-                service_type, url, str(e)
-            )
+            error_msg = "{} <i>{}</i> - <b>Bad operation</b>: {}".format(service_type, url, str(e))
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
         except HTTPError as e:
@@ -491,17 +513,17 @@ class GeoServiceManager:
                 logger.info("Using owslib.Authentication module with 'verify=false' worked !")
             except Exception as e:
                 logger.error(
-                    "Error raised trying to use owslib.Authentication module : {}".format(
-                        e
-                    )
+                    "Error raised trying to use owslib.Authentication module : {}".format(e)
                 )
                 try:
                     service_dict = self.parse_ogc_xml(service_type, service_dict)
                     logger.info("parse_ogc_xml method has to be used.")
                     return 1, service_dict
                 except Exception as e:
-                    error_msg = "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
-                        service_type, url, str(e)
+                    error_msg = (
+                        "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
+                            service_type, url, str(e)
+                        )
                     )
                     service_dict["reachable"] = 0
                     service_dict["error"] = error_msg
@@ -528,8 +550,7 @@ class GeoServiceManager:
         service_dict["version"] = service_version
         service_dict["operations"] = [op.name for op in service.operations]
         service_dict["formatOptions"] = [
-            f.split(";", 1)[0]
-            for f in service.getOperationByName(main_op_name).formatOptions
+            f.split(";", 1)[0] for f in service.getOperationByName(main_op_name).formatOptions
         ]
 
         # check if main operation ("GetMap" or "GetFeature" depending on service type) is available
@@ -594,10 +615,7 @@ class GeoServiceManager:
         # check layer availability + retrieve its real id for "TYPENAME" URL parameter
         if api_layer_name in wfs_dict.get("typenames"):
             layer_typename = api_layer_name
-        elif any(
-            api_layer_name in typename.split(":")
-            for typename in wfs_dict.get("typenames")
-        ):
+        elif any(api_layer_name in typename.split(":") for typename in wfs_dict.get("typenames")):
             layer_typename = [
                 typename
                 for typename in wfs_dict.get("typenames")
@@ -605,9 +623,7 @@ class GeoServiceManager:
             ][0]
         elif any(api_layer_name in typename for typename in wfs_dict.get("typenames")):
             layer_typenames = [
-                typename
-                for typename in wfs_dict.get("typenames")
-                if api_layer_name in typename
+                typename for typename in wfs_dict.get("typenames") if api_layer_name in typename
             ]
             if len(layer_typenames) > 1:
                 warning_msg = "WFS {} - Multiple typenames matched for '{}' layer, the first one will be choosed: {}".format(
@@ -624,9 +640,7 @@ class GeoServiceManager:
             return 0, error_msg
 
         # check if GetFeature and DescribeFeatureType operation are available
-        if not hasattr(wfs, "getfeature") and not wfs_dict.get(
-            "GetFeature_isAvailable"
-        ):
+        if not hasattr(wfs, "getfeature") and not wfs_dict.get("GetFeature_isAvailable"):
             return 0, "GetFeature operation not available in: {}".format(wfs_url_getcap)
         else:
             logger.info("GetFeature available")
@@ -638,8 +652,7 @@ class GeoServiceManager:
             available_crs_options = ["EPSG:" + wfs_lyr.get("EPSG")]
         else:
             available_crs_options = [
-                "{}:{}".format(srs.authority, srs.code)
-                for srs in wfs[layer_typename].crsOptions
+                "{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions
             ]
         srs = self.choose_appropriate_srs(crs_options=available_crs_options)
 
@@ -650,7 +663,7 @@ class GeoServiceManager:
             "VERSION={}".format(wfs_dict.get("version")),
             "TYPENAME={}".format(layer_typename),
             "SRSNAME={}".format(srs),
-            "RESULTTYPE=results"
+            "RESULTTYPE=results",
         ]
 
         # trying to set BBOX parameter as current map canvas extent
@@ -660,12 +673,20 @@ class GeoServiceManager:
             if wfs_dict.get("manual"):
                 srs_id = wfs_lyr.get("srs_id")
             else:
-                srs_id = [crsOption.id for crsOption in wfs[layer_typename].crsOptions if srs_code in str(crsOption.code)][0]
+                srs_id = [
+                    crsOption.id
+                    for crsOption in wfs[layer_typename].crsOptions
+                    if srs_code in str(crsOption.code)
+                ][0]
 
             canvas_rectangle = iface.mapCanvas().extent()
             canvas_crs = iface.mapCanvas().mapSettings().destinationCrs()
-            destination_crs = QgsCoordinateReferenceSystem(int(srs_code), QgsCoordinateReferenceSystem.EpsgCrsId)
-            coord_transformer = QgsCoordinateTransform(canvas_crs, destination_crs, QgsProject.instance())
+            destination_crs = QgsCoordinateReferenceSystem(
+                int(srs_code), QgsCoordinateReferenceSystem.EpsgCrsId
+            )
+            coord_transformer = QgsCoordinateTransform(
+                canvas_crs, destination_crs, QgsProject.instance()
+            )
 
             destCrs_rectangle = coord_transformer.transform(canvas_rectangle)
 
@@ -674,7 +695,7 @@ class GeoServiceManager:
                 destCrs_rectangle.xMinimum(),
                 destCrs_rectangle.yMaximum(),
                 destCrs_rectangle.xMaximum(),
-                srs_id
+                srs_id,
             )
             li_url_params.append(bbox_parameter)
         else:
@@ -773,9 +794,7 @@ class GeoServiceManager:
             lyr_style = ""
 
         # Format definition
-        formats_image = [
-            f for f in wms_dict.get("formatOptions") if f in qgis_wms_formats
-        ]
+        formats_image = [f for f in wms_dict.get("formatOptions") if f in qgis_wms_formats]
         if "image/png" in formats_image:
             layer_format = "image/png"
         elif "image/jpeg" in formats_image:
@@ -803,10 +822,14 @@ class GeoServiceManager:
 
         if not destination_crs.isValid():
             bbox = ""
-            logger.warning("BBOX parameter cannot be set because srs is not recognized : {}.".format(srs))
+            logger.warning(
+                "BBOX parameter cannot be set because srs is not recognized : {}.".format(srs)
+            )
         elif not has_bbox:
             bbox = ""
-            logger.warning("BBOX parameter cannot be set because wms layer object has no boundingBox attributes.")
+            logger.warning(
+                "BBOX parameter cannot be set because wms layer object has no boundingBox attributes."
+            )
         else:
             source_crs_id = ""
             if hasattr(wms_lyr, "boundingBox"):
@@ -828,7 +851,9 @@ class GeoServiceManager:
             logger.info("Let's use {} bbox.".format(source_crs_id))
             source_crs = QgsCoordinateReferenceSystem(source_crs_id)
 
-            coord_transformer = QgsCoordinateTransform(source_crs, destination_crs, QgsProject.instance())
+            coord_transformer = QgsCoordinateTransform(
+                source_crs, destination_crs, QgsProject.instance()
+            )
             bbox_rectangle = QgsRectangle(
                 float(wms_lyr_bbox[0]),
                 float(wms_lyr_bbox[1]),
@@ -858,12 +883,10 @@ class GeoServiceManager:
                 "TRANSPARENT": "TRUE",
                 "BBOX": bbox,
                 "WIDTH": width,
-                "HEIGHT": height
+                "HEIGHT": height,
             }
 
-            if (
-                "&" in wms_url_base
-            ):  # for case when there is already params into base url
+            if "&" in wms_url_base:  # for case when there is already params into base url
                 wms_url_params["url"] = "{}?{}".format(
                     wms_url_base.split("?")[0], quote(wms_url_base.split("?")[1])
                 )
@@ -926,10 +949,7 @@ class GeoServiceManager:
         # check layer availability + retrieve its real id for "layers" URL parameter
         if api_layer_id in wmts_dict.get("typenames"):
             layer_typename = api_layer_id
-        elif any(
-            api_layer_id in typename.split(":")
-            for typename in wmts_dict.get("typenames")
-        ):
+        elif any(api_layer_id in typename.split(":") for typename in wmts_dict.get("typenames")):
             layer_typename = [
                 typename
                 for typename in wmts_dict.get("typenames")
@@ -937,9 +957,7 @@ class GeoServiceManager:
             ][0]
         elif any(api_layer_id in typename for typename in wmts_dict.get("typenames")):
             layer_typenames = [
-                typename
-                for typename in wmts_dict.get("typenames")
-                if api_layer_id in typename
+                typename for typename in wmts_dict.get("typenames") if api_layer_id in typename
             ]
             if len(layer_typenames) > 1:
                 warning_msg = "WMTS {} - Multiple typenames matched for '{}' layer, the first one will be choosed: {}".format(
@@ -964,8 +982,7 @@ class GeoServiceManager:
         if not hasattr(wmts, "gettile") and not wmts_dict.get("GetTile_isAvailable"):
             return (
                 0,
-                "Required GetTile operation not available in: "
-                + wmts_dict.get("getCap_url"),
+                "Required GetTile operation not available in: " + wmts_dict.get("getCap_url"),
             )
         else:
             logger.debug("GetTile available")
@@ -1132,7 +1149,8 @@ class GeoServiceManager:
         # check the service accessibility and store service informations
         if srv_details.get("path") not in efs_cached_dict:
             check = self.check_esri_service(
-                service_type="EFS", service_url=srv_details.get("path"),
+                service_type="EFS",
+                service_url=srv_details.get("path"),
             )
             if check[0]:
                 efs_dict = check[1]
@@ -1178,7 +1196,8 @@ class GeoServiceManager:
         # check the service accessibility and store service informations
         if srv_details.get("path") not in ems_cached_dict:
             check = self.check_esri_service(
-                service_type="EMS", service_url=srv_details.get("path"),
+                service_type="EMS",
+                service_url=srv_details.get("path"),
             )
             if check[0]:
                 ems_dict = check[1]

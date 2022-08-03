@@ -119,6 +119,7 @@ tests/try
 # user settings
 _user/*.json
 config_*.json
+*.json
 # _user/cache.json
 # _user/quicksearches.json
 

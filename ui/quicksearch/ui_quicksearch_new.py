@@ -19,9 +19,7 @@ class Ui_dlg_quicksearch_new(object):
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            dlg_quicksearch_new.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(dlg_quicksearch_new.sizePolicy().hasHeightForWidth())
         dlg_quicksearch_new.setSizePolicy(sizePolicy)
         dlg_quicksearch_new.setMinimumSize(QtCore.QSize(340, 100))
         dlg_quicksearch_new.setMaximumSize(QtCore.QSize(700, 110))

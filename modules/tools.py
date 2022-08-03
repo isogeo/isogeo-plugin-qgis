@@ -67,6 +67,39 @@ class IsogeoPlgTools(IsogeoUtils):
         else:
             pass
 
+    def format_widget_title(self, widget, line_width):
+        """Format the title to fit the widget width.
+
+        :param object widget: widget which text has to be formated and has a 'setText' method
+        :param int width: width to fit with
+        """
+        title = widget.text().strip()
+        fm = widget.fontMetrics()
+
+        final_text = ""
+        words = title.split(" ")
+        if len(words) == 1:
+            word_width = fm.size(1, title).width()
+            if word_width > line_width:
+                final_text = fm.elidedText(title, 1, line_width)
+            else:
+                final_text = title
+        else:
+            for word in words:
+                current_width = fm.size(1, final_text + " " + word).width()
+                if current_width > line_width:
+                    word_width = fm.size(1, word).width()
+                    if word_width > line_width:
+                        final_text += " \n" + fm.elidedText(word, 1, line_width)
+                    else:
+                        final_text += " \n" + word
+                else:
+                    final_text += " " + word
+        final_text = final_text.rstrip()
+        # method ending
+        widget.setText(final_text)
+        return
+
     def get_map_crs(self):
         """Get QGIS map canvas current EPSG code."""
         current_crs = str(iface.mapCanvas().mapSettings().destinationCrs().authid())
@@ -77,6 +110,16 @@ class IsogeoPlgTools(IsogeoUtils):
 
         :param str input_date: input date to format
         """
+        try:
+            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
+        except TypeError as e:
+            logger.error(
+                "Bad type in QSettings: {}. Original error: {}".format(
+                    type(qsettings.value("locale/userLocale")), e
+                )
+            )
+            locale = "fr"
+
         if input_date != "NR":
             date = input_date.split("T")[0]
             year = int(date.split("-")[0])
@@ -84,7 +127,10 @@ class IsogeoPlgTools(IsogeoUtils):
             day = int(date.split("-")[2])
             new_date = datetime.date(year, month, day)
             # method ending
-            return new_date.strftime("%Y-%m-%d")
+            if locale == "fr":
+                return new_date.strftime("%d-%m-%Y")
+            else:
+                return new_date.strftime("%Y-%m-%d")
         else:
             return input_date
 
@@ -106,9 +152,7 @@ class IsogeoPlgTools(IsogeoUtils):
                 autoraise=True,
             )
         # method ending
-        logger.debug(
-            "Isogeo Plugin&Widget test form launched in the default web browser"
-        )
+        logger.debug("Isogeo Plugin&Widget test form launched in the default web browser")
 
     def open_pipedrive_rdv_form(self, lang):
         """Open the rdv request online form in web browser.
@@ -148,9 +192,15 @@ class IsogeoPlgTools(IsogeoUtils):
             proc = startfile(path.realpath(target))
 
         elif opersys.startswith("linux"):  # Linux:
-            proc = subprocess.Popen(
-                ["xdg-open", target], stdout=subprocess.PIPE, stderr=subprocess.PIPE
-            )
+            try:
+                proc = subprocess.Popen(
+                    ["xdg-open", target], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                )
+            except Exception as e:
+                logger.error("Unable to open log folder: {}".format(e))
+                raise SystemError(
+                    "Unable to open log folder, please try to install xdg-utils with the following command: sudo apt install xdg-utils"
+                )
 
         elif opersys == "darwin":  # Mac:
             proc = subprocess.Popen(
@@ -158,9 +208,7 @@ class IsogeoPlgTools(IsogeoUtils):
             )
 
         else:
-            raise NotImplementedError(
-                "Your `%s` isn't a supported operating system`." % opersys
-            )
+            raise NotImplementedError("Your `%s` isn't a supported operating system`." % opersys)
 
         # end of function
         return proc
@@ -178,9 +226,7 @@ class IsogeoPlgTools(IsogeoUtils):
         logger.debug("Link launched in the default web browser: {}".format(link))
         return
 
-    def plugin_metadata(
-        self, base_path=path.dirname(__file__), section="general", value="version"
-    ):
+    def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
         """Plugin metadata.txt parser.
 
         :param path base_path: directory path whete the metadata txt is stored
@@ -312,9 +358,7 @@ class IsogeoPlgTools(IsogeoUtils):
         # retrieve QGIS proxy settings
         qgis_proxy_enabled = qsettings.value("proxy/proxyEnabled", False, type=bool)
         if qgis_proxy_enabled is True:
-            qgis_proxy_type = qsettings.value(
-                "proxy/proxyType", "DefaultProxy", type=str
-            )
+            qgis_proxy_type = qsettings.value("proxy/proxyType", "DefaultProxy", type=str)
             logger.info("Proxy enabled in QGIS: {}".format(qgis_proxy_type))
         else:
             logger.info("No proxy enabled in QGIS.")
@@ -345,9 +389,7 @@ class IsogeoPlgTools(IsogeoUtils):
                     )
             except Exception as exc:
                 logger.error(
-                    "Despite the absence of proxy, connection to Isogeo API failed: {}".format(
-                        exc
-                    )
+                    "Despite the absence of proxy, connection to Isogeo API failed: {}".format(exc)
                 )
 
             return True
@@ -426,9 +468,7 @@ class IsogeoPlgTools(IsogeoUtils):
             # if proxy type is DefaultProxy, then ignore it
             if qgis_proxy_type == "DefaultProxy":
                 logger.debug(
-                    "QGIS is using system settings: {}. [case 4a]".format(
-                        system_proxy_config
-                    )
+                    "QGIS is using system settings: {}. [case 4a]".format(system_proxy_config)
                 )
                 return True
 

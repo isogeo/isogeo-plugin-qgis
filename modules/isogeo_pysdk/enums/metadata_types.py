@@ -28,6 +28,7 @@ class MetadataTypes(Enum):
         >>> for md_type in MetadataTypes:
         >>>     print("{0:<30} {1:>20}".format(md_type, md_type.value))
         Enum                                          Value
+        MetadataTypes.noGeoDataset          no-geo-dataset
         MetadataTypes.rasterDataset          raster-dataset
         MetadataTypes.resource                     resource
         MetadataTypes.service                       service
@@ -45,6 +46,7 @@ class MetadataTypes(Enum):
     """
 
     dataset = "dataset"
+    noGeoDataset = "no-geo-dataset"
     rasterDataset = "raster-dataset"
     resource = "resource"
     service = "service"

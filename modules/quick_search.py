@@ -63,7 +63,7 @@ class QuickSearchManager:
         # Getting what the class need from ApiRequester to build search URL
         self.url_builder = object
 
-        #Getting what the class need to build default search request URLs
+        # Getting what the class need to build default search request URLs
         self.api_base_url = str
 
     def write_params(self, search_name: str = "_default", search_kind: str = "Default"):
@@ -99,9 +99,7 @@ class QuickSearchManager:
         self.dump_file(saved_searches)
         # Log and messages
         logger.debug(
-            "{} search stored: {}. Parameters: {}".format(
-                search_kind, search_name, params
-            )
+            "{} search stored: {}. Parameters: {}".format(search_kind, search_name, params)
         )
         if search_kind != "Current" and search_kind != "Last":
             msgBar.pushMessage(
@@ -142,9 +140,9 @@ class QuickSearchManager:
         # inform user
         msgBar.pushMessage(
             "Isogeo",
-            self.tr(
-                "Quicksearch renamed: from {} to {}", context=__class__.__name__
-            ).format(old_name, new_name),
+            self.tr("Quicksearch renamed: from {} to {}", context=__class__.__name__).format(
+                old_name, new_name
+            ),
             level=0,
             duration=3,
         )
@@ -165,15 +163,41 @@ class QuickSearchManager:
         # inform user
         msgBar.pushMessage(
             "Isogeo",
-            self.tr("Quicksearch removed: {}", context=__class__.__name__).format(
-                to_remove
-            ),
+            self.tr("Quicksearch removed: {}", context=__class__.__name__).format(to_remove),
             level=0,
             duration=3,
         )
         # method ending
         logger.debug("'{}' quicksearch removed from JSON file.".format(to_remove))
         return
+
+    def get_default_file_content(self):
+        """Return quicksearch.json file default content. usefull to reset JSON file content"""
+        default_content = {
+            "_default": {
+                "contacts": None,
+                "datatype": "type:dataset",
+                "favorite": None,
+                "formats": None,
+                "geofilter": None,
+                "inspire": None,
+                "groupTheme": None,
+                "lang": "fr",
+                "licenses": None,
+                "ob": "relevance",
+                "od": "desc",
+                "operation": "intersects",
+                "owners": None,
+                "page": 1,
+                "show": True,
+                "srs": None,
+                "text": "",
+                "url": "{}/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0&_lang=fr".format(
+                    self.api_base_url
+                ),
+            }
+        }
+        return default_content
 
     def load_file(self):
 
@@ -187,20 +211,44 @@ class QuickSearchManager:
                         saved_searches
                     )
                 )
-                saved_searches = 0
+                logger.warning("Let's replace it with the default content.")
+                saved_searches = self.get_default_file_content()
+                self.dump_file(saved_searches)
             elif "_default" not in saved_searches:
                 logger.warning(
                     "Missing '_default' quicksearch in _user/quicksearches.json file content : {}.".format(
                         saved_searches
                     )
                 )
-                saved_searches = 0
+                logger.warning("Let's add the default one.")
+                # if default search is missing, let's adding it to JSON file content
+                saved_searches["_default"] = self.get_default_file_content().get("_default")
+                self.dump_file(saved_searches)
             else:
                 logger.info(
                     "_user/quicksearches.json file content successfully loaded : {}.".format(
                         saved_searches
                     )
                 )
+                for quicksearch in saved_searches:
+                    quicksearch_url = saved_searches.get(quicksearch).get("url")
+                    if self.api_base_url not in quicksearch_url:
+                        default_search_parameters = quicksearch_url.split("/resources/search?")[1]
+                        base_search_url = self.api_base_url + "/resources/search?"
+
+                        saved_searches[quicksearch]["url"] = (
+                            base_search_url + default_search_parameters
+                        )
+                        logger.warning(
+                            "'{}' quicksearch : URL {} replaced with {}.".format(
+                                quicksearch,
+                                quicksearch_url,
+                                base_search_url + default_search_parameters,
+                            )
+                        )
+                    else:
+                        pass
+                self.dump_file(saved_searches)
 
         except Exception as e:
             if not self.json_path.exists() or not self.json_path.is_file():
@@ -209,37 +257,11 @@ class QuickSearchManager:
                         str(self.json_path), str(e)
                     )
                 )
-                logger.warning(
-                    "Let's create one with default values: {}.".format(self.json_path)
-                )
-                saved_searches = {
-                    "_default": {
-                        "contacts": None,
-                        "datatype": "type:dataset",
-                        "favorite": None,
-                        "formats": None,
-                        "geofilter": None,
-                        "inspire": None,
-                        "lang": "fr",
-                        "licenses": None,
-                        "ob": "relevance",
-                        "od": "desc",
-                        "operation": "intersects",
-                        "owners": None,
-                        "page": 1,
-                        "show": True,
-                        "srs": None,
-                        "text": "",
-                        "url": "{}/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0&_lang=fr".format(self.api_base_url),
-                    }
-                }
+                logger.warning("Let's create one with default values: {}.".format(self.json_path))
+                saved_searches = self.get_default_file_content()
                 self.dump_file(saved_searches)
             else:
-                logger.error(
-                    "_user/quicksearches.json file can't be read : {}.".format(
-                        str(e)
-                    )
-                )
+                logger.error("_user/quicksearches.json file can't be read : {}.".format(str(e)))
                 saved_searches = 0
 
         logger.debug(

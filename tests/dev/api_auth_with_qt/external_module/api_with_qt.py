@@ -57,13 +57,9 @@ logging.captureWarnings(True)
 
 logger.setLevel(log_level)
 log_form = logging.Formatter(
-    "%(asctime)s || %(levelname)s "
-    "|| %(module)s - %(lineno)d ||"
-    " %(funcName)s || %(message)s"
+    "%(asctime)s || %(levelname)s " "|| %(module)s - %(lineno)d ||" " %(funcName)s || %(message)s"
 )
-logfile = RotatingFileHandler(
-    os.path.join(logdir, "log_api_with_pyqt.log"), "a", 5000000, 1
-)
+logfile = RotatingFileHandler(os.path.join(logdir, "log_api_with_pyqt.log"), "a", 5000000, 1)
 
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
@@ -90,9 +86,7 @@ class ApiConnection:
         # for connection :
         self.naMngr = QNetworkAccessManager()
         self.token_url = "https://id.api.isogeo.com/oauth/token"
-        self.request_url = (
-            "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
-        )
+        self.request_url = "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
         self.token = ""
 
         # for ui :
@@ -118,9 +112,7 @@ class ApiConnection:
             logger.debug("Credentials issue : {}".format(e))
             return
 
-        self.md_expected = isogeo.search(whole_share=0, page_size=0, augment=0).get(
-            "total"
-        )
+        self.md_expected = isogeo.search(whole_share=0, page_size=0, augment=0).get("total")
         self.ui.lbl_expected.setText("{} expected resources".format(self.md_expected))
         logger.debug(
             "isogeo-pysdk validates the authentication file, {} accessible resources".format(
@@ -156,9 +148,7 @@ class ApiConnection:
         # setting headers
         token_rqst.setRawHeader(crd_header_name, crd_header_value)
         logger.debug(
-            "Setting credentials header : {}".format(
-                token_rqst.rawHeader(crd_header_name)
-            )
+            "Setting credentials header : {}".format(token_rqst.rawHeader(crd_header_name))
         )
 
         token_rqst.setHeader(token_rqst.ContentTypeHeader, ct_header_value)
@@ -219,9 +209,7 @@ class ApiConnection:
 
         # setting credentials header
         rqst.setRawHeader(crd_header_name, crd_header_value)
-        logger.debug(
-            "Setting credentials header : {}".format(rqst.rawHeader(crd_header_name))
-        )
+        logger.debug("Setting credentials header : {}".format(rqst.rawHeader(crd_header_name)))
 
         # sending request
         rqst_reply = self.naMngr.get(rqst)

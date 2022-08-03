@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>654</width>
-    <height>822</height>
+    <width>572</width>
+    <height>900</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>654</width>
-    <height>759</height>
+    <width>572</width>
+    <height>611</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>900</width>
-    <height>1792</height>
+    <width>700</width>
+    <height>900</height>
    </size>
   </property>
   <property name="windowIcon">
@@ -33,6 +33,12 @@
    <string notr="true">Isogeo</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="maximumSize">
     <size>
      <width>900</width>
@@ -40,10 +46,25 @@
     </size>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>5</number>
+    </property>
+    <property name="topMargin">
+     <number>5</number>
+    </property>
+    <property name="rightMargin">
+     <number>5</number>
+    </property>
+    <property name="bottomMargin">
+     <number>5</number>
+    </property>
+    <property name="spacing">
+     <number>5</number>
+    </property>
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -53,6 +74,70 @@
         <width>16777215</width>
         <height>16777215</height>
        </size>
+      </property>
+      <property name="palette">
+       <palette>
+        <active>
+         <colorrole role="WindowText">
+          <brush brushstyle="SolidPattern">
+           <color alpha="255">
+            <red>39</red>
+            <green>39</green>
+            <blue>39</blue>
+           </color>
+          </brush>
+         </colorrole>
+         <colorrole role="Text">
+          <brush brushstyle="SolidPattern">
+           <color alpha="255">
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+           </color>
+          </brush>
+         </colorrole>
+        </active>
+        <inactive>
+         <colorrole role="WindowText">
+          <brush brushstyle="SolidPattern">
+           <color alpha="255">
+            <red>39</red>
+            <green>39</green>
+            <blue>39</blue>
+           </color>
+          </brush>
+         </colorrole>
+         <colorrole role="Text">
+          <brush brushstyle="SolidPattern">
+           <color alpha="255">
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+           </color>
+          </brush>
+         </colorrole>
+        </inactive>
+        <disabled>
+         <colorrole role="WindowText">
+          <brush brushstyle="SolidPattern">
+           <color alpha="255">
+            <red>120</red>
+            <green>120</green>
+            <blue>120</blue>
+           </color>
+          </brush>
+         </colorrole>
+         <colorrole role="Text">
+          <brush brushstyle="SolidPattern">
+           <color alpha="255">
+            <red>120</red>
+            <green>120</green>
+            <blue>120</blue>
+           </color>
+          </brush>
+         </colorrole>
+        </disabled>
+       </palette>
       </property>
       <property name="font">
        <font>
@@ -67,6 +152,12 @@
        <number>0</number>
       </property>
       <widget class="QWidget" name="tab_search">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="maximumSize">
         <size>
          <width>875</width>
@@ -81,495 +172,44 @@
         <string>Search</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_8">
-        <item row="2" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_17">
-          <item>
-           <widget class="QPushButton" name="btn_show">
-            <property name="minimumSize">
-             <size>
-              <width>250</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>360</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Display the results list</string>
-            </property>
-            <property name="text">
-             <string>Show results</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/search/eye.svg</normaloff>:/plugins/Isogeo/resources/search/eye.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cbb_ob">
-            <property name="minimumSize">
-             <size>
-              <width>45</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>50</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Sorting method</string>
-            </property>
-            <property name="maxCount">
-             <number>6</number>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-            </property>
-            <property name="minimumContentsLength">
-             <number>20</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cbb_od">
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>50</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Sorting direction</string>
-            </property>
-            <property name="maxVisibleItems">
-             <number>3</number>
-            </property>
-            <property name="maxCount">
-             <number>3</number>
-            </property>
-            <property name="insertPolicy">
-             <enum>QComboBox::InsertAlphabetically</enum>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-            </property>
-            <property name="minimumContentsLength">
-             <number>20</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="Line" name="line_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_reinit">
-            <property name="minimumSize">
-             <size>
-              <width>30</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>75</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Reset all input fields</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/undo.svg</normaloff>:/plugins/Isogeo/resources/undo.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_quicksearch_save">
-            <property name="minimumSize">
-             <size>
-              <width>30</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>75</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Save research</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/save.svg</normaloff>:/plugins/Isogeo/resources/save.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="0">
-         <layout class="QGridLayout" name="lyt_search">
-          <item row="0" column="0" colspan="5">
-           <widget class="QLineEdit" name="txt_input">
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Enter your search terms</string>
-            </property>
-            <property name="autoFillBackground">
-             <bool>true</bool>
-            </property>
-            <property name="inputMask">
-             <string/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="placeholderText">
-             <string>roads, habitat, cadastral parcel, transport</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="4" colspan="3">
-           <widget class="QComboBox" name="cbb_quicksearch_use">
-            <property name="minimumSize">
-             <size>
-              <width>200</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="sizeIncrement">
-             <size>
-              <width>2</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Quick searches</string>
-            </property>
-            <property name="autoFillBackground">
-             <bool>true</bool>
-            </property>
-            <property name="insertPolicy">
-             <enum>QComboBox::InsertAlphabetically</enum>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-            <item>
-             <property name="text">
-              <string>Quicksearches</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QgsCheckableComboBox" name="cbb_chck_kw">
-            <property name="minimumSize">
-             <size>
-              <width>300</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>300</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="autoFillBackground">
-             <bool>true</bool>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-            </property>
-            <property name="minimumContentsLength">
-             <number>20</number>
-            </property>
-            <property name="defaultText">
-             <string>---- Keywords ----</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <spacer name="horizontalSpacer_12">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="ico_kw">
-            <property name="maximumSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/tag.svg</pixmap>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="5" colspan="2">
-           <widget class="QPushButton" name="btn_search_go">
-            <property name="minimumSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="toolTip">
-             <string>Launch search</string>
-            </property>
-            <property name="autoFillBackground">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/search/search.svg</normaloff>:/plugins/Isogeo/resources/search/search.svg</iconset>
-            </property>
-            <property name="autoDefault">
-             <bool>true</bool>
-            </property>
-            <property name="default">
-             <bool>true</bool>
-            </property>
-            <property name="flat">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QLabel" name="label">
-            <property name="maximumSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/bolt.svg</pixmap>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="4" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_12">
-          <item>
-           <spacer name="horizontalSpacer_7">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>98</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_previous">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string notr="true"/>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/search/caret-left.svg</normaloff>:/plugins/Isogeo/resources/search/caret-left.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="lbl_page">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Page x on x</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_next">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources.qrc">
-              <normaloff>:/plugins/Isogeo/resources/search/caret-right.svg</normaloff>:/plugins/Isogeo/resources/search/caret-right.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>128</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item row="3" column="0">
-         <widget class="QTableWidget" name="tbl_result">
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="sortingEnabled">
-           <bool>false</bool>
-          </property>
-          <attribute name="horizontalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <column>
-           <property name="text">
-            <string>Title</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Modified</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Type</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Add</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-        <item row="1" column="0">
+        <property name="leftMargin">
+         <number>5</number>
+        </property>
+        <property name="topMargin">
+         <number>11</number>
+        </property>
+        <property name="rightMargin">
+         <number>5</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <item row="6" column="0">
          <widget class="QgsCollapsibleGroupBox" name="grp_filters">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="maximumSize">
            <size>
-            <width>800</width>
+            <width>900</width>
             <height>16777215</height>
            </size>
           </property>
           <property name="font">
            <font>
+            <pointsize>9</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
           </property>
           <property name="title">
            <string>Advanced search</string>
@@ -581,6 +221,21 @@
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="spacing">
+            <number>5</number>
+           </property>
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
@@ -593,6 +248,111 @@
                  <property name="sizeConstraint">
                   <enum>QLayout::SetMaximumSize</enum>
                  </property>
+                 <item>
+                  <layout class="QVBoxLayout" name="lyt_vert_filter_grpTh">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_16">
+                     <item>
+                      <widget class="QLabel" name="ico_grpTh">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>18</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/paperclip.svg</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="lbl_grpTh">
+                       <property name="font">
+                        <font>
+                         <pointsize>8</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Group theme</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_24">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="cbb_grpTh">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>245</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>298</width>
+                       <height>25</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="currentIndex">
+                      <number>-1</number>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
+                     </property>
+                     <property name="insertPolicy">
+                      <enum>QComboBox::InsertAlphabetically</enum>
+                     </property>
+                     <property name="sizeAdjustPolicy">
+                      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
                  <item>
                   <layout class="QVBoxLayout" name="lyt_vert_filter_geo">
                    <property name="sizeConstraint">
@@ -623,6 +383,7 @@
                       <widget class="QLabel" name="lbl_geofilter">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
@@ -657,21 +418,35 @@
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>250</width>
+                       <width>245</width>
                        <height>20</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>280</width>
+                       <width>298</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
                      </property>
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>12</width>
+                       <height>12</height>
+                      </size>
                      </property>
                     </widget>
                    </item>
@@ -714,8 +489,8 @@
                       <widget class="QLabel" name="lbl_format">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
-                         <italic>false</italic>
                          <bold>true</bold>
                         </font>
                        </property>
@@ -749,15 +524,23 @@
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>250</width>
+                       <width>245</width>
                        <height>20</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>280</width>
+                       <width>298</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -806,8 +589,8 @@
                       <widget class="QLabel" name="lbl_inspire">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
-                         <italic>false</italic>
                          <bold>true</bold>
                         </font>
                        </property>
@@ -841,15 +624,23 @@
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>250</width>
+                       <width>245</width>
                        <height>20</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>280</width>
+                       <width>298</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -897,6 +688,7 @@
                       <widget class="QLabel" name="lbl_contact">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
@@ -905,7 +697,7 @@
                         <string>Contact</string>
                        </property>
                        <property name="scaledContents">
-                        <bool>true</bool>
+                        <bool>false</bool>
                        </property>
                       </widget>
                      </item>
@@ -934,15 +726,23 @@
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>250</width>
+                       <width>245</width>
                        <height>20</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>280</width>
+                       <width>298</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -981,6 +781,114 @@
                   <enum>QLayout::SetMaximumSize</enum>
                  </property>
                  <item>
+                  <layout class="QVBoxLayout" name="lyt_vert_filter_keywords">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_18">
+                     <item>
+                      <widget class="QLabel" name="ico_kw">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>18</width>
+                         <height>18</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="pixmap">
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/tag.svg</pixmap>
+                       </property>
+                       <property name="scaledContents">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="lbl_kw">
+                       <property name="font">
+                        <font>
+                         <pointsize>8</pointsize>
+                         <weight>75</weight>
+                         <bold>true</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Keyword</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_23">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QgsCheckableComboBox" name="cbb_chck_kw">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>245</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>298</width>
+                       <height>25</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="editable">
+                      <bool>true</bool>
+                     </property>
+                     <property name="currentText">
+                      <string/>
+                     </property>
+                     <property name="sizeAdjustPolicy">
+                      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                     </property>
+                     <property name="minimumContentsLength">
+                      <number>20</number>
+                     </property>
+                     <property name="defaultText">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
                   <layout class="QVBoxLayout" name="lyt_vert_filter_type">
                    <property name="sizeConstraint">
                     <enum>QLayout::SetDefaultConstraint</enum>
@@ -1010,6 +918,7 @@
                       <widget class="QLabel" name="lbl_type">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
@@ -1044,15 +953,23 @@
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>250</width>
+                       <width>245</width>
                        <height>20</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>280</width>
+                       <width>298</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -1090,7 +1007,7 @@
                         <string/>
                        </property>
                        <property name="pixmap">
-                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/users.svg</pixmap>
+                        <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/users_blue.svg</pixmap>
                        </property>
                        <property name="scaledContents">
                         <bool>true</bool>
@@ -1101,8 +1018,8 @@
                       <widget class="QLabel" name="lbl_owner">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
-                         <italic>false</italic>
                          <bold>true</bold>
                         </font>
                        </property>
@@ -1136,15 +1053,23 @@
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>250</width>
+                       <width>245</width>
                        <height>20</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>280</width>
+                       <width>298</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -1193,8 +1118,8 @@
                       <widget class="QLabel" name="lbl_srs">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
-                         <italic>false</italic>
                          <bold>true</bold>
                         </font>
                        </property>
@@ -1228,15 +1153,23 @@
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>250</width>
+                       <width>245</width>
                        <height>20</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>280</width>
+                       <width>298</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -1278,6 +1211,7 @@
                       <widget class="QLabel" name="lbl_license">
                        <property name="font">
                         <font>
+                         <pointsize>8</pointsize>
                          <weight>75</weight>
                          <bold>true</bold>
                         </font>
@@ -1315,15 +1249,23 @@
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>250</width>
+                       <width>245</width>
                        <height>20</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>280</width>
+                       <width>298</width>
                        <height>25</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="maxVisibleItems">
+                      <number>15</number>
                      </property>
                      <property name="insertPolicy">
                       <enum>QComboBox::InsertAlphabetically</enum>
@@ -1344,12 +1286,586 @@
           </layout>
          </widget>
         </item>
+        <item row="5" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMinimumSize</enum>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_20">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="sizeConstraint">
+             <enum>QLayout::SetDefaultConstraint</enum>
+            </property>
+            <property name="leftMargin">
+             <number>5</number>
+            </property>
+            <property name="rightMargin">
+             <number>5</number>
+            </property>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLineEdit" name="txt_input">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>215</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>268</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>Enter your search terms</string>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>true</bool>
+                </property>
+                <property name="inputMask">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="placeholderText">
+                 <string>roads, habitat, cadastral parcel, transport...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btn_search_go">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>30</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>30</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="toolTip">
+                 <string>Launch search</string>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../resources.qrc">
+                  <normaloff>:/plugins/Isogeo/resources/search/search.svg</normaloff>:/plugins/Isogeo/resources/search/search.svg</iconset>
+                </property>
+                <property name="autoDefault">
+                 <bool>true</bool>
+                </property>
+                <property name="default">
+                 <bool>true</bool>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_12">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_27">
+              <property name="spacing">
+               <number>5</number>
+              </property>
+              <property name="sizeConstraint">
+               <enum>QLayout::SetDefaultConstraint</enum>
+              </property>
+              <item>
+               <widget class="QLabel" name="ico_quicksearch">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>18</width>
+                  <height>18</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>18</width>
+                  <height>18</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/bolt.svg</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="cbb_quicksearch_use">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>222</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>275</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="sizeIncrement">
+                 <size>
+                  <width>2</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>9</pointsize>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>Quick searches</string>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>true</bool>
+                </property>
+                <property name="insertPolicy">
+                 <enum>QComboBox::InsertAlphabetically</enum>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Quicksearches</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item row="7" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_17">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="sizeConstraint">
+           <enum>QLayout::SetDefaultConstraint</enum>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btn_show">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>255</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>303</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Display the results list</string>
+            </property>
+            <property name="text">
+             <string>Show results</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/search/eye.svg</normaloff>:/plugins/Isogeo/resources/search/eye.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cbb_ob">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Sorting method</string>
+            </property>
+            <property name="maxCount">
+             <number>6</number>
+            </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+            </property>
+            <property name="minimumContentsLength">
+             <number>20</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cbb_od">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Sorting direction</string>
+            </property>
+            <property name="maxVisibleItems">
+             <number>3</number>
+            </property>
+            <property name="maxCount">
+             <number>3</number>
+            </property>
+            <property name="insertPolicy">
+             <enum>QComboBox::InsertAlphabetically</enum>
+            </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+            </property>
+            <property name="minimumContentsLength">
+             <number>20</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_reinit">
+            <property name="minimumSize">
+             <size>
+              <width>60</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Reset all input fields</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/undo.svg</normaloff>:/plugins/Isogeo/resources/undo.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_quicksearch_save">
+            <property name="minimumSize">
+             <size>
+              <width>60</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Save research</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/save.svg</normaloff>:/plugins/Isogeo/resources/save.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="8" column="0">
+         <widget class="QTableWidget" name="tbl_result">
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::NoSelection</enum>
+          </property>
+          <property name="sortingEnabled">
+           <bool>false</bool>
+          </property>
+          <attribute name="horizontalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Title</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Modified</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Add</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item row="9" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <item>
+           <spacer name="horizontalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>98</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_previous">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string notr="true"/>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/search/caret-left.svg</normaloff>:/plugins/Isogeo/resources/search/caret-left.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lbl_page">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Page x on x</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_next">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/plugins/Isogeo/resources/search/caret-right.svg</normaloff>:/plugins/Isogeo/resources/search/caret-right.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>128</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
        </layout>
        <zorder>grp_filters</zorder>
        <zorder>tbl_result</zorder>
        <zorder></zorder>
+       <zorder></zorder>
+       <zorder></zorder>
       </widget>
       <widget class="QWidget" name="tab_settings">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>875</width>
+         <height>2000</height>
+        </size>
+       </property>
        <attribute name="icon">
         <iconset resource="../resources.qrc">
          <normaloff>:/plugins/Isogeo/resources/settings/gear.svg</normaloff>:/plugins/Isogeo/resources/settings/gear.svg</iconset>
@@ -1358,152 +1874,131 @@
         <string>Settings</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="7" column="0">
-         <widget class="QGroupBox" name="groupBox_4">
-          <property name="title">
-           <string>Layer adding settings</string>
+        <property name="leftMargin">
+         <number>5</number>
+        </property>
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <property name="rightMargin">
+         <number>5</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <item row="6" column="0">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <layout class="QGridLayout" name="gridLayout_3">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>450</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="title">
+           <string>Authentication settings</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="horizontalSpacing">
+            <number>5</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>3</number>
+           </property>
            <item row="1" column="0">
-            <layout class="QVBoxLayout" name="verticalLayout">
+            <widget class="QTextBrowser" name="txt_shares">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_21">
+             <property name="spacing">
+              <number>5</number>
+             </property>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_14">
-               <item>
-                <widget class="QLabel" name="label_config_db_conn">
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Configure embed database connections to be used by the plugin</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_21">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="btn_open_ora_config_dialog">
-                 <property name="minimumSize">
-                  <size>
-                   <width>80</width>
-                   <height>25</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>Oracle databases</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="btn_open_pgdb_config_dialog">
-                 <property name="minimumSize">
-                  <size>
-                   <width>80</width>
-                   <height>25</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>PostGIS databases</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QLabel" name="lbl_auth">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Set plugin authentication:</string>
+               </property>
+              </widget>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <item>
-                <widget class="QLabel" name="label_portal_url">
-                 <property name="font">
-                  <font>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                 <property name="layoutDirection">
-                  <enum>Qt::LeftToRight</enum>
-                 </property>
-                 <property name="text">
-                  <string>Configure Isogeo portal metadata URL display into layer's properties</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_22">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="btn_open_portalURL_config_dialog">
-                 <property name="minimumSize">
-                  <size>
-                   <width>80</width>
-                   <height>25</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>30</height>
-                  </size>
-                 </property>
-                 <property name="toolTip">
-                  <string>Choose to add metadata portal URL to layer properties and specify portal base URL</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../resources.qrc">
-                   <normaloff>:/plugins/Isogeo/resources/edit.svg</normaloff>:/plugins/Isogeo/resources/edit.svg</iconset>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_change_user">
+               <property name="minimumSize">
+                <size>
+                 <width>80</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>80</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="../resources.qrc">
+                 <normaloff>:/plugins/Isogeo/resources/settings/key.svg</normaloff>:/plugins/Isogeo/resources/settings/key.svg</iconset>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -1512,27 +2007,65 @@
         </item>
         <item row="1" column="0">
          <widget class="QGroupBox" name="groupBox_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>121</height>
+            <height>0</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
           </property>
           <property name="title">
            <string>Search settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="spacing">
+            <number>5</number>
+           </property>
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_10">
+             <property name="spacing">
+              <number>3</number>
+             </property>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QComboBox" name="cbb_quicksearch_edit">
                  <property name="minimumSize">
                   <size>
-                   <width>221</width>
-                   <height>24</height>
+                   <width>250</width>
+                   <height>25</height>
                   </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
                  </property>
                  <property name="toolTip">
                   <string>Edit quicksearch</string>
@@ -1556,14 +2089,14 @@
                 <widget class="QPushButton" name="btn_rename_sr">
                  <property name="minimumSize">
                   <size>
-                   <width>111</width>
+                   <width>80</width>
                    <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>115</width>
-                   <height>25</height>
+                   <width>80</width>
+                   <height>30</height>
                   </size>
                  </property>
                  <property name="font">
@@ -1572,8 +2105,11 @@
                    <bold>false</bold>
                   </font>
                  </property>
+                 <property name="toolTip">
+                  <string>Rename selected quicksearch</string>
+                 </property>
                  <property name="text">
-                  <string>Rename</string>
+                  <string/>
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -1591,8 +2127,8 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>60</width>
-                   <height>25</height>
+                   <width>80</width>
+                   <height>30</height>
                   </size>
                  </property>
                  <property name="font">
@@ -1600,6 +2136,9 @@
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
+                 </property>
+                 <property name="toolTip">
+                  <string>Delete selected quicksearch</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -1614,10 +2153,14 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lbl_default">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -1644,15 +2187,18 @@
                 <widget class="QPushButton" name="btn_default_save">
                  <property name="minimumSize">
                   <size>
-                   <width>111</width>
+                   <width>80</width>
                    <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>115</width>
-                   <height>25</height>
+                   <width>80</width>
+                   <height>30</height>
                   </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Save current search as default</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -1673,9 +2219,12 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>60</width>
-                   <height>25</height>
+                   <width>80</width>
+                   <height>30</height>
                   </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Reset default search</string>
                  </property>
                  <property name="text">
                   <string/>
@@ -1690,10 +2239,14 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lbl_geo_op">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -1720,15 +2273,21 @@
                 <widget class="QComboBox" name="cbb_geo_op">
                  <property name="minimumSize">
                   <size>
-                   <width>176</width>
+                   <width>167</width>
                    <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>250</width>
-                   <height>25</height>
+                   <width>167</width>
+                   <height>30</height>
                   </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
                  </property>
                 </widget>
                </item>
@@ -1736,6 +2295,9 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_13">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <property name="sizeConstraint">
                 <enum>QLayout::SetDefaultConstraint</enum>
                </property>
@@ -1746,6 +2308,7 @@
                 <widget class="QLabel" name="lbl_cache">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -1778,8 +2341,8 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>60</width>
-                   <height>25</height>
+                   <width>80</width>
+                   <height>30</height>
                   </size>
                  </property>
                  <property name="toolTip">
@@ -1804,86 +2367,67 @@
           </layout>
          </widget>
         </item>
-        <item row="6" column="0">
-         <widget class="QGroupBox" name="groupBox">
-          <property name="title">
-           <string>Authentication settings</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_5">
-           <item row="1" column="0">
-            <widget class="QTextBrowser" name="txt_shares">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>300</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <layout class="QHBoxLayout" name="horizontalLayout_21">
-             <item>
-              <widget class="QLabel" name="lbl_auth">
-               <property name="font">
-                <font>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Set plugin authentication:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="btn_change_user">
-               <property name="minimumSize">
-                <size>
-                 <width>80</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="../resources.qrc">
-                 <normaloff>:/plugins/Isogeo/resources/settings/key.svg</normaloff>:/plugins/Isogeo/resources/settings/key.svg</iconset>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
         <item row="8" column="0">
-         <widget class="QGroupBox" name="groupBox_3">
-          <property name="title">
-           <string>Resources</string>
+         <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <layout class="QGridLayout" name="gridLayout_6">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 3px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
+          </property>
+          <property name="title">
+           <string>Advanced resources</string>
+          </property>
+          <property name="collapsed">
+           <bool>false</bool>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_9">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="horizontalSpacing">
+            <number>5</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>2</number>
+           </property>
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_12">
+             <property name="spacing">
+              <number>3</number>
+             </property>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_24">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lbl_report">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -1916,21 +2460,28 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>100</width>
+                   <width>80</width>
                    <height>30</height>
                   </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
                  </property>
                  <property name="cursor">
                   <cursorShape>PointingHandCursor</cursorShape>
                  </property>
                  <property name="toolTip">
-                  <string>Get the log file: &quot;log_isogeo_plugin.log&quot;</string>
+                  <string>Open folder of &quot;log_isogeo_plugin.log&quot; file</string>
                  </property>
                  <property name="autoFillBackground">
                   <bool>true</bool>
                  </property>
                  <property name="text">
-                  <string>LOG File</string>
+                  <string>LOG</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -1971,10 +2522,14 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_23">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lbl_help">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -2033,10 +2588,14 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_22">
+               <property name="spacing">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="lbl_credits">
                  <property name="font">
                   <font>
+                   <pointsize>8</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -2085,6 +2644,195 @@
                  <property name="icon">
                   <iconset resource="../resources.qrc">
                    <normaloff>:/plugins/Isogeo/resources/settings/info.svg</normaloff>:/plugins/Isogeo/resources/settings/info.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QGroupBox" name="groupBox_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="title">
+           <string>Layer adding settings</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <item row="1" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="spacing">
+              <number>3</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_14">
+               <property name="spacing">
+                <number>5</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_config_db_conn">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>8</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Configure embed database connections</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_21">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_open_ora_config_dialog">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Oracle databases</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_open_pgdb_config_dialog">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>PostgreSQL databases</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <property name="spacing">
+                <number>5</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_portal_url">
+                 <property name="font">
+                  <font>
+                   <pointsize>8</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="layoutDirection">
+                  <enum>Qt::LeftToRight</enum>
+                 </property>
+                 <property name="text">
+                  <string>Configure Isogeo portal metadata URL</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_22">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_open_portalURL_config_dialog">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="toolTip">
+                  <string>Choose to add metadata portal URL to layer properties and specify portal base URL</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../resources.qrc">
+                   <normaloff>:/plugins/Isogeo/resources/edit.svg</normaloff>:/plugins/Isogeo/resources/edit.svg</iconset>
                  </property>
                 </widget>
                </item>

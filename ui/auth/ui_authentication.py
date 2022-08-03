@@ -17,7 +17,7 @@ class Ui_dlg_form_auth_prompt(object):
         dlg_form_auth_prompt.setMaximumSize(QtCore.QSize(800, 400))
         icon = QtGui.QIcon()
         icon.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/users.svg"),
+            QtGui.QPixmap(":/plugins/Isogeo/resources/settings/key.svg"),
             QtGui.QIcon.Normal,
             QtGui.QIcon.Off,
         )
@@ -37,7 +37,7 @@ class Ui_dlg_form_auth_prompt(object):
         font.setBold(True)
         font.setWeight(75)
         self.grb_connection_ready.setFont(font)
-        self.grb_connection_ready.setAutoFillBackground(True)
+        self.grb_connection_ready.setAutoFillBackground(False)
         self.grb_connection_ready.setLocale(
             QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
         )
@@ -78,15 +78,13 @@ class Ui_dlg_form_auth_prompt(object):
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.lbl_app_secret.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.lbl_app_secret.sizePolicy().hasHeightForWidth())
         self.lbl_app_secret.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setBold(False)
         font.setWeight(50)
         self.lbl_app_secret.setFont(font)
-        self.lbl_app_secret.setAutoFillBackground(True)
+        self.lbl_app_secret.setAutoFillBackground(False)
         self.lbl_app_secret.setLocale(
             QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
         )
@@ -102,8 +100,9 @@ class Ui_dlg_form_auth_prompt(object):
         font.setBold(False)
         font.setWeight(50)
         self.chb_isogeo_editor.setFont(font)
+        self.chb_isogeo_editor.setToolTip("")
         self.chb_isogeo_editor.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.chb_isogeo_editor.setAutoFillBackground(True)
+        self.chb_isogeo_editor.setAutoFillBackground(False)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(
             QtGui.QPixmap(":/plugins/Isogeo/resources/authentication/user.svg"),
@@ -123,7 +122,7 @@ class Ui_dlg_form_auth_prompt(object):
         font.setBold(False)
         font.setWeight(50)
         self.lbl_browse_credentials.setFont(font)
-        self.lbl_browse_credentials.setAutoFillBackground(True)
+        self.lbl_browse_credentials.setAutoFillBackground(False)
         self.lbl_browse_credentials.setScaledContents(True)
         self.lbl_browse_credentials.setAlignment(
             QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
@@ -136,9 +135,7 @@ class Ui_dlg_form_auth_prompt(object):
         )
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
-        sizePolicy.setHeightForWidth(
-            self.btn_ok_cancel.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.btn_ok_cancel.sizePolicy().hasHeightForWidth())
         self.btn_ok_cancel.setSizePolicy(sizePolicy)
         self.btn_ok_cancel.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_ok_cancel.setMaximumSize(QtCore.QSize(16777215, 100))
@@ -146,7 +143,8 @@ class Ui_dlg_form_auth_prompt(object):
         font.setBold(False)
         font.setWeight(50)
         self.btn_ok_cancel.setFont(font)
-        self.btn_ok_cancel.setAutoFillBackground(True)
+        self.btn_ok_cancel.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.btn_ok_cancel.setAutoFillBackground(False)
         self.btn_ok_cancel.setOrientation(QtCore.Qt.Horizontal)
         self.btn_ok_cancel.setStandardButtons(
             QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Save
@@ -170,7 +168,7 @@ class Ui_dlg_form_auth_prompt(object):
         font.setBold(False)
         font.setWeight(50)
         self.lbl_app_id.setFont(font)
-        self.lbl_app_id.setAutoFillBackground(True)
+        self.lbl_app_id.setAutoFillBackground(False)
         self.lbl_app_id.setLocale(
             QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
         )
@@ -186,9 +184,7 @@ class Ui_dlg_form_auth_prompt(object):
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.ent_app_secret.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.ent_app_secret.sizePolicy().hasHeightForWidth())
         self.ent_app_secret.setSizePolicy(sizePolicy)
         self.ent_app_secret.setMinimumSize(QtCore.QSize(475, 25))
         self.ent_app_secret.setMaximumSize(QtCore.QSize(800, 30))
@@ -202,9 +198,7 @@ class Ui_dlg_form_auth_prompt(object):
         self.ent_app_secret.setMaxLength(64)
         self.ent_app_secret.setEchoMode(QtWidgets.QLineEdit.PasswordEchoOnEdit)
         self.ent_app_secret.setReadOnly(True)
-        self.ent_app_secret.setPlaceholderText(
-            "*******************************************"
-        )
+        self.ent_app_secret.setPlaceholderText("*******************************************")
         self.ent_app_secret.setObjectName("ent_app_secret")
         self.gridLayout_2.addWidget(self.ent_app_secret, 3, 3, 1, 1)
         self.lbl_api_url = QtWidgets.QLabel(self.grb_connection_ready)
@@ -212,7 +206,7 @@ class Ui_dlg_form_auth_prompt(object):
         font.setBold(False)
         font.setWeight(50)
         self.lbl_api_url.setFont(font)
-        self.lbl_api_url.setAutoFillBackground(True)
+        self.lbl_api_url.setAutoFillBackground(False)
         self.lbl_api_url.setScaledContents(True)
         self.lbl_api_url.setAlignment(
             QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
@@ -230,9 +224,7 @@ class Ui_dlg_form_auth_prompt(object):
         )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.btn_browse_credentials.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.btn_browse_credentials.sizePolicy().hasHeightForWidth())
         self.btn_browse_credentials.setSizePolicy(sizePolicy)
         self.btn_browse_credentials.setMinimumSize(QtCore.QSize(475, 30))
         self.btn_browse_credentials.setMaximumSize(QtCore.QSize(800, 30))
@@ -245,7 +237,7 @@ class Ui_dlg_form_auth_prompt(object):
         self.btn_browse_credentials.setFileWidgetButtonVisible(True)
         self.btn_browse_credentials.setUseLink(False)
         self.btn_browse_credentials.setFullUrl(False)
-        self.btn_browse_credentials.setFilter("*.json;*.ini")
+        self.btn_browse_credentials.setFilter("*.json")
         self.btn_browse_credentials.setDefaultRoot("")
         self.btn_browse_credentials.setObjectName("btn_browse_credentials")
         self.gridLayout_2.addWidget(self.btn_browse_credentials, 0, 3, 1, 1)
@@ -257,7 +249,7 @@ class Ui_dlg_form_auth_prompt(object):
         font.setKerning(True)
         self.lbl_api_url_value.setFont(font)
         self.lbl_api_url_value.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
-        self.lbl_api_url_value.setAutoFillBackground(True)
+        self.lbl_api_url_value.setAutoFillBackground(False)
         self.lbl_api_url_value.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.lbl_api_url_value.setText("https://v1.api.isogeo.com/")
         self.lbl_api_url_value.setOpenExternalLinks(True)
@@ -281,7 +273,7 @@ class Ui_dlg_form_auth_prompt(object):
         font.setBold(True)
         font.setWeight(75)
         self.grb_need_account.setFont(font)
-        self.grb_need_account.setAutoFillBackground(True)
+        self.grb_need_account.setAutoFillBackground(False)
         self.grb_need_account.setLocale(
             QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
         )
@@ -300,8 +292,10 @@ class Ui_dlg_form_auth_prompt(object):
         font.setWeight(50)
         self.btn_rdv_isogeo.setFont(font)
         self.btn_rdv_isogeo.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_rdv_isogeo.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         self.btn_rdv_isogeo.setAutoFillBackground(True)
-        self.btn_rdv_isogeo.setDefault(True)
+        self.btn_rdv_isogeo.setAutoDefault(False)
+        self.btn_rdv_isogeo.setDefault(False)
         self.btn_rdv_isogeo.setObjectName("btn_rdv_isogeo")
         self.gridLayout.addWidget(self.btn_rdv_isogeo, 2, 1, 1, 1)
         self.btn_free_test = QtWidgets.QPushButton(self.grb_need_account)
@@ -312,8 +306,10 @@ class Ui_dlg_form_auth_prompt(object):
         font.setWeight(50)
         self.btn_free_test.setFont(font)
         self.btn_free_test.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_free_test.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         self.btn_free_test.setAutoFillBackground(True)
-        self.btn_free_test.setDefault(True)
+        self.btn_free_test.setAutoDefault(False)
+        self.btn_free_test.setDefault(False)
         self.btn_free_test.setObjectName("btn_free_test")
         self.gridLayout.addWidget(self.btn_free_test, 2, 0, 1, 1)
         self.lbl_access_conditions = QtWidgets.QLabel(self.grb_need_account)
@@ -339,35 +335,20 @@ class Ui_dlg_form_auth_prompt(object):
         )
         self.grb_connection_ready.setTitle(
             _translate(
-                "dlg_form_auth_prompt",
-                "I already have Isogeo ID and SECRET for this application",
+                "dlg_form_auth_prompt", "I already have Isogeo ID and SECRET for this application"
             )
         )
         self.ent_app_id.setPlaceholderText(
-            _translate(
-                "dlg_form_auth_prompt",
-                "plugin-qgis-org-a1b23c4d5f6g7h8i9j10kl11mn13op14",
-            )
+            _translate("dlg_form_auth_prompt", "plugin-qgis-org-a1b23c4d5f6g7h8i9j10kl11mn13op14")
         )
-        self.lbl_app_secret.setText(
-            _translate("dlg_form_auth_prompt", "Application SECRET:")
-        )
-        self.chb_isogeo_editor.setToolTip(
-            _translate("dlg_form_auth_prompt", "I've got the power hey yeah heh!")
-        )
+        self.lbl_app_secret.setText(_translate("dlg_form_auth_prompt", "Application SECRET:"))
         self.chb_isogeo_editor.setText(
-            _translate(
-                "dlg_form_auth_prompt", "I've got edition rights on app.isogeo.com"
-            )
+            _translate("dlg_form_auth_prompt", "I've got edition rights on app.isogeo.com")
         )
-        self.lbl_browse_credentials.setText(
-            _translate("dlg_form_auth_prompt", "From a file:")
-        )
+        self.lbl_browse_credentials.setText(_translate("dlg_form_auth_prompt", "From a file:"))
         self.lbl_app_id.setText(_translate("dlg_form_auth_prompt", "Application ID:"))
         self.lbl_api_url.setToolTip(
-            _translate(
-                "dlg_form_auth_prompt", "Only for information, the Isogeo API base URL"
-            )
+            _translate("dlg_form_auth_prompt", "Only for information, the Isogeo API base URL")
         )
         self.lbl_api_url.setText(_translate("dlg_form_auth_prompt", "API location:"))
         self.btn_browse_credentials.setToolTip(

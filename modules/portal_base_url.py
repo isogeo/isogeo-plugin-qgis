@@ -46,9 +46,7 @@ class PortalURLManager:
 
         # Connecting ui
         self.portalURL_config_dialog.accepted.connect(self.save)
-        self.portalURL_config_dialog.chb_portal_url.stateChanged.connect(
-            self.update_input_state
-        )
+        self.portalURL_config_dialog.chb_portal_url.stateChanged.connect(self.update_input_state)
 
     def open_dialog(self):
         """"""

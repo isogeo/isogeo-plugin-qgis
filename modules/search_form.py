@@ -76,14 +76,18 @@ class SearchFormManager(IsogeoDockWidget):
         super().__init__()
 
         self.tr = trad
-        # geofilter, type, format, owner, inspire, srs, contact and license
-        self.cbbs_search_advanced = self.grp_filters.findChildren(QComboBox)
+        # groupTheme, geofilter, type, format, owner, inspire, srs, contact and license
+        self.cbbs_search_advanced = [
+            cbbox for cbbox in self.grp_filters.findChildren(QComboBox) if cbbox != self.cbb_chck_kw
+        ]
+
         # match between widgets and metadata fields
         self.match_widget_field = {
             self.cbb_type: "datatype",
             self.cbb_format: "formats",
             self.cbb_owner: "owners",
             self.cbb_inspire: "inspire",
+            self.cbb_grpTh: "groupTheme",
             self.cbb_srs: "srs",
             self.cbb_contact: "contacts",
             self.cbb_license: "licenses",
@@ -92,7 +96,7 @@ class SearchFormManager(IsogeoDockWidget):
         # Static dictionnaries for filling static widgets
         self.dict_operation = OrderedDict(
             [
-                (self.tr("Intersects", context=__class__.__name__), "intersects"),
+                (self.tr("intersects", context=__class__.__name__), "intersects"),
                 (self.tr("within", context=__class__.__name__), "within"),
                 (self.tr("contains", context=__class__.__name__), "contains"),
             ]
@@ -151,9 +155,7 @@ class SearchFormManager(IsogeoDockWidget):
         # Setting result manager
         self.results_mng = ResultsManager(self)
 
-    def update_cbb_keywords(
-        self, tags_keywords: dict = {}, selected_keywords: list = []
-    ):
+    def update_cbb_keywords(self, tags_keywords: dict = {}, selected_keywords: list = []):
         """Keywords combobox is specific because items are checkable.
         See: https://github.com/isogeo/isogeo-plugin-qgis/issues/159
 
@@ -180,11 +182,20 @@ class SearchFormManager(IsogeoDockWidget):
         model.clear()
 
         # parse keywords and check selected
+        cbb_chck_kw_width = self.cbb_chck_kw.width() - 10
+        cbb_chck_kw_fm = self.cbb_chck_kw.fontMetrics()
+
         i = 0  # row index
-        for tag_label, tag_code in sorted(
-            tags_keywords.items(), key=lambda item: item[1]
-        ):
-            item = QStandardItem(tag_label)
+        for tag_label, tag_code in sorted(tags_keywords.items(), key=lambda item: item[1]):
+            item = QStandardItem()
+            # format combobox item label fit the widget width
+            tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
+            if tag_label_width > cbb_chck_kw_width:
+                item.setText(cbb_chck_kw_fm.elidedText(tag_label, 1, cbb_chck_kw_width))
+                item.setToolTip(tag_label)
+            else:
+                item.setText(tag_label)
+
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             item.setData(tag_code, 32)
             if len(selected_keywords) == 0 or tag_code not in selected_keywords:
@@ -217,11 +228,10 @@ class SearchFormManager(IsogeoDockWidget):
         :param dict tags: 'tags' parameter of Isogeo.search_slot method.
         """
         logger.debug("Filling Advanced search comboboxes from tags")
-        # clear widgets
+
+        # Clear widgets then add the "nothing selected" option
         for cbb in self.cbbs_search_advanced:
             cbb.clear()
-        # Initiating the "nothing selected"
-        for cbb in self.cbbs_search_advanced:
             cbb.addItem(" - ")
         # Filling advanced search comboboxes (except geo filter)
         for cbb in self.match_widget_field.keys():
@@ -229,9 +239,7 @@ class SearchFormManager(IsogeoDockWidget):
             for tag in field_tags:
                 cbb.addItem(tag, field_tags.get(tag))
         # Filling geo filter combobox
-        self.cbb_geofilter.addItem(
-            self.tr("Map canvas", context=__class__.__name__), "mapcanvas"
-        )
+        self.cbb_geofilter.addItem(self.tr(" Map canvas", context=__class__.__name__), "mapcanvas")
         layers = QgsProject.instance().mapLayers().values()
         for layer in layers:
             if layer.type() == 0 and layer.name() != "Metadata envelope":
@@ -241,6 +249,20 @@ class SearchFormManager(IsogeoDockWidget):
                     self.cbb_geofilter.addItem(ico_line, layer.name())
                 elif layer.geometryType() == 0:
                     self.cbb_geofilter.addItem(ico_poin, layer.name())
+        # Format combobox tiems text to fit with widget width
+        for cbb in self.cbbs_search_advanced:
+            cbb_width = cbb.width()
+            cbb_fm = cbb.fontMetrics()
+
+            for i in range(cbb.count()):
+                item_label = cbb.itemText(i)
+                item_label_width = cbb_fm.size(1, item_label).width()
+                if item_label_width > cbb_width:
+                    cbb.setItemText(i, cbb_fm.elidedText(item_label, 1, cbb_width))
+                    cbb.setItemData(i, item_label, Qt.ToolTipRole)
+                else:
+                    pass
+            cbb.setStyleSheet("combobox-popup: 0;")
         return
 
     def pop_qs_cbbs(self, items_list: list = None):
@@ -263,9 +285,7 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_quicksearch_use.clear()
         self.cbb_quicksearch_edit.clear()
         # filling widgets from the saved searches list built above
-        self.cbb_quicksearch_use.addItem(
-            self.tr("Quicksearches", context=__class__.__name__)
-        )
+        self.cbb_quicksearch_use.addItem(self.tr("Quicksearches", context=__class__.__name__))
         for qs in qs_list:
             self.cbb_quicksearch_use.addItem(qs, qs)
             self.cbb_quicksearch_edit.addItem(qs, qs)
@@ -281,38 +301,35 @@ class SearchFormManager(IsogeoDockWidget):
         :param str quicksearch: empty string if no quicksearch performed.
         Otherwise:the name of the quicksearch performed.
         """
-        logger.debug(
-            "Settings widgets statut according to these parameters : \n{}".format(
-                params
-            )
-        )
+        logger.debug("Settings widgets statut according to these parameters : \n{}".format(params))
         # for Advanced search Combobox except geo_filter
         for cbb in self.match_widget_field.keys():
             field_name = self.match_widget_field.get(cbb)
             dest_index = cbb.findData(params.get(field_name))
             cbb.setCurrentIndex(dest_index)
-        # for geo filter, use quick search, and text label if quicksearch is True
-        if quicksearch == "":
-            if params.get("geofilter") == "mapcanvas":
-                dest_index = self.cbb_geofilter.findData("mapcanvas")
-                self.cbb_geofilter.setCurrentIndex(dest_index)
-            else:
-                dest_index = self.cbb_geofilter.findText(params["geofilter"])
-                self.cbb_geofilter.setCurrentIndex(dest_index)
-            dest_index = self.cbb_quicksearch_use.findData(params.get("favorite"))
-            self.cbb_quicksearch_use.setCurrentIndex(dest_index)
+
+        # for geo filter
+        if params.get("geofilter") == "mapcanvas":
+            geof_index = self.cbb_geofilter.findData("mapcanvas")
+        elif params.get("geofilter") is None:
+            geof_index = self.cbb_geofilter.findText(" - ")
         else:
-            dest_index = self.cbb_geofilter.findData(params.get("geofilter"))
-            self.cbb_geofilter.setCurrentIndex(dest_index)
-            if quicksearch != "_default":
-                saved_index = self.cbb_quicksearch_use.findData(quicksearch)
-                self.cbb_quicksearch_use.setCurrentIndex(saved_index)
-            else:
-                pass
-            self.txt_input.setText(params.get("text"))
+            geof_index = self.cbb_geofilter.findText(params.get("geofilter"))
+        self.cbb_geofilter.setCurrentIndex(geof_index)
+
+        # for use quick search
+        if quicksearch == "" or quicksearch == "_default":
+            qs_index = 0
+        else:
+            qs_index = self.cbb_quicksearch_use.findData(quicksearch)
+        self.cbb_quicksearch_use.setCurrentIndex(qs_index)
+
+        # for text label
+        self.txt_input.setText(params.get("text"))
+
         # for geo_op
-        dest_index = self.cbb_geo_op.findData(params.get("operation"))
-        self.cbb_geo_op.setCurrentIndex(dest_index)
+        geoop_index = self.cbb_geo_op.findData(params.get("operation"))
+        self.cbb_geo_op.setCurrentIndex(geoop_index)
 
         # for sorting order and direction
         self.cbb_ob.setCurrentIndex(self.cbb_ob.findData(params.get("ob")))
@@ -414,10 +431,10 @@ class SearchFormManager(IsogeoDockWidget):
             item = cbb.itemData(cbb.currentIndex())
             params[field] = item
 
-        if self.cbb_geofilter.currentIndex() < 2:
-            params["geofilter"] = self.cbb_geofilter.itemData(
-                self.cbb_geofilter.currentIndex()
-            )
+        if self.cbb_geofilter.currentText() == " - ":
+            params["geofilter"] = None
+        elif self.cbb_geofilter.itemData(self.cbb_geofilter.currentIndex()) == "mapcanvas":
+            params["geofilter"] = "mapcanvas"
         else:
             params["geofilter"] = self.cbb_geofilter.currentText()
 
@@ -479,23 +496,17 @@ class SearchFormManager(IsogeoDockWidget):
         current_epsg = int(current_epsg.split(":")[1])
 
         if current_epsg == 4326:
-            coord = "{0},{1},{2},{3}".format(
-                e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()
-            )
+            coord = "{},{},{},{}".format(e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum())
             return coord
         elif type(current_epsg) is int:
             current_srs = QgsCoordinateReferenceSystem(
                 current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId
             )
-            wgs = QgsCoordinateReferenceSystem(
-                4326, QgsCoordinateReferenceSystem.EpsgCrsId
-            )
+            wgs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             xform = QgsCoordinateTransform(current_srs, wgs, QgsProject.instance())
             minimum = xform.transform(QgsPointXY(e.xMinimum(), e.yMinimum()))
             maximum = xform.transform(QgsPointXY(e.xMaximum(), e.yMaximum()))
-            coord = "{0},{1},{2},{3}".format(
-                minimum[0], minimum[1], maximum[0], maximum[1]
-            )
+            coord = "{},{},{},{}".format(minimum[0], minimum[1], maximum[0], maximum[1])
             return coord
         else:
             logger.debug("Wrong EPSG")

@@ -21,18 +21,15 @@
     <file>resources/search/bolt.svg</file>
     <file>resources/search/phone_blue.svg</file>
     <file>resources/search/search.svg</file>
-    <file>resources/authentication/send-o.svg</file>
     <file>resources/credits/github.svg</file>
     <file>resources/credits/isogeo.png</file>
     <file>resources/credits/sponsor_logo_ca_lorient.png</file>
     <file>resources/credits/sponsor_logo_SMAVD.jpg</file>
-    <file>resources/settings/folder-open-o.svg</file>
     <file>resources/results/sort.svg</file>
     <file>resources/results/sort-alpha-asc.svg</file>
     <file>resources/results/sort-alpha-desc.svg</file>
     <file>resources/users_blue.svg</file>
     <file>resources/calendar_blue.svg</file>
-    <file>resources/metadata/arrows-h.svg</file>
     <file>resources/metadata/bookmark_blue.svg</file>
     <file>resources/metadata/bookmark_orange.svg</file>
     <file>resources/metadata/calendar_orange.svg</file>
@@ -45,9 +42,9 @@
     <file>resources/metadata/globe_orange.svg</file>
     <file>resources/metadata/inspire.png</file>
     <file>resources/metadata/list-alt.svg</file>
-    <file>resources/metadata/phone_orange.svg</file>
     <file>resources/metadata/puzzle-piece.svg</file>
     <file>resources/metadata/trophy.svg</file>
+    <file>resources/metadata/trophy_orange.svg</file>
     <file>resources/multi.svg</file>
     <file>resources/map-o.svg</file>
     <file>resources/map-signs.svg</file>
@@ -56,129 +53,31 @@
     <file>resources/calendar-minus-o.svg</file>
     <file>resources/calendar-plus-o.svg</file>
     <file>resources/edit.svg</file>
-    <file>resources/multi.svg</file>
     <file>resources/datacreated.svg</file>
     <file>resources/datamodified.svg</file>
     <file>resources/file.svg</file>
     <file>resources/map.svg</file>
-    <file>resources/map-o.svg</file>
-    <file>resources/map-signs.svg</file>
     <file>resources/metadatacreated.svg</file>
     <file>resources/metadatamodif.svg</file>
     <file>resources/none.svg</file>
-    <file>resources/pencil.svg</file>
+    <file>resources/paperclip.svg</file>
     <file>resources/save.svg</file>
     <file>resources/tag.svg</file>
     <file>resources/trash.svg</file>
     <file>resources/undo.svg</file>
     <file>resources/users.svg</file>
     <file>resources/user-times.svg</file>
-    <file>resources/users_blue.svg</file>
-    <file>resources/refresh.svg</file>
     <file>resources/leaf.svg</file>
     <file>resources/gavel.svg</file>
-    <file>resources/edit.svg</file>
-    <file>resources/calendar_blue.svg</file>
-    <file>resources/calendar-plus-o.svg</file>
     <file>resources/calendar-o.svg</file>
-    <file>resources/calendar-minus-o.svg</file>
-    <file>resources/calendar-check-o.svg</file>
-    <file>resources/metadata/arrows-h.svg</file>
-    <file>resources/metadata/bookmark_blue.svg</file>
-    <file>resources/metadata/bookmark_orange.svg</file>
-    <file>resources/metadata/calendar_orange.svg</file>
     <file>resources/metadata/calendar-times-o.svg</file>
-    <file>resources/metadata/code.svg</file>
-    <file>resources/metadata/comment.svg</file>
-    <file>resources/metadata/comment-o.svg</file>
-    <file>resources/metadata/compass.svg</file>
-    <file>resources/metadata/cube_blue.svg</file>
-    <file>resources/metadata/cubes.svg</file>
     <file>resources/metadata/download.svg</file>
-    <file>resources/metadata/globe_orange.svg</file>
-    <file>resources/metadata/inspire.png</file>
-    <file>resources/metadata/language.svg</file>
-    <file>resources/metadata/list-alt.svg</file>
-    <file>resources/metadata/lock.svg</file>
-    <file>resources/metadata/phone_orange.svg</file>
-    <file>resources/metadata/puzzle-piece.svg</file>
     <file>resources/metadata/th.svg</file>
-    <file>resources/metadata/trophy.svg</file>
-    <file>resources/gavel.svg</file>
-    <file>resources/metadata/download.svg</file>
     <file>icon.png</file>
-    <file>resources/file.svg</file>
-    <file>resources/metadata/arrows-h.svg</file>
-    <file>resources/metadata/bookmark_blue.svg</file>
-    <file>resources/metadata/bookmark_orange.svg</file>
-    <file>resources/metadata/calendar_orange.svg</file>
-    <file>resources/metadata/code.svg</file>
-    <file>resources/metadata/comment.svg</file>
-    <file>resources/metadata/comment-o.svg</file>
-    <file>resources/metadata/compass.svg</file>
-    <file>resources/metadata/cube_blue.svg</file>
-    <file>resources/metadata/cubes.svg</file>
-    <file>resources/metadata/globe_orange.svg</file>
-    <file>resources/metadata/inspire.png</file>
-    <file>resources/metadata/list-alt.svg</file>
-    <file>resources/metadata/phone_orange.svg</file>
-    <file>resources/leaf.svg</file>
-    <file>resources/none.svg</file>
-    <file>resources/calendar-o.svg</file>
     <file>resources/search/eye.svg</file>
     <file>resources/search/cube.svg</file>
     <file>resources/search/globe.svg</file>
     <file>resources/settings/gear.svg</file>
-    <file>resources/map.svg</file>
-    <file>resources/save.svg</file>
-    <file>resources/tag.svg</file>
-    <file>resources/trash.svg</file>
-    <file>resources/undo.svg</file>
-    <file>resources/users.svg</file>
-    <file>resources/user-times.svg</file>
-    <file>resources/authentication/send-o.svg</file>
-    <file>resources/authentication/sign-in.svg</file>
-    <file>resources/authentication/user.svg</file>
-    <file>resources/metadata/arrows-h.svg</file>
-    <file>resources/metadata/bookmark_blue.svg</file>
-    <file>resources/metadata/bookmark_orange.svg</file>
-    <file>resources/metadata/calendar_orange.svg</file>
-    <file>resources/metadata/code.svg</file>
-    <file>resources/metadata/comment.svg</file>
-    <file>resources/metadata/comment-o.svg</file>
-    <file>resources/metadata/compass.svg</file>
-    <file>resources/metadata/cube_blue.svg</file>
-    <file>resources/metadata/cubes.svg</file>
-    <file>resources/metadata/download.svg</file>
-    <file>resources/metadata/globe_orange.svg</file>
-    <file>resources/metadata/inspire.png</file>
-    <file>resources/metadata/language.svg</file>
-    <file>resources/metadata/list-alt.svg</file>
-    <file>resources/metadata/lock.svg</file>
-    <file>resources/metadata/phone_orange.svg</file>
-    <file>resources/metadata/puzzle-piece.svg</file>
-    <file>resources/metadata/trophy.svg</file>
-    <file>resources/credits/github.svg</file>
-    <file>resources/credits/isogeo.png</file>
-    <file>resources/credits/lgplv3.svg</file>
-    <file>resources/credits/sponsor_logo_ca_lorient.png</file>
-    <file>resources/credits/sponsor_logo_SMAVD.jpg</file>
-    <file>resources/settings/bullhorn.svg</file>
-    <file>resources/settings/folder-open-o.svg</file>
-    <file>resources/settings/gear.svg</file>
-    <file>resources/settings/info.svg</file>
-    <file>resources/settings/key.svg</file>
-    <file>resources/settings/question.svg</file>
     <file>resources/results/cloud.svg</file>
-    <file>resources/results/sort.svg</file>
-    <file>resources/results/sort-alpha-asc.svg</file>
-    <file>resources/results/sort-alpha-desc.svg</file>
-    <file>resources/search/asterisk.svg</file>
-    <file>resources/search/bolt.svg</file>
-    <file>resources/search/cube.svg</file>
-    <file>resources/search/eye.svg</file>
-    <file>resources/search/globe.svg</file>
-    <file>resources/search/phone_blue.svg</file>
-    <file>resources/search/search.svg</file>
   </qresource>
 </RCC>

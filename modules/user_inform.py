@@ -50,9 +50,7 @@ class UserInformer:
         """
         msg_dict = {
             "path": [
-                self.tr(
-                    "The specified file does not exist.", context=__class__.__name__
-                ),
+                self.tr("The specified file does not exist.", context=__class__.__name__),
                 5,
                 1,
             ],
@@ -66,8 +64,7 @@ class UserInformer:
             ],
             "ok": [
                 self.tr(
-                    "Authentication file is valid. Asking for authorization to Isogeo's"
-                    " API.",
+                    "Authentication file is valid. Asking for authorization to Isogeo's" " API.",
                     context=__class__.__name__,
                 ),
                 5,
@@ -91,6 +88,7 @@ class UserInformer:
             - 'unkown_error'
             - 'unkonw_reply'
             - 'internet_issue'
+            - 'config_issue'
         """
         msg_dict = {
             "creds_issue": self.tr(
@@ -125,6 +123,11 @@ class UserInformer:
                 "report it in the bug tracker.",
                 context=__class__.__name__,
             ),
+            "config_issue": self.tr(
+                "Search request to Isogeo's API failed : please check that 'api_base_url' and "
+                "'api_auth_url' URLs specified into config.json file are pointing to the same API.",
+                context=__class__.__name__,
+            ),
         }
         if api_sig in list(msg_dict.keys()):
             msg = msg_dict.get(api_sig)
@@ -157,9 +160,6 @@ class UserInformer:
         """
         :param dict lim_sig: informations about data limitation the message is about
         """
-        logger.debug(
-            "lim_sig emitted, passing {} to UserInformer lim_slot".format(lim_sig)
-        )
         if isinstance(lim_sig, list):
             msg = (
                 "<b>"
@@ -176,9 +176,7 @@ class UserInformer:
                     msg += lim.description
                 else:
                     msg += "<i>"
-                    msg += self.tr(
-                        "No description provided", context=__class__.__name__
-                    )
+                    msg += self.tr("No description provided", context=__class__.__name__)
                     msg += "</i>"
             self.display(message=msg, duration=14, level=0)
         else:

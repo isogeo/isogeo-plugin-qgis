@@ -23,9 +23,7 @@ class Ui_dlg_credits(object):
         )
         dlg_credits.setWindowIcon(icon)
         dlg_credits.setWindowOpacity(0.95)
-        dlg_credits.setLocale(
-            QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
-        )
+        dlg_credits.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         dlg_credits.setSizeGripEnabled(False)
         self.gridLayout = QtWidgets.QGridLayout(dlg_credits)
         self.gridLayout.setObjectName("gridLayout")
@@ -133,9 +131,7 @@ class Ui_dlg_credits(object):
         self.lbl_lorient_logo.setMaximumSize(QtCore.QSize(217, 40))
         self.lbl_lorient_logo.setText("")
         self.lbl_lorient_logo.setPixmap(
-            QtGui.QPixmap(
-                ":/plugins/Isogeo/resources/credits/sponsor_logo_ca_lorient.png"
-            )
+            QtGui.QPixmap(":/plugins/Isogeo/resources/credits/sponsor_logo_ca_lorient.png")
         )
         self.lbl_lorient_logo.setScaledContents(False)
         self.lbl_lorient_logo.setAlignment(QtCore.Qt.AlignCenter)
@@ -161,9 +157,7 @@ class Ui_dlg_credits(object):
         self.ico_github.setToolTip("")
         self.ico_github.setAutoFillBackground(True)
         self.ico_github.setText("")
-        self.ico_github.setPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/credits/github.svg")
-        )
+        self.ico_github.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/credits/github.svg"))
         self.ico_github.setScaledContents(True)
         self.ico_github.setAlignment(QtCore.Qt.AlignCenter)
         self.ico_github.setObjectName("ico_github")
@@ -174,9 +168,7 @@ class Ui_dlg_credits(object):
         self.ico_lgplv3.setToolTip("")
         self.ico_lgplv3.setAutoFillBackground(True)
         self.ico_lgplv3.setText("")
-        self.ico_lgplv3.setPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/credits/lgplv3.svg")
-        )
+        self.ico_lgplv3.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/credits/lgplv3.svg"))
         self.ico_lgplv3.setScaledContents(True)
         self.ico_lgplv3.setAlignment(QtCore.Qt.AlignCenter)
         self.ico_lgplv3.setObjectName("ico_lgplv3")

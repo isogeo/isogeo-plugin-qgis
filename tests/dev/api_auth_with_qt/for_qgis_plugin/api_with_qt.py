@@ -82,9 +82,7 @@ class ApiWithQt:
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
         locale = QSettings().value("locale/userLocale")[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir, "i18n", "ApiWithQt_{}.qm".format(locale)
-        )
+        locale_path = os.path.join(self.plugin_dir, "i18n", "ApiWithQt_{}.qm".format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
@@ -113,9 +111,7 @@ class ApiWithQt:
         # prepare connection
         self.naMngr = QgsNetworkAccessManager.instance()
         self.token_url = "https://id.api.isogeo.com/oauth/token"
-        self.request_url = (
-            "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
-        )
+        self.request_url = "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
         self.token = ""
 
     # noinspection PyMethodMayBeStatic
@@ -230,9 +226,9 @@ class ApiWithQt:
     def pysdk_checking(self):
         isogeo = Isogeo(self.app_id, self.app_secrets)
         token = isogeo.connect()
-        self.md_expected = isogeo.search(
-            token=token, whole_share=0, page_size=0, augment=0
-        ).get("total")
+        self.md_expected = isogeo.search(token=token, whole_share=0, page_size=0, augment=0).get(
+            "total"
+        )
         self.dlg.lbl_expected.setText("{} expected resources".format(self.md_expected))
 
     # additional methode to send token request to the API (with QgsNetworkAccessManager class)

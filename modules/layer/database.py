@@ -18,17 +18,12 @@ from qgis.PyQt.QtWidgets import (
 )
 
 # PyQGIS
-from qgis.core import QgsDataSourceUri, QgsCoordinateReferenceSystem
+from qgis.core import QgsDataSourceUri
 
 try:
     from qgis.core import Qgis
 except ImportError:
     from qgis.core import QGis as Qgis
-
-from db_manager.db_plugins.postgis.connector import PostGisDBConnector
-from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin
-
-from db_manager.db_plugins.oracle.connector import OracleDBConnector
 
 # UI classes
 from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
@@ -42,26 +37,54 @@ qgis_version = int("".join(Qgis.QGIS_VERSION.split(".")[:2]))
 qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
-connection_parameters_names = ["host", "port", "dbname", "user", "password"]
+# DBMS dependencies
+dbms_specifics_resources = {}
+try:
+    from db_manager.db_plugins.postgis.connector import PostGisDBConnector
+    from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin
 
-ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
-ico_ora = QIcon(":/images/themes/default/mIconOracle.svg")
-
-dbms_specifics_resources = {
-    "Oracle": {
-        "invalid_key": "isogeo/settings/invalid_ora_conn",
-        "prefered_key": "isogeo/settings/prefered_ora_conn",
-        "label": "Oracle",
-        "windowIcon": ico_ora,
-    },
-    "PostgreSQL": {
+    ico_pgis = QIcon(":/images/themes/default/mIconPostgis.svg")
+    dbms_specifics_resources["PostgreSQL"] = {
         "invalid_key": "isogeo/settings/invalid_pgdb_conn",
         "prefered_key": "isogeo/settings/prefered_pgdb_conn",
         "label": "PostGIS",
         "windowIcon": ico_pgis,
-    },
-}
+    }
 
+    pgis_available = 1
+    pgis_error = 0
+except Exception as e:
+    pgis_available = 0
+    pgis_error = e
+
+try:
+    from db_manager.db_plugins.oracle.connector import OracleDBConnector
+
+    ico_ora = QIcon(":/images/themes/default/mIconOracle.svg")
+    dbms_specifics_resources["Oracle"] = {
+        "invalid_key": "isogeo/settings/invalid_ora_conn",
+        "prefered_key": "isogeo/settings/prefered_ora_conn",
+        "label": "Oracle",
+        "windowIcon": ico_ora,
+    }
+
+    ora_sys_owner = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200','GSMADMIN_INTERNAL','SDE','ORDDATA')"
+    ora_geom_column_request = "select col.owner, col.table_name, col.column_name, md.srid from sys.all_tab_cols col left join user_sdo_geom_metadata md on col.table_name = md.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.table_name".format(
+        ora_sys_owner
+    )
+    available_ora_datasets_request = "select DISTINCT dataset from (select CONCAT(CONCAT(sys.all_tables.owner, '.'), sys.all_tables.table_name) as dataset from sys.all_tables  where sys.all_tables.owner = '$(USERNAME)' and sys.all_tables.table_name not in ('SDE_LOGFILES', 'SDE_LOGFILE_DATA') and sys.all_tables.secondary = 'N' and sys.all_TABLES.owner not in {0} union select CONCAT(CONCAT(sys.all_views.owner, '.'), sys.all_views.view_name) as dataset from sys.all_views where  sys.all_views.owner = '$(USERNAME)' and sys.all_views.owner not in {0} union select CONCAT(CONCAT(sys.all_tab_privs.table_schema, '.'), sys.all_tab_privs.table_name) as dataset from sys.all_tab_privs where (sys.all_tab_privs.grantee = '$(USERNAME)' or sys.all_tab_privs.grantor = '$(USERNAME)') and (sys.all_tab_privs.type in ('TABLE', 'VIEW')) and sys.all_tab_privs.table_name not in ('SDE_LOGFILES', 'SDE_LOGFILE_DATA') and sys.all_tab_privs.table_name NOT LIKE 'BIN$%' and sys.all_tab_privs.table_schema not in {0})".format(
+        ora_sys_owner
+    )
+
+    ora_available = 1
+    ora_error = 0
+except Exception as e:
+    ora_available = 0
+    ora_error = e
+
+connection_parameters_names = ["host", "port", "dbname", "user", "password"]
+
+# QDialog close button icones
 btnBox_ico_dict = {
     0: QIcon(":/plugins/Isogeo/resources/save.svg"),
     1: QIcon(":/images/themes/default/mActionRemove.svg"),
@@ -69,13 +92,7 @@ btnBox_ico_dict = {
 }
 
 # https://dataedo.com/kb/query/oracle/find-all-spatial-columns
-ora_sys_tables = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200')"
-ora_geom_column_tab_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_tables tab on col.owner = tab.owner and col.table_name = tab.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(
-    ora_sys_tables
-)
-ora_geom_column_v_request = "select col.owner, col.table_name, column_name, data_type from sys.all_tab_cols col join sys.all_views v on col.owner = v.owner and col.table_name = v.view_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.owner, col.table_name, column_id".format(
-    ora_sys_tables
-)
+
 
 arrow_cursor = QCursor(Qt.CursorShape(0))
 hourglass_cursor = QCursor(Qt.CursorShape(16))
@@ -94,6 +111,9 @@ class DataBaseManager:
         """Class constructor."""
 
         self.tr = tr
+
+        self.pgis_available = pgis_available
+        self.ora_available = ora_available
 
         # Check PGSERVICEFILE env var value if it exists
         pgservicefile_value = environ.get("PGSERVICEFILE", None)
@@ -122,33 +142,41 @@ class DataBaseManager:
         self.json_content = dict
         self.json_path = Path(__file__).parents[2] / "_user" / "db_connections.json"
 
-        # set connections infos management dict
-        self.dbms_specifics_infos = {
-            "Oracle": {
+        # Retrieved prefered and invalid connections saved into QSettings,
+        # then retrieve informations about registered database connections from QSettings
+        self.dbms_specifics_infos = {}
+        if self.pgis_available:
+            self.dbms_specifics_infos["PostgreSQL"] = {
                 "prefered_connections": [],
                 "invalid_connections": [],
                 "connections": [],
                 "db_names": [],
-            },
-            "PostgreSQL": {
+            }
+            self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="prefered")
+            self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="invalid")
+            self.build_connection_dict(dbms="PostgreSQL")
+        else:
+            logger.warning(
+                "Enable to load dependencies required to handle PostgreSQL database connections : {}".format(
+                    pgis_error
+                )
+            )
+        if self.ora_available:
+            self.dbms_specifics_infos["Oracle"] = {
                 "prefered_connections": [],
                 "invalid_connections": [],
                 "connections": [],
                 "db_names": [],
-            },
-        }
-
-        # Retrieved prefered connections saved into QSettings
-        self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="prefered")
-        self.fetch_qsettings_connections(dbms="Oracle", connections_kind="prefered")
-
-        # Retrieved invalid connections saved into QSettings
-        self.fetch_qsettings_connections(dbms="PostgreSQL", connections_kind="invalid")
-        self.fetch_qsettings_connections(dbms="Oracle", connections_kind="invalid")
-
-        # retrieve informations about registered database connections from QSettings
-        self.build_connection_dict(dbms="PostgreSQL")
-        self.build_connection_dict(dbms="Oracle")
+            }
+            self.fetch_qsettings_connections(dbms="Oracle", connections_kind="prefered")
+            self.fetch_qsettings_connections(dbms="Oracle", connections_kind="invalid")
+            self.build_connection_dict(dbms="Oracle")
+        else:
+            logger.warning(
+                "Enable to load dependencies required to handle Oracle database connections : {}".format(
+                    ora_error
+                )
+            )
 
         # set UI module
         self.db_config_dialog = Isogeodb_connections()
@@ -164,9 +192,7 @@ class DataBaseManager:
 
         self.tbl = self.db_config_dialog.tbl
 
-    def set_qsettings_connections(
-        self, dbms: str, connections_kind: str, li_connections: list
-    ):
+    def set_qsettings_connections(self, dbms: str, connections_kind: str, li_connections: list):
         """Save the list of invalid connections in QSettings"""
 
         if not isinstance(li_connections, list):
@@ -176,14 +202,10 @@ class DataBaseManager:
                 )
             )
         elif not isinstance(dbms, str):
-            raise TypeError(
-                "'dbms' argument value should be a str, not : {}".format(type(dbms))
-            )
+            raise TypeError("'dbms' argument value should be a str, not : {}".format(type(dbms)))
         elif dbms not in ["PostgreSQL", "Oracle"]:
             raise ValueError(
-                "'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(
-                    dbms
-                )
+                "'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(dbms)
             )
         elif not isinstance(connections_kind, str):
             raise TypeError(
@@ -208,14 +230,10 @@ class DataBaseManager:
         """Retrieve the list of invalid or prefered (depending on connections_kind) connections saved in QSettings"""
 
         if not isinstance(dbms, str):
-            raise TypeError(
-                "'dbms' argument value should be str, not : {}".format(type(dbms))
-            )
+            raise TypeError("'dbms' argument value should be str, not : {}".format(type(dbms)))
         elif dbms not in ["PostgreSQL", "Oracle"]:
             raise ValueError(
-                "'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(
-                    dbms
-                )
+                "'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(dbms)
             )
         elif not isinstance(connections_kind, str):
             raise TypeError(
@@ -261,7 +279,10 @@ class DataBaseManager:
                     )
                 )
                 self.json_content = 0
-            elif not any(dbms_name in list(self.json_content.keys()) for dbms_name in list(self.dbms_specifics_infos.keys())):
+            elif not any(
+                dbms_name in list(self.json_content.keys())
+                for dbms_name in list(self.dbms_specifics_infos.keys())
+            ):
                 logger.warning(
                     "_user/db_connections.json file content has no 'Oracle' or 'PostgreSQl' key : {}.".format(
                         self.json_content
@@ -282,26 +303,15 @@ class DataBaseManager:
                         str(self.json_path), str(e)
                     )
                 )
-                logger.warning(
-                    "Let's create an empty one : {}.".format(self.json_path)
-                )
-                self.json_content = {
-                    "Oracle": [],
-                    "PostgreSQL": []
-                }
+                logger.warning("Let's create an empty one : {}.".format(self.json_path))
+                self.json_content = {"Oracle": [], "PostgreSQL": []}
                 with open(self.json_path, "w") as json_content:
                     json.dump([self.json_content], json_content, indent=4)
             else:
-                logger.error(
-                    "_user/db_connections.json file can't be read : {}.".format(
-                        str(e)
-                    )
-                )
+                logger.error("_user/db_connections.json file can't be read : {}.".format(str(e)))
                 self.json_content = 0
 
-    def config_file_parser(
-        self, file_path: Path, connection_service: str, connection_name: str
-    ):
+    def config_file_parser(self, file_path: Path, connection_service: str, connection_name: str):
         """Retrieve connection parameters values stored into configuration file corresponding
         to the specified file_path.
         """
@@ -333,9 +343,7 @@ class DataBaseManager:
             if param_name not in service_params_name
         ]
         li_empty_params = [
-            param_name
-            for param_name in expected_params_name
-            if service_params[param_name] == ""
+            param_name for param_name in expected_params_name if service_params[param_name] == ""
         ]
         if len(li_missing_params):
             error_msg = "Parameters missing into '{}' connection service : {}".format(
@@ -401,29 +409,17 @@ class DataBaseManager:
 
         error_msg = ""
         if not isinstance(host, str):
-            error_msg = "'host' argument value should be str, not : {}".format(
-                type(host)
-            )
+            error_msg = "'host' argument value should be str, not : {}".format(type(host))
         elif not isinstance(service, str):
-            error_msg = "'service' argument value should be str, not : {}".format(
-                type(service)
-            )
+            error_msg = "'service' argument value should be str, not : {}".format(type(service))
         elif not isinstance(port, str):
-            error_msg = "'port' argument value should be str, not : {}".format(
-                type(port)
-            )
+            error_msg = "'port' argument value should be str, not : {}".format(type(port))
         elif not isinstance(username, str):
-            error_msg = "'username' argument value should be str, not : {}".format(
-                type(username)
-            )
+            error_msg = "'username' argument value should be str, not : {}".format(type(username))
         elif not isinstance(password, str):
-            error_msg = "'password' argument value should be str, not : {}".format(
-                type(password)
-            )
+            error_msg = "'password' argument value should be str, not : {}".format(type(password))
         elif not isinstance(database, str):
-            error_msg = "'database' argument value should be str, not : {}".format(
-                type(database)
-            )
+            error_msg = "'database' argument value should be str, not : {}".format(type(database))
         elif not isinstance(connection, str):
             error_msg = "'connection' argument value should be str, not : {}".format(
                 type(connection)
@@ -469,6 +465,7 @@ class DataBaseManager:
 
     def establish_postgis_connection(
         self,
+        prefered: bool,
         service: str = "",
         host: str = "",
         port: str = "",
@@ -488,12 +485,10 @@ class DataBaseManager:
             raise TypeError(check_params)
 
         # build the connection URI and set the connection
-        uri = self.build_connection_uri(
-            service, host, port, username, password, database
-        )
+        uri = self.build_connection_uri(service, host, port, username, password, database)
 
         try:
-            if qgis_version >= 316:
+            if qgis_version > 310:
                 pgis_db_plg = PostGisDBPlugin(connection)
                 c = PostGisDBConnector(uri, pgis_db_plg)
             else:
@@ -507,12 +502,13 @@ class DataBaseManager:
             logger.error(str(e))
             return 0
 
-        li_table_infos = [infos for infos in c.getTables() if infos[0] == 1]
+        li_table_infos = [infos for infos in c.getTables()]
 
         return uri, li_table_infos
 
     def establish_oracle_connection(
         self,
+        prefered: bool,
         service: str = "",
         host: str = "",
         port: str = "",
@@ -533,9 +529,7 @@ class DataBaseManager:
             raise TypeError(check_params)
 
         # build the connection URI and set the connection
-        uri = self.build_connection_uri(
-            service, host, port, username, password, database
-        )
+        uri = self.build_connection_uri(service, host, port, username, password, database)
 
         try:
             ora_db_plg = connection
@@ -550,7 +544,19 @@ class DataBaseManager:
             return 0
 
         try:
-            geom_column_response = c._fetchall(c._execute(None, ora_geom_column_tab_request)) + c._fetchall(c._execute(None, ora_geom_column_v_request))
+            geom_column_response = c._fetchall(c._execute(None, ora_geom_column_request))
+        except Exception as e:
+            logger.error(
+                "Unable to retrieve spatial tables and views from {} Oracle database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
+                    database, service, host, port, username, password
+                )
+            )
+            logger.error(str(e))
+            return uri, []
+
+        sql_request = available_ora_datasets_request.replace("$(USERNAME)", username)
+        try:
+            available_datasets = c._fetchall(c._execute(None, sql_request))
         except Exception as e:
             logger.error(
                 "Unable to retrieve tables and views from {} Oracle database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
@@ -559,56 +565,24 @@ class DataBaseManager:
             )
             logger.error(str(e))
             return uri, []
-
-        li_tables_infos = []
-        for row in geom_column_response:
-            if len(row):
-
-                try:
-                    ora_table_srid_request = "select SRID from user_sdo_geom_metadata where table_name = '{}'".format(row[1])
-                    table_srid_response = c._fetchall(c._execute(None, ora_table_srid_request))
-                    table_srid = str(int(table_srid_response[0][0]))
-
-                    table_crs = QgsCoordinateReferenceSystem("EPSG:" + table_srid)
-                except Exception as e:
-                    logger.warning("'{}' Oracle table SRID could not be fetched : {}".format(row[1], e))
-                    table_crs = QgsCoordinateReferenceSystem()
-
-                try:
-                    ora_table_geomType_request = "select DISTINCT c.{}.GET_GTYPE() from {}.{} c order by c.{}.GET_GTYPE() asc".format(row[2], row[0], row[1], row[2])
-                    table_geomType_response = c._fetchall(c._execute(None, ora_table_geomType_request))
-                    table_geomType = [int(elem[0]) for elem in table_geomType_response]
-
-                except Exception as e:
-                    logger.warning("'{}' Oracle table geometry type could not be fetched : {}".format(row[1], e))
-                    table_geomType = []
-
-                table_infos = row + [table_crs, table_geomType]
-                li_tables_infos.append(table_infos)
-            else:
-                continue
-
-        return uri, li_tables_infos
+        li_tables_infos = geom_column_response + [
+            row[0].split(".") + [None] + [None]
+            for row in available_datasets
+            if all(row[0] != ".".join(geom_column[:2]) for geom_column in geom_column_response)
+        ]
+        return uri, li_tables_infos, c
 
     def build_connection_dict(self, dbms: str, skip_invalid: bool = True):
         """Build the dict that stores informations about PostgreSQL or Oracle connections."""
 
         if not isinstance(dbms, str):
-            raise TypeError(
-                "'dbms' argument value should be str, not : {}".format(type(dbms))
-            )
+            raise TypeError("'dbms' argument value should be str, not : {}".format(type(dbms)))
         elif dbms not in ["PostgreSQL", "Oracle"]:
             raise ValueError(
-                "'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(
-                    dbms
-                )
+                "'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(dbms)
             )
         else:
             dbms_prefix = "{}/connections/".format(dbms)
-            if dbms == "PostgreSQL":
-                establish_conn_func = self.establish_postgis_connection
-            else:
-                establish_conn_func = self.establish_oracle_connection
 
         li_connections = []
         li_db_names = []
@@ -616,22 +590,12 @@ class DataBaseManager:
 
         # Loading connections saved into QGIS Settings
         for k in sorted(qsettings.allKeys()):
-            if (
-                k.startswith(dbms_prefix)
-                and k.endswith("/database")
-                and len(k.split("/")) == 4
-            ):
+            if k.startswith(dbms_prefix) and k.endswith("/database") and len(k.split("/")) == 4:
                 connection_name = k.split("/")[2]
 
-                password_saved = qsettings.value(
-                    dbms_prefix + connection_name + "/savePassword"
-                )
-                user_saved = qsettings.value(
-                    dbms_prefix + connection_name + "/saveUsername"
-                )
-                connection_service = qsettings.value(
-                    dbms_prefix + connection_name + "/service"
-                )
+                password_saved = qsettings.value(dbms_prefix + connection_name + "/savePassword")
+                user_saved = qsettings.value(dbms_prefix + connection_name + "/saveUsername")
+                connection_service = qsettings.value(dbms_prefix + connection_name + "/service")
 
                 # For "traditionnaly" registered connections
                 if password_saved == "true" and user_saved == "true":
@@ -663,24 +627,7 @@ class DataBaseManager:
                 ):
                     pass
                 else:
-                    conn = establish_conn_func(**connection_dict)
-                    if not conn:
-                        connection_dict["uri"] = 0
-                        connection_dict["tables"] = 0
-                        self.dbms_specifics_infos[dbms]["invalid_connections"].append(
-                            connection_name
-                        )
-                        logger.info(
-                            "'{}' connection saved as invalid".format(connection_name)
-                        )
-                        continue
-                    else:
-                        connection_dict["uri"] = conn[0]
-                        connection_dict["tables"] = conn[1]
-
-                    if connection_dict.get(
-                        "connection"
-                    ) in self.dbms_specifics_infos.get(dbms).get(
+                    if connection_dict.get("connection") in self.dbms_specifics_infos.get(dbms).get(
                         "prefered_connections"
                     ):
                         connection_dict["prefered"] = 1
@@ -702,7 +649,17 @@ class DataBaseManager:
             for conn_dict in self.json_content.get(dbms):
                 connection_name = conn_dict.get("connection_name")
 
-                if all(conn_dict.get(key, "") != "" for key in ["database", "host", "port", "username", "password", "connection_name"]):
+                if all(
+                    conn_dict.get(key, "") != ""
+                    for key in [
+                        "database",
+                        "host",
+                        "port",
+                        "username",
+                        "password",
+                        "connection_name",
+                    ]
+                ):
                     connection_dict = {
                         "service": "",
                         "database": conn_dict.get("database"),
@@ -714,7 +671,11 @@ class DataBaseManager:
                         "connection": connection_name,
                     }
                 else:
-                    logger.warning("Invalid {} connection loaded from db_connections.json file : {}".format(dbms, conn_dict))
+                    logger.warning(
+                        "Invalid {} connection loaded from db_connections.json file : {}".format(
+                            dbms, conn_dict
+                        )
+                    )
                     continue
 
                 if (
@@ -724,24 +685,7 @@ class DataBaseManager:
                 ):
                     pass
                 else:
-                    conn = establish_conn_func(**connection_dict)
-                    if not conn:
-                        connection_dict["uri"] = 0
-                        connection_dict["tables"] = 0
-                        self.dbms_specifics_infos[dbms]["invalid_connections"].append(
-                            connection_name
-                        )
-                        logger.info(
-                            "'{}' connection saved as invalid".format(connection_name)
-                        )
-                        continue
-                    else:
-                        connection_dict["uri"] = conn[0]
-                        connection_dict["tables"] = conn[1]
-
-                    if connection_dict.get(
-                        "connection"
-                    ) in self.dbms_specifics_infos.get(dbms).get(
+                    if connection_dict.get("connection") in self.dbms_specifics_infos.get(dbms).get(
                         "prefered_connections"
                     ):
                         connection_dict["prefered"] = 1
@@ -755,7 +699,10 @@ class DataBaseManager:
                     else:
                         pass
 
-                    if connection_dict.get("database_alias", "") != "" and connection_dict.get("database_alias") not in li_db_aliases:
+                    if (
+                        connection_dict.get("database_alias", "") != ""
+                        and connection_dict.get("database_alias") not in li_db_aliases
+                    ):
                         li_db_aliases.append(connection_dict.get("database_alias"))
                     else:
                         pass
@@ -773,17 +720,13 @@ class DataBaseManager:
         )
 
     def fill_db_config_tbl(self, dbms):
-        """Fill the dialog table from informations about PostGIS database embed connection"""
+        """Fill the dialog table from informations about specified DBMS database embed connection"""
 
         if not isinstance(dbms, str):
-            raise TypeError(
-                "'dbms' argument value should be str, not : {}".format(type(dbms))
-            )
+            raise TypeError("'dbms' argument value should be str, not : {}".format(type(dbms)))
         elif dbms not in ["PostgreSQL", "Oracle"]:
             raise ValueError(
-                "'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(
-                    dbms
-                )
+                "'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(dbms)
             )
         else:
             pass
@@ -791,8 +734,14 @@ class DataBaseManager:
         # Clean and initiate the tab
         self.tbl.clear()
         li_header_labels = [
-            self.tr("Database", context=__class__.__name__,),
-            self.tr("Connection", context=__class__.__name__,),
+            self.tr(
+                "Database",
+                context=__class__.__name__,
+            ),
+            self.tr(
+                "Connection",
+                context=__class__.__name__,
+            ),
         ]
         self.tbl.setHorizontalHeaderLabels(li_header_labels)
         self.tbl.setRowCount(0)
@@ -841,18 +790,14 @@ class DataBaseManager:
         vheader.setMinimumSectionSize(10)
 
     def open_db_config_dialog(self, dbms: str):
-        """Build the dialog table from informations about PostGIS database embed connection, then
-        display the dialog window to the user"""
+        """Build the dialog table from informations about specified DBMS database embed connection,
+        then display the dialog window to the user"""
 
         if not isinstance(dbms, str):
-            raise TypeError(
-                "'dbms' argument value should be str, not : {}".format(type(dbms))
-            )
+            raise TypeError("'dbms' argument value should be str, not : {}".format(type(dbms)))
         elif dbms not in ["PostgreSQL", "Oracle"]:
             raise ValueError(
-                "'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(
-                    dbms
-                )
+                "'dbms' argument value should be 'PostgreSQL' or 'Oracle', not : {}".format(dbms)
             )
         else:
             label = dbms_specifics_resources.get(dbms).get("label")

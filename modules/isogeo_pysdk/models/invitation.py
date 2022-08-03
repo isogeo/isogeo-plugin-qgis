@@ -305,7 +305,5 @@ class Invitation(object):
 # ##################################
 if __name__ == "__main__":
     """standalone execution."""
-    atasource = Invitation(
-        group="Invitation Test", _modified="Test invitation _modified"
-    )
+    atasource = Invitation(group="Invitation Test", _modified="Test invitation _modified")
     print(atasource)

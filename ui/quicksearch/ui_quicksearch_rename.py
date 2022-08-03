@@ -67,9 +67,7 @@ class Ui_dlg_quicksearch_rename(object):
         dlg_quicksearch_rename.setWindowTitle(
             _translate("dlg_quicksearch_rename", "Isogeo - Rename quicksearch")
         )
-        self.lbl_title.setText(
-            _translate("dlg_quicksearch_rename", "Quicksearch new name:")
-        )
+        self.lbl_title.setText(_translate("dlg_quicksearch_rename", "Quicksearch new name:"))
 
 
 if __name__ == "__main__":

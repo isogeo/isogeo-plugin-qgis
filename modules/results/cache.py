@@ -84,18 +84,13 @@ class CacheManager:
                 logger.debug("Empty cache file.")
             elif isinstance(cache_loaded[0], dict):
                 self.cached_unreach_paths = cache_loaded[0].get("files")
-                logger.debug(
-                    "Cached unreachable file path has been successfuly loaded."
-                )
+                logger.debug("Cached unreachable file path has been successfuly loaded.")
                 self.cached_unreach_postgis = cache_loaded[0].get("PostGIS")
                 self.cached_unreach_service = cache_loaded[0].get("services")
-                for srv_type, li_unreachable_srv in (
-                    cache_loaded[0].get("services").items()
-                ):
+                for srv_type, li_unreachable_srv in cache_loaded[0].get("services").items():
                     if len(li_unreachable_srv):
                         cached_srv_content = [
-                            tuple(unreachable_srv)
-                            for unreachable_srv in li_unreachable_srv
+                            tuple(unreachable_srv) for unreachable_srv in li_unreachable_srv
                         ]
                         self.cached_unreach_service[srv_type] = cached_srv_content
                     else:
