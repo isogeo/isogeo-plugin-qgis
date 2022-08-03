@@ -141,15 +141,11 @@ with ZipFile(PLG_FINAL_ZIP_PATH, "w") as release_zip:
     # -- QGIS PLUGIN REQUIRED FILES -------------------------------------------------------
 
     release_zip.write(Path(BASE_DIR_ABS, "LICENSE"), Path(PLG_DIRNAME, "LICENSE"))
-    release_zip.write(
-        Path(BASE_DIR_ABS, "metadata.txt"), Path(PLG_DIRNAME, "metadata.txt")
-    )
+    release_zip.write(Path(BASE_DIR_ABS, "metadata.txt"), Path(PLG_DIRNAME, "metadata.txt"))
     release_zip.write(Path(BASE_DIR_ABS, "README.md"), Path(PLG_DIRNAME, "README"))
 
     # -- PLUGIN PYTHON CODE ------------------------------------------------------------
-    release_zip.write(
-        Path(BASE_DIR_ABS, "__init__.py"), Path(PLG_DIRNAME, "__init__.py")
-    )
+    release_zip.write(Path(BASE_DIR_ABS, "__init__.py"), Path(PLG_DIRNAME, "__init__.py"))
     release_zip.write(Path(BASE_DIR_ABS, "isogeo.py"), Path(PLG_DIRNAME, "isogeo.py"))
 
     # Python modules
@@ -185,9 +181,7 @@ with ZipFile(PLG_FINAL_ZIP_PATH, "w") as release_zip:
 
     # UI - Base
     release_zip.write(Path(BASE_DIR_ABS, "icon.png"), Path(PLG_DIRNAME, "icon.png"))
-    release_zip.write(
-        Path(BASE_DIR_ABS, "resources_rc.py"), Path(PLG_DIRNAME, "resources_rc.py")
-    )
+    release_zip.write(Path(BASE_DIR_ABS, "resources_rc.py"), Path(PLG_DIRNAME, "resources_rc.py"))
 
     # -- User settings ----------------------------------------------------------
     # # add default _user/quicksearches.json file

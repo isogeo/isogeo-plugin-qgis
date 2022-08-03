@@ -113,16 +113,20 @@ class Isogeo(Session):
         # auth mode
         if auth_mode not in self.AUTH_MODES:
             logging.error("Not accepted auth mode: {}".format(auth_mode))
-            raise ValueError(
-                "Mode value must be one of: ".format(" | ".join(self.AUTH_MODES))
-            )
+            raise ValueError("Mode value must be one of: ".format(" | ".join(self.AUTH_MODES)))
         else:
             self.auth_mode = auth_mode
 
         # platform to request
-        self.platform, self.api_url, self.app_url, self.csw_url, self.mng_url, self.oc_url, self.ssl = utils.set_base_url(
-            platform
-        )
+        (
+            self.platform,
+            self.api_url,
+            self.app_url,
+            self.csw_url,
+            self.mng_url,
+            self.oc_url,
+            self.ssl,
+        ) = utils.set_base_url(platform)
 
         # setting language
         if lang.lower() not in ("fr", "en"):
@@ -148,9 +152,7 @@ class Isogeo(Session):
                 else:
                     locale.setlocale(locale.LC_ALL, str("en_GB.utf8"))
         except locale.Error as e:
-            logging.error(
-                "Selected locale ({}) is not installed: {}".format(lang.lower(), e)
-            )
+            logging.error("Selected locale ({}) is not installed: {}".format(lang.lower(), e))
 
         # handling proxy parameters
         # see: http://docs.python-requests.org/en/latest/user/advanced/#proxies
@@ -228,9 +230,7 @@ class Isogeo(Session):
         expiration_delay = self.token.get("expires_in", 3600) - (
             self.token.get("expires_in", 3600) / 10
         )
-        self.token["expires_at"] = datetime.utcnow() + timedelta(
-            seconds=expiration_delay
-        )
+        self.token["expires_at"] = datetime.utcnow() + timedelta(seconds=expiration_delay)
 
         # end of method
         return self.token
@@ -534,12 +534,8 @@ class Isogeo(Session):
          (use it only for dev and tracking needs).
         """
         # passing auth parameter
-        share_url = "{}://v1.{}.isogeo.com/shares/{}".format(
-            prot, self.api_url, share_id
-        )
-        share_req = self.get(
-            share_url, headers=self.header, proxies=self.proxies, verify=self.ssl
-        )
+        share_url = "{}://v1.{}.isogeo.com/shares/{}".format(prot, self.api_url, share_id)
+        share_req = self.get(share_url, headers=self.header, proxies=self.proxies, verify=self.ssl)
 
         # checking response
         checker.check_api_response(share_req)
@@ -558,9 +554,7 @@ class Isogeo(Session):
 
     # -- LICENCES ---------------------------------------------
     @_check_bearer_validity
-    def licenses(
-        self, token: dict = None, owner_id: str = None, prot: str = "https"
-    ) -> dict:
+    def licenses(self, token: dict = None, owner_id: str = None, prot: str = "https") -> dict:
         """Get information about licenses owned by a specific workgroup.
 
         :param str token: API auth token
@@ -604,9 +598,7 @@ class Isogeo(Session):
         payload = {"lid": license_id}
 
         # search request
-        license_url = "{}://v1.{}.isogeo.com/licenses/{}".format(
-            prot, self.api_url, license_id
-        )
+        license_url = "{}://v1.{}.isogeo.com/licenses/{}".format(prot, self.api_url, license_id)
         license_req = self.get(
             license_url,
             headers=self.header,
@@ -633,9 +625,7 @@ class Isogeo(Session):
         """
         # passing auth parameter
         thez_url = "{}://v1.{}.isogeo.com/thesauri".format(prot, self.api_url)
-        thez_req = self.get(
-            thez_url, headers=self.header, proxies=self.proxies, verify=self.ssl
-        )
+        thez_req = self.get(thez_url, headers=self.header, proxies=self.proxies, verify=self.ssl)
 
         # checking response
         checker.check_api_response(thez_req)
@@ -661,9 +651,7 @@ class Isogeo(Session):
         payload = {"tid": thez_id}
 
         # passing auth parameter
-        thez_url = "{}://v1.{}.isogeo.com/thesauri/{}".format(
-            prot, self.api_url, thez_id
-        )
+        thez_url = "{}://v1.{}.isogeo.com/thesauri/{}".format(prot, self.api_url, thez_id)
         thez_req = self.get(
             thez_url,
             headers=self.header,
@@ -700,7 +688,7 @@ class Isogeo(Session):
         :param str query: search terms
         :param int offset: pagination start
         :param str order_by: sort criteria. Available values :
-        
+
             - count.group,
             - count.isogeo,
             - text
@@ -789,9 +777,7 @@ class Isogeo(Session):
         # check resource link type
         if not resource_link.get("type") == "hosted":
             raise ValueError(
-                "Resource link passed is not a hosted one: {}".format(
-                    resource_link.get("type")
-                )
+                "Resource link passed is not a hosted one: {}".format(resource_link.get("type"))
             )
         else:
             pass
@@ -800,9 +786,7 @@ class Isogeo(Session):
         payload = {"proxyUrl": proxy_url}
 
         # prepare URL request
-        hosted_url = "{}://v1.{}.isogeo.com/{}".format(
-            prot, self.api_url, resource_link.get("url")
-        )
+        hosted_url = "{}://v1.{}.isogeo.com/{}".format(prot, self.api_url, resource_link.get("url"))
 
         # send stream request
         hosted_req = self.get(
@@ -870,9 +854,7 @@ class Isogeo(Session):
         payload = {"proxyUrl": proxy_url, "id": id_resource}
 
         # resource search
-        md_url = "{}://v1.{}.isogeo.com/resources/{}.xml".format(
-            prot, self.api_url, id_resource
-        )
+        md_url = "{}://v1.{}.isogeo.com/resources/{}.xml".format(prot, self.api_url, id_resource)
         xml_req = self.get(
             md_url,
             headers=self.header,
@@ -894,9 +876,7 @@ class Isogeo(Session):
         # check if shares_id have already been retrieved or not
         if not hasattr(self, "shares_id"):
             shares = self.shares()
-            self.shares_id = {
-                "share:{}".format(i.get("_id")): i.get("name") for i in shares
-            }
+            self.shares_id = {"share:{}".format(i.get("_id")): i.get("name") for i in shares}
         else:
             pass
         # update query tags
@@ -914,9 +894,7 @@ class Isogeo(Session):
         if not hasattr(self, "app_properties"):
             first_app = self.shares()[0].get("applications")[0]
             app = {
-                "admin_url": "{}/applications/{}".format(
-                    self.mng_url, first_app.get("_id")
-                ),
+                "admin_url": "{}/applications/{}".format(self.mng_url, first_app.get("_id")),
                 "creation_date": first_app.get("_created"),
                 "last_update": first_app.get("_modified"),
                 "name": first_app.get("name"),
@@ -939,9 +917,7 @@ class Isogeo(Session):
         # search request
         req_url = "{}://v1.{}.isogeo.com/link-kinds".format(prot, self.api_url)
 
-        req = self.get(
-            req_url, headers=self.header, proxies=self.proxies, verify=self.ssl
-        )
+        req = self.get(req_url, headers=self.header, proxies=self.proxies, verify=self.ssl)
 
         # checking response
         checker.check_api_response(req)
@@ -960,9 +936,7 @@ class Isogeo(Session):
         # search request
         req_url = "{}://v1.{}.isogeo.com/directives".format(prot, self.api_url)
 
-        req = self.get(
-            req_url, headers=self.header, proxies=self.proxies, verify=self.ssl
-        )
+        req = self.get(req_url, headers=self.header, proxies=self.proxies, verify=self.ssl)
 
         # checking response
         checker.check_api_response(req)
@@ -992,9 +966,7 @@ class Isogeo(Session):
             prot, self.api_url, specific_srs
         )
 
-        req = self.get(
-            req_url, headers=self.header, proxies=self.proxies, verify=self.ssl
-        )
+        req = self.get(req_url, headers=self.header, proxies=self.proxies, verify=self.ssl)
 
         # checking response
         checker.check_api_response(req)
@@ -1003,9 +975,7 @@ class Isogeo(Session):
         return req.json()
 
     @_check_bearer_validity
-    def get_formats(
-        self, token: dict = None, format_code: str = None, prot: str = "https"
-    ) -> dict:
+    def get_formats(self, token: dict = None, format_code: str = None, prot: str = "https") -> dict:
         """Get formats.
 
         :param str token: API auth token
@@ -1020,13 +990,9 @@ class Isogeo(Session):
             specific_format = ""
 
         # search request
-        req_url = "{}://v1.{}.isogeo.com/formats{}".format(
-            prot, self.api_url, specific_format
-        )
+        req_url = "{}://v1.{}.isogeo.com/formats{}".format(prot, self.api_url, specific_format)
 
-        req = self.get(
-            req_url, headers=self.header, proxies=self.proxies, verify=self.ssl
-        )
+        req = self.get(req_url, headers=self.header, proxies=self.proxies, verify=self.ssl)
 
         # checking response
         checker.check_api_response(req)

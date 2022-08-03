@@ -342,7 +342,5 @@ class Datasource(object):
 # ##################################
 if __name__ == "__main__":
     """standalone execution."""
-    atasource = Datasource(
-        name="Datasource Test", _modified="Test datasource _modified"
-    )
+    atasource = Datasource(name="Datasource Test", _modified="Test datasource _modified")
     print(atasource)

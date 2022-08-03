@@ -19,9 +19,9 @@ manager = QNetworkAccessManager()
 def ask_for_token(c_id, c_secret, request_status=True):
     """Ask a token from Isogeo API authentification page.
 
-     This send a POST request to Isogeo API with the user id and secret in
-     its header. The API should return an access token
-     """
+    This send a POST request to Isogeo API with the user id and secret in
+    its header. The API should return an access token
+    """
     headervalue = "Basic " + base64.b64encode(c_id + ":" + c_secret)
     data = urllib.urlencode({"grant_type": "client_credentials"})
     databyte = QByteArray()

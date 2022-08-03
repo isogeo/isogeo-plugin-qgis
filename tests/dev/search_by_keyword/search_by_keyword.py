@@ -59,13 +59,9 @@ logging.captureWarnings(True)
 
 logger.setLevel(log_level)
 log_form = logging.Formatter(
-    "%(asctime)s || %(levelname)s "
-    "|| %(module)s - %(lineno)d ||"
-    " %(funcName)s || %(message)s"
+    "%(asctime)s || %(levelname)s " "|| %(module)s - %(lineno)d ||" " %(funcName)s || %(message)s"
 )
-logfile = RotatingFileHandler(
-    os.path.join(logdir, "log_api_with_pyqt.log"), "a", 5000000, 1
-)
+logfile = RotatingFileHandler(os.path.join(logdir, "log_api_with_pyqt.log"), "a", 5000000, 1)
 
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
@@ -92,9 +88,7 @@ class KeyWordsSelection:
         # for connection :
         self.naMngr = QNetworkAccessManager()
         self.token_url = "https://id.api.isogeo.com/oauth/token"
-        self.request_url = (
-            "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
-        )
+        self.request_url = "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
 
         # init variables :
         self.token = ""
@@ -126,9 +120,7 @@ class KeyWordsSelection:
             return
 
         if self.search_type == "init":
-            result = isogeo.search(
-                whole_share=0, page_size=0, augment=0, tags_as_dicts=1
-            )
+            result = isogeo.search(whole_share=0, page_size=0, augment=0, tags_as_dicts=1)
         else:
             query = " ".join(list(self.checked_kw.keys()))
             result = isogeo.search(
@@ -311,14 +303,10 @@ class KeyWordsSelection:
             del self.checked_kw[self.ui.kw_cbbox.itemData(index, 32)]
         # adding the selected keyword to the dict if it is not already in
         else:
-            self.checked_kw[
-                self.ui.kw_cbbox.itemData(index, 32)
-            ] = self.ui.kw_cbbox.itemText(index)
+            self.checked_kw[self.ui.kw_cbbox.itemData(index, 32)] = self.ui.kw_cbbox.itemText(index)
         logger.debug("ckeched kw : {}".format(self.checked_kw))
 
-        self.ui.lbl_selection.setText(
-            "{} keywords selected".format(len(self.checked_kw))
-        )
+        self.ui.lbl_selection.setText("{} keywords selected".format(len(self.checked_kw)))
         self.ui.kw_cbbox.setToolTip(" / ".join(list(self.checked_kw.values())))
         # now selected keywords are stocked, time to request the API
         self.kw_search()
@@ -345,9 +333,7 @@ class KeyWordsSelection:
         logger.debug("----------------- RESET -------------------")
         self.search_type = "reset"
         self.checked_kw = {}
-        self.request_url = (
-            "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
-        )
+        self.request_url = "https://v1.api.isogeo.com/resources/search?_limit=0&_offset=0"
         self.ui.lbl_selection.setText("")
         self.ui.kw_cbbox.setToolTip("")
         self.pysdk_checking()

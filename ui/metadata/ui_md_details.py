@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_dlg_metadata_details(object):
     def setupUi(self, dlg_metadata_details):
         dlg_metadata_details.setObjectName("dlg_metadata_details")
@@ -16,16 +17,22 @@ class Ui_dlg_metadata_details(object):
         dlg_metadata_details.setMinimumSize(QtCore.QSize(800, 550))
         dlg_metadata_details.setMaximumSize(QtCore.QSize(16777215, 800))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off
+        )
         dlg_metadata_details.setWindowIcon(icon)
         dlg_metadata_details.setWindowOpacity(1.0)
         dlg_metadata_details.setAutoFillBackground(True)
-        dlg_metadata_details.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
+        dlg_metadata_details.setLocale(
+            QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
+        )
         dlg_metadata_details.setSizeGripEnabled(True)
         self.gridLayout_2 = QtWidgets.QGridLayout(dlg_metadata_details)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.li_menu = QtWidgets.QListWidget(dlg_metadata_details)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.li_menu.sizePolicy().hasHeightForWidth())
@@ -42,19 +49,21 @@ class Ui_dlg_metadata_details(object):
         self.li_menu.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.li_menu.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         self.li_menu.setAutoFillBackground(True)
-        self.li_menu.setStyleSheet("QListWidget{\n"
-"    background-color: rgb(69, 69, 69, 220);\n"
-"    outline: 0;\n"
-"}\n"
-"QListWidget::item {\n"
-"    color: white;\n"
-"    padding: 3px;\n"
-"}\n"
-"QListWidget::item::selected {\n"
-"    color: black;\n"
-"    background-color:palette(Window);\n"
-"    padding-right: 0px;\n"
-"}")
+        self.li_menu.setStyleSheet(
+            "QListWidget{\n"
+            "    background-color: rgb(69, 69, 69, 220);\n"
+            "    outline: 0;\n"
+            "}\n"
+            "QListWidget::item {\n"
+            "    color: white;\n"
+            "    padding: 3px;\n"
+            "}\n"
+            "QListWidget::item::selected {\n"
+            "    color: black;\n"
+            "    background-color:palette(Window);\n"
+            "    padding-right: 0px;\n"
+            "}"
+        )
         self.li_menu.setFrameShape(QtWidgets.QFrame.Box)
         self.li_menu.setLineWidth(1)
         self.li_menu.setAlternatingRowColors(False)
@@ -67,7 +76,11 @@ class Ui_dlg_metadata_details(object):
         self.li_menu.setObjectName("li_menu")
         item = QtWidgets.QListWidgetItem()
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/bookmark_orange.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/bookmark_orange.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         item.setIcon(icon1)
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
         brush.setStyle(QtCore.Qt.NoBrush)
@@ -75,41 +88,69 @@ class Ui_dlg_metadata_details(object):
         self.li_menu.addItem(item)
         item = QtWidgets.QListWidgetItem()
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/list-alt.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/list-alt.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         item.setIcon(icon2)
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
         brush.setStyle(QtCore.Qt.NoBrush)
         item.setForeground(brush)
-        item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEnabled)
+        item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
         self.li_menu.addItem(item)
         item = QtWidgets.QListWidgetItem()
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/phone_orange.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/phone_orange.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         item.setIcon(icon3)
         self.li_menu.addItem(item)
         item = QtWidgets.QListWidgetItem()
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/calendar_orange.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/calendar_orange.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         item.setIcon(icon4)
         self.li_menu.addItem(item)
         item = QtWidgets.QListWidgetItem()
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/globe_orange.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/globe_orange.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         item.setIcon(icon5)
         self.li_menu.addItem(item)
         item = QtWidgets.QListWidgetItem()
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/trophy_orange.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon6.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/trophy_orange.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         item.setIcon(icon6)
         self.li_menu.addItem(item)
         item = QtWidgets.QListWidgetItem()
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/gavel.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon7.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/gavel.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         item.setIcon(icon7)
         self.li_menu.addItem(item)
         item = QtWidgets.QListWidgetItem()
         icon8 = QtGui.QIcon()
-        icon8.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/code.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon8.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/code.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         item.setIcon(icon8)
         self.li_menu.addItem(item)
         self.gridLayout_2.addWidget(self.li_menu, 0, 0, 1, 1)
@@ -118,7 +159,11 @@ class Ui_dlg_metadata_details(object):
         self.btn_md_edit.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_md_edit.setAutoFillBackground(True)
         icon9 = QtGui.QIcon()
-        icon9.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/pencil.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon9.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/pencil.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         self.btn_md_edit.setIcon(icon9)
         self.btn_md_edit.setCheckable(False)
         self.btn_md_edit.setAutoRepeat(False)
@@ -134,13 +179,17 @@ class Ui_dlg_metadata_details(object):
         self.btn_addtomap.setMinimumSize(QtCore.QSize(150, 25))
         self.btn_addtomap.setObjectName("btn_addtomap")
         self.horizontalLayout.addWidget(self.btn_addtomap)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.horizontalLayout.addItem(spacerItem)
         self.btn_ok_cancel = QtWidgets.QDialogButtonBox(dlg_metadata_details)
         self.btn_ok_cancel.setMinimumSize(QtCore.QSize(150, 25))
         self.btn_ok_cancel.setMaximumSize(QtCore.QSize(250, 16777215))
         self.btn_ok_cancel.setAutoFillBackground(True)
-        self.btn_ok_cancel.setStandardButtons(QtWidgets.QDialogButtonBox.Close|QtWidgets.QDialogButtonBox.Ok)
+        self.btn_ok_cancel.setStandardButtons(
+            QtWidgets.QDialogButtonBox.Close | QtWidgets.QDialogButtonBox.Ok
+        )
         self.btn_ok_cancel.setCenterButtons(False)
         self.btn_ok_cancel.setObjectName("btn_ok_cancel")
         self.horizontalLayout.addWidget(self.btn_ok_cancel)
@@ -148,7 +197,9 @@ class Ui_dlg_metadata_details(object):
         self.verticalLayout_13 = QtWidgets.QVBoxLayout()
         self.verticalLayout_13.setObjectName("verticalLayout_13")
         self.stackedWidget = QtWidgets.QStackedWidget(dlg_metadata_details)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
@@ -208,7 +259,9 @@ class Ui_dlg_metadata_details(object):
         self.val_owner.setAutoFillBackground(False)
         self.val_owner.setScaledContents(True)
         self.val_owner.setWordWrap(True)
-        self.val_owner.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_owner.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_owner.setObjectName("val_owner")
         self.horizontalLayout_2.addWidget(self.val_owner)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
@@ -232,7 +285,9 @@ class Ui_dlg_metadata_details(object):
         self.val_group_themes.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.val_group_themes.setScaledContents(True)
         self.val_group_themes.setWordWrap(True)
-        self.val_group_themes.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_group_themes.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_group_themes.setObjectName("val_group_themes")
         self.horizontalLayout_3.addWidget(self.val_group_themes)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
@@ -259,7 +314,9 @@ class Ui_dlg_metadata_details(object):
         self.val_keywords.setAutoFillBackground(False)
         self.val_keywords.setScaledContents(True)
         self.val_keywords.setWordWrap(True)
-        self.val_keywords.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_keywords.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_keywords.setObjectName("val_keywords")
         self.horizontalLayout_4.addWidget(self.val_keywords)
         self.verticalLayout_2.addLayout(self.horizontalLayout_4)
@@ -284,7 +341,9 @@ class Ui_dlg_metadata_details(object):
         self.val_inspire_themes.setFont(font)
         self.val_inspire_themes.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.val_inspire_themes.setAutoFillBackground(False)
-        self.val_inspire_themes.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_inspire_themes.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_inspire_themes.setObjectName("val_inspire_themes")
         self.horizontalLayout_5.addWidget(self.val_inspire_themes)
         self.ico_inspire_conformity = QtWidgets.QLabel(self.md_general)
@@ -293,7 +352,9 @@ class Ui_dlg_metadata_details(object):
         self.ico_inspire_conformity.setAutoFillBackground(True)
         self.ico_inspire_conformity.setFrameShadow(QtWidgets.QFrame.Plain)
         self.ico_inspire_conformity.setText("")
-        self.ico_inspire_conformity.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/inspire.png"))
+        self.ico_inspire_conformity.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/inspire.png")
+        )
         self.ico_inspire_conformity.setScaledContents(True)
         self.ico_inspire_conformity.setWordWrap(True)
         self.ico_inspire_conformity.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
@@ -308,15 +369,19 @@ class Ui_dlg_metadata_details(object):
         self.ico_abstract.setMaximumSize(QtCore.QSize(20, 20))
         self.ico_abstract.setFocusPolicy(QtCore.Qt.NoFocus)
         self.ico_abstract.setText("")
-        self.ico_abstract.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/bookmark_blue.svg"))
+        self.ico_abstract.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/bookmark_blue.svg")
+        )
         self.ico_abstract.setScaledContents(True)
-        self.ico_abstract.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.ico_abstract.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.ico_abstract.setWordWrap(False)
         self.ico_abstract.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
         self.ico_abstract.setObjectName("ico_abstract")
         self.gridLayout_14.addWidget(self.ico_abstract, 0, 0, 1, 1)
         self.scrollArea = QtWidgets.QScrollArea(self.md_general)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
@@ -328,7 +393,9 @@ class Ui_dlg_metadata_details(object):
         self.scrollArea.setObjectName("scrollArea")
         self.scroll_abstract = QtWidgets.QWidget()
         self.scroll_abstract.setGeometry(QtCore.QRect(0, 0, 514, 198))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.scroll_abstract.sizePolicy().hasHeightForWidth())
@@ -339,7 +406,9 @@ class Ui_dlg_metadata_details(object):
         self.gridLayout_17 = QtWidgets.QGridLayout(self.scroll_abstract)
         self.gridLayout_17.setObjectName("gridLayout_17")
         self.val_abstract = QtWidgets.QLabel(self.scroll_abstract)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.val_abstract.sizePolicy().hasHeightForWidth())
@@ -353,17 +422,23 @@ class Ui_dlg_metadata_details(object):
         self.val_abstract.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.val_abstract.setAutoFillBackground(False)
         self.val_abstract.setScaledContents(True)
-        self.val_abstract.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.val_abstract.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
         self.val_abstract.setWordWrap(True)
         self.val_abstract.setOpenExternalLinks(True)
-        self.val_abstract.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_abstract.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_abstract.setObjectName("val_abstract")
         self.gridLayout_17.addWidget(self.val_abstract, 0, 0, 1, 1)
         self.scrollArea.setWidget(self.scroll_abstract)
         self.gridLayout_14.addWidget(self.scrollArea, 0, 1, 1, 1)
         self.verticalLayout_2.addLayout(self.gridLayout_14)
         self.verticalLayout_11.addLayout(self.verticalLayout_2)
-        spacerItem1 = QtWidgets.QSpacerItem(1, 10, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.MinimumExpanding)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            1, 10, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.MinimumExpanding
+        )
         self.verticalLayout_11.addItem(spacerItem1)
         self.stackedWidget.addWidget(self.md_general)
         self.md_feat_attributes = QtWidgets.QWidget()
@@ -428,9 +503,13 @@ class Ui_dlg_metadata_details(object):
         self.val_ct_pointof.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.val_ct_pointof.setAutoFillBackground(False)
         self.val_ct_pointof.setScaledContents(True)
-        self.val_ct_pointof.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.val_ct_pointof.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
         self.val_ct_pointof.setOpenExternalLinks(True)
-        self.val_ct_pointof.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_ct_pointof.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_ct_pointof.setObjectName("val_ct_pointof")
         self.gridLayout_16.addWidget(self.val_ct_pointof, 0, 0, 1, 1)
         self.scroll_ct_pointof.setWidget(self.scrollAreaWidgetContents_3)
@@ -466,16 +545,22 @@ class Ui_dlg_metadata_details(object):
         self.val_ct_other.setToolTip("")
         self.val_ct_other.setAutoFillBackground(False)
         self.val_ct_other.setScaledContents(True)
-        self.val_ct_other.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.val_ct_other.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
         self.val_ct_other.setWordWrap(True)
         self.val_ct_other.setOpenExternalLinks(True)
-        self.val_ct_other.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_ct_other.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_ct_other.setObjectName("val_ct_other")
         self.gridLayout_15.addWidget(self.val_ct_other, 0, 0, 1, 1)
         self.scroll_ct_other.setWidget(self.scrollAreaWidgetContents)
         self.gridLayout_13.addWidget(self.scroll_ct_other, 0, 0, 1, 1)
         self.gridLayout_7.addWidget(self.groupBox, 1, 0, 1, 1)
-        spacerItem2 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.gridLayout_7.addItem(spacerItem2, 2, 0, 1, 1)
         self.stackedWidget.addWidget(self.md_contacts)
         self.md_history = QtWidgets.QWidget()
@@ -533,7 +618,9 @@ class Ui_dlg_metadata_details(object):
         self.ico_data_update = QtWidgets.QLabel(self.grp_history)
         self.ico_data_update.setMaximumSize(QtCore.QSize(16, 16))
         self.ico_data_update.setText("")
-        self.ico_data_update.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/calendar_blue.svg"))
+        self.ico_data_update.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/calendar_blue.svg")
+        )
         self.ico_data_update.setScaledContents(True)
         self.ico_data_update.setAlignment(QtCore.Qt.AlignCenter)
         self.ico_data_update.setObjectName("ico_data_update")
@@ -548,7 +635,9 @@ class Ui_dlg_metadata_details(object):
         self.ico_data_crea = QtWidgets.QLabel(self.grp_history)
         self.ico_data_crea.setMaximumSize(QtCore.QSize(16, 16))
         self.ico_data_crea.setText("")
-        self.ico_data_crea.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/calendar-plus-o.svg"))
+        self.ico_data_crea.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/calendar-plus-o.svg")
+        )
         self.ico_data_crea.setScaledContents(True)
         self.ico_data_crea.setAlignment(QtCore.Qt.AlignCenter)
         self.ico_data_crea.setObjectName("ico_data_crea")
@@ -560,11 +649,17 @@ class Ui_dlg_metadata_details(object):
         self.lbl_data_crea.setFont(font)
         self.lbl_data_crea.setObjectName("lbl_data_crea")
         self.gridLayout_9.addWidget(self.lbl_data_crea, 0, 2, 1, 1)
-        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem3 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_9.addItem(spacerItem3, 1, 3, 1, 1)
-        spacerItem4 = QtWidgets.QSpacerItem(13, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem4 = QtWidgets.QSpacerItem(
+            13, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_9.addItem(spacerItem4, 0, 3, 1, 1)
-        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem5 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_9.addItem(spacerItem5, 2, 3, 1, 1)
         self.ico_frequency = QtWidgets.QLabel(self.grp_history)
         self.ico_frequency.setMaximumSize(QtCore.QSize(16, 16))
@@ -597,12 +692,16 @@ class Ui_dlg_metadata_details(object):
         font.setWeight(50)
         self.val_valid_comment.setFont(font)
         self.val_valid_comment.setScaledContents(True)
-        self.val_valid_comment.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
+        self.val_valid_comment.setAlignment(
+            QtCore.Qt.AlignBottom | QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft
+        )
         self.val_valid_comment.setWordWrap(True)
         self.val_valid_comment.setOpenExternalLinks(True)
         self.val_valid_comment.setObjectName("val_valid_comment")
         self.gridLayout_11.addWidget(self.val_valid_comment, 2, 3, 1, 1)
-        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem6 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_11.addItem(spacerItem6, 2, 2, 1, 1)
         self.ico_valid_comment = QtWidgets.QLabel(self.grp_history)
         self.ico_valid_comment.setMaximumSize(QtCore.QSize(16, 16))
@@ -612,7 +711,9 @@ class Ui_dlg_metadata_details(object):
         self.ico_valid_comment.setFont(font)
         self.ico_valid_comment.setAutoFillBackground(True)
         self.ico_valid_comment.setText("")
-        self.ico_valid_comment.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/comment-o.svg"))
+        self.ico_valid_comment.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/comment-o.svg")
+        )
         self.ico_valid_comment.setScaledContents(True)
         self.ico_valid_comment.setAlignment(QtCore.Qt.AlignCenter)
         self.ico_valid_comment.setWordWrap(True)
@@ -622,7 +723,9 @@ class Ui_dlg_metadata_details(object):
         self.ico_valid_end = QtWidgets.QLabel(self.grp_history)
         self.ico_valid_end.setMaximumSize(QtCore.QSize(16, 16))
         self.ico_valid_end.setText("")
-        self.ico_valid_end.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/calendar-times-o.svg"))
+        self.ico_valid_end.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/calendar-times-o.svg")
+        )
         self.ico_valid_end.setScaledContents(True)
         self.ico_valid_end.setAlignment(QtCore.Qt.AlignCenter)
         self.ico_valid_end.setObjectName("ico_valid_end")
@@ -637,7 +740,9 @@ class Ui_dlg_metadata_details(object):
         self.ico_valid_start = QtWidgets.QLabel(self.grp_history)
         self.ico_valid_start.setMaximumSize(QtCore.QSize(16, 16))
         self.ico_valid_start.setText("")
-        self.ico_valid_start.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/calendar-check-o.svg"))
+        self.ico_valid_start.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/calendar-check-o.svg")
+        )
         self.ico_valid_start.setScaledContents(True)
         self.ico_valid_start.setAlignment(QtCore.Qt.AlignCenter)
         self.ico_valid_start.setObjectName("ico_valid_start")
@@ -663,9 +768,13 @@ class Ui_dlg_metadata_details(object):
         self.lbl_valid_end.setFont(font)
         self.lbl_valid_end.setObjectName("lbl_valid_end")
         self.gridLayout_11.addWidget(self.lbl_valid_end, 1, 1, 1, 1)
-        spacerItem7 = QtWidgets.QSpacerItem(28, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem7 = QtWidgets.QSpacerItem(
+            28, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_11.addItem(spacerItem7, 1, 2, 1, 1)
-        spacerItem8 = QtWidgets.QSpacerItem(13, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem8 = QtWidgets.QSpacerItem(
+            13, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_11.addItem(spacerItem8, 0, 2, 1, 1)
         self.verticalLayout_15.addLayout(self.gridLayout_11)
         self.gridLayout_5.addLayout(self.verticalLayout_15, 1, 2, 2, 1)
@@ -703,10 +812,14 @@ class Ui_dlg_metadata_details(object):
         self.val_context.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.val_context.setAutoFillBackground(False)
         self.val_context.setScaledContents(True)
-        self.val_context.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.val_context.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
         self.val_context.setWordWrap(True)
         self.val_context.setOpenExternalLinks(True)
-        self.val_context.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_context.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_context.setObjectName("val_context")
         self.gridLayout_30.addWidget(self.val_context, 0, 0, 1, 1)
         self.scrollArea_7.setWidget(self.scrollAreaWidgetContents_8)
@@ -743,10 +856,14 @@ class Ui_dlg_metadata_details(object):
         self.val_method.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.val_method.setAutoFillBackground(False)
         self.val_method.setScaledContents(True)
-        self.val_method.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.val_method.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
         self.val_method.setWordWrap(True)
         self.val_method.setOpenExternalLinks(True)
-        self.val_method.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_method.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_method.setObjectName("val_method")
         self.gridLayout_4.addWidget(self.val_method, 0, 0, 1, 1)
         self.scrollArea_9.setWidget(self.scrollAreaWidgetContents_10)
@@ -759,7 +876,9 @@ class Ui_dlg_metadata_details(object):
         self.verticalLayout_16 = QtWidgets.QVBoxLayout(self.mGroupBox)
         self.verticalLayout_16.setObjectName("verticalLayout_16")
         self.tbl_events = QtWidgets.QTableWidget(self.mGroupBox)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tbl_events.sizePolicy().hasHeightForWidth())
@@ -775,21 +894,31 @@ class Ui_dlg_metadata_details(object):
         self.tbl_events.setColumnCount(2)
         self.tbl_events.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignBottom)
+        item.setTextAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignBottom)
         icon10 = QtGui.QIcon()
-        icon10.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/calendar-o.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon10.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/calendar-o.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         item.setIcon(icon10)
         self.tbl_events.setHorizontalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignTop)
+        item.setTextAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignTop)
         icon11 = QtGui.QIcon()
-        icon11.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/edit.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon11.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/edit.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         item.setIcon(icon11)
         self.tbl_events.setHorizontalHeaderItem(1, item)
         self.tbl_events.verticalHeader().setVisible(False)
         self.verticalLayout_16.addWidget(self.tbl_events)
         self.verticalLayout_18.addWidget(self.mGroupBox)
-        spacerItem9 = QtWidgets.QSpacerItem(20, 10, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem9 = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.verticalLayout_18.addItem(spacerItem9)
         self.stackedWidget.addWidget(self.md_history)
         self.md_geography = QtWidgets.QWidget()
@@ -817,7 +946,9 @@ class Ui_dlg_metadata_details(object):
         self.ico_format = QtWidgets.QLabel(self.grp_technic)
         self.ico_format.setMaximumSize(QtCore.QSize(16, 16))
         self.ico_format.setText("")
-        self.ico_format.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/cube_blue.svg"))
+        self.ico_format.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/cube_blue.svg")
+        )
         self.ico_format.setScaledContents(True)
         self.ico_format.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
         self.ico_format.setObjectName("ico_format")
@@ -836,12 +967,16 @@ class Ui_dlg_metadata_details(object):
         self.lbl_format.setFont(font)
         self.lbl_format.setObjectName("lbl_format")
         self.gridLayout_20.addWidget(self.lbl_format, 0, 1, 1, 1)
-        spacerItem10 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem10 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_20.addItem(spacerItem10, 0, 2, 1, 1)
         self.ico_feat_count = QtWidgets.QLabel(self.grp_technic)
         self.ico_feat_count.setMaximumSize(QtCore.QSize(16, 16))
         self.ico_feat_count.setText("")
-        self.ico_feat_count.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/cubes.svg"))
+        self.ico_feat_count.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/cubes.svg")
+        )
         self.ico_feat_count.setScaledContents(True)
         self.ico_feat_count.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
         self.ico_feat_count.setObjectName("ico_feat_count")
@@ -853,7 +988,9 @@ class Ui_dlg_metadata_details(object):
         self.lbl_feat_count.setFont(font)
         self.lbl_feat_count.setObjectName("lbl_feat_count")
         self.gridLayout_20.addWidget(self.lbl_feat_count, 1, 1, 1, 1)
-        spacerItem11 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem11 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_20.addItem(spacerItem11, 1, 2, 1, 1)
         self.val_feat_count = QtWidgets.QLabel(self.grp_technic)
         font = QtGui.QFont()
@@ -877,7 +1014,9 @@ class Ui_dlg_metadata_details(object):
         self.ico_geometry.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
         self.ico_geometry.setObjectName("ico_geometry")
         self.gridLayout_20.addWidget(self.ico_geometry, 2, 0, 1, 1)
-        spacerItem12 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem12 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_20.addItem(spacerItem12, 2, 2, 1, 1)
         self.val_geometry = QtWidgets.QLabel(self.grp_technic)
         font = QtGui.QFont()
@@ -928,9 +1067,13 @@ class Ui_dlg_metadata_details(object):
         self.lbl_srs.setFont(font)
         self.lbl_srs.setObjectName("lbl_srs")
         self.gridLayout_19.addWidget(self.lbl_srs, 0, 1, 1, 1)
-        spacerItem13 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem13 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_19.addItem(spacerItem13, 0, 2, 1, 1)
-        spacerItem14 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem14 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_19.addItem(spacerItem14, 1, 2, 1, 1)
         self.val_srs = QtWidgets.QLabel(self.grp_technic)
         font = QtGui.QFont()
@@ -955,7 +1098,9 @@ class Ui_dlg_metadata_details(object):
         self.lbl_resolution.setFont(font)
         self.lbl_resolution.setObjectName("lbl_resolution")
         self.gridLayout_19.addWidget(self.lbl_resolution, 2, 1, 1, 1)
-        spacerItem15 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem15 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_19.addItem(spacerItem15, 2, 2, 1, 1)
         self.val_resolution = QtWidgets.QLabel(self.grp_technic)
         font = QtGui.QFont()
@@ -986,15 +1131,21 @@ class Ui_dlg_metadata_details(object):
         self.val_geoContext.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.val_geoContext.setAutoFillBackground(False)
         self.val_geoContext.setScaledContents(True)
-        self.val_geoContext.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.val_geoContext.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
         self.val_geoContext.setWordWrap(True)
         self.val_geoContext.setOpenExternalLinks(True)
-        self.val_geoContext.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_geoContext.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_geoContext.setObjectName("val_geoContext")
         self.verticalLayout.addWidget(self.val_geoContext)
         self.verticalLayout_22.addWidget(self.grp_geoContext)
         self.grp_bbox = QtWidgets.QGroupBox(self.md_geography)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.grp_bbox.sizePolicy().hasHeightForWidth())
@@ -1012,7 +1163,9 @@ class Ui_dlg_metadata_details(object):
         self.gridLayout_18.setObjectName("gridLayout_18")
         self.wid_bbox = QgsMapCanvas(self.grp_bbox)
         self.wid_bbox.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.wid_bbox.sizePolicy().hasHeightForWidth())
@@ -1023,7 +1176,9 @@ class Ui_dlg_metadata_details(object):
         self.wid_bbox.setObjectName("wid_bbox")
         self.gridLayout_18.addWidget(self.wid_bbox, 0, 0, 1, 1)
         self.verticalLayout_22.addWidget(self.grp_bbox)
-        spacerItem16 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem16 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.verticalLayout_22.addItem(spacerItem16)
         self.stackedWidget.addWidget(self.md_geography)
         self.md_quality = QtWidgets.QWidget()
@@ -1060,10 +1215,14 @@ class Ui_dlg_metadata_details(object):
         self.val_specifications.setFont(font)
         self.val_specifications.setAutoFillBackground(False)
         self.val_specifications.setScaledContents(True)
-        self.val_specifications.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.val_specifications.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
         self.val_specifications.setWordWrap(True)
         self.val_specifications.setOpenExternalLinks(True)
-        self.val_specifications.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_specifications.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_specifications.setObjectName("val_specifications")
         self.gridLayout_28.addWidget(self.val_specifications, 0, 0, 1, 1)
         self.scrollArea_5.setWidget(self.scrollAreaWidgetContents_6)
@@ -1097,16 +1256,22 @@ class Ui_dlg_metadata_details(object):
         self.val_topology.setFont(font)
         self.val_topology.setAutoFillBackground(False)
         self.val_topology.setScaledContents(True)
-        self.val_topology.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.val_topology.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
         self.val_topology.setWordWrap(True)
         self.val_topology.setOpenExternalLinks(True)
-        self.val_topology.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_topology.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_topology.setObjectName("val_topology")
         self.gridLayout_29.addWidget(self.val_topology, 0, 0, 1, 1)
         self.scrollArea_6.setWidget(self.scrollAreaWidgetContents_7)
         self.gridLayout_27.addWidget(self.scrollArea_6, 0, 0, 1, 1)
         self.verticalLayout_5.addWidget(self.grp_topoConsist)
-        spacerItem17 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem17 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.verticalLayout_5.addItem(spacerItem17)
         self.stackedWidget.addWidget(self.md_quality)
         self.md_cgu = QtWidgets.QWidget()
@@ -1143,10 +1308,14 @@ class Ui_dlg_metadata_details(object):
         self.val_licenses.setFont(font)
         self.val_licenses.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.val_licenses.setAutoFillBackground(False)
-        self.val_licenses.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.val_licenses.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
         self.val_licenses.setWordWrap(True)
         self.val_licenses.setOpenExternalLinks(True)
-        self.val_licenses.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_licenses.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_licenses.setObjectName("val_licenses")
         self.gridLayout_26.addWidget(self.val_licenses, 0, 0, 1, 1)
         self.scrollArea_3.setWidget(self.scrollAreaWidgetContents_4)
@@ -1183,16 +1352,22 @@ class Ui_dlg_metadata_details(object):
         self.val_limitations.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.val_limitations.setAutoFillBackground(False)
         self.val_limitations.setScaledContents(True)
-        self.val_limitations.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.val_limitations.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
         self.val_limitations.setWordWrap(True)
         self.val_limitations.setOpenExternalLinks(True)
-        self.val_limitations.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
+        self.val_limitations.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse
+        )
         self.val_limitations.setObjectName("val_limitations")
         self.gridLayout_25.addWidget(self.val_limitations, 0, 0, 1, 1)
         self.scrollArea_4.setWidget(self.scrollAreaWidgetContents_5)
         self.gridLayout_24.addWidget(self.scrollArea_4, 0, 0, 1, 1)
         self.verticalLayout_3.addWidget(self.groupBox_2)
-        spacerItem18 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem18 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.verticalLayout_3.addItem(spacerItem18)
         self.stackedWidget.addWidget(self.md_cgu)
         self.md_advanced = QtWidgets.QWidget()
@@ -1210,11 +1385,17 @@ class Ui_dlg_metadata_details(object):
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.scrollAreaWidgetContents_2)
         self.gridLayout_3.setObjectName("gridLayout_3")
-        spacerItem19 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem19 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.gridLayout_3.addItem(spacerItem19, 3, 0, 1, 2)
         self.btn_xml_dl = QtWidgets.QPushButton(self.scrollAreaWidgetContents_2)
         icon12 = QtGui.QIcon()
-        icon12.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/download.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon12.addPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/download.svg"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off,
+        )
         self.btn_xml_dl.setIcon(icon12)
         self.btn_xml_dl.setDefault(True)
         self.btn_xml_dl.setFlat(False)
@@ -1289,7 +1470,9 @@ class Ui_dlg_metadata_details(object):
         self.val_owner_name.setScaledContents(True)
         self.val_owner_name.setObjectName("val_owner_name")
         self.gridLayout_8.addWidget(self.val_owner_name, 0, 0, 1, 1)
-        spacerItem20 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem20 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.gridLayout_8.addItem(spacerItem20, 6, 0, 1, 1)
         self.gridLayout_3.addWidget(self.grp_md_owner, 0, 0, 1, 1)
         self.grp_md_properties = QtWidgets.QGroupBox(self.scrollAreaWidgetContents_2)
@@ -1320,7 +1503,9 @@ class Ui_dlg_metadata_details(object):
         self.lbl_md_lang.setFont(font)
         self.lbl_md_lang.setObjectName("lbl_md_lang")
         self.gridLayout_10.addWidget(self.lbl_md_lang, 0, 1, 1, 1)
-        spacerItem21 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem21 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_10.addItem(spacerItem21, 1, 2, 1, 1)
         self.ico_md_date_update = QtWidgets.QLabel(self.grp_md_properties)
         self.ico_md_date_update.setMinimumSize(QtCore.QSize(16, 16))
@@ -1330,7 +1515,9 @@ class Ui_dlg_metadata_details(object):
         font.setWeight(50)
         self.ico_md_date_update.setFont(font)
         self.ico_md_date_update.setText("")
-        self.ico_md_date_update.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/calendar_blue.svg"))
+        self.ico_md_date_update.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/calendar_blue.svg")
+        )
         self.ico_md_date_update.setScaledContents(True)
         self.ico_md_date_update.setObjectName("ico_md_date_update")
         self.gridLayout_10.addWidget(self.ico_md_date_update, 2, 0, 1, 1)
@@ -1342,13 +1529,19 @@ class Ui_dlg_metadata_details(object):
         font.setWeight(50)
         self.ico_md_date_crea.setFont(font)
         self.ico_md_date_crea.setText("")
-        self.ico_md_date_crea.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/calendar-plus-o.svg"))
+        self.ico_md_date_crea.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/calendar-plus-o.svg")
+        )
         self.ico_md_date_crea.setScaledContents(True)
         self.ico_md_date_crea.setObjectName("ico_md_date_crea")
         self.gridLayout_10.addWidget(self.ico_md_date_crea, 1, 0, 1, 1)
-        spacerItem22 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem22 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_10.addItem(spacerItem22, 2, 2, 1, 1)
-        spacerItem23 = QtWidgets.QSpacerItem(470, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem23 = QtWidgets.QSpacerItem(
+            470, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.gridLayout_10.addItem(spacerItem23, 0, 2, 1, 1)
         self.val_md_date_crea = QtWidgets.QLabel(self.grp_md_properties)
         font = QtGui.QFont()
@@ -1358,7 +1551,9 @@ class Ui_dlg_metadata_details(object):
         self.val_md_date_crea.setObjectName("val_md_date_crea")
         self.gridLayout_10.addWidget(self.val_md_date_crea, 1, 3, 1, 1)
         self.lbl_md_date_update = QtWidgets.QLabel(self.grp_md_properties)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lbl_md_date_update.sizePolicy().hasHeightForWidth())
@@ -1382,7 +1577,9 @@ class Ui_dlg_metadata_details(object):
         font.setWeight(50)
         self.ico_md_lang.setFont(font)
         self.ico_md_lang.setText("")
-        self.ico_md_lang.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/language.svg"))
+        self.ico_md_lang.setPixmap(
+            QtGui.QPixmap(":/plugins/Isogeo/resources/metadata/language.svg")
+        )
         self.ico_md_lang.setScaledContents(True)
         self.ico_md_lang.setObjectName("ico_md_lang")
         self.gridLayout_10.addWidget(self.ico_md_lang, 0, 0, 1, 1)
@@ -1400,7 +1597,9 @@ class Ui_dlg_metadata_details(object):
         self.val_md_lang.setFont(font)
         self.val_md_lang.setObjectName("val_md_lang")
         self.gridLayout_10.addWidget(self.val_md_lang, 0, 3, 1, 1)
-        spacerItem24 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem24 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.gridLayout_10.addItem(spacerItem24, 3, 2, 1, 1)
         self.gridLayout_3.addWidget(self.grp_md_properties, 0, 1, 1, 1)
         self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_2)
@@ -1412,7 +1611,7 @@ class Ui_dlg_metadata_details(object):
         self.retranslateUi(dlg_metadata_details)
         self.li_menu.setCurrentRow(-1)
         self.stackedWidget.setCurrentIndex(0)
-        self.li_menu.currentRowChanged['int'].connect(self.stackedWidget.setCurrentIndex)
+        self.li_menu.currentRowChanged["int"].connect(self.stackedWidget.setCurrentIndex)
         self.btn_ok_cancel.accepted.connect(dlg_metadata_details.accept)
         self.btn_ok_cancel.rejected.connect(dlg_metadata_details.reject)
         QtCore.QMetaObject.connectSlotsByName(dlg_metadata_details)
@@ -1532,15 +1731,16 @@ class Ui_dlg_metadata_details(object):
         self.val_md_date_update.setText(_translate("dlg_metadata_details", "TextLabel"))
         self.val_md_lang.setText(_translate("dlg_metadata_details", "TextLabel"))
 
+
 from qgis.gui import QgsMapCanvas
 from qgscollapsiblegroupbox import QgsCollapsibleGroupBox
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     dlg_metadata_details = QtWidgets.QDialog()
     ui = Ui_dlg_metadata_details()
     ui.setupUi(dlg_metadata_details)
     dlg_metadata_details.show()
     sys.exit(app.exec_())
-

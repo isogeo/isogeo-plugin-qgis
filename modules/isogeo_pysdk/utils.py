@@ -101,9 +101,15 @@ class IsogeoUtils(object):
         :param dict proxies: dictionary of proxy settings as described in
          requests. See: http://docs.python-requests.org/en/master/user/advanced/#proxies
         """
-        self.platform, self.api_url, self.app_url, self.csw_url, self.mng_url, self.oc_url, self.ssl = (
-            self.set_base_url()
-        )
+        (
+            self.platform,
+            self.api_url,
+            self.app_url,
+            self.csw_url,
+            self.mng_url,
+            self.oc_url,
+            self.ssl,
+        ) = self.set_base_url()
         self.proxies = proxies
         super(IsogeoUtils, self).__init__()
 
@@ -125,9 +131,7 @@ class IsogeoUtils(object):
             ssl = False
             logging.debug("Using Quality Assurance platform (reduced perfs).")
         else:
-            logging.error(
-                "Platform must be one of: {}".format(" | ".join(self.API_URLS.keys()))
-            )
+            logging.error("Platform must be one of: {}".format(" | ".join(self.API_URLS.keys())))
             raise ValueError(
                 3,
                 "Platform must be one of: {}".format(" | ".join(self.API_URLS.keys())),
@@ -233,17 +237,13 @@ class IsogeoUtils(object):
         if component == "api":
             version_url = "{}://v1.{}.isogeo.com/about".format(prot, self.api_url)
         elif component == "db":
-            version_url = "{}://v1.{}.isogeo.com/about/database".format(
-                prot, self.api_url
-            )
+            version_url = "{}://v1.{}.isogeo.com/about/database".format(prot, self.api_url)
         elif component == "app" and self.platform == "prod":
             version_url = "https://app.isogeo.com/about"
         elif component == "app" and self.platform == "qa":
             version_url = "https://qa-isogeo-app.azurewebsites.net/about"
         else:
-            raise ValueError(
-                "Component value must be one of: " "api [default], db, app."
-            )
+            raise ValueError("Component value must be one of: " "api [default], db, app.")
 
         # send request
         version_req = requests.get(version_url, proxies=self.proxies, verify=self.ssl)
@@ -301,9 +301,7 @@ class IsogeoUtils(object):
             else:
                 raise TypeError(
                     "'{}' webapp expects {} argument(s): {}."
-                    " Args passed: {}".format(
-                        webapp, len(webapp_args), webapp_args, kwargs
-                    )
+                    " Args passed: {}".format(webapp, len(webapp_args), webapp_args, kwargs)
                 )
         else:
             raise ValueError(
@@ -354,9 +352,7 @@ class IsogeoUtils(object):
         """
         in_parsed = urlparse(url_api_token)
         if "qa" in url_api_token:
-            api_url_base = in_parsed._replace(
-                path="", netloc=in_parsed.netloc.replace("id.", "")
-            )
+            api_url_base = in_parsed._replace(path="", netloc=in_parsed.netloc.replace("id.", ""))
         else:
             api_url_base = in_parsed._replace(
                 path="", netloc=in_parsed.netloc.replace("id.", "v1.")
@@ -402,8 +398,7 @@ class IsogeoUtils(object):
             wgs = None
         else:
             raise ValueError(
-                "Duplicated value is not an accepted value."
-                " Please refer to __doc__ method."
+                "Duplicated value is not an accepted value." " Please refer to __doc__ method."
             )
 
         # inner function
@@ -456,9 +451,7 @@ class IsogeoUtils(object):
                     _duplicate_mng(tags_as_dicts.get("catalogs"), (v, k))
                 else:
                     logging.debug(
-                        "Duplicated catalog name: {}. Last catalog is retained.".format(
-                            v
-                        )
+                        "Duplicated catalog name: {}. Last catalog is retained.".format(v)
                     )
                     tags_as_dicts.get("catalogs")[v] = k
                 continue
@@ -467,9 +460,7 @@ class IsogeoUtils(object):
                     _duplicate_mng(tags_as_dicts.get("contacts"), (v, k))
                 else:
                     logging.debug(
-                        "Duplicated contact name: {}. Last contact is retained.".format(
-                            v
-                        )
+                        "Duplicated contact name: {}. Last contact is retained.".format(v)
                     )
                     tags_as_dicts.get("contacts")[v] = k
                 continue
@@ -481,9 +472,7 @@ class IsogeoUtils(object):
                     _duplicate_mng(tags_as_dicts.get("data-sources"), (v, k))
                 else:
                     logging.debug(
-                        "Duplicated data-source name: {}. Last data-source is retained.".format(
-                            v
-                        )
+                        "Duplicated data-source name: {}. Last data-source is retained.".format(v)
                     )
                     tags_as_dicts.get("data-sources")[v] = k
                 continue
@@ -501,9 +490,7 @@ class IsogeoUtils(object):
                     _duplicate_mng(tags_as_dicts.get("licenses"), (v, k))
                 else:
                     logging.debug(
-                        "Duplicated license name: {}. Last license is retained.".format(
-                            v
-                        )
+                        "Duplicated license name: {}. Last license is retained.".format(v)
                     )
                     tags_as_dicts.get("licenses")[v] = k
                 continue
@@ -527,9 +514,7 @@ class IsogeoUtils(object):
         # -- QUERY TAGS -------------
         # handle share case
         if prev_query.get("_shares"):
-            prev_query.get("_tags").append(
-                "share:{}".format(prev_query.get("_shares")[0])
-            )
+            prev_query.get("_tags").append("share:{}".format(prev_query.get("_shares")[0]))
         else:
             pass
         # output dict struture
@@ -565,9 +550,7 @@ class IsogeoUtils(object):
                     _duplicate_mng(query_tags.get("catalogs"), (v, k))
                 else:
                     logging.debug(
-                        "Duplicated catalog name: {}. Last catalog is retained.".format(
-                            v
-                        )
+                        "Duplicated catalog name: {}. Last catalog is retained.".format(v)
                     )
                     query_tags.get("catalogs")[tags.get(t)] = t
                 continue
@@ -576,9 +559,7 @@ class IsogeoUtils(object):
                     _duplicate_mng(query_tags.get("contacts"), (v, k))
                 else:
                     logging.debug(
-                        "Duplicated contact name: {}. Last contact is retained.".format(
-                            v
-                        )
+                        "Duplicated contact name: {}. Last contact is retained.".format(v)
                     )
                     query_tags.get("contacts")[tags.get(t)] = t
                 continue
@@ -590,9 +571,7 @@ class IsogeoUtils(object):
                     _duplicate_mng(query_tags.get("data-sources"), (v, k))
                 else:
                     logging.debug(
-                        "Duplicated data-source name: {}. Last data-source is retained.".format(
-                            v
-                        )
+                        "Duplicated data-source name: {}. Last data-source is retained.".format(v)
                     )
                     query_tags.get("data-sources")[tags.get(t)] = t
                 continue
@@ -610,9 +589,7 @@ class IsogeoUtils(object):
                     _duplicate_mng(query_tags.get("licenses"), (v, k))
                 else:
                     logging.debug(
-                        "Duplicated license name: {}. Last license is retained.".format(
-                            v
-                        )
+                        "Duplicated license name: {}. Last license is retained.".format(v)
                     )
                     query_tags.get("licenses")[tags.get(t)] = t
                 continue
@@ -631,9 +608,7 @@ class IsogeoUtils(object):
                 continue
             # ignored tags
             else:
-                logging.debug(
-                    "A query tag has been ignored during parsing: {}".format(t)
-                )
+                logging.debug("A query tag has been ignored during parsing: {}".format(t))
 
         # return the output
         return tags_as_dicts, query_as_dicts
@@ -651,9 +626,7 @@ class IsogeoUtils(object):
             self.app_url, creator_id, share.get("_id")
         )
         # check if OpenCatalog is activated
-        opencat_url = "{}/s/{}/{}".format(
-            self.oc_url, share.get("_id"), share.get("urlToken")
-        )
+        opencat_url = "{}/s/{}/{}".format(self.oc_url, share.get("_id"), share.get("urlToken"))
         if requests.head(opencat_url):
             share["oc_url"] = opencat_url
         else:
@@ -678,9 +651,7 @@ class IsogeoUtils(object):
             in_credentials = path.normpath(in_credentials)
         if path.splitext(in_credentials)[1] not in accepted_extensions:
             raise ValueError(
-                "Extension of credentials file must be one of {}".format(
-                    accepted_extensions
-                )
+                "Extension of credentials file must be one of {}".format(accepted_extensions)
             )
         else:
             kind = path.splitext(in_credentials)[1]
@@ -707,9 +678,7 @@ class IsogeoUtils(object):
                     "scopes": auth_settings.get("scopes", ["resources:read"]),
                     "uri_auth": auth_settings.get("auth_uri"),
                     "uri_token": auth_settings.get("token_uri"),
-                    "uri_base": self.get_url_base_from_url_token(
-                        auth_settings.get("token_uri")
-                    ),
+                    "uri_base": self.get_url_base_from_url_token(auth_settings.get("token_uri")),
                     "uri_redirect": None,
                 }
             else:
@@ -723,9 +692,7 @@ class IsogeoUtils(object):
                     "scopes": auth_settings.get("scopes", ["resources:read"]),
                     "uri_auth": auth_settings.get("auth_uri"),
                     "uri_token": auth_settings.get("token_uri"),
-                    "uri_base": self.get_url_base_from_url_token(
-                        auth_settings.get("token_uri")
-                    ),
+                    "uri_base": self.get_url_base_from_url_token(auth_settings.get("token_uri")),
                     "uri_redirect": auth_settings.get("redirect_uris", None),
                 }
         else:
@@ -747,9 +714,7 @@ class IsogeoUtils(object):
                 "client_secret": auth_settings.get("CLIENT_SECRET"),
                 "uri_auth": auth_settings.get("URI_AUTH"),
                 "uri_token": auth_settings.get("URI_TOKEN"),
-                "uri_base": self.get_url_base_from_url_token(
-                    auth_settings.get("URI_TOKEN")
-                ),
+                "uri_base": self.get_url_base_from_url_token(auth_settings.get("URI_TOKEN")),
                 "uri_redirect": auth_settings.get("URI_REDIRECT"),
             }
         # method ending

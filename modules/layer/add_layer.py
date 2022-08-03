@@ -16,7 +16,7 @@ from qgis.core import (
     QgsRasterLayer,
     QgsMessageLog,
     QgsApplication,
-    QgsCoordinateReferenceSystem
+    QgsCoordinateReferenceSystem,
 )
 
 from qgis.utils import iface
@@ -47,9 +47,7 @@ qgis_wms_formats = (
     "image/tiff",
 )
 
-li_ora_multiGeom_ok = [
-    [1, 5], [2, 6], [3, 7]
-]
+li_ora_multiGeom_ok = [[1, 5], [2, 6], [3, 7]]
 
 # ############################################################################
 # ##### Conditional imports ########
@@ -120,9 +118,7 @@ class LayerAdder:
 
         # Let's inform the user
         logger.warning(
-            "Invalid {} layer: {}. QGIS says: {}".format(
-                data_type, data_source, error_msg
-            )
+            "Invalid {} layer: {}. QGIS says: {}".format(data_type, data_source, error_msg)
         )
         msg = "<b>{} ({}) ".format(layer_type, data_type)
         msg += self.tr("is not valid", context=__class__.__name__)
@@ -153,9 +149,7 @@ class LayerAdder:
         elif data_type == "raster":
             layer = QgsRasterLayer(path, layer_label)
         else:
-            raise ValueError(
-                "'data_type' argument value should be 'vector' or 'raster'"
-            )
+            raise ValueError("'data_type' argument value should be 'vector' or 'raster'")
 
         # If the layer is valid, add it to the map canvas and inform the user
         if layer.isValid():
@@ -163,7 +157,9 @@ class LayerAdder:
             layer_is_ok = 1
             try:
                 QgsMessageLog.logMessage(
-                    message="Data layer added: {}".format(name), tag="Isogeo", level=0,
+                    message="Data layer added: {}".format(name),
+                    tag="Isogeo",
+                    level=0,
                 )
                 logger.debug("{} layer added: {}".format(data_type.capitalize(), path))
             except UnicodeEncodeError:
@@ -175,9 +171,7 @@ class LayerAdder:
                     level=0,
                 )
                 logger.debug(
-                    "{} layer added: {}".format(
-                        data_type.capitalize(), name.decode("latin1")
-                    )
+                    "{} layer added: {}".format(data_type.capitalize(), name.decode("latin1"))
                 )
         # If it's not, just inform the user
         else:
@@ -185,15 +179,16 @@ class LayerAdder:
             layer_is_ok = 0
 
         if not layer_is_ok:
-            self.invalid_layer_inform(
-                data_type=data_type, data_source=path, error_msg=error_msg
-            )
+            self.invalid_layer_inform(data_type=data_type, data_source=path, error_msg=error_msg)
             return 0
         else:
             return lyr, layer
 
     def add_service_layer(
-        self, layer_url: str, layer_title: str, service_type: str,
+        self,
+        layer_url: str,
+        layer_title: str,
+        service_type: str,
     ):
         """Add a geo service layer from its URL. Usefull for WMS multi-layer
 
@@ -225,9 +220,7 @@ class LayerAdder:
             if layer.isValid():
                 lyr = QgsProject.instance().addMapLayer(layer)
                 QgsMessageLog.logMessage(
-                    message="{} service layer added: {}".format(
-                        service_type, layer_url
-                    ),
+                    message="{} service layer added: {}".format(service_type, layer_url),
                     tag="Isogeo",
                     level=0,
                 )
@@ -250,7 +243,10 @@ class LayerAdder:
             return lyr, layer
 
     def add_from_service(
-        self, service_type: str, api_layer: dict, service_details: dict,
+        self,
+        service_type: str,
+        api_layer: dict,
+        service_details: dict,
     ):
         """Add a layer to QGIS map canvas from a Geographic Service Layer.
 
@@ -321,9 +317,7 @@ class LayerAdder:
 
         # Retrieve information about the table or the view from the database connection
         table = [
-            tab
-            for tab in db_connection.get("tables")
-            if tab[1] == table_name and tab[2] == schema
+            tab for tab in db_connection.get("tables") if tab[1] == table_name and tab[2] == schema
         ]
 
         # Create a vector layer from retrieved infos
@@ -359,9 +353,7 @@ class LayerAdder:
                     layer = QgsVectorLayer(uri.uri(True), table[1], "postgres")
                     if layer.isValid():
                         layer_is_ok = 1
-                        logger.debug(
-                            "'{}' chose as key column to add PostGIS view".format(field)
-                        )
+                        logger.debug("'{}' chose as key column to add PostGIS view".format(field))
                         break
                     else:
                         continue
@@ -371,11 +363,7 @@ class LayerAdder:
                 )
             # If it's just not, let's prepare error message for the user
             else:
-                logger.debug(
-                    "Layer not valid. table = {} : {}".format(
-                        table, plg_tools.last_error
-                    )
-                )
+                logger.debug("Layer not valid. table = {} : {}".format(table, plg_tools.last_error))
                 error_msg = "The '{}' database table retrieved using '{}' data base connection is not valid : {}".format(
                     base_name, conn_name, plg_tools.last_error[1]
                 )
@@ -428,7 +416,9 @@ class LayerAdder:
             uri = db_connection.get("uri")
 
         # Retrieve information about the table or the view from the database connection
-        table_infos = [tab for tab in db_connection.get("tables") if tab[0] == schema and tab[1] == table_name][0]
+        table_infos = [
+            tab for tab in db_connection.get("tables") if tab[0] == schema and tab[1] == table_name
+        ][0]
         geometry_column = table_infos[2]
         table = [schema, table_name, geometry_column]
 
@@ -445,12 +435,20 @@ class LayerAdder:
             # first, request Oracle Db about specific table geometry types
             try:
                 db_connector = db_connection.get("db_connector")
-                ora_table_geomType_request = "select DISTINCT c.{}.GET_GTYPE() from {}.{} c order by c.{}.GET_GTYPE() asc".format(table[2], table[0], table[1], table[2])
-                table_geomType_response = db_connector._fetchall(db_connector._execute(None, ora_table_geomType_request))
+                ora_table_geomType_request = "select DISTINCT c.{}.GET_GTYPE() from {}.{} c order by c.{}.GET_GTYPE() asc".format(
+                    table[2], table[0], table[1], table[2]
+                )
+                table_geomType_response = db_connector._fetchall(
+                    db_connector._execute(None, ora_table_geomType_request)
+                )
                 li_geomTypes = [int(elem[0]) for elem in table_geomType_response]
 
             except Exception as e:
-                logger.warning("'{}.{}' Oracle table geometry type could not be fetched : {}".format(table[0], table[1], e))
+                logger.warning(
+                    "'{}.{}' Oracle table geometry type could not be fetched : {}".format(
+                        table[0], table[1], e
+                    )
+                )
                 li_geomTypes = []
 
             is_multi_geom = 0
@@ -485,10 +483,7 @@ class LayerAdder:
                 if geomType_layer.isValid():
                     li_layers_to_add.append(geomType_layer)
                 # If it's not and the table seems to be a view, let's try to handle that
-                elif (
-                    not geomType_layer.isValid()
-                    and plg_tools.last_error[0] == "oracle"
-                ):
+                elif not geomType_layer.isValid() and plg_tools.last_error[0] == "oracle":
                     logger.debug(
                         "Oracle layer may be a view, so key column is missing. Trying to automatically set one..."
                     )
@@ -514,9 +509,7 @@ class LayerAdder:
                 # If it's just not, let's prepare error message for the user
                 else:
                     logger.debug(
-                        "Layer not valid. table = {} : {}".format(
-                            table, plg_tools.last_error
-                        )
+                        "Layer not valid. table = {} : {}".format(table, plg_tools.last_error)
                     )
                     error_msg = "The '{}' database table retrieved using '{}' database connection is not valid : {}".format(
                         base_name, conn_name, plg_tools.last_error[1]
@@ -528,9 +521,17 @@ class LayerAdder:
             for layer in li_layers_to_add:
                 logger.debug("Data added: {} (geomtype : {})".format(table_name, layer.wkbType()))
 
-                table_infos = [tab for tab in db_connection.get("tables") if tab[0] == schema and tab[1] == table_name][0]
+                table_infos = [
+                    tab
+                    for tab in db_connection.get("tables")
+                    if tab[0] == schema and tab[1] == table_name
+                ][0]
 
-                if isinstance(table_infos[3], float) or isinstance(table_infos[3], int) or isinstance(table_infos[3], str):
+                if (
+                    isinstance(table_infos[3], float)
+                    or isinstance(table_infos[3], int)
+                    or isinstance(table_infos[3], str)
+                ):
                     table_srid = str(int(table_infos[3]))
                     table_crs = QgsCoordinateReferenceSystem("EPSG:" + table_srid)
                     layer.setCrs(table_crs)

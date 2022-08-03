@@ -22,10 +22,7 @@ try:
 
     print("Depencencies - HTTPError within owslib")
 except ImportError as e:
-    print(
-        "Depencencies - HTTPError not within owslib."
-        " Trying to get it from urllib2 directly."
-    )
+    print("Depencencies - HTTPError not within owslib." " Trying to get it from urllib2 directly.")
     from urllib2 import HTTPError
 
 # ################################
@@ -41,10 +38,10 @@ wfs_url_in_v2_public_1 = (
 wfs_url_in_v2_public_2 = (
     "http://noisy.hq.isogeo.fr:6090/geoserver/ows?service=wfs&request=GetCapabilities"
 )
-wfs_url_in_v2_public_3 = (
-    "http://magosm.magellium.com/geoserver/wfs?request=GetCapabilities"
+wfs_url_in_v2_public_3 = "http://magosm.magellium.com/geoserver/wfs?request=GetCapabilities"
+wfs_url_in_v1_public = (
+    "http://noisy.hq.isogeo.fr:6090/geoserver/ows?service=wfs&version=1.1.0&request=GetCapabilities"
 )
-wfs_url_in_v1_public = "http://noisy.hq.isogeo.fr:6090/geoserver/ows?service=wfs&version=1.1.0&request=GetCapabilities"
 wfs_url_in_v2_auth_1 = (
     "https://www.ppige-npdc.fr/geoserver/ayants-droits/wfs?request=GetCapabilities"
 )
@@ -237,14 +234,10 @@ lyr_srs = wfs_lyr.GetSpatialRef()
 lyr_srs.AutoIdentifyEPSG()
 if lyr_srs.GetAuthorityName("PROJCS"):
     print("CRS type: projected")
-    srs = "{}:{}".format(
-        lyr_srs.GetAuthorityName("PROJCS"), lyr_srs.GetAuthorityCode("PROJCS")
-    )
+    srs = "{}:{}".format(lyr_srs.GetAuthorityName("PROJCS"), lyr_srs.GetAuthorityCode("PROJCS"))
 elif lyr_srs.GetAuthorityName("GEOGCS"):
     print("CRS type: geographic")
-    srs = "{}:{}".format(
-        lyr_srs.GetAuthorityName("GEOGCS"), lyr_srs.GetAuthorityCode("GEOGCS")
-    )
+    srs = "{}:{}".format(lyr_srs.GetAuthorityName("GEOGCS"), lyr_srs.GetAuthorityCode("GEOGCS"))
 else:
     print("SRS: undetermined CRS")
     pass

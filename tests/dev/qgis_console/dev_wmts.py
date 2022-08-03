@@ -19,10 +19,7 @@ try:
 
     print("Depencencies - HTTPError within owslib")
 except ImportError as e:
-    print(
-        "Depencencies - HTTPError not within owslib."
-        " Trying to get it from urllib2 directly."
-    )
+    print("Depencencies - HTTPError not within owslib." " Trying to get it from urllib2 directly.")
     from urllib2 import HTTPError
 
 # ################################
@@ -48,19 +45,13 @@ qgis_wms_formats = (
 QgsMapLayerRegistry.instance().removeAllMapLayers()
 
 # sample WMTS
-wmts_url_in_public_1 = (
-    "http://suite.opengeo.org/geoserver/gwc/service/wmts?request=getcapabilities"
-)  # bd_lyr = "opengeo:countries"
-wmts_url_in_public_2 = (
-    "http://noisy.hq.isogeo.fr:6090/geoserver/gwc/service/wmts?REQUEST=GetCapabilities"
-)  # i_lyr = "Isogeo:WC2014_stadiums"
+wmts_url_in_public_1 = "http://suite.opengeo.org/geoserver/gwc/service/wmts?request=getcapabilities"  # bd_lyr = "opengeo:countries"
+wmts_url_in_public_2 = "http://noisy.hq.isogeo.fr:6090/geoserver/gwc/service/wmts?REQUEST=GetCapabilities"  # i_lyr = "Isogeo:WC2014_stadiums"
 wmts_url_in_public_3 = "http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?service=WMTS&request=GetCapabilities"  # msc_lyr = "Europakart"
 wmts_url_in_public_4_esri = "http://data.geus.dk/arcgis/rest/services/OneGeologyGlobal/S071_G2500_OneGeology/MapServer/WMTS?request=GetCapabilities"
 wmts_url_in_public_5_esri = "http://sampleserver6.arcgisonline.com/arcgis/rest/services/WorldTimeZones/MapServer/WMTS?REQUEST=GetCapabilities&SERVICE=WMTS"
 wmts_url_in_publc_6 = "http://openlayers.org/en/v4.0.1/examples/data/WMTSCapabilities.xml?request=GetCapabilities&service=WMTS"
-wmts_url_in_publc_7 = (
-    "https://www.ppige-npdc.fr/geoserver/gwc/service/wmts?REQUEST=GetCapabilities"
-)
+wmts_url_in_publc_7 = "https://www.ppige-npdc.fr/geoserver/gwc/service/wmts?REQUEST=GetCapabilities"
 
 # opening WMTS
 wmts_url_getcap = wmts_url_in_public_1

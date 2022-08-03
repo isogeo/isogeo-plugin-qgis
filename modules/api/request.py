@@ -138,9 +138,7 @@ class ApiRequester(QObject):
             - 'details'
             - 'shares'
         """
-        logger.info(
-            "-------------- Sending a '{}' request --------------".format(request_type)
-        )
+        logger.info("-------------- Sending a '{}' request --------------".format(request_type))
         # creating the QNetworkRequest appropriate to the request_type
         request = self.create_request(request_type)
         # post request for 'token' request
@@ -201,11 +199,7 @@ class ApiRequester(QObject):
         httpStatusMessage = reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
 
         logger.info("API answer from {}".format(url))
-        logger.info(
-            "Status code: {} - Response message: {}".format(
-                httpStatus, httpStatusMessage
-            )
-        )
+        logger.info("Status code: {} - Response message: {}".format(httpStatus, httpStatusMessage))
         try:
             parsed_content = json.loads(content)
         except ValueError as e:
@@ -216,9 +210,7 @@ class ApiRequester(QObject):
                 return
             else:
                 try:
-                    logger.error(
-                        "API's response content cannot be loaded : {}".format(content)
-                    )
+                    logger.error("API's response content cannot be loaded : {}".format(content))
                 except Exception as e:
                     logger.error("API's response content issue : {}".format(e))
         # error detected
@@ -298,14 +290,10 @@ class ApiRequester(QObject):
                     self.shares_sig.emit(parsed_content)
                 elif "resources/search?" in url:
                     logger.debug("Handling reply to a 'search' request")
-                    self.search_sig.emit(
-                        parsed_content, self.get_tags(parsed_content.get("tags"))
-                    )
+                    self.search_sig.emit(parsed_content, self.get_tags(parsed_content.get("tags")))
                 elif "resources/" in reply.url().toString():
                     logger.debug("Handling reply to a 'details' request")
-                    self.details_sig.emit(
-                        parsed_content, self.get_tags(parsed_content.get("tags"))
-                    )
+                    self.details_sig.emit(parsed_content, self.get_tags(parsed_content.get("tags")))
                 else:
                     logger.debug("Unkown reply type : {}".format(parsed_content))
         # no errors detected but empty API's reply content
@@ -388,9 +376,7 @@ class ApiRequester(QObject):
         # Geographical filter
         if params.get("geofilter") is not None:
             if params.get("coord") is not False:
-                filters += "&box={0}&rel={1}".format(
-                    params.get("coord"), params.get("operation")
-                )
+                filters += "&box={0}&rel={1}".format(params.get("coord"), params.get("operation"))
             else:
                 pass
         else:

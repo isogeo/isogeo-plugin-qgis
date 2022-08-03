@@ -50,9 +50,7 @@ class UserInformer:
         """
         msg_dict = {
             "path": [
-                self.tr(
-                    "The specified file does not exist.", context=__class__.__name__
-                ),
+                self.tr("The specified file does not exist.", context=__class__.__name__),
                 5,
                 1,
             ],
@@ -66,8 +64,7 @@ class UserInformer:
             ],
             "ok": [
                 self.tr(
-                    "Authentication file is valid. Asking for authorization to Isogeo's"
-                    " API.",
+                    "Authentication file is valid. Asking for authorization to Isogeo's" " API.",
                     context=__class__.__name__,
                 ),
                 5,
@@ -179,9 +176,7 @@ class UserInformer:
                     msg += lim.description
                 else:
                     msg += "<i>"
-                    msg += self.tr(
-                        "No description provided", context=__class__.__name__
-                    )
+                    msg += self.tr("No description provided", context=__class__.__name__)
                     msg += "</i>"
             self.display(message=msg, duration=14, level=0)
         else:

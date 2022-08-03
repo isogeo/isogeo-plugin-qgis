@@ -21,18 +21,14 @@ QgsMapLayerRegistry.instance().removeAllMapLayers()
 
 
 uri = QgsDataSourceURI()
-uri.setParam(
-    "url", "http://geodata.nanterre.fr/arcgis/rest/services/Limite_Admin/MapServer/0"
-)
+uri.setParam("url", "http://geodata.nanterre.fr/arcgis/rest/services/Limite_Admin/MapServer/0")
 # uri.setParam("typename", layer_id)
 # uri.setParam("version", "auto")
 uri.setParam("crs", "EPSG:2154")
 uri.setParam("restrictToRequestBBOX", "1")
 
 # let's try to add it to the map canvas
-qgis_efs_lyr_auto = QgsVectorLayer(
-    uri.uri(), "URI - Nanterre AUTO", "arcgisfeatureserver"
-)
+qgis_efs_lyr_auto = QgsVectorLayer(uri.uri(), "URI - Nanterre AUTO", "arcgisfeatureserver")
 QgsMapLayerRegistry.instance().addMapLayer(qgis_efs_lyr_auto)
 
 # for comparison, manual URL

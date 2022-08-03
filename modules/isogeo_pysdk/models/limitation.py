@@ -165,10 +165,7 @@ class Limitation(object):
         :param str restriction: The restriction of this Limitation.
         """
         # check type value
-        if (
-            restriction is not None
-            and restriction not in LimitationRestrictions.__members__
-        ):
+        if restriction is not None and restriction not in LimitationRestrictions.__members__:
             raise ValueError(
                 "Limitation restriction '{}' is not an accepted value. Must be one of: {}.".format(
                     type, " | ".join([e.name for e in LimitationRestrictions])

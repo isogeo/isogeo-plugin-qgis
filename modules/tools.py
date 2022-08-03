@@ -152,9 +152,7 @@ class IsogeoPlgTools(IsogeoUtils):
                 autoraise=True,
             )
         # method ending
-        logger.debug(
-            "Isogeo Plugin&Widget test form launched in the default web browser"
-        )
+        logger.debug("Isogeo Plugin&Widget test form launched in the default web browser")
 
     def open_pipedrive_rdv_form(self, lang):
         """Open the rdv request online form in web browser.
@@ -200,7 +198,9 @@ class IsogeoPlgTools(IsogeoUtils):
                 )
             except Exception as e:
                 logger.error("Unable to open log folder: {}".format(e))
-                raise SystemError("Unable to open log folder, please try to install xdg-utils with the following command: sudo apt install xdg-utils")
+                raise SystemError(
+                    "Unable to open log folder, please try to install xdg-utils with the following command: sudo apt install xdg-utils"
+                )
 
         elif opersys == "darwin":  # Mac:
             proc = subprocess.Popen(
@@ -208,9 +208,7 @@ class IsogeoPlgTools(IsogeoUtils):
             )
 
         else:
-            raise NotImplementedError(
-                "Your `%s` isn't a supported operating system`." % opersys
-            )
+            raise NotImplementedError("Your `%s` isn't a supported operating system`." % opersys)
 
         # end of function
         return proc
@@ -228,9 +226,7 @@ class IsogeoPlgTools(IsogeoUtils):
         logger.debug("Link launched in the default web browser: {}".format(link))
         return
 
-    def plugin_metadata(
-        self, base_path=path.dirname(__file__), section="general", value="version"
-    ):
+    def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
         """Plugin metadata.txt parser.
 
         :param path base_path: directory path whete the metadata txt is stored
@@ -362,9 +358,7 @@ class IsogeoPlgTools(IsogeoUtils):
         # retrieve QGIS proxy settings
         qgis_proxy_enabled = qsettings.value("proxy/proxyEnabled", False, type=bool)
         if qgis_proxy_enabled is True:
-            qgis_proxy_type = qsettings.value(
-                "proxy/proxyType", "DefaultProxy", type=str
-            )
+            qgis_proxy_type = qsettings.value("proxy/proxyType", "DefaultProxy", type=str)
             logger.info("Proxy enabled in QGIS: {}".format(qgis_proxy_type))
         else:
             logger.info("No proxy enabled in QGIS.")
@@ -395,9 +389,7 @@ class IsogeoPlgTools(IsogeoUtils):
                     )
             except Exception as exc:
                 logger.error(
-                    "Despite the absence of proxy, connection to Isogeo API failed: {}".format(
-                        exc
-                    )
+                    "Despite the absence of proxy, connection to Isogeo API failed: {}".format(exc)
                 )
 
             return True
@@ -476,9 +468,7 @@ class IsogeoPlgTools(IsogeoUtils):
             # if proxy type is DefaultProxy, then ignore it
             if qgis_proxy_type == "DefaultProxy":
                 logger.debug(
-                    "QGIS is using system settings: {}. [case 4a]".format(
-                        system_proxy_config
-                    )
+                    "QGIS is using system settings: {}. [case 4a]".format(system_proxy_config)
                 )
                 return True
 

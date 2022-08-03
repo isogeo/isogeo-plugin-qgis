@@ -19,10 +19,7 @@ try:
 
     print("Depencencies - HTTPError within owslib")
 except ImportError as e:
-    print(
-        "Depencencies - HTTPError not within owslib."
-        " Trying to get it from urllib2 directly."
-    )
+    print("Depencencies - HTTPError not within owslib." " Trying to get it from urllib2 directly.")
     from urllib2 import HTTPError
 
 # ################################
@@ -48,7 +45,9 @@ qgis_wms_formats = (
 QgsMapLayerRegistry.instance().removeAllMapLayers()
 
 # opening WMS
-wms_url_getcap = "http://geobretagne.fr/geoserver/lorientagglo/wms?request=GetCapabilities&service=WMS"
+wms_url_getcap = (
+    "http://geobretagne.fr/geoserver/lorientagglo/wms?request=GetCapabilities&service=WMS"
+)
 
 try:
     wms = WebMapService(wms_url_getcap)

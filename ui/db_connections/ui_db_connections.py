@@ -105,9 +105,7 @@ class Ui_dlg_pgdb_connections(object):
         self.btnbox.setMaximumSize(QtCore.QSize(600, 16777215))
         self.btnbox.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btnbox.setAutoFillBackground(False)
-        self.btnbox.setLocale(
-            QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
-        )
+        self.btnbox.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         self.btnbox.setOrientation(QtCore.Qt.Horizontal)
         self.btnbox.setStandardButtons(
             QtWidgets.QDialogButtonBox.Cancel
@@ -133,9 +131,7 @@ class Ui_dlg_pgdb_connections(object):
             )
         )
         self.tbl.setSortingEnabled(False)
-        self.btn_reload_conn.setText(
-            _translate("dlg_db_connections", "Reload embed connection(s)")
-        )
+        self.btn_reload_conn.setText(_translate("dlg_db_connections", "Reload embed connection(s)"))
 
 
 if __name__ == "__main__":

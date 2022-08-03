@@ -153,24 +153,34 @@ class Authenticator(QObject):
                     )
                 )
                 self.json_content = 0
-            elif not all(key in list(self.json_content.keys()) for key in ["api_base_url", "api_auth_url", "app_base_url", "help_base_url", "background_map_url"]):
+            elif not all(
+                key in list(self.json_content.keys())
+                for key in [
+                    "api_base_url",
+                    "api_auth_url",
+                    "app_base_url",
+                    "help_base_url",
+                    "background_map_url",
+                ]
+            ):
                 logger.warning(
-                    "Missing key in config.json file content : {}.".format(
-                        self.json_content
-                    )
+                    "Missing key in config.json file content : {}.".format(self.json_content)
                 )
                 self.json_content = 0
             else:
                 logger.info(
-                    "config.json file content successfully loaded : {}.".format(
-                        self.json_content
-                    )
+                    "config.json file content successfully loaded : {}.".format(self.json_content)
                 )
                 qsettings.setValue("isogeo/env/api_base_url", self.json_content.get("api_base_url"))
                 qsettings.setValue("isogeo/env/api_auth_url", self.json_content.get("api_auth_url"))
                 qsettings.setValue("isogeo/env/app_base_url", self.json_content.get("app_base_url"))
-                qsettings.setValue("isogeo/env/help_base_url", self.json_content.get("help_base_url"))
-                qsettings.setValue("isogeo/settings/background_map_url", self.json_content.get("background_map_url"))
+                qsettings.setValue(
+                    "isogeo/env/help_base_url", self.json_content.get("help_base_url")
+                )
+                qsettings.setValue(
+                    "isogeo/settings/background_map_url",
+                    self.json_content.get("background_map_url"),
+                )
 
         except Exception as e:
             if not self.json_path.exists() or not self.json_path.is_file():
@@ -179,24 +189,29 @@ class Authenticator(QObject):
                         str(self.json_path), str(e)
                     )
                 )
-                logger.warning(
-                    "Let's create one with default values: {}.".format(self.json_path)
-                )
+                logger.warning("Let's create one with default values: {}.".format(self.json_path))
                 self.json_content = {
-                    "api_base_url": qsettings.value("isogeo/env/api_base_url", "https://v1.api.isogeo.com"),
-                    "api_auth_url": qsettings.value("isogeo/env/api_auth_url", "https://id.api.isogeo.com"),
-                    "app_base_url": qsettings.value("isogeo/env/app_base_url", "https://app.isogeo.com"),
-                    "help_base_url": qsettings.value("isogeo/env/help_base_url", "https://help.isogeo.com"),
-                    "background_map_url": qsettings.value("isogeo/settings/background_map_url", "type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png")
+                    "api_base_url": qsettings.value(
+                        "isogeo/env/api_base_url", "https://v1.api.isogeo.com"
+                    ),
+                    "api_auth_url": qsettings.value(
+                        "isogeo/env/api_auth_url", "https://id.api.isogeo.com"
+                    ),
+                    "app_base_url": qsettings.value(
+                        "isogeo/env/app_base_url", "https://app.isogeo.com"
+                    ),
+                    "help_base_url": qsettings.value(
+                        "isogeo/env/help_base_url", "https://help.isogeo.com"
+                    ),
+                    "background_map_url": qsettings.value(
+                        "isogeo/settings/background_map_url",
+                        "type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    ),
                 }
                 with open(self.json_path, "w") as json_content:
                     json.dump(self.json_content, json_content, indent=4)
             else:
-                logger.error(
-                    "config.json file can't be read : {}.".format(
-                        str(e)
-                    )
-                )
+                logger.error("config.json file can't be read : {}.".format(str(e)))
                 self.json_content = 0
 
     # MANAGER --------------------------------------------------------------------------------------
@@ -235,9 +250,7 @@ class Authenticator(QObject):
         """Retrieve Isogeo API credentials within QGIS QSettings."""
 
         if "isogeo-plugin" in qsettings.childGroups():
-            logger.warning(
-                "Old credentials found and removed in QGIS QSettings: isogeo-plugin"
-            )
+            logger.warning("Old credentials found and removed in QGIS QSettings: isogeo-plugin")
 
             qsettings.remove("isogeo-plugin")
             return False
@@ -339,9 +352,7 @@ class Authenticator(QObject):
         self.ui_auth_form.btn_rdv_isogeo.pressed.connect(
             partial(plg_tools.open_pipedrive_rdv_form, lang=self.lang)
         )
-        self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
-            self.credentials_uploader
-        )
+        self.ui_auth_form.btn_browse_credentials.fileChanged.connect(self.credentials_uploader)
 
         self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
 
@@ -373,9 +384,7 @@ class Authenticator(QObject):
         # test file structure
         selected_file = Path(self.ui_auth_form.btn_browse_credentials.filePath())
         logger.debug(
-            "Loading credentials from file indicated by the user : {}".format(
-                selected_file
-            )
+            "Loading credentials from file indicated by the user : {}".format(selected_file)
         )
         try:
             api_credentials = plg_tools.credentials_loader(
@@ -384,35 +393,24 @@ class Authenticator(QObject):
         except IOError as e:
             self.auth_sig.emit("path")
             logger.error(
-                "Fail to load credentials from authentication file. IOError : {}".format(
-                    e
-                )
+                "Fail to load credentials from authentication file. IOError : {}".format(e)
             )
-            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
-                self.credentials_uploader
-            )
+            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(self.credentials_uploader)
             self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
         except ValueError as e:
             self.auth_sig.emit("file")
             logger.error(
-                "Fail to load credentials from authentication file. ValueError : {}".format(
-                    e
-                )
+                "Fail to load credentials from authentication file. ValueError : {}".format(e)
             )
-            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
-                self.credentials_uploader
-            )
+            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(self.credentials_uploader)
             self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
 
         # rename existing credentials file with prefix 'old_' and datetime as suffix
         dest_path = self.cred_filepath
         if dest_path.is_file():
-            logger.debug(
-                "client_secrets.json already existed. "
-                "Previous file has been renamed."
-            )
+            logger.debug("client_secrets.json already existed. " "Previous file has been renamed.")
 
             old_file_renamed = self.auth_folder / "old_client_secrets_{}.json".format(
                 int(time.time())
@@ -424,12 +422,8 @@ class Authenticator(QObject):
 
         # move new credentials file to the _auth subfolder
         try:
-            shutil.copyfile(
-                str(selected_file), str(dest_path)
-            )  # using pathlib.Path (= os.rename)
-            logger.debug(
-                "Selected credentials file has been moved into plugin _auth subfolder"
-            )
+            shutil.copyfile(str(selected_file), str(dest_path))  # using pathlib.Path (= os.rename)
+            logger.debug("Selected credentials file has been moved into plugin _auth subfolder")
         except OSError as e:
             logger.error(
                 "Move new file raised: {}. Maybe because of moving from a "
@@ -438,9 +432,7 @@ class Authenticator(QObject):
         except Exception as exc:
             logger.error("Failed to move authentication file: {}".format(exc))
             self.auth_sig.emit("path")
-            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
-                self.credentials_uploader
-            )
+            self.ui_auth_form.btn_browse_credentials.fileChanged.connect(self.credentials_uploader)
             self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
             return False
 
@@ -452,9 +444,7 @@ class Authenticator(QObject):
         self.credentials_update(credentials_source="oAuth2_file")
         # store into QSettings if existing
         self.credentials_storer(store_location="QSettings")
-        self.ui_auth_form.btn_browse_credentials.fileChanged.connect(
-            self.credentials_uploader
-        )
+        self.ui_auth_form.btn_browse_credentials.fileChanged.connect(self.credentials_uploader)
         self.auth_sig.emit("ok")
         return True
 

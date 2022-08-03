@@ -219,21 +219,12 @@ class IsogeoChecker(object):
         # Values
         dico_filters = {i.split(":")[0]: i.split(":")[1:] for i in li_args}
         if dico_filters.get("type", ("dataset",))[0].lower() not in FILTER_TYPES:
+            raise ValueError("type value must be one of: {}".format(" | ".join(FILTER_TYPES)))
+        elif dico_filters.get("action", ("download",))[0].lower() not in LinkActions.__members__:
             raise ValueError(
-                "type value must be one of: {}".format(" | ".join(FILTER_TYPES))
+                "action value must be one of: {}".format(" | ".join(LinkActions.__members__))
             )
-        elif (
-            dico_filters.get("action", ("download",))[0].lower()
-            not in LinkActions.__members__
-        ):
-            raise ValueError(
-                "action value must be one of: {}".format(
-                    " | ".join(LinkActions.__members__)
-                )
-            )
-        elif (
-            dico_filters.get("provider", ("manual",))[0].lower() not in FILTER_PROVIDERS
-        ):
+        elif dico_filters.get("provider", ("manual",))[0].lower() not in FILTER_PROVIDERS:
             raise ValueError(
                 "provider value must be one of: {}".format(" | ".join(FILTER_PROVIDERS))
             )
@@ -263,9 +254,7 @@ class IsogeoChecker(object):
         if not isinstance(uuid_str, str):
             logger.debug(
                 TypeError(
-                    "'uuid_str' parameter expects a str value. Got: {}".format(
-                        type(uuid_str)
-                    )
+                    "'uuid_str' parameter expects a str value. Got: {}".format(type(uuid_str))
                 )
             )
             return False
@@ -281,9 +270,7 @@ class IsogeoChecker(object):
             uid = UUID(uuid_str)
             return uid.hex == uuid_str.replace("-", "").replace("urn:uuid:", "")
         except ValueError as e:
-            logging.warning(
-                "uuid ValueError. {} ({}) -- {}".format(type(uuid_str), uuid_str, e)
-            )
+            logging.warning("uuid ValueError. {} ({}) -- {}".format(type(uuid_str), uuid_str, e))
             return False
 
     def check_edit_tab(self, tab: str, md_type: str):
@@ -298,9 +285,7 @@ class IsogeoChecker(object):
         else:
             pass
         if not isinstance(md_type, str):
-            raise TypeError(
-                "'md_type' expected a str value, not {}".format(type(md_type))
-            )
+            raise TypeError("'md_type' expected a str value, not {}".format(type(md_type)))
         else:
             pass
         # check parameters values
@@ -343,17 +328,13 @@ class IsogeoChecker(object):
                 for md in specific_md:
                     if not self.check_is_uuid(md):
                         specific_md.remove(md)
-                        logging.warning(
-                            "Incorrect metadata UUID has been removed: {}".format(md)
-                        )
+                        logging.warning("Incorrect metadata UUID has been removed: {}".format(md))
                 # joining survivors
                 specific_md = ",".join(specific_md)
             else:
                 specific_md = ""
         else:
-            raise TypeError(
-                "'specific_md' expects a tuple, not {}".format(type(specific_md))
-            )
+            raise TypeError("'specific_md' expects a tuple, not {}".format(type(specific_md)))
         return specific_md
 
     def _check_filter_specific_tag(self, specific_tag: list):
@@ -417,9 +398,7 @@ class IsogeoChecker(object):
                 includes = ""
         else:
             raise TypeError(
-                "'includes' expect a tuple or a str='all', not {}".format(
-                    type(includes)
-                )
+                "'includes' expect a tuple or a str='all', not {}".format(type(includes))
             )
         return includes
 
@@ -464,9 +443,7 @@ class IsogeoChecker(object):
                 )
             else:
                 raise ValueError(
-                    "Invalid subresource. Must be one of: {}".format(
-                        "|".join(l_subresources)
-                    )
+                    "Invalid subresource. Must be one of: {}".format("|".join(l_subresources))
                 )
         else:
             raise TypeError("'subresource' expects a str")
@@ -483,9 +460,7 @@ class IsogeoChecker(object):
         elif type_to_convert in FILTER_TYPES.values():
             return [k for k, v in FILTER_TYPES.items() if v == type_to_convert][0]
         else:
-            raise ValueError(
-                "Incorrect metadata type to convert: {}".format(type_to_convert)
-            )
+            raise ValueError("Incorrect metadata type to convert: {}".format(type_to_convert))
 
 
 # ##############################################################################

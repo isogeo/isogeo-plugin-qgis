@@ -38,9 +38,7 @@ class CoordinateSystem(object):
 
     ATTR_MAP = {}
 
-    def __init__(
-        self, _tag: str = None, alias: str = None, code: str = None, name: str = None
-    ):
+    def __init__(self, _tag: str = None, alias: str = None, code: str = None, name: str = None):
         """Coordinate-systems model."""
 
         # default values for the object attributes/properties

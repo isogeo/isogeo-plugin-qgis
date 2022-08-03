@@ -44,9 +44,7 @@ class TestCacheManager(unittest.TestCase):
         self.assertTrue(isinstance(self.cache_mng.cached_unreach_postgis, list))
         self.assertTrue(isinstance(self.cache_mng.cached_unreach_srv, list))
 
-        self.assertEqual(
-            sorted(self.cache_mng.cached_unreach_paths), sorted(["path1", "path2"])
-        )
+        self.assertEqual(sorted(self.cache_mng.cached_unreach_paths), sorted(["path1", "path2"]))
         self.assertEqual(
             sorted(self.cache_mng.cached_unreach_postgis), sorted(["pg3", "pg4", "pg5"])
         )

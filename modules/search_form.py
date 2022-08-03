@@ -77,7 +77,9 @@ class SearchFormManager(IsogeoDockWidget):
 
         self.tr = trad
         # groupTheme, geofilter, type, format, owner, inspire, srs, contact and license
-        self.cbbs_search_advanced = [cbbox for cbbox in self.grp_filters.findChildren(QComboBox) if cbbox != self.cbb_chck_kw]
+        self.cbbs_search_advanced = [
+            cbbox for cbbox in self.grp_filters.findChildren(QComboBox) if cbbox != self.cbb_chck_kw
+        ]
 
         # match between widgets and metadata fields
         self.match_widget_field = {
@@ -153,9 +155,7 @@ class SearchFormManager(IsogeoDockWidget):
         # Setting result manager
         self.results_mng = ResultsManager(self)
 
-    def update_cbb_keywords(
-        self, tags_keywords: dict = {}, selected_keywords: list = []
-    ):
+    def update_cbb_keywords(self, tags_keywords: dict = {}, selected_keywords: list = []):
         """Keywords combobox is specific because items are checkable.
         See: https://github.com/isogeo/isogeo-plugin-qgis/issues/159
 
@@ -186,9 +186,7 @@ class SearchFormManager(IsogeoDockWidget):
         cbb_chck_kw_fm = self.cbb_chck_kw.fontMetrics()
 
         i = 0  # row index
-        for tag_label, tag_code in sorted(
-            tags_keywords.items(), key=lambda item: item[1]
-        ):
+        for tag_label, tag_code in sorted(tags_keywords.items(), key=lambda item: item[1]):
             item = QStandardItem()
             # format combobox item label fit the widget width
             tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
@@ -241,9 +239,7 @@ class SearchFormManager(IsogeoDockWidget):
             for tag in field_tags:
                 cbb.addItem(tag, field_tags.get(tag))
         # Filling geo filter combobox
-        self.cbb_geofilter.addItem(
-            self.tr(" Map canvas", context=__class__.__name__), "mapcanvas"
-        )
+        self.cbb_geofilter.addItem(self.tr(" Map canvas", context=__class__.__name__), "mapcanvas")
         layers = QgsProject.instance().mapLayers().values()
         for layer in layers:
             if layer.type() == 0 and layer.name() != "Metadata envelope":
@@ -289,9 +285,7 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_quicksearch_use.clear()
         self.cbb_quicksearch_edit.clear()
         # filling widgets from the saved searches list built above
-        self.cbb_quicksearch_use.addItem(
-            self.tr("Quicksearches", context=__class__.__name__)
-        )
+        self.cbb_quicksearch_use.addItem(self.tr("Quicksearches", context=__class__.__name__))
         for qs in qs_list:
             self.cbb_quicksearch_use.addItem(qs, qs)
             self.cbb_quicksearch_edit.addItem(qs, qs)
@@ -307,11 +301,7 @@ class SearchFormManager(IsogeoDockWidget):
         :param str quicksearch: empty string if no quicksearch performed.
         Otherwise:the name of the quicksearch performed.
         """
-        logger.debug(
-            "Settings widgets statut according to these parameters : \n{}".format(
-                params
-            )
-        )
+        logger.debug("Settings widgets statut according to these parameters : \n{}".format(params))
         # for Advanced search Combobox except geo_filter
         for cbb in self.match_widget_field.keys():
             field_name = self.match_widget_field.get(cbb)
@@ -506,23 +496,17 @@ class SearchFormManager(IsogeoDockWidget):
         current_epsg = int(current_epsg.split(":")[1])
 
         if current_epsg == 4326:
-            coord = "{},{},{},{}".format(
-                e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()
-            )
+            coord = "{},{},{},{}".format(e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum())
             return coord
         elif type(current_epsg) is int:
             current_srs = QgsCoordinateReferenceSystem(
                 current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId
             )
-            wgs = QgsCoordinateReferenceSystem(
-                4326, QgsCoordinateReferenceSystem.EpsgCrsId
-            )
+            wgs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
             xform = QgsCoordinateTransform(current_srs, wgs, QgsProject.instance())
             minimum = xform.transform(QgsPointXY(e.xMinimum(), e.yMinimum()))
             maximum = xform.transform(QgsPointXY(e.xMaximum(), e.yMaximum()))
-            coord = "{},{},{},{}".format(
-                minimum[0], minimum[1], maximum[0], maximum[1]
-            )
+            coord = "{},{},{},{}".format(minimum[0], minimum[1], maximum[0], maximum[1])
             return coord
         else:
             logger.debug("Wrong EPSG")

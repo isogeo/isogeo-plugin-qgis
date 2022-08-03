@@ -79,9 +79,7 @@ class LimitationsChecker(QObject):
                         popup_txt += "<br>{}".format(lim.description)
                     else:
                         popup_txt += "<br><i>"
-                        popup_txt += self.tr(
-                            "No description provided", context=__class__.__name__
-                        )
+                        popup_txt += self.tr("No description provided", context=__class__.__name__)
                         popup_txt += "</i>"
                     popup.setText(popup_txt)
 
@@ -95,15 +93,11 @@ class LimitationsChecker(QObject):
                     )
                     popup.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
                     popup.setDefaultButton(QMessageBox.No)
-                    popup.finished.connect(
-                        partial(self.finished_slot, data_info.get("layer"))
-                    )
+                    popup.finished.connect(partial(self.finished_slot, data_info.get("layer")))
                     popup.exec()
                     return
                 else:
-                    logger.info(
-                        "Unexpected data limitation type : {}".format(lim.to_str())
-                    )
+                    logger.info("Unexpected data limitation type : {}".format(lim.to_str()))
                     pass
             # if all limitations are 'legal' type and 'No limit' INSPIRE directive, let's add the layer
             if len(li_lim) == 0:

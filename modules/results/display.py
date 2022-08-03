@@ -157,18 +157,14 @@ class ResultsManager(QObject):
             md = Metadata.clean_attributes(i)
             # get metadata's keywords from tags, they will be displayed in QGIS
             # 'layer properties' if the layer is added to the canvas
-            md.keywords = [
-                md.tags.get(kw) for kw in md.tags if kw.startswith("keyword:isogeo")
-            ]
+            md.keywords = [md.tags.get(kw) for kw in md.tags if kw.startswith("keyword:isogeo")]
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
             title = md.title_or_name()
             if title:
                 btn_md_title = QPushButton(title)
             else:
-                btn_md_title = QPushButton(
-                    self.tr("Undefined", context=__class__.__name__)
-                )
+                btn_md_title = QPushButton(self.tr("Undefined", context=__class__.__name__))
                 btn_md_title.setStyleSheet("font: italic")
 
             # Connecting the button to the full metadata popup
@@ -195,9 +191,7 @@ class ResultsManager(QObject):
                             geom_item = self.pix_geom_dict.get(geom_type)
                             lbl_geom.setPixmap(geom_item.get("pix"))
                             lbl_geom.setToolTip(
-                                self.tr(
-                                    geom_item.get("tooltip"), context=__class__.__name__
-                                )
+                                self.tr(geom_item.get("tooltip"), context=__class__.__name__)
                             )
                         else:
                             continue
@@ -216,14 +210,10 @@ class ResultsManager(QObject):
                     lbl_geom.setToolTip(self.tr("Service", context=__class__.__name__))
                 elif "noGeoDataset" in md.type:
                     lbl_geom.setPixmap(pix_table)
-                    lbl_geom.setToolTip(
-                        self.tr("Table", context=__class__.__name__)
-                    )
+                    lbl_geom.setToolTip(self.tr("Table", context=__class__.__name__))
                 else:
                     lbl_geom.setPixmap(pix_nogeo)
-                    lbl_geom.setToolTip(
-                        self.tr("Unknown geometry", context=__class__.__name__)
-                    )
+                    lbl_geom.setToolTip(self.tr("Unknown geometry", context=__class__.__name__))
             lbl_geom.setAlignment(Qt.AlignCenter)
             tbl_result.setCellWidget(count, 2, lbl_geom)
 
@@ -248,9 +238,7 @@ class ResultsManager(QObject):
                             md.keywords,
                             portal_md_url,
                         ]
-                        add_options_dict[
-                            self.tr("Data file", context=__class__.__name__)
-                        ] = params
+                        add_options_dict[self.tr("Data file", context=__class__.__name__)] = params
                     else:
                         pass
                 # Same if the data is a raster
@@ -265,9 +253,7 @@ class ResultsManager(QObject):
                             md.keywords,
                             portal_md_url,
                         ]
-                        add_options_dict[
-                            self.tr("Data file", context=__class__.__name__)
-                        ] = params
+                        add_options_dict[self.tr("Data file", context=__class__.__name__)] = params
                     else:
                         pass
                 # If the data is a postGIS table and the connection has
@@ -276,15 +262,20 @@ class ResultsManager(QObject):
                     if (
                         md.path
                         and md.name
-                        and md.path in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
+                        and md.path
+                        in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
                         and "." in md.name
                     ):
                         available_connections = [
                             ora_conn
-                            for ora_conn in self.db_mng.dbms_specifics_infos.get(
-                                "PostgreSQL"
-                            ).get("connections")
-                            if (md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")) and ora_conn.get("prefered")
+                            for ora_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
+                                "connections"
+                            )
+                            if (
+                                md.path == ora_conn.get("database")
+                                or md.path == ora_conn.get("database_alias")
+                            )
+                            and ora_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
@@ -292,7 +283,8 @@ class ResultsManager(QObject):
                                 for ora_conn in self.db_mng.dbms_specifics_infos.get(
                                     "PostgreSQL"
                                 ).get("connections")
-                                if md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")
+                                if md.path == ora_conn.get("database")
+                                or md.path == ora_conn.get("database_alias")
                             ]
                         else:
                             pass
@@ -305,11 +297,13 @@ class ResultsManager(QObject):
                                 if not conn:
                                     connection["uri"] = 0
                                     connection["tables"] = 0
-                                    self.db_mng.dbms_specifics_infos["PostgreSQL"]["invalid_connections"].append(
-                                        connection.get("connection")
-                                    )
+                                    self.db_mng.dbms_specifics_infos["PostgreSQL"][
+                                        "invalid_connections"
+                                    ].append(connection.get("connection"))
                                     logger.info(
-                                        "'{}' connection saved as invalid".format(connection.get("connection"))
+                                        "'{}' connection saved as invalid".format(
+                                            connection.get("connection")
+                                        )
                                     )
                                     continue
                                 else:
@@ -335,7 +329,7 @@ class ResultsManager(QObject):
                                         "title": md.title,
                                         "keywords": md.keywords,
                                         "md_portal_url": portal_md_url,
-                                        "dbms": "PostgreSQL"
+                                        "dbms": "PostgreSQL",
                                     }
                                     options_key = "PostgreSQL - {}".format(
                                         connection.get("connection")
@@ -346,7 +340,9 @@ class ResultsManager(QObject):
                         self.db_mng.set_qsettings_connections(
                             "PostgreSQL",
                             "invalid",
-                            self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("invalid_connections"),
+                            self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
+                                "invalid_connections"
+                            ),
                         )
                     else:
                         pass
@@ -357,23 +353,31 @@ class ResultsManager(QObject):
                     if (
                         md.path
                         and md.name
-                        and any(md.path in self.db_mng.dbms_specifics_infos.get("Oracle").get(key) for key in ["db_names", "db_aliases"])
+                        and any(
+                            md.path in self.db_mng.dbms_specifics_infos.get("Oracle").get(key)
+                            for key in ["db_names", "db_aliases"]
+                        )
                         and "." in md.name
                     ):
                         available_connections = [
                             ora_conn
-                            for ora_conn in self.db_mng.dbms_specifics_infos.get(
-                                "Oracle"
-                            ).get("connections")
-                            if (md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")) and ora_conn.get("prefered")
+                            for ora_conn in self.db_mng.dbms_specifics_infos.get("Oracle").get(
+                                "connections"
+                            )
+                            if (
+                                md.path == ora_conn.get("database")
+                                or md.path == ora_conn.get("database_alias")
+                            )
+                            and ora_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
                                 ora_conn
-                                for ora_conn in self.db_mng.dbms_specifics_infos.get(
-                                    "Oracle"
-                                ).get("connections")
-                                if md.path == ora_conn.get("database") or md.path == ora_conn.get("database_alias")
+                                for ora_conn in self.db_mng.dbms_specifics_infos.get("Oracle").get(
+                                    "connections"
+                                )
+                                if md.path == ora_conn.get("database")
+                                or md.path == ora_conn.get("database_alias")
                             ]
                         else:
                             pass
@@ -387,11 +391,13 @@ class ResultsManager(QObject):
                                     connection["uri"] = 0
                                     connection["tables"] = 0
                                     connection["db_connector"] = 0
-                                    self.db_mng.dbms_specifics_infos["Oracle"]["invalid_connections"].append(
-                                        connection.get("connection")
-                                    )
+                                    self.db_mng.dbms_specifics_infos["Oracle"][
+                                        "invalid_connections"
+                                    ].append(connection.get("connection"))
                                     logger.info(
-                                        "'{}' connection saved as invalid".format(connection.get("connection"))
+                                        "'{}' connection saved as invalid".format(
+                                            connection.get("connection")
+                                        )
                                     )
                                     continue
                                 else:
@@ -418,18 +424,18 @@ class ResultsManager(QObject):
                                         "title": md.title,
                                         "keywords": md.keywords,
                                         "md_portal_url": portal_md_url,
-                                        "dbms": "Oracle"
+                                        "dbms": "Oracle",
                                     }
-                                    options_key = "Oracle - {}".format(
-                                        connection.get("connection")
-                                    )
+                                    options_key = "Oracle - {}".format(connection.get("connection"))
                                     add_options_dict[options_key] = params
                                 else:
                                     pass
                         self.db_mng.set_qsettings_connections(
                             "Oracle",
                             "invalid",
-                            self.db_mng.dbms_specifics_infos.get("Oracle").get("invalid_connections"),
+                            self.db_mng.dbms_specifics_infos.get("Oracle").get(
+                                "invalid_connections"
+                            ),
                         )
                     else:
                         pass
@@ -471,9 +477,7 @@ class ResultsManager(QObject):
                                 portal_md_url,
                             ]
                             params.append(basic_md)
-                            layer_title = geo_srv_mng.build_layer_title(
-                                service_type, layer
-                            )
+                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
                             btn_label = "{} : {}".format(service_type, layer_title)
                             dict_key = "{}-*-{}".format(btn_label, service.get("_id"))  # for #408
                             add_options_dict[dict_key] = params
@@ -498,9 +502,7 @@ class ResultsManager(QObject):
                     if md.format.lower() in self.service_ico_dict:
                         service_type = md.format.upper()
                         for layer in md.layers:
-                            layer_title = geo_srv_mng.build_layer_title(
-                                service_type, layer
-                            )
+                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
                             btn_label = "{} : {}".format(service_type, layer_title)
                             params = [service_type, layer, srv_details]
                             basic_md = [
@@ -546,9 +548,7 @@ class ResultsManager(QObject):
                     elif option_type.startswith("Oracle"):
                         icon = ico_ora
                     # Data file
-                    elif option_type.startswith(
-                        self.tr("Data file", context=__class__.__name__)
-                    ):
+                    elif option_type.startswith(self.tr("Data file", context=__class__.__name__)):
                         icon = ico_file
                     # Unkown option
                     else:
@@ -562,9 +562,7 @@ class ResultsManager(QObject):
                     add_button.setStyleSheet("text-align: left")
                     # connect the widget to the adding method from LayerAdder class
                     data_info["layer"] = ("info", params, count)
-                    add_button.pressed.connect(
-                        partial(self.lim_checker.check, data_info)
-                    )
+                    add_button.pressed.connect(partial(self.lim_checker.check, data_info))
                     tbl_result.setCellWidget(count, 3, add_button)
                 # Else, add a combobox, storing all possibilities.
                 else:
@@ -581,9 +579,7 @@ class ResultsManager(QObject):
                         elif option.startswith("Oracle"):
                             icon = ico_ora
                         # Data file
-                        elif option.startswith(
-                            self.tr("Data file", context=__class__.__name__)
-                        ):
+                        elif option.startswith(self.tr("Data file", context=__class__.__name__)):
                             icon = ico_file
                         # Unkown option
                         else:
@@ -601,9 +597,7 @@ class ResultsManager(QObject):
                     # connect the widget to the adding method from LayerAdder class
                     data_info["layer"] = ("index", count)
                     combo.activated.connect(partial(self.lim_checker.check, data_info))
-                    combo.model().sort(
-                        0
-                    )  # sort alphabetically on option prefix. see: #113
+                    combo.model().sort(0)  # sort alphabetically on option prefix. see: #113
                     tbl_result.setCellWidget(count, 3, combo)
 
             # make the widget (button or combobox) width the same as the column width
@@ -663,11 +657,7 @@ class ResultsManager(QObject):
                     pass
             except Exception as e:
                 self.cache_mng.cached_unreach_paths.append(dir_file)
-                logger.info(
-                    "Path is not reachable and has been cached:{} / {}".format(
-                        dir_file, e
-                    )
-                )
+                logger.info("Path is not reachable and has been cached:{} / {}".format(dir_file, e))
                 return False
         else:
             logger.debug("Path has been ignored because it's cached.")
@@ -679,9 +669,7 @@ class ResultsManager(QObject):
 
         :param str metadata_id: id of the metadata
         """
-        add_portal_md_url = int(
-            qsettings.value("isogeo/settings/add_metadata_url_portal", 0)
-        )
+        add_portal_md_url = int(qsettings.value("isogeo/settings/add_metadata_url_portal", 0))
         portal_base_url = qsettings.value("isogeo/settings/portal_base_url", "")
 
         if add_portal_md_url and portal_base_url != "":
