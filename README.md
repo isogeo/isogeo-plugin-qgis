@@ -3,9 +3,10 @@
 [![Build Status](https://dev.azure.com/isogeo/Plugin%20QGIS/_apis/build/status/isogeo.isogeo-plugin-qgis?branchName=master)](https://dev.azure.com/isogeo/Plugin%20QGIS/_build/latest?definitionId=13&branchName=master)
 [![Build Status](https://travis-ci.org/isogeo/isogeo-plugin-qgis.svg?branch=master)](https://travis-ci.org/isogeo/isogeo-plugin-qgis)
 
-![Isogeo plugin for QGIS - logo](https://user-images.githubusercontent.com/41120579/185194393-83a13809-73e6-4590-8b64-669bf09179e0.png)
 
-QGIS plugin for [Isogeo](https://www.isogeo.com/), a SaaS software to give an easier access to geodata.
+![Isogeo plugin for QGIS - Logo](https://user-images.githubusercontent.com/41120579/185194393-83a13809-73e6-4590-8b64-669bf09179e0.png)
+
+QGIS plugin from [Isogeo](https://www.isogeo.com/), a SaaS software to give an easier access to geodata.
 Equivalent of [plugins for ArcGIS](https://www.isogeo.com/nos-produits/Plugins-Widgets).
 
 You can see and vote for [this plugin on the official QGIS extensions website](https://plugins.qgis.org/plugins/isogeo_search_engine/).
