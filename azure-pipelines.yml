@@ -258,7 +258,7 @@ stages:
         azureSubscription: 'Isogeo - MPN(82885610-5841-4749-8d71-46f56b643ad2)'
         scriptLocation: inlineScript
         inlineScript: |
-            az storage blob download --account-name isogeoonpremises --container-name images --file versions.json --blob-url https://isogeoonpremises.blob.core.windows.net/images
+            az storage blob download --account-name isogeoonpremises --container-name images --file versions.json --blob-url https://isogeoonpremises.blob.core.windows.net/images/versions.json
       
     - script:   jq --argjson version "$(<version.json)" '.plugin-qgis |= . +  $version' versions.json > last.json
       displayName: first stage  
