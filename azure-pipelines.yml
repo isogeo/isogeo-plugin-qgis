@@ -248,3 +248,29 @@ stages:
   #       scriptLocation: 'inlineScript'
   #       inlineScript: |
   #             az storage blob upload-batch -d isogeoonpremises -s $(build.sourcesDirectory) --pattern *.zip  --blob-endpoint https://isogeoonpremises.blob.core.windows.net  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"' --destination-path /plugin-qgis
+  
+## Update and overwrite to azure container versions.json file ##
+
+    - script: sudo apt-get install jq
+      displayName: Install jq tools  
+    - task: AzureCLI@1
+      inputs:
+        azureSubscription: 'Isogeo - MPN(82885610-5841-4749-8d71-46f56b643ad2)'
+        scriptLocation: inlineScript
+        inlineScript: |
+            az storage blob download --account-name isogeoonpremises --container-name images --file versions.json --blob-url https://isogeoonpremises.blob.core.windows.net/images
+      
+    - script:   jq --argjson version "$(<version.json)" '.plugin-qgis |= . +  $version' versions.json > last.json
+      displayName: first stage  
+    - script: cat last.json
+      displayName: read versions.json
+     
+    - script: rm -rf versions.json && mv last.json versions.json
+      displayName: read versions.json
+      
+    - task: AzureCLI@1
+      inputs:
+         azureSubscription: 'Isogeo - MPN(82885610-5841-4749-8d71-46f56b643ad2)'
+         scriptLocation: inlineScript
+         inlineScript: |
+              az storage blob upload-batch -d isogeoonpremises -s ./ --pattern versions.json  --blob-endpoint https://isogeoonpremises.blob.core.windows.net/images  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite --destination-path /
