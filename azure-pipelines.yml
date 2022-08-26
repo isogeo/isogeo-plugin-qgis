@@ -251,26 +251,38 @@ stages:
   
 ## Update and overwrite to azure container versions.json file ##
 
-    - script: sudo apt-get install jq
-      displayName: Install jq tools  
-    - task: AzureCLI@1
-      inputs:
-        azureSubscription: 'Isogeo - MPN(82885610-5841-4749-8d71-46f56b643ad2)'
-        scriptLocation: inlineScript
-        inlineScript: |
-            az storage blob download --account-name isogeoonpremises --container-name images --file versions.json --blob-url https://isogeoonpremises.blob.core.windows.net/images/versions.json
-      
-    - script:   jq --argjson version "$(<version.json)" '.plugin-qgis |= . +  $version' versions.json > last.json
-      displayName: first stage  
-    - script: cat last.json
-      displayName: read versions.json
-     
-    - script: rm -rf versions.json && mv last.json versions.json
-      displayName: read versions.json
-      
-    - task: AzureCLI@1
-      inputs:
+## Update and overwrite to azure container versions.json file ##
+- stage: Update_versions
+  displayName: Update versions.json
+  jobs:
+  - job: Updatejson
+    displayName: Update_version_json
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+
+     - script: sudo apt-get install jq
+       displayName: Install jq tools
+
+     - task: AzureCLI@1
+       inputs:
          azureSubscription: 'Isogeo - MPN(82885610-5841-4749-8d71-46f56b643ad2)'
          scriptLocation: inlineScript
          inlineScript: |
-              az storage blob upload-batch -d isogeoonpremises -s ./ --pattern versions.json  --blob-endpoint https://isogeoonpremises.blob.core.windows.net/images  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite --destination-path /
+             az storage blob download --account-name isogeoonpremises --container-name images --file versions.json --blob-url https://isogeoonpremises.blob.core.windows.net/images/isogeoonpremises/versions.json
+       
+     - script:   jq --argjson version "$(<version.json)" '.plugin-qgis |= . +  $version' versions.json > last.json
+       displayName: first stage
+
+     - script: cat last.json
+       displayName: read versions.json
+      
+     - script: rm -rf versions.json && mv last.json versions.json
+       displayName: read versions.json
+       
+     - task: AzureCLI@1
+       inputs:
+          azureSubscription: 'Isogeo - MPN(82885610-5841-4749-8d71-46f56b643ad2)'
+          scriptLocation: inlineScript
+          inlineScript: |
+               az storage blob upload-batch -d isogeoonpremises -s ./ --pattern versions.json  --blob-endpoint https://isogeoonpremises.blob.core.windows.net/images  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite --destination-path /
