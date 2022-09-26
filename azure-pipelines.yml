@@ -6,7 +6,8 @@ trigger:
   batch: true
   branches:
     include:
-    - master
+      - debug
+      - master
   tags:
     include:
     - "*"
@@ -17,12 +18,21 @@ pr:
 # -- GLOBAL VARIABLES ------------------------------------------------------------------
 variables:
   PLUGIN_NAME: Isogeo
-  QGIS_VERSION_TAG: release-3_10
+  QGIS_VERSION_TAG: release-3_16
   QGIS_IMAGE: qgis/qgis
   pythonVersion: "3.7"
   vmImageName: "windows-2019"
   VERSION_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
   VERSION_SUFIX: $[replace(variables['VERSION_NAME'], '.', '_')]
+  sourceName: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
+  blobstorageURL: $(BLOB_STORAGE_URL)
+  tag: '$(Build.BuildId)'
+  azureSubscription : $(AZURE_SUBSCRIPTION)
+  date: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/debug') }}:
+     tagName : debug-$(date)
+  ${{ if contains(variables['Build.SourceBranch'], 'refs/tags') }}:
+     tagName : $(sourceName)
 
 # -- STAGES ----------------------------------------------------------------------------
 stages:
@@ -172,102 +182,125 @@ stages:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
-- stage: DeployPackage
-  # -- DEPLOY --------------------------------------------------------------------------
-  displayName: "Deploy package"
+# - stage: PublishtoGitHub
+#   displayName: "Publish to GitHub"
+#   dependsOn:
+#     - Build
+#   condition: |
+#     and(
+#       succeeded(),
+#       contains(variables['Build.SourceBranch'], 'tags')
+#     )
+
+#   jobs:
+
+#   - job: 'PublishGithubRelease'
+#     displayName: "Publish to Github release"
+#     pool:
+#       vmImage: $(vmImageName)
+
+#     steps:
+#     - checkout: none
+
+#     - task: DownloadPipelineArtifact@2
+#       displayName: "Download artifact previously saved"
+#       inputs:
+#         buildType: "current"
+#         artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+#         targetPath: "$(System.DefaultWorkingDirectory)"
+
+#     - task: GitHubRelease@1
+#       continueOnError: true
+#       displayName: "Publish tagged code as Github Release"
+#       inputs:
+#         gitHubConnection: 'github.com_SimonSAMPERE'
+#         repositoryName: '$(Build.Repository.Name)'
+#         action: 'create'
+#         assets: "$(System.DefaultWorkingDirectory)/*"
+#         target: '$(Build.SourceVersion)'
+#         tagSource: 'gitTag'
+#         changeLogCompareToRelease: 'lastFullRelease'
+#         changeLogType: 'commitBased'
+
+
+- stage: PublishToAzure
+  displayName: "Publish to Azure"
   dependsOn:
     - Build
   condition: |
     and(
       succeeded(),
-      contains(variables['Build.SourceBranch'], 'tags')
+      contains(variables['Build.SourceBranch'], 'refs/tags')
     )
 
   jobs:
 
-  - job: 'PublishGithubRelease'
-    displayName: "Publish to Github release"
+  - job: 'UploadToBlobStorage'
+    condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/debug'),contains(variables['Build.SourceBranch'], 'refs/tags'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName : Building archive for Blob storage
     pool:
       vmImage: $(vmImageName)
 
     steps:
-    - checkout: none
+      - checkout: none
+  
+      - task: DownloadPipelineArtifact@2
+        displayName: "Download artifact previously saved"
+        inputs:
+          buildType: "current"
+          downloadType: 'single'
+          artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+          targetPath: "$(System.DefaultWorkingDirectory)"
 
-    - task: DownloadPipelineArtifact@2
-      displayName: "Download artifact previously saved"
-      inputs:
-        buildType: "current"
-        artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
-        targetPath: "$(System.DefaultWorkingDirectory)"
+      - script : TAR_NAME=`echo $(SERVICE_NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(date).tar` && echo "##vso[task.setvariable variable=tarname]$TAR_NAME"
+        displayName: Set tar name
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/debug')
 
-    - task: GitHubRelease@1
-      continueOnError: true
-      displayName: "Publish tagged code as Github Release"
-      inputs:
-        gitHubConnection: 'github.com_SimonSAMPERE'
-        repositoryName: '$(Build.Repository.Name)'
-        action: 'create'
-        assets: "$(System.DefaultWorkingDirectory)/*"
-        target: '$(Build.SourceVersion)'
-        tagSource: 'gitTag'
-        changeLogCompareToRelease: 'lastFullRelease'
-        changeLogType: 'commitBased'
+      - script : TAR_NAME=`echo $(SERVICE_NAME)-$(sourceName).tar` && echo "##vso[task.setvariable variable=tarname]$TAR_NAME"
+        displayName: Set tar name
+        condition: contains(variables['Build.SourceBranch'], 'refs/tags')
 
-
-#####Upload pluginqgis to blobstorage######
-  - job: 'UploadToBlobStorage'
-    displayName: "Upload to Blob Storage (on premises)"
-    pool:
-      vmImage: $(vmImageName) 
-    steps: 
-      - download: current
-        artifact: plugin
-        patterns: 'PACKAGED*'
-
-      - script: dir
-        displayName: Rename
+      - script: mv $(System.DefaultWorkingDirectory)/PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId) $(System.DefaultWorkingDirectory)/$(tarname)
+        displayName: Rename image file name with correct version
 
       - task: AzureCLI@1
+        displayName: Upload image to images blob tag version
         inputs:
-         azureSubscription: 'Isogeo - MPN(82885610-5841-4749-8d71-46f56b643ad2)'
-         scriptLocation: 'inlineScript'
-         inlineScript: |
-               az storage blob upload-batch -d isogeoonpremises -s $(build.sourcesDirectory) --pattern *.zip  --blob-endpoint https://isogeoonpremises.blob.core.windows.net  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"' --destination-path /plugin-qgis
-  
+          azureSubscription: $(azureSubscription)
+          scriptLocation: inlineScript
+          inlineScript: |
+                az storage blob upload-batch -d $(SERVICE_NAME) -s ./ --pattern $(tarname)  --blob-endpoint $(blobstorageURL) --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'
 
-
-## Update and overwrite to azure container versions.json file ##
-- stage: Update_versions
-  displayName: Update versions.json
-  jobs:
-  - job: Updatejson
-    displayName: Update_version_json
+  - job: 'Updatejson'
+    displayName: Update versions.json
     pool:
       vmImage: $(vmImageName)
     steps:
 
-     - script: sudo apt-get install jq
-       displayName: Install jq tools
+    - script: sudo apt-get install jq
+      displayName: Install jq tools
 
-     - task: AzureCLI@1
-       inputs:
-         azureSubscription: 'Isogeo - MPN(82885610-5841-4749-8d71-46f56b643ad2)'
-         scriptLocation: inlineScript
-         inlineScript: |
-             az storage blob download --account-name isogeoonpremises --container-name images --file versions.json --blob-url https://isogeoonpremises.blob.core.windows.net/images/isogeoonpremises/versions.json
-       
-     - script:   jq --argjson version "$(<version.json)" '.plugin-qgis |= . +  $version' versions.json > last.json
-       displayName: first stage
+    - task: AzureCLI@1
+      displayName : Download versions.json
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptLocation: inlineScript
+        inlineScript: |
+              az storage blob download --account-name isogeoonpremises --container-name versions --file versions.json --blob-url $(blobstorageURL)/versions/versions.json   --account-key '"$(AZURE_STORAGE_KEY)"'   --connection-string $(BLOB_CONNEXION_STRING)
 
-     - script: cat last.json
-       displayName: read versions.json
-      
-     - script: rm -rf versions.json && mv last.json versions.json
-       displayName: read versions.json
-       
-     - task: AzureCLI@1
-       inputs:
-          azureSubscription: 'Isogeo - MPN(82885610-5841-4749-8d71-46f56b643ad2)'
+    - script : cat version.json | jq --arg date "$(date)" '.releaseDate += $date' > version_date.json
+      displayName : Add date to version.json
+
+    - script: cat versions.json | jq --argjson version "$(<version_date.json)" '.$(SERVICE_NAME)."$(tagName)" += $version' > new_versions.json
+      displayName: Add version to versions.json
+
+    - script : rm -rf versions.json && mv new_versions.json versions.json
+      displayName: Rename file
+
+    - task: AzureCLI@1
+      displayName: Write versions.json to the blob storage
+      inputs:
+          azureSubscription: $(azureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-               az storage blob upload-batch -d isogeoonpremises -s ./ --pattern versions.json  --blob-endpoint https://isogeoonpremises.blob.core.windows.net/images  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite --destination-path /
+              az storage blob upload-batch -d versions -s ./ --pattern versions.json  --blob-endpoint $(blobstorageURL)  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite
