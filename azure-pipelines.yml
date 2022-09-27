@@ -224,9 +224,7 @@ stages:
   #     )
 
   condition: |
-    and(
-      succeeded()
-    )
+    succeeded()
 
   jobs:
 
