@@ -244,7 +244,7 @@ stages:
       - script: ls $(System.DefaultWorkingDirectory)
         displayName: show directory content
 
-      - script: mv $(System.DefaultWorkingDirectory)\PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId).zip $(System.DefaultWorkingDirectory)\$(ZIP_NAME)
+      - script: mv $(System.DefaultWorkingDirectory)\isogeo_search_engine.zip $(System.DefaultWorkingDirectory)\$(ZIP_NAME)
         displayName: Rename image file name with correct version
 
       - task: AzureCLI@1
