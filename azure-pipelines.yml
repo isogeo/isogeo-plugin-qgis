@@ -6,7 +6,6 @@ trigger:
   batch: true
   branches:
     include:
-      - debug
       - master
   tags:
     include:
@@ -22,17 +21,9 @@ variables:
   QGIS_IMAGE: qgis/qgis
   pythonVersion: "3.7"
   vmImageName: "windows-2019"
-  VERSION_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
-  VERSION_SUFIX: $[replace(variables['VERSION_NAME'], '.', '_')]
-  sourceName: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
-  blobstorageURL: $(BLOB_STORAGE_URL)
-  tag: '$(Build.BuildId)'
+  TAG_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
+  ZIP_NAME: $(SERVICE_NAME)-$[replace(variables['TAG_NAME'], '.', '_')].zip
   azureSubscription : $(AZURE_SUBSCRIPTION)
-  date: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
-  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/debug') }}:
-     tagName : debug-$(date)
-  ${{ if contains(variables['Build.SourceBranch'], 'refs/tags') }}:
-     tagName : $(sourceName)
 
 # -- STAGES ----------------------------------------------------------------------------
 stages:
@@ -88,8 +79,7 @@ stages:
   dependsOn: Lint
   condition: |
     and(
-      succeeded(),
-      ne(variables['System.PullRequest.SourceBranch'], 'docs')
+      succeeded()
     )
 
   jobs:
@@ -227,16 +217,20 @@ stages:
   displayName: "Publish to Azure"
   dependsOn:
     - Build
+  # condition: |
+  #     and(
+  #       succeeded(),
+  #       contains(variables['Build.SourceBranch'], 'tags')
+  #     )
+
   condition: |
     and(
-      succeeded(),
-      contains(variables['Build.SourceBranch'], 'refs/tags')
+      succeeded()
     )
 
   jobs:
 
   - job: 'UploadToBlobStorage'
-    condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/debug'),contains(variables['Build.SourceBranch'], 'refs/tags'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     displayName : Building archive for Blob storage
     pool:
       vmImage: $(vmImageName)
@@ -252,15 +246,7 @@ stages:
           artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
           targetPath: "$(System.DefaultWorkingDirectory)"
 
-      - script : TAR_NAME=`echo $(SERVICE_NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(date).tar` && echo "##vso[task.setvariable variable=tarname]$TAR_NAME"
-        displayName: Set tar name
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/debug')
-
-      - script : TAR_NAME=`echo $(SERVICE_NAME)-$(sourceName).tar` && echo "##vso[task.setvariable variable=tarname]$TAR_NAME"
-        displayName: Set tar name
-        condition: contains(variables['Build.SourceBranch'], 'refs/tags')
-
-      - script: mv $(System.DefaultWorkingDirectory)/PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId) $(System.DefaultWorkingDirectory)/$(tarname)
+      - script: mv $(System.DefaultWorkingDirectory)/PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId) $(System.DefaultWorkingDirectory)/$(ZIP_NAME)
         displayName: Rename image file name with correct version
 
       - task: AzureCLI@1
@@ -269,10 +255,11 @@ stages:
           azureSubscription: $(azureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-                az storage blob upload-batch -d $(SERVICE_NAME) -s ./ --pattern $(tarname)  --blob-endpoint $(blobstorageURL) --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'
+                az storage blob upload-batch -d $(SERVICE_NAME) -s ./ --pattern $(ZIP_NAME)  --blob-endpoint $(BLOB_STORAGE_URL) --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'
 
-  - job: 'Updatejson'
+  - job: 'UpdateVersionJSON'
     displayName: Update versions.json
+    dependsOn: "UploadToBlobStorage"
     pool:
       vmImage: $(vmImageName)
     steps:
@@ -286,12 +273,12 @@ stages:
         azureSubscription: $(azureSubscription)
         scriptLocation: inlineScript
         inlineScript: |
-              az storage blob download --account-name isogeoonpremises --container-name versions --file versions.json --blob-url $(blobstorageURL)/versions/versions.json   --account-key '"$(AZURE_STORAGE_KEY)"'   --connection-string $(BLOB_CONNEXION_STRING)
+              az storage blob download --account-name isogeoonpremises --container-name versions --file versions.json --blob-url $(BLOB_STORAGE_URL)/versions/versions.json   --account-key '"$(AZURE_STORAGE_KEY)"'   --connection-string $(BLOB_CONNEXION_STRING)
 
-    - script : cat version.json | jq --arg date "$(date)" '.releaseDate += $date' > version_date.json
+    - script : cat version.json | jq --arg date "$(date)" '."release-date" += $date' > version_date.json
       displayName : Add date to version.json
 
-    - script: cat versions.json | jq --argjson version "$(<version_date.json)" '.$(SERVICE_NAME)."$(tagName)" += $version' > new_versions.json
+    - script: cat versions.json | jq --argjson version "$(<version_date.json)" '.$(SERVICE_NAME)."$(TAG_NAME)" += $version' > new_versions.json
       displayName: Add version to versions.json
 
     - script : rm -rf versions.json && mv new_versions.json versions.json
@@ -303,4 +290,4 @@ stages:
           azureSubscription: $(azureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-              az storage blob upload-batch -d versions -s ./ --pattern versions.json  --blob-endpoint $(blobstorageURL)  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite
+              az storage blob upload-batch -d versions -s ./ --pattern versions.json  --blob-endpoint $(BLOB_STORAGE_URL)  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite
