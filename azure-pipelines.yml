@@ -21,8 +21,7 @@ variables:
   QGIS_IMAGE: qgis/qgis
   pythonVersion: "3.7"
   vmImageName: "windows-2019"
-  # TAG_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
-  TAG_NAME: "3.4.1"
+  TAG_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
   ZIP_NAME: $(SERVICE_NAME)-$(TAG_NAME).zip
   azureSubscription : $(AZURE_SUBSCRIPTION)
   date: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
@@ -171,58 +170,56 @@ stages:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
-# - stage: PublishtoGitHub
-#   displayName: "Publish to GitHub"
-#   dependsOn:
-#     - Build
-#   condition: |
-#     and(
-#       succeeded(),
-#       contains(variables['Build.SourceBranch'], 'tags')
-#     )
+- stage: PublishtoGitHub
+  displayName: "Publish to GitHub"
+  dependsOn:
+    - Build
+  condition: |
+    and(
+      succeeded(),
+      contains(variables['Build.SourceBranch'], 'tags')
+    )
 
-#   jobs:
+  jobs:
 
-#   - job: 'PublishGithubRelease'
-#     displayName: "Publish to Github release"
-#     pool:
-#       vmImage: $(vmImageName)
+  - job: 'PublishGithubRelease'
+    displayName: "Publish to Github release"
+    pool:
+      vmImage: $(vmImageName)
 
-#     steps:
-#     - checkout: none
+    steps:
+    - checkout: none
 
-#     - task: DownloadPipelineArtifact@2
-#       displayName: "Download packaged source code previously saved"
-#       inputs:
-#         buildType: "current"
-#         artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
-#         targetPath: "$(System.DefaultWorkingDirectory)"
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download packaged source code previously saved"
+      inputs:
+        buildType: "current"
+        artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        targetPath: "$(System.DefaultWorkingDirectory)"
 
-#     - task: GitHubRelease@1
-#       continueOnError: true
-#       displayName: "Publish tagged code as Github Release"
-#       inputs:
-#         gitHubConnection: 'github.com_SimonSAMPERE'
-#         repositoryName: '$(Build.Repository.Name)'
-#         action: 'create'
-#         assets: "$(System.DefaultWorkingDirectory)/*"
-#         target: '$(Build.SourceVersion)'
-#         tagSource: 'gitTag'
-#         changeLogCompareToRelease: 'lastFullRelease'
-#         changeLogType: 'commitBased'
+    - task: GitHubRelease@1
+      continueOnError: true
+      displayName: "Publish tagged code as Github Release"
+      inputs:
+        gitHubConnection: 'github.com_SimonSAMPERE'
+        repositoryName: '$(Build.Repository.Name)'
+        action: 'create'
+        assets: "$(System.DefaultWorkingDirectory)/*"
+        target: '$(Build.SourceVersion)'
+        tagSource: 'gitTag'
+        changeLogCompareToRelease: 'lastFullRelease'
+        changeLogType: 'commitBased'
 
 
 - stage: PublishToAzure
   displayName: "Publish to Azure"
   dependsOn:
     - Build
-  # condition: |
-  #     and(
-  #       succeeded(),
-  #       contains(variables['Build.SourceBranch'], 'tags')
-  #     )
-
-  condition: succeeded()
+  condition: |
+      and(
+        succeeded(),
+        contains(variables['Build.SourceBranch'], 'tags')
+      )
 
   jobs:
 
