@@ -77,10 +77,7 @@ stages:
   # --  BUILD --------------------------------------------------------------------------
   displayName: "Build and package"
   dependsOn: Lint
-  condition: |
-    and(
-      succeeded()
-    )
+  condition: succeeded()
 
   jobs:
   # UI COMPILATION
@@ -223,8 +220,7 @@ stages:
   #       contains(variables['Build.SourceBranch'], 'tags')
   #     )
 
-  condition: |
-    succeeded()
+  condition: succeeded()
 
   jobs:
 
