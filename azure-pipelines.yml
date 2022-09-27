@@ -23,10 +23,9 @@ variables:
   vmImageName: "windows-2019"
   # TAG_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
   TAG_NAME: "3.4.1"
-  # ZIP_SUFFIX: $[replace(variables['TAG_NAME'], '.', '_')]
-  ZIP_SUFFIX: "3_4_1"
-  ZIP_NAME: $(SERVICE_NAME)-$(ZIP_SUFFIX).zip
+  ZIP_NAME: $(SERVICE_NAME)-$(TAG_NAME).zip
   azureSubscription : $(AZURE_SUBSCRIPTION)
+  date: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
 
 # -- STAGES ----------------------------------------------------------------------------
 stages:
