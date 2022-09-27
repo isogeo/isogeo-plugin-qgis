@@ -22,7 +22,8 @@ variables:
   pythonVersion: "3.7"
   vmImageName: "windows-2019"
   TAG_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
-  ZIP_NAME: $(SERVICE_NAME)-$[replace(variables['TAG_NAME'], '.', '_')].zip
+  ZIP_SUFFIX: $[replace(variables['TAG_NAME'], '.', '_')]
+  ZIP_NAME: $(SERVICE_NAME)-$(ZIP_SUFFIX).zip
   azureSubscription : $(AZURE_SUBSCRIPTION)
 
 # -- STAGES ----------------------------------------------------------------------------
