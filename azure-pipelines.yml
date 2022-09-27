@@ -22,7 +22,8 @@ variables:
   pythonVersion: "3.7"
   vmImageName: "windows-2019"
   TAG_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
-  ZIP_SUFFIX: $[replace(variables['TAG_NAME'], '.', '_')]
+  # ZIP_SUFFIX: $[replace(variables['TAG_NAME'], '.', '_')]
+  ZIP_SUFFIX: $[replace(variables['TAG_NAME'], '/', '_')]
   ZIP_NAME: $(SERVICE_NAME)-$(ZIP_SUFFIX).zip
   azureSubscription : $(AZURE_SUBSCRIPTION)
 
@@ -92,7 +93,7 @@ stages:
     - checkout: none
 
     - task: DownloadPipelineArtifact@2
-      displayName: "Download artifact previously saved"
+      displayName: "Download formatted source code previously saved"
       inputs:
         buildType: "current"
         artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
@@ -148,7 +149,7 @@ stages:
     - checkout: none
 
     - task: DownloadPipelineArtifact@2
-      displayName: "Download artifact previously saved"
+      displayName: "Download compiled source code previously saved"
       inputs:
         buildType: "current"
         artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
@@ -191,7 +192,7 @@ stages:
 #     - checkout: none
 
 #     - task: DownloadPipelineArtifact@2
-#       displayName: "Download artifact previously saved"
+#       displayName: "Download packaged source code previously saved"
 #       inputs:
 #         buildType: "current"
 #         artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
@@ -234,14 +235,13 @@ stages:
       - checkout: none
   
       - task: DownloadPipelineArtifact@2
-        displayName: "Download artifact previously saved"
+        displayName: "Download packaged source code previously saved"
         inputs:
           buildType: "current"
-          downloadType: 'single'
           artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
           targetPath: "$(System.DefaultWorkingDirectory)"
 
-      - script: mv $(System.DefaultWorkingDirectory)/PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId) $(System.DefaultWorkingDirectory)/$(ZIP_NAME)
+      - script: mv $(System.DefaultWorkingDirectory)/PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId).zip $(System.DefaultWorkingDirectory)/$(ZIP_NAME)
         displayName: Rename image file name with correct version
 
       - task: AzureCLI@1
