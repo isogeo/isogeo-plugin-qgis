@@ -21,9 +21,10 @@ variables:
   QGIS_IMAGE: qgis/qgis
   pythonVersion: "3.7"
   vmImageName: "windows-2019"
-  TAG_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
+  # TAG_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
+  TAG_NAME: "3.4.1"
   # ZIP_SUFFIX: $[replace(variables['TAG_NAME'], '.', '_')]
-  ZIP_SUFFIX: $[replace(variables['TAG_NAME'], '/', '_')]
+  ZIP_SUFFIX: "3_4_1"
   ZIP_NAME: $(SERVICE_NAME)-$(ZIP_SUFFIX).zip
   azureSubscription : $(AZURE_SUBSCRIPTION)
 
@@ -273,7 +274,7 @@ stages:
       - script : cat version.json | jq --arg date "$(date)" '."release-date" += $date' > version_date.json
         displayName : Add date to version.json
 
-      - script: cat versions.json | jq --argjson version "$(<version_date.json)" '.$(SERVICE_NAME)."$(TAG_NAME)" += $version' > new_versions.json
+      - script: cat versions.json | jq --argjson version "$(<version_date.json)" '."$(SERVICE_NAME)"."$(TAG_NAME)" += $version' > new_versions.json
         displayName: Add version to versions.json
 
       - script : rm -rf versions.json && mv new_versions.json versions.json
