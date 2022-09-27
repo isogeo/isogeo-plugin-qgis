@@ -241,9 +241,6 @@ stages:
           artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
           targetPath: "$(System.DefaultWorkingDirectory)"
 
-      - script: ls $(System.DefaultWorkingDirectory)
-        displayName: show directory content
-
       - script: mv $(System.DefaultWorkingDirectory)\isogeo_search_engine.zip $(System.DefaultWorkingDirectory)\$(ZIP_NAME)
         displayName: Rename image file name with correct version
 
@@ -259,33 +256,33 @@ stages:
     displayName: Update versions.json
     dependsOn: "UploadToBlobStorage"
     pool:
-      vmImage: $(vmImageName)
+      vmImage: 'ubuntu-latest'
+
     steps:
+      - script: sudo apt-get install jq
+        displayName: Install jq tools
 
-    - script: sudo apt-get install jq
-      displayName: Install jq tools
-
-    - task: AzureCLI@1
-      displayName : Download versions.json
-      inputs:
-        azureSubscription: $(azureSubscription)
-        scriptLocation: inlineScript
-        inlineScript: |
-              az storage blob download --account-name isogeoonpremises --container-name versions --file versions.json --blob-url $(BLOB_STORAGE_URL)/versions/versions.json   --account-key '"$(AZURE_STORAGE_KEY)"'   --connection-string $(BLOB_CONNEXION_STRING)
-
-    - script : cat version.json | jq --arg date "$(date)" '."release-date" += $date' > version_date.json
-      displayName : Add date to version.json
-
-    - script: cat versions.json | jq --argjson version "$(<version_date.json)" '.$(SERVICE_NAME)."$(TAG_NAME)" += $version' > new_versions.json
-      displayName: Add version to versions.json
-
-    - script : rm -rf versions.json && mv new_versions.json versions.json
-      displayName: Rename file
-
-    - task: AzureCLI@1
-      displayName: Write versions.json to the blob storage
-      inputs:
+      - task: AzureCLI@1
+        displayName : Download versions.json
+        inputs:
           azureSubscription: $(azureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-              az storage blob upload-batch -d versions -s ./ --pattern versions.json  --blob-endpoint $(BLOB_STORAGE_URL)  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite
+                az storage blob download --account-name isogeoonpremises --container-name versions --file versions.json --blob-url $(BLOB_STORAGE_URL)/versions/versions.json   --account-key '"$(AZURE_STORAGE_KEY)"'   --connection-string $(BLOB_CONNEXION_STRING)
+
+      - script : cat version.json | jq --arg date "$(date)" '."release-date" += $date' > version_date.json
+        displayName : Add date to version.json
+
+      - script: cat versions.json | jq --argjson version "$(<version_date.json)" '.$(SERVICE_NAME)."$(TAG_NAME)" += $version' > new_versions.json
+        displayName: Add version to versions.json
+
+      - script : rm -rf versions.json && mv new_versions.json versions.json
+        displayName: Rename file
+
+      - task: AzureCLI@1
+        displayName: Write versions.json to the blob storage
+        inputs:
+            azureSubscription: $(azureSubscription)
+            scriptLocation: inlineScript
+            inlineScript: |
+                az storage blob upload-batch -d versions -s ./ --pattern versions.json  --blob-endpoint $(BLOB_STORAGE_URL)  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite
