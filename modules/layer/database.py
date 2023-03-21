@@ -305,8 +305,8 @@ class DataBaseManager:
                 )
                 logger.warning("Let's create an empty one : {}.".format(self.json_path))
                 self.json_content = {"Oracle": [], "PostgreSQL": []}
-                with open(self.json_path, "w") as json_content:
-                    json.dump([self.json_content], json_content, indent=4)
+                with open(self.json_path, "w") as json_writer:
+                    json.dump(self.json_content, json_writer, indent=4)
             else:
                 logger.error("_user/db_connections.json file can't be read : {}.".format(str(e)))
                 self.json_content = 0
