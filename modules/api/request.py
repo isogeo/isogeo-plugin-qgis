@@ -51,9 +51,7 @@ class ApiRequester(QObject):
         self.app_secret = str
         # URL
         self.api_url_base = str
-        self.api_url_auth = str
         self.api_url_token = str
-        self.api_url_redirect = str
 
         # Requesting operation attributes
         # manage requesting
@@ -75,9 +73,7 @@ class ApiRequester(QObject):
         self.app_id = dict_params.get("app_id", "")
         self.app_secret = dict_params.get("app_secret", "")
         self.api_url_base = dict_params.get("url_base", "")
-        self.api_url_auth = dict_params.get("url_auth", "")
         self.api_url_token = dict_params.get("url_token", "")
-        self.api_url_redirect = dict_params.get("url_redirect", "")
         # sending an authentication request once API parameters are storer
         self.send_request("token")
 
