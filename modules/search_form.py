@@ -146,6 +146,7 @@ class SearchFormManager(IsogeoDockWidget):
         self.btn_rename_sr.pressed.connect(self.qs_mng.dlg_rename.show)
         self.btn_delete_sr.pressed.connect(self.qs_mng.remove)
         self.btn_default_save.pressed.connect(self.qs_mng.write_params)
+        self.btn_default_reset.pressed.connect(self.qs_mng.reset_default_search)
 
         # Setting portal base URL manager
         self.portalURL_mng = PortalURLManager()

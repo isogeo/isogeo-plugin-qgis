@@ -66,6 +66,25 @@ class QuickSearchManager:
         # Getting what the class need to build default search request URLs
         self.api_base_url = str
 
+    def fetch_params(self):
+        # Write the current parameters in a dict
+        params = self.form_mng.save_params()
+        # Info for _offset parameter
+        self.page_index = 1
+        params["page"] = self.page_index
+        # Info for _limit parameter
+        params["show"] = True
+        # Info for _lang parameter
+        params["lang"] = self.lang
+        # building request url
+        params["url"] = self.url_builder(params)
+
+        for i in range(len(params.get("keys"))):
+            params["keyword_{0}".format(i)] = params.get("keys")[i]
+        params.pop("keys", None)
+
+        return params
+
     def write_params(self, search_name: str = "_default", search_kind: str = "Default"):
         """Write a new element in the json file when a search is saved."""
         # Open the saved_search file as a dict. Each key is a search name,
@@ -77,29 +96,14 @@ class QuickSearchManager:
                 "_current", "{}/resources/search?&_limit=0".format(self.api_base_url)
             )
         else:
-            # Write the current parameters in a dict, and store it in the saved
-            # search dict
-            params = self.form_mng.save_params()
-            # Info for _offset parameter
-            self.page_index = 1
-            params["page"] = self.page_index
-            # Info for _limit parameter
-            params["show"] = True
-            # Info for _lang parameter
-            params["lang"] = self.lang
-            # building request url
-            params["url"] = self.url_builder(params)
-
-            for i in range(len(params.get("keys"))):
-                params["keyword_{0}".format(i)] = params.get("keys")[i]
-            params.pop("keys", None)
+            params = self.fetch_params()
 
         saved_searches[search_name] = params
         # writing file
         self.dump_file(saved_searches)
         # Log and messages
-        logger.debug(
-            "{} search stored: {}. Parameters: {}".format(search_kind, search_name, params)
+        logger.info(
+            "{} search stored as '{}'. Parameters: {}".format(search_kind, search_name, params)
         )
         if search_kind != "Current" and search_kind != "Last":
             msgBar.pushMessage(
@@ -274,4 +278,23 @@ class QuickSearchManager:
     def dump_file(self, content: dict):
         with open(self.json_path, "w") as outfile:
             json.dump(content, outfile, sort_keys=True, indent=4)
+        return
+
+    def reset_default_search(self):
+
+        search_name = "_default"
+        # fetch current JSON file content
+        saved_searches = self.load_file()
+        # fetch default search default params
+        params = self.get_default_file_content().get(search_name)
+        # update JSON file content
+        saved_searches[search_name] = params
+        self.dump_file(saved_searches)
+
+        # Log and messages
+        logger.info("Default search successfully reset.")
+        msgBar.pushMessage(
+            self.tr("Default search successfully reset.", context=__class__.__name__),
+            duration=3,
+        )
         return
