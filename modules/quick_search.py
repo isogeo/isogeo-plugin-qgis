@@ -229,11 +229,6 @@ class QuickSearchManager:
                 saved_searches["_default"] = self.get_default_file_content().get("_default")
                 self.dump_file(saved_searches)
             else:
-                logger.info(
-                    "_user/quicksearches.json file content successfully loaded : {}.".format(
-                        saved_searches
-                    )
-                )
                 for quicksearch in saved_searches:
                     quicksearch_url = saved_searches.get(quicksearch).get("url")
                     if self.api_base_url not in quicksearch_url:
