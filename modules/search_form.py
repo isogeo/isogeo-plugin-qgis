@@ -107,10 +107,10 @@ class SearchFormManager(IsogeoDockWidget):
             self.cbb_ob: (
                 (self.tr("Relevance", context=__class__.__name__), ico_ob_relev, "relevance"),
                 (self.tr("Alphabetical order", context=__class__.__name__), ico_ob_alpha, "title"),
-                (self.tr("Metadata modified", context=__class__.__name__), ico_ob_mupda, "_modified", self.tr("Metadata modification date", context=__class__.__name__)),
-                (self.tr("Metadata created", context=__class__.__name__), ico_ob_mcrea, "_created", self.tr("Metadata creation date", context=__class__.__name__)),
                 (self.tr("Data modified", context=__class__.__name__), ico_ob_dupda, "modified", self.tr("Data modification date", context=__class__.__name__)),
                 (self.tr("Data created", context=__class__.__name__), ico_ob_dcrea, "created", self.tr("Data creation date", context=__class__.__name__)),
+                (self.tr("Metadata modified", context=__class__.__name__), ico_ob_mupda, "_modified", self.tr("Metadata modification date", context=__class__.__name__)),
+                (self.tr("Metadata created", context=__class__.__name__), ico_ob_mcrea, "_created", self.tr("Metadata creation date", context=__class__.__name__)),
             ),
             self.cbb_od: (
                 (self.tr("Descending", context=__class__.__name__), ico_od_desc, "desc"),
@@ -323,12 +323,12 @@ class SearchFormManager(IsogeoDockWidget):
         # for sorting order and direction
         self.cbb_ob.setCurrentIndex(self.cbb_ob.findData(params.get("ob")))
         self.cbb_ob.setToolTip(
-            self.tr("Order by: ") + self.cbb_ob.currentText()
+            self.tr("Order by: ", context=__class__.__name__) + self.cbb_ob.currentText()
         )
         # self.cbb_ob.setStyleSheet(r"QToolTip {color: black}")
         self.cbb_od.setCurrentIndex(self.cbb_od.findData(params.get("od")))
         self.cbb_od.setToolTip(
-            self.tr("Order direction: ") + self.cbb_od.currentText()
+            self.tr("Order direction: ", context=__class__.__name__) + self.cbb_od.currentText()
         )
 
         return
