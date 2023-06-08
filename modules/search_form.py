@@ -250,9 +250,10 @@ class SearchFormManager(IsogeoDockWidget):
                     self.cbb_geofilter.addItem(ico_line, layer.name())
                 elif layer.geometryType() == 0:
                     self.cbb_geofilter.addItem(ico_poin, layer.name())
-        # Format combobox tiems text to fit with widget width
+        # Format combobox items text to fit with widget width
         for cbb in self.cbbs_search_advanced:
-            cbb_width = cbb.width()
+            cbb.setStyleSheet("combobox-popup: 0; font-size: 12px")
+            cbb_width = cbb.width() - 20
             cbb_fm = cbb.fontMetrics()
 
             for i in range(cbb.count()):
