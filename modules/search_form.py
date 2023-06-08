@@ -41,11 +41,11 @@ qsettings = QSettings()
 ico_od_asc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-asc.svg")
 ico_od_desc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-desc.svg")
 ico_ob_relev = QIcon(":/plugins/Isogeo/resources/results/star.svg")
-ico_ob_alpha = QIcon(":/plugins/Isogeo/resources/metadata/language.svg")
-ico_ob_dcrea = QIcon(":/plugins/Isogeo/resources/datacreated.svg")
-ico_ob_dupda = QIcon(":/plugins/Isogeo/resources/datamodified.svg")
-ico_ob_mcrea = QIcon(":/plugins/Isogeo/resources/calendar-plus-o.svg")
-ico_ob_mupda = QIcon(":/plugins/Isogeo/resources/calendar_blue.svg")
+ico_ob_alpha = QIcon(":/plugins/Isogeo/resources/results/sort-alpha.svg")
+ico_ob_mcrea = QIcon(":/plugins/Isogeo/resources/results/sort-metadatacreated.svg")
+ico_ob_mupda = QIcon(":/plugins/Isogeo/resources/results/sort-metadatamodified.svg")
+ico_ob_dcrea = QIcon(":/plugins/Isogeo/resources/results/sort-datacreated.svg")
+ico_ob_dupda = QIcon(":/plugins/Isogeo/resources/results/sort-datamodified.svg")
 ico_none = QIcon(":/plugins/Isogeo/resources/none.svg")
 ico_line = QIcon(":/images/themes/default/mIconLineLayer.svg")
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
@@ -107,10 +107,10 @@ class SearchFormManager(IsogeoDockWidget):
             self.cbb_ob: (
                 (self.tr("Relevance", context=__class__.__name__), ico_ob_relev, "relevance"),
                 (self.tr("Alphabetical order", context=__class__.__name__), ico_ob_alpha, "title"),
+                (self.tr("Metadata modified", context=__class__.__name__), ico_ob_mupda, "_modified", self.tr("Metadata modification date", context=__class__.__name__)),
+                (self.tr("Metadata created", context=__class__.__name__), ico_ob_mcrea, "_created", self.tr("Metadata creation date", context=__class__.__name__)),
                 (self.tr("Data modified", context=__class__.__name__), ico_ob_dupda, "modified", self.tr("Data modification date", context=__class__.__name__)),
                 (self.tr("Data created", context=__class__.__name__), ico_ob_dcrea, "created", self.tr("Data creation date", context=__class__.__name__)),
-                (self.tr("Metadata modified", context=__class__.__name__), ico_ob_mcrea, "_modified", self.tr("Metadata modification date", context=__class__.__name__)),
-                (self.tr("Metadata created", context=__class__.__name__), ico_ob_mupda, "_created", self.tr("Metadata creation date", context=__class__.__name__)),
             ),
             self.cbb_od: (
                 (self.tr("Descending", context=__class__.__name__), ico_od_desc, "desc"),
