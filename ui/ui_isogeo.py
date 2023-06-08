@@ -8,7 +8,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class Ui_IsogeoDockWidgetBase(object):
     def setupUi(self, IsogeoDockWidgetBase):
         IsogeoDockWidgetBase.setObjectName("IsogeoDockWidgetBase")
@@ -16,18 +15,12 @@ class Ui_IsogeoDockWidgetBase(object):
         IsogeoDockWidgetBase.setMinimumSize(QtCore.QSize(572, 611))
         IsogeoDockWidgetBase.setMaximumSize(QtCore.QSize(700, 900))
         icon = QtGui.QIcon()
-        icon.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off
-        )
+        icon.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         IsogeoDockWidgetBase.setWindowIcon(icon)
-        IsogeoDockWidgetBase.setLocale(
-            QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates)
-        )
+        IsogeoDockWidgetBase.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         IsogeoDockWidgetBase.setWindowTitle("Isogeo")
         self.dockWidgetContents = QtWidgets.QWidget()
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.dockWidgetContents.sizePolicy().hasHeightForWidth())
@@ -39,9 +32,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.gridLayout.setSpacing(5)
         self.gridLayout.setObjectName("gridLayout")
         self.tabWidget = QtWidgets.QTabWidget(self.dockWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
@@ -54,18 +45,27 @@ class Ui_IsogeoDockWidgetBase(object):
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Text, brush)
+        brush = QtGui.QBrush(QtGui.QColor(0, 0, 0, 128))
+        brush.setStyle(QtCore.Qt.NoBrush)
+        palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.PlaceholderText, brush)
         brush = QtGui.QBrush(QtGui.QColor(39, 39, 39))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Inactive, QtGui.QPalette.WindowText, brush)
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Inactive, QtGui.QPalette.Text, brush)
+        brush = QtGui.QBrush(QtGui.QColor(0, 0, 0, 128))
+        brush.setStyle(QtCore.Qt.NoBrush)
+        palette.setBrush(QtGui.QPalette.Inactive, QtGui.QPalette.PlaceholderText, brush)
         brush = QtGui.QBrush(QtGui.QColor(120, 120, 120))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, brush)
         brush = QtGui.QBrush(QtGui.QColor(120, 120, 120))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.Text, brush)
+        brush = QtGui.QBrush(QtGui.QColor(0, 0, 0, 128))
+        brush.setStyle(QtCore.Qt.NoBrush)
+        palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.PlaceholderText, brush)
         self.tabWidget.setPalette(palette)
         font = QtGui.QFont()
         font.setBold(True)
@@ -74,9 +74,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.tabWidget.setAutoFillBackground(False)
         self.tabWidget.setObjectName("tabWidget")
         self.tab_search = QtWidgets.QWidget()
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tab_search.sizePolicy().hasHeightForWidth())
@@ -88,9 +86,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.gridLayout_8.setSpacing(5)
         self.gridLayout_8.setObjectName("gridLayout_8")
         self.grp_filters = QgsCollapsibleGroupBox(self.tab_search)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.grp_filters.sizePolicy().hasHeightForWidth())
@@ -101,9 +97,7 @@ class Ui_IsogeoDockWidgetBase(object):
         font.setBold(True)
         font.setWeight(75)
         self.grp_filters.setFont(font)
-        self.grp_filters.setStyleSheet(
-            "QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}"
-        )
+        self.grp_filters.setStyleSheet("QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}")
         self.grp_filters.setCollapsed(False)
         self.grp_filters.setScrollOnExpand(True)
         self.grp_filters.setObjectName("grp_filters")
@@ -124,9 +118,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_16 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_16.setObjectName("horizontalLayout_16")
         self.ico_grpTh = QtWidgets.QLabel(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ico_grpTh.sizePolicy().hasHeightForWidth())
@@ -146,15 +138,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_grpTh.setFont(font)
         self.lbl_grpTh.setObjectName("lbl_grpTh")
         self.horizontalLayout_16.addWidget(self.lbl_grpTh)
-        spacerItem = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_16.addItem(spacerItem)
         self.lyt_vert_filter_grpTh.addLayout(self.horizontalLayout_16)
         self.cbb_grpTh = QtWidgets.QComboBox(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_grpTh.sizePolicy().hasHeightForWidth())
@@ -166,9 +154,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_grpTh.setFont(font)
         self.cbb_grpTh.setMaxVisibleItems(15)
         self.cbb_grpTh.setInsertPolicy(QtWidgets.QComboBox.InsertAlphabetically)
-        self.cbb_grpTh.setSizeAdjustPolicy(
-            QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon
-        )
+        self.cbb_grpTh.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
         self.cbb_grpTh.setObjectName("cbb_grpTh")
         self.lyt_vert_filter_grpTh.addWidget(self.cbb_grpTh)
         self.lyt_vert_filters_left.addLayout(self.lyt_vert_filter_grpTh)
@@ -192,15 +178,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_geofilter.setFont(font)
         self.lbl_geofilter.setObjectName("lbl_geofilter")
         self.horizontalLayout.addWidget(self.lbl_geofilter)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            48, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(48, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.lyt_vert_filter_geo.addLayout(self.horizontalLayout)
         self.cbb_geofilter = QtWidgets.QComboBox(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_geofilter.sizePolicy().hasHeightForWidth())
@@ -212,9 +194,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_geofilter.setFont(font)
         self.cbb_geofilter.setMaxVisibleItems(15)
         self.cbb_geofilter.setInsertPolicy(QtWidgets.QComboBox.InsertAlphabetically)
-        self.cbb_geofilter.setSizeAdjustPolicy(
-            QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon
-        )
+        self.cbb_geofilter.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
         self.cbb_geofilter.setIconSize(QtCore.QSize(12, 12))
         self.cbb_geofilter.setObjectName("cbb_geofilter")
         self.lyt_vert_filter_geo.addWidget(self.cbb_geofilter)
@@ -244,15 +224,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_format.setFont(font)
         self.lbl_format.setObjectName("lbl_format")
         self.horizontalLayout_3.addWidget(self.lbl_format)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            138, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(138, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem2)
         self.lyt_vert_filter_format.addLayout(self.horizontalLayout_3)
         self.cbb_format = QtWidgets.QComboBox(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_format.sizePolicy().hasHeightForWidth())
@@ -264,9 +240,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_format.setFont(font)
         self.cbb_format.setMaxVisibleItems(15)
         self.cbb_format.setInsertPolicy(QtWidgets.QComboBox.InsertAlphabetically)
-        self.cbb_format.setSizeAdjustPolicy(
-            QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon
-        )
+        self.cbb_format.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
         self.cbb_format.setObjectName("cbb_format")
         self.lyt_vert_filter_format.addWidget(self.cbb_format)
         self.lyt_vert_filters_left.addLayout(self.lyt_vert_filter_format)
@@ -295,15 +269,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_inspire.setFont(font)
         self.lbl_inspire.setObjectName("lbl_inspire")
         self.horizontalLayout_4.addWidget(self.lbl_inspire)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            78, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem3 = QtWidgets.QSpacerItem(78, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem3)
         self.lyt_vert_filter_inspire.addLayout(self.horizontalLayout_4)
         self.cbb_inspire = QtWidgets.QComboBox(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_inspire.sizePolicy().hasHeightForWidth())
@@ -315,9 +285,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_inspire.setFont(font)
         self.cbb_inspire.setMaxVisibleItems(15)
         self.cbb_inspire.setInsertPolicy(QtWidgets.QComboBox.InsertAlphabetically)
-        self.cbb_inspire.setSizeAdjustPolicy(
-            QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon
-        )
+        self.cbb_inspire.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
         self.cbb_inspire.setObjectName("cbb_inspire")
         self.lyt_vert_filter_inspire.addWidget(self.cbb_inspire)
         self.lyt_vert_filters_left.addLayout(self.lyt_vert_filter_inspire)
@@ -331,9 +299,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.ico_contact = QtWidgets.QLabel(self.grp_filters)
         self.ico_contact.setMaximumSize(QtCore.QSize(18, 18))
         self.ico_contact.setText("")
-        self.ico_contact.setPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/search/phone_blue.svg")
-        )
+        self.ico_contact.setPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/search/phone_blue.svg"))
         self.ico_contact.setScaledContents(True)
         self.ico_contact.setObjectName("ico_contact")
         self.horizontalLayout_15.addWidget(self.ico_contact)
@@ -346,15 +312,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_contact.setScaledContents(False)
         self.lbl_contact.setObjectName("lbl_contact")
         self.horizontalLayout_15.addWidget(self.lbl_contact)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_15.addItem(spacerItem4)
         self.lyt_vert_filter_contact.addLayout(self.horizontalLayout_15)
         self.cbb_contact = QtWidgets.QComboBox(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_contact.sizePolicy().hasHeightForWidth())
@@ -366,16 +328,12 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_contact.setFont(font)
         self.cbb_contact.setMaxVisibleItems(15)
         self.cbb_contact.setInsertPolicy(QtWidgets.QComboBox.InsertAlphabetically)
-        self.cbb_contact.setSizeAdjustPolicy(
-            QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon
-        )
+        self.cbb_contact.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
         self.cbb_contact.setObjectName("cbb_contact")
         self.lyt_vert_filter_contact.addWidget(self.cbb_contact)
         self.lyt_vert_filters_left.addLayout(self.lyt_vert_filter_contact)
         self.lyt_horiz_filters.addLayout(self.lyt_vert_filters_left)
-        spacerItem5 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Minimum)
         self.lyt_horiz_filters.addItem(spacerItem5)
         self.lyt_vert_filters_right = QtWidgets.QVBoxLayout()
         self.lyt_vert_filters_right.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
@@ -386,9 +344,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_18 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_18.setObjectName("horizontalLayout_18")
         self.ico_kw = QtWidgets.QLabel(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ico_kw.sizePolicy().hasHeightForWidth())
@@ -408,15 +364,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_kw.setFont(font)
         self.lbl_kw.setObjectName("lbl_kw")
         self.horizontalLayout_18.addWidget(self.lbl_kw)
-        spacerItem6 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_18.addItem(spacerItem6)
         self.lyt_vert_filter_keywords.addLayout(self.horizontalLayout_18)
         self.cbb_chck_kw = QgsCheckableComboBox(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_chck_kw.sizePolicy().hasHeightForWidth())
@@ -428,9 +380,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_chck_kw.setFont(font)
         self.cbb_chck_kw.setEditable(True)
         self.cbb_chck_kw.setCurrentText("")
-        self.cbb_chck_kw.setSizeAdjustPolicy(
-            QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon
-        )
+        self.cbb_chck_kw.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
         self.cbb_chck_kw.setMinimumContentsLength(20)
         self.cbb_chck_kw.setDefaultText("")
         self.cbb_chck_kw.setObjectName("cbb_chck_kw")
@@ -456,15 +406,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_type.setFont(font)
         self.lbl_type.setObjectName("lbl_type")
         self.horizontalLayout_2.addWidget(self.lbl_type)
-        spacerItem7 = QtWidgets.QSpacerItem(
-            48, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem7 = QtWidgets.QSpacerItem(48, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem7)
         self.lyt_vert_filter_type.addLayout(self.horizontalLayout_2)
         self.cbb_type = QtWidgets.QComboBox(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_type.sizePolicy().hasHeightForWidth())
@@ -505,15 +451,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_owner.setFont(font)
         self.lbl_owner.setObjectName("lbl_owner")
         self.horizontalLayout_5.addWidget(self.lbl_owner)
-        spacerItem8 = QtWidgets.QSpacerItem(
-            148, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem8 = QtWidgets.QSpacerItem(148, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacerItem8)
         self.lyt_vert_filter_workgroup.addLayout(self.horizontalLayout_5)
         self.cbb_owner = QtWidgets.QComboBox(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_owner.sizePolicy().hasHeightForWidth())
@@ -525,9 +467,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_owner.setFont(font)
         self.cbb_owner.setMaxVisibleItems(15)
         self.cbb_owner.setInsertPolicy(QtWidgets.QComboBox.InsertAlphabetically)
-        self.cbb_owner.setSizeAdjustPolicy(
-            QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon
-        )
+        self.cbb_owner.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
         self.cbb_owner.setObjectName("cbb_owner")
         self.lyt_vert_filter_workgroup.addWidget(self.cbb_owner)
         self.lyt_vert_filters_right.addLayout(self.lyt_vert_filter_workgroup)
@@ -556,15 +496,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_srs.setFont(font)
         self.lbl_srs.setObjectName("lbl_srs")
         self.horizontalLayout_6.addWidget(self.lbl_srs)
-        spacerItem9 = QtWidgets.QSpacerItem(
-            68, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem9 = QtWidgets.QSpacerItem(68, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_6.addItem(spacerItem9)
         self.lyt_vert_filter_srs.addLayout(self.horizontalLayout_6)
         self.cbb_srs = QtWidgets.QComboBox(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_srs.sizePolicy().hasHeightForWidth())
@@ -600,15 +536,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_license.setFont(font)
         self.lbl_license.setObjectName("lbl_license")
         self.horizontalLayout_8.addWidget(self.lbl_license)
-        spacerItem10 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem10 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_8.addItem(spacerItem10)
         self.lyt_vert_filter_licence.addLayout(self.horizontalLayout_8)
         self.cbb_license = QtWidgets.QComboBox(self.grp_filters)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_license.sizePolicy().hasHeightForWidth())
@@ -620,9 +552,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_license.setFont(font)
         self.cbb_license.setMaxVisibleItems(15)
         self.cbb_license.setInsertPolicy(QtWidgets.QComboBox.InsertAlphabetically)
-        self.cbb_license.setSizeAdjustPolicy(
-            QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon
-        )
+        self.cbb_license.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
         self.cbb_license.setObjectName("cbb_license")
         self.lyt_vert_filter_licence.addWidget(self.cbb_license)
         self.lyt_vert_filters_right.addLayout(self.lyt_vert_filter_licence)
@@ -646,9 +576,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_19.setSpacing(0)
         self.horizontalLayout_19.setObjectName("horizontalLayout_19")
         self.txt_input = QtWidgets.QLineEdit(self.tab_search)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.txt_input.sizePolicy().hasHeightForWidth())
@@ -665,9 +593,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.txt_input.setObjectName("txt_input")
         self.horizontalLayout_19.addWidget(self.txt_input)
         self.btn_search_go = QtWidgets.QPushButton(self.tab_search)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.btn_search_go.sizePolicy().hasHeightForWidth())
@@ -678,11 +604,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_search_go.setAutoFillBackground(True)
         self.btn_search_go.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/search/search.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon1.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/search/search.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_search_go.setIcon(icon1)
         self.btn_search_go.setAutoDefault(True)
         self.btn_search_go.setDefault(True)
@@ -690,18 +612,14 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_search_go.setObjectName("btn_search_go")
         self.horizontalLayout_19.addWidget(self.btn_search_go)
         self.horizontalLayout_20.addLayout(self.horizontalLayout_19)
-        spacerItem11 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem11 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_20.addItem(spacerItem11)
         self.horizontalLayout_27 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_27.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
         self.horizontalLayout_27.setSpacing(5)
         self.horizontalLayout_27.setObjectName("horizontalLayout_27")
         self.ico_quicksearch = QtWidgets.QLabel(self.tab_search)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ico_quicksearch.sizePolicy().hasHeightForWidth())
@@ -714,9 +632,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.ico_quicksearch.setObjectName("ico_quicksearch")
         self.horizontalLayout_27.addWidget(self.ico_quicksearch)
         self.cbb_quicksearch_use = QtWidgets.QComboBox(self.tab_search)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.cbb_quicksearch_use.sizePolicy().hasHeightForWidth())
@@ -744,9 +660,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_17.setSpacing(5)
         self.horizontalLayout_17.setObjectName("horizontalLayout_17")
         self.btn_show = QtWidgets.QPushButton(self.tab_search)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.btn_show.sizePolicy().hasHeightForWidth())
@@ -755,13 +669,11 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_show.setMaximumSize(QtCore.QSize(303, 30))
         font = QtGui.QFont()
         font.setPointSize(9)
+        font.setBold(True)
+        font.setWeight(75)
         self.btn_show.setFont(font)
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/search/eye.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon2.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/search/eye.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_show.setIcon(icon2)
         self.btn_show.setObjectName("btn_show")
         self.horizontalLayout_17.addWidget(self.btn_show)
@@ -773,6 +685,7 @@ class Ui_IsogeoDockWidgetBase(object):
         font.setBold(False)
         font.setWeight(50)
         self.cbb_ob.setFont(font)
+        self.cbb_ob.setToolTip("")
         self.cbb_ob.setMaxCount(6)
         self.cbb_ob.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
         self.cbb_ob.setMinimumContentsLength(20)
@@ -786,6 +699,7 @@ class Ui_IsogeoDockWidgetBase(object):
         font.setBold(False)
         font.setWeight(50)
         self.cbb_od.setFont(font)
+        self.cbb_od.setToolTip("")
         self.cbb_od.setMaxVisibleItems(3)
         self.cbb_od.setMaxCount(3)
         self.cbb_od.setInsertPolicy(QtWidgets.QComboBox.InsertAlphabetically)
@@ -803,11 +717,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_reinit.setMaximumSize(QtCore.QSize(80, 30))
         self.btn_reinit.setText("")
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/undo.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon3.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/undo.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_reinit.setIcon(icon3)
         self.btn_reinit.setIconSize(QtCore.QSize(18, 18))
         self.btn_reinit.setObjectName("btn_reinit")
@@ -817,14 +727,12 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_quicksearch_save.setMaximumSize(QtCore.QSize(80, 30))
         font = QtGui.QFont()
         font.setPointSize(8)
+        font.setBold(True)
+        font.setWeight(75)
         self.btn_quicksearch_save.setFont(font)
         self.btn_quicksearch_save.setText("")
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/save.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon4.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/save.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_quicksearch_save.setIcon(icon4)
         self.btn_quicksearch_save.setIconSize(QtCore.QSize(18, 18))
         self.btn_quicksearch_save.setObjectName("btn_quicksearch_save")
@@ -851,9 +759,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_12.setSpacing(5)
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
-        spacerItem12 = QtWidgets.QSpacerItem(
-            98, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem12 = QtWidgets.QSpacerItem(98, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_12.addItem(spacerItem12)
         self.btn_previous = QtWidgets.QPushButton(self.tab_search)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -863,11 +769,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_previous.setSizePolicy(sizePolicy)
         self.btn_previous.setText("")
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/search/caret-left.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon5.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/search/caret-left.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_previous.setIcon(icon5)
         self.btn_previous.setObjectName("btn_previous")
         self.horizontalLayout_12.addWidget(self.btn_previous)
@@ -883,26 +785,18 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_next = QtWidgets.QPushButton(self.tab_search)
         self.btn_next.setText("")
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/search/caret-right.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon6.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/search/caret-right.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_next.setIcon(icon6)
         self.btn_next.setObjectName("btn_next")
         self.horizontalLayout_12.addWidget(self.btn_next)
-        spacerItem13 = QtWidgets.QSpacerItem(
-            128, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem13 = QtWidgets.QSpacerItem(128, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_12.addItem(spacerItem13)
         self.gridLayout_8.addLayout(self.horizontalLayout_12, 9, 0, 1, 1)
         self.grp_filters.raise_()
         self.tbl_result.raise_()
         self.tabWidget.addTab(self.tab_search, icon1, "")
         self.tab_settings = QtWidgets.QWidget()
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tab_settings.sizePolicy().hasHeightForWidth())
@@ -914,9 +808,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.gridLayout_7.setSpacing(5)
         self.gridLayout_7.setObjectName("gridLayout_7")
         self.groupBox = QtWidgets.QGroupBox(self.tab_settings)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.groupBox.sizePolicy().hasHeightForWidth())
@@ -924,6 +816,8 @@ class Ui_IsogeoDockWidgetBase(object):
         self.groupBox.setMaximumSize(QtCore.QSize(16777215, 450))
         font = QtGui.QFont()
         font.setPointSize(9)
+        font.setBold(True)
+        font.setWeight(75)
         self.groupBox.setFont(font)
         self.groupBox.setObjectName("groupBox")
         self.gridLayout_5 = QtWidgets.QGridLayout(self.groupBox)
@@ -935,6 +829,8 @@ class Ui_IsogeoDockWidgetBase(object):
         self.txt_shares.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
         font.setPointSize(8)
+        font.setBold(True)
+        font.setWeight(75)
         self.txt_shares.setFont(font)
         self.txt_shares.setObjectName("txt_shares")
         self.gridLayout_5.addWidget(self.txt_shares, 1, 0, 1, 1)
@@ -949,29 +845,21 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_auth.setFont(font)
         self.lbl_auth.setObjectName("lbl_auth")
         self.horizontalLayout_21.addWidget(self.lbl_auth)
-        spacerItem14 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem14 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_21.addItem(spacerItem14)
         self.btn_change_user = QtWidgets.QPushButton(self.groupBox)
         self.btn_change_user.setMinimumSize(QtCore.QSize(80, 25))
         self.btn_change_user.setMaximumSize(QtCore.QSize(80, 30))
         self.btn_change_user.setText("")
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/settings/key.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon7.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/settings/key.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_change_user.setIcon(icon7)
         self.btn_change_user.setObjectName("btn_change_user")
         self.horizontalLayout_21.addWidget(self.btn_change_user)
         self.gridLayout_5.addLayout(self.horizontalLayout_21, 0, 0, 1, 1)
         self.gridLayout_7.addWidget(self.groupBox, 6, 0, 1, 1)
         self.groupBox_2 = QtWidgets.QGroupBox(self.tab_settings)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.groupBox_2.sizePolicy().hasHeightForWidth())
@@ -979,6 +867,8 @@ class Ui_IsogeoDockWidgetBase(object):
         self.groupBox_2.setMinimumSize(QtCore.QSize(0, 0))
         font = QtGui.QFont()
         font.setPointSize(9)
+        font.setBold(True)
+        font.setWeight(75)
         self.groupBox_2.setFont(font)
         self.groupBox_2.setObjectName("groupBox_2")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.groupBox_2)
@@ -994,29 +884,25 @@ class Ui_IsogeoDockWidgetBase(object):
         self.cbb_quicksearch_edit = QtWidgets.QComboBox(self.groupBox_2)
         self.cbb_quicksearch_edit.setMinimumSize(QtCore.QSize(250, 25))
         font = QtGui.QFont()
+        font.setPointSize(9)
         font.setBold(False)
         font.setWeight(50)
         self.cbb_quicksearch_edit.setFont(font)
         self.cbb_quicksearch_edit.setObjectName("cbb_quicksearch_edit")
         self.horizontalLayout_9.addWidget(self.cbb_quicksearch_edit)
-        spacerItem15 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem15 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_9.addItem(spacerItem15)
         self.btn_rename_sr = QtWidgets.QPushButton(self.groupBox_2)
         self.btn_rename_sr.setMinimumSize(QtCore.QSize(80, 25))
         self.btn_rename_sr.setMaximumSize(QtCore.QSize(80, 30))
         font = QtGui.QFont()
+        font.setPointSize(9)
         font.setBold(False)
         font.setWeight(50)
         self.btn_rename_sr.setFont(font)
         self.btn_rename_sr.setText("")
         icon8 = QtGui.QIcon()
-        icon8.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/pencil.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon8.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/pencil.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_rename_sr.setIcon(icon8)
         self.btn_rename_sr.setObjectName("btn_rename_sr")
         self.horizontalLayout_9.addWidget(self.btn_rename_sr)
@@ -1024,16 +910,13 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_delete_sr.setMinimumSize(QtCore.QSize(80, 25))
         self.btn_delete_sr.setMaximumSize(QtCore.QSize(80, 30))
         font = QtGui.QFont()
+        font.setPointSize(9)
         font.setBold(False)
         font.setWeight(50)
         self.btn_delete_sr.setFont(font)
         self.btn_delete_sr.setText("")
         icon9 = QtGui.QIcon()
-        icon9.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/trash.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon9.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/trash.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_delete_sr.setIcon(icon9)
         self.btn_delete_sr.setObjectName("btn_delete_sr")
         self.horizontalLayout_9.addWidget(self.btn_delete_sr)
@@ -1049,9 +932,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_default.setFont(font)
         self.lbl_default.setObjectName("lbl_default")
         self.horizontalLayout_10.addWidget(self.lbl_default)
-        spacerItem16 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem16 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_10.addItem(spacerItem16)
         self.btn_default_save = QtWidgets.QPushButton(self.groupBox_2)
         self.btn_default_save.setMinimumSize(QtCore.QSize(80, 25))
@@ -1079,14 +960,13 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_geo_op.setFont(font)
         self.lbl_geo_op.setObjectName("lbl_geo_op")
         self.horizontalLayout_11.addWidget(self.lbl_geo_op)
-        spacerItem17 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem17 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_11.addItem(spacerItem17)
         self.cbb_geo_op = QtWidgets.QComboBox(self.groupBox_2)
         self.cbb_geo_op.setMinimumSize(QtCore.QSize(167, 25))
         self.cbb_geo_op.setMaximumSize(QtCore.QSize(167, 30))
         font = QtGui.QFont()
+        font.setPointSize(9)
         font.setBold(False)
         font.setWeight(50)
         self.cbb_geo_op.setFont(font)
@@ -1106,9 +986,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_cache.setFont(font)
         self.lbl_cache.setObjectName("lbl_cache")
         self.horizontalLayout_13.addWidget(self.lbl_cache)
-        spacerItem18 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem18 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_13.addItem(spacerItem18)
         self.btn_cache_trash = QtWidgets.QPushButton(self.groupBox_2)
         self.btn_cache_trash.setMinimumSize(QtCore.QSize(80, 25))
@@ -1122,9 +1000,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.gridLayout_4.addLayout(self.verticalLayout_10, 0, 0, 1, 1)
         self.gridLayout_7.addWidget(self.groupBox_2, 1, 0, 1, 1)
         self.mGroupBox = QgsCollapsibleGroupBox(self.tab_settings)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.mGroupBox.sizePolicy().hasHeightForWidth())
@@ -1135,9 +1011,7 @@ class Ui_IsogeoDockWidgetBase(object):
         font.setWeight(75)
         self.mGroupBox.setFont(font)
         self.mGroupBox.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.mGroupBox.setStyleSheet(
-            "QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 3px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}"
-        )
+        self.mGroupBox.setStyleSheet("QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 3px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}")
         self.mGroupBox.setCollapsed(False)
         self.mGroupBox.setObjectName("mGroupBox")
         self.gridLayout_9 = QtWidgets.QGridLayout(self.mGroupBox)
@@ -1159,9 +1033,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_report.setFont(font)
         self.lbl_report.setObjectName("lbl_report")
         self.horizontalLayout_24.addWidget(self.lbl_report)
-        spacerItem19 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem19 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_24.addItem(spacerItem19)
         self.btn_log_dir = QtWidgets.QPushButton(self.mGroupBox)
         self.btn_log_dir.setMinimumSize(QtCore.QSize(80, 25))
@@ -1174,11 +1046,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_log_dir.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_log_dir.setAutoFillBackground(True)
         icon10 = QtGui.QIcon()
-        icon10.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/settings/folder-open-o.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon10.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/settings/folder-open-o.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_log_dir.setIcon(icon10)
         self.btn_log_dir.setObjectName("btn_log_dir")
         self.horizontalLayout_24.addWidget(self.btn_log_dir)
@@ -1189,11 +1057,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_report.setAutoFillBackground(True)
         self.btn_report.setText("")
         icon11 = QtGui.QIcon()
-        icon11.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/settings/bullhorn.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon11.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/settings/bullhorn.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_report.setIcon(icon11)
         self.btn_report.setObjectName("btn_report")
         self.horizontalLayout_24.addWidget(self.btn_report)
@@ -1209,9 +1073,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_help.setFont(font)
         self.lbl_help.setObjectName("lbl_help")
         self.horizontalLayout_23.addWidget(self.lbl_help)
-        spacerItem20 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem20 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_23.addItem(spacerItem20)
         self.btn_help = QtWidgets.QPushButton(self.mGroupBox)
         self.btn_help.setMinimumSize(QtCore.QSize(80, 25))
@@ -1220,11 +1082,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_help.setAutoFillBackground(True)
         self.btn_help.setText("")
         icon12 = QtGui.QIcon()
-        icon12.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/settings/question.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon12.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/settings/question.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_help.setIcon(icon12)
         self.btn_help.setObjectName("btn_help")
         self.horizontalLayout_23.addWidget(self.btn_help)
@@ -1240,9 +1098,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_credits.setFont(font)
         self.lbl_credits.setObjectName("lbl_credits")
         self.horizontalLayout_22.addWidget(self.lbl_credits)
-        spacerItem21 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem21 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_22.addItem(spacerItem21)
         self.btn_credits = QtWidgets.QPushButton(self.mGroupBox)
         self.btn_credits.setMinimumSize(QtCore.QSize(80, 25))
@@ -1250,11 +1106,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_credits.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_credits.setText("")
         icon13 = QtGui.QIcon()
-        icon13.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/settings/info.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon13.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/settings/info.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_credits.setIcon(icon13)
         self.btn_credits.setObjectName("btn_credits")
         self.horizontalLayout_22.addWidget(self.btn_credits)
@@ -1262,15 +1114,15 @@ class Ui_IsogeoDockWidgetBase(object):
         self.gridLayout_9.addLayout(self.verticalLayout_12, 0, 0, 1, 1)
         self.gridLayout_7.addWidget(self.mGroupBox, 8, 0, 1, 1)
         self.groupBox_4 = QtWidgets.QGroupBox(self.tab_settings)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.groupBox_4.sizePolicy().hasHeightForWidth())
         self.groupBox_4.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(9)
+        font.setBold(True)
+        font.setWeight(75)
         self.groupBox_4.setFont(font)
         self.groupBox_4.setObjectName("groupBox_4")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.groupBox_4)
@@ -1292,9 +1144,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.label_config_db_conn.setFont(font)
         self.label_config_db_conn.setObjectName("label_config_db_conn")
         self.horizontalLayout_14.addWidget(self.label_config_db_conn)
-        spacerItem22 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem22 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_14.addItem(spacerItem22)
         self.btn_open_ora_config_dialog = QtWidgets.QPushButton(self.groupBox_4)
         self.btn_open_ora_config_dialog.setMinimumSize(QtCore.QSize(80, 30))
@@ -1321,20 +1171,14 @@ class Ui_IsogeoDockWidgetBase(object):
         self.label_portal_url.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.label_portal_url.setObjectName("label_portal_url")
         self.horizontalLayout_7.addWidget(self.label_portal_url)
-        spacerItem23 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem23 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_7.addItem(spacerItem23)
         self.btn_open_portalURL_config_dialog = QtWidgets.QPushButton(self.groupBox_4)
         self.btn_open_portalURL_config_dialog.setMinimumSize(QtCore.QSize(80, 30))
         self.btn_open_portalURL_config_dialog.setMaximumSize(QtCore.QSize(100, 30))
         self.btn_open_portalURL_config_dialog.setText("")
         icon14 = QtGui.QIcon()
-        icon14.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/edit.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon14.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/edit.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_open_portalURL_config_dialog.setIcon(icon14)
         self.btn_open_portalURL_config_dialog.setObjectName("btn_open_portalURL_config_dialog")
         self.horizontalLayout_7.addWidget(self.btn_open_portalURL_config_dialog)
@@ -1342,11 +1186,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.gridLayout_3.addLayout(self.verticalLayout, 1, 0, 1, 1)
         self.gridLayout_7.addWidget(self.groupBox_4, 7, 0, 1, 1)
         icon15 = QtGui.QIcon()
-        icon15.addPixmap(
-            QtGui.QPixmap(":/plugins/Isogeo/resources/settings/gear.svg"),
-            QtGui.QIcon.Normal,
-            QtGui.QIcon.Off,
-        )
+        icon15.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/settings/gear.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.tab_settings, icon15, "")
         self.gridLayout.addWidget(self.tabWidget, 0, 0, 1, 1)
         IsogeoDockWidgetBase.setWidget(self.dockWidgetContents)
@@ -1370,16 +1210,12 @@ class Ui_IsogeoDockWidgetBase(object):
         self.lbl_srs.setText(_translate("IsogeoDockWidgetBase", "Coordinate system (source)"))
         self.lbl_license.setText(_translate("IsogeoDockWidgetBase", "License"))
         self.txt_input.setToolTip(_translate("IsogeoDockWidgetBase", "Enter your search terms"))
-        self.txt_input.setPlaceholderText(
-            _translate("IsogeoDockWidgetBase", "roads, habitat, cadastral parcel, transport...")
-        )
+        self.txt_input.setPlaceholderText(_translate("IsogeoDockWidgetBase", "roads, habitat, cadastral parcel, transport..."))
         self.btn_search_go.setToolTip(_translate("IsogeoDockWidgetBase", "Launch search"))
         self.cbb_quicksearch_use.setToolTip(_translate("IsogeoDockWidgetBase", "Quick searches"))
         self.cbb_quicksearch_use.setItemText(0, _translate("IsogeoDockWidgetBase", "Quicksearches"))
         self.btn_show.setToolTip(_translate("IsogeoDockWidgetBase", "Display the results list"))
         self.btn_show.setText(_translate("IsogeoDockWidgetBase", "Show results"))
-        self.cbb_ob.setToolTip(_translate("IsogeoDockWidgetBase", "Sorting method"))
-        self.cbb_od.setToolTip(_translate("IsogeoDockWidgetBase", "Sorting direction"))
         self.btn_reinit.setToolTip(_translate("IsogeoDockWidgetBase", "Reset all input fields"))
         self.btn_quicksearch_save.setToolTip(_translate("IsogeoDockWidgetBase", "Save research"))
         self.tbl_result.setSortingEnabled(False)
@@ -1392,82 +1228,44 @@ class Ui_IsogeoDockWidgetBase(object):
         item = self.tbl_result.horizontalHeaderItem(3)
         item.setText(_translate("IsogeoDockWidgetBase", "Add"))
         self.lbl_page.setText(_translate("IsogeoDockWidgetBase", "Page x on x"))
-        self.tabWidget.setTabText(
-            self.tabWidget.indexOf(self.tab_search), _translate("IsogeoDockWidgetBase", "Search")
-        )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_search), _translate("IsogeoDockWidgetBase", "Search"))
         self.groupBox.setTitle(_translate("IsogeoDockWidgetBase", "Authentication settings"))
         self.lbl_auth.setText(_translate("IsogeoDockWidgetBase", "Set plugin authentication:"))
         self.groupBox_2.setTitle(_translate("IsogeoDockWidgetBase", "Search settings"))
         self.cbb_quicksearch_edit.setToolTip(_translate("IsogeoDockWidgetBase", "Edit quicksearch"))
-        self.btn_rename_sr.setToolTip(
-            _translate("IsogeoDockWidgetBase", "Rename selected quicksearch")
-        )
-        self.btn_delete_sr.setToolTip(
-            _translate("IsogeoDockWidgetBase", "Delete selected quicksearch")
-        )
+        self.btn_rename_sr.setToolTip(_translate("IsogeoDockWidgetBase", "Rename selected quicksearch"))
+        self.btn_delete_sr.setToolTip(_translate("IsogeoDockWidgetBase", "Delete selected quicksearch"))
         self.lbl_default.setText(_translate("IsogeoDockWidgetBase", "Default search"))
-        self.btn_default_save.setToolTip(
-            _translate("IsogeoDockWidgetBase", "Save current search as default")
-        )
-        self.btn_default_reset.setToolTip(
-            _translate("IsogeoDockWidgetBase", "Reset default search")
-        )
-        self.lbl_geo_op.setText(
-            _translate("IsogeoDockWidgetBase", "Geographical operator applied to the filter")
-        )
+        self.btn_default_save.setToolTip(_translate("IsogeoDockWidgetBase", "Save current search as default"))
+        self.btn_default_reset.setToolTip(_translate("IsogeoDockWidgetBase", "Reset default search"))
+        self.lbl_geo_op.setText(_translate("IsogeoDockWidgetBase", "Geographical operator applied to the filter"))
         self.lbl_cache.setText(_translate("IsogeoDockWidgetBase", "Paths cache"))
-        self.btn_cache_trash.setToolTip(
-            _translate("IsogeoDockWidgetBase", "Empty the paths cached")
-        )
+        self.btn_cache_trash.setToolTip(_translate("IsogeoDockWidgetBase", "Empty the paths cached"))
         self.mGroupBox.setTitle(_translate("IsogeoDockWidgetBase", "Advanced resources"))
-        self.lbl_report.setText(
-            _translate("IsogeoDockWidgetBase", "Report an issue on the bug tracker")
-        )
-        self.btn_log_dir.setToolTip(
-            _translate("IsogeoDockWidgetBase", 'Open folder of "log_isogeo_plugin.log" file')
-        )
+        self.lbl_report.setText(_translate("IsogeoDockWidgetBase", "Report an issue on the bug tracker"))
+        self.btn_log_dir.setToolTip(_translate("IsogeoDockWidgetBase", "Open folder of \"log_isogeo_plugin.log\" file"))
         self.btn_log_dir.setText(_translate("IsogeoDockWidgetBase", "LOG"))
         self.lbl_help.setText(_translate("IsogeoDockWidgetBase", "Open online plugin help"))
-        self.btn_help.setToolTip(
-            _translate("IsogeoDockWidgetBase", "Open online help in default browser")
-        )
+        self.btn_help.setToolTip(_translate("IsogeoDockWidgetBase", "Open online help in default browser"))
         self.lbl_credits.setText(_translate("IsogeoDockWidgetBase", "Open plugin credits"))
         self.btn_credits.setToolTip(_translate("IsogeoDockWidgetBase", "Open credits popup"))
         self.groupBox_4.setTitle(_translate("IsogeoDockWidgetBase", "Layer adding settings"))
-        self.label_config_db_conn.setText(
-            _translate("IsogeoDockWidgetBase", "Configure embed database connections")
-        )
-        self.btn_open_ora_config_dialog.setToolTip(
-            _translate("IsogeoDockWidgetBase", "Oracle databases")
-        )
-        self.btn_open_pgdb_config_dialog.setToolTip(
-            _translate("IsogeoDockWidgetBase", "PostgreSQL databases")
-        )
-        self.label_portal_url.setText(
-            _translate("IsogeoDockWidgetBase", "Configure Isogeo portal metadata URL")
-        )
-        self.btn_open_portalURL_config_dialog.setToolTip(
-            _translate(
-                "IsogeoDockWidgetBase",
-                "Choose to add metadata portal URL to layer properties and specify portal base URL",
-            )
-        )
-        self.tabWidget.setTabText(
-            self.tabWidget.indexOf(self.tab_settings),
-            _translate("IsogeoDockWidgetBase", "Settings"),
-        )
-
+        self.label_config_db_conn.setText(_translate("IsogeoDockWidgetBase", "Configure embed database connections"))
+        self.btn_open_ora_config_dialog.setToolTip(_translate("IsogeoDockWidgetBase", "Oracle databases"))
+        self.btn_open_pgdb_config_dialog.setToolTip(_translate("IsogeoDockWidgetBase", "PostgreSQL databases"))
+        self.label_portal_url.setText(_translate("IsogeoDockWidgetBase", "Configure Isogeo portal metadata URL"))
+        self.btn_open_portalURL_config_dialog.setToolTip(_translate("IsogeoDockWidgetBase", "Choose to add metadata portal URL to layer properties and specify portal base URL"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_settings), _translate("IsogeoDockWidgetBase", "Settings"))
 
 from qgscheckablecombobox import QgsCheckableComboBox
 from qgscollapsiblegroupbox import QgsCollapsibleGroupBox
-import resources_rc
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     IsogeoDockWidgetBase = QtWidgets.QDockWidget()
     ui = Ui_IsogeoDockWidgetBase()
     ui.setupUi(IsogeoDockWidgetBase)
     IsogeoDockWidgetBase.show()
     sys.exit(app.exec_())
+

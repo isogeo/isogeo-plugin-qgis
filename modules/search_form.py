@@ -76,10 +76,6 @@ class SearchFormManager(IsogeoDockWidget):
         super().__init__()
 
         self.tr = trad
-        # groupTheme, geofilter, type, format, owner, inspire, srs, contact and license
-        self.cbbs_search_advanced = [
-            cbbox for cbbox in self.grp_filters.findChildren(QComboBox) if cbbox != self.cbb_chck_kw
-        ]
 
         # match between widgets and metadata fields
         self.match_widget_field = {
@@ -101,43 +97,26 @@ class SearchFormManager(IsogeoDockWidget):
                 (self.tr("contains", context=__class__.__name__), "contains"),
             ]
         )
-        self.dict_ob = OrderedDict(
-            [
-                (
-                    self.tr("Relevance", context=__class__.__name__),
-                    (ico_ob_relev, "relevance"),
-                ),
-                (
-                    self.tr("Alphabetical order", context=__class__.__name__),
-                    (ico_ob_alpha, "title"),
-                ),
-                (
-                    self.tr("Data modified", context=__class__.__name__),
-                    (ico_ob_dupda, "modified"),
-                ),
-                (
-                    self.tr("Data created", context=__class__.__name__),
-                    (ico_ob_dcrea, "created"),
-                ),
-                (
-                    self.tr("Metadata modified", context=__class__.__name__),
-                    (ico_ob_mcrea, "_modified"),
-                ),
-                (
-                    self.tr("Metadata created", context=__class__.__name__),
-                    (ico_ob_mupda, "_created"),
-                ),
-            ]
-        )
-        self.dict_od = OrderedDict(
-            [
-                (
-                    self.tr("Descending", context=__class__.__name__),
-                    (ico_od_desc, "desc"),
-                ),
-                (self.tr("Ascending", context=__class__.__name__), (ico_od_asc, "asc")),
-            ]
-        )
+
+        # groupTheme, geofilter, type, format, owner, inspire, srs, contact and license
+        self.cbbs_search_advanced = [
+            cbbox for cbbox in self.grp_filters.findChildren(QComboBox) if cbbox != self.cbb_chck_kw
+        ]
+        # order by, order direction
+        self.cbbs_order = {
+            self.cbb_ob: (
+                (self.tr("Relevance", context=__class__.__name__), ico_ob_relev, "relevance"),
+                (self.tr("Alphabetical order", context=__class__.__name__), ico_ob_alpha, "title"),
+                (self.tr("Data modified", context=__class__.__name__), ico_ob_dupda, "modified", self.tr("Data modification date", context=__class__.__name__)),
+                (self.tr("Data created", context=__class__.__name__), ico_ob_dcrea, "created", self.tr("Data creation date", context=__class__.__name__)),
+                (self.tr("Metadata modified", context=__class__.__name__), ico_ob_mcrea, "_modified", self.tr("Metadata modification date", context=__class__.__name__)),
+                (self.tr("Metadata created", context=__class__.__name__), ico_ob_mupda, "_created", self.tr("Metadata creation date", context=__class__.__name__)),
+            ),
+            self.cbb_od: (
+                (self.tr("Descending", context=__class__.__name__), ico_od_desc, "desc"),
+                (self.tr("Ascending", context=__class__.__name__), ico_od_asc, "asc"),
+            )
+        }
 
         # Setting quick search manager
         self.qs_mng = QuickSearchManager(self)
@@ -252,7 +231,6 @@ class SearchFormManager(IsogeoDockWidget):
                     self.cbb_geofilter.addItem(ico_poin, layer.name())
         # Format combobox items text to fit with widget width
         for cbb in self.cbbs_search_advanced:
-            cbb.setStyleSheet("combobox-popup: 0; font-size: 12px")
             cbb_width = cbb.width() - 20
             cbb_fm = cbb.fontMetrics()
 
@@ -264,7 +242,16 @@ class SearchFormManager(IsogeoDockWidget):
                     cbb.setItemData(i, item_label, Qt.ToolTipRole)
                 else:
                     pass
-            cbb.setStyleSheet("combobox-popup: 0;")
+        # Filling order by and direction cbb
+        for cbb in self.cbbs_order:
+            cbb.clear()
+            for tup in self.cbbs_order[cbb]:
+                cbb.addItem(tup[1], tup[0], tup[2])
+                if len(tup) == 4:
+                    cbb.setItemData(cbb.count() - 1, tup[3], Qt.ToolTipRole)
+                else:
+                    pass
+
         return
 
     def pop_qs_cbbs(self, items_list: list = None):
@@ -335,7 +322,14 @@ class SearchFormManager(IsogeoDockWidget):
 
         # for sorting order and direction
         self.cbb_ob.setCurrentIndex(self.cbb_ob.findData(params.get("ob")))
+        self.cbb_ob.setToolTip(
+            self.tr("Order by: ") + self.cbb_ob.currentText()
+        )
+        # self.cbb_ob.setStyleSheet(r"QToolTip {color: black}")
         self.cbb_od.setCurrentIndex(self.cbb_od.findData(params.get("od")))
+        self.cbb_od.setToolTip(
+            self.tr("Order direction: ") + self.cbb_od.currentText()
+        )
 
         return
 
@@ -394,14 +388,14 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_geo_op.clear()
         for key in self.dict_operation.keys():
             self.cbb_geo_op.addItem(key, self.dict_operation.get(key))
-        # Order by cbb
-        self.cbb_ob.clear()
-        for k, v in self.dict_ob.items():
-            self.cbb_ob.addItem(v[0], k, v[1])
-        # Order direction cbb
-        self.cbb_od.clear()
-        for k, v in self.dict_od.items():
-            self.cbb_od.addItem(v[0], k, v[1])
+        # Advanced search cbb
+        for cbb in self.cbbs_search_advanced:
+            cbb.setStyleSheet("combobox-popup: 0; font-size: 12px")
+        # Order by and direction cbb
+        for cbb in self.cbbs_order:
+            cbb.setStyleSheet("QComboBox {combobox-popup: 0; color: transparent; font-size: 12px} QListView {color: black; icon-size: 20px} QToolTip {color: black}")
+            # cbb.setStyleSheet("QComboBox {combobox-popup: 0; color: transparent; font-size: 12px} QListView {color: black; icon-size: 20px; selection-background-color: lightgray; selection-color: black} QToolTip {color: black}")
+            cbb.view().setSpacing(2)
 
     def reinit_widgets(self):
         """Called by Isogeo.reinitialize_search method to clear search widgets."""
