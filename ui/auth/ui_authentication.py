@@ -11,14 +11,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_dlg_form_auth_prompt(object):
     def setupUi(self, dlg_form_auth_prompt):
         dlg_form_auth_prompt.setObjectName("dlg_form_auth_prompt")
-        dlg_form_auth_prompt.resize(600, 300)
+        dlg_form_auth_prompt.resize(800, 300)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(dlg_form_auth_prompt.sizePolicy().hasHeightForWidth())
         dlg_form_auth_prompt.setSizePolicy(sizePolicy)
-        dlg_form_auth_prompt.setMinimumSize(QtCore.QSize(600, 300))
-        dlg_form_auth_prompt.setMaximumSize(QtCore.QSize(800, 300))
+        dlg_form_auth_prompt.setMinimumSize(QtCore.QSize(800, 300))
+        dlg_form_auth_prompt.setMaximumSize(QtCore.QSize(803, 300))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/plugins/Isogeo/resources/settings/key.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         dlg_form_auth_prompt.setWindowIcon(icon)
