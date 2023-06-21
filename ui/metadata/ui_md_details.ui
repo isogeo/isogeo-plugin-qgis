@@ -313,7 +313,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>7</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="md_general">
         <property name="maximumSize">
@@ -1325,7 +1325,7 @@ QListWidget::item::selected {
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar_blue.svg</pixmap>
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/results/sort-datamodified.svg</pixmap>
                   </property>
                   <property name="scaledContents">
                    <bool>true</bool>
@@ -1362,7 +1362,7 @@ QListWidget::item::selected {
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-plus-o.svg</pixmap>
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/results/sort-datacreated.svg</pixmap>
                   </property>
                   <property name="scaledContents">
                    <bool>true</bool>
