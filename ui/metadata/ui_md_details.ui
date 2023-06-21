@@ -237,6 +237,12 @@ QListWidget::item::selected {
      <property name="enabled">
       <bool>true</bool>
      </property>
+     <property name="font">
+      <font>
+       <family>Calibri</family>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
      <property name="cursor">
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
@@ -269,61 +275,6 @@ QListWidget::item::selected {
       <bool>false</bool>
      </property>
     </widget>
-   </item>
-   <item row="1" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="btn_addtomap">
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>addButton</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="btn_ok_cancel">
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>250</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
-       </property>
-       <property name="centerButtons">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item row="0" column="1">
     <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -362,7 +313,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>7</number>
        </property>
        <widget class="QWidget" name="md_general">
         <property name="maximumSize">
@@ -382,6 +333,7 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
              <pointsize>12</pointsize>
              <weight>50</weight>
              <bold>false</bold>
@@ -461,6 +413,8 @@ QListWidget::item::selected {
                </property>
                <property name="font">
                 <font>
+                 <family>Calibri</family>
+                 <pointsize>9</pointsize>
                  <weight>50</weight>
                  <bold>false</bold>
                 </font>
@@ -536,6 +490,8 @@ QListWidget::item::selected {
                </property>
                <property name="font">
                 <font>
+                 <family>Calibri</family>
+                 <pointsize>9</pointsize>
                  <weight>50</weight>
                  <bold>false</bold>
                 </font>
@@ -617,6 +573,8 @@ QListWidget::item::selected {
                </property>
                <property name="font">
                 <font>
+                 <family>Calibri</family>
+                 <pointsize>9</pointsize>
                  <weight>50</weight>
                  <bold>false</bold>
                 </font>
@@ -701,6 +659,8 @@ QListWidget::item::selected {
                </property>
                <property name="font">
                 <font>
+                 <family>Calibri</family>
+                 <pointsize>9</pointsize>
                  <weight>50</weight>
                  <bold>false</bold>
                 </font>
@@ -879,6 +839,8 @@ QListWidget::item::selected {
                    </property>
                    <property name="font">
                     <font>
+                     <family>Calibri</family>
+                     <pointsize>9</pointsize>
                      <weight>50</weight>
                      <bold>false</bold>
                     </font>
@@ -1029,6 +991,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -1045,6 +1009,14 @@ QListWidget::item::selected {
                 <height>500</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <family>Calibri</family>
+                <pointsize>9</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
               <property name="widgetResizable">
                <bool>true</bool>
               </property>
@@ -1054,7 +1026,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>521</width>
-                 <height>193</height>
+                 <height>194</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -1080,6 +1052,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1124,6 +1098,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -1149,7 +1125,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>521</width>
-                 <height>194</height>
+                 <height>195</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -1175,6 +1151,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1254,6 +1232,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -1277,6 +1257,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="val_frequency">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1290,6 +1272,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="lbl_frequency">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1303,6 +1287,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="val_data_update">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1316,6 +1302,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="lbl_data_update">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1351,6 +1339,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="val_data_crea">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1386,6 +1376,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="lbl_data_crea">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1444,6 +1436,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1474,6 +1468,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="lbl_valid_comment">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1487,6 +1483,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="val_valid_comment">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1531,6 +1529,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1584,6 +1584,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="val_valid_end">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1619,6 +1621,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="lbl_valid_start">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1632,6 +1636,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="val_valid_start">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1645,6 +1651,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="lbl_valid_end">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1706,6 +1714,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -1736,7 +1746,7 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>521</width>
                  <height>108</height>
                 </rect>
                </property>
@@ -1769,6 +1779,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1822,6 +1834,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -1852,7 +1866,7 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>521</width>
                  <height>108</height>
                 </rect>
                </property>
@@ -1879,6 +1893,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -1921,8 +1937,14 @@ QListWidget::item::selected {
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>440</height>
+             <height>16777215</height>
             </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
+            </font>
            </property>
            <property name="title">
             <string>Last modifications</string>
@@ -1950,6 +1972,12 @@ QListWidget::item::selected {
                 <width>16777215</width>
                 <height>440</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Calibri</family>
+                <pointsize>8</pointsize>
+               </font>
               </property>
               <property name="cursor" stdset="0">
                <cursorShape>IBeamCursor</cursorShape>
@@ -2034,6 +2062,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -2080,6 +2110,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="val_format">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2093,6 +2125,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="lbl_format">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2141,6 +2175,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="lbl_feat_count">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2167,6 +2203,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="val_feat_count">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2180,6 +2218,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="lbl_geometry">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2228,6 +2268,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="val_geometry">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2276,6 +2318,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="val_scale">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2311,6 +2355,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="lbl_scale">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2324,6 +2370,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="lbl_srs">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2363,6 +2411,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="val_srs">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2401,6 +2451,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="lbl_resolution">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2427,6 +2479,8 @@ QListWidget::item::selected {
                <widget class="QLabel" name="val_resolution">
                 <property name="font">
                  <font>
+                  <family>Calibri</family>
+                  <pointsize>9</pointsize>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
@@ -2457,6 +2511,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -2481,6 +2537,8 @@ QListWidget::item::selected {
               </property>
               <property name="font">
                <font>
+                <family>Calibri</family>
+                <pointsize>9</pointsize>
                 <weight>50</weight>
                 <bold>false</bold>
                </font>
@@ -2539,6 +2597,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -2623,6 +2683,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -2650,8 +2712,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>37</height>
+                 <width>521</width>
+                 <height>194</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -2671,6 +2733,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -2721,6 +2785,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -2745,8 +2811,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>37</height>
+                 <width>521</width>
+                 <height>195</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -2766,6 +2832,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -2833,6 +2901,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -2860,8 +2930,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>172</height>
+                 <width>521</width>
+                 <height>194</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -2887,6 +2957,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -2931,6 +3003,8 @@ QListWidget::item::selected {
            </property>
            <property name="font">
             <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -2961,8 +3035,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>172</height>
+                 <width>521</width>
+                 <height>195</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -2988,6 +3062,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3064,8 +3140,8 @@ QListWidget::item::selected {
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>529</width>
-              <height>214</height>
+              <width>545</width>
+              <height>715</height>
              </rect>
             </property>
             <property name="maximumSize">
@@ -3121,6 +3197,8 @@ QListWidget::item::selected {
                </property>
                <property name="font">
                 <font>
+                 <family>Calibri</family>
+                 <pointsize>9</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -3148,6 +3226,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                     <underline>true</underline>
@@ -3180,6 +3260,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3205,6 +3287,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3230,6 +3314,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3255,6 +3341,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3280,6 +3368,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3324,6 +3414,8 @@ QListWidget::item::selected {
                </property>
                <property name="font">
                 <font>
+                 <family>Calibri</family>
+                 <pointsize>9</pointsize>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>
@@ -3348,6 +3440,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3373,6 +3467,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3411,6 +3507,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3442,6 +3540,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3487,6 +3587,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="val_md_date_crea">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3518,6 +3620,7 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
                     <pointsize>8</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
@@ -3550,6 +3653,8 @@ QListWidget::item::selected {
                   </property>
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3569,6 +3674,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="val_md_date_update">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3582,6 +3689,8 @@ QListWidget::item::selected {
                  <widget class="QLabel" name="val_md_lang">
                   <property name="font">
                    <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
                     <weight>50</weight>
                     <bold>false</bold>
                    </font>
@@ -3613,6 +3722,61 @@ QListWidget::item::selected {
          </item>
         </layout>
        </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="btn_addtomap">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>addButton</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="btn_ok_cancel">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>250</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+       </property>
+       <property name="centerButtons">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
     </layout>
@@ -3655,9 +3819,9 @@ QListWidget::item::selected {
   </connection>
   <connection>
    <sender>btn_ok_cancel</sender>
-   <signal>accepted()</signal>
+   <signal>rejected()</signal>
    <receiver>dlg_metadata_details</receiver>
-   <slot>accept()</slot>
+   <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>787</x>
@@ -3671,9 +3835,9 @@ QListWidget::item::selected {
   </connection>
   <connection>
    <sender>btn_ok_cancel</sender>
-   <signal>rejected()</signal>
+   <signal>accepted()</signal>
    <receiver>dlg_metadata_details</receiver>
-   <slot>reject()</slot>
+   <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>787</x>
