@@ -46,6 +46,241 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="1">
+    <layout class="QVBoxLayout" name="verticalLayout_32">
+     <item>
+      <widget class="QListWidget" name="li_menu">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>500</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Calibri</family>
+         <pointsize>11</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+         <underline>false</underline>
+        </font>
+       </property>
+       <property name="cursor" stdset="0">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QListWidget{
+	background-color: rgb(69, 69, 69, 220);
+	outline: 0;
+}
+QListWidget::item {
+	color: white;
+	padding: 3px;
+}
+QListWidget::item::selected {
+	color: black;
+	background-color:palette(Window);
+    padding-right: 0px;
+}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
+       </property>
+       <property name="lineWidth">
+        <number>1</number>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>false</bool>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="movement">
+        <enum>QListView::Static</enum>
+       </property>
+       <property name="spacing">
+        <number>8</number>
+       </property>
+       <property name="viewMode">
+        <enum>QListView::ListMode</enum>
+       </property>
+       <property name="uniformItemSizes">
+        <bool>true</bool>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="selectionRectVisible">
+        <bool>true</bool>
+       </property>
+       <property name="currentRow">
+        <number>-1</number>
+       </property>
+       <property name="sortingEnabled">
+        <bool>false</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>General</string>
+        </property>
+        <property name="background">
+         <brush brushstyle="NoBrush">
+          <color alpha="255">
+           <red>0</red>
+           <green>0</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/metadata/bookmark_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/bookmark_orange.svg</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Feature attributes</string>
+        </property>
+        <property name="foreground">
+         <brush brushstyle="NoBrush">
+          <color alpha="255">
+           <red>0</red>
+           <green>0</green>
+           <blue>0</blue>
+          </color>
+         </brush>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/metadata/list-alt.svg</normaloff>:/plugins/Isogeo/resources/metadata/list-alt.svg</iconset>
+        </property>
+        <property name="flags">
+         <set>ItemIsSelectable|ItemIsEnabled</set>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Contacts</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/metadata/phone_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/phone_orange.svg</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>History</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/metadata/calendar_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/calendar_orange.svg</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Geography</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/metadata/globe_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/globe_orange.svg</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Quality</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/metadata/trophy_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/trophy_orange.svg</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Licenses</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/gavel.svg</normaloff>:/plugins/Isogeo/resources/gavel.svg</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Advanced</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resources.qrc">
+          <normaloff>:/plugins/Isogeo/resources/metadata/code.svg</normaloff>:/plugins/Isogeo/resources/metadata/code.svg</iconset>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_md_edit">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="font">
+        <font>
+         <family>Calibri</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Edit it on Isogeo</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resources.qrc">
+         <normaloff>:/plugins/Isogeo/resources/pencil.svg</normaloff>:/plugins/Isogeo/resources/pencil.svg</iconset>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <property name="autoRepeat">
+        <bool>false</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>false</bool>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="3" rowspan="2">
     <layout class="QVBoxLayout" name="verticalLayout_13">
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
@@ -85,10 +320,16 @@
         <number>7</number>
        </property>
        <widget class="QWidget" name="md_general">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>739</height>
+          <height>16777215</height>
          </size>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -563,7 +804,7 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>514</width>
+                  <width>512</width>
                   <height>198</height>
                  </rect>
                 </property>
@@ -679,7 +920,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>739</height>
+          <height>16777215</height>
          </size>
         </property>
         <layout class="QGridLayout" name="gridLayout">
@@ -746,7 +987,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>739</height>
+          <height>16777215</height>
          </size>
         </property>
         <layout class="QGridLayout" name="gridLayout_7">
@@ -797,7 +1038,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
+                 <width>519</width>
                  <height>194</height>
                 </rect>
                </property>
@@ -899,7 +1140,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
+                 <width>519</width>
                  <height>195</height>
                 </rect>
                </property>
@@ -987,7 +1228,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>739</height>
+          <height>16777215</height>
          </size>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1463,7 +1704,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
+                 <width>519</width>
                  <height>95</height>
                 </rect>
                </property>
@@ -1583,7 +1824,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
+                 <width>519</width>
                  <height>95</height>
                 </rect>
                </property>
@@ -1730,7 +1971,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
+                 <width>519</width>
                  <height>94</height>
                 </rect>
                </property>
@@ -1933,7 +2174,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>739</height>
+          <height>16777215</height>
          </size>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -2554,7 +2795,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>739</height>
+          <height>16777215</height>
          </size>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2606,7 +2847,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
+                 <width>519</width>
                  <height>194</height>
                 </rect>
                </property>
@@ -2708,7 +2949,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
+                 <width>519</width>
                  <height>195</height>
                 </rect>
                </property>
@@ -2784,7 +3025,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>739</height>
+          <height>16777215</height>
          </size>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2830,7 +3071,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
+                 <width>519</width>
                  <height>194</height>
                 </rect>
                </property>
@@ -2935,7 +3176,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>521</width>
+                 <width>519</width>
                  <height>195</height>
                 </rect>
                </property>
@@ -3020,7 +3261,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>739</height>
+          <height>16777215</height>
          </size>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -3040,8 +3281,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>545</width>
-              <height>715</height>
+              <width>543</width>
+              <height>737</height>
              </rect>
             </property>
             <property name="maximumSize">
@@ -3051,7 +3292,7 @@
              </size>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
-             <item row="3" column="0" colspan="2">
+             <item row="2" column="0" colspan="2">
               <spacer name="md_advanced_vert_spacer">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -3063,23 +3304,6 @@
                 </size>
                </property>
               </spacer>
-             </item>
-             <item row="2" column="0" colspan="2">
-              <widget class="QPushButton" name="btn_xml_dl">
-               <property name="text">
-                <string>Download metadata XML</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../resources.qrc">
-                 <normaloff>:/plugins/Isogeo/resources/metadata/download.svg</normaloff>:/plugins/Isogeo/resources/metadata/download.svg</iconset>
-               </property>
-               <property name="default">
-                <bool>true</bool>
-               </property>
-               <property name="flat">
-                <bool>false</bool>
-               </property>
-              </widget>
              </item>
              <item row="0" column="0">
               <widget class="QGroupBox" name="grp_md_owner">
@@ -3113,6 +3337,90 @@
                 <bool>true</bool>
                </property>
                <layout class="QGridLayout" name="gridLayout_8">
+                <item row="4" column="0">
+                 <widget class="QLabel" name="val_owner_city">
+                  <property name="minimumSize">
+                   <size>
+                    <width>225</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>wg_pc_city</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="val_owner_name">
+                  <property name="minimumSize">
+                   <size>
+                    <width>225</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>wg_owner</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="val_owner_country">
+                  <property name="minimumSize">
+                   <size>
+                    <width>225</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>50</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>wg_country</string>
+                  </property>
+                 </widget>
+                </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="val_owner_email">
                   <property name="minimumSize">
@@ -3147,33 +3455,6 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="val_owner_address">
-                  <property name="minimumSize">
-                   <size>
-                    <width>225</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>50</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Calibri</family>
-                    <pointsize>9</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>wg_address</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="2" column="0">
                  <widget class="QLabel" name="val_owner_phone">
                   <property name="minimumSize">
@@ -3201,8 +3482,8 @@
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="0">
-                 <widget class="QLabel" name="val_owner_city">
+                <item row="3" column="0">
+                 <widget class="QLabel" name="val_owner_address">
                   <property name="minimumSize">
                    <size>
                     <width>225</width>
@@ -3224,64 +3505,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>wg_pc_city</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="0">
-                 <widget class="QLabel" name="val_owner_country">
-                  <property name="minimumSize">
-                   <size>
-                    <width>225</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>50</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Calibri</family>
-                    <pointsize>9</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>wg_country</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="val_owner_name">
-                  <property name="minimumSize">
-                   <size>
-                    <width>225</width>
-                    <height>16</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>50</width>
-                    <height>16</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Calibri</family>
-                    <pointsize>9</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>wg_owner</string>
-                  </property>
-                  <property name="scaledContents">
-                   <bool>true</bool>
+                   <string>wg_address</string>
                   </property>
                  </widget>
                 </item>
@@ -3632,292 +3856,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="btn_md_edit">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="font">
-      <font>
-       <family>Calibri</family>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>Edit it on Isogeo</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../resources.qrc">
-       <normaloff>:/plugins/Isogeo/resources/pencil.svg</normaloff>:/plugins/Isogeo/resources/pencil.svg</iconset>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="autoRepeat">
-      <bool>false</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-     <property name="autoDefault">
-      <bool>false</bool>
-     </property>
-     <property name="default">
-      <bool>false</bool>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="btn_addtomap">
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>addButton</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="btn_ok_cancel">
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>25</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>250</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
-       </property>
-       <property name="centerButtons">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="0">
-    <widget class="QListWidget" name="li_menu">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>500</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>200</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>Calibri</family>
-       <pointsize>11</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-       <underline>false</underline>
-      </font>
-     </property>
-     <property name="cursor" stdset="0">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="contextMenuPolicy">
-      <enum>Qt::NoContextMenu</enum>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QListWidget{
-	background-color: rgb(69, 69, 69, 220);
-	outline: 0;
-}
-QListWidget::item {
-	color: white;
-	padding: 3px;
-}
-QListWidget::item::selected {
-	color: black;
-	background-color:palette(Window);
-    padding-right: 0px;
-}</string>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="lineWidth">
-      <number>1</number>
-     </property>
-     <property name="alternatingRowColors">
-      <bool>false</bool>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>32</width>
-       <height>32</height>
-      </size>
-     </property>
-     <property name="movement">
-      <enum>QListView::Static</enum>
-     </property>
-     <property name="spacing">
-      <number>8</number>
-     </property>
-     <property name="viewMode">
-      <enum>QListView::ListMode</enum>
-     </property>
-     <property name="uniformItemSizes">
-      <bool>true</bool>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <property name="selectionRectVisible">
-      <bool>true</bool>
-     </property>
-     <property name="currentRow">
-      <number>-1</number>
-     </property>
-     <property name="sortingEnabled">
-      <bool>false</bool>
-     </property>
-     <item>
-      <property name="text">
-       <string>General</string>
-      </property>
-      <property name="background">
-       <brush brushstyle="NoBrush">
-        <color alpha="255">
-         <red>0</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </brush>
-      </property>
-      <property name="icon">
-       <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/metadata/bookmark_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/bookmark_orange.svg</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Feature attributes</string>
-      </property>
-      <property name="foreground">
-       <brush brushstyle="NoBrush">
-        <color alpha="255">
-         <red>0</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </brush>
-      </property>
-      <property name="icon">
-       <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/metadata/list-alt.svg</normaloff>:/plugins/Isogeo/resources/metadata/list-alt.svg</iconset>
-      </property>
-      <property name="flags">
-       <set>ItemIsSelectable|ItemIsEnabled</set>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Contacts</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/metadata/phone_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/phone_orange.svg</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>History</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/metadata/calendar_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/calendar_orange.svg</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Geography</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/metadata/globe_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/globe_orange.svg</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Quality</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/metadata/trophy_orange.svg</normaloff>:/plugins/Isogeo/resources/metadata/trophy_orange.svg</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Licenses</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/gavel.svg</normaloff>:/plugins/Isogeo/resources/gavel.svg</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Advanced</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../resources.qrc">
-        <normaloff>:/plugins/Isogeo/resources/metadata/code.svg</normaloff>:/plugins/Isogeo/resources/metadata/code.svg</iconset>
-      </property>
-     </item>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -3934,9 +3872,6 @@ QListWidget::item::selected {
    <container>1</container>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>li_menu</tabstop>
- </tabstops>
  <connections>
   <connection>
    <sender>li_menu</sender>
@@ -3951,38 +3886,6 @@ QListWidget::item::selected {
     <hint type="destinationlabel">
      <x>428</x>
      <y>256</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btn_ok_cancel</sender>
-   <signal>rejected()</signal>
-   <receiver>dlg_metadata_details</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>787</x>
-     <y>787</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>399</x>
-     <y>391</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btn_ok_cancel</sender>
-   <signal>accepted()</signal>
-   <receiver>dlg_metadata_details</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>787</x>
-     <y>787</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>399</x>
-     <y>391</y>
     </hint>
    </hints>
   </connection>

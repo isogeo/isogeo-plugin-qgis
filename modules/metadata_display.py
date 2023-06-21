@@ -433,10 +433,6 @@ class MetadataDisplayer:
 
         self.complete_md.btn_md_edit.setEnabled(int(qsettings.value("isogeo/user/editor", 1)))
 
-        # -- ADD OPTIONS ------------------------------------------------------
-        self.complete_md.btn_addtomap.setHidden(1)
-        self.complete_md.btn_xml_dl.setHidden(1)
-
         # -- DISPLAY ---------------------------------------------------------
         self.fields_displayer(md.get("type"), md.get("series"))
         # Finally open the damned window
