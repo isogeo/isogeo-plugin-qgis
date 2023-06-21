@@ -1218,6 +1218,12 @@ QListWidget::item::selected {
         <layout class="QVBoxLayout" name="verticalLayout_18">
          <item>
           <widget class="QGroupBox" name="grp_history">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -1244,6 +1250,12 @@ QListWidget::item::selected {
            <layout class="QGridLayout" name="gridLayout_5">
             <item row="0" column="1" rowspan="3" colspan="2">
              <widget class="Line" name="vert_separator">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -1253,36 +1265,6 @@ QListWidget::item::selected {
              <layout class="QVBoxLayout" name="verticalLayout_14">
               <item>
                <layout class="QGridLayout" name="gridLayout_9">
-                <item row="2" column="5">
-                 <widget class="QLabel" name="val_frequency">
-                  <property name="font">
-                   <font>
-                    <family>Calibri</family>
-                    <pointsize>9</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>TextLabel</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QLabel" name="lbl_frequency">
-                  <property name="font">
-                   <font>
-                    <family>Calibri</family>
-                    <pointsize>9</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Updated every:</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="1" column="5">
                  <widget class="QLabel" name="val_data_update">
                   <property name="font">
@@ -1298,42 +1280,18 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="2">
-                 <widget class="QLabel" name="lbl_data_update">
-                  <property name="font">
-                   <font>
-                    <family>Calibri</family>
-                    <pointsize>9</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
+                <item row="0" column="3">
+                 <spacer name="horiz_spacer_data_update">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                  <property name="text">
-                   <string>Last update:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLabel" name="ico_data_update">
-                  <property name="maximumSize">
+                  <property name="sizeHint" stdset="0">
                    <size>
-                    <width>16</width>
-                    <height>16</height>
+                    <width>13</width>
+                    <height>20</height>
                    </size>
                   </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="pixmap">
-                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/results/sort-datamodified.svg</pixmap>
-                  </property>
-                  <property name="scaledContents">
-                   <bool>true</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
+                 </spacer>
                 </item>
                 <item row="0" column="5">
                  <widget class="QLabel" name="val_data_crea">
@@ -1352,6 +1310,12 @@ QListWidget::item::selected {
                 </item>
                 <item row="0" column="1">
                  <widget class="QLabel" name="ico_data_crea">
+                  <property name="minimumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>16</width>
@@ -1363,6 +1327,47 @@ QListWidget::item::selected {
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/results/sort-datacreated.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLabel" name="ico_data_update">
+                  <property name="minimumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/results/sort-datamodified.svg</pixmap>
                   </property>
                   <property name="scaledContents">
                    <bool>true</bool>
@@ -1387,53 +1392,8 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="3">
-                 <spacer name="horizontalSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="0" column="3">
-                 <spacer name="horiz_spacer_data_update">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>13</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="2" column="3">
-                 <spacer name="horizontalSpacer_2">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QLabel" name="ico_frequency">
-                  <property name="maximumSize">
-                   <size>
-                    <width>16</width>
-                    <height>16</height>
-                   </size>
-                  </property>
+                <item row="1" column="2">
+                 <widget class="QLabel" name="lbl_data_update">
                   <property name="font">
                    <font>
                     <family>Calibri</family>
@@ -1443,16 +1403,7 @@ QListWidget::item::selected {
                    </font>
                   </property>
                   <property name="text">
-                   <string/>
-                  </property>
-                  <property name="pixmap">
-                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/refresh.svg</pixmap>
-                  </property>
-                  <property name="scaledContents">
-                   <bool>true</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <string>Last update:</string>
                   </property>
                  </widget>
                 </item>
@@ -1464,48 +1415,6 @@ QListWidget::item::selected {
              <layout class="QVBoxLayout" name="verticalLayout_15">
               <item>
                <layout class="QGridLayout" name="gridLayout_11">
-                <item row="2" column="1">
-                 <widget class="QLabel" name="lbl_valid_comment">
-                  <property name="font">
-                   <font>
-                    <family>Calibri</family>
-                    <pointsize>9</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Validity comment:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="3">
-                 <widget class="QLabel" name="val_valid_comment">
-                  <property name="font">
-                   <font>
-                    <family>Calibri</family>
-                    <pointsize>9</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>TextLabel</string>
-                  </property>
-                  <property name="scaledContents">
-                   <bool>true</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>true</bool>
-                  </property>
-                  <property name="openExternalLinks">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
                 <item row="2" column="2">
                  <spacer name="horizontalSpacer_3">
                   <property name="orientation">
@@ -1519,47 +1428,14 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="ico_valid_comment">
-                  <property name="maximumSize">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="ico_valid_end">
+                  <property name="minimumSize">
                    <size>
                     <width>16</width>
                     <height>16</height>
                    </size>
                   </property>
-                  <property name="font">
-                   <font>
-                    <family>Calibri</family>
-                    <pointsize>9</pointsize>
-                    <weight>50</weight>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="autoFillBackground">
-                   <bool>true</bool>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="pixmap">
-                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/comment-o.svg</pixmap>
-                  </property>
-                  <property name="scaledContents">
-                   <bool>true</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>true</bool>
-                  </property>
-                  <property name="textInteractionFlags">
-                   <set>Qt::NoTextInteraction</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="ico_valid_end">
                   <property name="maximumSize">
                    <size>
                     <width>16</width>
@@ -1597,6 +1473,12 @@ QListWidget::item::selected {
                 </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="ico_valid_start">
+                  <property name="minimumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>16</width>
@@ -1688,6 +1570,72 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
+                <item row="2" column="1">
+                 <widget class="QLabel" name="lbl_frequency">
+                  <property name="font">
+                   <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Updated every:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="ico_frequency">
+                  <property name="minimumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/refresh.svg</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="3">
+                 <widget class="QLabel" name="val_frequency">
+                  <property name="font">
+                   <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
              </layout>
@@ -1699,17 +1647,116 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
+          <widget class="QGroupBox" name="grp_valid_comment">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>Calibri</family>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="title">
+            <string>Validity comment</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <item>
+             <widget class="QScrollArea" name="scrollArea_8">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_9">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>521</width>
+                 <height>95</height>
+                </rect>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_12">
+                <item>
+                 <widget class="QLabel" name="val_valid_comment">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>IBeamCursor</cursorShape>
+                  </property>
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="openExternalLinks">
+                   <bool>true</bool>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
           <widget class="QGroupBox" name="grp_collect_context">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>110</height>
+             <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>150</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="font">
@@ -1726,16 +1773,22 @@ QListWidget::item::selected {
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
              <widget class="QScrollArea" name="scrollArea_7">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>110</height>
+                <height>0</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>140</height>
+                <height>16777215</height>
                </size>
               </property>
               <property name="widgetResizable">
@@ -1747,13 +1800,19 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>521</width>
-                 <height>108</height>
+                 <height>95</height>
                 </rect>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
                <property name="minimumSize">
                 <size>
                  <width>0</width>
-                 <height>100</height>
+                 <height>0</height>
                 </size>
                </property>
                <property name="maximumSize">
@@ -1762,13 +1821,19 @@ QListWidget::item::selected {
                  <height>16777215</height>
                 </size>
                </property>
-               <layout class="QGridLayout" name="gridLayout_30">
-                <item row="0" column="0">
+               <layout class="QVBoxLayout" name="verticalLayout_9">
+                <item>
                  <widget class="QLabel" name="val_context">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>50</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -1820,16 +1885,22 @@ QListWidget::item::selected {
          </item>
          <item>
           <widget class="QGroupBox" name="grp_collect_method">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>110</height>
+             <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>150</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="font">
@@ -1846,16 +1917,22 @@ QListWidget::item::selected {
            <layout class="QVBoxLayout" name="verticalLayout_7">
             <item>
              <widget class="QScrollArea" name="scrollArea_9">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>110</height>
+                <height>0</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>140</height>
+                <height>16777215</height>
                </size>
               </property>
               <property name="widgetResizable">
@@ -1867,22 +1944,34 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>521</width>
-                 <height>108</height>
+                 <height>94</height>
                 </rect>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
                <property name="minimumSize">
                 <size>
                  <width>0</width>
-                 <height>100</height>
+                 <height>0</height>
                 </size>
                </property>
-               <layout class="QGridLayout" name="gridLayout_4">
-                <item row="0" column="0">
+               <layout class="QVBoxLayout" name="verticalLayout_10">
+                <item>
                  <widget class="QLabel" name="val_method">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>50</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -1934,10 +2023,16 @@ QListWidget::item::selected {
          </item>
          <item>
           <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>16777215</height>
+             <height>20</height>
             </size>
            </property>
            <property name="font">
@@ -1950,7 +2045,7 @@ QListWidget::item::selected {
             <string>Last modifications</string>
            </property>
            <property name="collapsed">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_16">
             <item>
