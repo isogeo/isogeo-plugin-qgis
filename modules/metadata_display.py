@@ -20,7 +20,7 @@ from qgis.core import (
 )
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtCore import QSettings, Qt, QSize
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QLabel
 
@@ -59,15 +59,32 @@ class MetadataDisplayer:
 
         # some basic settings
         self.app_base_url = app_base_url
-        self.background_lyr = QgsRasterLayer(background_map_url, "OSM_Standard", "wms")
+        self.background_map_url = background_map_url
+        self.background_lyr_id = ""
+        self.envelope_lyr_id = ""
         self.complete_md.btn_md_edit.pressed.connect(
             lambda: plg_tools.open_webpage(link=self.md_edition_url)
         )
+
+        self.complete_md.closingPlugin.connect(self.complete_md_closed)
 
         self.complete_md.wid_bbox.setCanvasColor(Qt.white)
         self.complete_md.wid_bbox.enableAntiAliasing(True)
 
         self.tr = object
+
+    def complete_md_closed(self):
+
+        # for https://github.com/isogeo/isogeo-plugin-qgis/issues/461
+        layers = QgsProject.instance().mapLayers().values()
+        if any(layer.id() == self.background_lyr_id for layer in layers):
+            QgsProject.instance().removeMapLayer(self.background_lyr_id)
+        else:
+            pass
+        if any(layer.id() == self.envelope_lyr_id for layer in layers):
+            QgsProject.instance().removeMapLayer(self.envelope_lyr_id)
+        else:
+            pass
 
     def show_complete_md(self, md: dict, tags: dict):
         """Open the pop up window that shows the metadata sheet details.
@@ -334,13 +351,16 @@ class MetadataDisplayer:
             self.complete_md.grp_bbox.setDisabled(0)
             # get convex hull coordinates and create the polygon
             md_lyr = self.envelope2layer(md.get("envelope"))
-            li_lyr = [md_lyr, self.background_lyr]
+            background_lyr = QgsRasterLayer(self.background_map_url, "OSM_Standard", "wms")
+            li_lyr = [md_lyr, background_lyr]
             # add layers
             qgs_prj.addMapLayers(li_lyr, 0)
             map_canvas_layer_list = [
                 qgs_prj.mapLayer(md_lyr.id()),
-                qgs_prj.mapLayer(self.background_lyr.id()),
+                qgs_prj.mapLayer(background_lyr.id()),
             ]
+            self.envelope_lyr_id = md_lyr.id()
+            self.background_lyr_id = background_lyr.id()
 
             self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())
