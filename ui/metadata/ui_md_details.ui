@@ -341,7 +341,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>7</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="md_general">
         <property name="sizePolicy">
@@ -1107,8 +1107,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>451</width>
-                 <height>217</height>
+                 <width>81</width>
+                 <height>172</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -1209,8 +1209,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>451</width>
-                 <height>216</height>
+                 <width>81</width>
+                 <height>172</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -1788,8 +1788,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>451</width>
-                 <height>112</height>
+                 <width>81</width>
+                 <height>40</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -1908,8 +1908,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>451</width>
-                 <height>112</height>
+                 <width>81</width>
+                 <height>40</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -2055,8 +2055,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>451</width>
-                 <height>111</height>
+                 <width>81</width>
+                 <height>40</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -2279,10 +2279,16 @@ QListWidget::item::selected {
          </property>
          <item>
           <widget class="QGroupBox" name="grp_technic">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>150</height>
+             <height>200</height>
             </size>
            </property>
            <property name="font">
@@ -2302,423 +2308,762 @@ QListWidget::item::selected {
            <property name="flat">
             <bool>true</bool>
            </property>
-           <layout class="QGridLayout" name="gridLayout_6">
-            <item row="0" column="1">
-             <widget class="Line" name="line">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
+           <layout class="QVBoxLayout" name="verticalLayout_35">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>4</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>4</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QWidget" name="grp_format" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <property name="spacing">
+                <number>4</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="ico_format">
+                 <property name="minimumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cube_blue.svg</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::NoTextInteraction</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lbl_format">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Format:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horiz_spacer_format">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>10</width>
+                   <height>17</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="val_format">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>TextLabel</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </widget>
             </item>
-            <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_20">
-              <item row="0" column="0">
-               <widget class="QLabel" name="ico_format">
-                <property name="maximumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cube_blue.svg</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::NoTextInteraction</set>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <widget class="QLabel" name="val_format">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="lbl_format">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Format:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <spacer name="horiz_spacer_format">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="ico_feat_count">
-                <property name="maximumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cubes.svg</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::NoTextInteraction</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLabel" name="lbl_feat_count">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Features count:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <spacer name="horiz_spacer_feat_count">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="3">
-               <widget class="QLabel" name="val_feat_count">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLabel" name="lbl_geometry">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Geometry type:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="ico_geometry">
-                <property name="maximumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/multi.svg</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::NoTextInteraction</set>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <spacer name="horiz_spacer_srs">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="2" column="3">
-               <widget class="QLabel" name="val_geometry">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+            <item>
+             <widget class="QWidget" name="grp_feat_count" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <property name="spacing">
+                <number>4</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="ico_feat_count">
+                 <property name="minimumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cubes.svg</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::NoTextInteraction</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>grp_feat_count</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lbl_feat_count">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Features count:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horiz_spacer_feat_count">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>13</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="val_feat_count">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>TextLabel</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_4">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
             </item>
-            <item row="0" column="2">
-             <layout class="QGridLayout" name="gridLayout_19">
-              <item row="1" column="0">
-               <widget class="QLabel" name="ico_scale">
-                <property name="minimumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="autoFillBackground">
-                 <bool>true</bool>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/arrows-h.svg</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::NoTextInteraction</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="3">
-               <widget class="QLabel" name="val_scale">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="ico_srs">
-                <property name="maximumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/compass.svg</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::NoTextInteraction</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLabel" name="lbl_scale">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Scale:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="lbl_srs">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>SRS:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <spacer name="horizontalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="2">
-               <spacer name="horiz_spacer_geometry">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="3">
-               <widget class="QLabel" name="val_srs">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="ico_resolution">
-                <property name="maximumSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="autoFillBackground">
-                 <bool>true</bool>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="pixmap">
-                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/th.svg</pixmap>
-                </property>
-                <property name="scaledContents">
-                 <bool>true</bool>
-                </property>
-                <property name="textInteractionFlags">
-                 <set>Qt::NoTextInteraction</set>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLabel" name="lbl_resolution">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Resolution:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <spacer name="horizontalSpacer_6">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="2" column="3">
-               <widget class="QLabel" name="val_resolution">
-                <property name="font">
-                 <font>
-                  <family>Calibri</family>
-                  <pointsize>9</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>TextLabel</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+            <item>
+             <widget class="QWidget" name="grp_geometry" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <property name="spacing">
+                <number>4</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="ico_geometry">
+                 <property name="minimumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/multi.svg</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::NoTextInteraction</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>grp_geometry</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lbl_geometry">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Geometry type:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horiz_spacer_srs">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>13</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="val_geometry">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>TextLabel</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_7">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="grp_srs" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <property name="spacing">
+                <number>4</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="ico_srs">
+                 <property name="minimumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/compass.svg</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::NoTextInteraction</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>grp_srs</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lbl_srs">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>SRS:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_5">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>13</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="val_srs">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>TextLabel</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_8">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="grp_scale" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <property name="spacing">
+                <number>4</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="ico_scale">
+                 <property name="minimumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="autoFillBackground">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/arrows-h.svg</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::NoTextInteraction</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>grp_scale</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lbl_scale">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Scale:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horiz_spacer_geometry">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>13</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="val_scale">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>TextLabel</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_9">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="grp_resolution" native="true">
+              <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <property name="spacing">
+                <number>4</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="ico_resolution">
+                 <property name="minimumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="autoFillBackground">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/th.svg</pixmap>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
+                 </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::NoTextInteraction</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>grp_resolution</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="lbl_resolution">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Resolution:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>13</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="val_resolution">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>16</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>9</pointsize>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>TextLabel</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_10">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -2961,8 +3306,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>451</width>
-                 <height>217</height>
+                 <width>81</width>
+                 <height>40</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -3063,8 +3408,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>451</width>
-                 <height>216</height>
+                 <width>81</width>
+                 <height>40</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -3200,8 +3545,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>451</width>
-                 <height>217</height>
+                 <width>81</width>
+                 <height>172</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -3305,8 +3650,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>451</width>
-                 <height>216</height>
+                 <width>81</width>
+                 <height>172</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -3426,7 +3771,7 @@ QListWidget::item::selected {
               <x>0</x>
               <y>0</y>
               <width>529</width>
-              <height>720</height>
+              <height>179</height>
              </rect>
             </property>
             <property name="maximumSize">
@@ -3505,6 +3850,9 @@ QListWidget::item::selected {
                   </property>
                   <property name="text">
                    <string>wg_pc_city</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>grp_format</cstring>
                   </property>
                  </widget>
                 </item>
