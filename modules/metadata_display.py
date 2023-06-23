@@ -429,19 +429,48 @@ class MetadataDisplayer:
         # Workgroup owner
         wg_id = md.get("_creator").get("_id")
         wg_contact = md.get("_creator").get("contact")
-        self.complete_md.val_owner_name.setText(wg_contact.get("name", ""))
-        self.complete_md.val_owner_email.setText(wg_contact.get("email", ""))
-        self.complete_md.val_owner_phone.setText(wg_contact.get("phone", ""))
-        self.complete_md.val_owner_address.setText(
-            "{}<br>{}".format(
-                wg_contact.get("addressLine1", "NR"), wg_contact.get("addressLine2", "")
-            )
-        )
-        self.complete_md.val_owner_city.setText(wg_contact.get("zipCode", ""))
-        self.complete_md.val_owner_country.setText(wg_contact.get("countryCode", ""))
+        owner_field_dict = {
+            self.complete_md.val_owner_name: (
+                "<strong>{}</strong>".format(wg_contact.get("name", "")),
+                "<i>{}</i>".format(self.tr("unknown owner name", context=__class__.__name__))
+            ),
+            self.complete_md.val_owner_email: (
+                "<u>{}</u>".format(wg_contact.get("email", "")),
+                "<i>{}</i>".format(self.tr("unknown owner email", context=__class__.__name__))
+            ),
+            self.complete_md.val_owner_phone: (
+                wg_contact.get("phone", ""),
+                "<i>{}</i>".format(self.tr("unknown owner phone number", context=__class__.__name__))
+            ),
+            self.complete_md.val_owner_address: (
+                "{}<br>{}".format(wg_contact.get("addressLine1", ""), wg_contact.get("addressLine2", "")),
+                "<i>{}</i>".format(self.tr("unknown owner adress", context=__class__.__name__))
+            ),
+            self.complete_md.val_owner_city: (
+                "{} - {}".format(wg_contact.get("city", ""), wg_contact.get("zipCode", "")),
+                "<i>{}</i>".format(self.tr("unknown owner city", context=__class__.__name__))
+            ),
+            self.complete_md.val_owner_country: (
+                wg_contact.get("countryCode", ""),
+                "<i>{}</i>".format(self.tr("unknown owner country", context=__class__.__name__))
+            ),
+        }
+        li_remaining_string = ["<strong></strong>", "<u></u>", "<br>", "-", ""]
+        for owner_field in owner_field_dict:
+            owner_field_value = owner_field_dict.get(owner_field)[0]
+            owner_field_value_missing = owner_field_dict.get(owner_field)[1]
+            if all(remaining_string != owner_field_value.strip() for remaining_string in li_remaining_string):
+                if owner_field_value.endswith("<br>"):
+                    owner_field.setText(owner_field_value[:-4])
+                elif owner_field_value.endswith(" - "):
+                    owner_field.setText(owner_field_value[:-3])
+                else:
+                    owner_field.setText(owner_field_value)
+            else:
+                owner_field.setText(owner_field_value_missing)
 
         # Metadata
-        self.complete_md.val_md_lang.setText(md.get("language", "NR"))
+        self.complete_md.val_md_lang.setText(md.get("language", "<i>{}</i>".format(self.tr("unknown", context=__class__.__name__))))
         self.complete_md.val_md_date_crea.setText(plg_tools.handle_date(md.get("_created")[:19]))
         self.complete_md.val_md_date_update.setText(plg_tools.handle_date(md.get("_modified")[:19]))
 
