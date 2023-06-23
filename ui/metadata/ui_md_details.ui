@@ -344,7 +344,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>6</number>
        </property>
        <widget class="QWidget" name="md_general">
         <property name="sizePolicy">
@@ -852,8 +852,8 @@ QListWidget::item::selected {
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>444</width>
-                  <height>198</height>
+                  <width>110</width>
+                  <height>181</height>
                  </rect>
                 </property>
                 <property name="sizePolicy">
@@ -1151,7 +1151,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>361</height>
+                 <height>357</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -1290,7 +1290,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>361</height>
+                 <height>357</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -1448,7 +1448,10 @@ QListWidget::item::selected {
            <property name="flat">
             <bool>true</bool>
            </property>
-           <layout class="QGridLayout" name="gridLayout_5">
+           <layout class="QHBoxLayout" name="horizontalLayout_15">
+            <property name="spacing">
+             <number>4</number>
+            </property>
             <property name="leftMargin">
              <number>0</number>
             </property>
@@ -1461,23 +1464,7 @@ QListWidget::item::selected {
             <property name="bottomMargin">
              <number>4</number>
             </property>
-            <property name="spacing">
-             <number>4</number>
-            </property>
-            <item row="0" column="1" rowspan="3" colspan="2">
-             <widget class="Line" name="vert_separator">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" rowspan="2">
+            <item>
              <layout class="QVBoxLayout" name="verticalLayout_14">
               <property name="spacing">
                <number>4</number>
@@ -1633,7 +1620,20 @@ QListWidget::item::selected {
               </item>
              </layout>
             </item>
-            <item row="1" column="2" rowspan="2">
+            <item>
+             <widget class="Line" name="vert_separator">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
              <layout class="QVBoxLayout" name="verticalLayout_15">
               <property name="spacing">
                <number>4</number>
@@ -1933,7 +1933,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>184</height>
+                 <height>181</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -2087,7 +2087,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>184</height>
+                 <height>182</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -2268,7 +2268,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>184</height>
+                 <height>181</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -3318,13 +3318,13 @@ QListWidget::item::selected {
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>100</height>
+             <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>150</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="font">
@@ -3359,54 +3359,91 @@ QListWidget::item::selected {
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="val_geoContext">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>100</height>
-               </size>
+             <widget class="QScrollArea" name="scrollArea_2">
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>150</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Calibri</family>
-                <pointsize>9</pointsize>
-                <weight>50</weight>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>IBeamCursor</cursorShape>
-              </property>
-              <property name="toolTip">
-               <string>Geographical context</string>
-              </property>
-              <property name="autoFillBackground">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-              <property name="scaledContents">
+              <property name="widgetResizable">
                <bool>true</bool>
               </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="openExternalLinks">
-               <bool>true</bool>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_2">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>482</width>
+                 <height>158</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_39">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>4</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="val_geoContext">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Calibri</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>IBeamCursor</cursorShape>
+                  </property>
+                  <property name="toolTip">
+                   <string>Geographical context</string>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="openExternalLinks">
+                   <bool>true</bool>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </widget>
             </item>
            </layout>
@@ -3603,7 +3640,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>361</height>
+                 <height>357</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -3739,7 +3776,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>361</height>
+                 <height>357</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -3913,7 +3950,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>361</height>
+                 <height>357</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -3968,6 +4005,9 @@ QListWidget::item::selected {
                   </property>
                   <property name="text">
                    <string>TextLabel</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -4052,7 +4092,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>361</height>
+                 <height>357</height>
                 </rect>
                </property>
                <property name="maximumSize">
