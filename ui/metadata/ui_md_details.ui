@@ -51,6 +51,9 @@
    <bool>false</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="leftMargin">
+    <number>4</number>
+   </property>
    <property name="topMargin">
     <number>4</number>
    </property>
@@ -341,7 +344,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>7</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="md_general">
         <property name="sizePolicy">
@@ -774,11 +777,11 @@ QListWidget::item::selected {
             </layout>
            </item>
            <item>
-            <layout class="QGridLayout" name="gridLayout_14">
+            <layout class="QHBoxLayout" name="horizontalLayout_14">
              <property name="sizeConstraint">
               <enum>QLayout::SetMaximumSize</enum>
              </property>
-             <item row="0" column="0">
+             <item>
               <widget class="QLabel" name="ico_abstract">
                <property name="minimumSize">
                 <size>
@@ -818,7 +821,7 @@ QListWidget::item::selected {
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
+             <item>
               <widget class="QScrollArea" name="scrollArea">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -871,8 +874,23 @@ QListWidget::item::selected {
                   <height>16777215</height>
                  </size>
                 </property>
-                <layout class="QGridLayout" name="gridLayout_17">
-                 <item row="0" column="0">
+                <layout class="QVBoxLayout" name="verticalLayout_38">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
                   <widget class="QLabel" name="val_abstract">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -1067,7 +1085,7 @@ QListWidget::item::selected {
           <number>0</number>
          </property>
          <item>
-          <widget class="QGroupBox" name="grp_pointof">
+          <widget class="QWidget" name="grp_ct_pointof" native="true">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -1082,13 +1100,29 @@ QListWidget::item::selected {
              <bold>true</bold>
             </font>
            </property>
-           <property name="title">
-            <string>Point of contact</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout_19">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Point of contact</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QScrollArea" name="scroll_ct_pointof">
               <property name="maximumSize">
@@ -1105,6 +1139,9 @@ QListWidget::item::selected {
                 <bold>true</bold>
                </font>
               </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
               <property name="widgetResizable">
                <bool>true</bool>
               </property>
@@ -1113,29 +1150,44 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>172</height>
+                 <width>482</width>
+                 <height>361</height>
                 </rect>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>500</height>
+                 <height>16777215</height>
                 </size>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_21">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>4</number>
+                </property>
                 <item>
                  <widget class="QLabel" name="val_ct_pointof">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>150</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>500</height>
+                    <height>16777215</height>
                    </size>
                   </property>
                   <property name="font">
@@ -1161,6 +1213,9 @@ QListWidget::item::selected {
                   <property name="alignment">
                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                   </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
                   <property name="openExternalLinks">
                    <bool>true</bool>
                   </property>
@@ -1177,7 +1232,7 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox">
+          <widget class="QWidget" name="grp_ct_other" native="true">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -1192,13 +1247,29 @@ QListWidget::item::selected {
              <bold>true</bold>
             </font>
            </property>
-           <property name="title">
-            <string>Others contacts</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout_17">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Others contacts</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QScrollArea" name="scroll_ct_other">
               <property name="maximumSize">
@@ -1206,6 +1277,9 @@ QListWidget::item::selected {
                 <width>16777215</width>
                 <height>500</height>
                </size>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
               <property name="widgetResizable">
                <bool>true</bool>
@@ -1215,29 +1289,44 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>172</height>
+                 <width>482</width>
+                 <height>361</height>
                 </rect>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>500</height>
+                 <height>16777215</height>
                 </size>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_20">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>4</number>
+                </property>
                 <item>
                  <widget class="QLabel" name="val_ct_other">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>150</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>500</height>
+                    <height>16777215</height>
                    </size>
                   </property>
                   <property name="font">
@@ -1289,10 +1378,13 @@ QListWidget::item::selected {
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Minimum</enum>
+           </property>
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>20</height>
+             <height>4</height>
             </size>
            </property>
           </spacer>
@@ -1325,7 +1417,7 @@ QListWidget::item::selected {
          <item>
           <widget class="QGroupBox" name="grp_history">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -1339,7 +1431,7 @@ QListWidget::item::selected {
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>150</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="font">
@@ -1357,6 +1449,21 @@ QListWidget::item::selected {
             <bool>true</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <property name="spacing">
+             <number>4</number>
+            </property>
             <item row="0" column="1" rowspan="3" colspan="2">
              <widget class="Line" name="vert_separator">
               <property name="sizePolicy">
@@ -1372,8 +1479,14 @@ QListWidget::item::selected {
             </item>
             <item row="1" column="0" rowspan="2">
              <layout class="QVBoxLayout" name="verticalLayout_14">
+              <property name="spacing">
+               <number>4</number>
+              </property>
               <item>
                <layout class="QGridLayout" name="gridLayout_9">
+                <property name="spacing">
+                 <number>4</number>
+                </property>
                 <item row="1" column="5">
                  <widget class="QLabel" name="val_data_update">
                   <property name="font">
@@ -1522,8 +1635,14 @@ QListWidget::item::selected {
             </item>
             <item row="1" column="2" rowspan="2">
              <layout class="QVBoxLayout" name="verticalLayout_15">
+              <property name="spacing">
+               <number>4</number>
+              </property>
               <item>
                <layout class="QGridLayout" name="gridLayout_11">
+                <property name="spacing">
+                 <number>4</number>
+                </property>
                 <item row="2" column="2">
                  <spacer name="horizontalSpacer_3">
                   <property name="orientation">
@@ -1756,7 +1875,7 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="grp_valid_comment">
+          <widget class="QWidget" name="grp_valid_comment" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1771,13 +1890,29 @@ QListWidget::item::selected {
              <bold>true</bold>
             </font>
            </property>
-           <property name="title">
-            <string>Validity comment</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Validity comment</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QScrollArea" name="scrollArea_8">
               <property name="sizePolicy">
@@ -1785,6 +1920,9 @@ QListWidget::item::selected {
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
               <property name="widgetResizable">
                <bool>true</bool>
@@ -1794,8 +1932,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>40</height>
+                 <width>482</width>
+                 <height>184</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -1805,6 +1943,21 @@ QListWidget::item::selected {
                 </sizepolicy>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_12">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>4</number>
+                </property>
                 <item>
                  <widget class="QLabel" name="val_valid_comment">
                   <property name="sizePolicy">
@@ -1852,7 +2005,7 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="grp_collect_context">
+          <widget class="QWidget" name="grp_collect_context" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1879,13 +2032,29 @@ QListWidget::item::selected {
              <bold>true</bold>
             </font>
            </property>
-           <property name="title">
-            <string>Collection context</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout_6">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Collection context</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QScrollArea" name="scrollArea_7">
               <property name="sizePolicy">
@@ -1906,6 +2075,9 @@ QListWidget::item::selected {
                 <height>16777215</height>
                </size>
               </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
               <property name="widgetResizable">
                <bool>true</bool>
               </property>
@@ -1914,8 +2086,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>40</height>
+                 <width>482</width>
+                 <height>184</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -1937,6 +2109,21 @@ QListWidget::item::selected {
                 </size>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_9">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>4</number>
+                </property>
                 <item>
                  <widget class="QLabel" name="val_context">
                   <property name="sizePolicy">
@@ -1999,7 +2186,7 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="grp_collect_method">
+          <widget class="QWidget" name="grp_collect_method" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -2026,13 +2213,29 @@ QListWidget::item::selected {
              <bold>true</bold>
             </font>
            </property>
-           <property name="title">
-            <string>Collection method</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout_7">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Collection method</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QScrollArea" name="scrollArea_9">
               <property name="sizePolicy">
@@ -2053,6 +2256,9 @@ QListWidget::item::selected {
                 <height>16777215</height>
                </size>
               </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
               <property name="widgetResizable">
                <bool>true</bool>
               </property>
@@ -2061,8 +2267,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>40</height>
+                 <width>482</width>
+                 <height>184</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -2078,6 +2284,21 @@ QListWidget::item::selected {
                 </size>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_10">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>4</number>
+                </property>
                 <item>
                  <widget class="QLabel" name="val_method">
                   <property name="sizePolicy">
@@ -2169,6 +2390,21 @@ QListWidget::item::selected {
             <bool>true</bool>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_16">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
             <item>
              <widget class="QTableWidget" name="tbl_events">
               <property name="sizePolicy">
@@ -2250,9 +2486,12 @@ QListWidget::item::selected {
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Minimum</enum>
+           </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>20</width>
+             <width>4</width>
              <height>10</height>
             </size>
            </property>
@@ -3075,7 +3314,7 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="grp_geoContext">
+          <widget class="QWidget" name="grp_geoContext" native="true">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -3096,13 +3335,29 @@ QListWidget::item::selected {
              <bold>true</bold>
             </font>
            </property>
-           <property name="title">
-            <string>Geographical context</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Geographical context</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QLabel" name="val_geoContext">
               <property name="minimumSize">
@@ -3158,7 +3413,7 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="grp_bbox">
+          <widget class="QWidget" name="grp_bbox" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -3188,13 +3443,29 @@ QListWidget::item::selected {
            <property name="autoFillBackground">
             <bool>false</bool>
            </property>
-           <property name="title">
-            <string>Bounding box preview</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout_23">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Bounding box preview</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QgsMapCanvas" name="wid_bbox" native="true">
               <property name="enabled">
@@ -3265,17 +3536,17 @@ QListWidget::item::selected {
           <number>0</number>
          </property>
          <item>
-          <widget class="QGroupBox" name="grp_specification">
+          <widget class="QWidget" name="grp_specification" native="true">
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>100</height>
+             <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>350</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="font">
@@ -3289,20 +3560,39 @@ QListWidget::item::selected {
            <property name="autoFillBackground">
             <bool>false</bool>
            </property>
-           <property name="title">
-            <string>Specifications</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout_24">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Specifications</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QScrollArea" name="scrollArea_5">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>350</height>
+                <height>16777215</height>
                </size>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
               <property name="widgetResizable">
                <bool>true</bool>
@@ -3312,23 +3602,38 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>40</height>
+                 <width>482</width>
+                 <height>361</height>
                 </rect>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>350</height>
+                 <height>16777215</height>
                 </size>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_26">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>4</number>
+                </property>
                 <item>
                  <widget class="QLabel" name="val_specifications">
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>350</height>
+                    <height>16777215</height>
                    </size>
                   </property>
                   <property name="font">
@@ -3370,17 +3675,17 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="grp_topoConsist">
+          <widget class="QWidget" name="grp_topoConsist" native="true">
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>70</height>
+             <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>350</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="font">
@@ -3391,20 +3696,39 @@ QListWidget::item::selected {
              <bold>true</bold>
             </font>
            </property>
-           <property name="title">
-            <string>Topological consistency</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout_25">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Topological consistency</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QScrollArea" name="scrollArea_6">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>350</height>
+                <height>16777215</height>
                </size>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
               <property name="widgetResizable">
                <bool>true</bool>
@@ -3414,23 +3738,38 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>40</height>
+                 <width>482</width>
+                 <height>361</height>
                 </rect>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>350</height>
+                 <height>16777215</height>
                 </size>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_27">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>4</number>
+                </property>
                 <item>
                  <widget class="QLabel" name="val_topology">
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>350</height>
+                    <height>16777215</height>
                    </size>
                   </property>
                   <property name="font">
@@ -3476,10 +3815,13 @@ QListWidget::item::selected {
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Minimum</enum>
+           </property>
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>40</height>
+             <height>4</height>
             </size>
            </property>
           </spacer>
@@ -3510,11 +3852,11 @@ QListWidget::item::selected {
           <number>0</number>
          </property>
          <item>
-          <widget class="QGroupBox" name="grp_licences">
+          <widget class="QWidget" name="grp_licences" native="true">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>350</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="font">
@@ -3528,20 +3870,39 @@ QListWidget::item::selected {
            <property name="autoFillBackground">
             <bool>false</bool>
            </property>
-           <property name="title">
-            <string>Licenses</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout_29">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Licenses</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QScrollArea" name="scrollArea_3">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>350</height>
+                <height>16777215</height>
                </size>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
               <property name="widgetResizable">
                <bool>true</bool>
@@ -3551,29 +3912,44 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>172</height>
+                 <width>482</width>
+                 <height>361</height>
                 </rect>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>350</height>
+                 <height>16777215</height>
                 </size>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_31">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>4</number>
+                </property>
                 <item>
                  <widget class="QLabel" name="val_licenses">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>150</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>350</height>
+                    <height>16777215</height>
                    </size>
                   </property>
                   <property name="font">
@@ -3615,11 +3991,11 @@ QListWidget::item::selected {
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_2">
+          <widget class="QWidget" name="grp_limitations" native="true">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>350</height>
+             <height>16777215</height>
             </size>
            </property>
            <property name="font">
@@ -3633,20 +4009,39 @@ QListWidget::item::selected {
            <property name="autoFillBackground">
             <bool>false</bool>
            </property>
-           <property name="title">
-            <string>Limitations</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
            <layout class="QVBoxLayout" name="verticalLayout_28">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Limitations</string>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QScrollArea" name="scrollArea_4">
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>350</height>
+                <height>16777215</height>
                </size>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
               </property>
               <property name="widgetResizable">
                <bool>true</bool>
@@ -3656,29 +4051,44 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>172</height>
+                 <width>482</width>
+                 <height>361</height>
                 </rect>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>350</height>
+                 <height>16777215</height>
                 </size>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_30">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>4</number>
+                </property>
+                <property name="topMargin">
+                 <number>4</number>
+                </property>
+                <property name="rightMargin">
+                 <number>4</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>4</number>
+                </property>
                 <item>
                  <widget class="QLabel" name="val_limitations">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>150</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>350</height>
+                    <height>16777215</height>
                    </size>
                   </property>
                   <property name="font">
@@ -3727,10 +4137,13 @@ QListWidget::item::selected {
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Minimum</enum>
+           </property>
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>40</height>
+             <height>4</height>
             </size>
            </property>
           </spacer>
