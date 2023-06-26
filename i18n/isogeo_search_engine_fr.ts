@@ -437,8 +437,43 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>MetadataDisplayer</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="106"/>
+        <location filename="../modules/metadata_display.py" line="125"/>
         <source>Undefined</source>
+        <translation>Non renseigné</translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="435"/>
+        <source>unknown owner name</source>
+        <translation>Nom non renseigné</translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="439"/>
+        <source>unknown owner email</source>
+        <translation>Adresse email non renseignée</translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="443"/>
+        <source>unknown owner phone number</source>
+        <translation>Numéro de téléphone non renseigné</translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="447"/>
+        <source>unknown owner adress</source>
+        <translation>Adresse non renseignée</translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="451"/>
+        <source>unknown owner city</source>
+        <translation>Ville non renseignée</translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="455"/>
+        <source>unknown owner country</source>
+        <translation>Pays non renseigné</translation>
+    </message>
+    <message>
+        <location filename="../modules/metadata_display.py" line="475"/>
+        <source>unknown</source>
         <translation>Non renseigné</translation>
     </message>
 </context>
@@ -766,342 +801,337 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>dlg_form_auth_prompt</name>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="243"/>
+        <location filename="../ui/auth/ui_authentication.py" line="238"/>
         <source>Isogeo authentication settings</source>
         <translation>Paramètres d&apos;authentification du plugin</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="250"/>
+        <location filename="../ui/auth/ui_authentication.py" line="244"/>
         <source>Application ID:</source>
         <translation>ID :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="252"/>
+        <location filename="../ui/auth/ui_authentication.py" line="245"/>
         <source>Application SECRET:</source>
         <translation>Secret :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="253"/>
+        <location filename="../ui/auth/ui_authentication.py" line="247"/>
         <source>I&apos;ve got edition rights on app.isogeo.com</source>
         <translation>J&apos;ai accès aux fonctionnalités d&apos;édition sur app.isogeo.com</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="249"/>
+        <location filename="../ui/auth/ui_authentication.py" line="239"/>
         <source>From a file:</source>
         <translation>Importer depuis un fichier :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="251"/>
+        <location filename="../ui/auth/ui_authentication.py" line="246"/>
         <source>plugin-qgis-org-a1b23c4d5f6g7h8i9j10kl11mn13op14</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="247"/>
+        <location filename="../ui/auth/ui_authentication.py" line="240"/>
         <source>Pick your credentials file</source>
         <translation>Importer le fichier d&apos;authentification fourni par Isogeo ou votre administrateur</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="248"/>
+        <location filename="../ui/auth/ui_authentication.py" line="241"/>
         <source>Locate the Isogeo API credentials file</source>
         <translation>Trouver le fichier &quot;client_secrets.json&quot;</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="245"/>
+        <location filename="../ui/auth/ui_authentication.py" line="242"/>
         <source>Only for information, the Isogeo API base URL</source>
         <translation>Pour information, l&apos;URL de base de l&apos;API Isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="246"/>
+        <location filename="../ui/auth/ui_authentication.py" line="243"/>
         <source>API location:</source>
         <translation>URL de l&apos;API :</translation>
-    </message>
-    <message>
-        <location filename="../ui/auth/ui_authentication.py" line="244"/>
-        <source>Plugin authentication to Isogeo API</source>
-        <translation>Authentification du plugin à l&apos;API Isogeo</translation>
     </message>
 </context>
 <context>
     <name>dlg_metadata_details</name>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1621"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1880"/>
         <source>Isogeo Metadata</source>
         <translation>Fiche de métadonnée Isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1643"/>
-        <source>addButton</source>
-        <translation>Ajouter à la carte</translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1626"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1885"/>
         <source>General</source>
         <translation>Général</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1628"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1887"/>
         <source>Feature attributes</source>
         <translation>Attributs</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1630"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1889"/>
         <source>Contacts</source>
         <translation>Contacts</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1632"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1891"/>
         <source>History</source>
         <translation>Historique</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1634"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1893"/>
         <source>Geography</source>
         <translation>Géographie</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1714"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1974"/>
         <source>Licenses</source>
         <translation>Licences</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1640"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1899"/>
         <source>Advanced</source>
         <translation>Divers</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1642"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1901"/>
         <source>Edit it on Isogeo</source>
         <translation>Editer sur Isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1652"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1912"/>
         <source>INSPIRE themes</source>
         <translation>Thématiques INSPIRE</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1649"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1909"/>
         <source>Keywords</source>
         <translation>Mots-clés</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1655"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1915"/>
         <source>Abstract</source>
         <translation>Résumé</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1732"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1984"/>
         <source>TextLabel</source>
         <translation>NR</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1719"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1985"/>
         <source>Metadata owner</source>
         <translation>Propriétaire de la métadonnée</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1659"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1919"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1661"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1921"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1663"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1923"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1692"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1952"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1666"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1926"/>
         <source>Point of contact</source>
         <translation>Point(s) de contact</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1668"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1928"/>
         <source>Others contacts</source>
         <translation>Autre(s) contact(s)</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1670"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1930"/>
         <source>Data history</source>
         <translation>Historique de la donnée</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1672"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1939"/>
         <source>Updated every:</source>
         <translation>Mise à jour tous les :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1730"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1983"/>
         <source>Last update:</source>
         <translation>Dernière modification :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1676"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1933"/>
         <source>Creation date:</source>
         <translation>Date de création :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1677"/>
-        <source>Validity comment:</source>
-        <translation>Commentaire :</translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1680"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1936"/>
         <source>Validity period start:</source>
         <translation>Début de validité :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1682"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1938"/>
         <source>Validity period end:</source>
         <translation>Fin de validité :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1687"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1947"/>
         <source>Last modifications</source>
         <translation>Dernières modifications sur la donnée</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1690"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1950"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1693"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1953"/>
         <source>Technical informations</source>
         <translation>Informations techniques</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1701"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1962"/>
         <source>Scale:</source>
         <translation>Échelle :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1702"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1960"/>
         <source>SRS:</source>
         <translation>Système de coordonnées :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1704"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1964"/>
         <source>Resolution:</source>
         <translation>Résolution :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1695"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1954"/>
         <source>Format:</source>
         <translation>Format :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1696"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1956"/>
         <source>Features count:</source>
         <translation>Nombre d&apos;objets :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1698"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1958"/>
         <source>Geometry type:</source>
         <translation>Type de géométrie :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1709"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1969"/>
         <source>Bounding box preview</source>
         <translation>Aperçu de l&apos;enveloppe</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1716"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1976"/>
         <source>Limitations</source>
         <translation>Limitations</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1718"/>
-        <source>Download metadata XML</source>
-        <translation>Télécharger la métadonnée en XML ISO 19139</translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1720"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1987"/>
         <source>wg_email</source>
         <translation>Email</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1721"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1989"/>
         <source>wg_address</source>
         <translation>Adresse</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1722"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1988"/>
         <source>wg_phone</source>
         <translation>Tél</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1723"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1990"/>
         <source>wg_pc_city</source>
         <translation>Code postal et ville</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1724"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1991"/>
         <source>wg_country</source>
         <translation>Pays</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1726"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1978"/>
         <source>Metadata properties</source>
         <translation>Détails de la métadonnée</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1727"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1981"/>
         <source>Created:</source>
         <translation>Créée le :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1683"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1943"/>
         <source>Collection context</source>
         <translation>Contexte de collecte</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1685"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1945"/>
         <source>Collection method</source>
         <translation>Méthode de collecte</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1728"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1979"/>
         <source>Language: </source>
         <translation>Langue: </translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1636"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1895"/>
         <source>Quality</source>
         <translation>Qualité des données</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1725"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1986"/>
         <source>wg_owner</source>
         <translation>Organisme</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1707"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1967"/>
         <source>Geographical context</source>
         <translation>Contexte géographique</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1710"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1970"/>
         <source>Specifications</source>
         <translation>Spécifications</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1712"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1972"/>
         <source>Topological consistency</source>
         <translation>Cohérence topologique</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1646"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1906"/>
         <source>Group themes</source>
         <translation>Thématiques</translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1902"/>
+        <source>Owner</source>
+        <translation>Propriétaire</translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1905"/>
+        <source>Group Themes</source>
+        <translation>Thématiques</translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1941"/>
+        <source>Validity comment</source>
+        <translation>Validité</translation>
     </message>
 </context>
 <context>
@@ -1151,46 +1181,46 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>isogeo_tr</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="299"/>
+        <location filename="../modules/metadata_display.py" line="318"/>
         <source>quality</source>
         <comment>isConform</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="301"/>
+        <location filename="../modules/metadata_display.py" line="320"/>
         <source>quality</source>
         <comment>isNotConform</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="213"/>
+        <location filename="../modules/metadata_display.py" line="232"/>
         <source>roles</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="240"/>
+        <location filename="../modules/metadata_display.py" line="259"/>
         <source>frequencyTypes</source>
         <comment>frequencyUpdateHelp</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="240"/>
+        <location filename="../modules/metadata_display.py" line="259"/>
         <source>frequencyShortTypes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="370"/>
+        <location filename="../modules/metadata_display.py" line="392"/>
         <source>conditions</source>
         <comment>noLicense</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="384"/>
+        <location filename="../modules/metadata_display.py" line="406"/>
         <source>limitations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="390"/>
+        <location filename="../modules/metadata_display.py" line="412"/>
         <source>restrictions</source>
         <translation></translation>
     </message>
