@@ -480,29 +480,44 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>QuickSearchManager</name>
     <message>
-        <location filename="../modules/quick_search.py" line="115"/>
+        <location filename="../modules/quick_search.py" line="117"/>
         <source>{} successfully saved: {}</source>
         <translation>{} sauvegardée correctement : {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="151"/>
+        <location filename="../modules/quick_search.py" line="191"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation>Recherche rapide renommée de {} à {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="174"/>
+        <location filename="../modules/quick_search.py" line="216"/>
         <source>Quicksearch removed: {}</source>
         <translation>Recherche rapide supprimée : {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="304"/>
+        <location filename="../modules/quick_search.py" line="346"/>
         <source>Default search successfully reset.</source>
         <translation>Recherche par défault réinitialisée.</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="240"/>
+        <location filename="../modules/quick_search.py" line="282"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
+    </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="133"/>
+        <source>Isogeo - Rename quicksearch</source>
+        <translation>Isogeo - Renommer une recherche rapide</translation>
+    </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="137"/>
+        <source>Isogeo - New quicksearch</source>
+        <translation>Isogeo - Nouvelle recherche rapide</translation>
+    </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="146"/>
+        <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
+        <translation>La recherche rapide &apos;{}&apos; existe déjà, voulez-vous l&apos;écraser ?</translation>
     </message>
 </context>
 <context>

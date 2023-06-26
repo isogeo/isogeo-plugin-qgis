@@ -5,12 +5,14 @@
 import logging
 import json
 from pathlib import Path
+from functools import partial
 
 # PyQGIS
 from qgis.utils import iface
 
 # PyQT
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QMessageBox
 
 # UI classes
 from ..ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
@@ -52,8 +54,8 @@ class QuickSearchManager:
             self.dlg_rename = QuicksearchRename()
 
             # Connecting ui
-            self.dlg_new.accepted.connect(self.save)
-            self.dlg_rename.accepted.connect(self.rename)
+            self.dlg_new.accepted.connect(partial(self.check_already_exist, 0))
+            self.dlg_rename.accepted.connect(partial(self.check_already_exist, 1))
         else:
             pass
 
@@ -122,43 +124,83 @@ class QuickSearchManager:
             pass
         return
 
-    def save(self):
+    def check_already_exist(self, rename: bool = 0):
+
+        saved_searches = self.load_file()
+
+        if rename:
+            search_name = self.dlg_rename.txt_quicksearch_rename.text()
+            popup_title = self.tr("Isogeo - Rename quicksearch", __class__.__name__,)
+            slot_func = self.rename
+        else:
+            search_name = self.dlg_new.txt_quicksearch_name.text()
+            popup_title = self.tr("Isogeo - New quicksearch", __class__.__name__,)
+            slot_func = self.save
+
+        if search_name in saved_searches:
+            popup = QMessageBox()
+            popup.setWindowIcon(ico_bolt)
+            popup.setWindowTitle(popup_title)
+            popup.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            popup.setDefaultButton(QMessageBox.No)
+            popup_txt = (
+                "<b>{}</b>".format(
+                    self.tr("Quicksearch '{}' already exists, do you want to overwrite it?", __class__.__name__,).format(search_name)
+                )
+            )
+            popup.setText(popup_txt)
+            popup.finished.connect(slot_func)
+            popup.exec()
+        else:
+            slot_func(QMessageBox.Yes)
+
+        return
+
+    def save(self, i):
         """Call the write_search() function and refresh the combobox."""
         # retrieve quicksearch given name and store it
-        search_name = self.dlg_new.txt_quicksearch_name.text()
-        self.write_params(search_name, search_kind="Quicksearch")
-        # load all saved quicksearches and populate drop-down (combobox)
-        saved_searches = self.load_file()
-        search_list = list(saved_searches.keys())
-        # updating quick search widgets
-        self.form_mng.pop_qs_cbbs(items_list=search_list)
-        # method ending
-        return
+        if i == QMessageBox.Yes:
+            search_name = self.dlg_new.txt_quicksearch_name.text()
+            self.dlg_new.txt_quicksearch_name.setText("")
+            self.write_params(search_name, search_kind="Quicksearch")
+            # load all saved quicksearches and populate drop-down (combobox)
+            saved_searches = self.load_file()
+            search_list = list(saved_searches.keys())
+            # updating quick search widgets
+            self.form_mng.pop_qs_cbbs(items_list=search_list)
+            # method ending
+            return
+        else:
+            return
 
-    def rename(self):
+    def rename(self, i):
         """Modify the json file in order to rename a search."""
-        old_name = self.form_mng.cbb_quicksearch_edit.currentText()
-        new_name = self.dlg_rename.txt_quicksearch_rename.text()
+        if i == QMessageBox.Yes:
+            old_name = self.form_mng.cbb_quicksearch_edit.currentText()
+            new_name = self.dlg_rename.txt_quicksearch_rename.text()
+            self.dlg_rename.txt_quicksearch_rename.setText("")
 
-        saved_searches = self.load_file()
-        saved_searches[new_name] = saved_searches[old_name]
-        saved_searches.pop(old_name)
-        search_list = list(saved_searches.keys())
-        self.form_mng.pop_qs_cbbs(items_list=search_list)
-        # Update JSON file
-        self.dump_file(content=saved_searches)
-        # inform user
-        msgBar.pushMessage(
-            "Isogeo",
-            self.tr("Quicksearch renamed: from {} to {}", context=__class__.__name__).format(
-                old_name, new_name
-            ),
-            level=0,
-            duration=3,
-        )
-        # method ending
-        logger.debug("'{}' quicksearch renamed '{}'".format(old_name, new_name))
-        return
+            saved_searches = self.load_file()
+            saved_searches[new_name] = saved_searches[old_name]
+            saved_searches.pop(old_name)
+            search_list = list(saved_searches.keys())
+            self.form_mng.pop_qs_cbbs(items_list=search_list)
+            # Update JSON file
+            self.dump_file(content=saved_searches)
+            # inform user
+            msgBar.pushMessage(
+                "Isogeo",
+                self.tr("Quicksearch renamed: from {} to {}", context=__class__.__name__).format(
+                    old_name, new_name
+                ),
+                level=0,
+                duration=3,
+            )
+            # method ending
+            logger.debug("'{}' quicksearch renamed '{}'".format(old_name, new_name))
+            return
+        else:
+            return
 
     def remove(self):
         """Modify the json file in order to delete a search."""

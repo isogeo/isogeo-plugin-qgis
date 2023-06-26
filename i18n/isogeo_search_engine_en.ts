@@ -477,28 +477,43 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>QuickSearchManager</name>
     <message>
-        <location filename="../modules/quick_search.py" line="115"/>
+        <location filename="../modules/quick_search.py" line="117"/>
         <source>{} successfully saved: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="151"/>
+        <location filename="../modules/quick_search.py" line="191"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="174"/>
+        <location filename="../modules/quick_search.py" line="216"/>
         <source>Quicksearch removed: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="304"/>
+        <location filename="../modules/quick_search.py" line="346"/>
         <source>Default search successfully reset.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="240"/>
+        <location filename="../modules/quick_search.py" line="282"/>
         <source>Last search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="133"/>
+        <source>Isogeo - Rename quicksearch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="137"/>
+        <source>Isogeo - New quicksearch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="146"/>
+        <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

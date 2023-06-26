@@ -381,6 +381,18 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <target>Dernière recherche</target>
 </phrase>
 <phrase>
+    <source>Isogeo - Rename quicksearch</source>
+    <target>Isogeo - Renommer une recherche rapide</target>
+</phrase>
+<phrase>
+    <source>Isogeo - New quicksearch</source>
+    <target>Isogeo - Nouvelle recherche rapide</target>
+</phrase>
+<phrase>
+    <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
+    <target>La recherche rapide &apos;{}&apos; existe déjà, voulez-vous l&apos;écraser ?</target>
+</phrase>
+<phrase>
     <source>Unknown geometry</source>
     <target>Géométrie inconnue</target>
 </phrase>
