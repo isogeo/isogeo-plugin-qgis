@@ -480,24 +480,29 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>QuickSearchManager</name>
     <message>
-        <location filename="../modules/quick_search.py" line="109"/>
+        <location filename="../modules/quick_search.py" line="115"/>
         <source>{} successfully saved: {}</source>
         <translation>{} sauvegardée correctement : {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="145"/>
+        <location filename="../modules/quick_search.py" line="151"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation>Recherche rapide renommée de {} à {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="168"/>
+        <location filename="../modules/quick_search.py" line="174"/>
         <source>Quicksearch removed: {}</source>
         <translation>Recherche rapide supprimée : {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="291"/>
+        <location filename="../modules/quick_search.py" line="304"/>
         <source>Default search successfully reset.</source>
         <translation>Recherche par défault réinitialisée.</translation>
+    </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="240"/>
+        <source>Last search</source>
+        <translation>Dernière recherche</translation>
     </message>
 </context>
 <context>

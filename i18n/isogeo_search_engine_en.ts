@@ -477,23 +477,28 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>QuickSearchManager</name>
     <message>
-        <location filename="../modules/quick_search.py" line="109"/>
+        <location filename="../modules/quick_search.py" line="115"/>
         <source>{} successfully saved: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="145"/>
+        <location filename="../modules/quick_search.py" line="151"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="168"/>
+        <location filename="../modules/quick_search.py" line="174"/>
         <source>Quicksearch removed: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="291"/>
+        <location filename="../modules/quick_search.py" line="304"/>
         <source>Default search successfully reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="240"/>
+        <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

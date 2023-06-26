@@ -95,6 +95,12 @@ class QuickSearchManager:
             params = saved_searches.get(
                 "_current", "{}/resources/search?&_limit=0".format(self.api_base_url)
             )
+            if search_name == "Last search" and "Dernière recherche" in saved_searches:
+                del saved_searches["Dernière recherche"]
+            elif search_name == "Dernière recherche" and "Last search" in saved_searches:
+                del saved_searches["Last search"]
+            else:
+                pass
         else:
             params = self.fetch_params()
 
@@ -229,6 +235,13 @@ class QuickSearchManager:
                 saved_searches["_default"] = self.get_default_file_content().get("_default")
                 self.dump_file(saved_searches)
             else:
+                for trad in ["Last search", "Dernière recherche"]:
+                    if trad in saved_searches and self.tr("Last search") != trad:
+                        saved_searches[self.tr("Last search")] = saved_searches.get(trad)
+                        del saved_searches[trad]
+                    else:
+                        pass
+
                 for quicksearch in saved_searches:
                     quicksearch_url = saved_searches.get(quicksearch).get("url")
                     if self.api_base_url not in quicksearch_url:

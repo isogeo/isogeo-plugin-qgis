@@ -377,6 +377,10 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <target>Recherche par défault réinitialisée.</target>
 </phrase>
 <phrase>
+    <source>Last search</source>
+    <target>Dernière recherche</target>
+</phrase>
+<phrase>
     <source>Unknown geometry</source>
     <target>Géométrie inconnue</target>
 </phrase>
