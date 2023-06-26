@@ -567,6 +567,7 @@ class ResultsManager(QObject):
                 # Else, add a combobox, storing all possibilities.
                 else:
                     combo = QComboBox()
+                    combo.installEventFilter(self.form_mng)
                     for option in add_options_dict:
                         option_type = option.split(" : ")[0]
                         # services

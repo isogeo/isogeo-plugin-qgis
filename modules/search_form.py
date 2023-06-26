@@ -14,7 +14,7 @@ from qgis.core import (
 from qgis.utils import iface
 
 # PyQT
-from qgis.PyQt.QtCore import pyqtSignal, QSettings, Qt
+from qgis.PyQt.QtCore import pyqtSignal, QSettings, Qt, QEvent
 from qgis.PyQt.QtWidgets import QComboBox
 from qgis.PyQt.QtGui import QIcon, QStandardItem
 
@@ -77,6 +77,10 @@ class SearchFormManager(IsogeoDockWidget):
 
         self.tr = trad
 
+        # disable wheel event on combobox
+        for cbb in self.findChildren(QComboBox):
+            cbb.installEventFilter(self)
+
         # match between widgets and metadata fields
         self.match_widget_field = {
             self.cbb_type: "datatype",
@@ -134,6 +138,12 @@ class SearchFormManager(IsogeoDockWidget):
 
         # Setting result manager
         self.results_mng = ResultsManager(self)
+
+    def eventFilter(self, obj, event):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/455
+        if event.type() == QEvent.Wheel:
+            return True
+        else:
+            return False
 
     def update_cbb_keywords(self, tags_keywords: dict = {}, selected_keywords: list = []):
         """Keywords combobox is specific because items are checkable.
