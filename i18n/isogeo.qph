@@ -21,12 +21,8 @@
     <target> - Configuration des connexions aux bases de données</target>
 </phrase>
 <phrase>
-    <source>Choose the embed connection to be used to access to each </source>
-    <target>Choisissez la connexion qui sera utilisée pour accéder à chaque base de données </target>
-</phrase>
-<phrase>
-    <source> database</source>
-    <target></target>
+    <source>Choose the embed connection to be used to access to each {} database</source>
+    <target>Choisissez la connexion qui sera utilisée pour accéder à chaque base de données {}</target>
 </phrase>
 <phrase>
     <source>&amp;Isogeo</source>

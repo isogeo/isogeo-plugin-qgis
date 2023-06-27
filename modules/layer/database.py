@@ -808,14 +808,8 @@ class DataBaseManager:
             " - Configuration of database connections", context=__class__.__name__
         )
         self.db_config_dialog.setWindowTitle(windowTitle)
-        dialog_label = (
-            self.tr(
-                "Choose the embed connection to be used to access to each ",
-                context=__class__.__name__,
-            )
-            + label
-            + self.tr(" database", context=__class__.__name__)
-        )
+        dialog_label = self.tr("Choose the embed connection to be used to access to each {} database", context=__class__.__name__).format(label)
+
         self.db_config_dialog.label.setText(dialog_label)
         self.fill_db_config_tbl(dbms)
         self.db_config_dialog.open()
