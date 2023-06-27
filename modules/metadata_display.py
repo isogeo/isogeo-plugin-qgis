@@ -300,7 +300,7 @@ class MetadataDisplayer:
             self.complete_md.val_format.setText("NR")
 
         # feature info
-        self.complete_md.val_feat_count.setText(str(md.get("features", "/")))
+        self.complete_md.val_feat_count.setText(str(md.get("features", "NR")))
         self.complete_md.val_geometry.setText(md.get("geometry", ""))
         self.complete_md.val_resolution.setText(str(md.get("distance", "")) + " m")
         self.complete_md.val_scale.setText("1:" + str(md.get("scale", "")))
@@ -568,20 +568,20 @@ class MetadataDisplayer:
             self.complete_md.lbl_valid_end.setHidden(0)
             self.complete_md.ico_valid_end.setHidden(0)
             self.complete_md.val_valid_end.setHidden(0)
-            self.complete_md.grp_valid_comment.setHidden(0)
-            self.complete_md.grp_collect_context.setHidden(0)
-            self.complete_md.grp_collect_method.setHidden(0)
+            self.setHidden_with_children(self.complete_md.grp_valid_comment, 0)
+            self.setHidden_with_children(self.complete_md.grp_collect_context, 0)
+            self.setHidden_with_children(self.complete_md.grp_collect_method, 0)
             # geography
-            self.complete_md.grp_geoContext.setHidden(1)
-            self.complete_md.grp_technic.setHidden(0)
-            self.complete_md.grp_feat_count.setHidden(0)
-            self.complete_md.grp_geometry.setHidden(0)
-            self.complete_md.grp_srs.setHidden(0)
-            self.complete_md.grp_scale.setHidden(0)
-            self.complete_md.grp_resolution.setHidden(0)
-            self.complete_md.grp_bbox.setHidden(0)
+            self.setHidden_with_children(self.complete_md.grp_geoContext, 1)
+            self.setHidden_with_children(self.complete_md.grp_technic, 0)
+            self.setHidden_with_children(self.complete_md.grp_feat_count, 0)
+            self.setHidden_with_children(self.complete_md.grp_geometry, 0)
+            self.setHidden_with_children(self.complete_md.grp_srs, 0)
+            self.setHidden_with_children(self.complete_md.grp_scale, 0)
+            self.setHidden_with_children(self.complete_md.grp_resolution, 0)
+            self.setHidden_with_children(self.complete_md.grp_bbox, 0)
             # quality
-            self.complete_md.grp_topoConsist.setHidden(0)
+            self.setHidden_with_children(self.complete_md.grp_topoConsist, 0)
             # menus
             menu_list.item(1).setHidden(0)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -607,61 +607,38 @@ class MetadataDisplayer:
             self.complete_md.lbl_valid_end.setHidden(0)
             self.complete_md.ico_valid_end.setHidden(0)
             self.complete_md.val_valid_end.setHidden(0)
-            self.complete_md.grp_valid_comment.setHidden(0)
-            self.complete_md.grp_collect_context.setHidden(0)
-            self.complete_md.grp_collect_method.setHidden(0)
+            self.setHidden_with_children(self.complete_md.grp_valid_comment, 0)
+            self.setHidden_with_children(self.complete_md.grp_collect_context, 0)
+            self.setHidden_with_children(self.complete_md.grp_collect_method, 0)
             # geography
-            self.complete_md.grp_geoContext.setHidden(0)
-            self.complete_md.grp_technic.setHidden(0)
-            self.complete_md.grp_feat_count.setHidden(0)
-            self.complete_md.grp_geometry.setHidden(1)
-            self.complete_md.grp_srs.setHidden(1)
-            self.complete_md.grp_scale.setHidden(1)
-            self.complete_md.grp_resolution.setHidden(1)
-            self.complete_md.grp_bbox.setHidden(1)
+            self.setHidden_with_children(self.complete_md.grp_geoContext, 0)
+            self.setHidden_with_children(self.complete_md.grp_technic, 0)
+            self.setHidden_with_children(self.complete_md.grp_feat_count, 0)
+            self.setHidden_with_children(self.complete_md.grp_geometry, 1)
+            self.setHidden_with_children(self.complete_md.grp_srs, 1)
+            self.setHidden_with_children(self.complete_md.grp_scale, 1)
+            self.setHidden_with_children(self.complete_md.grp_resolution, 1)
+            self.setHidden_with_children(self.complete_md.grp_bbox, 1)
             # quality
-            self.complete_md.grp_topoConsist.setHidden(1)
+            self.setHidden_with_children(self.complete_md.grp_topoConsist, 1)
             # menus
             menu_list.item(1).setHidden(0)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
             menu_list.item(5).setHidden(0)  # quality
             return
 
-        elif md_type == "rasterDataset" and not series:
+        elif md_type == "rasterDataset":
             # geography
-            self.complete_md.val_feat_count.setHidden(1)
-            self.complete_md.val_geometry.setHidden(1)
-            self.complete_md.grp_geoContext.setHidden(1)
-            # geography
-            self.complete_md.grp_technic.setHidden(0)
-            # geography
-            self.complete_md.grp_feat_count.setHidden(1)
-            self.complete_md.grp_geometry.setHidden(1)
-            self.complete_md.grp_srs.setHidden(0)
-            self.complete_md.grp_scale.setHidden(0)
-            self.complete_md.grp_resolution.setHidden(0)
-            self.complete_md.grp_bbox.setHidden(0)
+            self.setHidden_with_children(self.complete_md.grp_geoContext, 1)
+            self.setHidden_with_children(self.complete_md.grp_technic, 0)
+            self.setHidden_with_children(self.complete_md.grp_feat_count, 1)
+            self.setHidden_with_children(self.complete_md.grp_geometry, 1)
+            self.setHidden_with_children(self.complete_md.grp_srs, 0)
+            self.setHidden_with_children(self.complete_md.grp_scale, 0)
+            self.setHidden_with_children(self.complete_md.grp_resolution, 0)
+            self.setHidden_with_children(self.complete_md.grp_bbox, 0)
             # quality
-            self.complete_md.grp_topoConsist.setHidden(1)
-            # menus
-            menu_list.item(1).setHidden(1)  # attributes
-            menu_list.item(4).setHidden(0)  # geography and technical
-            menu_list.item(5).setHidden(0)  # quality
-            return
-
-        elif md_type == "rasterDataset" and series:
-            # geography
-            self.complete_md.grp_feat_count.setHidden(1)
-            self.complete_md.grp_geometry.setHidden(1)
-            self.complete_md.grp_srs.setHidden(0)
-            self.complete_md.grp_scale.setHidden(0)
-            self.complete_md.grp_resolution.setHidden(0)
-            self.complete_md.grp_bbox.setHidden(0)
-            self.complete_md.grp_geoContext.setHidden(1)
-            # geography
-            self.complete_md.grp_technic.setHidden(0)
-            # quality
-            self.complete_md.grp_topoConsist.setHidden(1)
+            self.setHidden_with_children(self.complete_md.grp_topoConsist, 1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -683,14 +660,20 @@ class MetadataDisplayer:
             self.complete_md.lbl_valid_end.setHidden(1)
             self.complete_md.ico_valid_end.setHidden(1)
             self.complete_md.val_valid_end.setHidden(1)
-            self.complete_md.grp_valid_comment.setHidden(1)
-            self.complete_md.grp_collect_context.setHidden(1)
-            self.complete_md.grp_collect_method.setHidden(1)
+            self.setHidden_with_children(self.complete_md.grp_valid_comment, 1)
+            self.setHidden_with_children(self.complete_md.grp_collect_context, 1)
+            self.setHidden_with_children(self.complete_md.grp_collect_method, 1)
             # geography
-            self.complete_md.grp_technic.setHidden(0)
-            self.complete_md.grp_geoContext.setHidden(1)
+            self.setHidden_with_children(self.complete_md.grp_technic, 0)
+            self.setHidden_with_children(self.complete_md.grp_geoContext, 1)
+            self.setHidden_with_children(self.complete_md.grp_feat_count, 1)
+            self.setHidden_with_children(self.complete_md.grp_geometry, 1)
+            self.setHidden_with_children(self.complete_md.grp_srs, 0)
+            self.setHidden_with_children(self.complete_md.grp_scale, 1)
+            self.setHidden_with_children(self.complete_md.grp_resolution, 1)
+            self.setHidden_with_children(self.complete_md.grp_bbox, 0)
             # quality
-            self.complete_md.grp_topoConsist.setHidden(1)
+            self.setHidden_with_children(self.complete_md.grp_topoConsist, 1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(0)  # geography and technical
@@ -708,12 +691,11 @@ class MetadataDisplayer:
             self.complete_md.lbl_valid_end.setHidden(1)
             self.complete_md.ico_valid_end.setHidden(1)
             self.complete_md.val_valid_end.setHidden(1)
-            self.complete_md.grp_valid_comment.setHidden(1)
-            self.complete_md.grp_collect_context.setHidden(1)
-            self.complete_md.grp_collect_method.setHidden(1)
-            self.complete_md.grp_geoContext.setHidden(1)
+            self.setHidden_with_children(self.complete_md.grp_valid_comment, 1)
+            self.setHidden_with_children(self.complete_md.grp_collect_context, 1)
+            self.setHidden_with_children(self.complete_md.grp_collect_method, 1)
             # quality
-            self.complete_md.grp_topoConsist.setHidden(1)
+            self.setHidden_with_children(self.complete_md.grp_topoConsist, 1)
             # menus
             menu_list.item(1).setHidden(1)  # attributes
             menu_list.item(4).setHidden(1)  # geography and technical
@@ -724,6 +706,14 @@ class MetadataDisplayer:
             # should not exist
             logger.error("Metadata type not recognized:", md_type)
             return
+
+    def setHidden_with_children(self, parent: object, hide: bool = 1):
+        parent.setHidden(hide)
+        for child in parent.children():
+            if hasattr(child, "setHidden"):
+                child.setHidden(hide)
+            else:
+                pass
 
     def resize_alias_labels(self, column_index, old_width, new_width):
         """Slot to self.complete_md.tbl_attributes.horizontalHeader().sectionResized signal. Resize
