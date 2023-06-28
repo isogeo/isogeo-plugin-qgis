@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
  <class>dlg_form_auth_prompt</class>
  <widget class="QDialog" name="dlg_form_auth_prompt">
@@ -39,7 +39,7 @@
     <normaloff>:/plugins/Isogeo/resources/settings/key.svg</normaloff>:/plugins/Isogeo/resources/settings/key.svg</iconset>
   </property>
   <property name="locale">
-   <locale language="English" country="UnitedStates"/>
+   <locale country="UnitedStates" language="English" />
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="sizeConstraint">
@@ -63,7 +63,7 @@
    <property name="verticalSpacing">
     <number>6</number>
    </property>
-   <item row="0" column="0">
+   <item column="0" row="0">
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <property name="spacing">
       <number>0</number>
@@ -150,7 +150,7 @@
               </font>
              </property>
              <property name="locale">
-              <locale language="English" country="UnitedStates"/>
+              <locale country="UnitedStates" language="English" />
              </property>
              <property name="text">
               <string>From a file:</string>
@@ -211,7 +211,7 @@
               <enum>Qt::LeftToRight</enum>
              </property>
              <property name="locale">
-              <locale language="English" country="UnitedStates"/>
+              <locale country="UnitedStates" language="English" />
              </property>
              <property name="text">
               <string>Application ID:</string>
@@ -253,7 +253,7 @@
               <enum>Qt::LeftToRight</enum>
              </property>
              <property name="locale">
-              <locale language="English" country="UnitedStates"/>
+              <locale country="UnitedStates" language="English" />
              </property>
              <property name="text">
               <string>Application SECRET:</string>
@@ -295,7 +295,7 @@
               <enum>Qt::LeftToRight</enum>
              </property>
              <property name="locale">
-              <locale language="English" country="UnitedStates"/>
+              <locale country="UnitedStates" language="English" />
              </property>
              <property name="text">
               <string>API location:</string>
@@ -371,7 +371,7 @@
               <string>Pick your credentials file</string>
              </property>
              <property name="locale">
-              <locale language="English" country="UnitedStates"/>
+              <locale country="UnitedStates" language="English" />
              </property>
              <property name="fileWidgetButtonVisible">
               <bool>true</bool>
@@ -383,7 +383,7 @@
               <string notr="true">*.json</string>
              </property>
              <property name="defaultRoot">
-              <string notr="true"/>
+              <string notr="true" />
              </property>
             </widget>
            </item>
@@ -435,7 +435,7 @@
               <bool>false</bool>
              </property>
              <property name="locale">
-              <locale language="English" country="UnitedStates"/>
+              <locale country="UnitedStates" language="English" />
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -474,7 +474,7 @@
               <bool>false</bool>
              </property>
              <property name="locale">
-              <locale language="English" country="UnitedStates"/>
+              <locale country="UnitedStates" language="English" />
              </property>
              <property name="echoMode">
               <enum>QLineEdit::PasswordEchoOnEdit</enum>
@@ -518,7 +518,7 @@
               <bool>false</bool>
              </property>
              <property name="locale">
-              <locale language="English" country="UnitedStates"/>
+              <locale country="UnitedStates" language="English" />
              </property>
              <property name="text">
               <string notr="true">https://v1.api.isogeo.com/</string>
@@ -605,7 +605,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="locale">
-          <locale language="English" country="UnitedStates"/>
+          <locale country="UnitedStates" language="English" />
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -628,10 +628,10 @@
   <customwidget>
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
-   <header>qgsfilewidget.h</header>
+   <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources />
  <connections>
   <connection>
    <sender>btn_ok_cancel</sender>

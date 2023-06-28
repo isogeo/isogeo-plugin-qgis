@@ -1268,8 +1268,7 @@ class Ui_IsogeoDockWidgetBase(object):
         self.btn_open_portalURL_config_dialog.setToolTip(_translate("IsogeoDockWidgetBase", "Choose to add metadata portal URL to layer properties and specify portal base URL"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_settings), _translate("IsogeoDockWidgetBase", "Settings"))
 
-from qgscheckablecombobox import QgsCheckableComboBox
-from qgscollapsiblegroupbox import QgsCollapsibleGroupBox
+from qgis.gui import QgsCheckableComboBox, QgsCollapsibleGroupBox
 
 if __name__ == "__main__":
     import sys

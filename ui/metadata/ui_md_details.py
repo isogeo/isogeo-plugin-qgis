@@ -1990,8 +1990,7 @@ class Ui_dlg_metadata_details(object):
         self.val_owner_city.setText(_translate("dlg_metadata_details", "wg_pc_city"))
         self.val_owner_country.setText(_translate("dlg_metadata_details", "wg_country"))
 
-from qgis.gui import QgsMapCanvas
-from qgscollapsiblegroupbox import QgsCollapsibleGroupBox
+from qgis.gui import QgsCollapsibleGroupBox, QgsMapCanvas
 
 if __name__ == "__main__":
     import sys

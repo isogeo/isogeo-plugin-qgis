@@ -251,7 +251,7 @@ class Ui_dlg_form_auth_prompt(object):
         self.btn_browse_credentials.setDialogTitle(_translate("dlg_form_auth_prompt", "Locate the Isogeo API credentials file"))
         self.chb_isogeo_editor.setText(_translate("dlg_form_auth_prompt", "I\'ve got edition rights on app.isogeo.com"))
 
-from qgsfilewidget import QgsFileWidget
+from qgis.gui import QgsFileWidget
 
 if __name__ == "__main__":
     import sys

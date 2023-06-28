@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
  <class>dlg_metadata_details</class>
  <widget class="QDialog" name="dlg_metadata_details">
@@ -45,7 +45,7 @@
    <bool>true</bool>
   </property>
   <property name="locale">
-   <locale language="English" country="UnitedStates"/>
+   <locale country="UnitedStates" language="English" />
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
@@ -66,7 +66,7 @@
    <property name="spacing">
     <number>4</number>
    </property>
-   <item row="0" column="1">
+   <item column="1" row="0">
     <layout class="QVBoxLayout" name="verticalLayout_32">
      <property name="spacing">
       <number>4</number>
@@ -304,7 +304,7 @@ QListWidget::item::selected {
      </item>
     </layout>
    </item>
-   <item row="0" column="3" rowspan="2">
+   <item column="3" row="0" rowspan="2">
     <layout class="QVBoxLayout" name="verticalLayout_13">
      <property name="spacing">
       <number>4</number>
@@ -395,7 +395,7 @@ QListWidget::item::selected {
             <cursorShape>IBeamCursor</cursorShape>
            </property>
            <property name="text">
-            <string/>
+            <string />
            </property>
            <property name="textFormat">
             <enum>Qt::AutoText</enum>
@@ -433,7 +433,7 @@ QListWidget::item::selected {
                 <string>Owner</string>
                </property>
                <property name="text">
-                <string/>
+                <string />
                </property>
                <property name="pixmap">
                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/users_blue.svg</pixmap>
@@ -522,7 +522,7 @@ QListWidget::item::selected {
                 <string>Group Themes</string>
                </property>
                <property name="text">
-                <string/>
+                <string />
                </property>
                <property name="pixmap">
                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/paperclip.svg</pixmap>
@@ -599,7 +599,7 @@ QListWidget::item::selected {
                 <string>Keywords</string>
                </property>
                <property name="text">
-                <string/>
+                <string />
                </property>
                <property name="textFormat">
                 <enum>Qt::PlainText</enum>
@@ -688,7 +688,7 @@ QListWidget::item::selected {
                 <bool>true</bool>
                </property>
                <property name="text">
-                <string/>
+                <string />
                </property>
                <property name="pixmap">
                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/leaf.svg</pixmap>
@@ -758,7 +758,7 @@ QListWidget::item::selected {
                 <enum>QFrame::Plain</enum>
                </property>
                <property name="text">
-                <string/>
+                <string />
                </property>
                <property name="pixmap">
                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/inspire.png</pixmap>
@@ -802,7 +802,7 @@ QListWidget::item::selected {
                 <string>Abstract</string>
                </property>
                <property name="text">
-                <string notr="true"/>
+                <string notr="true" />
                </property>
                <property name="pixmap">
                 <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/bookmark_blue.svg</pixmap>
@@ -1341,7 +1341,7 @@ QListWidget::item::selected {
                    <cursorShape>IBeamCursor</cursorShape>
                   </property>
                   <property name="toolTip">
-                   <string/>
+                   <string />
                   </property>
                   <property name="autoFillBackground">
                    <bool>false</bool>
@@ -1461,7 +1461,7 @@ QListWidget::item::selected {
                 <property name="spacing">
                  <number>4</number>
                 </property>
-                <item row="1" column="5">
+                <item column="5" row="1">
                  <widget class="QLabel" name="val_data_update">
                   <property name="font">
                    <font>
@@ -1476,7 +1476,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="3">
+                <item column="3" row="0">
                  <spacer name="horiz_spacer_data_update">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1489,7 +1489,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item row="0" column="5">
+                <item column="5" row="0">
                  <widget class="QLabel" name="val_data_crea">
                   <property name="font">
                    <font>
@@ -1504,7 +1504,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
+                <item column="1" row="0">
                  <widget class="QLabel" name="ico_data_crea">
                   <property name="minimumSize">
                    <size>
@@ -1519,7 +1519,7 @@ QListWidget::item::selected {
                    </size>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string />
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/results/sort-datacreated.svg</pixmap>
@@ -1532,7 +1532,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="3">
+                <item column="3" row="1">
                  <spacer name="horizontalSpacer">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1545,7 +1545,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item row="1" column="1">
+                <item column="1" row="1">
                  <widget class="QLabel" name="ico_data_update">
                   <property name="minimumSize">
                    <size>
@@ -1560,7 +1560,7 @@ QListWidget::item::selected {
                    </size>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string />
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/results/sort-datamodified.svg</pixmap>
@@ -1573,7 +1573,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="2">
+                <item column="2" row="0">
                  <widget class="QLabel" name="lbl_data_crea">
                   <property name="font">
                    <font>
@@ -1588,7 +1588,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="2">
+                <item column="2" row="1">
                  <widget class="QLabel" name="lbl_data_update">
                   <property name="font">
                    <font>
@@ -1630,7 +1630,7 @@ QListWidget::item::selected {
                 <property name="spacing">
                  <number>4</number>
                 </property>
-                <item row="2" column="2">
+                <item column="2" row="2">
                  <spacer name="horizontalSpacer_3">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1643,7 +1643,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item row="1" column="0">
+                <item column="0" row="1">
                  <widget class="QLabel" name="ico_valid_end">
                   <property name="minimumSize">
                    <size>
@@ -1658,7 +1658,7 @@ QListWidget::item::selected {
                    </size>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string />
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/calendar-times-o.svg</pixmap>
@@ -1671,7 +1671,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="3">
+                <item column="3" row="1">
                  <widget class="QLabel" name="val_valid_end">
                   <property name="font">
                    <font>
@@ -1686,7 +1686,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="0">
+                <item column="0" row="0">
                  <widget class="QLabel" name="ico_valid_start">
                   <property name="minimumSize">
                    <size>
@@ -1701,7 +1701,7 @@ QListWidget::item::selected {
                    </size>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string />
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-check-o.svg</pixmap>
@@ -1714,7 +1714,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
+                <item column="1" row="0">
                  <widget class="QLabel" name="lbl_valid_start">
                   <property name="font">
                    <font>
@@ -1729,7 +1729,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="3">
+                <item column="3" row="0">
                  <widget class="QLabel" name="val_valid_start">
                   <property name="font">
                    <font>
@@ -1744,7 +1744,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
+                <item column="1" row="1">
                  <widget class="QLabel" name="lbl_valid_end">
                   <property name="font">
                    <font>
@@ -1759,7 +1759,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="2">
+                <item column="2" row="1">
                  <spacer name="horiz_spacer_valid_end">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1772,7 +1772,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item row="0" column="2">
+                <item column="2" row="0">
                  <spacer name="horiz_spacer_valid_start">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1785,7 +1785,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item row="2" column="1">
+                <item column="1" row="2">
                  <widget class="QLabel" name="lbl_frequency">
                   <property name="font">
                    <font>
@@ -1800,7 +1800,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
+                <item column="0" row="2">
                  <widget class="QLabel" name="ico_frequency">
                   <property name="minimumSize">
                    <size>
@@ -1823,7 +1823,7 @@ QListWidget::item::selected {
                    </font>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string />
                   </property>
                   <property name="pixmap">
                    <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/refresh.svg</pixmap>
@@ -1836,7 +1836,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="3">
+                <item column="3" row="2">
                  <widget class="QLabel" name="val_frequency">
                   <property name="font">
                    <font>
@@ -1857,8 +1857,8 @@ QListWidget::item::selected {
             </item>
            </layout>
            <zorder>vert_separator</zorder>
-           <zorder></zorder>
-           <zorder></zorder>
+           <zorder />
+           <zorder />
           </widget>
          </item>
          <item>
@@ -2594,7 +2594,7 @@ QListWidget::item::selected {
                   </size>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="pixmap">
                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cube_blue.svg</pixmap>
@@ -2714,7 +2714,7 @@ QListWidget::item::selected {
                   </size>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="pixmap">
                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/cubes.svg</pixmap>
@@ -2837,7 +2837,7 @@ QListWidget::item::selected {
                   </size>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="pixmap">
                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/multi.svg</pixmap>
@@ -2960,7 +2960,7 @@ QListWidget::item::selected {
                   </size>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="pixmap">
                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/compass.svg</pixmap>
@@ -3086,7 +3086,7 @@ QListWidget::item::selected {
                   <bool>true</bool>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="pixmap">
                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/arrows-h.svg</pixmap>
@@ -3212,7 +3212,7 @@ QListWidget::item::selected {
                   <bool>true</bool>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="pixmap">
                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/th.svg</pixmap>
@@ -4264,7 +4264,7 @@ QListWidget::item::selected {
                   </font>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="pixmap">
                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/metadata/language.svg</pixmap>
@@ -4401,7 +4401,7 @@ QListWidget::item::selected {
                   </font>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="pixmap">
                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar-plus-o.svg</pixmap>
@@ -4538,7 +4538,7 @@ QListWidget::item::selected {
                   </font>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="pixmap">
                   <pixmap resource="../../resources.qrc">:/plugins/Isogeo/resources/calendar_blue.svg</pixmap>
@@ -4914,7 +4914,7 @@ QListWidget::item::selected {
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
   <customwidget>

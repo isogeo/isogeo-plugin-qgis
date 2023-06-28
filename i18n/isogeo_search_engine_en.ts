@@ -767,32 +767,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_credits</name>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="213"/>
+        <location filename="../ui/credits/ui_credits.py" line="194"/>
         <source>Credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="214"/>
+        <location filename="../ui/credits/ui_credits.py" line="195"/>
         <source>Realization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="221"/>
+        <location filename="../ui/credits/ui_credits.py" line="197"/>
         <source>Sponsors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="222"/>
+        <location filename="../ui/credits/ui_credits.py" line="198"/>
         <source>Sources and license</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.ui" line="117"/>
+        <location filename="../ui/credits/ui_credits.py" line="196"/>
         <source>&lt;a href=&quot;https://www.isogeo.com&quot; style=&quot;color:#6480A7;text-decoration:none;&quot;&gt;Easy access to geodata!&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.ui" line="365"/>
+        <location filename="../ui/credits/ui_credits.py" line="199"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -800,12 +800,12 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_db_connections</name>
     <message>
-        <location filename="../ui/db_connections/ui_db_connections.ui" line="101"/>
+        <location filename="../ui/db_connections/ui_db_connections.ui" line="122"/>
         <source>Choose the embed connection to be used to access to each PostGIS database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/db_connections/ui_db_connections.ui" line="217"/>
+        <location filename="../ui/db_connections/ui_db_connections.ui" line="244"/>
         <source>Reload embed connection(s)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -813,52 +813,42 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_form_auth_prompt</name>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="238"/>
+        <location filename="../ui/auth/ui_authentication.py" line="245"/>
         <source>Isogeo authentication settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="244"/>
+        <location filename="../ui/auth/ui_authentication.py" line="247"/>
         <source>Application ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="245"/>
+        <location filename="../ui/auth/ui_authentication.py" line="248"/>
         <source>Application SECRET:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="247"/>
+        <location filename="../ui/auth/ui_authentication.py" line="252"/>
         <source>I&apos;ve got edition rights on app.isogeo.com</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="239"/>
+        <location filename="../ui/auth/ui_authentication.py" line="246"/>
         <source>From a file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="246"/>
-        <source>plugin-qgis-org-a1b23c4d5f6g7h8i9j10kl11mn13op14</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/auth/ui_authentication.py" line="240"/>
+        <location filename="../ui/auth/ui_authentication.py" line="250"/>
         <source>Pick your credentials file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="241"/>
+        <location filename="../ui/auth/ui_authentication.py" line="251"/>
         <source>Locate the Isogeo API credentials file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="242"/>
-        <source>Only for information, the Isogeo API base URL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/auth/ui_authentication.py" line="243"/>
+        <location filename="../ui/auth/ui_authentication.py" line="249"/>
         <source>API location:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1167,12 +1157,12 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_quicksearch_new</name>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_new.py" line="78"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_new.py" line="65"/>
         <source>Isogeo - New quicksearch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_new.py" line="81"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_new.py" line="66"/>
         <source>Quicksearch name:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1180,12 +1170,12 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_quicksearch_rename</name>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="67"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="56"/>
         <source>Isogeo - Rename quicksearch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="70"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="57"/>
         <source>Quicksearch new name:</source>
         <translation type="unfinished"></translation>
     </message>

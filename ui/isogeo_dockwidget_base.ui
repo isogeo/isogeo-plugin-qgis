@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
  <class>IsogeoDockWidgetBase</class>
  <widget class="QDockWidget" name="IsogeoDockWidgetBase">
@@ -27,7 +27,7 @@
     <normaloff>:/plugins/Isogeo/icon.png</normaloff>:/plugins/Isogeo/icon.png</iconset>
   </property>
   <property name="locale">
-   <locale language="English" country="UnitedStates"/>
+   <locale country="UnitedStates" language="English" />
   </property>
   <property name="windowTitle">
    <string notr="true">Isogeo</string>
@@ -61,7 +61,7 @@
     <property name="spacing">
      <number>5</number>
     </property>
-    <item row="0" column="0">
+    <item column="0" row="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -214,7 +214,7 @@
         <property name="spacing">
          <number>5</number>
         </property>
-        <item row="6" column="0">
+        <item column="0" row="6">
          <widget class="QgsCollapsibleGroupBox" name="grp_filters">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -263,7 +263,7 @@
            <property name="spacing">
             <number>5</number>
            </property>
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
               <layout class="QHBoxLayout" name="lyt_horiz_filters" stretch="1,1,1">
@@ -300,7 +300,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/paperclip.svg</pixmap>
@@ -399,7 +399,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/map.svg</pixmap>
@@ -508,7 +508,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/cube.svg</pixmap>
@@ -611,7 +611,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/leaf.svg</pixmap>
@@ -713,7 +713,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/phone_blue.svg</pixmap>
@@ -847,7 +847,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/tag.svg</pixmap>
@@ -918,7 +918,7 @@
                       <bool>true</bool>
                      </property>
                      <property name="currentText">
-                      <string/>
+                      <string />
                      </property>
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
@@ -927,7 +927,7 @@
                       <number>20</number>
                      </property>
                      <property name="defaultText">
-                      <string/>
+                      <string />
                      </property>
                     </widget>
                    </item>
@@ -949,7 +949,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/asterisk.svg</pixmap>
@@ -1052,7 +1052,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/users_blue.svg</pixmap>
@@ -1155,7 +1155,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/globe.svg</pixmap>
@@ -1251,7 +1251,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/gavel.svg</pixmap>
@@ -1343,7 +1343,7 @@
           </layout>
          </widget>
         </item>
-        <item row="5" column="0">
+        <item column="0" row="5">
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <property name="spacing">
            <number>5</number>
@@ -1403,10 +1403,10 @@
                  <bool>true</bool>
                 </property>
                 <property name="inputMask">
-                 <string/>
+                 <string />
                 </property>
                 <property name="text">
-                 <string/>
+                 <string />
                 </property>
                 <property name="placeholderText">
                  <string>roads, habitat, cadastral parcel, transport...</string>
@@ -1443,7 +1443,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="text">
-                 <string/>
+                 <string />
                 </property>
                 <property name="icon">
                  <iconset resource="../resources.qrc">
@@ -1507,7 +1507,7 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string/>
+                 <string />
                 </property>
                 <property name="pixmap">
                  <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/bolt.svg</pixmap>
@@ -1581,7 +1581,7 @@
           </item>
          </layout>
         </item>
-        <item row="7" column="0">
+        <item column="0" row="7">
          <layout class="QHBoxLayout" name="horizontalLayout_17">
           <property name="spacing">
            <number>5</number>
@@ -1656,7 +1656,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string/>
+             <string />
             </property>
             <property name="maxCount">
              <number>6</number>
@@ -1691,7 +1691,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string/>
+             <string />
             </property>
             <property name="maxVisibleItems">
              <number>3</number>
@@ -1735,7 +1735,7 @@
              <string>Reset all input fields</string>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -1774,7 +1774,7 @@
              <string>Save research</string>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -1790,7 +1790,7 @@
           </item>
          </layout>
         </item>
-        <item row="8" column="0">
+        <item column="0" row="8">
          <widget class="QTableWidget" name="tbl_result">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -1832,7 +1832,7 @@
           </column>
          </widget>
         </item>
-        <item row="9" column="0">
+        <item column="0" row="9">
          <layout class="QHBoxLayout" name="horizontalLayout_12">
           <property name="spacing">
            <number>5</number>
@@ -1859,7 +1859,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string notr="true"/>
+             <string notr="true" />
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -1887,7 +1887,7 @@
           <item>
            <widget class="QPushButton" name="btn_next">
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -1913,9 +1913,9 @@
        </layout>
        <zorder>grp_filters</zorder>
        <zorder>tbl_result</zorder>
-       <zorder></zorder>
-       <zorder></zorder>
-       <zorder></zorder>
+       <zorder />
+       <zorder />
+       <zorder />
       </widget>
       <widget class="QWidget" name="tab_settings">
        <property name="sizePolicy">
@@ -1953,7 +1953,7 @@
         <property name="spacing">
          <number>5</number>
         </property>
-        <item row="6" column="0">
+        <item column="0" row="6">
          <widget class="QGroupBox" name="groupBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -1996,7 +1996,7 @@
            <property name="verticalSpacing">
             <number>3</number>
            </property>
-           <item row="1" column="0">
+           <item column="0" row="1">
             <widget class="QTextBrowser" name="txt_shares">
              <property name="maximumSize">
               <size>
@@ -2013,7 +2013,7 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QHBoxLayout" name="horizontalLayout_21">
              <property name="spacing">
               <number>5</number>
@@ -2060,7 +2060,7 @@
                 </size>
                </property>
                <property name="text">
-                <string/>
+                <string />
                </property>
                <property name="icon">
                 <iconset resource="../resources.qrc">
@@ -2073,7 +2073,7 @@
           </layout>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item column="0" row="1">
          <widget class="QGroupBox" name="groupBox_2">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -2113,7 +2113,7 @@
            <property name="spacing">
             <number>5</number>
            </property>
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <property name="spacing">
               <number>3</number>
@@ -2181,7 +2181,7 @@
                   <string>Rename selected quicksearch</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2214,7 +2214,7 @@
                   <string>Delete selected quicksearch</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2274,7 +2274,7 @@
                   <string>Save current search as default</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2300,7 +2300,7 @@
                   <string>Reset default search</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2441,7 +2441,7 @@
           </layout>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item column="0" row="8">
          <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -2487,7 +2487,7 @@
            <property name="verticalSpacing">
             <number>2</number>
            </property>
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QVBoxLayout" name="verticalLayout_12">
              <property name="spacing">
               <number>3</number>
@@ -2549,7 +2549,7 @@
                   <cursorShape>PointingHandCursor</cursorShape>
                  </property>
                  <property name="toolTip">
-                  <string>Open folder of &quot;log_isogeo_plugin.log&quot; file</string>
+                  <string>Open folder of "log_isogeo_plugin.log" file</string>
                  </property>
                  <property name="autoFillBackground">
                   <bool>true</bool>
@@ -2584,7 +2584,7 @@
                   <bool>true</bool>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2650,7 +2650,7 @@
                   <bool>true</bool>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2713,7 +2713,7 @@
                   <string>Open credits popup</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2728,7 +2728,7 @@
           </layout>
          </widget>
         </item>
-        <item row="7" column="0">
+        <item column="0" row="7">
          <widget class="QGroupBox" name="groupBox_4">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -2762,7 +2762,7 @@
            <property name="spacing">
             <number>5</number>
            </property>
-           <item row="1" column="0">
+           <item column="0" row="1">
             <layout class="QVBoxLayout" name="verticalLayout">
              <property name="spacing">
               <number>3</number>
@@ -2823,7 +2823,7 @@
                   <string>Oracle databases</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                 </widget>
                </item>
@@ -2845,7 +2845,7 @@
                   <string>PostgreSQL databases</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                 </widget>
                </item>
@@ -2904,7 +2904,7 @@
                   <string>Choose to add metadata portal URL to layer properties and specify portal base URL</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2930,14 +2930,14 @@
   <customwidget>
    <class>QgsCheckableComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgscheckablecombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <connections/>
+ <connections />
 </ui>
