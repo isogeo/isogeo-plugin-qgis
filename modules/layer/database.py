@@ -597,18 +597,8 @@ class DataBaseManager:
                 user_saved = qsettings.value(dbms_prefix + connection_name + "/saveUsername")
                 connection_service = qsettings.value(dbms_prefix + connection_name + "/service")
 
-                # For "traditionnaly" registered connections
-                if password_saved == "true" and user_saved == "true":
-                    connection_dict = self.qsettings_content_parser(
-                        dbms=dbms, connection_name=connection_name
-                    )
-                    if connection_dict[0]:
-                        connection_dict = connection_dict[1]
-                    else:
-                        logger.warning(connection_dict[1])
-
                 # For connections configured using config file and service
-                elif connection_service != "" and self.pg_configfile_path:
+                if connection_service != "" and self.pg_configfile_path and dbms == "PostgreSQL":
                     connection_dict = self.config_file_parser(
                         self.pg_configfile_path, connection_service, connection_name
                     )
@@ -617,6 +607,15 @@ class DataBaseManager:
                     else:
                         logger.warning(connection_dict[1])
                         continue
+                # For "traditionnaly" registered connections
+                elif password_saved == "true" and user_saved == "true":
+                    connection_dict = self.qsettings_content_parser(
+                        dbms=dbms, connection_name=connection_name
+                    )
+                    if connection_dict[0]:
+                        connection_dict = connection_dict[1]
+                    else:
+                        logger.warning(connection_dict[1])
                 else:
                     continue
 
@@ -670,6 +669,18 @@ class DataBaseManager:
                         "password": conn_dict.get("password"),
                         "connection": connection_name,
                     }
+                elif all(
+                    conn_dict.get(key, "") == ""
+                    for key in [
+                        "database",
+                        "host",
+                        "port",
+                        "username",
+                        "password",
+                        "connection_name",
+                    ]
+                ):
+                    continue
                 else:
                     logger.warning(
                         "Invalid {} connection loaded from db_connections.json file : {}".format(
