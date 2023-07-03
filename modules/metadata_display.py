@@ -515,7 +515,7 @@ class MetadataDisplayer:
             md_lyr = QgsVectorLayer("Polygon?crs=epsg:3857", "Metadata envelope", "memory")
             coords = envelope.get("coordinates")[0]
             poly_pts = [
-                coord_transformer.transform(QgsPointXY(round(i[0], 3), round(i[1], 3)))
+                coord_transformer.transform(QgsPointXY(round(i[0], 6), round(i[1], 6)))
                 for i in coords
             ]
             feature.setGeometry(QgsGeometry.fromPolygonXY([poly_pts]))
@@ -523,14 +523,14 @@ class MetadataDisplayer:
             md_lyr = QgsVectorLayer("Polygon?crs=epsg:3857", "Metadata envelope", "memory")
             coords = envelope.get("bbox")
             poly_pts = [
-                coord_transformer.transform(QgsPointXY(round(i[0], 3), round(i[1], 3)))
+                coord_transformer.transform(QgsPointXY(round(i[0], 6), round(i[1], 6)))
                 for i in coords
             ]
             feature.setGeometry(QgsGeometry.fromPolygonXY([poly_pts]))
         elif envelope.get("type") == "Point":
             md_lyr = QgsVectorLayer("Point?crs=epsg:3857", "Metadata envelope", "memory")
             coords = envelope.get("coordinates")
-            point = QgsPointXY(round(coords[0], 3), round(coords[1], 3))
+            point = QgsPointXY(round(coords[0], 6), round(coords[1], 6))
             feature.setGeometry(QgsGeometry.fromPointXY(point))
         else:
             md_lyr = QgsVectorLayer("Polygon?crs=epsg:3857", "Metadata envelope", "memory")
