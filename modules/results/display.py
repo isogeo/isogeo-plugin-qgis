@@ -449,7 +449,7 @@ class ResultsManager(QObject):
                     )
                     pass
             # Associated service layers
-            if md.type == "vectorDataset" or md.type == "rasterDataset":
+            if md.type == "vectorDataset" or md.type == "rasterDataset" or md.type == "noGeoDataset":
                 for layer in md.serviceLayers:
                     service = layer.get("service")
                     if service is not None and service.get("format"):
