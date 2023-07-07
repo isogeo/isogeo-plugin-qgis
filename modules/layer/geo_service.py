@@ -645,60 +645,59 @@ class GeoServiceManager:
             logger.info("GetFeature available")
             pass
 
-        # SRS definition
-        if wfs_dict.get("manual"):
-            wfs_lyr = [lyr for lyr in wfs if lyr.get("typename") == layer_typename][0]
-            available_crs_options = ["EPSG:" + wfs_lyr.get("EPSG")]
-        else:
-            available_crs_options = [
-                "{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions
-            ]
-        srs = self.choose_appropriate_srs(crs_options=available_crs_options)
-
         # build URL
         li_url_params = [
             "REQUEST=GetFeature",
             "SERVICE=WFS",
             "VERSION={}".format(wfs_dict.get("version")),
             "TYPENAME={}".format(layer_typename),
-            "SRSNAME={}".format(srs),
-            "RESULTTYPE=results",
+            "RESULTTYPE=results"
         ]
-
-        # trying to set BBOX parameter as current map canvas extent
-        if "EPSG" in srs:
+        if api_layer.get("type") == "table":
+            pass
+        else:
+            # SRS definition
+            if wfs_dict.get("manual"):
+                wfs_lyr = [lyr for lyr in wfs if lyr.get("typename") == layer_typename][0]
+                available_crs_options = ["EPSG:" + wfs_lyr.get("EPSG")]
+            else:
+                available_crs_options = [
+                    "{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions
+                ]
+            srs = self.choose_appropriate_srs(crs_options=available_crs_options)
             srs_code = srs.split(":")[1]
-
             if wfs_dict.get("manual"):
                 srs_id = wfs_lyr.get("srs_id")
+                li_url_params.append("SRSNAME={}".format(srs))
+            elif len(wfs[layer_typename].crsOptions):
+                srs_id = [crsOption.id for crsOption in wfs[layer_typename].crsOptions if srs_code in str(crsOption.code)][0]
+                li_url_params.append("SRSNAME={}".format(srs))
             else:
-                srs_id = [
-                    crsOption.id
-                    for crsOption in wfs[layer_typename].crsOptions
-                    if srs_code in str(crsOption.code)
-                ][0]
+                srs_id = False
 
-            canvas_rectangle = iface.mapCanvas().extent()
-            canvas_crs = iface.mapCanvas().mapSettings().destinationCrs()
-            destination_crs = QgsCoordinateReferenceSystem(
-                int(srs_code), QgsCoordinateReferenceSystem.EpsgCrsId
-            )
-            coord_transformer = QgsCoordinateTransform(
-                canvas_crs, destination_crs, QgsProject.instance()
-            )
+            # trying to set BBOX parameter as current map canvas extent
+            if "EPSG" in srs and srs_id:
+                canvas_rectangle = iface.mapCanvas().extent()
+                canvas_crs = iface.mapCanvas().mapSettings().destinationCrs()
+                destination_crs = QgsCoordinateReferenceSystem(
+                    int(srs_code), QgsCoordinateReferenceSystem.EpsgCrsId
+                )
+                coord_transformer = QgsCoordinateTransform(
+                    canvas_crs, destination_crs, QgsProject.instance()
+                )
 
-            destCrs_rectangle = coord_transformer.transform(canvas_rectangle)
+                destCrs_rectangle = coord_transformer.transform(canvas_rectangle)
 
-            bbox_parameter = "BBOX={},{},{},{},{}&restrictToRequestBBOX=1".format(
-                destCrs_rectangle.yMinimum(),
-                destCrs_rectangle.xMinimum(),
-                destCrs_rectangle.yMaximum(),
-                destCrs_rectangle.xMaximum(),
-                srs_id,
-            )
-            li_url_params.append(bbox_parameter)
-        else:
-            pass
+                bbox_parameter = "BBOX={},{},{},{},{}&restrictToRequestBBOX=1".format(
+                    destCrs_rectangle.yMinimum(),
+                    destCrs_rectangle.xMinimum(),
+                    destCrs_rectangle.yMaximum(),
+                    destCrs_rectangle.xMaximum(),
+                    srs_id,
+                )
+                li_url_params.append(bbox_parameter)
+            else:
+                pass
 
         wfs_url_final = wfs_url_base + "&".join(li_url_params)
 
