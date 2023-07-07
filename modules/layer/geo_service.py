@@ -179,8 +179,8 @@ class GeoServiceManager:
         else:
             if service_type in self.esri_infos_dict:
                 generic_title = "{} layer ({})".format(service_type, api_layer.get("id"))
-                if len(api_layer.get("titles")):
-                    layer_title = api_layer.get("titles")[0].get("value", generic_title)
+                if api_layer.get("title", None) is not None:
+                    layer_title = api_layer.get("title")
                 else:
                     layer_title = generic_title
             else:
@@ -189,9 +189,8 @@ class GeoServiceManager:
                 else:
                     api_layer_id = api_layer.get("id")
                 generic_title = api_layer_id
-
-                if len(api_layer.get("titles")):
-                    layer_title = api_layer.get("titles")[0].get("value", generic_title)
+                if api_layer.get("title", None) is not None:
+                    layer_title = api_layer.get("title")
                 else:
                     layer_title = generic_title
 
@@ -1088,12 +1087,14 @@ class GeoServiceManager:
             error_msg = "{} <i>{}</i> - <b>Server connection failure</b>: {}".format(
                 service_type, service_dict["getCap_url"], e
             )
+            getCap_content = ""
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
         except Exception as e:
             error_msg = "{} <i>{}</i> - <b>Unable to access service capabilities</b>: {}".format(
                 service_type, service_dict["getCap_url"], e
             )
+            getCap_content = ""
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
 
