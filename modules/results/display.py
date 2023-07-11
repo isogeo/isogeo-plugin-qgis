@@ -452,7 +452,7 @@ class ResultsManager(QObject):
             if md.type == "vectorDataset" or md.type == "rasterDataset" or md.type == "noGeoDataset":
                 for layer in md.serviceLayers:
                     service = layer.get("service")
-                    if service is not None and service.get("format"):
+                    if service is not None and service.get("format") and not (service.get("format") == "efs" and layer.get("type") == "table"):
                         srv_details = {
                             "path": service.get("path", "NR"),
                             "formatVersion": service.get("formatVersion"),
@@ -491,6 +491,9 @@ class ResultsManager(QObject):
                                 )
                             )
                             pass
+                    else:
+                        pass
+
             # New association mode. For services metadata sheet, the layers
             # are stored in the purposely named include: "layers".
             elif md.type == "service":
@@ -502,17 +505,20 @@ class ResultsManager(QObject):
                     if md.format.lower() in self.service_ico_dict:
                         service_type = md.format.upper()
                         for layer in md.layers:
-                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
-                            btn_label = "{} : {}".format(service_type, layer_title)
-                            params = [service_type, layer, srv_details]
-                            basic_md = [
-                                md.title,
-                                md.abstract,
-                                md.keywords,
-                                portal_md_url,
-                            ]
-                            params.append(basic_md)
-                            add_options_dict[btn_label] = params
+                            if md.format.lower() == "efs" and layer.get("type") == "table":
+                                continue
+                            else:
+                                layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                                btn_label = "{} : {}".format(service_type, layer_title)
+                                params = [service_type, layer, srv_details]
+                                basic_md = [
+                                    md.title,
+                                    md.abstract,
+                                    md.keywords,
+                                    portal_md_url,
+                                ]
+                                params.append(basic_md)
+                                add_options_dict[btn_label] = params
                     else:
                         pass
             else:
