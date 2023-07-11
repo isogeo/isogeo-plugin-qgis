@@ -1178,10 +1178,7 @@ class GeoServiceManager:
 
         # build EFS layer URI
         efs_uri = "crs='{}' ".format(srs)
-        efs_uri += "filter='' "
         efs_uri += "url='{}{}' ".format(efs_base_url, api_layer_id)
-        efs_uri += "table'' "
-        efs_uri += "sql=''"
 
         return ("EFS", layer_title, efs_uri)
 
