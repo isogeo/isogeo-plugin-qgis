@@ -1174,7 +1174,10 @@ class GeoServiceManager:
         efs_base_url = efs_dict.get("base_url")
 
         # retrieve appropriate srs
-        srs = efs_dict.get("appropriate_srs")
+        if efs_dict.get("appropriate_srs") not in ["EPSG:None", ""] :
+            srs = efs_dict.get("appropriate_srs")
+        else:
+            srs = plg_tools.get_map_crs()
 
         # build EFS layer URI
         efs_uri = "crs='{}' ".format(srs)
