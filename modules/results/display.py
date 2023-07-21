@@ -452,7 +452,7 @@ class ResultsManager(QObject):
             if md.type == "vectorDataset" or md.type == "rasterDataset" or md.type == "noGeoDataset":
                 for layer in md.serviceLayers:
                     service = layer.get("service")
-                    if service is not None and service.get("format") and not (service.get("format") == "efs" and layer.get("type") == "table"):
+                    if service is not None and service.get("format") and not (service.get("format") in ["ems", "efs"] and layer.get("type") == "table"):
                         srv_details = {
                             "path": service.get("path", "NR"),
                             "formatVersion": service.get("formatVersion"),
@@ -505,7 +505,7 @@ class ResultsManager(QObject):
                     if md.format.lower() in self.service_ico_dict:
                         service_type = md.format.upper()
                         for layer in md.layers:
-                            if md.format.lower() == "efs" and layer.get("type") == "table":
+                            if md.format.lower() in ["ems", "efs"] and layer.get("type") == "table":
                                 continue
                             else:
                                 layer_title = geo_srv_mng.build_layer_title(service_type, layer)
