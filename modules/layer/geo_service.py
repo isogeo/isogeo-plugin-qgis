@@ -1125,13 +1125,18 @@ class GeoServiceManager:
             pass
 
         # retrieve appropriate srs from service capabilities
-        try:
-            service_dict["appropriate_srs"] = "EPSG:" + str(
-                getCap_content.get("spatialReference").get(srs_entry_name)
-            )
-        except Exception as e:
-            warning_msg = "{} {} - Unable to retrieve information about appropriate srs from service capabilities: {}".format(
-                service_type, service_dict["getCap_url"], e
+        if "spatialReference" in getCap_content:
+            if srs_entry_name in getCap_content.get("spatialReference"):
+                service_dict["appropriate_srs"] = "EPSG:" + str(
+                    getCap_content.get("spatialReference").get(srs_entry_name)
+                )
+            elif "wkt" in getCap_content.get("spatialReference"):
+                service_dict["appropriate_srs"] = QgsCoordinateReferenceSystem.fromWkt(getCap_content.get("spatialReference").get("wkt")).authid()
+            else:
+                service_dict["appropriate_srs"] = ""
+        else:
+            warning_msg = "{} {} - Unable to retrieve information about appropriate srs from service capabilities: 'spatialReference' is missing into GetCapabilities".format(
+                service_type, service_dict["getCap_url"]
             )
             logger.warning(warning_msg)
             service_dict["appropriate_srs"] = ""
@@ -1174,11 +1179,10 @@ class GeoServiceManager:
         efs_base_url = efs_dict.get("base_url")
 
         # retrieve appropriate srs
-        if efs_dict.get("appropriate_srs") not in ["EPSG:None", ""] :
+        if efs_dict.get("appropriate_srs") not in ["EPSG:None", ""]:
             srs = efs_dict.get("appropriate_srs")
         else:
             srs = plg_tools.get_map_crs()
-
         # build EFS layer URI
         efs_uri = "crs='{}' ".format(srs)
         efs_uri += "url='{}{}' ".format(efs_base_url, api_layer_id)
