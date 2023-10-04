@@ -17,6 +17,7 @@ from qgis.core import (
     QgsMessageLog,
     QgsApplication,
     QgsCoordinateReferenceSystem,
+    QgsDataSourceUri
 )
 
 from qgis.utils import iface
@@ -215,8 +216,17 @@ class LayerAdder:
         else:
             error_msg = layer.error().message()
             layer_is_ok = 0
-            # Try to create it again without specifying data provider
-            layer = QgsLayer(layer_url, layer_title)
+            # Handling QGISServer Layers : https://github.com/isogeo/isogeo-plugin-qgis/issues/463
+            layer_uri = QgsDataSourceUri()
+            for param in layer_url.split("&"):
+                key = param.split("=")[0]
+                if key == "layers":
+                    val = param.split("=")[1].replace("+", " ")
+                else:
+                    val = param.split("=")[1]
+                layer_uri.setParam(key, val)
+            layer_uri = bytes(layer_uri.encodedUri()).decode()
+            layer = QgsLayer(layer_uri, layer_title, "wms")
             if layer.isValid():
                 lyr = QgsProject.instance().addMapLayer(layer)
                 QgsMessageLog.logMessage(
@@ -225,14 +235,31 @@ class LayerAdder:
                     level=0,
                 )
                 logger.warning(
-                    "{} layer added without specifying the data provider: {}".format(
-                        service_type, layer_url
+                    "{} layer added re-building QgsDataSourceUri: {}".format(
+                        service_type, layer_uri
                     )
                 )
                 layer_is_ok = 1
+            # If the layer is still not valid
             else:
-                error_msg = layer.error().message()
-                layer_is_ok = 0
+                # Try to create it again without specifying data provider
+                layer = QgsLayer(layer_url, layer_title)
+                if layer.isValid():
+                    lyr = QgsProject.instance().addMapLayer(layer)
+                    QgsMessageLog.logMessage(
+                        message="{} service layer added: {}".format(service_type, layer_url),
+                        tag="Isogeo",
+                        level=0,
+                    )
+                    logger.warning(
+                        "{} layer added without specifying the data provider: {}".format(
+                            service_type, layer_url
+                        )
+                    )
+                    layer_is_ok = 1
+                else:
+                    error_msg = layer.error().message()
+                    layer_is_ok = 0
 
         if not layer_is_ok:
             self.invalid_layer_inform(
