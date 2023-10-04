@@ -762,17 +762,17 @@ class GeoServiceManager:
         # Update 'layers' param value in the case of multi-layer
         li_layer_name = [api_layer_id]
         li_layer_title = [layer_title]
-        if hasattr(wms_lyr, "layers"):
-            if len(wms_lyr.layers):
-                li_layer_name = []
-                li_layer_title = []
-                for layer in wms_lyr.layers:
-                    li_layer_name.append(layer.name)
-                    li_layer_title.append(layer.title)
-            else:
-                pass
-        else:
-            pass
+        # if hasattr(wms_lyr, "layers"):
+        #     if len(wms_lyr.layers):
+        #         li_layer_name = []
+        #         li_layer_title = []
+        #         for layer in wms_lyr.layers:
+        #             li_layer_name.append(layer.name)
+        #             li_layer_title.append(layer.title)
+        #     else:
+        #         pass
+        # else:
+        #     pass
 
         # WIDTH and HEIGHT parameters
         canvas_size = iface.mapCanvas().size()
