@@ -492,30 +492,33 @@ class SearchFormManager(IsogeoDockWidget):
         :rtype: str
         """
         if filter == "canvas":
-            e = iface.mapCanvas().extent()
+            extent = iface.mapCanvas().extent()
             current_epsg = plg_tools.get_map_crs()
+            logger.info("*=====* current_epsg : {}".format(current_epsg))
+            logger.info("*=====* extent : {},{},{},{}".format(extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum()))
         else:
             layer = QgsProject.instance().mapLayersByName(filter)[0]
-            e = layer.extent()
+            extent = layer.extent()
             current_epsg = layer.crs().authid()
         # epsg code as integer
         current_epsg = int(current_epsg.split(":")[1])
 
         if current_epsg == 4326:
-            coord = "{},{},{},{}".format(e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum())
+            coord = "{},{},{},{}".format(extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum())
             return coord
         elif type(current_epsg) is int:
             current_srs = QgsCoordinateReferenceSystem(
                 current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId
             )
-            wgs = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-            xform = QgsCoordinateTransform(current_srs, wgs, QgsProject.instance())
-            minimum = xform.transform(QgsPointXY(e.xMinimum(), e.yMinimum()))
-            maximum = xform.transform(QgsPointXY(e.xMaximum(), e.yMaximum()))
+            wgs84 = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+            crs_converter = QgsCoordinateTransform(current_srs, wgs84, QgsProject.instance())
+            minimum = crs_converter.transform(QgsPointXY(extent.xMinimum(), extent.yMinimum()))
+            maximum = crs_converter.transform(QgsPointXY(extent.xMaximum(), extent.yMaximum()))
             coord = "{},{},{},{}".format(minimum[0], minimum[1], maximum[0], maximum[1])
+            logger.info("*=====* extent WGS84: {},{},{},{}".format(minimum[0], minimum[1], maximum[0], maximum[1]))
             return coord
         else:
-            logger.debug("Wrong EPSG")
+            logger.warning("Wrong EPSG")
             return False
 
 
