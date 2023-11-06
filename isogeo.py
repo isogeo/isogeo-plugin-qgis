@@ -38,7 +38,7 @@ from qgis.PyQt.QtGui import QIcon
 
 # PyQGIS
 from qgis.utils import iface, plugin_times
-from qgis.core import QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle
+from qgis.core import QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle, QgsProject
 
 
 try:
@@ -622,9 +622,9 @@ class Isogeo:
 
             # Check projection settings in loaded search params
             if "epsg" in search_params:
-                epsg = int(plg_tools.get_map_crs().split(":")[1])
-                logger.debug("Specific SRS found in search params: {}".format(epsg))
-                if epsg == search_params.get("epsg"):
+                currentCrs = plg_tools.get_map_crs()
+                logger.debug("Specific CRS found in search params: {}".format(search_params.get("epsg")))
+                if currentCrs == search_params.get("epsg"):
                     canvas = iface.mapCanvas()
                     e = search_params.get("extent")
                     rect = QgsRectangle(e[0], e[1], e[2], e[3])
@@ -632,16 +632,26 @@ class Isogeo:
                     canvas.refresh()
                 else:
                     canvas = iface.mapCanvas()
-                    canvas.mapSettings().setDestinationCrs(
-                        QgsCoordinateReferenceSystem(
-                            search_params.get("epsg"),
-                            QgsCoordinateReferenceSystem.EpsgCrsId,
+                    qgs_prj = QgsProject.instance()
+
+                    # because "epsg" parameter values changed working on https://github.com/isogeo/isogeo-plugin-qgis/issues/437
+                    if QgsCoordinateReferenceSystem(search_params.get("epsg")).isValid():
+                        originCrs = QgsCoordinateReferenceSystem(search_params.get("epsg"))
+                    else:
+                        originCrs = QgsCoordinateReferenceSystem("EPSG:" + str(search_params.get("epsg")))
+                    
+                    if originCrs.isValid():
+                        qgs_prj.setCrs(originCrs)
+                        e = search_params.get("extent")
+                        rect = QgsRectangle(e[0], e[1], e[2], e[3])
+                        canvas.setExtent(rect)
+                        canvas.refresh()
+                        qgs_prj.setCrs(
+                            QgsCoordinateReferenceSystem(currentCrs)
                         )
-                    )
-                    e = search_params.get("extent")
-                    rect = QgsRectangle(e[0], e[1], e[2], e[3])
-                    canvas.setExtent(rect)
-                    canvas.refresh()
+                    else:
+                        logger.warning("No valid CRS could be build, neither from '{}' nor from '{}'".format(str(search_params.get("epsg")), "EPSG:" + str(search_params.get("epsg"))))
+                        pass
             # load request
             self.api_requester.currentUrl = search_params.get("url")
             self.api_requester.send_request()
