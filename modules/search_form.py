@@ -6,9 +6,9 @@ from collections import OrderedDict
 
 # PyQGIS
 from qgis.core import (
+    Qgis,
     QgsProject,
     QgsCoordinateReferenceSystem,
-    QgsPointXY,
     QgsCoordinateTransform,
 )
 from qgis.utils import iface
@@ -466,8 +466,7 @@ class SearchFormManager(IsogeoDockWidget):
             e = iface.mapCanvas().extent()
             extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
             params["extent"] = extent
-            epsg = int(plg_tools.get_map_crs().split(":")[1])
-            params["epsg"] = epsg
+            params["epsg"] = plg_tools.get_map_crs()
             params["coord"] = self.get_coords("canvas")
         elif params.get("geofilter") in [
             lyr.name() for lyr in QgsProject.instance().mapLayers().values()
@@ -491,35 +490,57 @@ class SearchFormManager(IsogeoDockWidget):
 
         :rtype: str
         """
+        qgs_prj = QgsProject.instance()
         if filter == "canvas":
             extent = iface.mapCanvas().extent()
-            current_epsg = plg_tools.get_map_crs()
-            logger.info("*=====* current_epsg : {}".format(current_epsg))
-            logger.info("*=====* extent : {},{},{},{}".format(extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum()))
+            currentCrs = plg_tools.get_map_crs()
         else:
-            layer = QgsProject.instance().mapLayersByName(filter)[0]
+            layer = qgs_prj.mapLayersByName(filter)[0]
             extent = layer.extent()
-            current_epsg = layer.crs().authid()
-        # epsg code as integer
-        current_epsg = int(current_epsg.split(":")[1])
+            currentCrs = layer.crs().authid()
 
-        if current_epsg == 4326:
+        # If coordinates already are WGS84 we can use them
+        if currentCrs == "EPSG:4326":
             coord = "{},{},{},{}".format(extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum())
             return coord
-        elif type(current_epsg) is int:
-            current_srs = QgsCoordinateReferenceSystem(
-                current_epsg, QgsCoordinateReferenceSystem.EpsgCrsId
-            )
-            wgs84 = QgsCoordinateReferenceSystem(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-            crs_converter = QgsCoordinateTransform(current_srs, wgs84, QgsProject.instance())
-            minimum = crs_converter.transform(QgsPointXY(extent.xMinimum(), extent.yMinimum()))
-            maximum = crs_converter.transform(QgsPointXY(extent.xMaximum(), extent.yMaximum()))
-            coord = "{},{},{},{}".format(minimum[0], minimum[1], maximum[0], maximum[1])
-            logger.info("*=====* extent WGS84: {},{},{},{}".format(minimum[0], minimum[1], maximum[0], maximum[1]))
-            return coord
+        # Else, we have to convert them to WGS84
         else:
-            logger.warning("Wrong EPSG")
-            return False
+            wgs84_crs = QgsCoordinateReferenceSystem("EPSG:4326")
+            crs_converter = QgsCoordinateTransform(QgsCoordinateReferenceSystem(currentCrs), wgs84_crs, qgs_prj)
+
+            wgs84_bounds = wgs84_crs.bounds()
+            wgs84_bounds_currentCrs = crs_converter.transformBoundingBox(wgs84_bounds, Qgis.TransformDirection(1))
+
+            # because of https://github.com/isogeo/isogeo-plugin-qgis/issues/437
+            if wgs84_bounds_currentCrs.contains(extent):
+                pass
+            else:
+                if extent.xMinimum() < wgs84_bounds_currentCrs.xMinimum():
+                    extent.setXMinimum(wgs84_bounds_currentCrs.xMinimum())
+                else:
+                    pass
+
+                if extent.yMinimum() < wgs84_bounds_currentCrs.yMinimum():
+                    extent.setYMinimum(wgs84_bounds_currentCrs.yMinimum())
+                else:
+                    pass
+
+                if extent.xMaximum() > wgs84_bounds_currentCrs.xMaximum():
+                    extent.setXMaximum(wgs84_bounds_currentCrs.xMaximum())
+                else:
+                    pass
+
+                if extent.yMaximum() > wgs84_bounds_currentCrs.yMaximum():
+                    extent.setYMaximum(wgs84_bounds_currentCrs.yMaximum())
+                else:
+                    pass
+
+            extent_wgs84 = crs_converter.transformBoundingBox(extent)
+            coord = "{},{},{},{}".format(
+                extent_wgs84.xMinimum(), extent_wgs84.yMinimum(), extent_wgs84.xMaximum(), extent_wgs84.yMaximum()
+            )
+
+            return coord
 
 
 # #############################################################################
