@@ -49,7 +49,7 @@ points_currentCRS = [
 bbox_geometry_currentCRS = QgsGeometry.fromPolygonXY([points_currentCRS])
 bbox_polygon_currentCRS = QgsFeature()
 bbox_polygon_currentCRS.setGeometry(bbox_geometry_currentCRS)
-bbox_layer_currentCRS = QgsVectorLayer("Polygon?crs=epsg:{}".format(int(str(current_crs.authid()).split(":")[1])), "BoundingBox_currentCRS", "memory")
+bbox_layer_currentCRS = QgsVectorLayer("Polygon?crs={}".format(current_crs.authid().lower()), "BoundingBox_currentCRS", "memory")
 bbox_layer_currentCRS.dataProvider().addFeatures([bbox_polygon_currentCRS])
 
 wgs84_xMin = wgs84_rectangle.xMinimum()
