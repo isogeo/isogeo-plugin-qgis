@@ -786,7 +786,8 @@ class Isogeo:
         self.cbbs_search_advanced = self.form_mng.grp_filters.findChildren(QComboBox)
         # -- Search form ------------------------------------------------------
         # search terms text input
-        self.form_mng.txt_input.editingFinished.connect(self.edited_search)
+        self.form_mng.txt_input.returnPressed.connect(self.edited_search)
+        self.form_mng.btn_search_go.pressed.connect(self.edited_search)
         # reset search button
         self.form_mng.btn_reinit.pressed.connect(self.reinitialize_search)
         # filters comboboxes
