@@ -145,12 +145,14 @@ class SearchFormManager(IsogeoDockWidget):
         else:
             return False
 
-    def update_cbb_keywords(self, tags_keywords: dict = {}, selected_keywords: list = []):
+    def update_cbb_keywords(self, tags_keywords: dict = {}, selected_keywords: list = [], selected_keywords_labels: list = []):
         """Keywords combobox is specific because items are checkable.
         See: https://github.com/isogeo/isogeo-plugin-qgis/issues/159
 
         :param dict tags_keywords: keywords found in search tags.
         :param list selected_keywords: keywords (codes) already checked.
+        :param list selected_keywords_labels: keywords (label) already checked, argument added for
+            no results searches (https://github.com/isogeo/isogeo-plugin-qgis/issues/436)
         """
         selected_keywords_lbls = self.cbb_chck_kw.checkedItems()  # for tooltip
         logger.debug(
@@ -158,7 +160,6 @@ class SearchFormManager(IsogeoDockWidget):
                 len(tags_keywords), len(selected_keywords_lbls)
             )
         )
-
         # shortcut
         model = self.cbb_chck_kw.model()
 
@@ -175,34 +176,56 @@ class SearchFormManager(IsogeoDockWidget):
         cbb_chck_kw_width = self.cbb_chck_kw.width() - 10
         cbb_chck_kw_fm = self.cbb_chck_kw.fontMetrics()
 
-        i = 0  # row index
-        for tag_label, tag_code in sorted(tags_keywords.items(), key=lambda item: item[1]):
-            item = QStandardItem()
-            # format combobox item label fit the widget width
-            tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
-            if tag_label_width > cbb_chck_kw_width:
-                item.setText(cbb_chck_kw_fm.elidedText(tag_label, 1, cbb_chck_kw_width))
-                item.setToolTip(tag_label)
-            else:
-                item.setText(tag_label)
+        # Only for no results searches, when comboboxe is filled from params and not tags
+        # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
+        if not len(tags_keywords) and len(selected_keywords) and len(selected_keywords_labels):
+            for i in range(len(selected_keywords)):
+                tag_label = selected_keywords_labels[i]
+                tag_code = selected_keywords[i]
+                item = QStandardItem()
+                # format combobox item label fit the widget width
+                tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
+                if tag_label_width > cbb_chck_kw_width:
+                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, 1, cbb_chck_kw_width))
+                    item.setToolTip(tag_code)
+                else:
+                    item.setText(tag_label)
 
-            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-            item.setData(tag_code, 32)
-            if len(selected_keywords) == 0 or tag_code not in selected_keywords:
-                item.setData(Qt.Unchecked, Qt.CheckStateRole)
-                model.setItem(i, 0, item)
-            elif tag_code in selected_keywords:
+                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                item.setData(tag_code, 32)
                 item.setData(Qt.Checked, Qt.CheckStateRole)
                 model.insertRow(0, item)
-            else:
-                pass
-            i += 1
+        # For all other searches
+        else:
+            row_i = 0  # row index
+            for tag_label, tag_code in sorted(tags_keywords.items(), key=lambda item: item[1]):
+                item = QStandardItem()
+                # format combobox item label fit the widget width
+                tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
+                if tag_label_width > cbb_chck_kw_width:
+                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, 1, cbb_chck_kw_width))
+                    item.setToolTip(tag_label)
+                else:
+                    item.setText(tag_label)
+
+                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                item.setData(tag_code, 32)
+                if len(selected_keywords) == 0 or tag_code not in selected_keywords:
+                    item.setData(Qt.Unchecked, Qt.CheckStateRole)
+                    model.setItem(row_i, 0, item)
+                elif tag_code in selected_keywords:
+                    item.setData(Qt.Checked, Qt.CheckStateRole)
+                    model.insertRow(0, item)
+                else:
+                    pass
+                row_i += 1
+            
 
         # connect keyword selected -> launch search
         model.itemChanged.connect(self.kw_sig.emit)
 
         # add tooltip with selected keywords. see: #107#issuecomment-341742142
-        if selected_keywords:
+        if len(selected_keywords):
             tooltip = "{}\n - {}".format(
                 self.tr("Selected keywords:", context=__class__.__name__),
                 "\n - ".join(selected_keywords_lbls),
@@ -305,6 +328,15 @@ class SearchFormManager(IsogeoDockWidget):
         for cbb in self.match_widget_field.keys():
             field_name = self.match_widget_field.get(cbb)
             dest_index = cbb.findData(params.get(field_name))
+            # For no result searches, we need to create items from paramas before setting index
+            # because there is no tags so comboboxes are empty 
+            # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
+            if dest_index == -1 and params.get("labels", False):
+                item_text = params.get("labels").get(field_name)
+                cbb.addItem(item_text, params.get(field_name))
+                dest_index = cbb.findData(params.get(field_name))
+            else:
+                pass
             cbb.setCurrentIndex(dest_index)
 
         # for geo filter
@@ -431,11 +463,15 @@ class SearchFormManager(IsogeoDockWidget):
         :rtype: dict
         """
         params = {}
+        # in case when the search will have no results, we need to store infos to fill comboboxes
+        # because tags will be empty  (https://github.com/isogeo/isogeo-plugin-qgis/issues/436)
+        params["labels"] = {}
         # get the data of the item which index is (comboboxes current index)
         for cbb in self.match_widget_field:
             field = self.match_widget_field.get(cbb)
             item = cbb.itemData(cbb.currentIndex())
             params[field] = item
+            params["labels"][field] = cbb.currentText()
 
         if self.cbb_geofilter.currentText() == " - ":
             params["geofilter"] = None
@@ -457,20 +493,22 @@ class SearchFormManager(IsogeoDockWidget):
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
+        labels_key_params = []
         for txt in self.cbb_chck_kw.checkedItems():
             item_index = self.cbb_chck_kw.findText(txt, Qt.MatchFixedString)
             key_params.append(self.cbb_chck_kw.itemData(item_index, 32))
+            labels_key_params.append(txt)
         params["keys"] = key_params
+        params["labels"]["keys"] = labels_key_params
         # check geographic filter
+        layer_names = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
         if params.get("geofilter") == "mapcanvas":
             e = iface.mapCanvas().extent()
             extent = [e.xMinimum(), e.yMinimum(), e.xMaximum(), e.yMaximum()]
             params["extent"] = extent
             params["epsg"] = plg_tools.get_map_crs()
             params["coord"] = self.get_coords("canvas")
-        elif params.get("geofilter") in [
-            lyr.name() for lyr in QgsProject.instance().mapLayers().values()
-        ]:
+        elif params.get("geofilter") in layer_names:
             params["coord"] = self.get_coords(params.get("geofilter"))
         else:
             pass

@@ -497,7 +497,6 @@ class Isogeo:
             level=0,
         )
         # Save entered text and filters in search form
-        self.form_mng.old_text = self.form_mng.txt_input.text()
         params = self.form_mng.save_params()
 
         # Show how many results there are
@@ -518,7 +517,7 @@ class Isogeo:
             self.form_mng.init_steps()
         else:
             logger.debug("Not default search nor reset.")
-            pass
+            self.old_text = self.form_mng.txt_input.text()  # only if not first search to avoid when current widgets status is not relevant
 
         # Filling Advanced search comboboxes from tags
         self.form_mng.pop_as_cbbs(tags)
@@ -530,7 +529,7 @@ class Isogeo:
             cbb.model().sort(0)
 
         # Putting comboboxes' selected index to the appropriate location
-        # and updating key words checkable combobox
+        # and updating keywords checkable combobox
         if self.hardReset is True:
             # In case of a hard reset, we don't have to worry about comboboxes' selected index
             logger.debug("Reset search")
@@ -540,27 +539,33 @@ class Isogeo:
             if self.savedSearch == "":
                 # Putting all the comboboxes selected index to their previous location.
                 logger.debug("Classic search case (not quicksearch)")
-                # Setting widgets to their previous index
-                self.form_mng.set_ccb_index(params=params)
-                # Updating the keywords special combobox (filling + indexing)
-                self.form_mng.update_cbb_keywords(
-                    tags_keywords=tags.get("keywords"),
-                    selected_keywords=params.get("keys"),
-                )
+                params=params
+                selected_keywords = params.get("keys")
+                quicksearch = ""
             else:
-                # Putting all the comboboxes selected index
-                # according to params found in the json file
+                # Putting all the comboboxes selected index according to params found in the json file
                 logger.debug("Quicksearch case: {}".format(self.savedSearch))
                 # Opening the json to get quick search's params
-                search_params = self.form_mng.qs_mng.load_file().get(self.savedSearch)
-                # Putting widgets to their previous states according to the json content
-                self.form_mng.set_ccb_index(params=search_params, quicksearch=self.savedSearch)
+                params = self.form_mng.qs_mng.load_file().get(self.savedSearch)
+                quicksearch = self.savedSearch
                 self.savedSearch = ""
-                # Updating the keywords special combobox (filling + indexing)
-                keywords_list = [v for k, v in search_params.items() if k.startswith("keyword")]
-                self.form_mng.update_cbb_keywords(
-                    tags_keywords=tags.get("keywords"), selected_keywords=keywords_list
-                )
+                selected_keywords = [v for k, v in params.items() if k.startswith("keyword")]
+
+            tags_keywords = tags.get("keywords")
+
+            if params.get("labels", {}).get("keys", False):
+                selected_keywords_labels = params.get("labels").get("keys")  # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
+            else:
+                selected_keywords_labels = []
+            
+            # Setting widgets to their previous index
+            self.form_mng.set_ccb_index(params=params, quicksearch=quicksearch)
+            # Updating the keywords special combobox (filling + indexing)
+            self.form_mng.update_cbb_keywords(
+                tags_keywords=tags_keywords,
+                selected_keywords=selected_keywords,
+                selected_keywords_labels=selected_keywords_labels  # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
+            )
 
         # tweaking
         plg_tools._ui_tweaker(ui_widgets=self.form_mng.tab_search.findChildren(QComboBox))
@@ -661,6 +666,8 @@ class Isogeo:
 
                 self.savedSearch = "_default"
                 search_params = saved_searches.get("_default")
+                self.old_text = search_params.get("text")
+                logger.info("*=====* {}".format(self.old_text))
 
                 self.api_requester.currentUrl = search_params.get("url")
                 self.api_requester.send_request()
@@ -670,19 +677,17 @@ class Isogeo:
 
     def edited_search(self):
         """On the Qline edited signal, decide weither a search has to be launched."""
-        try:
-            logger.debug("Editing finished signal sent.")
-        except AttributeError:
-            pass
-        if self.form_mng.txt_input.text() == self.old_text:
-            logger.debug("The lineEdit text hasn't changed." " So pass without sending a request.")
+
+        current_text = self.form_mng.txt_input.text()
+        if current_text == self.old_text:
+            logger.debug("The lineEdit text hasn't changed. So pass without sending a request.")
         else:
-            logger.debug("The line Edit text changed." " Calls the search function.")
-            if self.form_mng.txt_input.text() == "Ici c'est Isogeo !":
+            logger.debug("The line Edit text changed. Calls the search function.")
+            if current_text == "Ici c'est Isogeo !":
                 plg_tools.special_search("isogeo")
                 self.form_mng.txt_input.clear()
                 return
-            elif self.form_mng.txt_input.text() == "Picasa":
+            elif current_text == "Picasa":
                 plg_tools.special_search("picasa")
                 self.form_mng.txt_input.clear()
                 return
