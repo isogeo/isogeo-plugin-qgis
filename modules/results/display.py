@@ -133,6 +133,10 @@ class ResultsManager(QObject):
         """Display the results in a table."""
 
         logger.info("Results manager called. Displaying the results")
+        try:
+            self.tbl_result.horizontalHeader().sectionResized.disconnect()
+        except TypeError:
+            pass
 
         tbl_result = self.tbl_result
 
@@ -642,9 +646,24 @@ class ResultsManager(QObject):
                         pass
             else:
                 pass
+        hheader.sectionResized.connect(partial(self.section_resized_slot))  # https://github.com/isogeo/isogeo-plugin-qgis/issues/438
         # method ending
         return None
 
+
+    def section_resized_slot(self, *args):
+        """ https://github.com/isogeo/isogeo-plugin-qgis/issues/438
+        """
+
+        logger.info("*=====* SECTION RESIZED")
+        scrollBar_width = self.tbl_result.verticalScrollBar().sizeHint().width()
+        max_width = args[2] - scrollBar_width - 10
+
+        for i in range(self.tbl_result.rowCount()):
+            btn_title = self.tbl_result.cellWidget(i, 0)
+            btn_title.setText(btn_title.toolTip())
+            plg_tools.format_widget_title(btn_title, max_width)
+    
     # -- PRIVATE METHOD -------------------------------------------------------
     def _filepath_builder(self, metadata_path: str):
         """Build filepath from metadata path handling various cases. See: #129.
