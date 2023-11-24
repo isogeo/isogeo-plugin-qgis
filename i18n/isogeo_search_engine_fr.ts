@@ -52,7 +52,7 @@
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="508"/>
+        <location filename="../isogeo.py" line="507"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
@@ -62,27 +62,27 @@
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="506"/>
+        <location filename="../isogeo.py" line="505"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="829"/>
+        <location filename="../isogeo.py" line="845"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="605"/>
+        <location filename="../isogeo.py" line="611"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="859"/>
+        <location filename="../isogeo.py" line="875"/>
         <source>PostgreSQL databases are not supported by your QGIS installation.</source>
         <translation>Les bases de données PostgreSQL ne sont pas supportées par votre installation de QGIS.</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="870"/>
+        <location filename="../isogeo.py" line="886"/>
         <source>Oracle databases are not supported by your QGIS installation.</source>
         <translation>Les bases de données Oracle ne sont pas supportées par votre installation de QGIS.</translation>
     </message>
@@ -380,32 +380,32 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="105"/>
+        <location filename="../modules/layer/add_layer.py" line="106"/>
         <source>Service layer</source>
         <translation>La couche de service</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="108"/>
+        <location filename="../modules/layer/add_layer.py" line="109"/>
         <source>Data file layer</source>
         <translation>La couche</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="124"/>
+        <location filename="../modules/layer/add_layer.py" line="125"/>
         <source>is not valid</source>
         <translation>n&apos;est pas valide</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="127"/>
+        <location filename="../modules/layer/add_layer.py" line="128"/>
         <source>Error:</source>
         <translation>Erreur :</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="112"/>
+        <location filename="../modules/layer/add_layer.py" line="113"/>
         <source>The table</source>
         <translation>La table</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="130"/>
+        <location filename="../modules/layer/add_layer.py" line="131"/>
         <source>The layer can&apos;t be added</source>
         <translation>La couche ne peut pas être ajoutée</translation>
     </message>
@@ -605,22 +605,22 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
         <translation>Ascendant</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="206"/>
+        <location filename="../modules/search_form.py" line="229"/>
         <source>Selected keywords:</source>
         <translation>Mots-clés sélectionnés :</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="211"/>
+        <location filename="../modules/search_form.py" line="234"/>
         <source>No keyword selected</source>
         <translation>Aucun mot-clé sélectionné</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="287"/>
+        <location filename="../modules/search_form.py" line="310"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="372"/>
+        <location filename="../modules/search_form.py" line="404"/>
         <source>Display results</source>
         <translation>Affichage des résultats</translation>
     </message>
@@ -630,7 +630,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
         <translation>intersecte</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="232"/>
+        <location filename="../modules/search_form.py" line="255"/>
         <source> Map canvas</source>
         <translation> Emprise de la carte</translation>
     </message>
@@ -655,12 +655,12 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
         <translation>Date de création de la donnée</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="335"/>
+        <location filename="../modules/search_form.py" line="367"/>
         <source>Order by: </source>
         <translation>Critère de tri : </translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="340"/>
+        <location filename="../modules/search_form.py" line="372"/>
         <source>Order direction: </source>
         <translation>Sens du tri : </translation>
     </message>
