@@ -667,7 +667,6 @@ class Isogeo:
                 self.savedSearch = "_default"
                 search_params = saved_searches.get("_default")
                 self.old_text = search_params.get("text")
-                logger.info("*=====* {}".format(self.old_text))
 
                 self.api_requester.currentUrl = search_params.get("url")
                 self.api_requester.send_request()
