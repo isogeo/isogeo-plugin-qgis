@@ -625,21 +625,25 @@ class SearchFormManager(IsogeoDockWidget):
             #     message="{}".format(coord_currentCrs), tag="Isogeo", level=0
             # )
 
-            # from qgis.core import QgsGeometry, QgsFeature, QgsRenderContext, QgsVectorLayer
-            # from qgis.PyQt.QtGui import QColor
+            from qgis.core import QgsGeometry, QgsFeature, QgsRenderContext, QgsVectorLayer
+            from qgis.PyQt.QtGui import QColor
             
-            # bbox_polygon = QgsFeature()
-            # bbox_polygon.setGeometry(QgsGeometry.fromRect(extent_wgs84))
-            # bbox_layer = QgsVectorLayer("Polygon?crs=epsg:4326", "BoundingBox", "memory")
-            # bbox_layer.dataProvider().addFeatures([bbox_polygon])
+            bbox_layer_name = "BoundingBox {}".format(coord)
+            if any(lyr.name() == bbox_layer_name for lyr in qgs_prj.mapLayers().values()):
+                pass
+            else:
+                bbox_polygon = QgsFeature()
+                bbox_polygon.setGeometry(QgsGeometry.fromRect(extent_wgs84))
+                bbox_layer = QgsVectorLayer("Polygon?crs=epsg:4326", bbox_layer_name, "memory")
+                bbox_layer.dataProvider().addFeatures([bbox_polygon])
 
-            # symbols = bbox_layer.renderer().symbols(QgsRenderContext())
-            # symbol = symbols[0]
-            # symbol.setColor(QColor.fromRgb(255, 20, 147))
-            # symbol.setOpacity(0.25)
+                symbols = bbox_layer.renderer().symbols(QgsRenderContext())
+                symbol = symbols[0]
+                symbol.setColor(QColor.fromRgb(255, 20, 147))
+                symbol.setOpacity(0.25)
 
-            # qgs_prj.addMapLayer(bbox_layer)
-            # iface.mapCanvas().refresh()
+                qgs_prj.addMapLayer(bbox_layer)
+                iface.mapCanvas().refresh()
 
             return coord
 
