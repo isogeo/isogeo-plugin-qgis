@@ -10,11 +10,11 @@ with open(json_env_path, "r", encoding="utf-8") as json_file:
     env = json.load(json_file)
 
 uri = QgsDataSourceUri()
-host=env.get("ajout_couche_postgis_multigeom").get("host")
-port=env.get("ajout_couche_postgis_multigeom").get("port")
-db_name=env.get("ajout_couche_postgis_multigeom").get("db_name")
-user=env.get("ajout_couche_postgis_multigeom").get("user")
-password=env.get("ajout_couche_postgis_multigeom").get("password")
+host=env.get("ajout_couche_postgis").get("host")
+port=env.get("ajout_couche_postgis").get("port")
+db_name=env.get("ajout_couche_postgis").get("db_name")
+user=env.get("ajout_couche_postgis").get("user")
+password=env.get("ajout_couche_postgis").get("password")
 
 uri.setConnection(aHost=host, aPort=port, aDatabase=db_name, aUsername=user, aPassword=password)
 
