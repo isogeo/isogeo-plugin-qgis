@@ -517,37 +517,37 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="216"/>
+        <location filename="../modules/results/display.py" line="220"/>
         <source>Unknown geometry</source>
         <translation>Géométrie inconnue</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="207"/>
+        <location filename="../modules/results/display.py" line="211"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="210"/>
+        <location filename="../modules/results/display.py" line="214"/>
         <source>Service</source>
         <translation>Service</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="589"/>
+        <location filename="../modules/results/display.py" line="593"/>
         <source>Data file</source>
         <translation>Donnée fichier</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="531"/>
+        <location filename="../modules/results/display.py" line="535"/>
         <source>Can&apos;t be added</source>
         <translation>Non ajoutable</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="167"/>
+        <location filename="../modules/results/display.py" line="171"/>
         <source>Undefined</source>
         <translation>Non renseigné</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="213"/>
+        <location filename="../modules/results/display.py" line="217"/>
         <source>Table</source>
         <translation>Table</translation>
     </message>
@@ -555,112 +555,112 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>SearchFormManager</name>
     <message>
-        <location filename="../modules/search_form.py" line="97"/>
+        <location filename="../modules/search_form.py" line="98"/>
         <source>within</source>
         <translation>est contenu</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="97"/>
+        <location filename="../modules/search_form.py" line="98"/>
         <source>contains</source>
         <translation>contient</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Relevance</source>
         <translation>Pertinence</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Alphabetical order</source>
         <translation>Ordre alphabétique</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Data modified</source>
         <translation>Donnée modifiée</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Data created</source>
         <translation>Donnée créée</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Metadata modified</source>
         <translation>Métadonnée modifiée</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Metadata created</source>
         <translation>Métadonnée créée</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="119"/>
+        <location filename="../modules/search_form.py" line="120"/>
         <source>Descending</source>
         <translation>Descendant</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="119"/>
+        <location filename="../modules/search_form.py" line="120"/>
         <source>Ascending</source>
         <translation>Ascendant</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="229"/>
+        <location filename="../modules/search_form.py" line="230"/>
         <source>Selected keywords:</source>
         <translation>Mots-clés sélectionnés :</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="234"/>
+        <location filename="../modules/search_form.py" line="235"/>
         <source>No keyword selected</source>
         <translation>Aucun mot-clé sélectionné</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="310"/>
+        <location filename="../modules/search_form.py" line="311"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="404"/>
+        <location filename="../modules/search_form.py" line="405"/>
         <source>Display results</source>
         <translation>Affichage des résultats</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="97"/>
+        <location filename="../modules/search_form.py" line="98"/>
         <source>intersects</source>
         <translation>intersecte</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="255"/>
+        <location filename="../modules/search_form.py" line="256"/>
         <source> Map canvas</source>
         <translation> Emprise de la carte</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Metadata modification date</source>
         <translation>Date de dernière modification de la métadonnée</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Metadata creation date</source>
         <translation>Date de création de la métadonnée</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Data modification date</source>
         <translation>Date de dernière modification de la donnée</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Data creation date</source>
         <translation>Date de création de la donnée</translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="367"/>
+        <location filename="../modules/search_form.py" line="368"/>
         <source>Order by: </source>
         <translation>Critère de tri : </translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="372"/>
+        <location filename="../modules/search_form.py" line="373"/>
         <source>Order direction: </source>
         <translation>Sens du tri : </translation>
     </message>

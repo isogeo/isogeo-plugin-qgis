@@ -515,37 +515,37 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="216"/>
+        <location filename="../modules/results/display.py" line="220"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="207"/>
+        <location filename="../modules/results/display.py" line="211"/>
         <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="210"/>
+        <location filename="../modules/results/display.py" line="214"/>
         <source>Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="589"/>
+        <location filename="../modules/results/display.py" line="593"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="531"/>
+        <location filename="../modules/results/display.py" line="535"/>
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="167"/>
+        <location filename="../modules/results/display.py" line="171"/>
         <source>Undefined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="213"/>
+        <location filename="../modules/results/display.py" line="217"/>
         <source>Table</source>
         <translation type="unfinished"></translation>
     </message>
@@ -553,112 +553,112 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>SearchFormManager</name>
     <message>
-        <location filename="../modules/search_form.py" line="97"/>
+        <location filename="../modules/search_form.py" line="98"/>
         <source>within</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="97"/>
+        <location filename="../modules/search_form.py" line="98"/>
         <source>contains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Relevance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Alphabetical order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Data modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Data created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Metadata modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Metadata created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="119"/>
+        <location filename="../modules/search_form.py" line="120"/>
         <source>Descending</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="119"/>
+        <location filename="../modules/search_form.py" line="120"/>
         <source>Ascending</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="229"/>
+        <location filename="../modules/search_form.py" line="230"/>
         <source>Selected keywords:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="234"/>
+        <location filename="../modules/search_form.py" line="235"/>
         <source>No keyword selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="310"/>
+        <location filename="../modules/search_form.py" line="311"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="404"/>
+        <location filename="../modules/search_form.py" line="405"/>
         <source>Display results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="97"/>
+        <location filename="../modules/search_form.py" line="98"/>
         <source>intersects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="255"/>
+        <location filename="../modules/search_form.py" line="256"/>
         <source> Map canvas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Metadata modification date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Metadata creation date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Data modification date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="111"/>
+        <location filename="../modules/search_form.py" line="112"/>
         <source>Data creation date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="367"/>
+        <location filename="../modules/search_form.py" line="368"/>
         <source>Order by: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="372"/>
+        <location filename="../modules/search_form.py" line="373"/>
         <source>Order direction: </source>
         <translation type="unfinished"></translation>
     </message>
