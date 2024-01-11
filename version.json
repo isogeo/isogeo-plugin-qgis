@@ -5,7 +5,7 @@
     },
     "compliance":{
         "api": {
-            "minimum": "2.21.2"
+            "minimum": "2.22.7"
         }
     },
     "extension": "zip"
