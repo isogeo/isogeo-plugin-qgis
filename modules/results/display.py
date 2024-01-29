@@ -271,24 +271,24 @@ class ResultsManager(QObject):
                         and "." in md.name
                     ):
                         available_connections = [
-                            ora_conn
-                            for ora_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
+                            pg_conn
+                            for pg_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
                                 "connections"
                             )
                             if (
-                                md.path == ora_conn.get("database")
-                                or md.path == ora_conn.get("database_alias")
+                                md.path == pg_conn.get("database")
+                                or md.path == pg_conn.get("database_alias")
                             )
-                            and ora_conn.get("prefered")
+                            and pg_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
-                                ora_conn
-                                for ora_conn in self.db_mng.dbms_specifics_infos.get(
+                                pg_conn
+                                for pg_conn in self.db_mng.dbms_specifics_infos.get(
                                     "PostgreSQL"
                                 ).get("connections")
-                                if md.path == ora_conn.get("database")
-                                or md.path == ora_conn.get("database_alias")
+                                if md.path == pg_conn.get("database")
+                                or md.path == pg_conn.get("database_alias")
                             ]
                         else:
                             pass
@@ -650,7 +650,6 @@ class ResultsManager(QObject):
         # method ending
         return None
 
-
     def section_resized_slot(self, *args):
         """ https://github.com/isogeo/isogeo-plugin-qgis/issues/438
         """
@@ -663,7 +662,7 @@ class ResultsManager(QObject):
             btn_title = self.tbl_result.cellWidget(i, 0)
             btn_title.setText(btn_title.toolTip())
             plg_tools.format_widget_title(btn_title, max_width)
-    
+
     # -- PRIVATE METHOD -------------------------------------------------------
     def _filepath_builder(self, metadata_path: str):
         """Build filepath from metadata path handling various cases. See: #129.
