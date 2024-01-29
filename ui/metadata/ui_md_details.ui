@@ -45,7 +45,7 @@
    <bool>true</bool>
   </property>
   <property name="locale">
-   <locale country="UnitedStates" language="English" />
+   <locale language="English" country="UnitedStates" />
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
@@ -66,7 +66,7 @@
    <property name="spacing">
     <number>4</number>
    </property>
-   <item column="1" row="0">
+   <item row="0" column="1">
     <layout class="QVBoxLayout" name="verticalLayout_32">
      <property name="spacing">
       <number>4</number>
@@ -304,7 +304,7 @@ QListWidget::item::selected {
      </item>
     </layout>
    </item>
-   <item column="3" row="0" rowspan="2">
+   <item row="0" column="3" rowspan="2">
     <layout class="QVBoxLayout" name="verticalLayout_13">
      <property name="spacing">
       <number>4</number>
@@ -344,7 +344,7 @@ QListWidget::item::selected {
         <number>0</number>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="md_general">
         <property name="sizePolicy">
@@ -405,6 +405,9 @@ QListWidget::item::selected {
            </property>
            <property name="wordWrap">
             <bool>true</bool>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
            </property>
           </widget>
          </item>
@@ -852,7 +855,7 @@ QListWidget::item::selected {
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>451</width>
+                  <width>452</width>
                   <height>198</height>
                  </rect>
                 </property>
@@ -1150,8 +1153,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>482</width>
-                 <height>361</height>
+                 <width>98</width>
+                 <height>28</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -1289,8 +1292,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>482</width>
-                 <height>365</height>
+                 <width>98</width>
+                 <height>28</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -1461,7 +1464,7 @@ QListWidget::item::selected {
                 <property name="spacing">
                  <number>4</number>
                 </property>
-                <item column="5" row="1">
+                <item row="1" column="5">
                  <widget class="QLabel" name="val_data_update">
                   <property name="font">
                    <font>
@@ -1476,7 +1479,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="0">
+                <item row="0" column="3">
                  <spacer name="horiz_spacer_data_update">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1489,7 +1492,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="5" row="0">
+                <item row="0" column="5">
                  <widget class="QLabel" name="val_data_crea">
                   <property name="font">
                    <font>
@@ -1504,7 +1507,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="0">
+                <item row="0" column="1">
                  <widget class="QLabel" name="ico_data_crea">
                   <property name="minimumSize">
                    <size>
@@ -1532,7 +1535,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="1">
+                <item row="1" column="3">
                  <spacer name="horizontalSpacer">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1545,7 +1548,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="1" row="1">
+                <item row="1" column="1">
                  <widget class="QLabel" name="ico_data_update">
                   <property name="minimumSize">
                    <size>
@@ -1573,7 +1576,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="0">
+                <item row="0" column="2">
                  <widget class="QLabel" name="lbl_data_crea">
                   <property name="font">
                    <font>
@@ -1588,7 +1591,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="1">
+                <item row="1" column="2">
                  <widget class="QLabel" name="lbl_data_update">
                   <property name="font">
                    <font>
@@ -1630,7 +1633,7 @@ QListWidget::item::selected {
                 <property name="spacing">
                  <number>4</number>
                 </property>
-                <item column="2" row="2">
+                <item row="2" column="2">
                  <spacer name="horizontalSpacer_3">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1643,7 +1646,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="0" row="1">
+                <item row="1" column="0">
                  <widget class="QLabel" name="ico_valid_end">
                   <property name="minimumSize">
                    <size>
@@ -1671,7 +1674,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="1">
+                <item row="1" column="3">
                  <widget class="QLabel" name="val_valid_end">
                   <property name="font">
                    <font>
@@ -1686,7 +1689,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="0">
+                <item row="0" column="0">
                  <widget class="QLabel" name="ico_valid_start">
                   <property name="minimumSize">
                    <size>
@@ -1714,7 +1717,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="0">
+                <item row="0" column="1">
                  <widget class="QLabel" name="lbl_valid_start">
                   <property name="font">
                    <font>
@@ -1729,7 +1732,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="0">
+                <item row="0" column="3">
                  <widget class="QLabel" name="val_valid_start">
                   <property name="font">
                    <font>
@@ -1744,7 +1747,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="1" row="1">
+                <item row="1" column="1">
                  <widget class="QLabel" name="lbl_valid_end">
                   <property name="font">
                    <font>
@@ -1759,7 +1762,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="2" row="1">
+                <item row="1" column="2">
                  <spacer name="horiz_spacer_valid_end">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1772,7 +1775,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="2" row="0">
+                <item row="0" column="2">
                  <spacer name="horiz_spacer_valid_start">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -1785,7 +1788,7 @@ QListWidget::item::selected {
                   </property>
                  </spacer>
                 </item>
-                <item column="1" row="2">
+                <item row="2" column="1">
                  <widget class="QLabel" name="lbl_frequency">
                   <property name="font">
                    <font>
@@ -1800,7 +1803,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="0" row="2">
+                <item row="2" column="0">
                  <widget class="QLabel" name="ico_frequency">
                   <property name="minimumSize">
                    <size>
@@ -1836,7 +1839,7 @@ QListWidget::item::selected {
                   </property>
                  </widget>
                 </item>
-                <item column="3" row="2">
+                <item row="2" column="3">
                  <widget class="QLabel" name="val_frequency">
                   <property name="font">
                    <font>
@@ -1920,7 +1923,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>118</height>
+                 <height>122</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -2074,7 +2077,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>118</height>
+                 <height>123</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -2255,7 +2258,7 @@ QListWidget::item::selected {
                  <x>0</x>
                  <y>0</y>
                  <width>482</width>
-                 <height>118</height>
+                 <height>122</height>
                 </rect>
                </property>
                <property name="sizePolicy">
@@ -3363,8 +3366,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>482</width>
-                 <height>160</height>
+                 <width>98</width>
+                 <height>28</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3631,8 +3634,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>482</width>
-                 <height>361</height>
+                 <width>98</width>
+                 <height>28</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -3767,8 +3770,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>482</width>
-                 <height>365</height>
+                 <width>98</width>
+                 <height>28</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -3925,8 +3928,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>482</width>
-                 <height>361</height>
+                 <width>98</width>
+                 <height>28</height>
                 </rect>
                </property>
                <property name="maximumSize">
@@ -4067,8 +4070,8 @@ QListWidget::item::selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>482</width>
-                 <height>365</height>
+                 <width>98</width>
+                 <height>28</height>
                 </rect>
                </property>
                <property name="maximumSize">
