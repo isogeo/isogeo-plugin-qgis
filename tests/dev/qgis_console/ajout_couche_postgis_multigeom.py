@@ -17,7 +17,7 @@ user=env.get("ajout_couche_postgis_multigeom").get("user")
 password=env.get("ajout_couche_postgis_multigeom").get("password")
 
 schema_name = "sample"
-table_name = "multigeom_2154"
+table_name = "dtng_with_aliases"
 
 uri.setConnection(aHost=host, aPort=port, aDatabase=db_name, aUsername=user, aPassword=password)
 

@@ -313,6 +313,7 @@ class ResultsManager(QObject):
                                 else:
                                     connection["uri"] = conn[0]
                                     connection["tables"] = conn[1]
+                                    connection["db_connector"] = conn[2]
 
                             tables_infos = connection.get("tables")
                             if tables_infos == 0:

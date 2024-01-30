@@ -504,7 +504,7 @@ class DataBaseManager:
 
         li_table_infos = [infos for infos in c.getTables()]
 
-        return uri, li_table_infos
+        return uri, li_table_infos, c
 
     def establish_oracle_connection(
         self,
