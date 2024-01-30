@@ -5,9 +5,9 @@
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
     // PyQt Integration
-    "pyqt-integration.qtdesigner.path": "C:/OSGeo4W64/bin/qgis-ltr-designer.bat",
-    "pyqt-integration.pyuic.cmd": "C:\\OSGEO4~1\\apps\\Python37\\Scripts\\pyuic5.bat",
-    "pyqt-integration.pylupdate.cmd": "C:\\OSGEO4~1\\apps\\Python37\\Scripts\\pylupdate5.bat",
-    "pyqt-integration.pyrcc.cmd": "C:\\OSGEO4~1\\apps\\Python37\\Scripts\\pyrcc5.bat",
+    "pyqt-integration.qtdesigner.path": "C:\\Program Files\\QGIS 3.28.4\\bin\\qgis-ltr-designer.bat",
+    "pyqt-integration.pyuic.cmd": "C:\\Program Files\\QGIS 3.28.4\\apps\\Python39\\Scripts\\pyuic5.exe",
+    "pyqt-integration.pylupdate.cmd": "C:\\Program Files\\QGIS 3.28.4\\apps\\Python39\\Scripts\\pylupdate5.exe",
+    "pyqt-integration.pyrcc.cmd": "C:\\Program Files\\QGIS 3.28.4\\apps\\Python39\\Scripts\\pyrcc5.exe",
     "pyqt-integration.pyrcc.compile.filepath": "${workspace}/${qrc_name}.py"
 }
