@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR">
 <context>
     <name>ApiRequester</name>
     <message>
-        <location filename="../modules/api/request.py" line="478"/>
+        <location filename="../modules/api/request.py" line="477"/>
         <source>Dataset</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19,22 +20,22 @@
 <context>
     <name>DataBaseManager</name>
     <message>
-        <location filename="../modules/layer/database.py" line="753"/>
+        <location filename="../modules/layer/database.py" line="748"/>
         <source>Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="757"/>
+        <location filename="../modules/layer/database.py" line="752"/>
         <source>Connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="823"/>
+        <location filename="../modules/layer/database.py" line="818"/>
         <source> - Configuration of database connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="827"/>
+        <location filename="../modules/layer/database.py" line="822"/>
         <source>Choose the embed connection to be used to access to each {} database</source>
         <translation type="unfinished"></translation>
     </message>
@@ -42,47 +43,47 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="359"/>
+        <location filename="../isogeo.py" line="358"/>
         <source>&amp;Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="332"/>
+        <location filename="../isogeo.py" line="331"/>
         <source>Search within Isogeo catalogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="507"/>
+        <location filename="../isogeo.py" line="506"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="443"/>
+        <location filename="../isogeo.py" line="442"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="505"/>
+        <location filename="../isogeo.py" line="504"/>
         <source> results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="845"/>
+        <location filename="../isogeo.py" line="842"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="611"/>
+        <location filename="../isogeo.py" line="608"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="875"/>
+        <location filename="../isogeo.py" line="872"/>
         <source>PostgreSQL databases are not supported by your QGIS installation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="886"/>
+        <location filename="../isogeo.py" line="883"/>
         <source>Oracle databases are not supported by your QGIS installation.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -358,17 +359,17 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="453"/>
+        <location filename="../modules/tools.py" line="452"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="365"/>
+        <location filename="../modules/tools.py" line="364"/>
         <source>Alert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="365"/>
+        <location filename="../modules/tools.py" line="364"/>
         <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
@@ -378,32 +379,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="106"/>
+        <location filename="../modules/layer/add_layer.py" line="108"/>
         <source>Service layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="109"/>
+        <location filename="../modules/layer/add_layer.py" line="111"/>
         <source>Data file layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="125"/>
+        <location filename="../modules/layer/add_layer.py" line="127"/>
         <source>is not valid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="128"/>
+        <location filename="../modules/layer/add_layer.py" line="130"/>
         <source>Error:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="113"/>
+        <location filename="../modules/layer/add_layer.py" line="115"/>
         <source>The table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="131"/>
+        <location filename="../modules/layer/add_layer.py" line="133"/>
         <source>The layer can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
@@ -429,42 +430,42 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>MetadataDisplayer</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="125"/>
+        <location filename="../modules/metadata_display.py" line="123"/>
         <source>Undefined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="435"/>
+        <location filename="../modules/metadata_display.py" line="433"/>
         <source>unknown owner name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="439"/>
+        <location filename="../modules/metadata_display.py" line="437"/>
         <source>unknown owner email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="443"/>
+        <location filename="../modules/metadata_display.py" line="441"/>
         <source>unknown owner phone number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="447"/>
+        <location filename="../modules/metadata_display.py" line="445"/>
         <source>unknown owner adress</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="451"/>
+        <location filename="../modules/metadata_display.py" line="449"/>
         <source>unknown owner city</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="455"/>
+        <location filename="../modules/metadata_display.py" line="453"/>
         <source>unknown owner country</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="475"/>
+        <location filename="../modules/metadata_display.py" line="473"/>
         <source>unknown</source>
         <translation type="unfinished"></translation>
     </message>
@@ -530,12 +531,12 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="593"/>
+        <location filename="../modules/results/display.py" line="594"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="535"/>
+        <location filename="../modules/results/display.py" line="536"/>
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
@@ -856,282 +857,282 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_metadata_details</name>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1880"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1884"/>
         <source>Isogeo Metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1885"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1889"/>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1887"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1891"/>
         <source>Feature attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1889"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1893"/>
         <source>Contacts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1891"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1895"/>
         <source>History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1893"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1897"/>
         <source>Geography</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1974"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1978"/>
         <source>Licenses</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1899"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1903"/>
         <source>Advanced</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1901"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1905"/>
         <source>Edit it on Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1912"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1916"/>
         <source>INSPIRE themes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1909"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1913"/>
         <source>Keywords</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1915"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1919"/>
         <source>Abstract</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1984"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1988"/>
         <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1985"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1989"/>
         <source>Metadata owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1919"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1923"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1921"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1925"/>
         <source>Alias</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1923"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1927"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1952"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1956"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1926"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1930"/>
         <source>Point of contact</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1928"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1932"/>
         <source>Others contacts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1930"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1934"/>
         <source>Data history</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1939"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1943"/>
         <source>Updated every:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1983"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1987"/>
         <source>Last update:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1933"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1937"/>
         <source>Creation date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1936"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1940"/>
         <source>Validity period start:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1938"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1942"/>
         <source>Validity period end:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1947"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1951"/>
         <source>Last modifications</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1950"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1954"/>
         <source>Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1953"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1957"/>
         <source>Technical informations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1962"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1966"/>
         <source>Scale:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1960"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1964"/>
         <source>SRS:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1964"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1968"/>
         <source>Resolution:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1954"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1958"/>
         <source>Format:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1956"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1960"/>
         <source>Features count:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1958"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1962"/>
         <source>Geometry type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1969"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1973"/>
         <source>Bounding box preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1976"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1980"/>
         <source>Limitations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1987"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1991"/>
         <source>wg_email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1989"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1993"/>
         <source>wg_address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1988"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1992"/>
         <source>wg_phone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1990"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1994"/>
         <source>wg_pc_city</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1991"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1995"/>
         <source>wg_country</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1978"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1982"/>
         <source>Metadata properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1981"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1985"/>
         <source>Created:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1943"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1947"/>
         <source>Collection context</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1945"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1949"/>
         <source>Collection method</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1979"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1983"/>
         <source>Language: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1895"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1899"/>
         <source>Quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1986"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1990"/>
         <source>wg_owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1967"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1971"/>
         <source>Geographical context</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1970"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1974"/>
         <source>Specifications</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1972"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1976"/>
         <source>Topological consistency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1906"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1910"/>
         <source>Group themes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1902"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1906"/>
         <source>Owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1905"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1909"/>
         <source>Group Themes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1941"/>
+        <location filename="../ui/metadata/ui_md_details.py" line="1945"/>
         <source>Validity comment</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1183,46 +1184,46 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>isogeo_tr</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="318"/>
+        <location filename="../modules/metadata_display.py" line="316"/>
         <source>quality</source>
         <comment>isConform</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="320"/>
+        <location filename="../modules/metadata_display.py" line="318"/>
         <source>quality</source>
         <comment>isNotConform</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="232"/>
+        <location filename="../modules/metadata_display.py" line="230"/>
         <source>roles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="259"/>
+        <location filename="../modules/metadata_display.py" line="257"/>
         <source>frequencyTypes</source>
         <comment>frequencyUpdateHelp</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="259"/>
+        <location filename="../modules/metadata_display.py" line="257"/>
         <source>frequencyShortTypes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="392"/>
+        <location filename="../modules/metadata_display.py" line="390"/>
         <source>conditions</source>
         <comment>noLicense</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="406"/>
+        <location filename="../modules/metadata_display.py" line="404"/>
         <source>limitations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="412"/>
+        <location filename="../modules/metadata_display.py" line="410"/>
         <source>restrictions</source>
         <translation type="unfinished"></translation>
     </message>
