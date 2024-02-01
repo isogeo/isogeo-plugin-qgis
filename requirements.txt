@@ -17,7 +17,7 @@ black
 flake8
 pre-commit
 pylint
-pyqt5-tools==5.13.*
+pyqt5-tools==5.15.*
 pytest
 pytest-cov
 python-dotenv
