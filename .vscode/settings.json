@@ -1,13 +1,13 @@
 {
     "editor.rulers": [100],
     "editor.wordWrapColumn": 100,
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter"
-    },
     // PyQt Integration
     "pyqt-integration.qtdesigner.path": "C:\\Program Files\\QGIS 3.28.4\\bin\\qgis-ltr-designer.bat",
     "pyqt-integration.pyuic.cmd": "C:\\Program Files\\QGIS 3.28.4\\apps\\Python39\\Scripts\\pyuic5.exe",
     "pyqt-integration.pylupdate.cmd": "C:\\Program Files\\QGIS 3.28.4\\apps\\Python39\\Scripts\\pylupdate5.exe",
     "pyqt-integration.pyrcc.cmd": "C:\\Program Files\\QGIS 3.28.4\\apps\\Python39\\Scripts\\pyrcc5.exe",
-    "pyqt-integration.pyrcc.compile.filepath": "${workspace}/${qrc_name}.py"
+    "pyqt-integration.pyrcc.compile.filepath": "${workspace}/${qrc_name}.py",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    }
 }
