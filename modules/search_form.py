@@ -15,7 +15,7 @@ from qgis.core import (
 from qgis.utils import iface
 
 # PyQT
-from qgis.PyQt.QtCore import pyqtSignal, QSettings, Qt, QEvent
+from qgis.PyQt.QtCore import pyqtSignal, Qt, QEvent
 from qgis.PyQt.QtWidgets import QComboBox
 from qgis.PyQt.QtGui import QIcon, QStandardItem
 
@@ -27,6 +27,7 @@ from .tools import IsogeoPlgTools
 from .quick_search import QuickSearchManager
 from .portal_base_url import PortalURLManager
 from .results import ResultsManager
+from .settings_manager import SettingsManager
 
 # ############################################################################
 # ########## Globals ###############
@@ -37,7 +38,7 @@ msgBar = iface.messageBar()
 
 plg_tools = IsogeoPlgTools()
 
-qsettings = QSettings()
+settings_mng = SettingsManager()
 # icons
 ico_od_asc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-asc.svg")
 ico_od_desc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-desc.svg")
@@ -514,7 +515,7 @@ class SearchFormManager(IsogeoDockWidget):
         else:
             pass
         # saving params in QSettings
-        qsettings.setValue("isogeo/settings/georelation", params.get("operation"))
+        settings_mng.set_value("isogeo/settings/georelation", params.get("operation"))
         return params
 
     def get_coords(self, filter: str):

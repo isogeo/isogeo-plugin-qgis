@@ -2,16 +2,38 @@
 #! python3  # noqa: E265
 
 # Standard library
+from pathlib import Path
 import logging
+
+# PyQT
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator
 
 # PyQGIS
 from qgis.gui import QgsMessageBar
+
+# submodule
+from .settings_manager import SettingsManager
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
 logger = logging.getLogger("IsogeoQgisPlugin")
+settings_mng = SettingsManager()
+
+
+# initialize locale
+locale = settings_mng.get_locale()
+plugin_dir = Path(__file__).parents[1]
+
+i18n_file_path = plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
+
+if i18n_file_path.exists():
+    translator = QTranslator()
+    translator.load(str(i18n_file_path))
+    QCoreApplication.installTranslator(translator)
+else:
+    pass
 
 # ############################################################################
 # ########## Classes ###############
@@ -21,12 +43,11 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 class UserInformer:
     """A basic class to manage the displaying of message to the user."""
 
-    def __init__(self, message_bar: object, trad: object):
+    def __init__(self, message_bar: object):
         if isinstance(message_bar, QgsMessageBar):
             self.bar = message_bar
         else:
             raise TypeError
-        self.tr = trad
 
     def display(self, message: str, duration: int = 6, level: int = 1):
         """A simple relay in charge of displaying messages to the user in the message
@@ -50,14 +71,13 @@ class UserInformer:
         """
         msg_dict = {
             "path": [
-                self.tr("The specified file does not exist.", context=__class__.__name__),
+                self.tr("The specified file does not exist."),
                 5,
                 1,
             ],
             "file": [
                 self.tr(
                     "The selected credentials file's format is not valid.",
-                    context=__class__.__name__,
                 ),
                 5,
                 1,
@@ -65,7 +85,6 @@ class UserInformer:
             "ok": [
                 self.tr(
                     "Authentication file is valid. Asking for authorization to Isogeo's" " API.",
-                    context=__class__.__name__,
                 ),
                 5,
                 0,
@@ -94,39 +113,32 @@ class UserInformer:
             "creds_issue": self.tr(
                 "ID and SECRET could be invalid. Provide them again."
                 " If this error keeps happening, please report it in the bug tracker.",
-                context=__class__.__name__,
             ),
             "proxy_issue": self.tr(
                 "Proxy error found. Check your OS and QGIS proxy configuration."
                 "If this error keeps happening, please report it in the bug tracker.",
-                context=__class__.__name__,
             ),
             "shares_issue": self.tr(
                 "The script is looping. Make sure you shared a catalog with the plugin "
                 "and check your Internet connection. If this error keeps happening, "
                 "please report it in the bug tracker.",
-                context=__class__.__name__,
             ),
             "unkown_error": self.tr(
                 "Request to Isogeo's API failed : unkown error found. Please,"
                 " report it in the bug tracker.",
-                context=__class__.__name__,
             ),
             "unkonw_reply": self.tr(
                 "API authentication failed : unexpected API's reply. Please,"
                 " report it in the bug tracker.",
-                context=__class__.__name__,
             ),
             "internet_issue": self.tr(
                 "Request to Isogeo's API failed : please check your Internet connection"
                 " and your proxy configuration. If this error keeps happening, please "
                 "report it in the bug tracker.",
-                context=__class__.__name__,
             ),
             "config_issue": self.tr(
                 "Search request to Isogeo's API failed : please check that 'api_base_url' and "
                 "'api_auth_url' URLs specified into config.json file are pointing to the same API.",
-                context=__class__.__name__,
             ),
         }
         if api_sig in list(msg_dict.keys()):
@@ -147,7 +159,6 @@ class UserInformer:
                 "No share feeds the plugin. If you want to access resources via the "
                 "plugin, you must share at least one catalog containing at least one "
                 "metadata with it.",
-                context=__class__.__name__,
             )
         }
         if shares_sig in list(msg_dict.keys()):
@@ -164,9 +175,9 @@ class UserInformer:
             msg = (
                 "<b>"
                 + (
-                    self.tr("This data is subject to ", context=__class__.__name__)
+                    self.tr("This data is subject to ")
                     + str(len(lim_sig))
-                    + self.tr(" legal limitation(s) :", context=__class__.__name__)
+                    + self.tr(" legal limitation(s) :")
                 )
                 + "</b>"
             )
@@ -176,8 +187,21 @@ class UserInformer:
                     msg += lim.description
                 else:
                     msg += "<i>"
-                    msg += self.tr("No description provided", context=__class__.__name__)
+                    msg += self.tr("No description provided")
                     msg += "</i>"
             self.display(message=msg, duration=14, level=0)
         else:
             raise TypeError
+
+    # noinspection PyMethodMayBeStatic
+    def tr(self, message):
+        """Get the translation for a string using Qt translation API.
+
+        We implement this ourselves since we do not inherit QObject.
+        :param message: String for translation.
+        :type message: str, QString
+        :returns: Translated version of message.
+        :rtype: QString
+        """
+        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
+        return QCoreApplication.translate(__class__.__name__, message)

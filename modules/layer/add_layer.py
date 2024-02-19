@@ -6,7 +6,6 @@ import logging
 import os
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QMessageBox
 
 # PyQGIS
@@ -32,7 +31,6 @@ from ..layer.geo_service import GeoServiceManager
 # ########## Globals ###############
 # ##################################
 
-qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_tools = IsogeoPlgTools()

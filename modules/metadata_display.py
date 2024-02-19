@@ -20,7 +20,7 @@ from qgis.core import (
 )
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, Qt, QSize
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QLabel
 
@@ -30,14 +30,17 @@ from .isogeo_pysdk import IsogeoTranslator
 # Plugin modules
 from .tools import IsogeoPlgTools
 
-# UI module
+# UI classes
 from ..ui.metadata.dlg_md_details import IsogeoMdDetails
+
+# Plugin modules
+from .settings_manager import SettingsManager
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-qsettings = QSettings()
+settings_mng = SettingsManager()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_tools = IsogeoPlgTools()
@@ -92,15 +95,7 @@ class MetadataDisplayer:
         :param md dict: Isogeo metadata dict
         """
         logger.info("Displaying the whole metadata sheet.")
-        try:
-            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
-        except TypeError as e:
-            logger.error(
-                "Bad type in QSettings: {}. Original error: {}".format(
-                    type(qsettings.value("locale/userLocale")), e
-                )
-            )
-            locale = "fr"
+        locale = settings_mng.get_locale()
         isogeo_tr = IsogeoTranslator(locale)
 
         # clean map canvas
@@ -480,7 +475,7 @@ class MetadataDisplayer:
             self.app_base_url, wg_id, md.get("_id")
         )
 
-        self.complete_md.btn_md_edit.setEnabled(int(qsettings.value("isogeo/user/editor", 1)))
+        self.complete_md.btn_md_edit.setEnabled(int(settings_mng.get_value("isogeo/user/editor", 0)))
 
         # -- DISPLAY ---------------------------------------------------------
         self.fields_displayer(md.get("type"), md.get("series"))

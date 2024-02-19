@@ -31,7 +31,7 @@ from logging.handlers import RotatingFileHandler
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import QCoreApplication, QSettings, Qt, QTranslator, qVersion
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator
 
 from qgis.PyQt.QtWidgets import QAction, QComboBox, QDesktopWidget, QProgressBar
 from qgis.PyQt.QtGui import QIcon
@@ -52,7 +52,7 @@ from .resources_rc import *
 # UI classes
 from .ui.credits.dlg_credits import IsogeoCredits
 
-# Plugin modules
+# submodule
 from .modules import (
     Authenticator,
     ApiRequester,
@@ -61,6 +61,7 @@ from .modules import (
     SharesParser,
     SearchFormManager,
     UserInformer,
+    SettingsManager
 )
 
 # ############################################################################
@@ -72,7 +73,7 @@ plg_basepath = Path(__file__).parent
 plg_reg_name = plg_basepath.name
 # QGIS useful tooling and shortcuts
 msgBar = iface.messageBar()
-qsettings = QSettings()
+settings_mng = SettingsManager()
 
 # required `_log` subfolder
 plg_logdir = Path(plg_basepath) / "_logs"
@@ -169,34 +170,22 @@ class Isogeo:
             pass
 
         # initialize locale
-        try:
-            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
-        except TypeError as exc:
-            logger.error(
-                "Bad type in QSettings: {}. Original error: {}".format(
-                    type(qsettings.value("locale/userLocale")), exc
-                )
-            )
-            locale = "fr"
-        # load localized translation
-        locale_path = self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
-        logger.info("Language applied: {0}".format(locale))
+        locale = settings_mng.get_locale()
 
-        if locale_path.exists():
+        i18n_file_path = self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
+        logger.info("Language applied: {}".format(locale))
+
+        if i18n_file_path.exists():
             self.translator = QTranslator()
-            self.translator.load(str(locale_path))
-
-            if qVersion() > "4.3.3":
-                QCoreApplication.installTranslator(self.translator)
-            else:
-                pass
+            self.translator.load(str(i18n_file_path))
+            QCoreApplication.installTranslator(self.translator)
         else:
             pass
 
-        if locale == "fr":
-            self.lang = "fr"
-        else:
+        if locale != "fr":
             self.lang = "en"
+        else:
+            self.lang = locale
 
         # Declare instance attributes
         self.actions = []
@@ -211,7 +200,7 @@ class Isogeo:
 
         # SUBMODULES
         # instanciating
-        self.informer = UserInformer(message_bar=msgBar, trad=self.tr)
+        self.informer = UserInformer(message_bar=msgBar)
 
         self.authenticator = Authenticator()
 
@@ -539,7 +528,7 @@ class Isogeo:
             if self.savedSearch == "":
                 # Putting all the comboboxes selected index to their previous location.
                 logger.debug("Classic search case (not quicksearch)")
-                params=params
+                params = params
                 selected_keywords = params.get("keys")
                 quicksearch = ""
             else:
@@ -557,7 +546,7 @@ class Isogeo:
                 selected_keywords_labels = params.get("labels").get("keys")  # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
             else:
                 selected_keywords_labels = []
-            
+
             # Setting widgets to their previous index
             self.form_mng.set_ccb_index(params=params, quicksearch=quicksearch)
             # Updating the keywords special combobox (filling + indexing)
@@ -644,7 +633,7 @@ class Isogeo:
                         originCrs = QgsCoordinateReferenceSystem(search_params.get("epsg"))
                     else:
                         originCrs = QgsCoordinateReferenceSystem("EPSG:" + str(search_params.get("epsg")))
-                    
+
                     if originCrs.isValid():
                         qgs_prj.setCrs(originCrs)
                         e = search_params.get("extent")
@@ -889,7 +878,6 @@ class Isogeo:
         # add translator method in others modules
         plg_tools.tr = self.tr
         self.authenticator.tr = self.tr
-        self.authenticator.lang = self.lang
         # checks
         url_to_check = (
             self.authenticator.api_params.get("url_base")
