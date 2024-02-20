@@ -7,9 +7,6 @@ import re
 from xml.etree import ElementTree
 from urllib.parse import urlencode, unquote, quote
 
-# PyQT
-from qgis.PyQt.QtCore import QSettings
-
 # PyQGIS
 from qgis.core import (
     QgsDataSourceUri,
@@ -22,12 +19,13 @@ from qgis.utils import iface
 
 # Plugin modules
 from ..tools import IsogeoPlgTools
+from ..settings_manager import SettingsManager
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-qsettings = QSettings()
+settings_mng = SettingsManager()
 logger = logging.getLogger("IsogeoQgisPlugin")
 plg_tools = IsogeoPlgTools()
 
@@ -125,11 +123,11 @@ class GeoServiceManager:
         if len(crs_options):
             # SRS definition
             srs_map = plg_tools.get_map_crs()
-            # srs_lyr_new = qsettings.value("projections/defaultBehaviour", None)
-            srs_lyr_crs = qsettings.value("projections/layerDefaultCrs", None)
-            srs_qgs_new = qsettings.value("app/projections/defaultProjectCrs", None)
-            # srs_qgs_otf_on = qsettings.value("app/projections/otfTransformEnabled", "false")
-            # srs_qgs_otf_auto = qsettings.value("app/projections/otfTransformAutoEnable", "false")
+            # srs_lyr_new = settings_mng.get_value("projections/defaultBehaviour", None)
+            srs_lyr_crs = settings_mng.get_value("projections/layerDefaultCrs", None)
+            srs_qgs_new = settings_mng.get_value("app/projections/defaultProjectCrs", None)
+            # srs_qgs_otf_on = settings_mng.get_value("app/projections/otfTransformEnabled", "false")
+            # srs_qgs_otf_auto = settings_mng.get_value("app/projections/otfTransformAutoEnable", "false")
 
             if srs_map in crs_options:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)

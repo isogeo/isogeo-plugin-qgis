@@ -6,7 +6,7 @@ import logging
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal
+from qgis.PyQt.QtCore import QObject, pyqtSignal
 from qgis.PyQt.QtWidgets import QMessageBox
 
 # isogeo_pysdk
@@ -16,7 +16,6 @@ from ..isogeo_pysdk.models import Limitation, Directive
 # ########## Globals ###############
 # ##################################
 
-qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 # ############################################################################

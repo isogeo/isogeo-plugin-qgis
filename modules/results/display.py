@@ -22,6 +22,7 @@ from ..layer.database import DataBaseManager
 
 # isogeo-pysdk
 from ..isogeo_pysdk import Metadata
+from ..settings_manager import SettingsManager
 
 # ############################################################################
 # ########## Globals ###############
@@ -30,7 +31,7 @@ from ..isogeo_pysdk import Metadata
 plg_tools = IsogeoPlgTools()
 geo_srv_mng = GeoServiceManager()
 
-qsettings = QSettings()
+settings_mng = SettingsManager()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 # Isogeo geometry types
@@ -695,8 +696,8 @@ class ResultsManager(QObject):
 
         :param str metadata_id: id of the metadata
         """
-        add_portal_md_url = int(qsettings.value("isogeo/settings/add_metadata_url_portal", 0))
-        portal_base_url = qsettings.value("isogeo/settings/portal_base_url", "")
+        add_portal_md_url = int(settings_mng.get_value("isogeo/settings/add_metadata_url_portal", 0))
+        portal_base_url = settings_mng.get_value("isogeo/settings/portal_base_url", "")
 
         if add_portal_md_url and portal_base_url != "":
             portal_md_url = portal_base_url + metadata_id
