@@ -575,76 +575,9 @@ class SearchFormManager(IsogeoDockWidget):
                 else:
                     pass
 
-            # wgs84_bounds = wgs84_crs.bounds()
-            # wgs84_bounds_currentCrs = crs_converter.transformBoundingBox(wgs84_bounds, Qgis.TransformDirection(1))
-
-            # # because of https://github.com/isogeo/isogeo-plugin-qgis/issues/437
-            # if wgs84_bounds_currentCrs.contains(extent):
-            #     pass
-            # else:
-            #     if extent.xMinimum() < wgs84_bounds_currentCrs.xMinimum():
-            #         extent.setXMinimum(wgs84_bounds_currentCrs.xMinimum())
-            #     else:
-            #         pass
-
-            #     if extent.yMinimum() < wgs84_bounds_currentCrs.yMinimum():
-            #         extent.setYMinimum(wgs84_bounds_currentCrs.yMinimum())
-            #     else:
-            #         pass
-
-            #     if extent.xMaximum() > wgs84_bounds_currentCrs.xMaximum():
-            #         extent.setXMaximum(wgs84_bounds_currentCrs.xMaximum())
-            #     else:
-            #         pass
-
-            #     if extent.yMaximum() > wgs84_bounds_currentCrs.yMaximum():
-            #         extent.setYMaximum(wgs84_bounds_currentCrs.yMaximum())
-            #     else:
-            #         pass
-
-            # extent_wgs84 = crs_converter.transformBoundingBox(extent)
-
             coord = "{},{},{},{}".format(
                 extent_wgs84.xMinimum(), extent_wgs84.yMinimum(), extent_wgs84.xMaximum(), extent_wgs84.yMaximum()
             )
-
-            # QgsMessageLog.logMessage(
-            #     message="{}".format(coord), tag="Isogeo", level=0
-            # )
-            
-            # coord_wgs84_bounds_currentCrs = "{},{},{},{}".format(
-            #     wgs84_bounds_currentCrs.xMinimum(), wgs84_bounds_currentCrs.yMinimum(), wgs84_bounds_currentCrs.xMaximum(), wgs84_bounds_currentCrs.yMaximum()
-            # )
-            # QgsMessageLog.logMessage(
-            #     message="{}".format(coord_wgs84_bounds_currentCrs), tag="Isogeo", level=0
-            # )
-
-            # coord_currentCrs = "{},{},{},{}".format(
-            #     extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum()
-            # )
-            # QgsMessageLog.logMessage(
-            #     message="{}".format(coord_currentCrs), tag="Isogeo", level=0
-            # )
-
-            from qgis.core import QgsGeometry, QgsFeature, QgsRenderContext, QgsVectorLayer
-            from qgis.PyQt.QtGui import QColor
-            
-            bbox_layer_name = "BoundingBox {}".format(coord)
-            if any(lyr.name() == bbox_layer_name for lyr in qgs_prj.mapLayers().values()):
-                pass
-            else:
-                bbox_polygon = QgsFeature()
-                bbox_polygon.setGeometry(QgsGeometry.fromRect(extent_wgs84))
-                bbox_layer = QgsVectorLayer("Polygon?crs=epsg:4326", bbox_layer_name, "memory")
-                bbox_layer.dataProvider().addFeatures([bbox_polygon])
-
-                symbols = bbox_layer.renderer().symbols(QgsRenderContext())
-                symbol = symbols[0]
-                symbol.setColor(QColor.fromRgb(255, 20, 147))
-                symbol.setOpacity(0.25)
-
-                qgs_prj.addMapLayer(bbox_layer)
-                iface.mapCanvas().refresh()
 
             return coord
 
