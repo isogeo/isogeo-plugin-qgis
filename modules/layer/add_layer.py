@@ -368,7 +368,7 @@ class LayerAdder:
             else:
                 # in case of multi-geometry table:
                 li_geomTypes = []
-                # first, request Postgre database about specific table geometry types
+                # first, request Postgres database about specific table geometry types
                 try:
                     db_connector = db_connection.get("db_connector")
                     pg_table_geomType_request = "SELECT DISTINCT ST_GeometryType({}) FROM {}.{}".format(
@@ -398,10 +398,10 @@ class LayerAdder:
                     li_geomTypes = []
 
                 is_multi_geom = 0
-                # in case of point&multi-point, line&multi-line, polygone&multi-polygone,
+                # in case of point&multi-point, line&multi-line, polygon&multi-polygon,
                 # QGIS is able to handle, so let's consider that the geometry type is multiple only
                 # if there is 2 geometry types which are not [5, 1], [6, 2] or [7, 3]
-                # or if there is more than 2 differents geometry types
+                # or if there is more than 2 different geometry types
                 if len(li_geomTypes) <= 1:
                     pass
                 elif all(li_geomTypes != pg_multiGeom_ok for pg_multiGeom_ok in li_pg_multiGeom_ok):
@@ -439,6 +439,7 @@ class LayerAdder:
                         fields_names.sort(key=lambda x: ("id" not in x, x))
                         for field in fields_names:
                             uri.setKeyColumn(field)
+                            uri.setWkbType(geomType_layer.dataProvider().wkbType())
                             layer = QgsVectorLayer(uri.uri(True), table[1], "postgres")
                             if layer.isValid():
                                 logger.info("'{}' chose as key column to add {}.{} PostGIS view".format(field, schema, table_name))
