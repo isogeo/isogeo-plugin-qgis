@@ -47,8 +47,14 @@ qgis_wms_formats = (
     "image/tiff",
 )
 
-li_ora_multiGeom_ok = [[1, 5], [2, 6], [3, 7]]
-li_pg_multiGeom_ok = [[1, 4], [2, 5], [3, 6]]
+matching_wkb_SDO_GTYPE = {
+    4: 7,
+    5: 4,
+    6: 5,
+    7: 6,
+}
+
+li_wkb_multiGeom_ok = [[1, 4], [2, 5], [3, 6]]
 
 # ############################################################################
 # ##### Conditional imports ########
@@ -316,13 +322,13 @@ class LayerAdder:
         return added_layer
 
     def add_from_pg_database(self, layer_info: dict):
-        """Add a layer to QGIS map canvas from a Postgre database table.
+        """Add a layer to QGIS map canvas from a Postgres database table.
 
-        :param dict layer_info: dictionnary containing informations needed to add the layer from the database table
+        :param dict layer_info: dictionary containing informations needed to add the layer from the database table
         """
 
         logger.debug("Data type: PostGIS")
-        # Give aliases to the data passed as arguement
+        # Give aliases to the data passed as argument
         db_connection = layer_info.get("connection", "")
         conn_name = db_connection.get("connection")
         base_name = layer_info.get("base_name", "")
@@ -371,7 +377,7 @@ class LayerAdder:
                 # first, request Postgres database about specific table geometry types
                 try:
                     db_connector = db_connection.get("db_connector")
-                    pg_table_geomType_request = "SELECT DISTINCT ST_GeometryType({}) FROM {}.{}".format(
+                    pg_table_geomType_request = "SELECT DISTINCT ST_GeometryType({}) FROM {}.\"{}\"".format(
                         table[2], table[0], table[1]
                     )
                     table_geomType_response = db_connector._fetchall(
@@ -389,6 +395,14 @@ class LayerAdder:
                                 )
                             )
                     li_geomTypes.sort()
+                    for wkb_multiGeom_ok in li_wkb_multiGeom_ok:
+                        if wkb_multiGeom_ok[0] in li_geomTypes and wkb_multiGeom_ok[1] in li_geomTypes:
+                            logger.debug("*=====* {}".format(wkb_multiGeom_ok[0]))
+                            logger.debug("*=====* {}".format(wkb_multiGeom_ok[1]))
+                            del li_geomTypes[li_geomTypes.index(wkb_multiGeom_ok[0])]
+                        else:
+                            pass
+                    logger.debug("*=====* {}".format(li_geomTypes))
                 except Exception as e:
                     logger.warning(
                         "'{}.{}' PostGIS table geometry type could not be fetched : {}".format(
@@ -397,6 +411,7 @@ class LayerAdder:
                     )
                     li_geomTypes = []
 
+                logger.debug("*=====* {}".format(li_geomTypes))
                 is_multi_geom = 0
                 # in case of point&multi-point, line&multi-line, polygon&multi-polygon,
                 # QGIS is able to handle, so let's consider that the geometry type is multiple only
@@ -404,14 +419,16 @@ class LayerAdder:
                 # or if there is more than 2 different geometry types
                 if len(li_geomTypes) <= 1:
                     pass
-                elif all(li_geomTypes != pg_multiGeom_ok for pg_multiGeom_ok in li_pg_multiGeom_ok):
+                elif all(li_geomTypes != pg_multiGeom_ok for pg_multiGeom_ok in li_wkb_multiGeom_ok):
                     is_multi_geom = 1
                 else:
                     pass
                 # Building the layer
                 li_geomType_layers = []
                 if len(li_geomTypes) == 0:
+                    uri.setWkbType(100)
                     layer = QgsVectorLayer(uri.uri(), table[1], "postgres")
+                    logger.debug("*=====* {}".format(layer.dataProvider().wkbType()))
                     li_geomType_layers.append(layer)
                 elif not is_multi_geom:
                     uri.setWkbType(li_geomTypes[0])
@@ -425,6 +442,7 @@ class LayerAdder:
                         li_geomType_layers += [layer]
 
                 for geomType_layer in li_geomType_layers:
+                    logger.debug("*=====* {}".format(geomType_layer.dataProvider().wkbType()))
                     # If the layer is valid that's find
                     if geomType_layer.isValid():
                         li_layers_to_add.append(geomType_layer)
@@ -438,9 +456,12 @@ class LayerAdder:
                         # sort them by name containing id to better perf
                         fields_names.sort(key=lambda x: ("id" not in x, x))
                         for field in fields_names:
+                            uri = db_connection.get("uri")
+                            uri.setDataSource(table[0], table[1], table[2])
                             uri.setKeyColumn(field)
                             uri.setWkbType(geomType_layer.dataProvider().wkbType())
                             layer = QgsVectorLayer(uri.uri(True), table[1], "postgres")
+                            logger.debug("*=====* {}".format(layer.dataProvider().wkbType()))
                             if layer.isValid():
                                 logger.info("'{}' chose as key column to add {}.{} PostGIS view".format(field, schema, table_name))
                                 li_layers_to_add.append(layer)
@@ -486,11 +507,11 @@ class LayerAdder:
     def add_from_ora_database(self, layer_info: dict):
         """Add a layer to QGIS map canvas from an Oracle database table.
 
-        :param dict layer_info: dictionnary containing informations needed to add the layer from the database table
+        :param dict layer_info: dictionary containing informations needed to add the layer from the database table
         """
 
         logger.debug("Data type: Oracle")
-        # Give aliases to the data passed as arguement
+        # Give aliases to the data passed as argument
         db_connection = layer_info.get("connection", "")
         conn_name = db_connection.get("connection")
         base_name = layer_info.get("base_name", "")
@@ -515,6 +536,7 @@ class LayerAdder:
             tab for tab in db_connection.get("tables") if tab[0] == schema and tab[1] == table_name
         ][0]
         geometry_column = table_infos[2]
+        logger.debug("*=====* {}".format(geometry_column))
         table = [schema, table_name, geometry_column]
 
         # Create a vector layer from retrieved infos
@@ -523,6 +545,7 @@ class LayerAdder:
 
         li_layers_to_add = []
         if table[2] is None:  # in case of DTNG
+            uri.setWkbType(100)
             layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
             li_layers_to_add.append(layer)
         else:
@@ -536,7 +559,29 @@ class LayerAdder:
                 table_geomType_response = db_connector._fetchall(
                     db_connector._execute(None, ora_table_geomType_request)
                 )
-                li_geomTypes = [int(elem[0]) for elem in table_geomType_response]
+                logger.debug("*=====* {}".format(table_geomType_response))
+                li_geomTypes = []
+                for elem in table_geomType_response:
+                    try:
+                        geomtype_WKB = matching_wkb_SDO_GTYPE.get(int(elem[0]), int(elem[0]))
+                        li_geomTypes.append(geomtype_WKB)
+                    except Exception as e:
+                        logger.warning(
+                            "'{}.{}' Oracle table geometry type '{}' could not be converted as WKB".format(
+                                table[0], table[1], elem[0]
+                            )
+                        )
+                        logger.warning(e)
+                li_geomTypes.sort()
+                for wkb_multiGeom_ok in li_wkb_multiGeom_ok:
+                    if wkb_multiGeom_ok[0] in li_geomTypes and wkb_multiGeom_ok[1] in li_geomTypes:
+                        logger.debug("*=====* {}".format(wkb_multiGeom_ok[0]))
+                        logger.debug("*=====* {}".format(wkb_multiGeom_ok[1]))
+                        del li_geomTypes[li_geomTypes.index(wkb_multiGeom_ok[0])]
+                    else:
+                        pass
+                logger.debug("*=====* {}".format(li_geomTypes))
+                logger.debug("*=====* {}".format(li_geomTypes))
 
             except Exception as e:
                 logger.warning(
@@ -553,13 +598,14 @@ class LayerAdder:
             # or if there is more than 2 differents geometry types
             if len(li_geomTypes) <= 1:
                 pass
-            elif all(li_geomTypes != ora_multiGeom_ok for ora_multiGeom_ok in li_ora_multiGeom_ok):
+            elif all(li_geomTypes != ora_multiGeom_ok for ora_multiGeom_ok in li_wkb_multiGeom_ok):
                 is_multi_geom = 1
             else:
                 pass
             # Building the layer
             li_geomType_layers = []
             if len(li_geomTypes) == 0:
+                uri.setWkbType(100)
                 layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
                 li_geomType_layers.append(layer)
             elif not is_multi_geom:
@@ -574,6 +620,7 @@ class LayerAdder:
                     li_geomType_layers += [layer]
 
             for geomType_layer in li_geomType_layers:
+                logger.debug("*=====* {}".format(geomType_layer.dataProvider().wkbType()))
                 # If the layer is valid that's find
                 if geomType_layer.isValid():
                     li_layers_to_add.append(geomType_layer)
@@ -586,14 +633,20 @@ class LayerAdder:
                     fields_names = [i.name() for i in geomType_layer.dataProvider().fields()]
                     # sort them by name containing id to better perf
                     fields_names.sort(key=lambda x: ("id" not in x, x))
+                    logger.debug("*=====* {}".format(fields_names))
                     for field in fields_names:
+                        logger.debug("*=====* {}".format(geomType_layer.dataProvider().wkbType()))
+                        uri = db_connection.get("uri")
+                        uri.setDataSource(table[0], table[1], table[2])
                         uri.setKeyColumn(field)
-                        geomType_layer = QgsVectorLayer(uri.uri(True), table[1], "oracle")
-                        if geomType_layer.isValid():
+                        uri.setWkbType(geomType_layer.dataProvider().wkbType())
+                        layer = QgsVectorLayer(uri.uri(True), table[1], "oracle")
+                        logger.debug("*=====* {}".format(layer.dataProvider().wkbType()))
+                        if layer.isValid():
                             logger.debug(
                                 "'{}' chose as key column to add Oracle view".format(field)
                             )
-                            li_layers_to_add.append(geomType_layer)
+                            li_layers_to_add.append(layer)
                             break
                         else:
                             continue
