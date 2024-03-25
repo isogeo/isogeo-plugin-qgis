@@ -27,7 +27,7 @@ logger = logging.getLogger("IsogeoQgisPlugin")
 
 class ApiRequester(QObject):
     """Basic class to manage direct interactions with Isogeo's API :
-    - Authentication request for tokenl
+    - Authentication request for token
     - Request about application's shares
     - Request about ressources
     - Building request URLs

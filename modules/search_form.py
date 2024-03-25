@@ -221,7 +221,6 @@ class SearchFormManager(IsogeoDockWidget):
                 else:
                     pass
                 row_i += 1
-            
 
         # connect keyword selected -> launch search
         model.itemChanged.connect(self.kw_sig.emit)

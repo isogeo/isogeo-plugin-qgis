@@ -203,10 +203,10 @@ class Authenticator(QObject):
         """Perform several operations to use Isogeo API:
 
         1. check if existing credentials are stored into QGIS or a file
-        2. gettings credentials from there storage location (QGIS settings or file)
+        2. get credentials from there storage location (QGIS settings or file)
         3. display auth form if no credentials are found
 
-        :returns: True and a dictionnary containing api parameters nessary for the
+        :returns: True and a dictionary containing api parameters necessary for the
         instanciation of the ApiRequester class if credentials are found. False and
         None if no credentials are found.
 
@@ -334,7 +334,7 @@ class Authenticator(QObject):
 
         self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
 
-        # fillfull auth form fields from stored settings
+        # fullfil auth form fields from stored settings
         self.ui_auth_form.ent_app_id.setText(self.api_params["app_id"])
         self.ui_auth_form.ent_app_secret.setText(self.api_params["app_secret"])
         self.ui_auth_form.lbl_api_url_value.setText(self.api_params["url_base"])
