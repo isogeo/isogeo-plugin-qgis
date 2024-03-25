@@ -163,7 +163,7 @@ class SettingsManager(QSettings):
             )
             logger.warning("Let's replace it with the default content.")
             json_content = self.get_default_quicksearch_content()
-            self.dump_json_file(self.quicksearch_json_path, json_content)
+            self.update_quicksearch_json(json_content)
             return json_content
         else:
             if "_default" not in json_content:
@@ -200,7 +200,7 @@ class SettingsManager(QSettings):
                     )
                 else:
                     pass
-            self.dump_json_file(self.quicksearch_json_path, json_content)
+            self.update_quicksearch_json(json_content)
             return json_content
 
     def load_quicksearch_from_qsettings(self):
@@ -258,11 +258,14 @@ class SettingsManager(QSettings):
             else:
                 pass
 
-        logger.debug("*=====* {}".format(json_content == qsettings_content))
-
-        self.dump_json_file(self.quicksearch_json_path, json_content)
+        self.update_quicksearch_json(json_content)
 
         return json_content
+
+    def update_quicksearch_json(self, content: dict):
+
+        self.dump_json_file(self.quicksearch_json_path, content)
+        return
 
     def update_quicksearch_qsettings(self, content: dict):
 
@@ -280,6 +283,13 @@ class SettingsManager(QSettings):
                         qsetting_key = "{}{}/{}/{}".format(self.quicksearch_prefix, quicksearch_name, quicksearch_param, label)
                         qsetting_value = quicksearch_param_value[label]
                         self.setValue(qsetting_key, qsetting_value)
+        return
+
+    def update_quicksearch(self, content):
+
+        self.update_quicksearch_json(content)
+        self.update_quicksearch_qsettings(content)
+
         return
 
     def save_quicksearch(self):
