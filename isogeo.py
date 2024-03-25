@@ -199,7 +199,7 @@ class Isogeo:
         self.credits_dialog = IsogeoCredits()
 
         # SUBMODULES
-        # instanciating
+        # instantiating
         self.informer = UserInformer(message_bar=msgBar)
 
         self.authenticator = Authenticator()
@@ -219,7 +219,7 @@ class Isogeo:
         self.form_mng = SearchFormManager(self.tr)
         self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
         self.form_mng.qs_mng.lang = self.lang
-        self.form_mng.qs_mng.api_base_url = self.authenticator.api_params.get("url_base")
+        self.form_mng.qs_mng.api_base_url_setter(self.authenticator.api_params.get("url_base"))
 
         # connecting
         self.api_requester.api_sig.connect(self.token_slot)
@@ -753,7 +753,7 @@ class Isogeo:
                 self.form_mng = SearchFormManager(self.tr)
                 self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
                 self.form_mng.qs_mng.lang = self.lang
-                self.form_mng.qs_mng.api_base_url = self.authenticator.api_params.get("url_base")
+                self.form_mng.qs_mng.api_base_url_setter(self.authenticator.api_params.get("url_base"))
 
                 logger.debug("Plugin load time: {}".format(plugin_times.get(plg_reg_name, "NR")))
             else:

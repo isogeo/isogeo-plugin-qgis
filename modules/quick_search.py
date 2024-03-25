@@ -18,6 +18,9 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from ..ui.quicksearch.dlg_quicksearch_new import QuicksearchNew
 from ..ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
 
+# submodule
+from .settings_manager import SettingsManager
+
 # ############################################################################
 # ########## Globals ###############
 # ##################################
@@ -25,6 +28,8 @@ from ..ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 msgBar = iface.messageBar()
+
+settings_mng = SettingsManager()
 
 ico_bolt = QIcon(":/plugins/Isogeo/resources/search/bolt.svg")
 
@@ -68,6 +73,14 @@ class QuickSearchManager:
         # Getting what the class need to build default search request URLs
         self.api_base_url = str
 
+    def api_base_url_setter(self, value: str):
+        self.api_base_url = value
+        self.customize_settings_mng()
+
+    def customize_settings_manager(self):
+        settings_mng.api_base_url = self.api_base_url
+        settings_mng.tr = self.tr
+
     def fetch_params(self):
         # Write the current parameters in a dict
         params = self.form_mng.save_params()
@@ -91,7 +104,26 @@ class QuickSearchManager:
         """Write a new element in the json file when a search is saved."""
         # Open the saved_search file as a dict. Each key is a search name,
         # each value is a dict containing the parameters for this search name
-        saved_searches = self.load_file()
+        # saved_searches = self.load_file()
+        # # If the name already exists, ask for a new one. ================ TO DO
+        # if search_kind == "Last":
+        #     params = saved_searches.get(
+        #         "_current", "{}/resources/search?&_limit=0".format(self.api_base_url)
+        #     )
+        #     if search_name == "Last search" and "Dernière recherche" in saved_searches:
+        #         del saved_searches["Dernière recherche"]
+        #     elif search_name == "Dernière recherche" and "Last search" in saved_searches:
+        #         del saved_searches["Last search"]
+        #     else:
+        #         pass
+        # else:
+        #     params = self.fetch_params()
+
+        # saved_searches[search_name] = params
+        # # writing file
+        # self.dump_file(saved_searches)
+
+        saved_searches = settings_mng.load_quicksearch()
         # If the name already exists, ask for a new one. ================ TO DO
         if search_kind == "Last":
             params = saved_searches.get(
@@ -108,7 +140,9 @@ class QuickSearchManager:
 
         saved_searches[search_name] = params
         # writing file
-        self.dump_file(saved_searches)
+        settings_mng.dump_json_file(settings_mng.quicksearch_json_path, saved_searches)
+        settings_mng.update_quicksearch_qsettings(saved_searches)
+
         # Log and messages
         logger.info(
             "{} search stored as '{}'. Parameters: {}".format(search_kind, search_name, params)
@@ -126,8 +160,7 @@ class QuickSearchManager:
 
     def check_already_exist(self, rename: bool = 0):
 
-        saved_searches = self.load_file()
-
+        saved_searches = settings_mng.load_quicksearch()
         if rename:
             search_name = self.dlg_rename.txt_quicksearch_rename.text()
             popup_title = self.tr("Isogeo - Rename quicksearch", __class__.__name__,)
@@ -157,14 +190,23 @@ class QuickSearchManager:
         return
 
     def save(self, i):
-        """Call the write_search() function and refresh the combobox."""
+        """Call the write_params() function and refresh the combobox."""
         # retrieve quicksearch given name and store it
         if i == QMessageBox.Yes:
+            # search_name = self.dlg_new.txt_quicksearch_name.text()
+            # self.dlg_new.txt_quicksearch_name.setText("")
+            # self.write_params(search_name, search_kind="Quicksearch")
+            # # load all saved quicksearches and populate drop-down (combobox)
+            # saved_searches = self.load_file()
+            # search_list = list(saved_searches.keys())
+            # # updating quick search widgets
+            # self.form_mng.pop_qs_cbbs(items_list=search_list)
+
             search_name = self.dlg_new.txt_quicksearch_name.text()
             self.dlg_new.txt_quicksearch_name.setText("")
             self.write_params(search_name, search_kind="Quicksearch")
             # load all saved quicksearches and populate drop-down (combobox)
-            saved_searches = self.load_file()
+            saved_searches = settings_mng.load_quicksearch()
             search_list = list(saved_searches.keys())
             # updating quick search widgets
             self.form_mng.pop_qs_cbbs(items_list=search_list)
@@ -176,17 +218,32 @@ class QuickSearchManager:
     def rename(self, i):
         """Modify the json file in order to rename a search."""
         if i == QMessageBox.Yes:
+            # old_name = self.form_mng.cbb_quicksearch_edit.currentText()
+            # new_name = self.dlg_rename.txt_quicksearch_rename.text()
+            # self.dlg_rename.txt_quicksearch_rename.setText("")
+
+            # saved_searches = self.load_file()
+            # saved_searches[new_name] = saved_searches[old_name]
+            # saved_searches.pop(old_name)
+            # search_list = list(saved_searches.keys())
+            # self.form_mng.pop_qs_cbbs(items_list=search_list)
+            # # Update JSON file
+            # self.dump_file(content=saved_searches)
+
             old_name = self.form_mng.cbb_quicksearch_edit.currentText()
             new_name = self.dlg_rename.txt_quicksearch_rename.text()
             self.dlg_rename.txt_quicksearch_rename.setText("")
 
-            saved_searches = self.load_file()
+            saved_searches = settings_mng.load_quicksearch()
             saved_searches[new_name] = saved_searches[old_name]
             saved_searches.pop(old_name)
             search_list = list(saved_searches.keys())
+            # Update quick search widgets
             self.form_mng.pop_qs_cbbs(items_list=search_list)
             # Update JSON file
-            self.dump_file(content=saved_searches)
+            settings_mng.dump_json_file(settings_mng.quicksearch_json_path, saved_searches)
+            settings_mng.update_quicksearch_qsettings(saved_searches)
+
             # inform user
             msgBar.pushMessage(
                 "Isogeo",
@@ -204,14 +261,25 @@ class QuickSearchManager:
 
     def remove(self):
         """Modify the json file in order to delete a search."""
+        # to_remove = self.form_mng.cbb_quicksearch_edit.currentText()
+        # saved_searches = self.load_file()
+        # saved_searches.pop(to_remove)
+        # search_list = list(saved_searches.keys())
+        # # updating quick search widgets
+        # self.form_mng.pop_qs_cbbs(items_list=search_list)
+        # # Update JSON file
+        # self.dump_file(content=saved_searches)
+
         to_remove = self.form_mng.cbb_quicksearch_edit.currentText()
-        saved_searches = self.load_file()
+        saved_searches = settings_mng.load_quicksearch()
         saved_searches.pop(to_remove)
         search_list = list(saved_searches.keys())
-        # updating quick search widgets
+        # Update quick search widgets
         self.form_mng.pop_qs_cbbs(items_list=search_list)
         # Update JSON file
-        self.dump_file(content=saved_searches)
+        settings_mng.dump_json_file(settings_mng.quicksearch_json_path, saved_searches)
+        settings_mng.update_quicksearch_qsettings(saved_searches)
+
         # inform user
         msgBar.pushMessage(
             "Isogeo",
@@ -224,7 +292,7 @@ class QuickSearchManager:
         return
 
     def get_default_file_content(self):
-        """Return quicksearch.json file default content. usefull to reset JSON file content"""
+        """Return quicksearch.json file default content. useful to reset JSON file content"""
         default_content = {
             "_default": {
                 "contacts": None,
@@ -253,76 +321,79 @@ class QuickSearchManager:
 
     def load_file(self):
 
-        try:
-            with open(self.json_path, "r") as json_content:
-                saved_searches = json.load(json_content)
+        # try:
+        #     with open(self.json_path, "r") as json_content:
+        #         saved_searches = json.load(json_content)
 
-            if not isinstance(saved_searches, dict):
-                logger.warning(
-                    "_user/quicksearches.json file content is not correctly formatted : {}.".format(
-                        saved_searches
-                    )
-                )
-                logger.warning("Let's replace it with the default content.")
-                saved_searches = self.get_default_file_content()
-                self.dump_file(saved_searches)
-            elif "_default" not in saved_searches:
-                logger.warning(
-                    "Missing '_default' quicksearch in _user/quicksearches.json file content : {}.".format(
-                        saved_searches
-                    )
-                )
-                logger.warning("Let's add the default one.")
-                # if default search is missing, let's adding it to JSON file content
-                saved_searches["_default"] = self.get_default_file_content().get("_default")
-                self.dump_file(saved_searches)
-            else:
-                for trad in ["Last search", "Dernière recherche"]:
-                    if trad in saved_searches and self.tr("Last search") != trad:
-                        saved_searches[self.tr("Last search")] = saved_searches.get(trad)
-                        del saved_searches[trad]
-                    else:
-                        pass
+        #     if not isinstance(saved_searches, dict):
+        #         logger.warning(
+        #             "_user/quicksearches.json file content is not correctly formatted : {}.".format(
+        #                 saved_searches
+        #             )
+        #         )
+        #         logger.warning("Let's replace it with the default content.")
+        #         saved_searches = self.get_default_file_content()
+        #         self.dump_file(saved_searches)
+        #     elif "_default" not in saved_searches:
+        #         logger.warning(
+        #             "Missing '_default' quicksearch in _user/quicksearches.json file content : {}.".format(
+        #                 saved_searches
+        #             )
+        #         )
+        #         logger.warning("Let's add the default one.")
+        #         # if default search is missing, let's adding it to JSON file content
+        #         saved_searches["_default"] = self.get_default_file_content().get("_default")
+        #         self.dump_file(saved_searches)
+        #     else:
+        #         for trad in ["Last search", "Dernière recherche"]:
+        #             if trad in saved_searches and self.tr("Last search") != trad:
+        #                 saved_searches[self.tr("Last search")] = saved_searches.get(trad)
+        #                 del saved_searches[trad]
+        #             else:
+        #                 pass
 
-                for quicksearch in saved_searches:
-                    quicksearch_url = saved_searches.get(quicksearch).get("url")
-                    if self.api_base_url not in quicksearch_url:
-                        default_search_parameters = quicksearch_url.split("/resources/search?")[1]
-                        base_search_url = self.api_base_url + "/resources/search?"
+        #         for quicksearch in saved_searches:
+        #             quicksearch_url = saved_searches.get(quicksearch).get("url")
+        #             if self.api_base_url not in quicksearch_url:
+        #                 default_search_parameters = quicksearch_url.split("/resources/search?")[1]
+        #                 base_search_url = self.api_base_url + "/resources/search?"
 
-                        saved_searches[quicksearch]["url"] = (
-                            base_search_url + default_search_parameters
-                        )
-                        logger.warning(
-                            "'{}' quicksearch : URL {} replaced with {}.".format(
-                                quicksearch,
-                                quicksearch_url,
-                                base_search_url + default_search_parameters,
-                            )
-                        )
-                    else:
-                        pass
-                self.dump_file(saved_searches)
+        #                 saved_searches[quicksearch]["url"] = (
+        #                     base_search_url + default_search_parameters
+        #                 )
+        #                 logger.warning(
+        #                     "'{}' quicksearch : URL {} replaced with {}.".format(
+        #                         quicksearch,
+        #                         quicksearch_url,
+        #                         base_search_url + default_search_parameters,
+        #                     )
+        #                 )
+        #             else:
+        #                 pass
+        #         self.dump_file(saved_searches)
 
-        except Exception as e:
-            if not self.json_path.exists() or not self.json_path.is_file():
-                logger.warning(
-                    "_user/quicksearches.json file can't be used : {} doesn't exist or is not a file : {}".format(
-                        str(self.json_path), str(e)
-                    )
-                )
-                logger.warning("Let's create one with default values: {}.".format(self.json_path))
-                saved_searches = self.get_default_file_content()
-                self.dump_file(saved_searches)
-            else:
-                logger.error("_user/quicksearches.json file can't be read : {}.".format(str(e)))
-                saved_searches = 0
+        # except Exception as e:
+        #     if not self.json_path.exists() or not self.json_path.is_file():
+        #         logger.warning(
+        #             "_user/quicksearches.json file can't be used : {} doesn't exist or is not a file : {}".format(
+        #                 str(self.json_path), str(e)
+        #             )
+        #         )
+        #         logger.warning("Let's create one with default values: {}.".format(self.json_path))
+        #         saved_searches = self.get_default_file_content()
+        #         self.dump_file(saved_searches)
+        #     else:
+        #         logger.error("_user/quicksearches.json file can't be read : {}.".format(str(e)))
+        #         saved_searches = 0
+
+        saved_searches = settings_mng.load_quicksearch()
 
         logger.debug(
-            "{} quicksearche(s) found : {}".format(
-                len(saved_searches.keys()), list(saved_searches.keys())
+            "{} quicksearch(es) found : {}".format(
+                len(saved_searches), list(saved_searches.keys())
             )
         )
+
         return saved_searches
 
     def dump_file(self, content: dict):
@@ -332,14 +403,24 @@ class QuickSearchManager:
 
     def reset_default_search(self):
 
+        # search_name = "_default"
+        # # fetch current JSON file content
+        # saved_searches = self.load_file()
+        # # fetch default search default params
+        # params = self.get_default_file_content().get(search_name)
+        # # update JSON file content
+        # saved_searches[search_name] = params
+        # self.dump_file(saved_searches)
+
         search_name = "_default"
         # fetch current JSON file content
-        saved_searches = self.load_file()
+        saved_searches = settings_mng.load_quicksearch()
         # fetch default search default params
-        params = self.get_default_file_content().get(search_name)
+        params = settings_mng.get_default_quicksearch_content().get(search_name)
         # update JSON file content
         saved_searches[search_name] = params
-        self.dump_file(saved_searches)
+        settings_mng.dump_json_file(settings_mng.quicksearch_json_path, saved_searches)
+        settings_mng.update_quicksearch_qsettings(saved_searches)
 
         # Log and messages
         logger.info("Default search successfully reset.")
