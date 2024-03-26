@@ -656,7 +656,6 @@ class ResultsManager(QObject):
         """ https://github.com/isogeo/isogeo-plugin-qgis/issues/438
         """
 
-        logger.info("*=====* SECTION RESIZED")
         scrollBar_width = self.tbl_result.verticalScrollBar().sizeHint().width()
         max_width = args[2] - scrollBar_width - 10
 
