@@ -80,6 +80,8 @@ class QuickSearchManager:
     def customize_settings_manager(self):
         settings_mng.api_base_url = self.api_base_url
         settings_mng.tr = self.tr
+        settings_mng.load_quicksearches()
+        logger.debug("SettingsManager initialized for quicksearches handling.")
 
     def fetch_params(self):
         # Write the current parameters in a dict
@@ -103,28 +105,26 @@ class QuickSearchManager:
     def write_params(self, search_name: str = "_default", search_kind: str = "Default"):
         """Write a new element in the json file when a search is saved."""
 
-        saved_searches = settings_mng.load_quicksearch()
         # If the name already exists, ask for a new one. ================ TO DO
         if search_kind == "Last":
-            params = saved_searches.get(
-                "_current", "{}/resources/search?&_limit=0".format(self.api_base_url)
-            )
-            if search_name == "Last search" and "Dernière recherche" in saved_searches:
-                del saved_searches["Dernière recherche"]
-            elif search_name == "Dernière recherche" and "Last search" in saved_searches:
-                del saved_searches["Last search"]
+            if search_name == "Last search" and "Dernière recherche" in self.get_quicksearches_names():
+                settings_mng.remove_quicksearch("Dernière recherche")
+            elif search_name == "Dernière recherche" and "Last search" in self.get_quicksearches_names():
+                settings_mng.remove_quicksearch("Last search")
             else:
                 pass
+            # writing file
+            settings_mng.save_quicksearch(
+                search_name,
+                settings_mng.quicksearches_content.get("_current", "{}/resources/search?&_limit=0".format(self.api_base_url))
+            )
         else:
-            params = self.fetch_params()
-
-        saved_searches[search_name] = params
-        # writing file
-        settings_mng.update_quicksearch(saved_searches)
+            # writing file
+            settings_mng.save_quicksearch(search_name, self.fetch_params())
 
         # Log and messages
         logger.info(
-            "{} search stored as '{}'. Parameters: {}".format(search_kind, search_name, params)
+            "{} search stored as '{}'.".format(search_kind, search_name)
         )
         if search_kind != "Current" and search_kind != "Last":
             msgBar.pushMessage(
@@ -139,7 +139,6 @@ class QuickSearchManager:
 
     def check_already_exist(self, rename: bool = 0):
 
-        saved_searches = settings_mng.load_quicksearch()
         if rename:
             search_name = self.dlg_rename.txt_quicksearch_rename.text()
             popup_title = self.tr("Isogeo - Rename quicksearch", __class__.__name__,)
@@ -149,7 +148,7 @@ class QuickSearchManager:
             popup_title = self.tr("Isogeo - New quicksearch", __class__.__name__,)
             slot_func = self.save
 
-        if search_name in saved_searches:
+        if search_name in self.get_quicksearches_names():
             popup = QMessageBox()
             popup.setWindowIcon(ico_bolt)
             popup.setWindowTitle(popup_title)
@@ -175,11 +174,8 @@ class QuickSearchManager:
             search_name = self.dlg_new.txt_quicksearch_name.text()
             self.dlg_new.txt_quicksearch_name.setText("")
             self.write_params(search_name, search_kind="Quicksearch")
-            # load all saved quicksearches and populate drop-down (combobox)
-            saved_searches = settings_mng.load_quicksearch()
-            search_list = list(saved_searches.keys())
             # updating quick search widgets
-            self.form_mng.pop_qs_cbbs(items_list=search_list)
+            self.form_mng.pop_qs_cbbs(items_list=self.get_quicksearches_names())
             # method ending
             return
         else:
@@ -193,14 +189,9 @@ class QuickSearchManager:
             new_name = self.dlg_rename.txt_quicksearch_rename.text()
             self.dlg_rename.txt_quicksearch_rename.setText("")
 
-            saved_searches = settings_mng.load_quicksearch()
-            saved_searches[new_name] = saved_searches[old_name]
-            saved_searches.pop(old_name)
-            search_list = list(saved_searches.keys())
+            settings_mng.rename_quicksearch(old_name, new_name)
             # Update quick search widgets
-            self.form_mng.pop_qs_cbbs(items_list=search_list)
-            # Update JSON file
-            settings_mng.update_quicksearch(saved_searches)
+            self.form_mng.pop_qs_cbbs(items_list=self.get_quicksearches_names())
 
             # inform user
             msgBar.pushMessage(
@@ -221,13 +212,9 @@ class QuickSearchManager:
         """Modify the json file in order to delete a search."""
 
         to_remove = self.form_mng.cbb_quicksearch_edit.currentText()
-        saved_searches = settings_mng.load_quicksearch()
-        saved_searches.pop(to_remove)
-        search_list = list(saved_searches.keys())
+        settings_mng.remove_quicksearch(to_remove)
         # Update quick search widgets
-        self.form_mng.pop_qs_cbbs(items_list=search_list)
-        # Update JSON file
-        settings_mng.update_quicksearch(saved_searches)
+        self.form_mng.pop_qs_cbbs(items_list=self.get_quicksearches_names())
 
         # inform user
         msgBar.pushMessage(
@@ -243,13 +230,10 @@ class QuickSearchManager:
     def reset_default_search(self):
 
         search_name = "_default"
-        # fetch current JSON file content
-        saved_searches = settings_mng.load_quicksearch()
-        # fetch default search default params
-        params = settings_mng.get_default_quicksearch_content().get(search_name)
-        # update JSON file content
-        saved_searches[search_name] = params
-        settings_mng.update_quicksearch(saved_searches)
+
+        settings_mng.save_quicksearch(
+            search_name, settings_mng.get_default_quicksearch_content().get(search_name)
+        )
 
         # Log and messages
         logger.info("Default search successfully reset.")
@@ -258,14 +242,18 @@ class QuickSearchManager:
             duration=3,
         )
 
-    def load_file(self):
+    def get_quicksearches(self):
 
-        saved_searches = settings_mng.load_quicksearch()
+        return settings_mng.quicksearches_content
+
+    def get_quicksearches_names(self):
+
+        saved_searches_names = list(self.get_quicksearches().keys())
 
         logger.debug(
             "{} quicksearch(es) found : {}".format(
-                len(saved_searches), list(saved_searches.keys())
+                len(saved_searches_names), saved_searches_names
             )
         )
 
-        return saved_searches
+        return saved_searches_names

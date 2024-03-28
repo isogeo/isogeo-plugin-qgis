@@ -34,10 +34,12 @@ class SettingsManager(QSettings):
         # instantiate
         super().__init__()
 
-        self.quicksearch_json_path = Path(__file__).parents[1] / "_user" / "quicksearches.json"
-        self.quicksearch_prefix = "isogeo/user/quicksearch/"
+        self.quicksearches_json_path = Path(__file__).parents[1] / "_user" / "quicksearches.json"
+        self.quicksearch_prefix = "isogeo/user/quicksearches/"
         self.api_base_url = str
         self.tr = object
+
+        self.quicksearches_content = {}
 
     def get_locale(self):
         """Return 'locale/userLocale' setting value about QGIS language configuration"""
@@ -85,14 +87,14 @@ class SettingsManager(QSettings):
                 return json_content
             except Exception as e:
                 logger.error("{} json file can't be read : {}.".format(str(file_path), str(e)))
-                return 0
+                return -1
 
     def dump_json_file(self, file_path: Path, content: dict):
         with open(file_path, "w") as outfile:
             json.dump(content, outfile, sort_keys=True, indent=4)
         return
 
-    def get_default_quicksearch_content(self):
+    def get_default_quicksearches_content(self):
 
         default_content = {
             "_default": {
@@ -131,13 +133,16 @@ class SettingsManager(QSettings):
         }
         return default_content
 
-    def load_quicksearch(self):
-        quicksearch_json_content = self.load_quicksearch_from_json()
-        quicksearch_qsettings_content = self.load_quicksearch_from_qsettings()
+    def load_quicksearches(self):
+        # logger.debug("*=====* Loading quicksearches")
+        quicksearch_json_content = self.load_quicksearches_from_json()
+        # logger.debug("*=====* {} quicksearches found in json_file".format(len(quicksearch_json_content)))
+        quicksearch_qsettings_content = self.load_quicksearches_from_qsettings()
+        # logger.debug("*=====* {} quicksearches found in qsettings".format(len(quicksearch_qsettings_content)))
 
-        quicksearch_content = self.merge_quicksearch(quicksearch_json_content, quicksearch_qsettings_content)
+        self.quicksearches_content = self.merge_quicksearch(quicksearch_json_content, quicksearch_qsettings_content)
 
-        return quicksearch_content
+        return self.quicksearches_content
 
     def check_quicksearch_json_content(self, json_content):
         if not isinstance(json_content, dict):
@@ -150,20 +155,30 @@ class SettingsManager(QSettings):
             return 0
         return 1
 
-    def load_quicksearch_from_json(self):
+    def load_quicksearches_from_json(self):
 
-        json_content = self.load_json_file(self.quicksearch_json_path)
-        if not json_content:
+        json_content = self.load_json_file(self.quicksearches_json_path)
+        if json_content == -1:
             return 0
+        elif not json_content:
+            logger.warning(
+                "{} json file is missing.".format(
+                    self.quicksearches_json_path
+                )
+            )
+            logger.warning("Let's create it with the default content.")
+            json_content = self.get_default_quicksearches_content()
+            self.update_quicksearches_json(json_content)
+            return json_content
         elif not self.check_quicksearch_json_content(json_content):
             logger.warning(
                 "{} json file content is not correctly formatted : {}.".format(
-                    self.quicksearch_json_path, json_content
+                    self.quicksearches_json_path, json_content
                 )
             )
             logger.warning("Let's replace it with the default content.")
-            json_content = self.get_default_quicksearch_content()
-            self.update_quicksearch_json(json_content)
+            json_content = self.get_default_quicksearches_content()
+            self.update_quicksearches_json(json_content)
             return json_content
         else:
             if "_default" not in json_content:
@@ -174,7 +189,7 @@ class SettingsManager(QSettings):
                 )
                 logger.warning("Let's add the default one.")
                 # if default search is missing, let's adding it to JSON file content
-                json_content["_default"] = self.get_default_quicksearch_content().get("_default")
+                json_content["_default"] = self.get_default_quicksearches_content().get("_default")
             else:
                 pass
 
@@ -200,10 +215,10 @@ class SettingsManager(QSettings):
                     )
                 else:
                     pass
-            self.update_quicksearch_json(json_content)
+            self.update_quicksearches_json(json_content)
             return json_content
 
-    def load_quicksearch_from_qsettings(self):
+    def load_quicksearches_from_qsettings(self):
 
         qsettings_quicksearch_keys = [key for key in self.allKeys() if key.startswith(self.quicksearch_prefix)]
 
@@ -234,22 +249,14 @@ class SettingsManager(QSettings):
 
     def merge_quicksearch(self, json_content, qsettings_content):
 
+        # logger.debug("*=====* merging quicksearches")
+
         for quicksearch_name in json_content:
             quicksearch = json_content[quicksearch_name]
             if quicksearch_name in ["Last search", "Dernière recherche", "_current"] and quicksearch_name in qsettings_content:
                 json_content[quicksearch_name] = qsettings_content[quicksearch_name]
             else:
-                for quicksearch_param in quicksearch:
-                    quicksearch_param_value = quicksearch[quicksearch_param]
-                    if quicksearch_param != "labels":
-                        qsetting_key = "{}{}/{}".format(self.quicksearch_prefix, quicksearch_name, quicksearch_param)
-                        qsetting_value = quicksearch_param_value
-                        self.setValue(qsetting_key, qsetting_value)
-                    else:
-                        for label in quicksearch_param_value:
-                            qsetting_key = "{}{}/{}/{}".format(self.quicksearch_prefix, quicksearch_name, quicksearch_param, label)
-                            qsetting_value = quicksearch_param_value[label]
-                            self.setValue(qsetting_key, qsetting_value)
+                self.write_quicksearch_qsettings(quicksearch_name, quicksearch)
 
         for quicksearch_name in qsettings_content:
             quicksearch = qsettings_content[quicksearch_name]
@@ -258,47 +265,68 @@ class SettingsManager(QSettings):
             else:
                 pass
 
-        self.update_quicksearch_json(json_content)
+        self.update_quicksearches_json(json_content)
 
         return json_content
 
-    def update_quicksearch_json(self, content: dict):
+    def update_quicksearches_json(self, content: dict):
 
-        self.dump_json_file(self.quicksearch_json_path, content)
+        self.dump_json_file(self.quicksearches_json_path, content)
         return
 
-    def update_quicksearch_qsettings(self, content: dict):
+    def write_quicksearch_qsettings(self, name: str, content: dict):
+
+        # logger.debug("*=====* writing {} quicksearches in qsettings".format(name))
+        for quicksearch_param in content:
+            quicksearch_param_value = content[quicksearch_param]
+            if quicksearch_param != "labels":
+                qsetting_key = "{}{}/{}".format(self.quicksearch_prefix, name, quicksearch_param)
+                qsetting_value = quicksearch_param_value
+                self.set_value(qsetting_key, qsetting_value)
+            else:
+                for label in quicksearch_param_value:
+                    qsetting_key = "{}{}/{}/{}".format(self.quicksearch_prefix, name, quicksearch_param, label)
+                    qsetting_value = quicksearch_param_value[label]
+                    self.set_value(qsetting_key, qsetting_value)
+
+        return
+
+    def update_quicksearches_qsettings(self, content: dict):
 
         self.remove(self.quicksearch_prefix[:-1])
         for quicksearch_name in content:
             quicksearch = content[quicksearch_name]
-            for quicksearch_param in quicksearch:
-                quicksearch_param_value = quicksearch[quicksearch_param]
-                if quicksearch_param != "labels":
-                    qsetting_key = "{}{}/{}".format(self.quicksearch_prefix, quicksearch_name, quicksearch_param)
-                    qsetting_value = quicksearch_param_value
-                    self.setValue(qsetting_key, qsetting_value)
-                else:
-                    for label in quicksearch_param_value:
-                        qsetting_key = "{}{}/{}/{}".format(self.quicksearch_prefix, quicksearch_name, quicksearch_param, label)
-                        qsetting_value = quicksearch_param_value[label]
-                        self.setValue(qsetting_key, qsetting_value)
+            self.write_quicksearch_qsettings(quicksearch_name, quicksearch)
         return
 
-    def update_quicksearch(self, content):
+    def update_quicksearches(self, content):
 
-        self.update_quicksearch_json(content)
-        self.update_quicksearch_qsettings(content)
+        self.update_quicksearches_json(content)
+        self.update_quicksearches_qsettings(content)
+        self.quicksearches_content = content
 
         return
 
-    def save_quicksearch(self):
+    def save_quicksearch(self, name: str, content: dict):
+
+        self.quicksearches_content[name] = content
+        self.update_quicksearches(self.quicksearches_content)
+
         return
 
-    def rename_quicksearch(self):
+    def rename_quicksearch(self, old_name: str, new_name: str):
+
+        self.quicksearches_content[new_name] = self.quicksearches_content[old_name]
+        self.quicksearches_content.pop(old_name)
+        self.update_quicksearches(self.quicksearches_content)
+
         return
 
-    def remove_quicksearch(self):
+    def remove_quicksearch(self, name: str):
+
+        self.quicksearches_content.pop(name)
+        self.update_quicksearches(self.quicksearches_content)
+
         return
 
 # #############################################################################

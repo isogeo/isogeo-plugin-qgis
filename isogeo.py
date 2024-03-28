@@ -431,8 +431,7 @@ class Isogeo:
             name = self.tr("Last search")
             self.form_mng.qs_mng.write_params(name, "Last")
             # update quick searches combobox
-            saved_searches = list(self.form_mng.qs_mng.load_file())
-            self.form_mng.pop_qs_cbbs(items_list=saved_searches)
+            self.form_mng.pop_qs_cbbs(items_list=self.form_mng.qs_mng.get_quicksearches_names())
             self.store = False
         else:
             pass
@@ -471,7 +470,7 @@ class Isogeo:
 
     def search_slot(self, result: dict, tags: dict):
         """Slot connected to ApiRequester.search_sig signal. It updates widgets, using
-        SearchFormManager appropiate methods to fill them from 'tags' parameter and put
+        SearchFormManager appropriate methods to fill them from 'tags' parameter and put
         them in the right status. It also display the results contained in 'result'
         parameter by calling ResultManager.show_results method if necessary.
 
@@ -511,8 +510,7 @@ class Isogeo:
         # Filling Advanced search comboboxes from tags
         self.form_mng.pop_as_cbbs(tags)
         # Filling quick searches comboboxes from json file (also the one in settings tab)
-        qs_list = list(self.form_mng.qs_mng.load_file().keys())
-        self.form_mng.pop_qs_cbbs(qs_list)
+        self.form_mng.pop_qs_cbbs(self.form_mng.qs_mng.get_quicksearches_names())
         # Sorting Advanced search comboboxes
         for cbb in self.cbbs_search_advanced:
             cbb.model().sort(0)
@@ -535,7 +533,7 @@ class Isogeo:
                 # Putting all the comboboxes selected index according to params found in the json file
                 logger.debug("Quicksearch case: {}".format(self.savedSearch))
                 # Opening the json to get quick search's params
-                params = self.form_mng.qs_mng.load_file().get(self.savedSearch)
+                params = self.form_mng.qs_mng.get_quicksearches().get(self.savedSearch)
                 quicksearch = self.savedSearch
                 self.savedSearch = ""
                 selected_keywords = [v for k, v in params.items() if k.startswith("keyword")]
@@ -584,7 +582,7 @@ class Isogeo:
         # Re enable all user input fields now the search function is
         # finished.
         self.form_mng.switch_widgets_on_and_off(1)
-        # Reseting attributes values
+        # Resetting attributes values
         self.hardReset = False
         self.showResult = False
 
@@ -593,7 +591,7 @@ class Isogeo:
         selected_search = self.form_mng.cbb_quicksearch_use.currentText()
         logger.debug("Quicksearch selected: {}".format(selected_search))
         # load quicksearches
-        saved_searches = self.form_mng.qs_mng.load_file()
+        saved_searches = self.form_mng.qs_mng.get_quicksearches()
         if selected_search != self.tr("Quicksearches"):
             self.form_mng.switch_widgets_on_and_off(0)  # disable search form
             # check if selected search can be found
@@ -601,8 +599,7 @@ class Isogeo:
                 self.savedSearch = selected_search
                 search_params = saved_searches.get(selected_search)
                 logger.debug(
-                    "Quicksearch found in saved searches and"
-                    " related search params have just been loaded from."
+                    "Quicksearch found in saved searches and related search params have just been loaded from it."
                 )
             elif selected_search not in saved_searches and "_default" in saved_searches:
                 logger.warning("Selected search ({}) not found." "'_default' will be used instead.")

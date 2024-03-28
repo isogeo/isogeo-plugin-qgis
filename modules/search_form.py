@@ -298,7 +298,7 @@ class SearchFormManager(IsogeoDockWidget):
         logger.debug("Filling quick searches comboboxes")
         # building the list of widgets' items'content
         if items_list is None:
-            qs_list = list(self.qs_mng.load_file().keys())
+            qs_list = self.qs_mng.get_quicksearches_names()
         else:
             qs_list = items_list
         qs_list.pop(qs_list.index("_default"))
@@ -521,7 +521,7 @@ class SearchFormManager(IsogeoDockWidget):
         """Get the extent's coordinates of a layer or canvas in the right format
         and SRS (WGS84).
 
-        :param str filter: the name of the element wich we want to get extent's
+        :param str filter: the name of the element which we want to get extent's
         coordinates.
 
         :returns: the x and y coordinates of the canvas' Southwestern and
