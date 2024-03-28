@@ -9,5 +9,10 @@
     "pyqt-integration.pyrcc.compile.filepath": "${workspace}/${qrc_name}.py",
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter"
-    }
+    },
+    "cSpell.words": [
+        "cbbs",
+        "geofilter",
+        "quicksearches"
+    ]
 }
