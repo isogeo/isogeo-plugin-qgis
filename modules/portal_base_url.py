@@ -50,14 +50,16 @@ class PortalURLManager:
         self.portalURL_config_dialog.accepted.connect(self.save)
         self.portalURL_config_dialog.chb_portal_url.stateChanged.connect(self.update_input_state)
 
+        settings_mng.load_config()
+
     def open_dialog(self):
         """"""
 
         self.portalURL_config_dialog.input_portal_url.setText(
-            settings_mng.get_value("isogeo/settings/portal_base_url", "")
+            settings_mng.config_content.get("portal_base_url")
         )
         self.portalURL_config_dialog.chb_portal_url.setChecked(
-            int(settings_mng.get_value("isogeo/settings/add_metadata_url_portal", 0))
+            int(settings_mng.config_content.get("add_metadata_url_portal"))
         )
         self.portalURL_config_dialog.open()
 
@@ -65,11 +67,11 @@ class PortalURLManager:
         """"""
 
         # save base portal URL in QSettings
-        settings_mng.set_value(
-            "isogeo/settings/portal_base_url", self.portalURL_config_dialog.input_portal_url.text()
+        settings_mng.set_config_value(
+            "portal_base_url", self.portalURL_config_dialog.input_portal_url.text()
         )
         is_checked = int(self.portalURL_config_dialog.chb_portal_url.isChecked())
-        settings_mng.set_value("isogeo/settings/add_metadata_url_portal", is_checked)
+        settings_mng.set_config_value("add_metadata_url_portal", is_checked)
 
     def update_input_state(self):
         """"""

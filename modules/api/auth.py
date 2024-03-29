@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # Standard library
-from configparser import Error
 import logging
 import shutil
 import time
@@ -75,10 +74,6 @@ class Authenticator(QObject):
     msgbar = QgsMessageBar(ui_auth_form)
     ui_auth_form.msgbar_vlayout.addWidget(msgbar)
 
-    # set config.json file path
-    json_content = dict
-    json_path = Path(__file__).parents[2] / "config.json"
-
     # plugin credentials storage parameters
     credentials_location = {"QSettings": 0, "oAuth2_file": 0}
 
@@ -87,33 +82,18 @@ class Authenticator(QObject):
         super().__init__()
 
         # api parameters
-        self.load_json_file_content()
-        if not self.json_content:
-            raise Error("Unable to load {} file content.".format(self.json_path))
-        else:
-            if self.json_content.get("api_base_url").endswith("/"):
-                v1_url = self.json_content.get("api_base_url")[:-1]
-            else:
-                v1_url = self.json_content.get("api_base_url")
+        settings_mng.load_config()
+        v1_url = settings_mng.config_content.get("api_base_url")
+        id_url = settings_mng.config_content.get("api_auth_url")
 
-            if self.json_content.get("api_auth_url").endswith("/"):
-                id_url = self.json_content.get("api_auth_url")[:-1]
-            else:
-                id_url = self.json_content.get("api_auth_url")
-
-            self.api_params = {
-                "app_id": "",
-                "app_secret": "",
-                "url_base": v1_url,
-                "url_auth": "{}/oauth/authorize".format(id_url),
-                "url_token": "{}/oauth/token".format(id_url),
-                "url_redirect": "http://localhost:5000/callback",
-            }
-
-            if self.json_content.get("app_base_url").endswith("/"):
-                self.app_url = self.json_content.get("app_base_url")[:-1]
-            else:
-                self.app_url = self.json_content.get("app_base_url")
+        self.api_params = {
+            "app_id": "",
+            "app_secret": "",
+            "url_base": v1_url,
+            "url_auth": "{}/oauth/authorize".format(id_url),
+            "url_token": "{}/oauth/token".format(id_url),
+            "url_redirect": "http://localhost:5000/callback",
+        }
 
         # credentials storage folder
         self.auth_folder = plugin_dir / "_auth"
@@ -122,81 +102,6 @@ class Authenticator(QObject):
         # inform user
         self.informer = object
         self.first_auth = bool
-
-    # CONFIG FILE LOADER ---------------------------------------------------------------------------
-    def load_json_file_content(self):
-        """Retrieve API and app URLs from config.json file"""
-        try:
-            with open(self.json_path, "r") as json_content:
-                self.json_content = json.load(json_content)
-
-            if not isinstance(self.json_content, dict):
-                logger.warning(
-                    "config.json file content is not correctly formatted : {}.".format(
-                        self.json_content
-                    )
-                )
-                self.json_content = 0
-            elif not all(
-                key in list(self.json_content.keys())
-                for key in [
-                    "api_base_url",
-                    "api_auth_url",
-                    "app_base_url",
-                    "help_base_url",
-                    "background_map_url",
-                ]
-            ):
-                logger.warning(
-                    "Missing key in config.json file content : {}.".format(self.json_content)
-                )
-                self.json_content = 0
-            else:
-                logger.info(
-                    "config.json file content successfully loaded : {}.".format(self.json_content)
-                )
-                settings_mng.set_value("isogeo/env/api_base_url", self.json_content.get("api_base_url"))
-                settings_mng.set_value("isogeo/env/api_auth_url", self.json_content.get("api_auth_url"))
-                settings_mng.set_value("isogeo/env/app_base_url", self.json_content.get("app_base_url"))
-                settings_mng.set_value(
-                    "isogeo/env/help_base_url", self.json_content.get("help_base_url")
-                )
-                settings_mng.set_value(
-                    "isogeo/settings/background_map_url",
-                    self.json_content.get("background_map_url"),
-                )
-
-        except Exception as e:
-            if not self.json_path.exists() or not self.json_path.is_file():
-                logger.warning(
-                    "config.json file can't be used : {} doesn't exist or is not a file : {}".format(
-                        str(self.json_path), str(e)
-                    )
-                )
-                logger.warning("Let's create one with default values: {}.".format(self.json_path))
-                self.json_content = {
-                    "api_base_url": settings_mng.get_value(
-                        "isogeo/env/api_base_url", "https://v1.api.isogeo.com"
-                    ),
-                    "api_auth_url": settings_mng.get_value(
-                        "isogeo/env/api_auth_url", "https://id.api.isogeo.com"
-                    ),
-                    "app_base_url": settings_mng.get_value(
-                        "isogeo/env/app_base_url", "https://app.isogeo.com"
-                    ),
-                    "help_base_url": settings_mng.get_value(
-                        "isogeo/env/help_base_url", "https://help.isogeo.com"
-                    ),
-                    "background_map_url": settings_mng.get_value(
-                        "isogeo/settings/background_map_url",
-                        "type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    ),
-                }
-                with open(self.json_path, "w") as json_content:
-                    json.dump(self.json_content, json_content, indent=4)
-            else:
-                logger.error("config.json file can't be read : {}.".format(str(e)))
-                self.json_content = 0
 
     # MANAGER --------------------------------------------------------------------------------------
     def manage_api_initialization(self):

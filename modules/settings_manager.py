@@ -36,10 +36,49 @@ class SettingsManager(QSettings):
 
         self.quicksearches_json_path = Path(__file__).parents[1] / "_user" / "quicksearches.json"
         self.quicksearch_prefix = "isogeo/user/quicksearches/"
+        self.config_json_path = Path(__file__).parents[1] / "config.json"
         self.api_base_url = str
         self.tr = object
 
         self.quicksearches_content = {}
+        self.config_settings = {
+            "api_base_url": {
+                "default": "https://v1.api.isogeo.com",
+                "type": str,
+                "qsetting": "isogeo/env/api_base_url",
+            },
+            "api_auth_url": {
+                "default": "https://id.api.isogeo.com",
+                "type": str,
+                "qsetting": "isogeo/env/api_auth_url",
+            },
+            "app_base_url": {
+                "default": "https://app.isogeo.com",
+                "type": str,
+                "qsetting": "isogeo/env/app_base_url",
+            },
+            "help_base_url": {
+                "default": "https://help.isogeo.com",
+                "type": str,
+                "qsetting": "isogeo/env/help_base_url",
+            },
+            "background_map_url": {
+                "default": "type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "type": str,
+                "qsetting": "isogeo/settings/background_map_url",
+            },
+            "portal_base_url": {
+                "default": "",
+                "type": str,
+                "qsetting": "isogeo/settings/portal_base_url",
+            },
+            "add_metadata_url_portal": {
+                "default": 0,
+                "type": int,
+                "qsetting": "isogeo/settings/add_metadata_url_portal",
+            },
+        }
+        self.config_content = {}
 
     def get_locale(self):
         """Return 'locale/userLocale' setting value about QGIS language configuration"""
@@ -94,6 +133,141 @@ class SettingsManager(QSettings):
             json.dump(content, outfile, sort_keys=True, indent=4)
         return
 
+    def get_default_config_content(self):
+
+        default_content = {}
+        for setting in self.config_settings:
+            default_content[setting] = self.config_settings[setting]["default"]
+        return default_content
+
+    def load_config(self):
+        config_json_content = self.load_config_from_json()
+        config_qsettings_content = self.load_config_from_qsettings()
+
+        self.config_content = self.merge_config(config_json_content, config_qsettings_content)
+
+        return self.config_content
+
+    def check_config_json_content(self, json_content):
+        if not isinstance(json_content, dict):
+            return 0
+        elif not all(isinstance(key, str) for key in json_content):
+            return 0
+        elif not all(isinstance(json_content[key], str) or isinstance(json_content[key], int) for key in json_content):
+            return 0
+        return 1
+
+    def load_config_from_json(self):
+
+        json_content = self.load_json_file(self.config_json_path)
+        if json_content == -1:
+            raise Exception("Unable to load {} file content.".format(self.config_json_path))
+        elif not json_content:
+            logger.warning(
+                "{} json file is missing.".format(
+                    self.config_json_path
+                )
+            )
+            logger.warning("Let's create it with the default content.")
+            json_content = self.get_default_config_content()
+            self.update_config_json(json_content)
+            return json_content
+        elif not self.check_config_json_content(json_content):
+            logger.warning(
+                "{} json file content is not correctly formatted : {}.".format(
+                    self.config_json_path, json_content
+                )
+            )
+            logger.warning("Let's replace it with the default content.")
+            json_content = self.get_default_config_content()
+            self.update_config_json(json_content)
+            return json_content
+        else:
+            for setting in self.config_settings:
+                default_value = self.config_settings[setting]["default"]
+                expected_type = self.config_settings[setting]["type"]
+                if setting not in json_content or not isinstance(json_content[setting], expected_type) or json_content[setting] == "" or json_content[setting] is None:
+                    json_content[setting] = default_value
+                else:
+                    pass
+            return json_content
+
+    def load_config_from_qsettings(self):
+
+        qsettings_content = {}
+
+        for setting in self.config_settings:
+            default_value = self.config_settings[setting]["default"]
+            expected_type = self.config_settings[setting]["type"]
+
+            qsettings_content[setting] = self.get_value(
+                self.config_settings[setting]["qsetting"],
+                default_value,
+                expected_type,
+            )
+
+            if not isinstance(qsettings_content[setting], expected_type) or qsettings_content[setting] == "" or qsettings_content[setting] is None:
+                qsettings_content[setting] = default_value
+            else:
+                pass
+
+        return qsettings_content
+
+    def merge_config(self, json_content: dict, qsettings_content: dict):
+
+        config_content = {}
+        for setting in self.config_settings:
+            json_value = json_content.get(setting)
+            qsettings_value = qsettings_content.get(setting)
+            default_value = self.config_settings.get(setting).get("default")
+            if json_value == default_value and qsettings_value != json_value:
+                config_content[setting] = qsettings_value
+            else:
+                config_content[setting] = json_value
+
+            if setting in ["api_base_url", "api_auth_url", "app_base_url", "help_base_url"] and config_content[setting].endswith("/"):
+                config_content[setting] = config_content.get(setting)[:-1]
+            else:
+                pass
+
+        self.update_config_json(config_content)
+        self.update_config_qsettings(config_content)
+
+        logger.debug("*=====* {}".format(self.load_config_from_json() == self.load_config_from_qsettings()))
+
+        return config_content
+
+    def update_config_json(self, content: dict):
+
+        self.dump_json_file(self.config_json_path, content)
+
+        return
+
+    def update_config_qsettings(self, content: dict):
+
+        for setting in self.config_settings:
+            qsettings_key = self.config_settings[setting]["qsetting"]
+            self.set_value(
+                qsettings_key, content[setting]
+            )
+
+        return
+
+    def update_config(self, content: dict):
+
+        self.update_config_json(content)
+        self.update_config_qsettings(content)
+        self.config_content = content
+
+        return
+
+    def set_config_value(self, setting_name: str, value):
+
+        self.config_content[setting_name] = value
+        self.update_config(self.config_content)
+
+        return
+
     def get_default_quicksearches_content(self):
 
         default_content = {
@@ -134,11 +308,8 @@ class SettingsManager(QSettings):
         return default_content
 
     def load_quicksearches(self):
-        # logger.debug("*=====* Loading quicksearches")
         quicksearch_json_content = self.load_quicksearches_from_json()
-        # logger.debug("*=====* {} quicksearches found in json_file".format(len(quicksearch_json_content)))
         quicksearch_qsettings_content = self.load_quicksearches_from_qsettings()
-        # logger.debug("*=====* {} quicksearches found in qsettings".format(len(quicksearch_qsettings_content)))
 
         self.quicksearches_content = self.merge_quicksearch(quicksearch_json_content, quicksearch_qsettings_content)
 
@@ -159,7 +330,7 @@ class SettingsManager(QSettings):
 
         json_content = self.load_json_file(self.quicksearches_json_path)
         if json_content == -1:
-            return 0
+            raise Exception("Unable to load {} file content.".format(self.quicksearches_json_path))
         elif not json_content:
             logger.warning(
                 "{} json file is missing.".format(
@@ -249,8 +420,6 @@ class SettingsManager(QSettings):
 
     def merge_quicksearch(self, json_content, qsettings_content):
 
-        # logger.debug("*=====* merging quicksearches")
-
         for quicksearch_name in json_content:
             quicksearch = json_content[quicksearch_name]
             if quicksearch_name in ["Last search", "Dernière recherche", "_current"] and quicksearch_name in qsettings_content:
@@ -276,7 +445,6 @@ class SettingsManager(QSettings):
 
     def write_quicksearch_qsettings(self, name: str, content: dict):
 
-        # logger.debug("*=====* writing {} quicksearches in qsettings".format(name))
         for quicksearch_param in content:
             quicksearch_param_value = content[quicksearch_param]
             if quicksearch_param != "labels":
