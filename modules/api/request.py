@@ -236,13 +236,13 @@ class ApiRequester(QObject):
             elif err == 302:
                 logger.error("Request to the API failed. Creds may be invalid")
                 self.api_sig.emit("creds_issue")
-            # unkown error
+            # unknown error
             else:
                 logger.warning(
-                    "Request to the API failed. Unkown error."
+                    "Request to the API failed. Unknown error."
                     "\n API's reply content : {}".format(parsed_content)
                 )
-                self.api_sig.emit("unkown_error")
+                self.api_sig.emit("unknown_error")
         # working cases
         elif content != "":
             # for token request, one signal is emitted passing a string whose

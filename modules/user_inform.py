@@ -104,7 +104,7 @@ class UserInformer:
             - 'creds_issue'
             - 'proxy_issue'
             - 'shares_issue'
-            - 'unkown_error'
+            - 'unknown_error'
             - 'unkonw_reply'
             - 'internet_issue'
             - 'config_issue'
@@ -123,7 +123,7 @@ class UserInformer:
                 "and check your Internet connection. If this error keeps happening, "
                 "please report it in the bug tracker.",
             ),
-            "unkown_error": self.tr(
+            "unknown_error": self.tr(
                 "Request to Isogeo's API failed : unkown error found. Please,"
                 " report it in the bug tracker.",
             ),
