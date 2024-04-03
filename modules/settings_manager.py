@@ -307,11 +307,19 @@ class SettingsManager(QSettings):
         }
         return default_content
 
+    def clean_quicksearch_url(self, url):
+
+        search_parameters = url.split("/resources/search?")[1]
+        base_search_url = self.api_base_url + "/resources/search?"
+        new_url = base_search_url + search_parameters
+
+        return new_url
+
     def load_quicksearches(self):
         quicksearch_json_content = self.load_quicksearches_from_json()
         quicksearch_qsettings_content = self.load_quicksearches_from_qsettings()
 
-        self.quicksearches_content = self.merge_quicksearch(quicksearch_json_content, quicksearch_qsettings_content)
+        self.quicksearches_content = self.merge_quicksearches(quicksearch_json_content, quicksearch_qsettings_content)
 
         return self.quicksearches_content
 
@@ -339,7 +347,6 @@ class SettingsManager(QSettings):
             )
             logger.warning("Let's create it with the default content.")
             json_content = self.get_default_quicksearches_content()
-            self.update_quicksearches_json(json_content)
             return json_content
         elif not self.check_quicksearch_json_content(json_content):
             logger.warning(
@@ -349,7 +356,6 @@ class SettingsManager(QSettings):
             )
             logger.warning("Let's replace it with the default content.")
             json_content = self.get_default_quicksearches_content()
-            self.update_quicksearches_json(json_content)
             return json_content
         else:
             if "_default" not in json_content:
@@ -371,22 +377,6 @@ class SettingsManager(QSettings):
                 else:
                     pass
 
-            for quicksearch in json_content:
-                quicksearch_url = json_content.get(quicksearch).get("url")
-                if self.api_base_url not in quicksearch_url:
-                    search_parameters = quicksearch_url.split("/resources/search?")[1]
-                    base_search_url = self.api_base_url + "/resources/search?"
-                    json_content[quicksearch]["url"] = (base_search_url + search_parameters)
-                    logger.warning(
-                        "'{}' quicksearch : URL {} replaced with {}.".format(
-                            quicksearch,
-                            quicksearch_url,
-                            base_search_url + search_parameters,
-                        )
-                    )
-                else:
-                    pass
-            self.update_quicksearches_json(json_content)
             return json_content
 
     def load_quicksearches_from_qsettings(self):
@@ -406,37 +396,59 @@ class SettingsManager(QSettings):
                     pass
 
                 quicksearch_param = key.replace(self.quicksearch_prefix, "").split("/")[1]
-                if quicksearch_param != "labels":
-                    qsettings_content[quicksearch_name][quicksearch_param] = self.get_value(key)
-                else:
+                if quicksearch_param == "labels":
                     if quicksearch_param not in qsettings_content[quicksearch_name]:
                         qsettings_content[quicksearch_name][quicksearch_param] = {}
                     else:
                         pass
                     label = key.replace(self.quicksearch_prefix, "").split("/")[2]
                     qsettings_content[quicksearch_name][quicksearch_param][label] = self.get_value(key)
+                else:
+                    qsettings_content[quicksearch_name][quicksearch_param] = self.get_value(key)
 
             return qsettings_content
 
-    def merge_quicksearch(self, json_content, qsettings_content):
+    def merge_quicksearches(self, json_content, qsettings_content):
+
+        quicksearches_content = {}
 
         for quicksearch_name in json_content:
             quicksearch = json_content[quicksearch_name]
+            # if last or _current search already exists in qsettings, we want to keep qsettings version of the quicksearch
             if quicksearch_name in ["Last search", "Dernière recherche", "_current"] and quicksearch_name in qsettings_content:
-                json_content[quicksearch_name] = qsettings_content[quicksearch_name]
+                pass
+            # else, we want to keep json file version of the quicksearch
             else:
-                self.write_quicksearch_qsettings(quicksearch_name, quicksearch)
+                quicksearches_content[quicksearch_name] = quicksearch
 
         for quicksearch_name in qsettings_content:
             quicksearch = qsettings_content[quicksearch_name]
-            if quicksearch_name not in json_content:
-                json_content[quicksearch_name] = quicksearch
+            # if quicksearch_name not in json_content:
+            # only retrieving from qsettings quicksearches which are not already in json file
+            if quicksearch_name not in quicksearches_content:
+                quicksearches_content[quicksearch_name] = quicksearch
             else:
                 pass
 
-        self.update_quicksearches_json(json_content)
+        for quicksearch_name in quicksearches_content:
+            quicksearch_url = quicksearches_content.get(quicksearch_name).get("url")
+            if self.api_base_url not in quicksearch_url:
+                cleaned_url = self.clean_quicksearch_url(quicksearch_url)
+                quicksearches_content[quicksearch_name]["url"] = cleaned_url
+                logger.warning(
+                    "'{}' quicksearch : URL {} replaced with {}.".format(
+                        quicksearch_name, quicksearch_url, cleaned_url
+                    )
+                )
+            else:
+                pass
 
-        return json_content
+        self.update_quicksearches_json(quicksearches_content)
+        self.update_quicksearches_qsettings(quicksearches_content)
+
+        logger.debug("*=====* {}".format(self.load_quicksearches_from_json() == self.load_quicksearches_from_qsettings()))
+
+        return quicksearches_content
 
     def update_quicksearches_json(self, content: dict):
 
