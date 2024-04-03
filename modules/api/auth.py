@@ -122,10 +122,10 @@ class Authenticator(QObject):
         self.credentials_location["oAuth2_file"] = self.credentials_check_file()
 
         # update class attributes from credentials found
-        if self.credentials_location.get("QSettings"):
-            self.credentials_update("QSettings")
-        elif self.credentials_location.get("oAuth2_file"):
+        if self.credentials_location.get("oAuth2_file"):
             self.credentials_update("oAuth2_file")
+        elif self.credentials_location.get("QSettings"):
+            self.credentials_update("QSettings")
         else:
             logger.info("No credentials found. ")
             self.first_auth = True
