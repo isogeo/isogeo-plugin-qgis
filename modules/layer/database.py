@@ -114,8 +114,6 @@ class DataBaseManager:
         """Class constructor."""
 
         # check _user/db_connections.json file and load the content
-        settings_mng.load_db_connections()
-
         self.tr = tr
 
         self.pgis_available = pgis_available
@@ -599,6 +597,7 @@ class DataBaseManager:
             else:
                 pass
 
+        settings_mng.load_db_connections()
         if dbms in settings_mng.db_connections:
             for conn_dict in settings_mng.db_connections.get(dbms):
                 connection_name = conn_dict.get("connection_name")
