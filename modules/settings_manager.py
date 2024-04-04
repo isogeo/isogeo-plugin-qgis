@@ -34,13 +34,13 @@ class SettingsManager(QSettings):
         # instantiate
         super().__init__()
 
-        self.quicksearches_json_path = Path(__file__).parents[1] / "_user" / "quicksearches.json"
-        self.quicksearch_prefix = "isogeo/user/quicksearches/"
-        self.config_json_path = Path(__file__).parents[1] / "config.json"
         self.api_base_url = str
         self.tr = object
 
-        self.quicksearches_content = {}
+        self.db_connections_json_path = Path(__file__).parents[1] / "_user" / "db_connections.json"
+        self.db_connections = {}
+
+        self.config_json_path = Path(__file__).parents[1] / "config.json"
         self.config_settings = {
             "api_base_url": {
                 "default": "https://v1.api.isogeo.com",
@@ -79,6 +79,10 @@ class SettingsManager(QSettings):
             },
         }
         self.config_content = {}
+
+        self.quicksearches_json_path = Path(__file__).parents[1] / "_user" / "quicksearches.json"
+        self.quicksearches_content = {}
+        self.quicksearch_prefix = "isogeo/user/quicksearches/"
 
     def get_locale(self):
         """Return 'locale/userLocale' setting value about QGIS language configuration"""
@@ -133,6 +137,57 @@ class SettingsManager(QSettings):
             json.dump(content, outfile, sort_keys=True, indent=4)
         return
 
+    def load_cache(self):
+        return
+
+    def check_db_connections_json_content(self, json_content):
+        li_expected_keys = ["Oracle", "PostgreSQL"]
+        if not isinstance(json_content, dict):
+            return 0
+        elif not all(isinstance(key, str) for key in json_content):
+            return 0
+        elif not all(key in json_content for key in li_expected_keys):
+            return 0
+        elif not all(isinstance(json_content.get(key), list) for key in li_expected_keys):
+            return 0
+        return 1
+
+    def get_default_db_connections_content(self):
+
+        default_content = {
+            "Oracle": [],
+            "PostgreSQL": []
+        }
+        return default_content
+
+    def load_db_connections(self):
+
+        json_content = self.load_json_file(self.db_connections_json_path)
+        if json_content == -1:
+            raise Exception("Unable to load {} file content.".format(self.db_connections_json_path))
+        elif not json_content:
+            logger.warning(
+                "{} json file is missing.".format(
+                    self.db_connections_json_path
+                )
+            )
+            logger.warning("Let's create it with the default content.")
+            json_content = self.get_default_db_connections_content()
+            self.update_config_json(json_content)
+        elif not self.check_db_connections_json_content(json_content):
+            logger.warning(
+                "{} json file content is not correctly formatted : {}.".format(
+                    self.db_connections_json_path, json_content
+                )
+            )
+            logger.warning("Let's replace it with the default content.")
+            json_content = self.get_default_db_connections_content()
+            self.update_config_json(json_content)
+        else:
+            pass
+
+        self.db_connections = json_content
+
     def get_default_config_content(self):
 
         default_content = {}
@@ -171,7 +226,6 @@ class SettingsManager(QSettings):
             logger.warning("Let's create it with the default content.")
             json_content = self.get_default_config_content()
             self.update_config_json(json_content)
-            return json_content
         elif not self.check_config_json_content(json_content):
             logger.warning(
                 "{} json file content is not correctly formatted : {}.".format(
@@ -181,7 +235,6 @@ class SettingsManager(QSettings):
             logger.warning("Let's replace it with the default content.")
             json_content = self.get_default_config_content()
             self.update_config_json(json_content)
-            return json_content
         else:
             for setting in self.config_settings:
                 default_value = self.config_settings[setting]["default"]
@@ -190,7 +243,7 @@ class SettingsManager(QSettings):
                     json_content[setting] = default_value
                 else:
                     pass
-            return json_content
+        return json_content
 
     def load_config_from_qsettings(self):
 
@@ -347,7 +400,6 @@ class SettingsManager(QSettings):
             )
             logger.warning("Let's create it with the default content.")
             json_content = self.get_default_quicksearches_content()
-            return json_content
         elif not self.check_quicksearch_json_content(json_content):
             logger.warning(
                 "{} json file content is not correctly formatted : {}.".format(
@@ -356,7 +408,6 @@ class SettingsManager(QSettings):
             )
             logger.warning("Let's replace it with the default content.")
             json_content = self.get_default_quicksearches_content()
-            return json_content
         else:
             if "_default" not in json_content:
                 logger.warning(
@@ -377,7 +428,7 @@ class SettingsManager(QSettings):
                 else:
                     pass
 
-            return json_content
+        return json_content
 
     def load_quicksearches_from_qsettings(self):
 

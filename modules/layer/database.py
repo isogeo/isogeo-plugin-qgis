@@ -113,6 +113,9 @@ class DataBaseManager:
     def __init__(self, tr):
         """Class constructor."""
 
+        # check _user/db_connections.json file and load the content
+        settings_mng.load_db_connections()
+
         self.tr = tr
 
         self.pgis_available = pgis_available
@@ -141,11 +144,7 @@ class DataBaseManager:
         else:
             self.pg_configfile_path = 0
 
-        # check _user/db_connections.json file and load the content
-        self.json_content = dict
-        self.json_path = Path(__file__).parents[2] / "_user" / "db_connections.json"
-
-        # Retrieved prefered and invalid connections saved into QSettings,
+        # Retrieved preferred and invalid connections saved into QSettings,
         # then retrieve informations about registered database connections from QSettings
         self.dbms_specifics_infos = {}
         if self.pgis_available:
@@ -268,51 +267,6 @@ class DataBaseManager:
         else:
             self.dbms_specifics_infos[dbms][dict_key] = []
             self.set_qsettings_connections(dbms, connections_kind, [])
-
-    def load_json_file_content(self):
-        """Retrieve the list of Oracle and PostgreSQL connections configured into _user/db_connections file"""
-        try:
-            with open(self.json_path, "r") as json_content:
-                self.json_content = json.load(json_content)
-
-            if not isinstance(self.json_content, dict):
-                logger.warning(
-                    "_user/db_connections.json file content is not correctly formatted : {}.".format(
-                        self.json_content
-                    )
-                )
-                self.json_content = 0
-            elif not any(
-                dbms_name in list(self.json_content.keys())
-                for dbms_name in list(self.dbms_specifics_infos.keys())
-            ):
-                logger.warning(
-                    "_user/db_connections.json file content has no 'Oracle' or 'PostgreSQl' key : {}.".format(
-                        self.json_content
-                    )
-                )
-                self.json_content = 0
-            else:
-                logger.info(
-                    "_user/db_connections.json file content successfully loaded : {}.".format(
-                        self.json_content
-                    )
-                )
-
-        except Exception as e:
-            if not self.json_path.exists() or not self.json_path.is_file():
-                logger.warning(
-                    "_user/db_connections.json file can't be used : {} doesn't exist or is not a file : {}".format(
-                        str(self.json_path), str(e)
-                    )
-                )
-                logger.warning("Let's create an empty one : {}.".format(self.json_path))
-                self.json_content = {"Oracle": [], "PostgreSQL": []}
-                with open(self.json_path, "w") as json_writer:
-                    json.dump(self.json_content, json_writer, indent=4)
-            else:
-                logger.error("_user/db_connections.json file can't be read : {}.".format(str(e)))
-                self.json_content = 0
 
     def config_file_parser(self, file_path: Path, connection_service: str, connection_name: str):
         """Retrieve connection parameters values stored into configuration file corresponding
@@ -645,10 +599,8 @@ class DataBaseManager:
             else:
                 pass
 
-        # Loading connections saved into _user/db_connections.json file
-        self.load_json_file_content()
-        if self.json_content and dbms in self.json_content:
-            for conn_dict in self.json_content.get(dbms):
+        if dbms in settings_mng.db_connections:
+            for conn_dict in settings_mng.db_connections.get(dbms):
                 connection_name = conn_dict.get("connection_name")
 
                 if all(
@@ -844,7 +796,7 @@ class DataBaseManager:
         if btn_role == 0:
             row_count = self.tbl.rowCount()
             li_connection_name = []
-            # Retrieve the option selected in each combobxs
+            # Retrieve the option selected in each combobxes
             for i in range(0, row_count):
                 cbbox = self.tbl.cellWidget(i, 1)
                 current_userData = cbbox.itemData(cbbox.currentIndex())
