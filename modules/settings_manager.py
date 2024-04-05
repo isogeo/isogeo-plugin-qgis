@@ -2,6 +2,7 @@
 #! python3  # noqa: E265
 
 # Standard library
+import os
 import logging
 import json
 from pathlib import Path
@@ -36,6 +37,9 @@ class SettingsManager(QSettings):
 
         self.api_base_url = str
         self.tr = object
+
+        self.cache_json_path = Path(__file__).parents[1] / "_user" / "cache.json"
+        self.cache_qsetting_key = "isogeo/user/unreachable_filepath"
 
         self.db_connections_json_path = Path(__file__).parents[1] / "_user" / "db_connections.json"
         self.db_connections = {}
@@ -137,8 +141,51 @@ class SettingsManager(QSettings):
             json.dump(content, outfile, sort_keys=True, indent=4)
         return
 
+    def check_cache_json_content(self, json_content):
+        if not isinstance(json_content, list):
+            return 0
+        elif not len(json_content) == 1:
+            return 0
+        elif not isinstance(json_content[0], dict):
+            return 0
+        elif "files" not in json_content[0]:
+            return 0
+        elif not isinstance(json_content[0].get("file"), list):
+            return 0
+        else:
+            return 1
+
     def load_cache(self):
-        return
+
+        cached_unreached_paths = []
+        if self.cache_qsetting_key in self.allKeys():
+            cached_unreached_paths = self.get_value(self.cache_qsetting_key, [], list)
+        else:
+            json_content = self.load_json_file(self.cache_json_path)
+            if not json_content:
+                self.set_value(self.cache_qsetting_key, cached_unreached_paths)
+            elif json_content == -1:
+                self.set_value(self.cache_qsetting_key, cached_unreached_paths)
+                try:
+                    os.remove(self.cache_json_path)
+                    logger.info("{} old cache file has been deleted successfully".format(self.cache_json_path))
+                except Exception as e:
+                    logger.warning("{} file deletion failed:")
+                    logger.warning(str(e))
+            else:
+                if self.check_cache_json_content(json_content):
+                    cached_unreached_paths = json_content[0].get("files")
+                else:
+                    pass
+                self.set_value(self.cache_qsetting_key, cached_unreached_paths)
+                try:
+                    os.remove(self.cache_json_path)
+                    logger.info("{} old cache file has been deleted successfully".format(self.cache_json_path))
+                except Exception as e:
+                    logger.warning("{} file deletion failed:")
+                    logger.warning(str(e))
+
+        return cached_unreached_paths
 
     def check_db_connections_json_content(self, json_content):
         li_expected_keys = ["Oracle", "PostgreSQL"]
@@ -150,7 +197,8 @@ class SettingsManager(QSettings):
             return 0
         elif not all(isinstance(json_content.get(key), list) for key in li_expected_keys):
             return 0
-        return 1
+        else:
+            return 1
 
     def get_default_db_connections_content(self):
 
@@ -385,7 +433,8 @@ class SettingsManager(QSettings):
             return 0
         elif not all(all(isinstance(sub_key, str) for sub_key in json_content[key]) for key in json_content):
             return 0
-        return 1
+        else:
+            return 1
 
     def load_quicksearches_from_json(self):
 

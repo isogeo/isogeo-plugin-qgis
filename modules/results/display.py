@@ -7,7 +7,6 @@ from functools import partial
 from pathlib import Path
 
 # PyQT
-# from QByteArray
 from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal, Qt
 from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QPushButton, QLabel
@@ -19,10 +18,10 @@ from ..layer.add_layer import LayerAdder
 from ..layer.limitations_checker import LimitationsChecker
 from ..layer.geo_service import GeoServiceManager
 from ..layer.database import DataBaseManager
+from ..settings_manager import SettingsManager
 
 # isogeo-pysdk
 from ..isogeo_pysdk import Metadata
-from ..settings_manager import SettingsManager
 
 # ############################################################################
 # ########## Globals ###############
@@ -117,7 +116,7 @@ class ResultsManager(QObject):
             line_list: {"tooltip": "Line", "pix": pix_line},
             multi_list: {"tooltip": "MultiPolygon", "pix": pix_multi},
         }
-        # set instanciate and load JSON file cache content
+        # set instantiate and load JSON file cache content
         self.cache_mng = CacheManager(self.layer_adder.geo_srv_mng)
         self.cache_mng.loader()
         self.cache_mng.tr = self.tr
@@ -668,27 +667,28 @@ class ResultsManager(QObject):
     def _filepath_builder(self, metadata_path: str):
         """Build filepath from metadata path handling various cases. See: #129.
 
-        :param str metadata_path: path found in metadata
+        :param str metadata_path: path to the dataset found in metadata
         """
         # building
         filepath = Path(metadata_path)
         try:
             dir_file = str(filepath.parent.resolve())
         except OSError as e:
-            logger.debug("'{}' is not a reguler path : {}".format(metadata_path, e))
+            logger.debug("'{}' is not a regular path : {}".format(metadata_path, e))
             return False
-        if dir_file not in self.cache_mng.cached_unreach_paths:
+        if dir_file not in self.cache_mng.cached_unreached_paths:
             try:
                 with open(filepath):
                     pass
             except Exception as e:
-                self.cache_mng.cached_unreach_paths.append(dir_file)
-                logger.info("Path is not reachable and has been cached:{} / {}".format(dir_file, e))
+                self.cache_mng.add_file_path(dir_file)
+                logger.info("{} path is not reachable and has been cached:".format(dir_file))
+                logger.info("{}".format(e))
                 return False
+            return str(filepath)
         else:
             logger.debug("Path has been ignored because it's cached.")
             return False
-        return str(filepath)
 
     def build_md_portal_url(self, metadata_id: str):
         """Build the URL of the metadata into Isogeo Portal (see https://github.com/isogeo/isogeo-plugin-qgis/issues/312)

@@ -329,8 +329,8 @@ class Isogeo:
     # -------------------------------------------------------------------------
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed."""
-        # save cache
-        self.form_mng.results_mng.cache_mng.dumper()
+        # delete geoservices cache
+        self.form_mng.results_mng.cache_mng.clean_geoservice_cache()
         # disconnects
         self.form_mng.closingPlugin.disconnect(self.onClosePlugin)
 
