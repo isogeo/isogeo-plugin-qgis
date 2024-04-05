@@ -12,7 +12,13 @@
     },
     "cSpell.words": [
         "cbbs",
+        "configfile",
+        "creds",
         "geofilter",
-        "quicksearches"
+        "logdir",
+        "msgbar",
+        "pgservicefile",
+        "quicksearches",
+        "vlayout"
     ]
 }
