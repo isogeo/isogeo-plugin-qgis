@@ -699,10 +699,7 @@ class ResultsManager(QObject):
         portal_base_url = settings_mng.get_value("isogeo/settings/portal_base_url", "")
 
         if add_portal_md_url and portal_base_url != "":
-            if portal_base_url.endswith("/"):
-                portal_md_url = portal_base_url + metadata_id
-            else:
-                portal_md_url = portal_base_url + "/" + metadata_id
+            portal_md_url = portal_base_url + "/" + metadata_id
         else:
             portal_md_url = ""
 

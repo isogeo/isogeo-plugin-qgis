@@ -287,10 +287,19 @@ class SettingsManager(QSettings):
             for setting in self.config_settings:
                 default_value = self.config_settings[setting]["default"]
                 expected_type = self.config_settings[setting]["type"]
-                if setting not in json_content or not isinstance(json_content[setting], expected_type) or json_content[setting] == "" or json_content[setting] is None:
+
+                use_default_value = (
+                    setting not in json_content
+                    or not isinstance(json_content[setting], expected_type)
+                    or json_content[setting] == ""
+                    or json_content[setting] is None
+                    or (setting == "add_metadata_url_portal" and json_content[setting] not in [0, 1])
+                )
+                if use_default_value:
                     json_content[setting] = default_value
                 else:
                     pass
+
         return json_content
 
     def load_config_from_qsettings(self):
@@ -307,7 +316,13 @@ class SettingsManager(QSettings):
                 expected_type,
             )
 
-            if not isinstance(qsettings_content[setting], expected_type) or qsettings_content[setting] == "" or qsettings_content[setting] is None:
+            use_default_value = (
+                not isinstance(qsettings_content[setting], expected_type)
+                or qsettings_content[setting] == ""
+                or qsettings_content[setting] is None
+                or (setting == "add_metadata_url_portal" and qsettings_content[setting] not in [0, 1])
+            )
+            if use_default_value:
                 qsettings_content[setting] = default_value
             else:
                 pass
@@ -321,12 +336,12 @@ class SettingsManager(QSettings):
             json_value = json_content.get(setting)
             qsettings_value = qsettings_content.get(setting)
             default_value = self.config_settings.get(setting).get("default")
-            if json_value == default_value and qsettings_value != json_value:
+            if json_value == default_value and qsettings_value != json_value and setting in ["api_base_url", "api_auth_url", "app_base_url", "help_base_url"]:
                 config_content[setting] = qsettings_value
             else:
                 config_content[setting] = json_value
 
-            if setting in ["api_base_url", "api_auth_url", "app_base_url", "help_base_url"] and config_content[setting].endswith("/"):
+            if setting in ["api_base_url", "api_auth_url", "app_base_url", "help_base_url", "portal_base_url"] and config_content[setting].endswith("/"):
                 config_content[setting] = config_content.get(setting)[:-1]
             else:
                 pass
