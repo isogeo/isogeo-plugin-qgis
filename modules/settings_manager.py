@@ -221,7 +221,7 @@ class SettingsManager(QSettings):
             )
             logger.warning("Let's create it with the default content.")
             json_content = self.get_default_db_connections_content()
-            self.update_config_json(json_content)
+            self.dump_json_file(self.db_connections_json_path, json_content)
         elif not self.check_db_connections_json_content(json_content):
             logger.warning(
                 "{} json file content is not correctly formatted : {}.".format(
@@ -230,7 +230,7 @@ class SettingsManager(QSettings):
             )
             logger.warning("Let's replace it with the default content.")
             json_content = self.get_default_db_connections_content()
-            self.update_config_json(json_content)
+            self.dump_json_file(self.db_connections_json_path, json_content)
         else:
             pass
 
