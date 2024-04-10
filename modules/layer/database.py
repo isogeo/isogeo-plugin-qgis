@@ -28,16 +28,12 @@ except ImportError:
 # UI classes
 from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
 
-# Plugin modules
-from ..settings_manager import SettingsManager
-
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
 qgis_version = int("".join(Qgis.QGIS_VERSION.split(".")[:2]))
 
-settings_mng = SettingsManager()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 # DBMS dependencies
@@ -109,12 +105,11 @@ class DataBaseManager:
     """Basic class that holds methods used to facilitate data base connections for layer
     adding."""
 
-    # def __init__(self, cache_manager: object):
-    def __init__(self, tr):
+    def __init__(self, trad: object = None, settings_manager: object = None):
         """Class constructor."""
 
-        # check _user/db_connections.json file and load the content
-        self.tr = tr
+        self.tr = trad
+        self.settings_mng = settings_manager
 
         self.pgis_available = pgis_available
         self.ora_available = ora_available
@@ -224,7 +219,7 @@ class DataBaseManager:
                 "{}_key".format(connections_kind)
             )
 
-        settings_mng.set_value(qsettings_key, li_connections)
+        self.settings_mng.set_value(qsettings_key, li_connections)
 
     def fetch_qsettings_connections(self, dbms: str, connections_kind: str):
         """Retrieve the list of invalid or prefered (depending on connections_kind) connections saved in QSettings"""
@@ -253,8 +248,8 @@ class DataBaseManager:
             )
             dict_key = "{}_connections".format(connections_kind)
 
-        if settings_mng.get_value(qsettings_key):
-            self.dbms_specifics_infos[dbms][dict_key] = settings_mng.get_value(qsettings_key)
+        if self.settings_mng.get_value(qsettings_key):
+            self.dbms_specifics_infos[dbms][dict_key] = self.settings_mng.get_value(qsettings_key)
             logger.info(
                 "{} {} {} connection retrieved from QSettings.".format(
                     len(self.dbms_specifics_infos.get(dbms).get(dict_key)),
@@ -330,11 +325,11 @@ class DataBaseManager:
 
         conn_prefix = "{}/connections/{}".format(dbms, connection_name)
 
-        database = settings_mng.get_value(conn_prefix + "/database")
-        host = settings_mng.get_value(conn_prefix + "/host")
-        port = settings_mng.get_value(conn_prefix + "/port")
-        username = settings_mng.get_value(conn_prefix + "/username")
-        password = settings_mng.get_value(conn_prefix + "/password")
+        database = self.settings_mng.get_value(conn_prefix + "/database")
+        host = self.settings_mng.get_value(conn_prefix + "/host")
+        port = self.settings_mng.get_value(conn_prefix + "/port")
+        username = self.settings_mng.get_value(conn_prefix + "/username")
+        password = self.settings_mng.get_value(conn_prefix + "/password")
 
         connection_dict = {
             "service": "",
@@ -544,13 +539,13 @@ class DataBaseManager:
         li_db_aliases = []
 
         # Loading connections saved into QGIS Settings
-        for k in sorted(settings_mng.allKeys()):
+        for k in sorted(self.settings_mng.allKeys()):
             if k.startswith(dbms_prefix) and k.endswith("/database") and len(k.split("/")) == 4:
                 connection_name = k.split("/")[2]
 
-                password_saved = settings_mng.get_value(dbms_prefix + connection_name + "/savePassword")
-                user_saved = settings_mng.get_value(dbms_prefix + connection_name + "/saveUsername")
-                connection_service = settings_mng.get_value(dbms_prefix + connection_name + "/service")
+                password_saved = self.settings_mng.get_value(dbms_prefix + connection_name + "/savePassword")
+                user_saved = self.settings_mng.get_value(dbms_prefix + connection_name + "/saveUsername")
+                connection_service = self.settings_mng.get_value(dbms_prefix + connection_name + "/service")
 
                 # For connections configured using config file and service
                 if connection_service != "" and self.pg_configfile_path and dbms == "PostgreSQL":
@@ -597,9 +592,9 @@ class DataBaseManager:
             else:
                 pass
 
-        settings_mng.load_db_connections()
-        if dbms in settings_mng.db_connections:
-            for conn_dict in settings_mng.db_connections.get(dbms):
+        self.settings_mng.load_db_connections()
+        if dbms in self.settings_mng.db_connections:
+            for conn_dict in self.settings_mng.db_connections.get(dbms):
                 connection_name = conn_dict.get("connection_name")
 
                 if all(

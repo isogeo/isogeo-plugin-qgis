@@ -210,6 +210,7 @@ class SettingsManager(QSettings):
 
     def load_db_connections(self):
 
+        logger.debug("Loading database connections from db_connections.json file...")
         json_content = self.load_json_file(self.db_connections_json_path)
         if json_content == -1:
             raise Exception("Unable to load {} file content.".format(self.db_connections_json_path))
@@ -244,10 +245,13 @@ class SettingsManager(QSettings):
         return default_content
 
     def load_config(self):
+
+        logger.debug("Loading config from config.json file and QSettings...")
         config_json_content = self.load_config_from_json()
         config_qsettings_content = self.load_config_from_qsettings()
 
         self.config_content = self.merge_config(config_json_content, config_qsettings_content)
+        self.api_base_url = self.config_content.get("api_base_url")
 
         return self.config_content
 
@@ -349,8 +353,6 @@ class SettingsManager(QSettings):
         self.update_config_json(config_content)
         self.update_config_qsettings(config_content)
 
-        logger.debug("*=====* {}".format(self.load_config_from_json() == self.load_config_from_qsettings()))
-
         return config_content
 
     def update_config_json(self, content: dict):
@@ -432,6 +434,8 @@ class SettingsManager(QSettings):
         return new_url
 
     def load_quicksearches(self):
+
+        logger.debug("Loading quicksearches from quicksearches.json file and QSettings...")
         quicksearch_json_content = self.load_quicksearches_from_json()
         quicksearch_qsettings_content = self.load_quicksearches_from_qsettings()
 
@@ -560,8 +564,6 @@ class SettingsManager(QSettings):
 
         self.update_quicksearches_json(quicksearches_content)
         self.update_quicksearches_qsettings(quicksearches_content)
-
-        logger.debug("*=====* {}".format(self.load_quicksearches_from_json() == self.load_quicksearches_from_qsettings()))
 
         return quicksearches_content
 

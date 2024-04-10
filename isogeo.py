@@ -73,7 +73,6 @@ plg_basepath = Path(__file__).parent
 plg_reg_name = plg_basepath.name
 # QGIS useful tooling and shortcuts
 msgBar = iface.messageBar()
-settings_mng = SettingsManager()
 
 # required `_log` subfolder
 plg_logdir = Path(plg_basepath) / "_logs"
@@ -169,16 +168,18 @@ class Isogeo:
         else:
             pass
 
+        self.settings_mng = SettingsManager()
+        self.settings_mng.tr = self.tr
         # initialize locale
-        locale = settings_mng.get_locale()
+        locale = self.settings_mng.get_locale()
 
         i18n_file_path = self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
         logger.info("Language applied: {}".format(locale))
 
         if i18n_file_path.exists():
-            self.translator = QTranslator()
-            self.translator.load(str(i18n_file_path))
-            QCoreApplication.installTranslator(self.translator)
+            translator = QTranslator()
+            translator.load(str(i18n_file_path))
+            QCoreApplication.installTranslator(translator)
         else:
             pass
 
@@ -199,29 +200,26 @@ class Isogeo:
         self.credits_dialog = IsogeoCredits()
 
         # SUBMODULES
-        settings_mng.load_config()
+        # self.settings_mng.load_config()
 
         # instantiating
         self.informer = UserInformer(message_bar=msgBar)
 
-        self.authenticator = Authenticator()
+        self.authenticator = Authenticator(settings_manager=self.settings_mng)
 
-        self.approps_mng = SharesParser(app_base_url=settings_mng.config_content.get("app_base_url"))
+        self.approps_mng = SharesParser(app_base_url=self.settings_mng.config_content.get("app_base_url"))
         self.approps_mng.tr = self.tr
 
-        self.md_display = MetadataDisplayer(
-            app_base_url=settings_mng.config_content.get("app_base_url"),
-            background_map_url=settings_mng.config_content.get("background_map_url"),
-        )
+        self.md_display = MetadataDisplayer(settings_manager=self.settings_mng)
         self.md_display.tr = self.tr
 
         self.api_requester = ApiRequester()
         self.api_requester.tr = self.tr
 
-        self.form_mng = SearchFormManager(self.tr)
+        self.form_mng = SearchFormManager(trad=self.tr, settings_manager=self.settings_mng)
         self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
         self.form_mng.qs_mng.lang = self.lang
-        self.form_mng.qs_mng.api_base_url_setter(settings_mng.config_content.get("api_base_url"))
+        # self.form_mng.qs_mng.api_base_url_setter(self.settings_mng.config_content.get("api_base_url"))
 
         # connecting
         self.api_requester.api_sig.connect(self.token_slot)
@@ -749,10 +747,10 @@ class Isogeo:
             #    removed on close (see self.onClosePlugin method)
             if self.form_mng is None:
                 # Create the dockwidget (after translation) and keep reference
-                self.form_mng = SearchFormManager(self.tr)
+                self.form_mng = SearchFormManager(trad=self.tr, settings_manager=self.settings_mng)
                 self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
                 self.form_mng.qs_mng.lang = self.lang
-                self.form_mng.qs_mng.api_base_url_setter(settings_mng.config_content.get("api_base_url"))
+                # self.form_mng.qs_mng.api_base_url_setter(self.settings_mng.config_content.get("api_base_url"))
 
                 logger.debug("Plugin load time: {}".format(plugin_times.get(plg_reg_name, "NR")))
             else:
@@ -841,7 +839,7 @@ class Isogeo:
             )
         )
         # help button
-        help_url = settings_mng.config_content.get("help_base_url") + "/qgis/"
+        help_url = self.settings_mng.config_content.get("help_base_url") + "/qgis/"
         self.form_mng.btn_help.pressed.connect(partial(plg_tools.open_webpage, link=help_url))
         # view credits - see: #52
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
@@ -875,7 +873,7 @@ class Isogeo:
         plg_tools.tr = self.tr
         # checks
         url_to_check = (
-            settings_mng.config_content.get("api_base_url")
+            self.settings_mng.config_content.get("api_base_url")
             .replace("https://", "")
             .replace("http://", "")
         )

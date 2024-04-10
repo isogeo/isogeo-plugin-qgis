@@ -27,28 +27,14 @@ from ...ui.auth.dlg_authentication import IsogeoAuthentication
 # Plugin modules
 from ..tools import IsogeoPlgTools
 from ..user_inform import UserInformer
-from ..settings_manager import SettingsManager
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
 logger = logging.getLogger("IsogeoQgisPlugin")
-settings_mng = SettingsManager()
 plg_tools = IsogeoPlgTools()
 
-# initialize locale
-locale = settings_mng.get_locale()
-plugin_dir = Path(__file__).parents[2]
-
-i18n_file_path = plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
-
-if i18n_file_path.exists():
-    translator = QTranslator()
-    translator.load(str(i18n_file_path))
-    QCoreApplication.installTranslator(translator)
-else:
-    pass
 
 # ############################################################################
 # ########## Classes ###############
@@ -77,14 +63,29 @@ class Authenticator(QObject):
     # plugin credentials storage parameters
     credentials_location = {"QSettings": 0, "oAuth2_file": 0}
 
-    def __init__(self):
+    def __init__(self, settings_manager: object = None):
         # inheritance
         super().__init__()
 
+        self.settings_mng = settings_manager
+
+        # initialize locale
+        locale = self.settings_mng.get_locale()
+        plugin_dir = Path(__file__).parents[2]
+
+        i18n_file_path = plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
+
+        if i18n_file_path.exists():
+            translator = QTranslator()
+            translator.load(str(i18n_file_path))
+            QCoreApplication.installTranslator(translator)
+        else:
+            pass
+
         # api parameters
-        settings_mng.load_config()
-        v1_url = settings_mng.config_content.get("api_base_url")
-        id_url = settings_mng.config_content.get("api_auth_url")
+        self.settings_mng.load_config()
+        v1_url = self.settings_mng.config_content.get("api_base_url")
+        id_url = self.settings_mng.config_content.get("api_auth_url")
 
         self.api_params = {
             "app_id": "",
@@ -138,21 +139,21 @@ class Authenticator(QObject):
     def credentials_check_qsettings(self):
         """Retrieve Isogeo API credentials within QGIS QSettings."""
 
-        if "isogeo-plugin" in settings_mng.childGroups():
+        if "isogeo-plugin" in self.settings_mng.childGroups():
             logger.warning("Old credentials found and removed in QGIS QSettings: isogeo-plugin")
 
-            settings_mng.remove("isogeo-plugin")
+            self.settings_mng.remove("isogeo-plugin")
             return False
-        elif "isogeo" in settings_mng.childGroups():
+        elif "isogeo" in self.settings_mng.childGroups():
             # looking in child groups and clean a little if needed
-            settings_mng.beginGroup("isogeo")
-            if "auth" in settings_mng.childGroups() and settings_mng.contains("auth/app_id"):
+            self.settings_mng.beginGroup("isogeo")
+            if "auth" in self.settings_mng.childGroups() and self.settings_mng.contains("auth/app_id"):
                 logger.debug("Credentials found within QGIS QSettings: isogeo/")
-                settings_mng.endGroup()
+                self.settings_mng.endGroup()
                 return True
             else:
                 logger.debug("Missing 'isogeo/auth' entry within QGIS QSettings.")
-                settings_mng.endGroup()
+                self.settings_mng.endGroup()
                 return False
         else:
             logger.debug("No Isogeo credentials found within QGIS QSettings.")
@@ -193,8 +194,8 @@ class Authenticator(QObject):
             - QSettings
         """
         if store_location == "QSettings":
-            settings_mng.set_value("isogeo/auth/app_id", self.api_params.get("app_id"))
-            settings_mng.set_value("isogeo/auth/app_secret", self.api_params.get("app_secret"))
+            self.settings_mng.set_value("isogeo/auth/app_id", self.api_params.get("app_id"))
+            self.settings_mng.set_value("isogeo/auth/app_secret", self.api_params.get("app_secret"))
         else:
             pass
         logger.debug("Credentials stored into: {}".format(store_location))
@@ -208,8 +209,8 @@ class Authenticator(QObject):
         """
         # update class attributes
         if credentials_source == "QSettings":
-            self.api_params["app_id"] = settings_mng.get_value("isogeo/auth/app_id", "")
-            self.api_params["app_secret"] = settings_mng.get_value("isogeo/auth/app_secret", "")
+            self.api_params["app_id"] = self.settings_mng.get_value("isogeo/auth/app_id", "")
+            self.api_params["app_secret"] = self.settings_mng.get_value("isogeo/auth/app_secret", "")
         elif credentials_source == "oAuth2_file":
             creds = plg_tools.credentials_loader(self.cred_filepath)
             self.api_params["app_id"] = creds.get("client_id")
@@ -230,7 +231,7 @@ class Authenticator(QObject):
         self.informer = UserInformer(message_bar=self.msgbar)
         self.auth_sig.connect(self.informer.authentication_slot)
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
-            lambda: settings_mng.set_value(
+            lambda: self.settings_mng.set_value(
                 "isogeo/user/editor",
                 int(self.ui_auth_form.chb_isogeo_editor.isChecked()),
             )
@@ -244,7 +245,7 @@ class Authenticator(QObject):
         self.ui_auth_form.ent_app_secret.setText(self.api_params["app_secret"])
         self.ui_auth_form.lbl_api_url_value.setText(self.api_params["url_base"])
         self.ui_auth_form.chb_isogeo_editor.setChecked(
-            int(settings_mng.get_value("isogeo/user/editor", 0))
+            int(self.settings_mng.get_value("isogeo/user/editor", 0))
         )
         # display
         logger.debug("Authentication form filled and ready to be launched.")

@@ -18,7 +18,6 @@ from ..layer.add_layer import LayerAdder
 from ..layer.limitations_checker import LimitationsChecker
 from ..layer.geo_service import GeoServiceManager
 from ..layer.database import DataBaseManager
-from ..settings_manager import SettingsManager
 
 # isogeo-pysdk
 from ..isogeo_pysdk import Metadata
@@ -30,7 +29,6 @@ from ..isogeo_pysdk import Metadata
 plg_tools = IsogeoPlgTools()
 geo_srv_mng = GeoServiceManager()
 
-settings_mng = SettingsManager()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 # Isogeo geometry types
@@ -90,14 +88,15 @@ ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 
 
 class ResultsManager(QObject):
-    """Basic class that holds utilitary methods for the plugin."""
+    """Basic class that holds utility methods for the plugin."""
 
     md_asked = pyqtSignal(str)
 
-    def __init__(self, search_form_manager: object):
+    def __init__(self, search_form_manager: object = None, settings_manager: object = None):
         # inheritance
         super().__init__()
 
+        self.settings_mng = settings_manager
         self.form_mng = search_form_manager
         self.tbl_result = self.form_mng.tbl_result
         self.tr = self.form_mng.tr
@@ -106,7 +105,7 @@ class ResultsManager(QObject):
         self.layer_adder.tr = self.tr
         self.layer_adder.tbl_result = self.tbl_result
 
-        self.db_mng = DataBaseManager(self.tr)
+        self.db_mng = DataBaseManager(trad=self.tr, settings_manager=self.settings_mng)
 
         self.lim_checker = LimitationsChecker(self.layer_adder, self.tr)
 
@@ -117,8 +116,7 @@ class ResultsManager(QObject):
             multi_list: {"tooltip": "MultiPolygon", "pix": pix_multi},
         }
         # set instantiate and load JSON file cache content
-        self.cache_mng = CacheManager(self.layer_adder.geo_srv_mng)
-        self.cache_mng.loader()
+        self.cache_mng = CacheManager(geo_service_manager=self.layer_adder.geo_srv_mng, settings_manager=self.settings_mng)
         self.cache_mng.tr = self.tr
 
         self.service_ico_dict = {
@@ -695,8 +693,8 @@ class ResultsManager(QObject):
 
         :param str metadata_id: id of the metadata
         """
-        add_portal_md_url = int(settings_mng.get_value("isogeo/settings/add_metadata_url_portal", 0))
-        portal_base_url = settings_mng.get_value("isogeo/settings/portal_base_url", "")
+        add_portal_md_url = int(self.settings_mng.get_value("isogeo/settings/add_metadata_url_portal", 0))
+        portal_base_url = self.settings_mng.get_value("isogeo/settings/portal_base_url", "")
 
         if add_portal_md_url and portal_base_url != "":
             portal_md_url = portal_base_url + "/" + metadata_id

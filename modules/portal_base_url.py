@@ -13,14 +13,9 @@ from qgis.PyQt.QtGui import QIcon
 # UI classes
 from ..ui.portal.dlg_portal_base_url import IsogeoPortalBaseUrl
 
-# Plugin modules
-from .settings_manager import SettingsManager
-
 # ############################################################################
 # ########## Globals ###############
 # ##################################
-
-settings_mng = SettingsManager()
 
 logger = logging.getLogger("IsogeoQgisPlugin")
 
@@ -41,7 +36,7 @@ class PortalURLManager:
     - Delete a quick search
     """
 
-    def __init__(self):
+    def __init__(self, settings_manager: object = None):
 
         # Setting ui elements
         self.portalURL_config_dialog = IsogeoPortalBaseUrl()
@@ -50,16 +45,16 @@ class PortalURLManager:
         self.portalURL_config_dialog.accepted.connect(self.save)
         self.portalURL_config_dialog.chb_portal_url.stateChanged.connect(self.update_input_state)
 
-        settings_mng.load_config()
+        self.settings_mng = settings_manager
 
     def open_dialog(self):
         """"""
 
         self.portalURL_config_dialog.input_portal_url.setText(
-            settings_mng.config_content.get("portal_base_url")
+            self.settings_mng.config_content.get("portal_base_url")
         )
         self.portalURL_config_dialog.chb_portal_url.setChecked(
-            int(settings_mng.config_content.get("add_metadata_url_portal"))
+            int(self.settings_mng.config_content.get("add_metadata_url_portal"))
         )
         self.portalURL_config_dialog.open()
 
@@ -67,11 +62,11 @@ class PortalURLManager:
         """"""
 
         # save base portal URL in QSettings
-        settings_mng.set_config_value(
+        self.settings_mng.set_config_value(
             "portal_base_url", self.portalURL_config_dialog.input_portal_url.text()
         )
         is_checked = int(self.portalURL_config_dialog.chb_portal_url.isChecked())
-        settings_mng.set_config_value("add_metadata_url_portal", is_checked)
+        self.settings_mng.set_config_value("add_metadata_url_portal", is_checked)
 
     def update_input_state(self):
         """"""

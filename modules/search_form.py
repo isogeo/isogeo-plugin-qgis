@@ -27,7 +27,6 @@ from .tools import IsogeoPlgTools
 from .quick_search import QuickSearchManager
 from .portal_base_url import PortalURLManager
 from .results import ResultsManager
-from .settings_manager import SettingsManager
 
 # ############################################################################
 # ########## Globals ###############
@@ -38,7 +37,6 @@ msgBar = iface.messageBar()
 
 plg_tools = IsogeoPlgTools()
 
-settings_mng = SettingsManager()
 # icons
 ico_od_asc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-asc.svg")
 ico_od_desc = QIcon(":/plugins/Isogeo/resources/results/sort-alpha-desc.svg")
@@ -73,11 +71,12 @@ class SearchFormManager(IsogeoDockWidget):
     # Simple signal to connect keywords special combobox with Isogeo.search method
     kw_sig = pyqtSignal()
 
-    def __init__(self, trad):
+    def __init__(self, trad: object = None, settings_manager: object = None):
         # inheritance
         super().__init__()
 
         self.tr = trad
+        self.settings_mng = settings_manager
 
         # disable wheel event on combobox
         for cbb in self.findChildren(QComboBox):
@@ -95,7 +94,7 @@ class SearchFormManager(IsogeoDockWidget):
             self.cbb_license: "licenses",
         }
 
-        # Static dictionnaries for filling static widgets
+        # Static dictionaries for filling static widgets
         self.dict_operation = OrderedDict(
             [
                 (self.tr("intersects", context=__class__.__name__), "intersects"),
@@ -125,7 +124,11 @@ class SearchFormManager(IsogeoDockWidget):
         }
 
         # Setting quick search manager
-        self.qs_mng = QuickSearchManager(self)
+        self.qs_mng = QuickSearchManager(
+            search_form_manager=self,
+            settings_manager=self.settings_mng
+        )
+        self.qs_mng.settings_mng = self.settings_mng
         # Connecting quick search widgets to QuickSearchManager's methods
         self.btn_quicksearch_save.pressed.connect(self.qs_mng.dlg_new.show)
         self.btn_rename_sr.pressed.connect(self.qs_mng.dlg_rename.show)
@@ -134,12 +137,15 @@ class SearchFormManager(IsogeoDockWidget):
         self.btn_default_reset.pressed.connect(self.qs_mng.reset_default_search)
 
         # Setting portal base URL manager
-        self.portalURL_mng = PortalURLManager()
+        self.portalURL_mng = PortalURLManager(settings_manager=self.settings_mng)
         # Connecting portal base URL configuration button to PortalURLManager's methods
         self.btn_open_portalURL_config_dialog.pressed.connect(self.portalURL_mng.open_dialog)
 
         # Setting result manager
-        self.results_mng = ResultsManager(self)
+        self.results_mng = ResultsManager(
+            search_form_manager=self,
+            settings_manager=self.settings_mng
+        )
 
     def eventFilter(self, obj, event):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/455
         if event.type() == QEvent.Wheel:
@@ -514,7 +520,7 @@ class SearchFormManager(IsogeoDockWidget):
         else:
             pass
         # saving params in QSettings
-        settings_mng.set_value("isogeo/settings/georelation", params.get("operation"))
+        self.settings_mng.set_value("isogeo/settings/georelation", params.get("operation"))
         return params
 
     def get_coords(self, filter: str):

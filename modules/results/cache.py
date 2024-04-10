@@ -9,14 +9,10 @@ from pathlib import Path
 # PyQGIS
 from qgis.utils import iface
 
-# Plugin modules
-from ..settings_manager import SettingsManager
-
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-settings_mng = SettingsManager()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 msgBar = iface.messageBar()
@@ -29,13 +25,15 @@ msgBar = iface.messageBar()
 class CacheManager:
     """Basic class to manage the cache system of the layer addition."""
 
-    def __init__(self, geo_service_manager: object):
+    def __init__(self, geo_service_manager: object, settings_manager: object = None):
 
         self.cached_unreached_paths = list()
         # Translator
         self.tr = object
         # GeoServiceManagerModule used by LayerAdder which temporary cache has to be cleaned
         self.geo_srv_mng = geo_service_manager
+        self.settings_mng = settings_manager
+        self.settings_mng.load_cache()
 
     def clean_geoservice_cache(self):
         self.geo_srv_mng.service_cached_dict = {
@@ -47,7 +45,7 @@ class CacheManager:
         }
 
     def save_cache_to_qsettings(self):
-        settings_mng.set_value(settings_mng.cache_qsetting_key, self.cached_unreached_paths)
+        self.settings_mng.set_value(self.settings_mng.cache_qsetting_key, self.cached_unreached_paths)
         return
 
     def add_file_path(self, file_path: Path):
@@ -57,7 +55,7 @@ class CacheManager:
 
     def loader(self):
         """Load ignored elements calling SettingsManager."""
-        self.cached_unreached_paths = settings_mng.load_cache()
+        self.cached_unreached_paths = self.settings_mng.load_cache()
         return
 
     def cleaner(self):

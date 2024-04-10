@@ -33,14 +33,10 @@ from .tools import IsogeoPlgTools
 # UI classes
 from ..ui.metadata.dlg_md_details import IsogeoMdDetails
 
-# Plugin modules
-from .settings_manager import SettingsManager
-
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-settings_mng = SettingsManager()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 plg_tools = IsogeoPlgTools()
@@ -55,14 +51,15 @@ class MetadataDisplayer:
 
     md_edition_url = str
 
-    def __init__(self, app_base_url: str, background_map_url: str):
+    def __init__(self, settings_manager: object = None):
         """Class constructor."""
         self.complete_md = IsogeoMdDetails()
         self.complete_md.stackedWidget.setCurrentIndex(0)
 
         # some basic settings
-        self.app_base_url = app_base_url
-        self.background_map_url = background_map_url
+        self.settings_mng = settings_manager
+        self.app_base_url = self.settings_mng.config_content.get("app_base_url")
+        self.background_map_url = self.settings_mng.config_content.get("background_map_url")
         self.background_lyr_id = ""
         self.envelope_lyr_id = ""
         self.complete_md.btn_md_edit.pressed.connect(
@@ -95,7 +92,7 @@ class MetadataDisplayer:
         :param md dict: Isogeo metadata dict
         """
         logger.info("Displaying the whole metadata sheet.")
-        locale = settings_mng.get_locale()
+        locale = self.settings_mng.get_locale()
         isogeo_tr = IsogeoTranslator(locale)
 
         # clean map canvas
@@ -475,7 +472,7 @@ class MetadataDisplayer:
             self.app_base_url, wg_id, md.get("_id")
         )
 
-        self.complete_md.btn_md_edit.setEnabled(int(settings_mng.get_value("isogeo/user/editor", 0)))
+        self.complete_md.btn_md_edit.setEnabled(int(self.settings_mng.get_value("isogeo/user/editor", 0)))
 
         # -- DISPLAY ---------------------------------------------------------
         self.fields_displayer(md.get("type"), md.get("series"))
