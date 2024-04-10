@@ -6,11 +6,9 @@ from collections import OrderedDict
 
 # PyQGIS
 from qgis.core import (
-    Qgis,
     QgsProject,
     QgsCoordinateReferenceSystem,
-    QgsCoordinateTransform,
-    QgsMessageLog
+    QgsCoordinateTransform
 )
 from qgis.utils import iface
 

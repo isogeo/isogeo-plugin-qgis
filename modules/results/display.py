@@ -7,7 +7,7 @@ from functools import partial
 from pathlib import Path
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal, Qt
+from qgis.PyQt.QtCore import QObject, pyqtSignal, Qt
 from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QPushButton, QLabel
 

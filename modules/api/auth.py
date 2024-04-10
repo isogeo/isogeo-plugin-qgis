@@ -4,8 +4,6 @@
 import logging
 import shutil
 import time
-import json
-from functools import partial
 from pathlib import Path
 
 # PyQGIS
@@ -15,10 +13,8 @@ from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QObject,
-    QSettings,
     QTranslator,
-    pyqtSignal,
-    qVersion,
+    pyqtSignal
 )
 
 # UI class

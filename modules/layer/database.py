@@ -3,13 +3,12 @@
 
 # Standard library
 import logging
-import json
 from configparser import ConfigParser
 from pathlib import Path
 from os import environ
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import (
     QComboBox,

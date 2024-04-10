@@ -6,7 +6,7 @@ from pathlib import Path
 import logging
 
 # PyQT
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator
+from qgis.PyQt.QtCore import QCoreApplication, QTranslator
 
 # PyQGIS
 from qgis.gui import QgsMessageBar

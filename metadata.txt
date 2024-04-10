@@ -24,7 +24,7 @@ repository=https://github.com/isogeo/isogeo-plugin-qgis
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-changelog=- <strong>3.4.0:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.4.0">dedicated GitHub release</a><br>- <strong>3.3.1:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.3.1">dedicated GitHub release</a><br>- <strong>3.3.0:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.3.0">dedicated GitHub release</a><br>- <strong>3.2.0:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.2.0">dedicated GitHub release</a><br>- <strong>3.1.1:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.1.1">dedicated GitHub release</a>
+changelog=- <strong>3.5.0-beta:</strong> Preliminary experimental version <br>- <strong>3.4.0:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.4.0">dedicated GitHub release</a><br>- <strong>3.3.1:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.3.1">dedicated GitHub release</a><br>- <strong>3.3.0:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.3.0">dedicated GitHub release</a><br>- <strong>3.2.0:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.2.0">dedicated GitHub release</a><br>- <strong>3.1.1:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.1.1">dedicated GitHub release</a>
 
 # Tags are comma separated with spaces allowed
 tags=REST API,catalog,search,explore,webservices,metadata,open data,INSPIRE

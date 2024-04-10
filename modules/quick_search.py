@@ -3,7 +3,6 @@
 
 # Standard library
 import logging
-import json
 from pathlib import Path
 from functools import partial
 
