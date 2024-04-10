@@ -34,7 +34,7 @@ homepage=http://help.isogeo.com/qgis/
 category=Web
 icon=icon.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
