@@ -1,43 +1,49 @@
 # Lint, test and package a plugin for QGIS
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops&tabs=yaml
 
-# CONDITIONS WHICH TRIGGER OR NOT THE JOBS
+# -- TRIGGERS --------------------------------------------------------------------------------------
+
+pr:
+  - master
+
 trigger:
   batch: true
   branches:
     include:
       - master
+      - debug
   tags:
     include:
     - "*"
 
-pr:
-- master
+# -- RESOURCES -------------------------------------------------------------------------------------
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: isogeo/devops-templates
+      endpoint: isogeo
 
-# -- GLOBAL VARIABLES ------------------------------------------------------------------
+# -- GLOBAL VARIABLES ------------------------------------------------------------------------------
 variables:
-  PLUGIN_NAME: Isogeo
-  QGIS_VERSION_TAG: release-3_16
-  QGIS_IMAGE: qgis/qgis
-  pythonVersion: "3.7"
+  pythonVersion: "3.9"
   vmImageName: "windows-2019"
-  TAG_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
-  ZIP_NAME: $(SERVICE_NAME)-$(TAG_NAME).zip
+  tagName: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
+  zipName: $(SERVICE_NAME)-$(tagName).zip
   azureSubscription : $(AZURE_SUBSCRIPTION)
   date: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
 
-# -- STAGES ----------------------------------------------------------------------------
+# -- ENVIRONMENT -----------------------------------------------------------------------------------
+pool:
+  vmImage: $(vmImageName)
+
+# -- STAGES ----------------------------------------------------------------------------------------
 stages:
-
-- stage: Lint
-  # -- LINT AND FORMAT -----------------------------------------------------------------
-  displayName: Format and lint code
+- stage: integration
+  displayName: "Format and lint code, then build and package the plugin"
   jobs:
-
-  # LINT AND FORMATTING CODE
-  - job: 'Lint'
-    pool:
-      vmImage: $(vmImageName)
+  # -- LINT AND FORMAT -----------------------------------------------------------------------------
+  - job: format_lint_build_package
 
     steps:
     - checkout: self  # self represents the repo where the initial Pipelines YAML file was found
@@ -48,76 +54,73 @@ stages:
         versionSpec: $(pythonVersion)
         architecture: 'x64'
         addToPath: true
+      displayName: "Install - Python ${{ variables.pythonVersion }}"
 
     - script: |
         python -m pip install -U pip --cache-dir ./.pipcache
         python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
-      displayName: 'Install dependencies'
+      displayName: "Install - Python dependencies"
 
     - script: |
         python -m black --target-version=py37 .\isogeo.py
         python -m black --target-version=py37 .\modules
-        python -m black --target-version=py37 .\tools
-        python -m black --target-version=py37 .\tests
         python -m black --target-version=py37 .\ui
-      displayName: "Apply black code formatting"
+      displayName: "Format - Apply black code formatting"
 
     - script: |
         flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
         flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
-      displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
+      displayName: "Lint - Static code analisis: PEP8 conformance, imports... (flake8)"
 
     # save formatted code to use later avoiding git clone again
-    - publish: $(System.DefaultWorkingDirectory)
-      artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
-      displayName: "Publish formatted code with dependencies"
+    # - task: PublishBuildArtifacts@1
+    #   displayName: "Publish formatted code with dependencies as an artifact named 'drop'"
+    #   inputs:
+    #     targetPath: $(System.DefaultWorkingDirectory)
 
-- stage: Build
+    # - publish: $(System.DefaultWorkingDirectory)
+    #   artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
+    #   displayName: "Publish formatted code with dependencies"
+
   # --  BUILD --------------------------------------------------------------------------
-  displayName: "Build and package"
-  dependsOn: Lint
-  condition: succeeded()
+  # - job: build_ui
+  #   dependsOn: lint
+  #   condition: succeeded()
+  #   displayName: "Qt - compilation and i18n"
 
-  jobs:
-  # UI COMPILATION
-  - job: "BuildUi"  # only letters and numbers (no space...)
-    displayName: "Qt - compilation and internationalization"  # can't contain special characters
-    pool:
-      vmImage: $(vmImageName)
+  #   steps:
+    # # no need for source code
+    # - checkout: none
 
-    steps:
-    # no need for source code
-    - checkout: none
+    # - task: DownloadPipelineArtifact@2
+    #   displayName: "Download formatted source code saved during 'lint' stage"
+    #   inputs:
+    #     buildType: "current"
+    #     artifact: "drop"
+    #     targetPath: "$(System.DefaultWorkingDirectory)"
 
-    - task: DownloadPipelineArtifact@2
-      displayName: "Download formatted source code previously saved"
-      inputs:
-        buildType: "current"
-        artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
-        targetPath: "$(System.DefaultWorkingDirectory)"
+    # - task: UsePythonVersion@0
+    #   inputs:
+    #     versionSpec: $(pythonVersion)
+    #     architecture: 'x64'
+    #     addToPath: true
 
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: $(pythonVersion)
-        architecture: 'x64'
-        addToPath: true
-
-    - script: |
-        python -m pip install -U pip --cache-dir ./.pipcache
-        python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
-      displayName: 'Install dependencies'
+    # - script: |
+    #     python -m pip install -U pip --cache-dir ./.pipcache
+    #     python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
+    #   displayName: 'Install dependencies'
 
     - script: |
         pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
         lrelease .\i18n\isogeo_search_engine_en.ts
         lrelease .\i18n\isogeo_search_engine_fr.ts
-      displayName: "Qt: processing translations (i18n)"
+      displayName: "Build - Qt translations (i18n)"
 
     - script: |
         pyrcc5 resources.qrc -o resources_rc.py
-      displayName: "Qt: processing resources compilation"
+      displayName: "Build - Qt resources compilation"
 
     - script: |
         pyuic5 -x "ui\isogeo_dockwidget_base.ui" -o "ui\ui_isogeo.py"
@@ -127,42 +130,40 @@ stages:
         pyuic5 -x "ui\metadata\ui_md_details.ui" -o "ui\metadata\ui_md_details.py"
         pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicksearch_rename.py"
         pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
-      displayName: "Qt: processing UI files compilation"
+      displayName: "Build - Qt UI files compilation"
 
-    - task: PublishPipelineArtifact@1
-      displayName: "Publish artifact: Qt stuff compiled"
-      inputs:
-        path: $(System.DefaultWorkingDirectory)
-        artifact: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
+    # - task: PublishPipelineArtifact@1
+    #   displayName: "Publish artifact: Qt stuff compiled"
+    #   inputs:
+    #     path: $(System.DefaultWorkingDirectory)
+    #     artifact: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
-  # UI COMPILATION
-  - job: "Packaging"  # only letters and numbers (no space...)
-    displayName: "Packaging the plugin"  # can't contain special characters
-    dependsOn: "BuildUi"
-    pool:
-      vmImage: $(vmImageName)
+  # # UI COMPILATION
+  # - job: "Packaging"  # only letters and numbers (no space...)
+  #   displayName: "Packaging the plugin"  # can't contain special characters
+  #   dependsOn: "BuildUi"
 
-    steps:
+  #   steps:
 
-    # no need for source code
-    - checkout: none
+  #   # no need for source code
+  #   - checkout: none
 
-    - task: DownloadPipelineArtifact@2
-      displayName: "Download compiled source code previously saved"
-      inputs:
-        buildType: "current"
-        artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
-        targetPath: "$(System.DefaultWorkingDirectory)"
+  #   - task: DownloadPipelineArtifact@2
+  #     displayName: "Download compiled source code previously saved"
+  #     inputs:
+  #       buildType: "current"
+  #       artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
+  #       targetPath: "$(System.DefaultWorkingDirectory)"
 
-    - task: UsePythonVersion@0
-      displayName: "Install Python"
-      inputs:
-        versionSpec: $(pythonVersion)
-        architecture: "x64"
-        addToPath: true
+    # - task: UsePythonVersion@0
+    #   displayName: "Install Python"
+    #   inputs:
+    #     versionSpec: $(pythonVersion)
+    #     architecture: "x64"
+    #     addToPath: true
 
     - script: python ./tools/plugin_packager.py
-      displayName: "Packager script"
+      displayName: "Package - execute script ./tools/plugin_packager.py"
 
     - task: PublishPipelineArtifact@1
       displayName: "Publish artifact: plugin packaged"
@@ -170,28 +171,21 @@ stages:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
-- stage: PublishtoGitHub
-  displayName: "Publish to GitHub"
+- stage: publish_to_github
+  displayName: "Create a GitHub release for tag ${{ variables.tagName }}"
   dependsOn:
-    - Build
-  condition: |
-    and(
-      succeeded(),
-      contains(variables['Build.SourceBranch'], 'tags')
-    )
+    - integration
+  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags'))
 
   jobs:
 
-  - job: 'PublishGithubRelease'
-    displayName: "Publish to Github release"
-    pool:
-      vmImage: $(vmImageName)
+  - job: 'create_github_release'
 
     steps:
     - checkout: none
 
     - task: DownloadPipelineArtifact@2
-      displayName: "Download packaged source code previously saved"
+      displayName: "Download packaged source code saved during 'integration' stage"
       inputs:
         buildType: "current"
         artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
@@ -210,7 +204,6 @@ stages:
         changeLogCompareToRelease: 'lastFullRelease'
         changeLogType: 'commitBased'
 
-
 - stage: PublishToAzure
   displayName: "Publish to Azure"
   dependsOn:
@@ -225,8 +218,6 @@ stages:
 
   - job: 'UploadToBlobStorage'
     displayName : Building archive for Blob storage
-    pool:
-      vmImage: $(vmImageName)
 
     steps:
       - checkout: none
@@ -238,7 +229,7 @@ stages:
           artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
           targetPath: "$(System.DefaultWorkingDirectory)"
 
-      - script: mv $(System.DefaultWorkingDirectory)\isogeo_search_engine.zip $(System.DefaultWorkingDirectory)\$(ZIP_NAME)
+      - script: mv $(System.DefaultWorkingDirectory)\isogeo_search_engine.zip $(System.DefaultWorkingDirectory)\$(zipName)
         displayName: Rename image file name with correct version
 
       - task: AzureCLI@1
@@ -247,7 +238,7 @@ stages:
           azureSubscription: $(azureSubscription)
           scriptLocation: inlineScript
           inlineScript: |
-                az storage blob upload-batch -d $(SERVICE_NAME) -s ./ --pattern $(ZIP_NAME)  --blob-endpoint $(BLOB_STORAGE_URL) --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'
+                az storage blob upload-batch -d $(SERVICE_NAME) -s ./ --pattern $(zipName)  --blob-endpoint $(BLOB_STORAGE_URL) --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'
 
   - job: 'UpdateVersionJSON'
     displayName: Update versions.json
@@ -270,7 +261,7 @@ stages:
       - script : cat version.json | jq --arg date "$(date)" '."release-date" += $date' > version_date.json
         displayName : Add date to version.json
 
-      - script: cat versions.json | jq --argjson version "$(<version_date.json)" '."$(SERVICE_NAME)"."$(TAG_NAME)" += $version' > new_versions.json
+      - script: cat versions.json | jq --argjson version "$(<version_date.json)" '."$(SERVICE_NAME)"."$(tagName)" += $version' > new_versions.json
         displayName: Add version to versions.json
 
       - script : rm -rf versions.json && mv new_versions.json versions.json
