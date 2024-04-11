@@ -114,8 +114,8 @@ stages:
 
     - script: |
         pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
-        lrelease .\i18n\isogeo_search_engine_en.ts
-        lrelease .\i18n\isogeo_search_engine_fr.ts
+        qt5-tools lrelease .\i18n\isogeo_search_engine_en.ts
+        qt5-tools lrelease .\i18n\isogeo_search_engine_fr.ts
       displayName: "Build - Qt translations (i18n)"
 
     - script: |
