@@ -157,6 +157,7 @@ class SettingsManager(QSettings):
 
     def load_cache(self):
 
+        logger.debug("Loading cached file paths from cache.json file and QSettings...")
         cached_unreached_paths = []
         if self.cache_qsetting_key in self.allKeys():
             cached_unreached_paths = self.get_value(self.cache_qsetting_key, [], list)
