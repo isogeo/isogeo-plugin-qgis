@@ -195,8 +195,7 @@ stages:
       continueOnError: true
       displayName: "Publish tagged code as Github Release"
       inputs:
-        # gitHubConnection: 'github.com_SimonSAMPERE'
-        gitHubConnection: 'isogeo'
+        gitHubConnection: 'github.com_SimonSAMPERE'
         repositoryName: '$(Build.Repository.Name)'
         action: 'create'
         assets: "$(System.DefaultWorkingDirectory)/*"
