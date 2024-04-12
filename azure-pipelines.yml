@@ -28,7 +28,7 @@ resources:
 variables:
   pythonVersion: "3.9"
   isProd: $[contains(variables['Build.SourceBranch'], 'refs/tags')]
-  isQA: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isQA: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), contains(variables['Build.SourceBranch'], 'refs/pull/'))]
   isDebug: $[eq(variables['Build.SourceBranch'], 'refs/heads/debug')]
   azureSubscription : $(AZURE_SUBSCRIPTION)
   releaseDate: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
@@ -36,6 +36,26 @@ variables:
 
 # -- STAGES ----------------------------------------------------------------------------------------
 stages:
+- stage: report
+  pool:
+    vmImage: "windows-2019"
+  displayName: "Report"
+  jobs:
+  # -- LINT AND FORMAT -----------------------------------------------------------------------------
+  - job: format_lint_build_package
+    displayName: "Format and lint code, then build and package the plugin"
+
+    steps:
+      - script: echo "pythonVersion - $(pythonVersion)"
+      - script: echo "Build.SourceBranch - $(Build.SourceBranch)"
+      - script: echo "isProd - $(isProd)"
+      - script: echo "isQA - $(isQA)"
+      - script: echo "isDebug - $(isDebug)"
+      - script: echo "releaseDate - $(releaseDate)"
+      - script: echo "releaseDateWithHour - $(releaseDateWithHour)"
+
+
+
 - stage: integration
   pool:
     vmImage: "windows-2019"
@@ -104,14 +124,14 @@ stages:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
-- stage : set_zip_name_variable
+- stage : build_zip_name
   displayName: "Set ZIPNAME variable value"
   pool:
     vmImage: "ubuntu-latest"
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   dependsOn : integration
   jobs:
-    - job: set_zip_name_variable
+    - job: create_zip_name_variable
       steps:
 
         - script: |
@@ -132,7 +152,7 @@ stages:
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   dependsOn : set_zip_name_variable
   variables : 
-    zipName : $[ stageDependencies.set_zip_name_variable.set_zip_name_variable.outputs['set_zip_name_variable.ZIPNAME'] ]
+    zipName : $[ stageDependencies.build_zip_name.create_zip_name_variable.outputs['set_zip_name_variable.ZIPNAME'] ]
   jobs:
     - template : /on-premises/upload_to_blob.yml@templates
       parameters :
