@@ -39,7 +39,7 @@ stages:
 - stage: integration
   pool:
     vmImage: "windows-2019"
-  condition: or(eq(variable.isProd, true), eq(variable.isQA, true), eq(variable.isDebug, true))
+  condition: or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true))
   displayName: "Integration"
   jobs:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ stages:
   displayName: "Set ZIPNAME variable value"
   pool:
     vmImage: "ubuntu-latest"
-  condition: and(succeeded(), or(eq(variable.isProd, true), eq(variable.isQA, true), eq(variable.isDebug, true)))
+  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   dependsOn : integration
   jobs:
     - job: set_zip_name_variable
@@ -129,7 +129,7 @@ stages:
 - stage : upload_to_blob
   pool:
     vmImage: "ubuntu-latest"
-  condition: and(succeeded(), or(eq(variable.isProd, true), eq(variable.isQA, true), eq(variable.isDebug, true)))
+  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   dependsOn : set_zip_name_variable
   variables : 
     zipName : $[ stageDependencies.set_zip_name_variable.set_zip_name_variable.outputs['set_zip_name_variable.ZIPNAME'] ]
@@ -215,7 +215,7 @@ stages:
 #   displayName: "Create a GitHub release for tag ${{ variables.tagName }}"
 #   dependsOn:
 #     - integration
-#   condition: and(succeeded(), eq(variable.isProd, true))
+#   condition: and(succeeded(), eq(variables.isProd, true))
 
 #   jobs:
 
