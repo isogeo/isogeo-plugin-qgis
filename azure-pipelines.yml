@@ -42,8 +42,8 @@ stages:
   displayName: "Report"
   jobs:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
-  - job: format_lint_build_package
-    displayName: "Format and lint code, then build and package the plugin"
+  - job: show_variables_values
+    displayName: "Pipeline variables values"
 
     steps:
       - script: echo "pythonVersion - $(pythonVersion)"
@@ -53,8 +53,6 @@ stages:
       - script: echo "isDebug - $(isDebug)"
       - script: echo "releaseDate - $(releaseDate)"
       - script: echo "releaseDateWithHour - $(releaseDateWithHour)"
-
-
 
 - stage: integration
   pool:
@@ -150,7 +148,7 @@ stages:
   pool:
     vmImage: "ubuntu-latest"
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
-  dependsOn : set_zip_name_variable
+  dependsOn : build_zip_name
   variables : 
     zipName : $[ stageDependencies.build_zip_name.create_zip_name_variable.outputs['set_zip_name_variable.ZIPNAME'] ]
   jobs:
