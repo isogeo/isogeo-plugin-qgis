@@ -157,15 +157,18 @@ stages:
       displayName: "Package - script ./tools/plugin_packager.py"
 
     - task: PublishPipelineArtifact@1
-      displayName: "Publish artifact: plugin packaged"
+      displayName: "Publish pipeline artifact: plugin packaged"
       inputs:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: $(zipName)
 
+    - script: ren $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip $(zipName)
+      displayName: "Package - rename archive for on premises artifact"
+
     - task: PublishBuildArtifacts@1
-      displayName: "Publish artifact: plugin packaged"
+      displayName: "Publish build artifact: plugin packaged for on premises"
       inputs:
-        PathtoPublish: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
+        PathtoPublish: $(System.DefaultWorkingDirectory)/build/latest/$(zipName)
         ArtifactName: archive
 
 - stage : upload_to_blob
