@@ -59,45 +59,51 @@ stages:
           echo "releaseDateWithHour - $(releaseDateWithHour)"
 
 - stage : build_zip_name
-  displayName: "Build ZIP name"
   pool:
     vmImage: "windows-2019"
-  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+  displayName: "Build ZIP name"
   dependsOn : report
+  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   jobs:
-    - job: create_zip_name_variable
-      steps:
-        - checkout: none
-        - script: |
-            echo "isProd - $(isProd)"
-            echo "isQA - $(isQA)"
-            echo "isDebug - $(isDebug)"
+  # -- CREATE zipName -----------------------------------------------------------------------------
+  - job: create_zip_name_variable
+    displayName: "Execute cmd script"
 
-            if $(isProd)==True set ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip"
-            if $(isQA)==True set ZIPNAME="$(NAME)-qa-$(releaseDateWithHour).zip"
-            if $(isDebug)==True set ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip"
+    steps:
+      - checkout: none
+      - script: |
+          echo isProd - $(isProd)
+          echo isQA - $(isQA)
+          echo isDebug - $(isDebug)
 
-            echo "##vso[task.setvariable variable=zipName]"
-            echo "##vso[task.setvariable variable=zipName;isOutput=true]"
-            echo "ZIPNAME - $(zipName)"
-        # - script: |
-        #     if [[ $(isProd) == True ]]; then
-        #       ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip"
-        #     elif [[ $(isQA) == True ]]; then
-        #       ZIPNAME="$(NAME)-qa-$(releaseDateWithHour).zip"
-        #     else
-        #       ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip"
-        #     fi
-        #     echo "##vso[task.setvariable variable=zipName]$ZIPNAME"
-        #     echo "##vso[task.setvariable variable=zipName;isOutput=true]$ZIPNAME"
-        #     echo "ZIPNAME - $(zipName)"
-          name: set_zip_name_variable
+          if $(isProd)==True set ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip"
+          if $(isQA)==True set ZIPNAME="$(NAME)-qa-$(releaseDateWithHour).zip"
+          if $(isDebug)==True set ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip"
+          echo %ZIPNAME%
+
+          echo "##vso[task.setvariable variable=zipName]%ZIPNAME%"
+          echo "##vso[task.setvariable variable=zipName;isOutput=true]%ZIPNAME%"
+
+        name: set_zip_name_variable
+      # - script: |
+      #     if [[ $(isProd) == True ]]; then
+      #       ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip"
+      #     elif [[ $(isQA) == True ]]; then
+      #       ZIPNAME="$(NAME)-qa-$(releaseDateWithHour).zip"
+      #     else
+      #       ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip"
+      #     fi
+      #     echo "##vso[task.setvariable variable=zipName]$ZIPNAME"
+      #     echo "##vso[task.setvariable variable=zipName;isOutput=true]$ZIPNAME"
+      #     echo "ZIPNAME - $(zipName)"
 
 - stage: integration
   pool:
     vmImage: "windows-2019"
-  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   dependsOn : build_zip_name
+  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+  variables : 
+    zipName : $[ stageDependencies.build_zip_name.create_zip_name_variable.outputs['set_zip_name_variable.zipName'] ]
   displayName: "Integration"
   jobs:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
@@ -168,7 +174,7 @@ stages:
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   dependsOn : integration
   variables : 
-    zipName : $[ stageDependencies.build_zip_name.create_zip_name_variable.outputs['set_zip_name_variable.ZIPNAME'] ]
+    zipName : $[ stageDependencies.build_zip_name.create_zip_name_variable.outputs['set_zip_name_variable.zipName'] ]
   jobs:
     - template : /on-premises/upload_to_blob.yml@templates
       parameters :
