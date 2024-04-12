@@ -58,7 +58,7 @@ stages:
         echo releaseDate - $(releaseDate)
         echo releaseDateWithHour - $(releaseDateWithHour)
 
-- stage : build_zip_name
+- stage : build_zipname
   pool:
     vmImage: "windows-2019"
   displayName: "Build ZIP name"
@@ -66,8 +66,8 @@ stages:
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   jobs:
   # -- CREATE zipName -----------------------------------------------------------------------------
-  - job: create_zip_name_variable
-    displayName: "Execute cmd script"
+  - job: create_zipname_variable
+    displayName: "Execute cmd script to set 'zipName' variable"
 
     steps:
     - checkout: none
@@ -81,10 +81,10 @@ stages:
         if $(isDebug)==True set ZIPNAME=$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip
         echo %ZIPNAME%
 
-        echo "##vso[task.setvariable variable=zipName]%ZIPNAME%"
-        echo "##vso[task.setvariable variable=zipName;isOutput=true]%ZIPNAME%"
+        echo ##vso[task.setvariable variable=zipName]%ZIPNAME%
+        echo ##vso[task.setvariable variable=zipName;isOutput=true]%ZIPNAME%
 
-      name: set_zip_name_variable
+      name: set_zipname_variable
       # - script: |
       #     if [[ $(isProd) == True ]]; then
       #       ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip"
@@ -100,10 +100,10 @@ stages:
 - stage: integration
   pool:
     vmImage: "windows-2019"
-  dependsOn : build_zip_name
+  dependsOn : build_zipname
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   variables : 
-    zipName : $[ stageDependencies.build_zip_name.create_zip_name_variable.outputs['set_zip_name_variable.zipName'] ]
+    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
   displayName: "Integration"
   jobs:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
@@ -177,9 +177,9 @@ stages:
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   dependsOn :
     - integration
-    - build_zip_name
+    - build_zipname
   variables : 
-    zipName : $[ stageDependencies.build_zip_name.create_zip_name_variable.outputs['set_zip_name_variable.zipName'] ]
+    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
   jobs:
     - template : /on-premises/upload_to_blob.yml@templates
       parameters :
@@ -262,9 +262,9 @@ stages:
   displayName: "Create a GitHub release for tag ${{ variables.tagName }}"
   dependsOn:
     - integration
-    - build_zip_name
+    - build_zipname
   variables : 
-    zipName : $[ stageDependencies.build_zip_name.create_zip_name_variable.outputs['set_zip_name_variable.zipName'] ]
+    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
   condition: and(succeeded(), eq(variables.isProd, true))
 
   jobs:
