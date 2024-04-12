@@ -63,7 +63,7 @@ stages:
   pool:
     vmImage: "windows-2019"
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
-  dependsOn : integration
+  dependsOn : report
   jobs:
     - job: create_zip_name_variable
       steps:
