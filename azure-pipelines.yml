@@ -131,15 +131,14 @@ stages:
     vmImage: "ubuntu-latest"
   condition: and(succeeded(), or(eq(variable.isProd, true), eq(variable.isQA, true), eq(variable.isDebug, true)))
   dependsOn : set_zip_name_variable
+  variables : 
+    zipName : $[ stageDependencies.set_zip_name_variable.set_zip_name_variable.outputs['set_zip_name_variable.ZIPNAME'] ]
   jobs:
-    - job: upload_to_blob
-      displayName: "Upload to ${{ variables.ZIPNAME }} Blob Storage"
-      steps:
-      - template : /on-premises/upload_to_blob.yml@templates
-        parameters : 
-          zipName : $[ stageDependencies.set_zip_name_variable.set_zip_name_variable.outputs['set_zip_name_variable.ZIPNAME'] ].zip
-          artifactName : "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
-          DependsOn : integration
+    - template : /on-premises/upload_to_blob.yml@templates
+      parameters :
+        zipName : $(zipName).zip
+        artifactName : "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        DependsOn : integration
 
 # - stage: PublishToAzure
 #   displayName: "Publish to Azure"
