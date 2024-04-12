@@ -7,8 +7,7 @@ from functools import partial
 from pathlib import Path
 
 # PyQT
-# from QByteArray
-from qgis.PyQt.QtCore import QSettings, QObject, pyqtSignal, Qt
+from qgis.PyQt.QtCore import QObject, pyqtSignal, Qt
 from qgis.PyQt.QtGui import QIcon, QPixmap
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QPushButton, QLabel
 
@@ -30,7 +29,6 @@ from ..isogeo_pysdk import Metadata
 plg_tools = IsogeoPlgTools()
 geo_srv_mng = GeoServiceManager()
 
-qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 # Isogeo geometry types
@@ -90,14 +88,15 @@ ico_file = QIcon(":/images/themes/default/mActionFileNew.svg")
 
 
 class ResultsManager(QObject):
-    """Basic class that holds utilitary methods for the plugin."""
+    """Basic class that holds utility methods for the plugin."""
 
     md_asked = pyqtSignal(str)
 
-    def __init__(self, search_form_manager: object):
+    def __init__(self, search_form_manager: object = None, settings_manager: object = None):
         # inheritance
         super().__init__()
 
+        self.settings_mng = settings_manager
         self.form_mng = search_form_manager
         self.tbl_result = self.form_mng.tbl_result
         self.tr = self.form_mng.tr
@@ -106,7 +105,7 @@ class ResultsManager(QObject):
         self.layer_adder.tr = self.tr
         self.layer_adder.tbl_result = self.tbl_result
 
-        self.db_mng = DataBaseManager(self.tr)
+        self.db_mng = DataBaseManager(trad=self.tr, settings_manager=self.settings_mng)
 
         self.lim_checker = LimitationsChecker(self.layer_adder, self.tr)
 
@@ -116,9 +115,8 @@ class ResultsManager(QObject):
             line_list: {"tooltip": "Line", "pix": pix_line},
             multi_list: {"tooltip": "MultiPolygon", "pix": pix_multi},
         }
-        # set instanciate and load JSON file cache content
-        self.cache_mng = CacheManager(self.layer_adder.geo_srv_mng)
-        self.cache_mng.loader()
+        # set instantiate and load JSON file cache content
+        self.cache_mng = CacheManager(geo_service_manager=self.layer_adder.geo_srv_mng, settings_manager=self.settings_mng)
         self.cache_mng.tr = self.tr
 
         self.service_ico_dict = {
@@ -133,6 +131,10 @@ class ResultsManager(QObject):
         """Display the results in a table."""
 
         logger.info("Results manager called. Displaying the results")
+        try:
+            self.tbl_result.horizontalHeader().sectionResized.disconnect()
+        except TypeError:
+            pass
 
         tbl_result = self.tbl_result
 
@@ -267,24 +269,24 @@ class ResultsManager(QObject):
                         and "." in md.name
                     ):
                         available_connections = [
-                            ora_conn
-                            for ora_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
+                            pg_conn
+                            for pg_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
                                 "connections"
                             )
                             if (
-                                md.path == ora_conn.get("database")
-                                or md.path == ora_conn.get("database_alias")
+                                md.path == pg_conn.get("database")
+                                or md.path == pg_conn.get("database_alias")
                             )
-                            and ora_conn.get("prefered")
+                            and pg_conn.get("prefered")
                         ]
                         if not len(available_connections):
                             available_connections = [
-                                ora_conn
-                                for ora_conn in self.db_mng.dbms_specifics_infos.get(
+                                pg_conn
+                                for pg_conn in self.db_mng.dbms_specifics_infos.get(
                                     "PostgreSQL"
                                 ).get("connections")
-                                if md.path == ora_conn.get("database")
-                                or md.path == ora_conn.get("database_alias")
+                                if md.path == pg_conn.get("database")
+                                or md.path == pg_conn.get("database_alias")
                             ]
                         else:
                             pass
@@ -309,6 +311,7 @@ class ResultsManager(QObject):
                                 else:
                                     connection["uri"] = conn[0]
                                     connection["tables"] = conn[1]
+                                    connection["db_connector"] = conn[2]
 
                             tables_infos = connection.get("tables")
                             if tables_infos == 0:
@@ -449,10 +452,10 @@ class ResultsManager(QObject):
                     )
                     pass
             # Associated service layers
-            if md.type == "vectorDataset" or md.type == "rasterDataset":
+            if md.type == "vectorDataset" or md.type == "rasterDataset" or md.type == "noGeoDataset":
                 for layer in md.serviceLayers:
                     service = layer.get("service")
-                    if service is not None and service.get("format"):
+                    if service is not None and service.get("format") and not (service.get("format") in ["ems", "efs"] and layer.get("type") == "table"):
                         srv_details = {
                             "path": service.get("path", "NR"),
                             "formatVersion": service.get("formatVersion"),
@@ -491,6 +494,9 @@ class ResultsManager(QObject):
                                 )
                             )
                             pass
+                    else:
+                        pass
+
             # New association mode. For services metadata sheet, the layers
             # are stored in the purposely named include: "layers".
             elif md.type == "service":
@@ -502,17 +508,20 @@ class ResultsManager(QObject):
                     if md.format.lower() in self.service_ico_dict:
                         service_type = md.format.upper()
                         for layer in md.layers:
-                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
-                            btn_label = "{} : {}".format(service_type, layer_title)
-                            params = [service_type, layer, srv_details]
-                            basic_md = [
-                                md.title,
-                                md.abstract,
-                                md.keywords,
-                                portal_md_url,
-                            ]
-                            params.append(basic_md)
-                            add_options_dict[btn_label] = params
+                            if md.format.lower() in ["ems", "efs"] and layer.get("type") == "table":
+                                continue
+                            else:
+                                layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                                btn_label = "{} : {}".format(service_type, layer_title)
+                                params = [service_type, layer, srv_details]
+                                basic_md = [
+                                    md.title,
+                                    md.abstract,
+                                    md.keywords,
+                                    portal_md_url,
+                                ]
+                                params.append(basic_md)
+                                add_options_dict[btn_label] = params
                     else:
                         pass
             else:
@@ -567,6 +576,7 @@ class ResultsManager(QObject):
                 # Else, add a combobox, storing all possibilities.
                 else:
                     combo = QComboBox()
+                    combo.installEventFilter(self.form_mng)
                     for option in add_options_dict:
                         option_type = option.split(" : ")[0]
                         # services
@@ -635,45 +645,59 @@ class ResultsManager(QObject):
                         pass
             else:
                 pass
+        hheader.sectionResized.connect(partial(self.section_resized_slot))  # https://github.com/isogeo/isogeo-plugin-qgis/issues/438
         # method ending
         return None
+
+    def section_resized_slot(self, *args):
+        """ https://github.com/isogeo/isogeo-plugin-qgis/issues/438
+        """
+
+        scrollBar_width = self.tbl_result.verticalScrollBar().sizeHint().width()
+        max_width = args[2] - scrollBar_width - 10
+
+        for i in range(self.tbl_result.rowCount()):
+            btn_title = self.tbl_result.cellWidget(i, 0)
+            btn_title.setText(btn_title.toolTip())
+            plg_tools.format_widget_title(btn_title, max_width)
 
     # -- PRIVATE METHOD -------------------------------------------------------
     def _filepath_builder(self, metadata_path: str):
         """Build filepath from metadata path handling various cases. See: #129.
 
-        :param str metadata_path: path found in metadata
+        :param str metadata_path: path to the dataset found in metadata
         """
         # building
         filepath = Path(metadata_path)
         try:
             dir_file = str(filepath.parent.resolve())
         except OSError as e:
-            logger.debug("'{}' is not a reguler path : {}".format(metadata_path, e))
+            logger.debug("'{}' is not a regular path : {}".format(metadata_path, e))
             return False
-        if dir_file not in self.cache_mng.cached_unreach_paths:
+        if dir_file not in self.cache_mng.cached_unreached_paths:
             try:
                 with open(filepath):
                     pass
             except Exception as e:
-                self.cache_mng.cached_unreach_paths.append(dir_file)
-                logger.info("Path is not reachable and has been cached:{} / {}".format(dir_file, e))
+                self.cache_mng.add_file_path(dir_file)
+                logger.info("{} path is not reachable and has been cached:".format(dir_file))
+                logger.info("{}".format(e))
                 return False
+            return str(filepath)
         else:
             logger.debug("Path has been ignored because it's cached.")
             return False
-        return str(filepath)
 
     def build_md_portal_url(self, metadata_id: str):
         """Build the URL of the metadata into Isogeo Portal (see https://github.com/isogeo/isogeo-plugin-qgis/issues/312)
 
         :param str metadata_id: id of the metadata
         """
-        add_portal_md_url = int(qsettings.value("isogeo/settings/add_metadata_url_portal", 0))
-        portal_base_url = qsettings.value("isogeo/settings/portal_base_url", "")
+        add_portal_md_url = int(self.settings_mng.get_value("isogeo/settings/add_metadata_url_portal", 0))
+        portal_base_url = self.settings_mng.get_value("isogeo/settings/portal_base_url", "")
 
         if add_portal_md_url and portal_base_url != "":
-            portal_md_url = portal_base_url + metadata_id
+            portal_md_url = portal_base_url + "/" + metadata_id
         else:
             portal_md_url = ""
 

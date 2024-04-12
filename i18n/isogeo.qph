@@ -17,12 +17,12 @@
     <target>Connexion</target>
 </phrase>
 <phrase>
-    <source>{} database configuration</source>
-    <target>Configuration des connexions aux bases de données {}</target>
+    <source> - Configuration of database connections</source>
+    <target> - Configuration des connexions aux bases de données</target>
 </phrase>
 <phrase>
     <source>Choose the embed connection to be used to access to each {} database</source>
-    <target>Choisissez la connexion qui sera utilisée pour accéder aux bases de données {}</target>
+    <target>Choisissez la connexion qui sera utilisée pour accéder à chaque base de données {}</target>
 </phrase>
 <phrase>
     <source>&amp;Isogeo</source>
@@ -51,6 +51,14 @@
 <phrase>
     <source>Quicksearches</source>
     <target>Recherches rapides</target>
+</phrase>
+<phrase>
+    <source>PostgreSQL databases are not supported by your QGIS installation.</source>
+    <target>Les bases de données PostgreSQL ne sont pas supportées par votre installation de QGIS.</target>
+</phrase>
+<phrase>
+    <source>Oracle databases are not supported by your QGIS installation.</source>
+    <target>Les bases de données Oracle ne sont pas supportées par votre installation de QGIS.</target>
 </phrase>
 <phrase>
     <source>Search</source>
@@ -85,10 +93,6 @@
     <target>Ajouter</target>
 </phrase>
 <phrase>
-    <source>Rename</source>
-    <target>Renommer</target>
-</phrase>
-<phrase>
     <source>Report an issue on the bug tracker</source>
     <target>Signaler un problème sur le bug tracker</target>
 </phrase>
@@ -113,24 +117,16 @@
     <target>Afficher la liste des résultats</target>
 </phrase>
 <phrase>
-    <source>Sorting method</source>
-    <target>Tri des résultats</target>
-</phrase>
-<phrase>
-    <source>Sorting direction</source>
-    <target>Direction du tri</target>
-</phrase>
-<phrase>
     <source>Settings</source>
     <target>Paramètres</target>
 </phrase>
 <phrase>
     <source>Authentication settings</source>
-    <target>Paramètres d&apos;authentification</target>
+    <target>Authentification</target>
 </phrase>
 <phrase>
     <source>Search settings</source>
-    <target>Paramètres de recherche</target>
+    <target>Recherche</target>
 </phrase>
 <phrase>
     <source>Geographical operator applied to the filter</source>
@@ -139,10 +135,6 @@
 <phrase>
     <source>Default search</source>
     <target>Recherche par défaut</target>
-</phrase>
-<phrase>
-    <source>Resources</source>
-    <target>Ressources</target>
 </phrase>
 <phrase>
     <source>Open online plugin help</source>
@@ -163,10 +155,6 @@
 <phrase>
     <source>Enter your search terms</source>
     <target>Termes de recherche</target>
-</phrase>
-<phrase>
-    <source>roads, habitat, cadastral parcel, transport</source>
-    <target>routes, habitat, cadastre, transport, vélo</target>
 </phrase>
 <phrase>
     <source>Launch search</source>
@@ -197,14 +185,6 @@
     <target>Recherches rapides</target>
 </phrase>
 <phrase>
-    <source>Get the log file: &quot;log_isogeo_plugin.log&quot;</source>
-    <target>Trouver le fichier &quot;log_isogeo_plugin.log&quot;</target>
-</phrase>
-<phrase>
-    <source>LOG File</source>
-    <target>Fichier LOG</target>
-</phrase>
-<phrase>
     <source>Open online help in default browser</source>
     <target>Consulter l&apos;aide en ligne dans le navigateur par défaut</target>
 </phrase>
@@ -218,7 +198,7 @@
 </phrase>
 <phrase>
     <source>Edit quicksearch</source>
-    <target>Editer la quicksearch</target>
+    <target>Sélectionner une recherche rapide</target>
 </phrase>
 <phrase>
     <source>Paths cache</source>
@@ -229,32 +209,68 @@
     <target>Vider le cache des chemins de fichiers</target>
 </phrase>
 <phrase>
-    <source>Add portal metadata URL to layer&apos;s properties</source>
-    <target>Ajouter l&apos;URL de la métadonnée du portail Isogeo aux propriétés des couches ajoutées</target>
-</phrase>
-<phrase>
-    <source>Please specify the portal base URL here:</source>
-    <target>Veuillez indiquer la base de l&apos;URL du Portail Isogeo :</target>
-</phrase>
-<phrase>
-    <source>---- Keywords ----</source>
-    <target>---- Mots-clés ----</target>
-</phrase>
-<phrase>
     <source>Layer adding settings</source>
-    <target>Paramètres d&apos;ajout de couche</target>
-</phrase>
-<phrase>
-    <source>Configure embed database connections to be used by the plugin</source>
-    <target>Choix des connexions aux bases de données à utiliser pour accéder aux tables</target>
+    <target>Ajout de couche</target>
 </phrase>
 <phrase>
     <source>Oracle databases</source>
     <target>Bases de données Oracle</target>
 </phrase>
 <phrase>
-    <source>PostGIS databases</source>
-    <target>Bases de données PostGIS</target>
+    <source>Choose to add metadata portal URL to layer properties and specify portal base URL</source>
+    <target>Choisir d&apos;ajouter ou non l&apos;URL et indiquer la base de l&apos;URL du portail</target>
+</phrase>
+<phrase>
+    <source>Group theme</source>
+    <target>Thématique</target>
+</phrase>
+<phrase>
+    <source>Keyword</source>
+    <target>Mot-clef</target>
+</phrase>
+<phrase>
+    <source>PostgreSQL databases</source>
+    <target>Bases de données PostgreSQL</target>
+</phrase>
+<phrase>
+    <source>roads, habitat, cadastral parcel, transport...</source>
+    <target>routes, habitats, cadastre, transport, vélo...</target>
+</phrase>
+<phrase>
+    <source>Rename selected quicksearch</source>
+    <target>Renommer la recherche rapide sélectionnée</target>
+</phrase>
+<phrase>
+    <source>Delete selected quicksearch</source>
+    <target>Supprimer la recherche rapide sélectionnée</target>
+</phrase>
+<phrase>
+    <source>Save current search as default</source>
+    <target>Sauvegarder la recherche actuelle comme recherche par défaut</target>
+</phrase>
+<phrase>
+    <source>Reset default search</source>
+    <target>Réinitialiser la recherche par défaut</target>
+</phrase>
+<phrase>
+    <source>LOG</source>
+    <target>LOG</target>
+</phrase>
+<phrase>
+    <source>Open folder of &quot;log_isogeo_plugin.log&quot; file</source>
+    <target>Ouvrir l&apos;emplacement du fichier &quot;log_isogeo_plugin.log&quot;</target>
+</phrase>
+<phrase>
+    <source>Advanced resources</source>
+    <target>Ressources Avancées</target>
+</phrase>
+<phrase>
+    <source>Configure embed database connections</source>
+    <target>Configuration des connexions aux bases de données</target>
+</phrase>
+<phrase>
+    <source>Configure Isogeo portal metadata URL</source>
+    <target>Configuration de l&apos;URL du portail isogeo</target>
 </phrase>
 <phrase>
     <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
@@ -268,7 +284,9 @@
     <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
-    <target></target>
+    <target>Problème de Proxy : 
+Un proxy est configuré dans votre OS {} mais pas dans QGIS.
+ Veuillez le configurer dans &apos;Préférences/Options/Réseau&apos; avant de redémarrer le plugin.</target>
 </phrase>
 <phrase>
     <source>Service layer</source>
@@ -311,6 +329,34 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>Non renseigné</target>
 </phrase>
 <phrase>
+    <source>unknown owner name</source>
+    <target>Nom non renseigné</target>
+</phrase>
+<phrase>
+    <source>unknown owner email</source>
+    <target>Adresse email non renseignée</target>
+</phrase>
+<phrase>
+    <source>unknown owner phone number</source>
+    <target>Numéro de téléphone non renseigné</target>
+</phrase>
+<phrase>
+    <source>unknown owner adress</source>
+    <target>Adresse non renseignée</target>
+</phrase>
+<phrase>
+    <source>unknown owner city</source>
+    <target>Ville non renseignée</target>
+</phrase>
+<phrase>
+    <source>unknown owner country</source>
+    <target>Pays non renseigné</target>
+</phrase>
+<phrase>
+    <source>unknown</source>
+    <target>Non renseigné</target>
+</phrase>
+<phrase>
     <source>{} successfully saved: {}</source>
     <target>{} sauvegardée correctement : {}</target>
 </phrase>
@@ -321,6 +367,26 @@ You have a proxy set up on your OS {} but none in QGIS.
 <phrase>
     <source>Quicksearch removed: {}</source>
     <target>Recherche rapide supprimée : {}</target>
+</phrase>
+<phrase>
+    <source>Default search successfully reset.</source>
+    <target>Recherche par défault réinitialisée.</target>
+</phrase>
+<phrase>
+    <source>Last search</source>
+    <target>Dernière recherche</target>
+</phrase>
+<phrase>
+    <source>Isogeo - Rename quicksearch</source>
+    <target>Isogeo - Renommer une recherche rapide</target>
+</phrase>
+<phrase>
+    <source>Isogeo - New quicksearch</source>
+    <target>Isogeo - Nouvelle recherche rapide</target>
+</phrase>
+<phrase>
+    <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
+    <target>La recherche rapide &apos;{}&apos; existe déjà, voulez-vous l&apos;écraser ?</target>
 </phrase>
 <phrase>
     <source>Unknown geometry</source>
@@ -347,16 +413,16 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>Non renseigné</target>
 </phrase>
 <phrase>
-    <source>Intersects</source>
-    <target>Intersecte</target>
+    <source>Table</source>
+    <target>Table</target>
 </phrase>
 <phrase>
     <source>within</source>
-    <target>Est contenu</target>
+    <target>est contenu</target>
 </phrase>
 <phrase>
     <source>contains</source>
-    <target>Contient</target>
+    <target>contient</target>
 </phrase>
 <phrase>
     <source>Relevance</source>
@@ -399,16 +465,44 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>Aucun mot-clé sélectionné</target>
 </phrase>
 <phrase>
-    <source>Map canvas</source>
-    <target>Emprise de la carte</target>
-</phrase>
-<phrase>
     <source>Quicksearches</source>
     <target>Recherches rapides</target>
 </phrase>
 <phrase>
     <source>Display results</source>
     <target>Affichage des résultats</target>
+</phrase>
+<phrase>
+    <source>intersects</source>
+    <target>intersecte</target>
+</phrase>
+<phrase>
+    <source> Map canvas</source>
+    <target> Emprise de la carte</target>
+</phrase>
+<phrase>
+    <source>Metadata modification date</source>
+    <target>Date de dernière modification de la métadonnée</target>
+</phrase>
+<phrase>
+    <source>Metadata creation date</source>
+    <target>Date de création de la métadonnée</target>
+</phrase>
+<phrase>
+    <source>Data modification date</source>
+    <target>Date de dernière modification de la donnée</target>
+</phrase>
+<phrase>
+    <source>Data creation date</source>
+    <target>Date de création de la donnée</target>
+</phrase>
+<phrase>
+    <source>Order by: </source>
+    <target>Critère de tri : </target>
+</phrase>
+<phrase>
+    <source>Order direction: </source>
+    <target>Sens du tri : </target>
 </phrase>
 <phrase>
     <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
@@ -483,6 +577,10 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>Aucune description renseignée</target>
 </phrase>
 <phrase>
+    <source>Search request to Isogeo&apos;s API failed : please check that &apos;api_base_url&apos; and &apos;api_auth_url&apos; URLs specified into config.json file are pointing to the same API.</source>
+    <target>La requête à l&apos;API Isogeo a échoué. Veuillez vérifier que les URLs &apos;api_base_url&apos; et &apos;api_auth_url&apos; indiqués dans le fichier config.json pointent vers la même version de &apos;API.</target>
+</phrase>
+<phrase>
     <source>Credits</source>
     <target>Crédits</target>
 </phrase>
@@ -527,18 +625,6 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>Secret :</target>
 </phrase>
 <phrase>
-    <source>Don&apos;t have an account yet ?</source>
-    <target>Pas encore de compte ?</target>
-</phrase>
-<phrase>
-    <source>I already have Isogeo ID and SECRET for this application</source>
-    <target>Je dispose déjà des ID et Secret pour ce plugin</target>
-</phrase>
-<phrase>
-    <source>I&apos;ve got the power hey yeah heh!</source>
-    <target></target>
-</phrase>
-<phrase>
     <source>I&apos;ve got edition rights on app.isogeo.com</source>
     <target>J&apos;ai accès aux fonctionnalités d&apos;édition sur app.isogeo.com</target>
 </phrase>
@@ -567,24 +653,8 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>URL de l&apos;API :</target>
 </phrase>
 <phrase>
-    <source>Make an appointment with Isogeo team</source>
-    <target>Prendre RDV avec la Team Isogeo</target>
-</phrase>
-<phrase>
-    <source>Test the Isogeo QGIS Plugin for free</source>
-    <target>Tester gratuitement le Plugin QGIS Isogeo</target>
-</phrase>
-<phrase>
-    <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;It is simple and free to test the Isogeo QGIS Plugin on a sample of data : &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-    <target>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Il est simple et gratuit de tester le Plugin QGIS Isogeo sur un échantillon de données, n&apos;hésitez pas à nous en faire la demande&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</target>
-</phrase>
-<phrase>
     <source>Isogeo Metadata</source>
     <target>Fiche de métadonnée Isogeo</target>
-</phrase>
-<phrase>
-    <source>addButton</source>
-    <target>Ajouter à la carte</target>
 </phrase>
 <phrase>
     <source>General</source>
@@ -604,7 +674,7 @@ You have a proxy set up on your OS {} but none in QGIS.
 </phrase>
 <phrase>
     <source>Geography</source>
-    <target>Géométrie</target>
+    <target>Géographie</target>
 </phrase>
 <phrase>
     <source>Licenses</source>
@@ -617,10 +687,6 @@ You have a proxy set up on your OS {} but none in QGIS.
 <phrase>
     <source>Edit it on Isogeo</source>
     <target>Editer sur Isogeo</target>
-</phrase>
-<phrase>
-    <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;No title&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-    <target>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Sans titre&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</target>
 </phrase>
 <phrase>
     <source>INSPIRE themes</source>
@@ -683,10 +749,6 @@ You have a proxy set up on your OS {} but none in QGIS.
     <target>Date de création :</target>
 </phrase>
 <phrase>
-    <source>Validity comment:</source>
-    <target>Commentaire :</target>
-</phrase>
-<phrase>
     <source>Validity period start:</source>
     <target>Début de validité :</target>
 </phrase>
@@ -708,11 +770,11 @@ You have a proxy set up on your OS {} but none in QGIS.
 </phrase>
 <phrase>
     <source>Scale:</source>
-    <target>Echelle :</target>
+    <target>Échelle :</target>
 </phrase>
 <phrase>
     <source>SRS:</source>
-    <target>SRS :</target>
+    <target>Système de coordonnées :</target>
 </phrase>
 <phrase>
     <source>Resolution:</source>
@@ -737,10 +799,6 @@ You have a proxy set up on your OS {} but none in QGIS.
 <phrase>
     <source>Limitations</source>
     <target>Limitations</target>
-</phrase>
-<phrase>
-    <source>Download metadata XML</source>
-    <target>Télécharger la métadonnée en XML ISO 19139</target>
 </phrase>
 <phrase>
     <source>wg_email</source>
@@ -789,6 +847,46 @@ You have a proxy set up on your OS {} but none in QGIS.
 <phrase>
     <source>wg_owner</source>
     <target>Organisme</target>
+</phrase>
+<phrase>
+    <source>Geographical context</source>
+    <target>Contexte géographique</target>
+</phrase>
+<phrase>
+    <source>Specifications</source>
+    <target>Spécifications</target>
+</phrase>
+<phrase>
+    <source>Topological consistency</source>
+    <target>Cohérence topologique</target>
+</phrase>
+<phrase>
+    <source>Group themes</source>
+    <target>Thématiques</target>
+</phrase>
+<phrase>
+    <source>Owner</source>
+    <target>Propriétaire</target>
+</phrase>
+<phrase>
+    <source>Group Themes</source>
+    <target>Thématiques</target>
+</phrase>
+<phrase>
+    <source>Validity comment</source>
+    <target>Validité</target>
+</phrase>
+<phrase>
+    <source>Isogeo - Portal base URL configuration</source>
+    <target>Isogeo - Configuration de l&apos;ajout de l&apos;URL du portail</target>
+</phrase>
+<phrase>
+    <source>Specify the portal base URL here:</source>
+    <target>Indiquer la base de l&apos;URL du portail :</target>
+</phrase>
+<phrase>
+    <source>Add portal metadata URL to layer&apos;s properties</source>
+    <target>Ajouter l&apos;URL de la métadonnée du portail Isogeo aux propriétés des couches ajoutées</target>
 </phrase>
 <phrase>
     <source>Isogeo - New quicksearch</source>

@@ -31,14 +31,14 @@ from logging.handlers import RotatingFileHandler
 from functools import partial
 
 # PyQT
-from qgis.PyQt.QtCore import QCoreApplication, QSettings, Qt, QTranslator, qVersion
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator
 
 from qgis.PyQt.QtWidgets import QAction, QComboBox, QDesktopWidget, QProgressBar
 from qgis.PyQt.QtGui import QIcon
 
 # PyQGIS
 from qgis.utils import iface, plugin_times
-from qgis.core import QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle
+from qgis.core import QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle, QgsProject
 
 
 try:
@@ -52,7 +52,7 @@ from .resources_rc import *
 # UI classes
 from .ui.credits.dlg_credits import IsogeoCredits
 
-# Plugin modules
+# submodule
 from .modules import (
     Authenticator,
     ApiRequester,
@@ -61,6 +61,7 @@ from .modules import (
     SharesParser,
     SearchFormManager,
     UserInformer,
+    SettingsManager
 )
 
 # ############################################################################
@@ -72,7 +73,6 @@ plg_basepath = Path(__file__).parent
 plg_reg_name = plg_basepath.name
 # QGIS useful tooling and shortcuts
 msgBar = iface.messageBar()
-qsettings = QSettings()
 
 # required `_log` subfolder
 plg_logdir = Path(plg_basepath) / "_logs"
@@ -94,7 +94,7 @@ else:
     log_level = logging.INFO
 
 logger = logging.getLogger("IsogeoQgisPlugin")
-logging.captureWarnings(True)
+
 logger.setLevel(log_level)
 log_form = logging.Formatter(
     "%(asctime)s || %(levelname)s " "|| %(module)s - %(lineno)d ||" " %(funcName)s || %(message)s"
@@ -168,35 +168,25 @@ class Isogeo:
         else:
             pass
 
+        self.settings_mng = SettingsManager()
+        self.settings_mng.tr = self.tr
         # initialize locale
-        try:
-            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
-        except TypeError as exc:
-            logger.error(
-                "Bad type in QSettings: {}. Original error: {}".format(
-                    type(qsettings.value("locale/userLocale")), exc
-                )
-            )
-            locale = "fr"
-        # load localized translation
-        locale_path = self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
-        logger.info("Language applied: {0}".format(locale))
+        locale = self.settings_mng.get_locale()
 
-        if locale_path.exists():
-            self.translator = QTranslator()
-            self.translator.load(str(locale_path))
+        i18n_file_path = self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
+        logger.info("Language applied: {}".format(locale))
 
-            if qVersion() > "4.3.3":
-                QCoreApplication.installTranslator(self.translator)
-            else:
-                pass
+        if i18n_file_path.exists():
+            translator = QTranslator()
+            translator.load(str(i18n_file_path))
+            QCoreApplication.installTranslator(translator)
         else:
             pass
 
-        if locale == "fr":
-            self.lang = "fr"
-        else:
+        if locale != "fr":
             self.lang = "en"
+        else:
+            self.lang = locale
 
         # Declare instance attributes
         self.actions = []
@@ -210,27 +200,26 @@ class Isogeo:
         self.credits_dialog = IsogeoCredits()
 
         # SUBMODULES
-        # instanciating
-        self.informer = UserInformer(message_bar=msgBar, trad=self.tr)
+        # self.settings_mng.load_config()
 
-        self.authenticator = Authenticator()
+        # instantiating
+        self.informer = UserInformer(message_bar=msgBar)
 
-        self.approps_mng = SharesParser(app_base_url=self.authenticator.app_url)
+        self.authenticator = Authenticator(settings_manager=self.settings_mng)
+
+        self.approps_mng = SharesParser(app_base_url=self.settings_mng.config_content.get("app_base_url"))
         self.approps_mng.tr = self.tr
 
-        self.md_display = MetadataDisplayer(
-            app_base_url=self.authenticator.app_url,
-            background_map_url=self.authenticator.json_content.get("background_map_url"),
-        )
+        self.md_display = MetadataDisplayer(settings_manager=self.settings_mng)
         self.md_display.tr = self.tr
 
         self.api_requester = ApiRequester()
         self.api_requester.tr = self.tr
 
-        self.form_mng = SearchFormManager(self.tr)
+        self.form_mng = SearchFormManager(trad=self.tr, settings_manager=self.settings_mng)
         self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
         self.form_mng.qs_mng.lang = self.lang
-        self.form_mng.qs_mng.api_base_url = self.authenticator.api_params.get("url_base")
+        # self.form_mng.qs_mng.api_base_url_setter(self.settings_mng.config_content.get("api_base_url"))
 
         # connecting
         self.api_requester.api_sig.connect(self.token_slot)
@@ -338,8 +327,8 @@ class Isogeo:
     # -------------------------------------------------------------------------
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed."""
-        # save cache
-        self.form_mng.results_mng.cache_mng.dumper()
+        # delete geoservices cache
+        self.form_mng.results_mng.cache_mng.clean_geoservice_cache()
         # disconnects
         self.form_mng.closingPlugin.disconnect(self.onClosePlugin)
 
@@ -349,6 +338,8 @@ class Isogeo:
         self.pluginIsActive = False
         # stop log file stream
         logging.shutdown()
+
+        del self
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
@@ -440,8 +431,7 @@ class Isogeo:
             name = self.tr("Last search")
             self.form_mng.qs_mng.write_params(name, "Last")
             # update quick searches combobox
-            saved_searches = list(self.form_mng.qs_mng.load_file())
-            self.form_mng.pop_qs_cbbs(items_list=saved_searches)
+            self.form_mng.pop_qs_cbbs(items_list=self.form_mng.qs_mng.get_quicksearches_names())
             self.store = False
         else:
             pass
@@ -480,7 +470,7 @@ class Isogeo:
 
     def search_slot(self, result: dict, tags: dict):
         """Slot connected to ApiRequester.search_sig signal. It updates widgets, using
-        SearchFormManager appropiate methods to fill them from 'tags' parameter and put
+        SearchFormManager appropriate methods to fill them from 'tags' parameter and put
         them in the right status. It also display the results contained in 'result'
         parameter by calling ResultManager.show_results method if necessary.
 
@@ -495,7 +485,6 @@ class Isogeo:
             level=0,
         )
         # Save entered text and filters in search form
-        self.form_mng.old_text = self.form_mng.txt_input.text()
         params = self.form_mng.save_params()
 
         # Show how many results there are
@@ -516,19 +505,18 @@ class Isogeo:
             self.form_mng.init_steps()
         else:
             logger.debug("Not default search nor reset.")
-            pass
+            self.old_text = self.form_mng.txt_input.text()  # only if not first search to avoid when current widgets status is not relevant
 
         # Filling Advanced search comboboxes from tags
         self.form_mng.pop_as_cbbs(tags)
         # Filling quick searches comboboxes from json file (also the one in settings tab)
-        qs_list = list(self.form_mng.qs_mng.load_file().keys())
-        self.form_mng.pop_qs_cbbs(qs_list)
+        self.form_mng.pop_qs_cbbs(self.form_mng.qs_mng.get_quicksearches_names())
         # Sorting Advanced search comboboxes
         for cbb in self.cbbs_search_advanced:
             cbb.model().sort(0)
 
         # Putting comboboxes' selected index to the appropriate location
-        # and updating key words checkable combobox
+        # and updating keywords checkable combobox
         if self.hardReset is True:
             # In case of a hard reset, we don't have to worry about comboboxes' selected index
             logger.debug("Reset search")
@@ -538,27 +526,33 @@ class Isogeo:
             if self.savedSearch == "":
                 # Putting all the comboboxes selected index to their previous location.
                 logger.debug("Classic search case (not quicksearch)")
-                # Setting widgets to their previous index
-                self.form_mng.set_ccb_index(params=params)
-                # Updating the keywords special combobox (filling + indexing)
-                self.form_mng.update_cbb_keywords(
-                    tags_keywords=tags.get("keywords"),
-                    selected_keywords=params.get("keys"),
-                )
+                params = params
+                selected_keywords = params.get("keys")
+                quicksearch = ""
             else:
-                # Putting all the comboboxes selected index
-                # according to params found in the json file
+                # Putting all the comboboxes selected index according to params found in the json file
                 logger.debug("Quicksearch case: {}".format(self.savedSearch))
                 # Opening the json to get quick search's params
-                search_params = self.form_mng.qs_mng.load_file().get(self.savedSearch)
-                # Putting widgets to their previous states according to the json content
-                self.form_mng.set_ccb_index(params=search_params, quicksearch=self.savedSearch)
+                params = self.form_mng.qs_mng.get_quicksearches().get(self.savedSearch)
+                quicksearch = self.savedSearch
                 self.savedSearch = ""
-                # Updating the keywords special combobox (filling + indexing)
-                keywords_list = [v for k, v in search_params.items() if k.startswith("keyword")]
-                self.form_mng.update_cbb_keywords(
-                    tags_keywords=tags.get("keywords"), selected_keywords=keywords_list
-                )
+                selected_keywords = [v for k, v in params.items() if k.startswith("keyword")]
+
+            tags_keywords = tags.get("keywords")
+
+            if params.get("labels", {}).get("keys", False):
+                selected_keywords_labels = params.get("labels").get("keys")  # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
+            else:
+                selected_keywords_labels = []
+
+            # Setting widgets to their previous index
+            self.form_mng.set_ccb_index(params=params, quicksearch=quicksearch)
+            # Updating the keywords special combobox (filling + indexing)
+            self.form_mng.update_cbb_keywords(
+                tags_keywords=tags_keywords,
+                selected_keywords=selected_keywords,
+                selected_keywords_labels=selected_keywords_labels  # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
+            )
 
         # tweaking
         plg_tools._ui_tweaker(ui_widgets=self.form_mng.tab_search.findChildren(QComboBox))
@@ -588,7 +582,7 @@ class Isogeo:
         # Re enable all user input fields now the search function is
         # finished.
         self.form_mng.switch_widgets_on_and_off(1)
-        # Reseting attributes values
+        # Resetting attributes values
         self.hardReset = False
         self.showResult = False
 
@@ -597,7 +591,7 @@ class Isogeo:
         selected_search = self.form_mng.cbb_quicksearch_use.currentText()
         logger.debug("Quicksearch selected: {}".format(selected_search))
         # load quicksearches
-        saved_searches = self.form_mng.qs_mng.load_file()
+        saved_searches = self.form_mng.qs_mng.get_quicksearches()
         if selected_search != self.tr("Quicksearches"):
             self.form_mng.switch_widgets_on_and_off(0)  # disable search form
             # check if selected search can be found
@@ -605,8 +599,7 @@ class Isogeo:
                 self.savedSearch = selected_search
                 search_params = saved_searches.get(selected_search)
                 logger.debug(
-                    "Quicksearch found in saved searches and"
-                    " related search params have just been loaded from."
+                    "Quicksearch found in saved searches and related search params have just been loaded from it."
                 )
             elif selected_search not in saved_searches and "_default" in saved_searches:
                 logger.warning("Selected search ({}) not found." "'_default' will be used instead.")
@@ -620,9 +613,9 @@ class Isogeo:
 
             # Check projection settings in loaded search params
             if "epsg" in search_params:
-                epsg = int(plg_tools.get_map_crs().split(":")[1])
-                logger.debug("Specific SRS found in search params: {}".format(epsg))
-                if epsg == search_params.get("epsg"):
+                currentCrs = plg_tools.get_map_crs()
+                logger.debug("Specific CRS found in search params: {}".format(search_params.get("epsg")))
+                if currentCrs == search_params.get("epsg"):
                     canvas = iface.mapCanvas()
                     e = search_params.get("extent")
                     rect = QgsRectangle(e[0], e[1], e[2], e[3])
@@ -630,16 +623,26 @@ class Isogeo:
                     canvas.refresh()
                 else:
                     canvas = iface.mapCanvas()
-                    canvas.mapSettings().setDestinationCrs(
-                        QgsCoordinateReferenceSystem(
-                            search_params.get("epsg"),
-                            QgsCoordinateReferenceSystem.EpsgCrsId,
+                    qgs_prj = QgsProject.instance()
+
+                    # because "epsg" parameter values changed working on https://github.com/isogeo/isogeo-plugin-qgis/issues/437
+                    if QgsCoordinateReferenceSystem(search_params.get("epsg")).isValid():
+                        originCrs = QgsCoordinateReferenceSystem(search_params.get("epsg"))
+                    else:
+                        originCrs = QgsCoordinateReferenceSystem("EPSG:" + str(search_params.get("epsg")))
+
+                    if originCrs.isValid():
+                        qgs_prj.setCrs(originCrs)
+                        e = search_params.get("extent")
+                        rect = QgsRectangle(e[0], e[1], e[2], e[3])
+                        canvas.setExtent(rect)
+                        canvas.refresh()
+                        qgs_prj.setCrs(
+                            QgsCoordinateReferenceSystem(currentCrs)
                         )
-                    )
-                    e = search_params.get("extent")
-                    rect = QgsRectangle(e[0], e[1], e[2], e[3])
-                    canvas.setExtent(rect)
-                    canvas.refresh()
+                    else:
+                        logger.warning("No valid CRS could be build, neither from '{}' nor from '{}'".format(str(search_params.get("epsg")), "EPSG:" + str(search_params.get("epsg"))))
+                        pass
             # load request
             self.api_requester.currentUrl = search_params.get("url")
             self.api_requester.send_request()
@@ -649,6 +652,7 @@ class Isogeo:
 
                 self.savedSearch = "_default"
                 search_params = saved_searches.get("_default")
+                self.old_text = search_params.get("text")
 
                 self.api_requester.currentUrl = search_params.get("url")
                 self.api_requester.send_request()
@@ -658,19 +662,17 @@ class Isogeo:
 
     def edited_search(self):
         """On the Qline edited signal, decide weither a search has to be launched."""
-        try:
-            logger.debug("Editing finished signal sent.")
-        except AttributeError:
-            pass
-        if self.form_mng.txt_input.text() == self.old_text:
-            logger.debug("The lineEdit text hasn't changed." " So pass without sending a request.")
+
+        current_text = self.form_mng.txt_input.text()
+        if current_text == self.old_text:
+            logger.debug("The lineEdit text hasn't changed. So pass without sending a request.")
         else:
-            logger.debug("The line Edit text changed." " Calls the search function.")
-            if self.form_mng.txt_input.text() == "Ici c'est Isogeo !":
+            logger.debug("The line Edit text changed. Calls the search function.")
+            if current_text == "Ici c'est Isogeo !":
                 plg_tools.special_search("isogeo")
                 self.form_mng.txt_input.clear()
                 return
-            elif self.form_mng.txt_input.text() == "Picasa":
+            elif current_text == "Picasa":
                 plg_tools.special_search("picasa")
                 self.form_mng.txt_input.clear()
                 return
@@ -745,10 +747,10 @@ class Isogeo:
             #    removed on close (see self.onClosePlugin method)
             if self.form_mng is None:
                 # Create the dockwidget (after translation) and keep reference
-                self.form_mng = SearchFormManager(self.tr)
+                self.form_mng = SearchFormManager(trad=self.tr, settings_manager=self.settings_mng)
                 self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
                 self.form_mng.qs_mng.lang = self.lang
-                self.form_mng.qs_mng.api_base_url = self.authenticator.api_params.get("url_base")
+                # self.form_mng.qs_mng.api_base_url_setter(self.settings_mng.config_content.get("api_base_url"))
 
                 logger.debug("Plugin load time: {}".format(plugin_times.get(plg_reg_name, "NR")))
             else:
@@ -774,7 +776,8 @@ class Isogeo:
         self.cbbs_search_advanced = self.form_mng.grp_filters.findChildren(QComboBox)
         # -- Search form ------------------------------------------------------
         # search terms text input
-        self.form_mng.txt_input.editingFinished.connect(self.edited_search)
+        self.form_mng.txt_input.returnPressed.connect(self.edited_search)
+        self.form_mng.btn_search_go.pressed.connect(self.edited_search)
         # reset search button
         self.form_mng.btn_reinit.pressed.connect(self.reinitialize_search)
         # filters comboboxes
@@ -836,10 +839,7 @@ class Isogeo:
             )
         )
         # help button
-        if self.authenticator.json_content.get("help_base_url").endswith("/"):
-            help_url = self.authenticator.json_content.get("help_base_url") + "qgis/"
-        else:
-            help_url = self.authenticator.json_content.get("help_base_url") + "/qgis/"
+        help_url = self.settings_mng.config_content.get("help_base_url") + "/qgis/"
         self.form_mng.btn_help.pressed.connect(partial(plg_tools.open_webpage, link=help_url))
         # view credits - see: #52
         self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
@@ -871,11 +871,9 @@ class Isogeo:
         self.form_mng.setWindowTitle("Isogeo - {}".format(self.plg_version))
         # add translator method in others modules
         plg_tools.tr = self.tr
-        self.authenticator.tr = self.tr
-        self.authenticator.lang = self.lang
         # checks
         url_to_check = (
-            self.authenticator.api_params.get("url_base")
+            self.settings_mng.config_content.get("api_base_url")
             .replace("https://", "")
             .replace("http://", "")
         )

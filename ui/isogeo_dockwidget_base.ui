@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
  <class>IsogeoDockWidgetBase</class>
  <widget class="QDockWidget" name="IsogeoDockWidgetBase">
@@ -13,7 +13,7 @@
   <property name="minimumSize">
    <size>
     <width>572</width>
-    <height>611</height>
+    <height>612</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -27,7 +27,7 @@
     <normaloff>:/plugins/Isogeo/icon.png</normaloff>:/plugins/Isogeo/icon.png</iconset>
   </property>
   <property name="locale">
-   <locale language="English" country="UnitedStates"/>
+   <locale country="UnitedStates" language="English" />
   </property>
   <property name="windowTitle">
    <string notr="true">Isogeo</string>
@@ -61,7 +61,7 @@
     <property name="spacing">
      <number>5</number>
     </property>
-    <item row="0" column="0">
+    <item column="0" row="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -187,7 +187,7 @@
         <property name="spacing">
          <number>5</number>
         </property>
-        <item row="6" column="0">
+        <item column="0" row="6">
          <widget class="QgsCollapsibleGroupBox" name="grp_filters">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -209,7 +209,7 @@
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
+           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
           </property>
           <property name="title">
            <string>Advanced search</string>
@@ -236,7 +236,7 @@
            <property name="spacing">
             <number>5</number>
            </property>
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QVBoxLayout" name="verticalLayout_13">
              <item>
               <layout class="QHBoxLayout" name="lyt_horiz_filters" stretch="1,1,1">
@@ -273,7 +273,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/paperclip.svg</pixmap>
@@ -337,6 +337,9 @@
                        <pointsize>9</pointsize>
                       </font>
                      </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
                      <property name="currentIndex">
                       <number>-1</number>
                      </property>
@@ -369,7 +372,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/map.svg</pixmap>
@@ -433,6 +436,9 @@
                        <pointsize>9</pointsize>
                       </font>
                      </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
                      <property name="maxVisibleItems">
                       <number>15</number>
                      </property>
@@ -444,8 +450,8 @@
                      </property>
                      <property name="iconSize">
                       <size>
-                       <width>12</width>
-                       <height>12</height>
+                       <width>20</width>
+                       <height>20</height>
                       </size>
                      </property>
                     </widget>
@@ -475,7 +481,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/cube.svg</pixmap>
@@ -539,6 +545,9 @@
                        <pointsize>9</pointsize>
                       </font>
                      </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
                      <property name="maxVisibleItems">
                       <number>15</number>
                      </property>
@@ -575,7 +584,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/leaf.svg</pixmap>
@@ -639,6 +648,9 @@
                        <pointsize>9</pointsize>
                       </font>
                      </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
                      <property name="maxVisibleItems">
                       <number>15</number>
                      </property>
@@ -674,7 +686,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/phone_blue.svg</pixmap>
@@ -741,6 +753,9 @@
                        <pointsize>9</pointsize>
                       </font>
                      </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
                      <property name="maxVisibleItems">
                       <number>15</number>
                      </property>
@@ -805,7 +820,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/tag.svg</pixmap>
@@ -869,11 +884,14 @@
                        <pointsize>9</pointsize>
                       </font>
                      </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
                      <property name="editable">
                       <bool>true</bool>
                      </property>
                      <property name="currentText">
-                      <string/>
+                      <string />
                      </property>
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
@@ -882,7 +900,7 @@
                       <number>20</number>
                      </property>
                      <property name="defaultText">
-                      <string/>
+                      <string />
                      </property>
                     </widget>
                    </item>
@@ -904,7 +922,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/asterisk.svg</pixmap>
@@ -968,6 +986,9 @@
                        <pointsize>9</pointsize>
                       </font>
                      </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
                      <property name="maxVisibleItems">
                       <number>15</number>
                      </property>
@@ -1004,7 +1025,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/users_blue.svg</pixmap>
@@ -1068,6 +1089,9 @@
                        <pointsize>9</pointsize>
                       </font>
                      </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
                      <property name="maxVisibleItems">
                       <number>15</number>
                      </property>
@@ -1104,7 +1128,7 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/globe.svg</pixmap>
@@ -1168,6 +1192,9 @@
                        <pointsize>9</pointsize>
                       </font>
                      </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
                      <property name="maxVisibleItems">
                       <number>15</number>
                      </property>
@@ -1197,7 +1224,7 @@
                         </size>
                        </property>
                        <property name="text">
-                        <string/>
+                        <string />
                        </property>
                        <property name="pixmap">
                         <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/gavel.svg</pixmap>
@@ -1264,6 +1291,9 @@
                        <pointsize>9</pointsize>
                       </font>
                      </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::ClickFocus</enum>
+                     </property>
                      <property name="maxVisibleItems">
                       <number>15</number>
                      </property>
@@ -1286,7 +1316,7 @@
           </layout>
          </widget>
         </item>
-        <item row="5" column="0">
+        <item column="0" row="5">
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <property name="spacing">
            <number>5</number>
@@ -1346,10 +1376,10 @@
                  <bool>true</bool>
                 </property>
                 <property name="inputMask">
-                 <string/>
+                 <string />
                 </property>
                 <property name="text">
-                 <string/>
+                 <string />
                 </property>
                 <property name="placeholderText">
                  <string>roads, habitat, cadastral parcel, transport...</string>
@@ -1386,7 +1416,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="text">
-                 <string/>
+                 <string />
                 </property>
                 <property name="icon">
                  <iconset resource="../resources.qrc">
@@ -1450,7 +1480,7 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string/>
+                 <string />
                 </property>
                 <property name="pixmap">
                  <pixmap resource="../resources.qrc">:/plugins/Isogeo/resources/search/bolt.svg</pixmap>
@@ -1493,6 +1523,9 @@
                   <bold>false</bold>
                  </font>
                 </property>
+                <property name="focusPolicy">
+                 <enum>Qt::ClickFocus</enum>
+                </property>
                 <property name="toolTip">
                  <string>Quick searches</string>
                 </property>
@@ -1521,7 +1554,7 @@
           </item>
          </layout>
         </item>
-        <item row="7" column="0">
+        <item column="0" row="7">
          <layout class="QHBoxLayout" name="horizontalLayout_17">
           <property name="spacing">
            <number>5</number>
@@ -1558,6 +1591,8 @@
             <property name="font">
              <font>
               <pointsize>9</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
              </font>
             </property>
             <property name="toolTip">
@@ -1594,7 +1629,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Sorting method</string>
+             <string />
             </property>
             <property name="maxCount">
              <number>6</number>
@@ -1629,7 +1664,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Sorting direction</string>
+             <string />
             </property>
             <property name="maxVisibleItems">
              <number>3</number>
@@ -1673,7 +1708,7 @@
              <string>Reset all input fields</string>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -1704,13 +1739,15 @@
             <property name="font">
              <font>
               <pointsize>8</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
              </font>
             </property>
             <property name="toolTip">
              <string>Save research</string>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -1726,7 +1763,7 @@
           </item>
          </layout>
         </item>
-        <item row="8" column="0">
+        <item column="0" row="8">
          <widget class="QTableWidget" name="tbl_result">
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -1768,7 +1805,7 @@
           </column>
          </widget>
         </item>
-        <item row="9" column="0">
+        <item column="0" row="9">
          <layout class="QHBoxLayout" name="horizontalLayout_12">
           <property name="spacing">
            <number>5</number>
@@ -1795,7 +1832,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string notr="true"/>
+             <string notr="true" />
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -1823,7 +1860,7 @@
           <item>
            <widget class="QPushButton" name="btn_next">
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -1849,9 +1886,9 @@
        </layout>
        <zorder>grp_filters</zorder>
        <zorder>tbl_result</zorder>
-       <zorder></zorder>
-       <zorder></zorder>
-       <zorder></zorder>
+       <zorder />
+       <zorder />
+       <zorder />
       </widget>
       <widget class="QWidget" name="tab_settings">
        <property name="sizePolicy">
@@ -1889,7 +1926,7 @@
         <property name="spacing">
          <number>5</number>
         </property>
-        <item row="6" column="0">
+        <item column="0" row="6">
          <widget class="QGroupBox" name="groupBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -1906,6 +1943,8 @@
           <property name="font">
            <font>
             <pointsize>9</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
           </property>
           <property name="title">
@@ -1930,7 +1969,7 @@
            <property name="verticalSpacing">
             <number>3</number>
            </property>
-           <item row="1" column="0">
+           <item column="0" row="1">
             <widget class="QTextBrowser" name="txt_shares">
              <property name="maximumSize">
               <size>
@@ -1941,11 +1980,13 @@
              <property name="font">
               <font>
                <pointsize>8</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
               </font>
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QHBoxLayout" name="horizontalLayout_21">
              <property name="spacing">
               <number>5</number>
@@ -1992,7 +2033,7 @@
                 </size>
                </property>
                <property name="text">
-                <string/>
+                <string />
                </property>
                <property name="icon">
                 <iconset resource="../resources.qrc">
@@ -2005,7 +2046,7 @@
           </layout>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item column="0" row="1">
          <widget class="QGroupBox" name="groupBox_2">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -2022,6 +2063,8 @@
           <property name="font">
            <font>
             <pointsize>9</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
           </property>
           <property name="title">
@@ -2043,7 +2086,7 @@
            <property name="spacing">
             <number>5</number>
            </property>
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <property name="spacing">
               <number>3</number>
@@ -2063,6 +2106,7 @@
                  </property>
                  <property name="font">
                   <font>
+                   <pointsize>9</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -2101,6 +2145,7 @@
                  </property>
                  <property name="font">
                   <font>
+                   <pointsize>9</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -2109,7 +2154,7 @@
                   <string>Rename selected quicksearch</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2133,6 +2178,7 @@
                  </property>
                  <property name="font">
                   <font>
+                   <pointsize>9</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -2141,7 +2187,7 @@
                   <string>Delete selected quicksearch</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2201,7 +2247,7 @@
                   <string>Save current search as default</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2227,7 +2273,7 @@
                   <string>Reset default search</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2285,6 +2331,7 @@
                  </property>
                  <property name="font">
                   <font>
+                   <pointsize>9</pointsize>
                    <weight>50</weight>
                    <bold>false</bold>
                   </font>
@@ -2367,7 +2414,7 @@
           </layout>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item column="0" row="8">
          <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -2386,13 +2433,13 @@
            <enum>Qt::NoFocus</enum>
           </property>
           <property name="styleSheet">
-           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 3px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
+           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 5px;  margin-right: 5px;  left: 0px;  top: 3px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;} QgsCollapsibleGroupBoxBasic { border: none; }QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
           </property>
           <property name="title">
            <string>Advanced resources</string>
           </property>
           <property name="collapsed">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
            <property name="leftMargin">
@@ -2413,7 +2460,7 @@
            <property name="verticalSpacing">
             <number>2</number>
            </property>
-           <item row="0" column="0">
+           <item column="0" row="0">
             <layout class="QVBoxLayout" name="verticalLayout_12">
              <property name="spacing">
               <number>3</number>
@@ -2475,7 +2522,7 @@
                   <cursorShape>PointingHandCursor</cursorShape>
                  </property>
                  <property name="toolTip">
-                  <string>Open folder of &quot;log_isogeo_plugin.log&quot; file</string>
+                  <string>Open folder of "log_isogeo_plugin.log" file</string>
                  </property>
                  <property name="autoFillBackground">
                   <bool>true</bool>
@@ -2510,7 +2557,7 @@
                   <bool>true</bool>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2576,7 +2623,7 @@
                   <bool>true</bool>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2639,7 +2686,7 @@
                   <string>Open credits popup</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2654,7 +2701,7 @@
           </layout>
          </widget>
         </item>
-        <item row="7" column="0">
+        <item column="0" row="7">
          <widget class="QGroupBox" name="groupBox_4">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -2665,6 +2712,8 @@
           <property name="font">
            <font>
             <pointsize>9</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
           </property>
           <property name="title">
@@ -2686,7 +2735,7 @@
            <property name="spacing">
             <number>5</number>
            </property>
-           <item row="1" column="0">
+           <item column="0" row="1">
             <layout class="QVBoxLayout" name="verticalLayout">
              <property name="spacing">
               <number>3</number>
@@ -2747,7 +2796,7 @@
                   <string>Oracle databases</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                 </widget>
                </item>
@@ -2769,7 +2818,7 @@
                   <string>PostgreSQL databases</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                 </widget>
                </item>
@@ -2828,7 +2877,7 @@
                   <string>Choose to add metadata portal URL to layer properties and specify portal base URL</string>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="icon">
                   <iconset resource="../resources.qrc">
@@ -2854,14 +2903,14 @@
   <customwidget>
    <class>QgsCheckableComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgscheckablecombobox.h</header>
+   <header>qgis.gui</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <connections/>
+ <connections />
 </ui>

@@ -1,123 +1,147 @@
 # Lint, test and package a plugin for QGIS
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops&tabs=yaml
 
-# CONDITIONS WHICH TRIGGER OR NOT THE JOBS
+# -- TRIGGERS --------------------------------------------------------------------------------------
+
+pr:
+  - master
+
 trigger:
   batch: true
   branches:
     include:
       - master
+      - debug
   tags:
     include:
     - "*"
 
-pr:
-- master
+# -- RESOURCES -------------------------------------------------------------------------------------
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: isogeo/devops-templates
+      endpoint: isogeo
 
-# -- GLOBAL VARIABLES ------------------------------------------------------------------
+# -- GLOBAL VARIABLES ------------------------------------------------------------------------------
 variables:
-  PLUGIN_NAME: Isogeo
-  QGIS_VERSION_TAG: release-3_16
-  QGIS_IMAGE: qgis/qgis
-  pythonVersion: "3.7"
-  vmImageName: "windows-2019"
-  TAG_NAME: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
-  ZIP_NAME: $(SERVICE_NAME)-$(TAG_NAME).zip
+  pythonVersion: "3.9"
+  isProd: $[contains(variables['Build.SourceBranch'], 'refs/tags')]
+  isQA: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), contains(variables['Build.SourceBranch'], 'refs/pull/'))]
+  isDebug: $[eq(variables['Build.SourceBranch'], 'refs/heads/debug')]
   azureSubscription : $(AZURE_SUBSCRIPTION)
-  date: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
+  releaseDate: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
+  releaseDateWithHour: $[format('{0:dd}.{0:MM}.{0:yyyy}-{0:HH}.{0:mm}', pipeline.startTime)]
 
-# -- STAGES ----------------------------------------------------------------------------
+# -- STAGES ----------------------------------------------------------------------------------------
 stages:
-
-- stage: Lint
-  # -- LINT AND FORMAT -----------------------------------------------------------------
-  displayName: Format and lint code
+- stage: report
+  pool:
+    vmImage: "windows-2019"
+  displayName: "Report"
   jobs:
-
-  # LINT AND FORMATTING CODE
-  - job: 'Lint'
-    pool:
-      vmImage: $(vmImageName)
+  # -- LINT AND FORMAT -----------------------------------------------------------------------------
+  - job: show_variables_values
+    displayName: "Pipeline variables values"
 
     steps:
-    - checkout: self  # self represents the repo where the initial Pipelines YAML file was found
+    - checkout: none
+    - script: |
+        echo NAME - $(NAME)
+        echo Build.BuildId - $(Build.BuildId)
+        echo Build.SourceBranch - $(Build.SourceBranch)
+        echo pythonVersion - $(pythonVersion)
+        echo isProd - $(isProd)
+        echo isQA - $(isQA)
+        echo isDebug - $(isDebug)
+        echo releaseDate - $(releaseDate)
+        echo releaseDateWithHour - $(releaseDateWithHour)
+
+- stage : build_zipname
+  pool:
+    vmImage: "windows-2019"
+  displayName: "Build ZIP name"
+  dependsOn : report
+  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+  jobs:
+  # -- CREATE zipName -----------------------------------------------------------------------------
+  - job: create_zipname_variable
+    displayName: "Execute cmd script to set 'zipName' variable"
+
+    steps:
+    - checkout: none
+    - script: |
+        echo isProd - $(isProd)
+        echo isQA - $(isQA)
+        echo isDebug - $(isDebug)
+
+        if $(isProd)==True set ZIPNAME=$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip
+        if $(isQA)==True set ZIPNAME=$(NAME)-qa-$(releaseDateWithHour).zip
+        if $(isDebug)==True set ZIPNAME=$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip
+        echo %ZIPNAME%
+
+        echo ##vso[task.setvariable variable=zipName]%ZIPNAME%
+        echo ##vso[task.setvariable variable=zipName;isOutput=true]%ZIPNAME%
+
+        echo $(zipName)
+
+      name: set_zipname_variable
+
+- stage: integration
+  pool:
+    vmImage: "windows-2019"
+  dependsOn : build_zipname
+  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+  variables : 
+    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
+  displayName: "Integration"
+  jobs:
+  # -- LINT AND FORMAT -----------------------------------------------------------------------------
+  - job: format_lint_build_package
+    displayName: "Format and lint code, then build and package the plugin"
+
+    steps:
+    - checkout: self
       fetchDepth: 10
+
+    - script: |
+        echo NAME - $(zipName)
 
     - task: UsePythonVersion@0
       inputs:
         versionSpec: $(pythonVersion)
         architecture: 'x64'
         addToPath: true
+      displayName: "Install - Python ${{ variables.pythonVersion }}"
 
     - script: |
         python -m pip install -U pip --cache-dir ./.pipcache
         python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
-      displayName: 'Install dependencies'
+      displayName: "Install - Dependencies"
 
     - script: |
         python -m black --target-version=py37 .\isogeo.py
         python -m black --target-version=py37 .\modules
-        python -m black --target-version=py37 .\tools
-        python -m black --target-version=py37 .\tests
         python -m black --target-version=py37 .\ui
-      displayName: "Apply black code formatting"
+      displayName: "Format - black code formatting"
 
     - script: |
         flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
         flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
-      displayName: "Static code analisis: PEP8 conformance, imports... (flake8)"
-
-    # save formatted code to use later avoiding git clone again
-    - publish: $(System.DefaultWorkingDirectory)
-      artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
-      displayName: "Publish formatted code with dependencies"
-
-- stage: Build
-  # --  BUILD --------------------------------------------------------------------------
-  displayName: "Build and package"
-  dependsOn: Lint
-  condition: succeeded()
-
-  jobs:
-  # UI COMPILATION
-  - job: "BuildUi"  # only letters and numbers (no space...)
-    displayName: "Qt - compilation and internationalization"  # can't contain special characters
-    pool:
-      vmImage: $(vmImageName)
-
-    steps:
-    # no need for source code
-    - checkout: none
-
-    - task: DownloadPipelineArtifact@2
-      displayName: "Download formatted source code previously saved"
-      inputs:
-        buildType: "current"
-        artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
-        targetPath: "$(System.DefaultWorkingDirectory)"
-
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: $(pythonVersion)
-        architecture: 'x64'
-        addToPath: true
-
-    - script: |
-        python -m pip install -U pip --cache-dir ./.pipcache
-        python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
-      displayName: 'Install dependencies'
+      displayName: "Lint - Static code analisis"
 
     - script: |
         pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
-        lrelease .\i18n\isogeo_search_engine_en.ts
-        lrelease .\i18n\isogeo_search_engine_fr.ts
-      displayName: "Qt: processing translations (i18n)"
+        qt5-tools lrelease .\i18n\isogeo_search_engine_en.ts
+        qt5-tools lrelease .\i18n\isogeo_search_engine_fr.ts
+      displayName: "Build - Qt translations (i18n)"
 
     - script: |
         pyrcc5 resources.qrc -o resources_rc.py
-      displayName: "Qt: processing resources compilation"
+      displayName: "Build - Qt resources compilation"
 
     - script: |
         pyuic5 -x "ui\isogeo_dockwidget_base.ui" -o "ui\ui_isogeo.py"
@@ -127,74 +151,67 @@ stages:
         pyuic5 -x "ui\metadata\ui_md_details.ui" -o "ui\metadata\ui_md_details.py"
         pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicksearch_rename.py"
         pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
-      displayName: "Qt: processing UI files compilation"
-
-    - task: PublishPipelineArtifact@1
-      displayName: "Publish artifact: Qt stuff compiled"
-      inputs:
-        path: $(System.DefaultWorkingDirectory)
-        artifact: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
-
-  # UI COMPILATION
-  - job: "Packaging"  # only letters and numbers (no space...)
-    displayName: "Packaging the plugin"  # can't contain special characters
-    dependsOn: "BuildUi"
-    pool:
-      vmImage: $(vmImageName)
-
-    steps:
-
-    # no need for source code
-    - checkout: none
-
-    - task: DownloadPipelineArtifact@2
-      displayName: "Download compiled source code previously saved"
-      inputs:
-        buildType: "current"
-        artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
-        targetPath: "$(System.DefaultWorkingDirectory)"
-
-    - task: UsePythonVersion@0
-      displayName: "Install Python"
-      inputs:
-        versionSpec: $(pythonVersion)
-        architecture: "x64"
-        addToPath: true
+      displayName: "Build - Qt UI files compilation"
 
     - script: python ./tools/plugin_packager.py
-      displayName: "Packager script"
+      displayName: "Package - script ./tools/plugin_packager.py"
 
     - task: PublishPipelineArtifact@1
       displayName: "Publish artifact: plugin packaged"
       inputs:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
-        artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        artifact: $(zipName)
 
-- stage: PublishtoGitHub
-  displayName: "Publish to GitHub"
+- stage : upload_to_blob
+  pool:
+    vmImage: "ubuntu-latest"
+  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+  dependsOn :
+    - integration
+    - build_zipname
+  variables : 
+    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
+  jobs:
+    - template : /on-premises/upload_to_blob.yml@templates
+      parameters :
+        zipName : "$(zipName)"
+        artifactName : "$(zipName)"
+
+- stage: versions_update
+  condition: and(succeeded(), eq(variables.isProd, true))
+  dependsOn : 
+  - upload_to_blob
+  jobs:
+  - template : /on-premises/update_versions.yml@templates
+
+- stage: installer_tag
+  condition: and(succeeded(), eq(variables.isProd, true))
+  dependsOn: versions_update
+  jobs : 
+  - template : /on-premises/retrieve_github_pat.yml@templates
+  - template : /on-premises/installer_tag.yml@templates
+
+- stage: publish_to_github
+  displayName: "Create a GitHub release for tag ${{ variables.tagName }}"
   dependsOn:
-    - Build
-  condition: |
-    and(
-      succeeded(),
-      contains(variables['Build.SourceBranch'], 'tags')
-    )
+    - integration
+    - build_zipname
+  variables : 
+    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
+  condition: and(succeeded(), eq(variables.isProd, true))
 
   jobs:
 
-  - job: 'PublishGithubRelease'
-    displayName: "Publish to Github release"
-    pool:
-      vmImage: $(vmImageName)
+  - job: 'create_github_release'
 
     steps:
     - checkout: none
 
     - task: DownloadPipelineArtifact@2
-      displayName: "Download packaged source code previously saved"
+      displayName: "Download packaged source code saved during 'integration' stage"
       inputs:
         buildType: "current"
-        artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        artifactName: $(zipName)
         targetPath: "$(System.DefaultWorkingDirectory)"
 
     - task: GitHubRelease@1
@@ -209,77 +226,3 @@ stages:
         tagSource: 'gitTag'
         changeLogCompareToRelease: 'lastFullRelease'
         changeLogType: 'commitBased'
-
-
-- stage: PublishToAzure
-  displayName: "Publish to Azure"
-  dependsOn:
-    - Build
-  condition: |
-      and(
-        succeeded(),
-        contains(variables['Build.SourceBranch'], 'tags')
-      )
-
-  jobs:
-
-  - job: 'UploadToBlobStorage'
-    displayName : Building archive for Blob storage
-    pool:
-      vmImage: $(vmImageName)
-
-    steps:
-      - checkout: none
-  
-      - task: DownloadPipelineArtifact@2
-        displayName: "Download packaged source code previously saved"
-        inputs:
-          buildType: "current"
-          artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
-          targetPath: "$(System.DefaultWorkingDirectory)"
-
-      - script: mv $(System.DefaultWorkingDirectory)\isogeo_search_engine.zip $(System.DefaultWorkingDirectory)\$(ZIP_NAME)
-        displayName: Rename image file name with correct version
-
-      - task: AzureCLI@1
-        displayName: Upload image to images blob tag version
-        inputs:
-          azureSubscription: $(azureSubscription)
-          scriptLocation: inlineScript
-          inlineScript: |
-                az storage blob upload-batch -d $(SERVICE_NAME) -s ./ --pattern $(ZIP_NAME)  --blob-endpoint $(BLOB_STORAGE_URL) --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'
-
-  - job: 'UpdateVersionJSON'
-    displayName: Update versions.json
-    dependsOn: "UploadToBlobStorage"
-    pool:
-      vmImage: 'ubuntu-latest'
-
-    steps:
-      - script: sudo apt-get install jq
-        displayName: Install jq tools
-
-      - task: AzureCLI@1
-        displayName : Download versions.json
-        inputs:
-          azureSubscription: $(azureSubscription)
-          scriptLocation: inlineScript
-          inlineScript: |
-                az storage blob download --account-name isogeoonpremises --container-name versions --file versions.json --blob-url $(BLOB_STORAGE_URL)/versions/versions.json   --account-key '"$(AZURE_STORAGE_KEY)"'   --connection-string $(BLOB_CONNEXION_STRING)
-
-      - script : cat version.json | jq --arg date "$(date)" '."release-date" += $date' > version_date.json
-        displayName : Add date to version.json
-
-      - script: cat versions.json | jq --argjson version "$(<version_date.json)" '."$(SERVICE_NAME)"."$(TAG_NAME)" += $version' > new_versions.json
-        displayName: Add version to versions.json
-
-      - script : rm -rf versions.json && mv new_versions.json versions.json
-        displayName: Rename file
-
-      - task: AzureCLI@1
-        displayName: Write versions.json to the blob storage
-        inputs:
-            azureSubscription: $(azureSubscription)
-            scriptLocation: inlineScript
-            inlineScript: |
-                az storage blob upload-batch -d versions -s ./ --pattern versions.json  --blob-endpoint $(BLOB_STORAGE_URL)  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite

@@ -1,12 +1,9 @@
 {
     "recommendations": [
-      "coenraads.bracket-pair-colorizer-2",
       "davidanson.vscode-markdownlint",
       "eriklynd.json-tools",
       "jock.svg",
-      "lextudio.restructuredtext",
       "mikestead.dotenv",
-      "ms-azure-devops.azure-pipelines",
       "ms-python.python",
       "ms-vscode.powershell",
       "zhoufeng.pyqt-integration"

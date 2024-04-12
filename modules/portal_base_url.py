@@ -9,7 +9,6 @@ from qgis.utils import iface
 
 # PyQT
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QSettings
 
 # UI classes
 from ..ui.portal.dlg_portal_base_url import IsogeoPortalBaseUrl
@@ -17,8 +16,6 @@ from ..ui.portal.dlg_portal_base_url import IsogeoPortalBaseUrl
 # ############################################################################
 # ########## Globals ###############
 # ##################################
-
-qsettings = QSettings()
 
 logger = logging.getLogger("IsogeoQgisPlugin")
 
@@ -39,7 +36,7 @@ class PortalURLManager:
     - Delete a quick search
     """
 
-    def __init__(self):
+    def __init__(self, settings_manager: object = None):
 
         # Setting ui elements
         self.portalURL_config_dialog = IsogeoPortalBaseUrl()
@@ -48,26 +45,28 @@ class PortalURLManager:
         self.portalURL_config_dialog.accepted.connect(self.save)
         self.portalURL_config_dialog.chb_portal_url.stateChanged.connect(self.update_input_state)
 
+        self.settings_mng = settings_manager
+
     def open_dialog(self):
         """"""
 
         self.portalURL_config_dialog.input_portal_url.setText(
-            qsettings.value("isogeo/settings/portal_base_url", "")
+            self.settings_mng.config_content.get("portal_base_url")
         )
         self.portalURL_config_dialog.chb_portal_url.setChecked(
-            int(qsettings.value("isogeo/settings/add_metadata_url_portal", 0))
+            int(self.settings_mng.config_content.get("add_metadata_url_portal"))
         )
         self.portalURL_config_dialog.open()
 
     def save(self):
         """"""
 
-        # save base portal URL in qsettings
-        qsettings.setValue(
-            "isogeo/settings/portal_base_url", self.portalURL_config_dialog.input_portal_url.text()
+        # save base portal URL in QSettings
+        self.settings_mng.set_config_value(
+            "portal_base_url", self.portalURL_config_dialog.input_portal_url.text()
         )
         is_checked = int(self.portalURL_config_dialog.chb_portal_url.isChecked())
-        qsettings.setValue("isogeo/settings/add_metadata_url_portal", is_checked)
+        self.settings_mng.set_config_value("add_metadata_url_portal", is_checked)
 
     def update_input_state(self):
         """"""

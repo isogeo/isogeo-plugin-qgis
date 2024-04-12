@@ -28,6 +28,11 @@
     <file>resources/results/sort.svg</file>
     <file>resources/results/sort-alpha-asc.svg</file>
     <file>resources/results/sort-alpha-desc.svg</file>
+    <file>resources/results/sort-alpha.svg</file>
+    <file>resources/results/sort-datacreated.svg</file>
+    <file>resources/results/sort-datamodified.svg</file>
+    <file>resources/results/sort-metadatacreated.svg</file>
+    <file>resources/results/sort-metadatamodified.svg</file>
     <file>resources/users_blue.svg</file>
     <file>resources/calendar_blue.svg</file>
     <file>resources/metadata/bookmark_blue.svg</file>
@@ -53,12 +58,8 @@
     <file>resources/calendar-minus-o.svg</file>
     <file>resources/calendar-plus-o.svg</file>
     <file>resources/edit.svg</file>
-    <file>resources/datacreated.svg</file>
-    <file>resources/datamodified.svg</file>
     <file>resources/file.svg</file>
     <file>resources/map.svg</file>
-    <file>resources/metadatacreated.svg</file>
-    <file>resources/metadatamodif.svg</file>
     <file>resources/none.svg</file>
     <file>resources/paperclip.svg</file>
     <file>resources/save.svg</file>

@@ -5,3 +5,4 @@ from .tools import IsogeoPlgTools
 from .quick_search import QuickSearchManager
 from .search_form import SearchFormManager
 from .user_inform import UserInformer
+from .settings_manager import SettingsManager

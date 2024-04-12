@@ -3,13 +3,12 @@
 
 # Standard library
 import logging
-import json
 from configparser import ConfigParser
 from pathlib import Path
 from os import environ
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import (
     QComboBox,
@@ -34,7 +33,6 @@ from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
 
 qgis_version = int("".join(Qgis.QGIS_VERSION.split(".")[:2]))
 
-qsettings = QSettings()
 logger = logging.getLogger("IsogeoQgisPlugin")
 
 # DBMS dependencies
@@ -106,11 +104,11 @@ class DataBaseManager:
     """Basic class that holds methods used to facilitate data base connections for layer
     adding."""
 
-    # def __init__(self, cache_manager: object):
-    def __init__(self, tr):
+    def __init__(self, trad: object = None, settings_manager: object = None):
         """Class constructor."""
 
-        self.tr = tr
+        self.tr = trad
+        self.settings_mng = settings_manager
 
         self.pgis_available = pgis_available
         self.ora_available = ora_available
@@ -138,11 +136,7 @@ class DataBaseManager:
         else:
             self.pg_configfile_path = 0
 
-        # check _user/db_connections.json file and load the content
-        self.json_content = dict
-        self.json_path = Path(__file__).parents[2] / "_user" / "db_connections.json"
-
-        # Retrieved prefered and invalid connections saved into QSettings,
+        # Retrieved preferred and invalid connections saved into QSettings,
         # then retrieve informations about registered database connections from QSettings
         self.dbms_specifics_infos = {}
         if self.pgis_available:
@@ -224,7 +218,7 @@ class DataBaseManager:
                 "{}_key".format(connections_kind)
             )
 
-        qsettings.setValue(qsettings_key, li_connections)
+        self.settings_mng.set_value(qsettings_key, li_connections)
 
     def fetch_qsettings_connections(self, dbms: str, connections_kind: str):
         """Retrieve the list of invalid or prefered (depending on connections_kind) connections saved in QSettings"""
@@ -253,8 +247,8 @@ class DataBaseManager:
             )
             dict_key = "{}_connections".format(connections_kind)
 
-        if qsettings.value(qsettings_key):
-            self.dbms_specifics_infos[dbms][dict_key] = qsettings.value(qsettings_key)
+        if self.settings_mng.get_value(qsettings_key):
+            self.dbms_specifics_infos[dbms][dict_key] = self.settings_mng.get_value(qsettings_key)
             logger.info(
                 "{} {} {} connection retrieved from QSettings.".format(
                     len(self.dbms_specifics_infos.get(dbms).get(dict_key)),
@@ -265,51 +259,6 @@ class DataBaseManager:
         else:
             self.dbms_specifics_infos[dbms][dict_key] = []
             self.set_qsettings_connections(dbms, connections_kind, [])
-
-    def load_json_file_content(self):
-        """Retrieve the list of Oracle and PostgreSQL connections configured into _user/db_connections file"""
-        try:
-            with open(self.json_path, "r") as json_content:
-                self.json_content = json.load(json_content)
-
-            if not isinstance(self.json_content, dict):
-                logger.warning(
-                    "_user/db_connections.json file content is not correctly formatted : {}.".format(
-                        self.json_content
-                    )
-                )
-                self.json_content = 0
-            elif not any(
-                dbms_name in list(self.json_content.keys())
-                for dbms_name in list(self.dbms_specifics_infos.keys())
-            ):
-                logger.warning(
-                    "_user/db_connections.json file content has no 'Oracle' or 'PostgreSQl' key : {}.".format(
-                        self.json_content
-                    )
-                )
-                self.json_content = 0
-            else:
-                logger.info(
-                    "_user/db_connections.json file content successfully loaded : {}.".format(
-                        self.json_content
-                    )
-                )
-
-        except Exception as e:
-            if not self.json_path.exists() or not self.json_path.is_file():
-                logger.warning(
-                    "_user/db_connections.json file can't be used : {} doesn't exist or is not a file : {}".format(
-                        str(self.json_path), str(e)
-                    )
-                )
-                logger.warning("Let's create an empty one : {}.".format(self.json_path))
-                self.json_content = {"Oracle": [], "PostgreSQL": []}
-                with open(self.json_path, "w") as json_content:
-                    json.dump([self.json_content], json_content, indent=4)
-            else:
-                logger.error("_user/db_connections.json file can't be read : {}.".format(str(e)))
-                self.json_content = 0
 
     def config_file_parser(self, file_path: Path, connection_service: str, connection_name: str):
         """Retrieve connection parameters values stored into configuration file corresponding
@@ -375,11 +324,11 @@ class DataBaseManager:
 
         conn_prefix = "{}/connections/{}".format(dbms, connection_name)
 
-        database = qsettings.value(conn_prefix + "/database")
-        host = qsettings.value(conn_prefix + "/host")
-        port = qsettings.value(conn_prefix + "/port")
-        username = qsettings.value(conn_prefix + "/username")
-        password = qsettings.value(conn_prefix + "/password")
+        database = self.settings_mng.get_value(conn_prefix + "/database")
+        host = self.settings_mng.get_value(conn_prefix + "/host")
+        port = self.settings_mng.get_value(conn_prefix + "/port")
+        username = self.settings_mng.get_value(conn_prefix + "/username")
+        password = self.settings_mng.get_value(conn_prefix + "/password")
 
         connection_dict = {
             "service": "",
@@ -504,7 +453,7 @@ class DataBaseManager:
 
         li_table_infos = [infos for infos in c.getTables()]
 
-        return uri, li_table_infos
+        return uri, li_table_infos, c
 
     def establish_oracle_connection(
         self,
@@ -589,26 +538,16 @@ class DataBaseManager:
         li_db_aliases = []
 
         # Loading connections saved into QGIS Settings
-        for k in sorted(qsettings.allKeys()):
+        for k in sorted(self.settings_mng.allKeys()):
             if k.startswith(dbms_prefix) and k.endswith("/database") and len(k.split("/")) == 4:
                 connection_name = k.split("/")[2]
 
-                password_saved = qsettings.value(dbms_prefix + connection_name + "/savePassword")
-                user_saved = qsettings.value(dbms_prefix + connection_name + "/saveUsername")
-                connection_service = qsettings.value(dbms_prefix + connection_name + "/service")
-
-                # For "traditionnaly" registered connections
-                if password_saved == "true" and user_saved == "true":
-                    connection_dict = self.qsettings_content_parser(
-                        dbms=dbms, connection_name=connection_name
-                    )
-                    if connection_dict[0]:
-                        connection_dict = connection_dict[1]
-                    else:
-                        logger.warning(connection_dict[1])
+                password_saved = self.settings_mng.get_value(dbms_prefix + connection_name + "/savePassword")
+                user_saved = self.settings_mng.get_value(dbms_prefix + connection_name + "/saveUsername")
+                connection_service = self.settings_mng.get_value(dbms_prefix + connection_name + "/service")
 
                 # For connections configured using config file and service
-                elif connection_service != "" and self.pg_configfile_path:
+                if connection_service != "" and self.pg_configfile_path and dbms == "PostgreSQL":
                     connection_dict = self.config_file_parser(
                         self.pg_configfile_path, connection_service, connection_name
                     )
@@ -617,6 +556,15 @@ class DataBaseManager:
                     else:
                         logger.warning(connection_dict[1])
                         continue
+                # For "traditionnaly" registered connections
+                elif password_saved == "true" and user_saved == "true":
+                    connection_dict = self.qsettings_content_parser(
+                        dbms=dbms, connection_name=connection_name
+                    )
+                    if connection_dict[0]:
+                        connection_dict = connection_dict[1]
+                    else:
+                        logger.warning(connection_dict[1])
                 else:
                     continue
 
@@ -643,10 +591,9 @@ class DataBaseManager:
             else:
                 pass
 
-        # Loading connections saved into _user/db_connections.json file
-        self.load_json_file_content()
-        if self.json_content and dbms in self.json_content:
-            for conn_dict in self.json_content.get(dbms):
+        self.settings_mng.load_db_connections()
+        if dbms in self.settings_mng.db_connections:
+            for conn_dict in self.settings_mng.db_connections.get(dbms):
                 connection_name = conn_dict.get("connection_name")
 
                 if all(
@@ -670,6 +617,18 @@ class DataBaseManager:
                         "password": conn_dict.get("password"),
                         "connection": connection_name,
                     }
+                elif all(
+                    conn_dict.get(key, "") == ""
+                    for key in [
+                        "database",
+                        "host",
+                        "port",
+                        "username",
+                        "password",
+                        "connection_name",
+                    ]
+                ):
+                    continue
                 else:
                     logger.warning(
                         "Invalid {} connection loaded from db_connections.json file : {}".format(
@@ -808,14 +767,8 @@ class DataBaseManager:
             " - Configuration of database connections", context=__class__.__name__
         )
         self.db_config_dialog.setWindowTitle(windowTitle)
-        dialog_label = (
-            self.tr(
-                "Choose the embed connection to be used to access to each ",
-                context=__class__.__name__,
-            )
-            + label
-            + self.tr(" database", context=__class__.__name__)
-        )
+        dialog_label = self.tr("Choose the embed connection to be used to access to each {} database", context=__class__.__name__).format(label)
+
         self.db_config_dialog.label.setText(dialog_label)
         self.fill_db_config_tbl(dbms)
         self.db_config_dialog.open()
@@ -836,7 +789,7 @@ class DataBaseManager:
         if btn_role == 0:
             row_count = self.tbl.rowCount()
             li_connection_name = []
-            # Retrieve the option selected in each combobxs
+            # Retrieve the option selected in each combobxes
             for i in range(0, row_count):
                 cbbox = self.tbl.cellWidget(i, 1)
                 current_userData = cbbox.itemData(cbbox.currentIndex())

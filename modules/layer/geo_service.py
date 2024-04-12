@@ -7,9 +7,6 @@ import re
 from xml.etree import ElementTree
 from urllib.parse import urlencode, unquote, quote
 
-# PyQT
-from qgis.PyQt.QtCore import QSettings
-
 # PyQGIS
 from qgis.core import (
     QgsDataSourceUri,
@@ -22,12 +19,13 @@ from qgis.utils import iface
 
 # Plugin modules
 from ..tools import IsogeoPlgTools
+from ..settings_manager import SettingsManager
 
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-qsettings = QSettings()
+settings_mng = SettingsManager()
 logger = logging.getLogger("IsogeoQgisPlugin")
 plg_tools = IsogeoPlgTools()
 
@@ -125,11 +123,11 @@ class GeoServiceManager:
         if len(crs_options):
             # SRS definition
             srs_map = plg_tools.get_map_crs()
-            # srs_lyr_new = qsettings.value("projections/defaultBehaviour", None)
-            srs_lyr_crs = qsettings.value("projections/layerDefaultCrs", None)
-            srs_qgs_new = qsettings.value("app/projections/defaultProjectCrs", None)
-            # srs_qgs_otf_on = qsettings.value("app/projections/otfTransformEnabled", "false")
-            # srs_qgs_otf_auto = qsettings.value("app/projections/otfTransformAutoEnable", "false")
+            # srs_lyr_new = settings_mng.get_value("projections/defaultBehaviour", None)
+            srs_lyr_crs = settings_mng.get_value("projections/layerDefaultCrs", None)
+            srs_qgs_new = settings_mng.get_value("app/projections/defaultProjectCrs", None)
+            # srs_qgs_otf_on = settings_mng.get_value("app/projections/otfTransformEnabled", "false")
+            # srs_qgs_otf_auto = settings_mng.get_value("app/projections/otfTransformAutoEnable", "false")
 
             if srs_map in crs_options:
                 logger.debug("It's a SRS match! With map canvas: " + srs_map)
@@ -179,8 +177,8 @@ class GeoServiceManager:
         else:
             if service_type in self.esri_infos_dict:
                 generic_title = "{} layer ({})".format(service_type, api_layer.get("id"))
-                if len(api_layer.get("titles")):
-                    layer_title = api_layer.get("titles")[0].get("value", generic_title)
+                if api_layer.get("title", None) is not None:
+                    layer_title = api_layer.get("title")
                 else:
                     layer_title = generic_title
             else:
@@ -189,9 +187,8 @@ class GeoServiceManager:
                 else:
                     api_layer_id = api_layer.get("id")
                 generic_title = api_layer_id
-
-                if len(api_layer.get("titles")):
-                    layer_title = api_layer.get("titles")[0].get("value", generic_title)
+                if api_layer.get("title", None) is not None:
+                    layer_title = api_layer.get("title")
                 else:
                     layer_title = generic_title
 
@@ -646,60 +643,59 @@ class GeoServiceManager:
             logger.info("GetFeature available")
             pass
 
-        # SRS definition
-        if wfs_dict.get("manual"):
-            wfs_lyr = [lyr for lyr in wfs if lyr.get("typename") == layer_typename][0]
-            available_crs_options = ["EPSG:" + wfs_lyr.get("EPSG")]
-        else:
-            available_crs_options = [
-                "{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions
-            ]
-        srs = self.choose_appropriate_srs(crs_options=available_crs_options)
-
         # build URL
         li_url_params = [
             "REQUEST=GetFeature",
             "SERVICE=WFS",
             "VERSION={}".format(wfs_dict.get("version")),
             "TYPENAME={}".format(layer_typename),
-            "SRSNAME={}".format(srs),
-            "RESULTTYPE=results",
+            "RESULTTYPE=results"
         ]
-
-        # trying to set BBOX parameter as current map canvas extent
-        if "EPSG" in srs:
+        if api_layer.get("type") == "table":
+            pass
+        else:
+            # SRS definition
+            if wfs_dict.get("manual"):
+                wfs_lyr = [lyr for lyr in wfs if lyr.get("typename") == layer_typename][0]
+                available_crs_options = ["EPSG:" + wfs_lyr.get("EPSG")]
+            else:
+                available_crs_options = [
+                    "{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions
+                ]
+            srs = self.choose_appropriate_srs(crs_options=available_crs_options)
             srs_code = srs.split(":")[1]
-
             if wfs_dict.get("manual"):
                 srs_id = wfs_lyr.get("srs_id")
+                li_url_params.append("SRSNAME={}".format(srs))
+            elif len(wfs[layer_typename].crsOptions):
+                srs_id = [crsOption.id for crsOption in wfs[layer_typename].crsOptions if srs_code in str(crsOption.code)][0]
+                li_url_params.append("SRSNAME={}".format(srs))
             else:
-                srs_id = [
-                    crsOption.id
-                    for crsOption in wfs[layer_typename].crsOptions
-                    if srs_code in str(crsOption.code)
-                ][0]
+                srs_id = False
 
-            canvas_rectangle = iface.mapCanvas().extent()
-            canvas_crs = iface.mapCanvas().mapSettings().destinationCrs()
-            destination_crs = QgsCoordinateReferenceSystem(
-                int(srs_code), QgsCoordinateReferenceSystem.EpsgCrsId
-            )
-            coord_transformer = QgsCoordinateTransform(
-                canvas_crs, destination_crs, QgsProject.instance()
-            )
+            # trying to set BBOX parameter as current map canvas extent
+            if "EPSG" in srs and srs_id:
+                canvas_rectangle = iface.mapCanvas().extent()
+                canvas_crs = iface.mapCanvas().mapSettings().destinationCrs()
+                destination_crs = QgsCoordinateReferenceSystem(
+                    int(srs_code), QgsCoordinateReferenceSystem.EpsgCrsId
+                )
+                coord_transformer = QgsCoordinateTransform(
+                    canvas_crs, destination_crs, QgsProject.instance()
+                )
 
-            destCrs_rectangle = coord_transformer.transform(canvas_rectangle)
+                destCrs_rectangle = coord_transformer.transform(canvas_rectangle)
 
-            bbox_parameter = "BBOX={},{},{},{},{}&restrictToRequestBBOX=1".format(
-                destCrs_rectangle.yMinimum(),
-                destCrs_rectangle.xMinimum(),
-                destCrs_rectangle.yMaximum(),
-                destCrs_rectangle.xMaximum(),
-                srs_id,
-            )
-            li_url_params.append(bbox_parameter)
-        else:
-            pass
+                bbox_parameter = "BBOX={},{},{},{},{}&restrictToRequestBBOX=1".format(
+                    destCrs_rectangle.yMinimum(),
+                    destCrs_rectangle.xMinimum(),
+                    destCrs_rectangle.yMaximum(),
+                    destCrs_rectangle.xMaximum(),
+                    srs_id,
+                )
+                li_url_params.append(bbox_parameter)
+            else:
+                pass
 
         wfs_url_final = wfs_url_base + "&".join(li_url_params)
 
@@ -764,17 +760,17 @@ class GeoServiceManager:
         # Update 'layers' param value in the case of multi-layer
         li_layer_name = [api_layer_id]
         li_layer_title = [layer_title]
-        if hasattr(wms_lyr, "layers"):
-            if len(wms_lyr.layers):
-                li_layer_name = []
-                li_layer_title = []
-                for layer in wms_lyr.layers:
-                    li_layer_name.append(layer.name)
-                    li_layer_title.append(layer.title)
-            else:
-                pass
-        else:
-            pass
+        # if hasattr(wms_lyr, "layers"):
+        #     if len(wms_lyr.layers):
+        #         li_layer_name = []
+        #         li_layer_title = []
+        #         for layer in wms_lyr.layers:
+        #             li_layer_name.append(layer.name)
+        #             li_layer_title.append(layer.title)
+        #     else:
+        #         pass
+        # else:
+        #     pass
 
         # WIDTH and HEIGHT parameters
         canvas_size = iface.mapCanvas().size()
@@ -1088,12 +1084,14 @@ class GeoServiceManager:
             error_msg = "{} <i>{}</i> - <b>Server connection failure</b>: {}".format(
                 service_type, service_dict["getCap_url"], e
             )
+            getCap_content = ""
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
         except Exception as e:
             error_msg = "{} <i>{}</i> - <b>Unable to access service capabilities</b>: {}".format(
                 service_type, service_dict["getCap_url"], e
             )
+            getCap_content = ""
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
 
@@ -1125,13 +1123,18 @@ class GeoServiceManager:
             pass
 
         # retrieve appropriate srs from service capabilities
-        try:
-            service_dict["appropriate_srs"] = "EPSG:" + str(
-                getCap_content.get("spatialReference").get(srs_entry_name)
-            )
-        except Exception as e:
-            warning_msg = "{} {} - Unable to retrieve information about appropriate srs from service capabilities: {}".format(
-                service_type, service_dict["getCap_url"], e
+        if "spatialReference" in getCap_content:
+            if srs_entry_name in getCap_content.get("spatialReference"):
+                service_dict["appropriate_srs"] = "EPSG:" + str(
+                    getCap_content.get("spatialReference").get(srs_entry_name)
+                )
+            elif "wkt" in getCap_content.get("spatialReference"):
+                service_dict["appropriate_srs"] = QgsCoordinateReferenceSystem.fromWkt(getCap_content.get("spatialReference").get("wkt")).authid()
+            else:
+                service_dict["appropriate_srs"] = ""
+        else:
+            warning_msg = "{} {} - Unable to retrieve information about appropriate srs from service capabilities: 'spatialReference' is missing into GetCapabilities".format(
+                service_type, service_dict["getCap_url"]
             )
             logger.warning(warning_msg)
             service_dict["appropriate_srs"] = ""
@@ -1174,14 +1177,13 @@ class GeoServiceManager:
         efs_base_url = efs_dict.get("base_url")
 
         # retrieve appropriate srs
-        srs = efs_dict.get("appropriate_srs")
-
+        if efs_dict.get("appropriate_srs") not in ["EPSG:None", ""]:
+            srs = efs_dict.get("appropriate_srs")
+        else:
+            srs = plg_tools.get_map_crs()
         # build EFS layer URI
         efs_uri = "crs='{}' ".format(srs)
-        efs_uri += "filter='' "
         efs_uri += "url='{}{}' ".format(efs_base_url, api_layer_id)
-        efs_uri += "table'' "
-        efs_uri += "sql=''"
 
         return ("EFS", layer_title, efs_uri)
 

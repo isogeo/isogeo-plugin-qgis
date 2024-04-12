@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 
 # Standard library
-from configparser import Error
 import logging
 import shutil
 import time
-import json
-from functools import partial
 from pathlib import Path
 
 # PyQGIS
@@ -16,10 +13,8 @@ from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QObject,
-    QSettings,
     QTranslator,
-    pyqtSignal,
-    qVersion,
+    pyqtSignal
 )
 
 # UI class
@@ -34,34 +29,8 @@ from ..user_inform import UserInformer
 # ##################################
 
 logger = logging.getLogger("IsogeoQgisPlugin")
-qsettings = QSettings()
 plg_tools = IsogeoPlgTools()
 
-plugin_dir = Path(__file__).parents[2]
-
-
-try:
-    locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
-except TypeError as exc:
-    logger.error(
-        "Bad type in QSettings: {}. Original error: {}".format(
-            type(qsettings.value("locale/userLocale")), exc
-        )
-    )
-    locale = "fr"
-
-locale_path = plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
-
-if locale_path.exists():
-    translator = QTranslator()
-    translator.load(str(locale_path))
-
-    if qVersion() > "4.3.3":
-        QCoreApplication.installTranslator(translator)
-    else:
-        pass
-else:
-    pass
 
 # ############################################################################
 # ########## Classes ###############
@@ -87,142 +56,59 @@ class Authenticator(QObject):
     msgbar = QgsMessageBar(ui_auth_form)
     ui_auth_form.msgbar_vlayout.addWidget(msgbar)
 
-    # set config.json file path
-    json_content = dict
-    json_path = Path(__file__).parents[2] / "config.json"
-
     # plugin credentials storage parameters
     credentials_location = {"QSettings": 0, "oAuth2_file": 0}
 
-    def __init__(self):
+    def __init__(self, settings_manager: object = None):
         # inheritance
         super().__init__()
 
-        # api parameters
-        self.load_json_file_content()
-        if not self.json_content:
-            raise Error("Unable to load {} file content.".format(self.json_path))
+        self.settings_mng = settings_manager
+
+        # initialize locale
+        locale = self.settings_mng.get_locale()
+        plugin_dir = Path(__file__).parents[2]
+
+        i18n_file_path = plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
+
+        if i18n_file_path.exists():
+            translator = QTranslator()
+            translator.load(str(i18n_file_path))
+            QCoreApplication.installTranslator(translator)
         else:
-            if self.json_content.get("api_base_url").endswith("/"):
-                v1_url = self.json_content.get("api_base_url")[:-1]
-            else:
-                v1_url = self.json_content.get("api_base_url")
+            pass
 
-            if self.json_content.get("api_auth_url").endswith("/"):
-                id_url = self.json_content.get("api_auth_url")[:-1]
-            else:
-                id_url = self.json_content.get("api_auth_url")
+        # api parameters
+        self.settings_mng.load_config()
+        v1_url = self.settings_mng.config_content.get("api_base_url")
+        id_url = self.settings_mng.config_content.get("api_auth_url")
 
-            self.api_params = {
-                "app_id": "",
-                "app_secret": "",
-                "url_base": v1_url,
-                "url_auth": "{}/oauth/authorize".format(id_url),
-                "url_token": "{}/oauth/token".format(id_url),
-                "url_redirect": "http://localhost:5000/callback",
-            }
-
-            if self.json_content.get("app_base_url").endswith("/"):
-                self.app_url = self.json_content.get("app_base_url")[:-1]
-            else:
-                self.app_url = self.json_content.get("app_base_url")
+        self.api_params = {
+            "app_id": "",
+            "app_secret": "",
+            "url_base": v1_url,
+            "url_auth": "{}/oauth/authorize".format(id_url),
+            "url_token": "{}/oauth/token".format(id_url),
+            "url_redirect": "http://localhost:5000/callback",
+        }
 
         # credentials storage folder
         self.auth_folder = plugin_dir / "_auth"
         self.cred_filepath = self.auth_folder / "client_secrets.json"
 
-        # translation
-        self.tr = object
-        self.lang = str
-
         # inform user
         self.informer = object
         self.first_auth = bool
-
-    # CONFIG FILE LOADER ---------------------------------------------------------------------------
-    def load_json_file_content(self):
-        """Retrieve API and app URLs from config.json file"""
-        try:
-            with open(self.json_path, "r") as json_content:
-                self.json_content = json.load(json_content)
-
-            if not isinstance(self.json_content, dict):
-                logger.warning(
-                    "config.json file content is not correctly formatted : {}.".format(
-                        self.json_content
-                    )
-                )
-                self.json_content = 0
-            elif not all(
-                key in list(self.json_content.keys())
-                for key in [
-                    "api_base_url",
-                    "api_auth_url",
-                    "app_base_url",
-                    "help_base_url",
-                    "background_map_url",
-                ]
-            ):
-                logger.warning(
-                    "Missing key in config.json file content : {}.".format(self.json_content)
-                )
-                self.json_content = 0
-            else:
-                logger.info(
-                    "config.json file content successfully loaded : {}.".format(self.json_content)
-                )
-                qsettings.setValue("isogeo/env/api_base_url", self.json_content.get("api_base_url"))
-                qsettings.setValue("isogeo/env/api_auth_url", self.json_content.get("api_auth_url"))
-                qsettings.setValue("isogeo/env/app_base_url", self.json_content.get("app_base_url"))
-                qsettings.setValue(
-                    "isogeo/env/help_base_url", self.json_content.get("help_base_url")
-                )
-                qsettings.setValue(
-                    "isogeo/settings/background_map_url",
-                    self.json_content.get("background_map_url"),
-                )
-
-        except Exception as e:
-            if not self.json_path.exists() or not self.json_path.is_file():
-                logger.warning(
-                    "config.json file can't be used : {} doesn't exist or is not a file : {}".format(
-                        str(self.json_path), str(e)
-                    )
-                )
-                logger.warning("Let's create one with default values: {}.".format(self.json_path))
-                self.json_content = {
-                    "api_base_url": qsettings.value(
-                        "isogeo/env/api_base_url", "https://v1.api.isogeo.com"
-                    ),
-                    "api_auth_url": qsettings.value(
-                        "isogeo/env/api_auth_url", "https://id.api.isogeo.com"
-                    ),
-                    "app_base_url": qsettings.value(
-                        "isogeo/env/app_base_url", "https://app.isogeo.com"
-                    ),
-                    "help_base_url": qsettings.value(
-                        "isogeo/env/help_base_url", "https://help.isogeo.com"
-                    ),
-                    "background_map_url": qsettings.value(
-                        "isogeo/settings/background_map_url",
-                        "type=xyz&format=image/png&styles=default&tileMatrixSet=250m&url=http://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    ),
-                }
-                with open(self.json_path, "w") as json_content:
-                    json.dump(self.json_content, json_content, indent=4)
-            else:
-                logger.error("config.json file can't be read : {}.".format(str(e)))
-                self.json_content = 0
 
     # MANAGER --------------------------------------------------------------------------------------
     def manage_api_initialization(self):
         """Perform several operations to use Isogeo API:
 
         1. check if existing credentials are stored into QGIS or a file
-        2. gettings credentials from there storage location (QGIS settings or file)
+        2. get credentials from there storage location (QGIS settings or file)
         3. display auth form if no credentials are found
 
-        :returns: True and a dictionnary containing api parameters nessary for the
+        :returns: True and a dictionary containing api parameters necessary for the
         instanciation of the ApiRequester class if credentials are found. False and
         None if no credentials are found.
 
@@ -233,10 +119,10 @@ class Authenticator(QObject):
         self.credentials_location["oAuth2_file"] = self.credentials_check_file()
 
         # update class attributes from credentials found
-        if self.credentials_location.get("QSettings"):
-            self.credentials_update("QSettings")
-        elif self.credentials_location.get("oAuth2_file"):
+        if self.credentials_location.get("oAuth2_file"):
             self.credentials_update("oAuth2_file")
+        elif self.credentials_location.get("QSettings"):
+            self.credentials_update("QSettings")
         else:
             logger.info("No credentials found. ")
             self.first_auth = True
@@ -249,21 +135,21 @@ class Authenticator(QObject):
     def credentials_check_qsettings(self):
         """Retrieve Isogeo API credentials within QGIS QSettings."""
 
-        if "isogeo-plugin" in qsettings.childGroups():
+        if "isogeo-plugin" in self.settings_mng.childGroups():
             logger.warning("Old credentials found and removed in QGIS QSettings: isogeo-plugin")
 
-            qsettings.remove("isogeo-plugin")
+            self.settings_mng.remove("isogeo-plugin")
             return False
-        elif "isogeo" in qsettings.childGroups():
+        elif "isogeo" in self.settings_mng.childGroups():
             # looking in child groups and clean a little if needed
-            qsettings.beginGroup("isogeo")
-            if "auth" in qsettings.childGroups() and qsettings.contains("auth/app_id"):
+            self.settings_mng.beginGroup("isogeo")
+            if "auth" in self.settings_mng.childGroups() and self.settings_mng.contains("auth/app_id"):
                 logger.debug("Credentials found within QGIS QSettings: isogeo/")
-                qsettings.endGroup()
+                self.settings_mng.endGroup()
                 return True
             else:
                 logger.debug("Missing 'isogeo/auth' entry within QGIS QSettings.")
-                qsettings.endGroup()
+                self.settings_mng.endGroup()
                 return False
         else:
             logger.debug("No Isogeo credentials found within QGIS QSettings.")
@@ -304,8 +190,8 @@ class Authenticator(QObject):
             - QSettings
         """
         if store_location == "QSettings":
-            qsettings.setValue("isogeo/auth/app_id", self.api_params.get("app_id"))
-            qsettings.setValue("isogeo/auth/app_secret", self.api_params.get("app_secret"))
+            self.settings_mng.set_value("isogeo/auth/app_id", self.api_params.get("app_id"))
+            self.settings_mng.set_value("isogeo/auth/app_secret", self.api_params.get("app_secret"))
         else:
             pass
         logger.debug("Credentials stored into: {}".format(store_location))
@@ -319,8 +205,8 @@ class Authenticator(QObject):
         """
         # update class attributes
         if credentials_source == "QSettings":
-            self.api_params["app_id"] = qsettings.value("isogeo/auth/app_id", "")
-            self.api_params["app_secret"] = qsettings.value("isogeo/auth/app_secret", "")
+            self.api_params["app_id"] = self.settings_mng.get_value("isogeo/auth/app_id", "")
+            self.api_params["app_secret"] = self.settings_mng.get_value("isogeo/auth/app_secret", "")
         elif credentials_source == "oAuth2_file":
             creds = plg_tools.credentials_loader(self.cred_filepath)
             self.api_params["app_id"] = creds.get("client_id")
@@ -338,30 +224,24 @@ class Authenticator(QObject):
     # AUTHENTICATION FORM --------------------------------------------------------------------------
     def display_auth_form(self):
         """Show authentication form with prefilled fields and connected widgets."""
-        self.informer = UserInformer(message_bar=self.msgbar, trad=self.tr)
+        self.informer = UserInformer(message_bar=self.msgbar)
         self.auth_sig.connect(self.informer.authentication_slot)
         self.ui_auth_form.chb_isogeo_editor.stateChanged.connect(
-            lambda: qsettings.setValue(
+            lambda: self.settings_mng.set_value(
                 "isogeo/user/editor",
                 int(self.ui_auth_form.chb_isogeo_editor.isChecked()),
             )
-        )
-        self.ui_auth_form.btn_free_test.pressed.connect(
-            partial(plg_tools.open_pipedrive_test_form, lang=self.lang)
-        )
-        self.ui_auth_form.btn_rdv_isogeo.pressed.connect(
-            partial(plg_tools.open_pipedrive_rdv_form, lang=self.lang)
         )
         self.ui_auth_form.btn_browse_credentials.fileChanged.connect(self.credentials_uploader)
 
         self.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(False)
 
-        # fillfull auth form fields from stored settings
+        # fullfil auth form fields from stored settings
         self.ui_auth_form.ent_app_id.setText(self.api_params["app_id"])
         self.ui_auth_form.ent_app_secret.setText(self.api_params["app_secret"])
         self.ui_auth_form.lbl_api_url_value.setText(self.api_params["url_base"])
         self.ui_auth_form.chb_isogeo_editor.setChecked(
-            int(qsettings.value("isogeo/user/editor", 0))
+            int(self.settings_mng.get_value("isogeo/user/editor", 0))
         )
         # display
         logger.debug("Authentication form filled and ready to be launched.")

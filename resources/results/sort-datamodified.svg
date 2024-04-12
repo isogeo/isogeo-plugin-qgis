@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1792"
+   height="1792"
+   viewBox="0 0 1792 1792"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="sort-datamodified.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2400"
+     inkscape:window-height="1271"
+     id="namedview6"
+     showgrid="false"
+     inkscape:zoom="0.37249375"
+     inkscape:cx="177.29483"
+     inkscape:cy="1200.5646"
+     inkscape:window-x="2551"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <path
+     d="M192 1664h288v-288H192v288zm352 0h320v-288H544v288zm-352-352h288V992H192v320zm352 0h320V992H544v320zM192 928h288V640H192v288zm736 736h320v-288H928v288zM544 928h320V640H544v288zm768 736h288v-288h-288v288zm-384-352h320V992H928v320zM576 448V160c0-8.666-3.168-16.166-9.5-22.5-6.334-6.333-13.834-9.5-22.5-9.5h-64c-8.668 0-16.168 3.167-22.5 9.5-6.335 6.334-9.5 13.834-9.5 22.5v288c0 8.668 3.165 16.168 9.5 22.5 6.332 6.335 13.832 9.5 22.5 9.5h64c8.666 0 16.166-3.165 22.5-9.5 6.332-6.332 9.5-13.832 9.5-22.5zm736 864h288V992h-288v320zM928 928h320V640H928v288zm384 0h288V640h-288v288zm32-480V160c0-8.666-3.168-16.166-9.5-22.5-6.334-6.333-13.834-9.5-22.5-9.5h-64c-8.668 0-16.168 3.167-22.5 9.5-6.334 6.334-9.5 13.834-9.5 22.5v288c0 8.668 3.166 16.168 9.5 22.5 6.332 6.335 13.832 9.5 22.5 9.5h64c8.666 0 16.166-3.165 22.5-9.5 6.332-6.332 9.5-13.832 9.5-22.5zm384-64v1280c0 34.668-12.668 64.668-38 90-25.334 25.334-55.334 38-90 38H192c-34.667 0-64.667-12.666-90-38-25.334-25.332-38-55.332-38-90V384c0-34.666 12.666-64.666 38-90 25.333-25.333 55.333-38 90-38h128v-96c0-44 15.666-81.666 47-113 31.333-31.333 69-47 113-47h64c44 0 81.666 15.667 113 47 31.332 31.334 47 69 47 113v96h384v-96c0-44 15.666-81.666 47-113 31.332-31.333 69-47 113-47h64c44 0 81.666 15.667 113 47 31.332 31.334 47 69 47 113v96h128c34.666 0 64.666 12.667 90 38 25.332 25.335 38 55.335 38 90z"
+     id="path2"
+     style="fill:#f29800;fill-opacity:1" />
+</svg>

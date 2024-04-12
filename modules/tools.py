@@ -16,11 +16,14 @@ import webbrowser
 from qgis.utils import iface
 
 # PyQT
-from qgis.PyQt.QtCore import QSettings, QUrl
+from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtWidgets import QMessageBox
 
 # 3rd party
 from .isogeo_pysdk import IsogeoUtils
+
+# Plugin modules
+from .settings_manager import SettingsManager
 
 # Depending on operating system
 if opersys == "win32":
@@ -33,7 +36,7 @@ else:
 # ########## Globals ###############
 # ##################################
 
-qsettings = QSettings()
+settings_mng = SettingsManager()
 logger = logging.getLogger("IsogeoQgisPlugin")
 msgBar = iface.messageBar()
 
@@ -110,15 +113,7 @@ class IsogeoPlgTools(IsogeoUtils):
 
         :param str input_date: input date to format
         """
-        try:
-            locale = str(qsettings.value("locale/userLocale", "fr", type=str))[0:2]
-        except TypeError as e:
-            logger.error(
-                "Bad type in QSettings: {}. Original error: {}".format(
-                    type(qsettings.value("locale/userLocale")), e
-                )
-            )
-            locale = "fr"
+        locale = settings_mng.get_locale()
 
         if input_date != "NR":
             date = input_date.split("T")[0]
@@ -133,46 +128,6 @@ class IsogeoPlgTools(IsogeoUtils):
                 return new_date.strftime("%Y-%m-%d")
         else:
             return input_date
-
-    def open_pipedrive_test_form(self, lang):
-        """Open the Isogeo Plugin&Widgets test online form in web browser.
-
-        :param str lang: language code. If not fr (French), the English form is displayed.
-        """
-        if lang == "fr":
-            webbrowser.open(
-                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ",
-                new=0,
-                autoraise=True,
-            )
-        else:
-            webbrowser.open(
-                "https://webforms.pipedrive.com/f/5kAUlfXAdFfv85vV3Mw1PWOYqOBpD7l9GV9wr0OlOAdmQcdC7DduZ6afScQHHZ",
-                new=0,
-                autoraise=True,
-            )
-        # method ending
-        logger.debug("Isogeo Plugin&Widget test form launched in the default web browser")
-
-    def open_pipedrive_rdv_form(self, lang):
-        """Open the rdv request online form in web browser.
-
-        :param str lang: language code. If not fr (French), the English form is displayed.
-        """
-        if lang == "fr":
-            webbrowser.open(
-                "https://isogeo.pipedrive.com/scheduler/lq0ZSm/rendez-vous-isogeo",
-                new=0,
-                autoraise=True,
-            )
-        else:
-            webbrowser.open(
-                "https://isogeo.pipedrive.com/scheduler/lq0ZSm/rendez-vous-isogeo",
-                new=0,
-                autoraise=True,
-            )
-        # method ending
-        logger.debug("Isogeo rdv request form launched in the default web browser")
 
     def open_dir_file(self, target):
         """Open a file or a directory in the explorer of the operating system.
@@ -356,9 +311,9 @@ class IsogeoPlgTools(IsogeoUtils):
             logger.info("No proxy settings found on the system.")
 
         # retrieve QGIS proxy settings
-        qgis_proxy_enabled = qsettings.value("proxy/proxyEnabled", False, type=bool)
+        qgis_proxy_enabled = settings_mng.get_value("proxy/proxyEnabled", False, type=bool)
         if qgis_proxy_enabled is True:
-            qgis_proxy_type = qsettings.value("proxy/proxyType", "DefaultProxy", type=str)
+            qgis_proxy_type = settings_mng.get_value("proxy/proxyType", "DefaultProxy")
             logger.info("Proxy enabled in QGIS: {}".format(qgis_proxy_type))
         else:
             logger.info("No proxy enabled in QGIS.")
@@ -474,8 +429,8 @@ class IsogeoPlgTools(IsogeoUtils):
 
             # compare system and QGIS settings
             qgis_proxy_params = {
-                "host": qsettings.value("proxy/proxyHost", None, type=str),
-                "port": qsettings.value("proxy/proxyPort", None, type=int),
+                "host": settings_mng.get_value("proxy/proxyHost", None),
+                "port": settings_mng.get_value("proxy/proxyPort", None),
             }
             logger.debug(qgis_proxy_params)
             return True
@@ -486,9 +441,9 @@ class IsogeoPlgTools(IsogeoUtils):
         Avert the user and force change if the selected is not adapted.
         See: https://github.com/isogeo/isogeo-plugin-qgis/issues/137.
         """
-        style_qgis = qsettings.value("qgis/style", "Default")
+        style_qgis = settings_mng.get_value("qgis/style", "Default")
         if style_qgis in ("macintosh", "cleanlooks"):
-            qsettings.setValue("qgis/style", "Plastique")
+            settings_mng.set_value("qgis/style", "Plastique")
             msgBar.pushMessage(
                 self.tr(
                     "The '{}' QGIS style is not "
