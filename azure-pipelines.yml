@@ -115,9 +115,9 @@ stages:
       steps:
 
         - script: |
-            if [[ "${{ variable.isProd}}" == true ]]; then
+            if [[ $(isProd) == true ]]; then
               ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||')"
-            elif [[ "${{ variable.isQA}}" == true ]]; then
+            elif [[ $(isQA) == true ]]; then
               ZIPNAME="$(NAME)-qa-$(releaseDateWithHour)"
             else
               ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate)"
