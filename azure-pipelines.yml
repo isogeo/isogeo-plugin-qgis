@@ -85,6 +85,7 @@ stages:
   pool:
     vmImage: "windows-2019"
   condition: or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true))
+  dependsOn : build_zip_name
   displayName: "Integration"
   jobs:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
@@ -153,7 +154,7 @@ stages:
   pool:
     vmImage: "ubuntu-latest"
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
-  dependsOn : build_zip_name
+  dependsOn : integration
   variables : 
     zipName : $[ stageDependencies.build_zip_name.create_zip_name_variable.outputs['set_zip_name_variable.ZIPNAME'] ]
   jobs:
