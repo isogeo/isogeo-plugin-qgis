@@ -69,16 +69,28 @@ stages:
       steps:
         - checkout: none
         - script: |
-            if [[ $(isProd) == True ]]; then
-              ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip"
-            elif [[ $(isQA) == True ]]; then
-              ZIPNAME="$(NAME)-qa-$(releaseDateWithHour).zip"
-            else
-              ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip"
-            fi
-            echo "##vso[task.setvariable variable=zipName]$ZIPNAME"
-            echo "##vso[task.setvariable variable=zipName;isOutput=true]$ZIPNAME"
+            echo "isProd - $(isProd)"
+            echo "isQA - $(isQA)"
+            echo "isDebug - $(isDebug)"
+
+            if $(isProd)==True set ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip"
+            if $(isQA)==True set ZIPNAME="$(NAME)-qa-$(releaseDateWithHour).zip"
+            if $(isDebug)==True set ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip"
+
+            echo "##vso[task.setvariable variable=zipName]"
+            echo "##vso[task.setvariable variable=zipName;isOutput=true]"
             echo "ZIPNAME - $(zipName)"
+        # - script: |
+        #     if [[ $(isProd) == True ]]; then
+        #       ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip"
+        #     elif [[ $(isQA) == True ]]; then
+        #       ZIPNAME="$(NAME)-qa-$(releaseDateWithHour).zip"
+        #     else
+        #       ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip"
+        #     fi
+        #     echo "##vso[task.setvariable variable=zipName]$ZIPNAME"
+        #     echo "##vso[task.setvariable variable=zipName;isOutput=true]$ZIPNAME"
+        #     echo "ZIPNAME - $(zipName)"
           name: set_zip_name_variable
 
 - stage: integration
