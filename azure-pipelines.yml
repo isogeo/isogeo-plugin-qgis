@@ -36,10 +36,10 @@ variables:
 
 # -- STAGES ----------------------------------------------------------------------------------------
 stages:
-- stage: report
+- stage: variables_report
   pool:
     vmImage: "windows-2019"
-  displayName: "Report"
+  displayName: "Variables values"
   jobs:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
   - job: show_variables_values
@@ -62,7 +62,7 @@ stages:
   pool:
     vmImage: "windows-2019"
   displayName: "Build ZIP name"
-  dependsOn : report
+  dependsOn : variables_report
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   jobs:
   # -- CREATE zipName -----------------------------------------------------------------------------
@@ -162,6 +162,12 @@ stages:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: $(zipName)
 
+    - task: PublishBuildArtifacts@1
+      displayName: "Publish artifact: plugin packaged"
+      inputs:
+        PathtoPublish: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
+        ArtifactName: archive
+
 - stage : upload_to_blob
   pool:
     vmImage: "ubuntu-latest"
@@ -175,7 +181,7 @@ stages:
     - template : /on-premises/upload_to_blob.yml@templates
       parameters :
         zipName : "$(zipName)"
-        artifactName : "$(zipName)"
+        artifactName : archive
 
 - stage: versions_update
   condition: and(succeeded(), eq(variables.isProd, true))
