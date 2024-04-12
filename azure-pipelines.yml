@@ -104,14 +104,14 @@ stages:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
-- stage : upload_to_blob
+- stage : set_zip_name_variable
+  displayName: "Set ZIPNAME variable value"
   pool:
     vmImage: "ubuntu-latest"
   condition: and(succeeded(), or(eq(variable.isProd, true), eq(variable.isQA, true), eq(variable.isDebug, true)))
   dependsOn : integration
   jobs:
     - job: set_zip_name_variable
-      displayName: "Set ZIPNAME variable value"
       steps:
 
         - script: |
@@ -124,13 +124,20 @@ stages:
             fi
             echo "##vso[task.setvariable variable=ZIPNAME]$ZIPNAME"
             echo "##vso[task.setvariable variable=ZIPNAME;isOutput=true]$ZIPNAME"
+          name: set_zip_name_variable
 
+- stage : upload_to_blob
+  pool:
+    vmImage: "ubuntu-latest"
+  condition: and(succeeded(), or(eq(variable.isProd, true), eq(variable.isQA, true), eq(variable.isDebug, true)))
+  dependsOn : set_zip_name_variable
+  jobs:
     - job: upload_to_blob
       displayName: "Upload to ${{ variables.ZIPNAME }} Blob Storage"
       steps:
       - template : /on-premises/upload_to_blob.yml@templates
         parameters : 
-          zipName : $(ZIPNAME).zip
+          zipName : $[ stageDependencies.set_zip_name_variable.set_zip_name_variable.outputs['set_zip_name_variable.ZIPNAME'] ].zip
           artifactName : "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
           DependsOn : integration
 
