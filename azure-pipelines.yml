@@ -27,26 +27,27 @@ resources:
 # -- GLOBAL VARIABLES ------------------------------------------------------------------------------
 variables:
   pythonVersion: "3.9"
-  vmImageName: "windows-2019"
-  tagName: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
-  zipName: $(SERVICE_NAME)-$(tagName).zip
+  isProd: $[contains(variables['Build.SourceBranch'], 'refs/tags')]
+  isQA: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isDebug: $[eq(variables['Build.SourceBranch'], 'refs/heads/debug')]
   azureSubscription : $(AZURE_SUBSCRIPTION)
-  date: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
-
-# -- ENVIRONMENT -----------------------------------------------------------------------------------
-pool:
-  vmImage: $(vmImageName)
+  releaseDate: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
+  releaseDateWithHour: $[format('{0:dd}.{0:MM}.{0:yyyy}-{0:HH}.{0:mm}', pipeline.startTime)]
 
 # -- STAGES ----------------------------------------------------------------------------------------
 stages:
 - stage: integration
-  displayName: "Format and lint code, then build and package the plugin"
+  pool:
+    vmImage: "windows-2019"
+  condition: or(eq(variable.isProd, true), eq(variable.isQA, true), eq(variable.isDebug, true))
+  displayName: "Integration"
   jobs:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
   - job: format_lint_build_package
+    displayName: "Format and lint code, then build and package the plugin"
 
     steps:
-    - checkout: self  # self represents the repo where the initial Pipelines YAML file was found
+    - checkout: self
       fetchDepth: 10
 
     - task: UsePythonVersion@0
@@ -59,58 +60,20 @@ stages:
     - script: |
         python -m pip install -U pip --cache-dir ./.pipcache
         python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
-      displayName: "Install - Python dependencies"
+      displayName: "Install - Dependencies"
 
     - script: |
         python -m black --target-version=py37 .\isogeo.py
         python -m black --target-version=py37 .\modules
         python -m black --target-version=py37 .\ui
-      displayName: "Format - Apply black code formatting"
+      displayName: "Format - black code formatting"
 
     - script: |
         flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
         flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
-      displayName: "Lint - Static code analisis: PEP8 conformance, imports... (flake8)"
-
-    # save formatted code to use later avoiding git clone again
-    # - task: PublishBuildArtifacts@1
-    #   displayName: "Publish formatted code with dependencies as an artifact named 'drop'"
-    #   inputs:
-    #     targetPath: $(System.DefaultWorkingDirectory)
-
-    # - publish: $(System.DefaultWorkingDirectory)
-    #   artifact: "FORMATTED_$(pyPiPackageName)_$(Build.SourceBranchName)_$(Build.BuildId)"
-    #   displayName: "Publish formatted code with dependencies"
-
-  # --  BUILD --------------------------------------------------------------------------
-  # - job: build_ui
-  #   dependsOn: lint
-  #   condition: succeeded()
-  #   displayName: "Qt - compilation and i18n"
-
-  #   steps:
-    # # no need for source code
-    # - checkout: none
-
-    # - task: DownloadPipelineArtifact@2
-    #   displayName: "Download formatted source code saved during 'lint' stage"
-    #   inputs:
-    #     buildType: "current"
-    #     artifact: "drop"
-    #     targetPath: "$(System.DefaultWorkingDirectory)"
-
-    # - task: UsePythonVersion@0
-    #   inputs:
-    #     versionSpec: $(pythonVersion)
-    #     architecture: 'x64'
-    #     addToPath: true
-
-    # - script: |
-    #     python -m pip install -U pip --cache-dir ./.pipcache
-    #     python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
-    #   displayName: 'Install dependencies'
+      displayName: "Lint - Static code analisis"
 
     - script: |
         pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
@@ -132,38 +95,8 @@ stages:
         pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
       displayName: "Build - Qt UI files compilation"
 
-    # - task: PublishPipelineArtifact@1
-    #   displayName: "Publish artifact: Qt stuff compiled"
-    #   inputs:
-    #     path: $(System.DefaultWorkingDirectory)
-    #     artifact: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
-
-  # # UI COMPILATION
-  # - job: "Packaging"  # only letters and numbers (no space...)
-  #   displayName: "Packaging the plugin"  # can't contain special characters
-  #   dependsOn: "BuildUi"
-
-  #   steps:
-
-  #   # no need for source code
-  #   - checkout: none
-
-  #   - task: DownloadPipelineArtifact@2
-  #     displayName: "Download compiled source code previously saved"
-  #     inputs:
-  #       buildType: "current"
-  #       artifactName: "COMPILED_$(Build.SourceBranchName)_$(Build.BuildId)"
-  #       targetPath: "$(System.DefaultWorkingDirectory)"
-
-    # - task: UsePythonVersion@0
-    #   displayName: "Install Python"
-    #   inputs:
-    #     versionSpec: $(pythonVersion)
-    #     architecture: "x64"
-    #     addToPath: true
-
     - script: python ./tools/plugin_packager.py
-      displayName: "Package - execute script ./tools/plugin_packager.py"
+      displayName: "Package - script ./tools/plugin_packager.py"
 
     - task: PublishPipelineArtifact@1
       displayName: "Publish artifact: plugin packaged"
@@ -171,38 +104,35 @@ stages:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
 
-- stage: publish_to_github
-  displayName: "Create a GitHub release for tag ${{ variables.tagName }}"
-  dependsOn:
-    - integration
-  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags'))
-
+- stage : upload_to_blob
+  pool:
+    vmImage: "ubuntu-latest"
+  condition: and(succeeded(), or(eq(variable.isProd, true), eq(variable.isQA, true), eq(variable.isDebug, true)))
+  dependsOn : integration
   jobs:
+    - job: set_zip_name_variable
+      displayName: "Set ZIPNAME variable value"
+      steps:
 
-  - job: 'create_github_release'
+        - script: |
+            if [[ "${{ variable.isProd}}" == true ]]; then
+              ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||')"
+            elif [[ "${{ variable.isQA}}" == true ]]; then
+              ZIPNAME="$(NAME)-qa-$(releaseDateWithHour)"
+            else
+              ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate)"
+            fi
+            echo "##vso[task.setvariable variable=ZIPNAME]$ZIPNAME"
+            echo "##vso[task.setvariable variable=ZIPNAME;isOutput=true]$ZIPNAME"
 
-    steps:
-    - checkout: none
-
-    - task: DownloadPipelineArtifact@2
-      displayName: "Download packaged source code saved during 'integration' stage"
-      inputs:
-        buildType: "current"
-        artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
-        targetPath: "$(System.DefaultWorkingDirectory)"
-
-    - task: GitHubRelease@1
-      continueOnError: true
-      displayName: "Publish tagged code as Github Release"
-      inputs:
-        gitHubConnection: 'github.com_SimonSAMPERE'
-        repositoryName: '$(Build.Repository.Name)'
-        action: 'create'
-        assets: "$(System.DefaultWorkingDirectory)/*"
-        target: '$(Build.SourceVersion)'
-        tagSource: 'gitTag'
-        changeLogCompareToRelease: 'lastFullRelease'
-        changeLogType: 'commitBased'
+    - job: upload_to_blob
+      displayName: "Upload to ${{ variables.ZIPNAME }} Blob Storage"
+      steps:
+      - template : /on-premises/upload_to_blob.yml@templates
+        parameters : 
+          zipName : $(ZIPNAME).zip
+          artifactName : "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+          DependsOn : integration
 
 # - stage: PublishToAzure
 #   displayName: "Publish to Azure"
@@ -274,3 +204,36 @@ stages:
 #             scriptLocation: inlineScript
 #             inlineScript: |
 #                 az storage blob upload-batch -d versions -s ./ --pattern versions.json  --blob-endpoint $(BLOB_STORAGE_URL)  --sas-token '"$(AZURE_STORAGE_SAS_TOKEN)"' --account-key '"$(AZURE_STORAGE_KEY)"'  --overwrite
+
+# - stage: publish_to_github
+#   displayName: "Create a GitHub release for tag ${{ variables.tagName }}"
+#   dependsOn:
+#     - integration
+#   condition: and(succeeded(), eq(variable.isProd, true))
+
+#   jobs:
+
+#   - job: 'create_github_release'
+
+#     steps:
+#     - checkout: none
+
+#     - task: DownloadPipelineArtifact@2
+#       displayName: "Download packaged source code saved during 'integration' stage"
+#       inputs:
+#         buildType: "current"
+#         artifactName: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+#         targetPath: "$(System.DefaultWorkingDirectory)"
+
+#     - task: GitHubRelease@1
+#       continueOnError: true
+#       displayName: "Publish tagged code as Github Release"
+#       inputs:
+#         gitHubConnection: 'github.com_SimonSAMPERE'
+#         repositoryName: '$(Build.Repository.Name)'
+#         action: 'create'
+#         assets: "$(System.DefaultWorkingDirectory)/*"
+#         target: '$(Build.SourceVersion)'
+#         tagSource: 'gitTag'
+#         changeLogCompareToRelease: 'lastFullRelease'
+#         changeLogType: 'commitBased'
