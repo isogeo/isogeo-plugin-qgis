@@ -46,13 +46,40 @@ stages:
     displayName: "Pipeline variables values"
 
     steps:
-      - script: echo "pythonVersion - $(pythonVersion)"
-      - script: echo "Build.SourceBranch - $(Build.SourceBranch)"
-      - script: echo "isProd - $(isProd)"
-      - script: echo "isQA - $(isQA)"
-      - script: echo "isDebug - $(isDebug)"
-      - script: echo "releaseDate - $(releaseDate)"
-      - script: echo "releaseDateWithHour - $(releaseDateWithHour)"
+      - checkout: none
+      - script: |
+          echo "NAME - $(NAME)"
+          echo "Build.BuildId - $(Build.BuildId)"
+          echo "Build.SourceBranch - $(Build.SourceBranch)"
+          echo "pythonVersion - $(pythonVersion)"
+          echo "isProd - $(isProd)"
+          echo "isQA - $(isQA)"
+          echo "isDebug - $(isDebug)"
+          echo "releaseDate - $(releaseDate)"
+          echo "releaseDateWithHour - $(releaseDateWithHour)"
+
+- stage : build_zip_name
+  displayName: "Build ZIP name"
+  pool:
+    vmImage: "windows-2019"
+  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+  dependsOn : integration
+  jobs:
+    - job: create_zip_name_variable
+      steps:
+        - checkout: none
+        - script: |
+            if [[ $(isProd) == true ]]; then
+              ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip"
+            elif [[ $(isQA) == true ]]; then
+              ZIPNAME="$(NAME)-qa-$(releaseDateWithHour).zip"
+            else
+              ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip"
+            fi
+            echo "##vso[task.setvariable variable=ZIPNAME]$ZIPNAME"
+            echo "##vso[task.setvariable variable=ZIPNAME;isOutput=true]$ZIPNAME"
+            echo "ZIPNAME - $(ZIPNAME)"
+          name: set_zip_name_variable
 
 - stage: integration
   pool:
@@ -120,29 +147,7 @@ stages:
       displayName: "Publish artifact: plugin packaged"
       inputs:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
-        artifact: "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
-
-- stage : build_zip_name
-  displayName: "Set ZIPNAME variable value"
-  pool:
-    vmImage: "ubuntu-latest"
-  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
-  dependsOn : integration
-  jobs:
-    - job: create_zip_name_variable
-      steps:
-
-        - script: |
-            if [[ $(isProd) == true ]]; then
-              ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||')"
-            elif [[ $(isQA) == true ]]; then
-              ZIPNAME="$(NAME)-qa-$(releaseDateWithHour)"
-            else
-              ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate)"
-            fi
-            echo "##vso[task.setvariable variable=ZIPNAME]$ZIPNAME"
-            echo "##vso[task.setvariable variable=ZIPNAME;isOutput=true]$ZIPNAME"
-          name: set_zip_name_variable
+        artifact: "$(ZIPNAME)"
 
 - stage : upload_to_blob
   pool:
@@ -154,8 +159,8 @@ stages:
   jobs:
     - template : /on-premises/upload_to_blob.yml@templates
       parameters :
-        zipName : $(zipName).zip
-        artifactName : "PACKAGED_$(Build.SourceBranchName)_$(Build.BuildId)"
+        zipName : "$(ZIPNAME)"
+        artifactName : "$(ZIPNAME)"
         # DependsOn : integration
 
 # - stage: PublishToAzure
