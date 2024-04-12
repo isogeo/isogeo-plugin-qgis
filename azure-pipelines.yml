@@ -69,22 +69,22 @@ stages:
       steps:
         - checkout: none
         - script: |
-            if [[ $(isProd) == true ]]; then
+            if [[ $(isProd) == True ]]; then
               ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip"
-            elif [[ $(isQA) == true ]]; then
+            elif [[ $(isQA) == True ]]; then
               ZIPNAME="$(NAME)-qa-$(releaseDateWithHour).zip"
             else
               ZIPNAME="$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip"
             fi
-            echo "##vso[task.setvariable variable=ZIPNAME]$ZIPNAME"
-            echo "##vso[task.setvariable variable=ZIPNAME;isOutput=true]$ZIPNAME"
-            echo "ZIPNAME - $(ZIPNAME)"
+            echo "##vso[task.setvariable variable=zipName]$ZIPNAME"
+            echo "##vso[task.setvariable variable=zipName;isOutput=true]$ZIPNAME"
+            echo "ZIPNAME - $(zipName)"
           name: set_zip_name_variable
 
 - stage: integration
   pool:
     vmImage: "windows-2019"
-  condition: or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true))
+  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   dependsOn : build_zip_name
   displayName: "Integration"
   jobs:
@@ -148,7 +148,7 @@ stages:
       displayName: "Publish artifact: plugin packaged"
       inputs:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
-        artifact: "$(ZIPNAME)"
+        artifact: $(zipName)
 
 - stage : upload_to_blob
   pool:
@@ -160,8 +160,8 @@ stages:
   jobs:
     - template : /on-premises/upload_to_blob.yml@templates
       parameters :
-        zipName : "$(ZIPNAME)"
-        artifactName : "$(ZIPNAME)"
+        zipName : "$(zipName)"
+        artifactName : "$(zipName)"
         # DependsOn : integration
 
 # - stage: PublishToAzure
