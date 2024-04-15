@@ -33,6 +33,7 @@ variables:
   azureSubscription : $(AZURE_SUBSCRIPTION)
   releaseDate: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
   releaseDateWithHour: $[format('{0:dd}.{0:MM}.{0:yyyy}-{0:HH}.{0:mm}', pipeline.startTime)]
+  windowsWorkingDirectory: $[replace(variables['System.DefaultWorkingDirectory'], '/', '\')] 
 
 # -- STAGES ----------------------------------------------------------------------------------------
 stages:
@@ -57,6 +58,7 @@ stages:
         echo isDebug - $(isDebug)
         echo releaseDate - $(releaseDate)
         echo releaseDateWithHour - $(releaseDateWithHour)
+        echo windowsWorkingDirectory - $(windowsWorkingDirectory)
 
 - stage : build_zipname
   pool:
@@ -99,9 +101,6 @@ stages:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
   - job: format_lint_build_package
     displayName: "Format & lint code, then build & package"
-    variables:
-      - name: windowsWorkingDirectory 
-        value: $[replace(variables['System.DefaultWorkingDirectory'], '/', '\')] 
 
     steps:
     - checkout: self
@@ -165,7 +164,6 @@ stages:
         artifact: $(zipName)
 
     - script: |
-        echo windowsWorkingDirectory - $(windowsWorkingDirectory)
         ls $(windowsWorkingDirectory)\build\latest\
         ren $(windowsWorkingDirectory)\build\latest\isogeo_search_engine.zip $(zipName)
         ls $(windowsWorkingDirectory)\build\latest\
