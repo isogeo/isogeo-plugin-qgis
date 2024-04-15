@@ -79,7 +79,7 @@ stages:
 
         if $(isProd)==True set ZIPNAME=$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip
         if $(isQA)==True set ZIPNAME=$(NAME)-qa-$(releaseDateWithHour).zip
-        if $(isDebug)==True set ZIPNAME=$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip
+        if $(isDebug)==True set ZIPNAME=$(NAME)-debug-$(echo git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip
         echo %ZIPNAME%
 
         echo ##vso[task.setvariable variable=zipName]%ZIPNAME%
