@@ -33,7 +33,7 @@ variables:
   azureSubscription : $(AZURE_SUBSCRIPTION)
   releaseDate: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
   releaseDateWithHour: $[format('{0:dd}.{0:MM}.{0:yyyy}-{0:HH}.{0:mm}', pipeline.startTime)]
-  windowsWorkingDirectory: $[replace(variables['System.DefaultWorkingDirectory'], '/', '\')] 
+  windowsWorkingDirectory: $[replace(variables['System.DefaultWorkingDirectory'], '/', '\\')] 
 
 # -- STAGES ----------------------------------------------------------------------------------------
 stages:
@@ -52,6 +52,7 @@ stages:
         echo NAME - $(NAME)
         echo Build.BuildId - $(Build.BuildId)
         echo Build.SourceBranch - $(Build.SourceBranch)
+        echo System.DefaultWorkingDirectory - $(System.DefaultWorkingDirectory)
         echo pythonVersion - $(pythonVersion)
         echo isProd - $(isProd)
         echo isQA - $(isQA)
@@ -60,184 +61,184 @@ stages:
         echo releaseDateWithHour - $(releaseDateWithHour)
         echo windowsWorkingDirectory - $(windowsWorkingDirectory)
 
-- stage : build_zipname
-  pool:
-    vmImage: "windows-2019"
-  displayName: "Build ZIP name"
-  dependsOn : variables_report
-  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
-  jobs:
-  # -- CREATE zipName -----------------------------------------------------------------------------
-  - job: create_zipname_variable
-    displayName: "Execute cmd script to set 'zipName' variable"
-    steps:
-    - checkout: none
-    - script: |
-        echo isProd - $(isProd)
-        echo isQA - $(isQA)
-        echo isDebug - $(isDebug)
+# - stage : build_zipname
+#   pool:
+#     vmImage: "windows-2019"
+#   displayName: "Build ZIP name"
+#   dependsOn : variables_report
+#   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+#   jobs:
+#   # -- CREATE zipName -----------------------------------------------------------------------------
+#   - job: create_zipname_variable
+#     displayName: "Execute cmd script to set 'zipName' variable"
+#     steps:
+#     - checkout: none
+#     - script: |
+#         echo isProd - $(isProd)
+#         echo isQA - $(isQA)
+#         echo isDebug - $(isDebug)
 
-        if $(isProd)==True set ZIPNAME=$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip
-        if $(isQA)==True set ZIPNAME=$(NAME)-qa-$(releaseDateWithHour).zip
-        if $(isDebug)==True set ZIPNAME=$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip
-        echo %ZIPNAME%
+#         if $(isProd)==True set ZIPNAME=$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip
+#         if $(isQA)==True set ZIPNAME=$(NAME)-qa-$(releaseDateWithHour).zip
+#         if $(isDebug)==True set ZIPNAME=$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip
+#         echo %ZIPNAME%
 
-        echo ##vso[task.setvariable variable=zipName]%ZIPNAME%
-        echo ##vso[task.setvariable variable=zipName;isOutput=true]%ZIPNAME%
+#         echo ##vso[task.setvariable variable=zipName]%ZIPNAME%
+#         echo ##vso[task.setvariable variable=zipName;isOutput=true]%ZIPNAME%
 
-        echo $(zipName)
+#         echo $(zipName)
 
-      name: set_zipname_variable
+#       name: set_zipname_variable
 
-- stage: integration
-  pool:
-    vmImage: "windows-2019"
-  dependsOn : build_zipname
-  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
-  variables : 
-    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
-  displayName: "Integration"
-  jobs:
-  # -- LINT AND FORMAT -----------------------------------------------------------------------------
-  - job: format_lint_build_package
-    displayName: "Format & lint code, then build & package"
+# - stage: integration
+#   pool:
+#     vmImage: "windows-2019"
+#   dependsOn : build_zipname
+#   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+#   variables : 
+#     zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
+#   displayName: "Integration"
+#   jobs:
+#   # -- LINT AND FORMAT -----------------------------------------------------------------------------
+#   - job: format_lint_build_package
+#     displayName: "Format & lint code, then build & package"
 
-    steps:
-    - checkout: self
-      fetchDepth: 10
+#     steps:
+#     - checkout: self
+#       fetchDepth: 10
 
-    - script: |
-        echo NAME - $(zipName)
+#     - script: |
+#         echo NAME - $(zipName)
 
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: $(pythonVersion)
-        architecture: 'x64'
-        addToPath: true
-      displayName: "Install - Python ${{ variables.pythonVersion }}"
+#     - task: UsePythonVersion@0
+#       inputs:
+#         versionSpec: $(pythonVersion)
+#         architecture: 'x64'
+#         addToPath: true
+#       displayName: "Install - Python ${{ variables.pythonVersion }}"
 
-    - script: |
-        python -m pip install -U pip --cache-dir ./.pipcache
-        python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
-      displayName: "Install - Dependencies"
+#     - script: |
+#         python -m pip install -U pip --cache-dir ./.pipcache
+#         python -m pip install -U -r ./requirements.txt --cache-dir ./.pipcache
+#       displayName: "Install - Dependencies"
 
-    - script: |
-        python -m black --target-version=py37 .\isogeo.py
-        python -m black --target-version=py37 .\modules
-        python -m black --target-version=py37 .\ui
-      displayName: "Format - black code formatting"
+#     - script: |
+#         python -m black --target-version=py37 .\isogeo.py
+#         python -m black --target-version=py37 .\modules
+#         python -m black --target-version=py37 .\ui
+#       displayName: "Format - black code formatting"
 
-    - script: |
-        flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
-        flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
-      displayName: "Lint - Static code analisis"
+#     - script: |
+#         flake8 ./isogeo.py --count --select=E9,F63,F7,F82 --show-source --statistics
+#         flake8 ./modules --count --select=E9,F63,F7,F82 --show-source --statistics
+#         flake8 ./isogeo.py --count --exit-zero --max-complexity=10 --max-line-length=100
+#         flake8 ./modules --count --exit-zero --max-complexity=10 --max-line-length=100
+#       displayName: "Lint - Static code analisis"
 
-    - script: |
-        pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
-        qt5-tools lrelease .\i18n\isogeo_search_engine_en.ts
-        qt5-tools lrelease .\i18n\isogeo_search_engine_fr.ts
-      displayName: "Build - Qt translations (i18n)"
+#     - script: |
+#         pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
+#         qt5-tools lrelease .\i18n\isogeo_search_engine_en.ts
+#         qt5-tools lrelease .\i18n\isogeo_search_engine_fr.ts
+#       displayName: "Build - Qt translations (i18n)"
 
-    - script: |
-        pyrcc5 resources.qrc -o resources_rc.py
-      displayName: "Build - Qt resources compilation"
+#     - script: |
+#         pyrcc5 resources.qrc -o resources_rc.py
+#       displayName: "Build - Qt resources compilation"
 
-    - script: |
-        pyuic5 -x "ui\isogeo_dockwidget_base.ui" -o "ui\ui_isogeo.py"
-        pyuic5 -x "ui\auth\ui_authentication.ui" -o "ui\auth\ui_authentication.py"
-        pyuic5 -x "ui\credits\ui_credits.ui" -o "ui\credits\ui_credits.py"
-        pyuic5 -x "ui\db_connections\ui_db_connections.ui" -o "ui\db_connections\ui_db_connections.py"
-        pyuic5 -x "ui\metadata\ui_md_details.ui" -o "ui\metadata\ui_md_details.py"
-        pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicksearch_rename.py"
-        pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
-      displayName: "Build - Qt UI files compilation"
+#     - script: |
+#         pyuic5 -x "ui\isogeo_dockwidget_base.ui" -o "ui\ui_isogeo.py"
+#         pyuic5 -x "ui\auth\ui_authentication.ui" -o "ui\auth\ui_authentication.py"
+#         pyuic5 -x "ui\credits\ui_credits.ui" -o "ui\credits\ui_credits.py"
+#         pyuic5 -x "ui\db_connections\ui_db_connections.ui" -o "ui\db_connections\ui_db_connections.py"
+#         pyuic5 -x "ui\metadata\ui_md_details.ui" -o "ui\metadata\ui_md_details.py"
+#         pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicksearch_rename.py"
+#         pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
+#       displayName: "Build - Qt UI files compilation"
 
-    - script: python ./tools/plugin_packager.py
-      displayName: "Package - script ./tools/plugin_packager.py"
+#     - script: python ./tools/plugin_packager.py
+#       displayName: "Package - script ./tools/plugin_packager.py"
 
-    - task: PublishPipelineArtifact@1
-      displayName: "Publish pipeline artifact: plugin packaged"
-      inputs:
-        path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
-        artifact: $(zipName)
+#     - task: PublishPipelineArtifact@1
+#       displayName: "Publish pipeline artifact: plugin packaged"
+#       inputs:
+#         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
+#         artifact: $(zipName)
 
-    - script: |
-        ls $(windowsWorkingDirectory)\build\latest\
-        ren $(windowsWorkingDirectory)\build\latest\isogeo_search_engine.zip $(zipName)
-        ls $(windowsWorkingDirectory)\build\latest\
-      displayName: "Package - rename archive for on premises artifact"
+#     - script: |
+#         ls $(windowsWorkingDirectory)\build\latest\
+#         ren $(windowsWorkingDirectory)\build\latest\isogeo_search_engine.zip $(zipName)
+#         ls $(windowsWorkingDirectory)\build\latest\
+#       displayName: "Package - rename archive for on premises artifact"
 
-    - task: PublishBuildArtifacts@1
-      displayName: "Publish build artifact: plugin packaged for on premises"
-      inputs:
-        PathtoPublish: $(System.DefaultWorkingDirectory)/build/latest/$(zipName)
-        ArtifactName: archive
+#     - task: PublishBuildArtifacts@1
+#       displayName: "Publish build artifact: plugin packaged for on premises"
+#       inputs:
+#         PathtoPublish: $(System.DefaultWorkingDirectory)/build/latest/$(zipName)
+#         ArtifactName: archive
 
-- stage : upload_to_blob
-  pool:
-    vmImage: "ubuntu-latest"
-  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
-  dependsOn :
-    - integration
-    - build_zipname
-  variables : 
-    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
-  displayName: "Upload packaged plugin to Blob Storage"
-  jobs:
-    - template : /on-premises/upload_to_blob.yml@templates
-      parameters :
-        zipName : "$(zipName)"
-        artifactName : archive
+# - stage : upload_to_blob
+#   pool:
+#     vmImage: "ubuntu-latest"
+#   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+#   dependsOn :
+#     - integration
+#     - build_zipname
+#   variables : 
+#     zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
+#   displayName: "Upload packaged plugin to Blob Storage"
+#   jobs:
+#     - template : /on-premises/upload_to_blob.yml@templates
+#       parameters :
+#         zipName : "$(zipName)"
+#         artifactName : archive
 
-- stage: versions_update
-  condition: and(succeeded(), eq(variables.isProd, true))
-  dependsOn : 
-  - upload_to_blob
-  displayName: "Add new plugin version to versions.json file"
-  jobs:
-  - template : /on-premises/update_versions.yml@templates
+# - stage: versions_update
+#   condition: and(succeeded(), eq(variables.isProd, true))
+#   dependsOn : 
+#   - upload_to_blob
+#   displayName: "Add new plugin version to versions.json file"
+#   jobs:
+#   - template : /on-premises/update_versions.yml@templates
 
-- stage: installer_tag
-  condition: and(succeeded(), eq(variables.isProd, true))
-  dependsOn: versions_update
-  jobs : 
-  - template : /on-premises/retrieve_github_pat.yml@templates
-  - template : /on-premises/installer_tag.yml@templates
+# - stage: installer_tag
+#   condition: and(succeeded(), eq(variables.isProd, true))
+#   dependsOn: versions_update
+#   jobs : 
+#   - template : /on-premises/retrieve_github_pat.yml@templates
+#   - template : /on-premises/installer_tag.yml@templates
 
-- stage: publish_to_github
-  displayName: "Create a GitHub release for tag ${{ variables.tagName }}"
-  dependsOn:
-    - integration
-    - build_zipname
-  variables : 
-    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
-  condition: and(succeeded(), eq(variables.isProd, true))
+# - stage: publish_to_github
+#   displayName: "Create a GitHub release for tag ${{ variables.tagName }}"
+#   dependsOn:
+#     - integration
+#     - build_zipname
+#   variables : 
+#     zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
+#   condition: and(succeeded(), eq(variables.isProd, true))
 
-  jobs:
+#   jobs:
 
-  - job: 'create_github_release'
+#   - job: 'create_github_release'
 
-    steps:
-    - checkout: none
+#     steps:
+#     - checkout: none
 
-    - task: DownloadPipelineArtifact@2
-      displayName: "Download packaged source code saved during 'integration' stage"
-      inputs:
-        buildType: "current"
-        artifactName: $(zipName)
-        targetPath: "$(System.DefaultWorkingDirectory)"
+#     - task: DownloadPipelineArtifact@2
+#       displayName: "Download packaged source code saved during 'integration' stage"
+#       inputs:
+#         buildType: "current"
+#         artifactName: $(zipName)
+#         targetPath: "$(System.DefaultWorkingDirectory)"
 
-    - task: GitHubRelease@1
-      continueOnError: true
-      displayName: "Publish tagged code as Github Release"
-      inputs:
-        gitHubConnection: 'github.com_SimonSAMPERE'
-        repositoryName: '$(Build.Repository.Name)'
-        action: 'create'
-        assets: "$(System.DefaultWorkingDirectory)/*"
-        target: '$(Build.SourceVersion)'
-        tagSource: 'gitTag'
-        changeLogCompareToRelease: 'lastFullRelease'
-        changeLogType: 'commitBased'
+#     - task: GitHubRelease@1
+#       continueOnError: true
+#       displayName: "Publish tagged code as Github Release"
+#       inputs:
+#         gitHubConnection: 'github.com_SimonSAMPERE'
+#         repositoryName: '$(Build.Repository.Name)'
+#         action: 'create'
+#         assets: "$(System.DefaultWorkingDirectory)/*"
+#         target: '$(Build.SourceVersion)'
+#         tagSource: 'gitTag'
+#         changeLogCompareToRelease: 'lastFullRelease'
+#         changeLogType: 'commitBased'
