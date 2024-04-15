@@ -68,7 +68,6 @@ stages:
   # -- CREATE zipName -----------------------------------------------------------------------------
   - job: create_zipname_variable
     displayName: "Execute cmd script to set 'zipName' variable"
-
     steps:
     - checkout: none
     - script: |
@@ -99,7 +98,10 @@ stages:
   jobs:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
   - job: format_lint_build_package
-    displayName: "Format and lint code, then build and package the plugin"
+    displayName: "Format & lint code, then build & package"
+    variables:
+      - name: windowsWorkingDirectory 
+        value: $[replace(variables['System.DefaultWorkingDirectory'], '/', '\')] 
 
     steps:
     - checkout: self
@@ -162,7 +164,11 @@ stages:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: $(zipName)
 
-    - script: ren $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip $(zipName)
+    - script: |
+        echo windowsWorkingDirectory - $(windowsWorkingDirectory)
+        ls $(windowsWorkingDirectory)\build\latest\
+        ren $(windowsWorkingDirectory)\build\latest\isogeo_search_engine.zip $(zipName)
+        ls $(windowsWorkingDirectory)\build\latest\
       displayName: "Package - rename archive for on premises artifact"
 
     - task: PublishBuildArtifacts@1
@@ -180,6 +186,7 @@ stages:
     - build_zipname
   variables : 
     zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
+  displayName: "Upload packaged plugin to Blob Storage"
   jobs:
     - template : /on-premises/upload_to_blob.yml@templates
       parameters :
@@ -190,6 +197,7 @@ stages:
   condition: and(succeeded(), eq(variables.isProd, true))
   dependsOn : 
   - upload_to_blob
+  displayName: "Add new plugin version to versions.json file"
   jobs:
   - template : /on-premises/update_versions.yml@templates
 
