@@ -71,27 +71,28 @@ stages:
   - job: create_zipname_variable
     displayName: "Execute cmd script to set 'zipName' variable"
     steps:
-    - checkout: none
-    - script: |
-        echo isProd - $(isProd)
-        echo isQA - $(isQA)
-        echo isDebug - $(isDebug)
+      - ${{ if ne(isDebug, true)}}:
+        - checkout: none
+      - script: |
+          echo isProd - $(isProd)
+          echo isQA - $(isQA)
+          echo isDebug - $(isDebug)
 
-        if $(isProd)==True set ZIPNAME=$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip
-        if $(isQA)==True set ZIPNAME=$(NAME)-qa-$(releaseDateWithHour).zip
-        if $(isDebug)==True ; then
-          set VERSION="$(git describe --tags $(git rev-list --tags --max-count=1))"
-          echo %VERSION%
-          set ZIPNAME=$(NAME)-debug-%VERSION%-$(releaseDate).zip
-        fi
-        echo %ZIPNAME%
+          if $(isProd)==True set ZIPNAME=$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip
+          if $(isQA)==True set ZIPNAME=$(NAME)-qa-$(releaseDateWithHour).zip
+          if [[$(isDebug)==True]] ; then
+            set VERSION="$(git describe --tags $(git rev-list --tags --max-count=1))"
+            echo %VERSION%
+            set ZIPNAME=$(NAME)-debug-%VERSION%-$(releaseDate).zip
+          fi
+          echo %ZIPNAME%
 
-        echo ##vso[task.setvariable variable=zipName]%ZIPNAME%
-        echo ##vso[task.setvariable variable=zipName;isOutput=true]%ZIPNAME%
+          echo ##vso[task.setvariable variable=zipName]%ZIPNAME%
+          echo ##vso[task.setvariable variable=zipName;isOutput=true]%ZIPNAME%
 
-        echo $(zipName)
+          echo $(zipName)
 
-      name: set_zipname_variable
+        name: set_zipname_variable
 
 - stage: integration
   pool:
