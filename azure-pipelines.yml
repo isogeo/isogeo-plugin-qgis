@@ -71,7 +71,7 @@ stages:
   - job: create_zipname_variable
     displayName: "Execute cmd script to set 'zipName' variable"
     steps:
-      - ${{ if ne(isDebug, true)}}:
+      - ${{ if ne(variables.isDebug, true)}}:
         - checkout: none
       - script: |
           echo isProd - $(isProd)
