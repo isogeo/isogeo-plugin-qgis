@@ -73,6 +73,8 @@ stages:
     steps:
       - ${{ if ne(variables.isDebug, true)}}:
         - checkout: none
+      - ${{ if eq(variables.isDebug, true)}}:
+        - checkout: self
       - script: |
           echo isProd - $(isProd)
           echo isQA - $(isQA)
