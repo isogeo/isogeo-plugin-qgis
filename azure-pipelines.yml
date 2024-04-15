@@ -84,7 +84,6 @@ stages:
             set VERSION="$(git describe --tags $(git rev-list --tags --max-count=1))"
             echo %VERSION%
             set ZIPNAME=$(NAME)-debug-%VERSION%-$(releaseDate).zip
-          fi
           echo %ZIPNAME%
 
           echo ##vso[task.setvariable variable=zipName]%ZIPNAME%
