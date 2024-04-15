@@ -81,8 +81,8 @@ stages:
           if $(isProd)==True set ZIPNAME=$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip
           if $(isQA)==True set ZIPNAME=$(NAME)-qa-$(releaseDateWithHour).zip
           if [[$(isDebug)==True]] ; then
-            for /f "tokens=* USEBACKQ" %a in (`git rev-list --tags --max-count=1`) do (SET COMMIT=%a)
-            for /f "tokens=* USEBACKQ" %b in (`git describe --tags %COMMIT%`) do (SET TAG=%b)
+            for /f "tokens=* USEBACKQ" %%a in (`git rev-list --tags --max-count=1`) do (SET COMMIT=%%a)
+            for /f "tokens=* USEBACKQ" %%b in (`git describe --tags %COMMIT%`) do (SET TAG=%%b)
             echo %TAG%
             set ZIPNAME=$(NAME)-debug-%TAG%-$(releaseDate).zip
           echo %ZIPNAME%
