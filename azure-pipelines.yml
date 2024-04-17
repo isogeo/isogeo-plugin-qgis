@@ -36,77 +36,75 @@ variables:
 
 # -- STAGES ----------------------------------------------------------------------------------------
 stages:
-- stage: report
+- stage: variables
   pool:
-    vmImage: "windows-2019"
-  displayName: "Report"
+    vmImage: "ubuntu-22.04"
+  displayName: "Variables"
   jobs:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
-  - job: show_variables_values
-    displayName: "Pipeline variables values"
+  - job: variables_values
+    displayName: "Set and display variables values"
+    # displayName: "Pipeline variables values"
 
     steps:
-    - checkout: none
-    - script: |
-        echo NAME - $(NAME)
-        echo Build.BuildId - $(Build.BuildId)
-        echo Build.SourceBranch - $(Build.SourceBranch)
-        echo pythonVersion - $(pythonVersion)
-        echo isProd - $(isProd)
-        echo isQA - $(isQA)
-        echo isDebug - $(isDebug)
-        echo releaseDate - $(releaseDate)
-        echo releaseDateWithHour - $(releaseDateWithHour)
+    - checkout : self
+      fetchTags: True
+    
+    - bash: |
+        if [ "$(isProd)" = "True" ]; then
+          echo isProd - $(isProd)
+          ZIPNAME="$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||')"
+        elif [ "$(isQA)" = "True" ]; then
+          echo isQA - $(isQA)
+          ZIPNAME="$(NAME)-qa-$(releaseDateWithHour)"
+        elif [ "$(isDebug)" = "True" ]; then
+          echo isDebug - $(isDebug)
+          TAG="$(git describe --tags $(git rev-list --tags --max-count=1))"
+          ZIPNAME="$(NAME)-debug-$TAG-$(releaseDate)"
+        else
+          echo isProd - $(isProd)
+          echo isQA - $(isQA)
+          echo isDebug - $(isDebug)
+          ZIPNAME="$(NAME)"
+        fi
 
-- stage : build_zipname
-  pool:
-    vmImage: "windows-2019"
-  displayName: "Build ZIP name"
-  dependsOn : report
-  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
-  jobs:
-  # -- CREATE zipName -----------------------------------------------------------------------------
-  - job: create_zipname_variable
-    displayName: "Execute cmd script to set 'zipName' variable"
-
-    steps:
-    - checkout: none
-    - script: |
-        echo isProd - $(isProd)
-        echo isQA - $(isQA)
-        echo isDebug - $(isDebug)
-
-        if $(isProd)==True set ZIPNAME=$(NAME)-$(echo $(Build.SourceBranch) | sed 's|refs/tags/||').zip
-        if $(isQA)==True set ZIPNAME=$(NAME)-qa-$(releaseDateWithHour).zip
-        if $(isDebug)==True set ZIPNAME=$(NAME)-debug-$(git describe --tags $(git rev-list --tags --max-count=1))-$(releaseDate).zip
-        echo %ZIPNAME%
-
-        echo ##vso[task.setvariable variable=zipName]%ZIPNAME%
-        echo ##vso[task.setvariable variable=zipName;isOutput=true]%ZIPNAME%
-
-        echo $(zipName)
+        echo $ZIPNAME
+        echo "##vso[task.setvariable variable=zipName;]$ZIPNAME"
+        echo "##vso[task.setvariable variable=zipName;isOutput=true]$ZIPNAME"
 
       name: set_zipname_variable
+
+    - bash: |
+        echo "NAME - $(NAME)"
+        echo "Build.BuildId - $(Build.BuildId)"
+        echo "Build.SourceBranch - $(Build.SourceBranch)"
+        echo "System.DefaultWorkingDirectory - $(System.DefaultWorkingDirectory)"
+        echo "pythonVersion - $(pythonVersion)"
+        echo "isProd - $(isProd)"
+        echo "isQA - $(isQA)"
+        echo "isDebug - $(isDebug)"
+        echo "releaseDate - $(releaseDate)"
+        echo "releaseDateWithHour - $(releaseDateWithHour)"
+        echo "zipName - $(zipName)"
+
+      name: display_variables_values
 
 - stage: integration
   pool:
     vmImage: "windows-2019"
-  dependsOn : build_zipname
+  dependsOn : variables
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
-  variables : 
-    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
+  variables:
+    zipName: $[ stageDependencies.variables.variables_values.outputs['set_zipname_variable.zipName'] ]
   displayName: "Integration"
   jobs:
   # -- LINT AND FORMAT -----------------------------------------------------------------------------
   - job: format_lint_build_package
-    displayName: "Format and lint code, then build and package the plugin"
+    displayName: "Format & lint code, then build & package"
 
     steps:
     - checkout: self
       fetchDepth: 10
-
-    - script: |
-        echo NAME - $(zipName)
 
     - task: UsePythonVersion@0
       inputs:
@@ -157,10 +155,23 @@ stages:
       displayName: "Package - script ./tools/plugin_packager.py"
 
     - task: PublishPipelineArtifact@1
-      displayName: "Publish artifact: plugin packaged"
+      displayName: "Publish - pipeline artifact"
       inputs:
         path: $(System.DefaultWorkingDirectory)/build/latest/isogeo_search_engine.zip
         artifact: $(zipName)
+
+    - script: |
+        echo $(System.DefaultWorkingDirectory)\build\latest\
+        ls $(System.DefaultWorkingDirectory)\build\latest\
+        mv $(System.DefaultWorkingDirectory)\build\latest\isogeo_search_engine.zip $(System.DefaultWorkingDirectory)\build\latest\$(zipName).zip
+        ls $(System.DefaultWorkingDirectory)\build\latest\
+      displayName: "Package - rename archive to ${{ variables.zipName }}"
+
+    - task: PublishBuildArtifacts@1
+      displayName: "Publish - build artifact"
+      inputs:
+        PathtoPublish: $(System.DefaultWorkingDirectory)/build/latest/$(zipName).zip
+        ArtifactName: archive
 
 - stage : upload_to_blob
   pool:
@@ -168,41 +179,45 @@ stages:
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   dependsOn :
     - integration
-    - build_zipname
-  variables : 
-    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
+    - variables
+  variables:
+    zipName: $[ stageDependencies.variables.variables_values.outputs['set_zipname_variable.zipName'] ]
+  displayName: "Upload to Blob"
   jobs:
     - template : /on-premises/upload_to_blob.yml@templates
       parameters :
-        zipName : "$(zipName)"
-        artifactName : "$(zipName)"
+        zipName: $(zipName).zip
+        artifactName : archive
 
 - stage: versions_update
   condition: and(succeeded(), eq(variables.isProd, true))
   dependsOn : 
   - upload_to_blob
+  displayName: "Update versions.json"
   jobs:
   - template : /on-premises/update_versions.yml@templates
 
 - stage: installer_tag
   condition: and(succeeded(), eq(variables.isProd, true))
   dependsOn: versions_update
+  displayName: "Git tag installer"
   jobs : 
   - template : /on-premises/retrieve_github_pat.yml@templates
   - template : /on-premises/installer_tag.yml@templates
 
 - stage: publish_to_github
-  displayName: "Create a GitHub release for tag ${{ variables.tagName }}"
   dependsOn:
     - integration
-    - build_zipname
-  variables : 
-    zipName : $[ stageDependencies.build_zipname.create_zipname_variable.outputs['set_zipname_variable.zipName'] ]
+    - variables
+  displayName: "GitHub release"
+  variables:
+    zipName: $[ stageDependencies.variables.variables_values.outputs['set_zipname_variable.zipName'] ]
   condition: and(succeeded(), eq(variables.isProd, true))
 
   jobs:
 
   - job: 'create_github_release'
+    displayName: "Create a GitHub Release"
 
     steps:
     - checkout: none
