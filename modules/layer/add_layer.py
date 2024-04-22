@@ -10,6 +10,7 @@ from qgis.PyQt.QtWidgets import QMessageBox
 
 # PyQGIS
 from qgis.core import (
+    Qgis,
     QgsProject,
     QgsVectorLayer,
     QgsRasterLayer,
@@ -55,6 +56,9 @@ matching_wkb_SDO_GTYPE = {
 }
 
 li_wkb_multiGeom_ok = [[1, 4], [2, 5], [3, 6]]
+
+qgis_version = Qgis.QGIS_VERSION
+qgis_minor_version = int(qgis_version.split(".")[1])
 
 # ############################################################################
 # ##### Conditional imports ########
@@ -366,7 +370,10 @@ class LayerAdder:
 
             li_layers_to_add = []
             if table[2] is None:  # in case of DTNG
-                uri.setWkbType(100)
+                if qgis_minor_version >= 30:
+                    uri.setWkbType(Qgis.WkbType(100))
+                else:
+                    uri.setWkbType(100)
                 layer = QgsVectorLayer(uri.uri(), table[1], "postgres")
                 li_layers_to_add.append(layer)
             else:
@@ -420,17 +427,26 @@ class LayerAdder:
                 # Building the layer
                 li_geomType_layers = []
                 if len(li_geomTypes) == 0:
-                    uri.setWkbType(100)
+                    if qgis_minor_version >= 30:
+                        uri.setWkbType(Qgis.WkbType(100))
+                    else:
+                        uri.setWkbType(100)
                     layer = QgsVectorLayer(uri.uri(), table[1], "postgres")
                     li_geomType_layers.append(layer)
                 elif not is_multi_geom:
-                    uri.setWkbType(li_geomTypes[0])
+                    if qgis_minor_version >= 30:
+                        uri.setWkbType(Qgis.WkbType(li_geomTypes[0]))
+                    else:
+                        uri.setWkbType(li_geomTypes[0])
                     layer = QgsVectorLayer(uri.uri(), table[1], "postgres")
                     li_geomType_layers.append(layer)
                 else:
                     li_geomTypes.sort(reverse=True)
                     for geomType in li_geomTypes:
-                        uri.setWkbType(geomType)
+                        if qgis_minor_version >= 30:
+                            uri.setWkbType(Qgis.WkbType(geomType))
+                        else:
+                            uri.setWkbType(geomType)
                         layer = QgsVectorLayer(uri.uri(), table[1], "postgres")
                         li_geomType_layers += [layer]
 
@@ -451,7 +467,10 @@ class LayerAdder:
                             uri = db_connection.get("uri")
                             uri.setDataSource(table[0], table[1], table[2])
                             uri.setKeyColumn(field)
-                            uri.setWkbType(geomType_layer.dataProvider().wkbType())
+                            if qgis_minor_version >= 30:
+                                uri.setWkbType(Qgis.WkbType(geomType_layer.dataProvider().wkbType()))
+                            else:
+                                uri.setWkbType(geomType_layer.dataProvider().wkbType())
                             layer = QgsVectorLayer(uri.uri(True), table[1], "postgres")
                             if layer.isValid():
                                 logger.info("'{}' chose as key column to add {}.{} PostGIS view".format(field, schema, table_name))
@@ -535,7 +554,10 @@ class LayerAdder:
 
         li_layers_to_add = []
         if table[2] is None:  # in case of DTNG
-            uri.setWkbType(100)
+            if qgis_minor_version >= 30:
+                uri.setWkbType(Qgis.WkbType(100))
+            else:
+                uri.setWkbType(100)
             layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
             li_layers_to_add.append(layer)
         else:
@@ -590,17 +612,26 @@ class LayerAdder:
             # Building the layer
             li_geomType_layers = []
             if len(li_geomTypes) == 0:
-                uri.setWkbType(100)
+                if qgis_minor_version >= 30:
+                    uri.setWkbType(Qgis.WkbType(100))
+                else:
+                    uri.setWkbType(100)
                 layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
                 li_geomType_layers.append(layer)
             elif not is_multi_geom:
-                uri.setWkbType(li_geomTypes[0])
+                if qgis_minor_version >= 30:
+                    uri.setWkbType(Qgis.WkbType(li_geomTypes[0]))
+                else:
+                    uri.setWkbType(li_geomTypes[0])
                 layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
                 li_geomType_layers.append(layer)
             else:
                 li_geomTypes.sort(reverse=True)
                 for geomType in li_geomTypes:
-                    uri.setWkbType(geomType)
+                    if qgis_minor_version >= 30:
+                        uri.setWkbType(Qgis.WkbType(geomType))
+                    else:
+                        uri.setWkbType(geomType)
                     layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
                     li_geomType_layers += [layer]
 
@@ -621,7 +652,10 @@ class LayerAdder:
                         uri = db_connection.get("uri")
                         uri.setDataSource(table[0], table[1], table[2])
                         uri.setKeyColumn(field)
-                        uri.setWkbType(geomType_layer.dataProvider().wkbType())
+                        if qgis_minor_version >= 30:
+                            uri.setWkbType(Qgis.WkbType(geomType_layer.dataProvider().wkbType()))
+                        else:
+                            uri.setWkbType(geomType_layer.dataProvider().wkbType())
                         layer = QgsVectorLayer(uri.uri(True), table[1], "oracle")
                         if layer.isValid():
                             logger.debug(
