@@ -1,8 +1,6 @@
 # Lint, test and package a plugin for QGIS
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops&tabs=yaml
 
-# -- TRIGGERS --------------------------------------------------------------------------------------
-
 pr:
   - master
 
@@ -16,7 +14,6 @@ trigger:
     include:
     - "*"
 
-# -- RESOURCES -------------------------------------------------------------------------------------
 resources:
   repositories:
     - repository: templates
@@ -24,7 +21,6 @@ resources:
       name: isogeo/devops-templates
       endpoint: isogeo
 
-# -- GLOBAL VARIABLES ------------------------------------------------------------------------------
 variables:
   pythonVersion: "3.9"
   isProd: $[contains(variables['Build.SourceBranch'], 'refs/tags')]
@@ -34,17 +30,14 @@ variables:
   releaseDate: $[format('{0:dd}.{0:MM}.{0:yyyy}', pipeline.startTime)]
   releaseDateWithHour: $[format('{0:dd}.{0:MM}.{0:yyyy}-{0:HH}.{0:mm}', pipeline.startTime)]
 
-# -- STAGES ----------------------------------------------------------------------------------------
 stages:
 - stage: variables
   pool:
     vmImage: "ubuntu-22.04"
   displayName: "Variables"
   jobs:
-  # -- LINT AND FORMAT -----------------------------------------------------------------------------
   - job: variables_values
     displayName: "Set and display variables values"
-    # displayName: "Pipeline variables values"
 
     steps:
     - checkout : self
@@ -98,7 +91,6 @@ stages:
     zipName: $[ stageDependencies.variables.variables_values.outputs['set_zipname_variable.zipName'] ]
   displayName: "Integration"
   jobs:
-  # -- LINT AND FORMAT -----------------------------------------------------------------------------
   - job: format_lint_build_package
     displayName: "Format & lint code, then build & package"
 
