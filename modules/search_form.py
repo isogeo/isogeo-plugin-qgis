@@ -60,7 +60,7 @@ class SearchFormManager(IsogeoDockWidget):
     It performs different tasks :
         - update widgets (clear, fill and set appropriate status)
         - fill the results table calling ResultsManager.show_results method
-        - save search parameters selected by the user, wich is useful for updating
+        - save search parameters selected by the user, which is useful for updating
         widgets or building search request's URL.
     Most of its methods are called by Isogeo.search_slot method which launched after
     the results of a search request has been parsed and validated.

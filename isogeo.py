@@ -691,6 +691,7 @@ class Isogeo:
         self.hardReset = True
         # clear widgets
         self.form_mng.reinit_widgets()
+        self.old_text = self.form_mng.txt_input.text()
         # launch search
         self.search()
 
