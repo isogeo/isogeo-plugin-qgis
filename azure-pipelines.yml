@@ -225,7 +225,7 @@ stages:
       continueOnError: true
       displayName: "Publish tagged code as Github Release"
       inputs:
-        gitHubConnection: 'github.com_SimonSAMPERE'
+        gitHubConnection: $(GITHUB_CONNECTION)
         repositoryName: '$(Build.Repository.Name)'
         action: 'create'
         assets: "$(System.DefaultWorkingDirectory)/*"
