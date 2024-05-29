@@ -54,7 +54,7 @@ class PortalURLManager:
             self.settings_mng.config_content.get("portal_base_url")
         )
         self.portalURL_config_dialog.chb_portal_url.setChecked(
-            int(self.settings_mng.config_content.get("add_metadata_url_portal"))
+            int(self.settings_mng.config_content.get("isogeo/settings/add_metadata_url_portal"))
         )
         self.portalURL_config_dialog.open()
 
@@ -66,7 +66,7 @@ class PortalURLManager:
             "portal_base_url", self.portalURL_config_dialog.input_portal_url.text()
         )
         is_checked = int(self.portalURL_config_dialog.chb_portal_url.isChecked())
-        self.settings_mng.set_config_value("add_metadata_url_portal", is_checked)
+        self.settings_mng.set_config_value("isogeo/settings/add_metadata_url_portal", is_checked)
 
     def update_input_state(self):
         """"""
