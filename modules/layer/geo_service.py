@@ -4,6 +4,7 @@
 # Standard library
 import logging
 import re
+import json
 from xml.etree import ElementTree
 from urllib.parse import urlencode, unquote, quote
 
@@ -14,8 +15,13 @@ from qgis.core import (
     QgsProject,
     QgsCoordinateReferenceSystem,
     QgsRectangle,
+    QgsNetworkAccessManager  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
 )
 from qgis.utils import iface
+
+# PyQT
+from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtNetwork import QNetworkRequest
 
 # Plugin modules
 from ..tools import IsogeoPlgTools
@@ -1078,6 +1084,7 @@ class GeoServiceManager:
         # try to send "GetCapabilities" equivalent request
         try:
             getCap_request = requests.get(service_dict["getCap_url"], verify=False)
+            logger.debug("*=====* {}".format(service_dict["getCap_url"]))
             getCap_content = getCap_request.json()
             service_dict["reachable"] = 1
         except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
@@ -1111,6 +1118,21 @@ class GeoServiceManager:
                 )
                 service_dict["reachable"] = 0
                 service_dict["error"] = error_msg
+
+                try:
+                    qnam = QgsNetworkAccessManager.instance()
+                    request = QNetworkRequest(QUrl(service_dict["getCap_url"]))
+                    reply = qnam.blockingGet(request, "portal1")
+
+                    reply_content_str = reply.content().data().decode("utf8")
+                    reply_content_json = json.loads(reply_content_str)
+
+                    getCap_content = reply_content_json
+                    service_dict["reachable"] = 1
+
+                    del qnam
+                except Exception as e:
+                    print(e)
             else:
                 pass
         else:

@@ -18,7 +18,8 @@ from qgis.core import (
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
-    QgsWkbTypes
+    QgsWkbTypes,
+    QgsNetworkAccessManager  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
 )
 
 from qgis.utils import iface
@@ -211,7 +212,15 @@ class LayerAdder:
         data_provider = self.dict_service_types.get(service_type)[0]
         QgsLayer = self.dict_service_types.get(service_type)[1]
         # create the layer
-        layer = QgsLayer(layer_url, layer_title, data_provider)
+        if service_type in ["EFS", "EMS"]:  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
+            layer_uri = "authcfg=portal1 " + layer_url
+            QgsNetworkAccessManager.instance().cache().clear()
+            layer = QgsLayer(layer_uri, layer_title, data_provider)
+            logger.debug("*=====*{}".format(layer_url))
+            logger.debug("*=====*{}".format(layer_uri))
+            logger.debug("*=====*{}".format(layer.isValid()))
+        else:
+            layer = QgsLayer(layer_url, layer_title, data_provider)
         # If the layer is valid, add it to the map canvas and inform the user
         if layer.isValid():
             lyr = QgsProject.instance().addMapLayer(layer)
@@ -272,6 +281,7 @@ class LayerAdder:
                     layer_is_ok = 0
 
         if not layer_is_ok:
+            logger.debug("*=====*{}".format(layer_url))
             self.invalid_layer_inform(
                 data_type=service_type, data_source=layer_url, error_msg=error_msg
             )
@@ -302,6 +312,7 @@ class LayerAdder:
 
         # use GeoServiceManager to retrieve all the infos we need to add the layer to the canvas
         layer_infos = url_builder(api_layer, service_details)
+        logger.debug("*=====* {}".format(layer_infos))
         # If everything is ok, let's create the layer that we gonna try to add to the canvas
         if layer_infos[0]:
             layer_url = layer_infos[2]
