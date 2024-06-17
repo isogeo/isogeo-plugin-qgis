@@ -1,6 +1,6 @@
 {
     "release-note": {
-        "fr": "## Version 3.4.0, publiée en Août 2022\n* Intégration des évolutions de l'API Isogeo :\r  * ajout d'un filtre sur les thématiques ;\r  * gestion des fiches relatives aux données tabulaires non géographiques.\n* Adaptations pour Isogeo *on premises* :\r  * configuration des URLs d'appel à l'API Isogeo ;\r  * premières étapes de la compatibilité avec les OS Linux.\n* Refonte légère de l'interface graphique :\r  * révision des icônes ;\r  * redimensionnement de la fenêtre principale.\n* Optimisation des performances et du fonctionnement.\n* Améliorations et corrections mineurs.\n",
+        "fr": "* Refonte de la gestion des paramètres.\n* Gestion des tables PostGIS à types de géométrie multiples.\n* Mise en compatibilité avec les évolutions de l'API Isogeo (groupes de couches, tables de services...).\n* Ajustements et améliorations graphiques (formulaire de recherche, fiche de métadonnées, fenêtre d'authentification...).\n* Correctifs divers (ajout de couches, gestion des géoservices, recherche textuelle, filtre géographique...)",
         "en": ""
     },
     "compliance":{
