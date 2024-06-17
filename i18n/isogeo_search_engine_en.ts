@@ -12,7 +12,7 @@
 <context>
     <name>CacheManager</name>
     <message>
-        <location filename="../modules/results/cache.py" line="129"/>
+        <location filename="../modules/results/cache.py" line="66"/>
         <source>Cache has been cleaned.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20,22 +20,22 @@
 <context>
     <name>DataBaseManager</name>
     <message>
-        <location filename="../modules/layer/database.py" line="748"/>
+        <location filename="../modules/layer/database.py" line="696"/>
         <source>Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="752"/>
+        <location filename="../modules/layer/database.py" line="700"/>
         <source>Connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="818"/>
+        <location filename="../modules/layer/database.py" line="766"/>
         <source> - Configuration of database connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="822"/>
+        <location filename="../modules/layer/database.py" line="770"/>
         <source>Choose the embed connection to be used to access to each {} database</source>
         <translation type="unfinished"></translation>
     </message>
@@ -43,47 +43,47 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="358"/>
+        <location filename="../isogeo.py" line="347"/>
         <source>&amp;Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="331"/>
+        <location filename="../isogeo.py" line="320"/>
         <source>Search within Isogeo catalogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="506"/>
+        <location filename="../isogeo.py" line="494"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="442"/>
+        <location filename="../isogeo.py" line="431"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="504"/>
+        <location filename="../isogeo.py" line="492"/>
         <source> results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="842"/>
+        <location filename="../isogeo.py" line="829"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="608"/>
+        <location filename="../isogeo.py" line="595"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="872"/>
+        <location filename="../isogeo.py" line="856"/>
         <source>PostgreSQL databases are not supported by your QGIS installation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="883"/>
+        <location filename="../isogeo.py" line="867"/>
         <source>Oracle databases are not supported by your QGIS installation.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -359,17 +359,17 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="452"/>
+        <location filename="../modules/tools.py" line="447"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="364"/>
+        <location filename="../modules/tools.py" line="359"/>
         <source>Alert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="364"/>
+        <location filename="../modules/tools.py" line="359"/>
         <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
@@ -379,32 +379,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="108"/>
+        <location filename="../modules/layer/add_layer.py" line="116"/>
         <source>Service layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="111"/>
+        <location filename="../modules/layer/add_layer.py" line="119"/>
         <source>Data file layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="127"/>
+        <location filename="../modules/layer/add_layer.py" line="135"/>
         <source>is not valid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="130"/>
+        <location filename="../modules/layer/add_layer.py" line="138"/>
         <source>Error:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="115"/>
+        <location filename="../modules/layer/add_layer.py" line="123"/>
         <source>The table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="133"/>
+        <location filename="../modules/layer/add_layer.py" line="141"/>
         <source>The layer can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
@@ -412,17 +412,17 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>LimitationsChecker</name>
     <message>
-        <location filename="../modules/layer/limitations_checker.py" line="70"/>
+        <location filename="../modules/layer/limitations_checker.py" line="69"/>
         <source>This data is subject to a security limitation :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/limitations_checker.py" line="86"/>
+        <location filename="../modules/layer/limitations_checker.py" line="85"/>
         <source>Do you want to add the layer to the canvas anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/limitations_checker.py" line="82"/>
+        <location filename="../modules/layer/limitations_checker.py" line="81"/>
         <source>No description provided</source>
         <translation type="unfinished"></translation>
     </message>
@@ -430,42 +430,42 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>MetadataDisplayer</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="123"/>
+        <location filename="../modules/metadata_display.py" line="115"/>
         <source>Undefined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="433"/>
+        <location filename="../modules/metadata_display.py" line="425"/>
         <source>unknown owner name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="437"/>
+        <location filename="../modules/metadata_display.py" line="429"/>
         <source>unknown owner email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="441"/>
+        <location filename="../modules/metadata_display.py" line="433"/>
         <source>unknown owner phone number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="445"/>
+        <location filename="../modules/metadata_display.py" line="437"/>
         <source>unknown owner adress</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="449"/>
+        <location filename="../modules/metadata_display.py" line="441"/>
         <source>unknown owner city</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="453"/>
+        <location filename="../modules/metadata_display.py" line="445"/>
         <source>unknown owner country</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="473"/>
+        <location filename="../modules/metadata_display.py" line="465"/>
         <source>unknown</source>
         <translation type="unfinished"></translation>
     </message>
@@ -478,37 +478,32 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="191"/>
+        <location filename="../modules/quick_search.py" line="184"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="216"/>
+        <location filename="../modules/quick_search.py" line="207"/>
         <source>Quicksearch removed: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="346"/>
+        <location filename="../modules/quick_search.py" line="227"/>
         <source>Default search successfully reset.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="282"/>
-        <source>Last search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/quick_search.py" line="133"/>
+        <location filename="../modules/quick_search.py" line="131"/>
         <source>Isogeo - Rename quicksearch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="137"/>
+        <location filename="../modules/quick_search.py" line="135"/>
         <source>Isogeo - New quicksearch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="146"/>
+        <location filename="../modules/quick_search.py" line="144"/>
         <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -516,37 +511,37 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="220"/>
+        <location filename="../modules/results/display.py" line="218"/>
         <source>Unknown geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="211"/>
+        <location filename="../modules/results/display.py" line="209"/>
         <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="214"/>
+        <location filename="../modules/results/display.py" line="212"/>
         <source>Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="594"/>
+        <location filename="../modules/results/display.py" line="592"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="536"/>
+        <location filename="../modules/results/display.py" line="534"/>
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="171"/>
+        <location filename="../modules/results/display.py" line="169"/>
         <source>Undefined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="217"/>
+        <location filename="../modules/results/display.py" line="215"/>
         <source>Table</source>
         <translation type="unfinished"></translation>
     </message>
@@ -554,112 +549,112 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>SearchFormManager</name>
     <message>
-        <location filename="../modules/search_form.py" line="98"/>
+        <location filename="../modules/search_form.py" line="96"/>
         <source>within</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="98"/>
+        <location filename="../modules/search_form.py" line="96"/>
         <source>contains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="112"/>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Relevance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="112"/>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Alphabetical order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="112"/>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Data modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="112"/>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Data created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="112"/>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Metadata modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="112"/>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Metadata created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="120"/>
+        <location filename="../modules/search_form.py" line="118"/>
         <source>Descending</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="120"/>
+        <location filename="../modules/search_form.py" line="118"/>
         <source>Ascending</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="230"/>
+        <location filename="../modules/search_form.py" line="234"/>
         <source>Selected keywords:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="235"/>
+        <location filename="../modules/search_form.py" line="239"/>
         <source>No keyword selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="311"/>
+        <location filename="../modules/search_form.py" line="315"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="405"/>
+        <location filename="../modules/search_form.py" line="409"/>
         <source>Display results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="98"/>
+        <location filename="../modules/search_form.py" line="96"/>
         <source>intersects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="256"/>
+        <location filename="../modules/search_form.py" line="260"/>
         <source> Map canvas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="112"/>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Metadata modification date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="112"/>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Metadata creation date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="112"/>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Data modification date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="112"/>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Data creation date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="368"/>
+        <location filename="../modules/search_form.py" line="372"/>
         <source>Order by: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="373"/>
+        <location filename="../modules/search_form.py" line="377"/>
         <source>Order direction: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -695,72 +690,72 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>UserInformer</name>
     <message>
-        <location filename="../modules/user_inform.py" line="53"/>
+        <location filename="../modules/user_inform.py" line="74"/>
         <source>The specified file does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="58"/>
+        <location filename="../modules/user_inform.py" line="79"/>
         <source>The selected credentials file&apos;s format is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="66"/>
+        <location filename="../modules/user_inform.py" line="86"/>
         <source>Authentication file is valid. Asking for authorization to Isogeo&apos;s API.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="99"/>
+        <location filename="../modules/user_inform.py" line="117"/>
         <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="110"/>
+        <location filename="../modules/user_inform.py" line="126"/>
         <source>Request to Isogeo&apos;s API failed : unkown error found. Please, report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="115"/>
+        <location filename="../modules/user_inform.py" line="130"/>
         <source>API authentication failed : unexpected API&apos;s reply. Please, report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="120"/>
+        <location filename="../modules/user_inform.py" line="134"/>
         <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="94"/>
+        <location filename="../modules/user_inform.py" line="113"/>
         <source>ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="146"/>
+        <location filename="../modules/user_inform.py" line="158"/>
         <source>No share feeds the plugin. If you want to access resources via the plugin, you must share at least one catalog containing at least one metadata with it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="104"/>
+        <location filename="../modules/user_inform.py" line="121"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin and check your Internet connection. If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="164"/>
+        <location filename="../modules/user_inform.py" line="175"/>
         <source>This data is subject to </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="164"/>
+        <location filename="../modules/user_inform.py" line="175"/>
         <source> legal limitation(s) :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="179"/>
+        <location filename="../modules/user_inform.py" line="190"/>
         <source>No description provided</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="126"/>
+        <location filename="../modules/user_inform.py" line="139"/>
         <source>Search request to Isogeo&apos;s API failed : please check that &apos;api_base_url&apos; and &apos;api_auth_url&apos; URLs specified into config.json file are pointing to the same API.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -768,32 +763,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_credits</name>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="194"/>
+        <location filename="../ui/credits/ui_credits.py" line="197"/>
         <source>Credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="195"/>
+        <location filename="../ui/credits/ui_credits.py" line="198"/>
         <source>Realization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="197"/>
+        <location filename="../ui/credits/ui_credits.py" line="200"/>
         <source>Sponsors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="198"/>
+        <location filename="../ui/credits/ui_credits.py" line="201"/>
         <source>Sources and license</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="196"/>
+        <location filename="../ui/credits/ui_credits.py" line="199"/>
         <source>&lt;a href=&quot;https://www.isogeo.com&quot; style=&quot;color:#6480A7;text-decoration:none;&quot;&gt;Easy access to geodata!&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="199"/>
+        <location filename="../ui/credits/ui_credits.py" line="202"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -814,42 +809,42 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_form_auth_prompt</name>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="245"/>
+        <location filename="../ui/auth/ui_authentication.py" line="248"/>
         <source>Isogeo authentication settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="247"/>
+        <location filename="../ui/auth/ui_authentication.py" line="250"/>
         <source>Application ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="248"/>
+        <location filename="../ui/auth/ui_authentication.py" line="251"/>
         <source>Application SECRET:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="252"/>
+        <location filename="../ui/auth/ui_authentication.py" line="255"/>
         <source>I&apos;ve got edition rights on app.isogeo.com</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="246"/>
+        <location filename="../ui/auth/ui_authentication.py" line="249"/>
         <source>From a file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="250"/>
+        <location filename="../ui/auth/ui_authentication.py" line="253"/>
         <source>Pick your credentials file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="251"/>
+        <location filename="../ui/auth/ui_authentication.py" line="254"/>
         <source>Locate the Isogeo API credentials file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="249"/>
+        <location filename="../ui/auth/ui_authentication.py" line="252"/>
         <source>API location:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1158,12 +1153,12 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_quicksearch_new</name>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_new.py" line="65"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_new.py" line="68"/>
         <source>Isogeo - New quicksearch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_new.py" line="66"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_new.py" line="69"/>
         <source>Quicksearch name:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1171,12 +1166,12 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>dlg_quicksearch_rename</name>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="56"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="59"/>
         <source>Isogeo - Rename quicksearch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="57"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="60"/>
         <source>Quicksearch new name:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1184,46 +1179,46 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>isogeo_tr</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="316"/>
+        <location filename="../modules/metadata_display.py" line="308"/>
         <source>quality</source>
         <comment>isConform</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="318"/>
+        <location filename="../modules/metadata_display.py" line="310"/>
         <source>quality</source>
         <comment>isNotConform</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="230"/>
+        <location filename="../modules/metadata_display.py" line="222"/>
         <source>roles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="257"/>
+        <location filename="../modules/metadata_display.py" line="249"/>
         <source>frequencyTypes</source>
         <comment>frequencyUpdateHelp</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="257"/>
+        <location filename="../modules/metadata_display.py" line="249"/>
         <source>frequencyShortTypes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="390"/>
+        <location filename="../modules/metadata_display.py" line="382"/>
         <source>conditions</source>
         <comment>noLicense</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="404"/>
+        <location filename="../modules/metadata_display.py" line="396"/>
         <source>limitations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="410"/>
+        <location filename="../modules/metadata_display.py" line="402"/>
         <source>restrictions</source>
         <translation type="unfinished"></translation>
     </message>
