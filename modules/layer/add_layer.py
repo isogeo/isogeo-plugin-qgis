@@ -213,11 +213,10 @@ class LayerAdder:
         QgsLayer = self.dict_service_types.get(service_type)[1]
         # create the layer
         if service_type in ["EFS", "EMS"]:  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
-            layer_uri = "authcfg=portal1 " + layer_url
             QgsNetworkAccessManager.instance().cache().clear()
-            layer = QgsLayer(layer_uri, layer_title, data_provider)
+            layer = QgsLayer(layer_url, layer_title, data_provider)
             logger.debug("*=====*{}".format(layer_url))
-            logger.debug("*=====*{}".format(layer_uri))
+            logger.debug("*=====*{}".format(layer_url))
             logger.debug("*=====*{}".format(layer.isValid()))
         else:
             layer = QgsLayer(layer_url, layer_title, data_provider)

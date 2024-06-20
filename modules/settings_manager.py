@@ -88,6 +88,8 @@ class SettingsManager(QSettings):
         self.quicksearches_content = {}
         self.quicksearch_prefix = "isogeo/user/quicksearches/"
 
+        self.afs_connections = {}  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
+
     def get_locale(self):
         """Return 'locale/userLocale' setting value about QGIS language configuration"""
 
@@ -626,6 +628,27 @@ class SettingsManager(QSettings):
         self.update_quicksearches(self.quicksearches_content)
 
         return
+
+    def load_afs_connections(self):
+
+        li_involved_keys = [key for key in self.allKeys() if "arcgisfeatureserver/items" in key and ("url" in key or "authcfg" in key)]
+
+        self.afs_connections = {}
+        for key in li_involved_keys:
+            afs_name = key.split("/")[-2]
+            if afs_name not in self.afs_connections:
+                self.afs_connections[afs_name] = {}
+            else:
+                pass
+
+            if "url" in key:
+                self.afs_connections[afs_name]["url"] = self.get_value(key)
+            elif "authcfg" in key:
+                self.afs_connections[afs_name]["authcfg"] = self.get_value(key)
+            else:
+                pass
+        return
+
 
 # #############################################################################
 # ##### Stand alone program ########
