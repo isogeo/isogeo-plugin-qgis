@@ -1284,13 +1284,13 @@ class GeoServiceManager:
         ems_uri.setParam("layer", api_layer_id)
         ems_uri.setParam("crs", srs)
 
-        ems_url = ems_uri.uri()
+        ems_uri = ems_uri.uri()
 
         logger.debug("*=====* {}".format(ems_dict.get("afs_connection")))
         if ems_dict.get("afs_connection"):
             authcfg = settings_mng.afs_connections.get(ems_dict.get("afs_connection")).get("authcfg")
-            ems_url = "authcfg={} {}".format(authcfg, ems_url)
+            ems_uri = "authcfg={} {}".format(authcfg, ems_uri)
         else:
             pass
 
-        return ("EMS", layer_title, ems_url)
+        return ("EMS", layer_title, ems_uri)
