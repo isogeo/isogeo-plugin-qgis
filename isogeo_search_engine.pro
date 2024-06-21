@@ -31,4 +31,6 @@ SOURCES = __init__.py \
 	ui/quicksearch/ui_quicksearch_rename.py\
 
 TRANSLATIONS = i18n/isogeo_search_engine_fr.ts \
-	i18n/isogeo_search_engine_en.ts
+	i18n/isogeo_search_engine_en.ts \
+	i18n/isogeo_search_engine_es.ts \
+
