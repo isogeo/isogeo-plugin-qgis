@@ -88,6 +88,8 @@ class SettingsManager(QSettings):
         self.quicksearches_content = {}
         self.quicksearch_prefix = "isogeo/user/quicksearches/"
 
+        self.afs_connections = {}  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
+
     def get_locale(self):
         """Return 'locale/userLocale' setting value about QGIS language configuration"""
 
@@ -626,6 +628,33 @@ class SettingsManager(QSettings):
         self.update_quicksearches(self.quicksearches_content)
 
         return
+
+    def load_afs_connections(self):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
+
+        li_afs_connections = [key.split("/")[-2] for key in self.allKeys() if "arcgisfeatureserver/items" in key and "authcfg" in key and self.get_value(key) != ""]
+        logger.debug("*=====* {}".format(li_afs_connections))
+        self.afs_connections = {}
+        for afs_connection in li_afs_connections:
+            authcfg = [self.get_value(key) for key in self.allKeys() if "arcgisfeatureserver/items/{}".format(afs_connection) in key and "authcfg" in key]
+            url = [self.get_value(key) for key in self.allKeys() if "arcgisfeatureserver/items/{}".format(afs_connection) in key and "url" in key]
+
+            if len(authcfg):
+                authcfg = authcfg[0]
+            else:
+                break
+            if len(url):
+                url = url[0]
+            else:
+                break
+
+            self.afs_connections[afs_connection] = {
+                "authcfg": authcfg,
+                "url": url,
+            }
+        logger.debug("*=====* {}".format(self.afs_connections))
+
+        return
+
 
 # #############################################################################
 # ##### Stand alone program ########
