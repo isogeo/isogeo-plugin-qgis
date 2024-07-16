@@ -631,12 +631,23 @@ class SettingsManager(QSettings):
 
     def load_afs_connections(self):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
 
-        li_afs_connections = [key.split("/")[-2] for key in self.allKeys() if "arcgisfeatureserver/items" in key and "authcfg" in key and self.get_value(key) != ""]
+        qsettings_afs_prefix = "arcgisfeatureserver/items"
+        li_afs_connections = [key.split("/")[-2] for key in self.allKeys() if qsettings_afs_prefix in key and "authcfg" in key and self.get_value(key) != ""]
+        if not len(li_afs_connections):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467#issuecomment-2225498751
+            qsettings_afs_prefix = "ARCGISFEATURESERVER"
+            li_afs_connections = [key.split("/")[-2] for key in self.allKeys() if qsettings_afs_prefix in key and "authcfg" in key and self.get_value(key) != ""]
+        else:
+            pass
+
+        logger.info("'{}' used as prefix to find ArcGISFeatureServer connections related QSettings.".format(qsettings_afs_prefix))
         logger.debug("*=====* {}".format(li_afs_connections))
         self.afs_connections = {}
         for afs_connection in li_afs_connections:
-            authcfg = [self.get_value(key) for key in self.allKeys() if "arcgisfeatureserver/items/{}".format(afs_connection) in key and "authcfg" in key]
-            url = [self.get_value(key) for key in self.allKeys() if "arcgisfeatureserver/items/{}".format(afs_connection) in key and "url" in key]
+            authcfg = [self.get_value(key) for key in self.allKeys() if "{}/{}".format(qsettings_afs_prefix, afs_connection) in key and "authcfg" in key]
+            if qsettings_afs_prefix == "ARCGISFEATURESERVER":
+                url = [self.get_value(key) for key in self.allKeys() if "connections-arcgisfeatureserver/{}/url".format(afs_connection) in key and "url" in key]
+            else:
+                url = [self.get_value(key) for key in self.allKeys() if "{}/{}".format(qsettings_afs_prefix, afs_connection) in key and "url" in key]
 
             if len(authcfg):
                 authcfg = authcfg[0]
