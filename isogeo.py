@@ -840,7 +840,7 @@ class Isogeo:
                 )
             )
             # help button
-            help_url = self.settings_mng.config_content.get("help_base_url") + "/qgis/"
+            help_url = self.settings_mng.config_content.get("help_base_url") + "/doc-plugin-qgis/"
             self.form_mng.btn_help.pressed.connect(partial(plg_tools.open_webpage, link=help_url))
             # view credits - see: #52
             self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
