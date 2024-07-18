@@ -24,6 +24,7 @@
 
 # Standard library
 from pathlib import Path
+from time import sleep
 import platform
 
 import logging
@@ -422,7 +423,7 @@ class Isogeo:
         :param int page_change: -1 if 'previous page' button was pressed, 1 if
         'next page' button was pressed, 0 otherwise
         """
-        logger.debug("Search function called. Building the url that is to be sent" "to the API")
+        logger.debug("Search function called. Building the url that is to be sent to the API")
         # Disabling all user inputs during the search function is running
         self.form_mng.switch_widgets_on_and_off(0)
 
@@ -740,6 +741,7 @@ class Isogeo:
     # This function is launched when the plugin is activated.
     def run(self):
         """Run method that loads and starts the plugin."""
+        logger.debug("*=====* {}".format(self.pluginIsActive))
         if not self.pluginIsActive:
             logger.info("Opening (display) the plugin...")
             self.pluginIsActive = True
@@ -764,128 +766,128 @@ class Isogeo:
             # TODO: fix to allow choice of dock location
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.form_mng)
             self.form_mng.show()
+
+            # Fixing a qgis.core bug that shows a warning banner "connexion time
+            # out" whenever a request is sent (even successfully) See :
+            # http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
+            # msgBar.widgetAdded.connect(msgBar.clearWidgets)
+
+            """ --- CONNECTING UI WIDGETS <-> FUNCTIONS --- """
+            # shortcuts
+            self.cbbs_search_advanced = self.form_mng.grp_filters.findChildren(QComboBox)
+            # -- Search form ------------------------------------------------------
+            # search terms text input
+            self.form_mng.txt_input.returnPressed.connect(self.edited_search)
+            self.form_mng.btn_search_go.pressed.connect(self.edited_search)
+            # reset search button
+            self.form_mng.btn_reinit.pressed.connect(self.reinitialize_search)
+            # filters comboboxes
+            self.form_mng.cbb_contact.activated.connect(self.search)
+            self.form_mng.cbb_format.activated.connect(self.search)
+            self.form_mng.cbb_geofilter.activated.connect(self.search)
+            self.form_mng.cbb_grpTh.activated.connect(self.search)
+            self.form_mng.cbb_inspire.activated.connect(self.search)
+            self.form_mng.cbb_license.activated.connect(self.search)
+            self.form_mng.cbb_owner.activated.connect(self.search)
+            self.form_mng.cbb_srs.activated.connect(self.search)
+            self.form_mng.cbb_type.activated.connect(self.search)
+            self.form_mng.kw_sig.connect(self.search)
+
+            # -- Results table ----------------------------------------------------
+            # show and order results
+            self.form_mng.btn_show.pressed.connect(partial(self.search, show=True))
+            self.form_mng.cbb_ob.activated.connect(partial(self.search, show=True))
+            self.form_mng.cbb_od.activated.connect(partial(self.search, show=True))
+            # pagination
+            self.form_mng.btn_next.pressed.connect(partial(self.search, show=True, page_change=1))
+            self.form_mng.btn_previous.pressed.connect(partial(self.search, show=True, page_change=-1))
+            # metadata display
+            self.form_mng.results_mng.md_asked.connect(self.send_details_request)
+
+            # -- Quicksearches ----------------------------------------------------
+
+            # select and use
+            self.form_mng.cbb_quicksearch_use.activated.connect(self.set_widget_status)
+
+            # # -- Settings tab - Search --------------------------------------------
+            # button to empty the cache of filepaths #135
+            self.form_mng.btn_cache_trash.pressed.connect(self.form_mng.results_mng.cache_mng.cleaner)
+
+            # -- Settings tab - Application authentication ------------------------
+            # Change user -> see below for authentication form
+            self.form_mng.btn_change_user.pressed.connect(self.authenticator.display_auth_form)
+            # share text window
+            self.form_mng.txt_shares.setOpenLinks(False)
+            self.form_mng.txt_shares.anchorClicked.connect(plg_tools.open_webpage)
+
+            # -- Settings tab - Resources -----------------------------------------
+            # report and log - see #53 and  #139
+            self.form_mng.btn_log_dir.setIcon(ico_log)
+            self.form_mng.btn_log_dir.pressed.connect(
+                partial(plg_tools.open_dir_file, target=plg_logdir)
+            )
+            self.form_mng.btn_report.pressed.connect(
+                partial(
+                    plg_tools.open_webpage,
+                    link="https://github.com/isogeo/isogeo-plugin-qgis/issues/new?"
+                    "assignees=&template=bug_report.md&title={}"
+                    " - plugin v{} QGIS {} ({})&labels=bug&milestone=4".format(
+                        self.tr("TITLE ISSUE REPORTED"),
+                        plg_tools.plugin_metadata(base_path=plg_basepath),
+                        Qgis.QGIS_VERSION,
+                        platform.platform(),
+                    ),
+                )
+            )
+            # help button
+            help_url = self.settings_mng.config_content.get("help_base_url") + "/qgis/"
+            self.form_mng.btn_help.pressed.connect(partial(plg_tools.open_webpage, link=help_url))
+            # view credits - see: #52
+            self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
+
+            # -- Settings tab - layer adding settings ------------------------
+            self.form_mng.btn_open_pgdb_config_dialog.setIcon(ico_pgis)
+            if self.form_mng.results_mng.db_mng.pgis_available:
+                self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(
+                    partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "PostgreSQL")
+                )
+            else:
+                self.form_mng.btn_open_pgdb_config_dialog.setEnabled(0)
+                self.form_mng.btn_open_pgdb_config_dialog.setToolTip(
+                    self.tr("PostgreSQL databases are not supported by your QGIS installation.")
+                )
+
+            self.form_mng.btn_open_ora_config_dialog.setIcon(ico_ora)
+            if self.form_mng.results_mng.db_mng.ora_available:
+                self.form_mng.btn_open_ora_config_dialog.pressed.connect(
+                    partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "Oracle")
+                )
+            else:
+                self.form_mng.btn_open_ora_config_dialog.setEnabled(0)
+                self.form_mng.btn_open_ora_config_dialog.setToolTip(
+                    self.tr("Oracle databases are not supported by your QGIS installation.")
+                )
+
+            """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
+            self.form_mng.setWindowTitle("Isogeo - {}".format(self.plg_version))
+            # add translator method in others modules
+            plg_tools.tr = self.tr
+            # checks
+            url_to_check = (
+                self.settings_mng.config_content.get("api_base_url")
+                .replace("https://", "")
+                .replace("http://", "")
+            )
+            plg_tools.check_proxy_configuration(url_to_check=url_to_check)  # 22
+            self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
+
+            self.form_mng.txt_input.setFocus()
+            # connect limitations checker to user informer
+            self.form_mng.results_mng.lim_checker.lim_sig.connect(self.informer.lim_slot)
+            # launch authentication
+            self.user_authentication()
         else:
             pass
-
-        # Fixing a qgis.core bug that shows a warning banner "connexion time
-        # out" whenever a request is sent (even successfully) See :
-        # http://gis.stackexchange.com/questions/136369/download-file-from-network-using-pyqgis-2-x#comment299999_136427
-        # msgBar.widgetAdded.connect(msgBar.clearWidgets)
-
-        """ --- CONNECTING UI WIDGETS <-> FUNCTIONS --- """
-        # shortcuts
-        self.cbbs_search_advanced = self.form_mng.grp_filters.findChildren(QComboBox)
-        # -- Search form ------------------------------------------------------
-        # search terms text input
-        self.form_mng.txt_input.returnPressed.connect(self.edited_search)
-        self.form_mng.btn_search_go.pressed.connect(self.edited_search)
-        # reset search button
-        self.form_mng.btn_reinit.pressed.connect(self.reinitialize_search)
-        # filters comboboxes
-        self.form_mng.cbb_contact.activated.connect(self.search)
-        self.form_mng.cbb_format.activated.connect(self.search)
-        self.form_mng.cbb_geofilter.activated.connect(self.search)
-        self.form_mng.cbb_grpTh.activated.connect(self.search)
-        self.form_mng.cbb_inspire.activated.connect(self.search)
-        self.form_mng.cbb_license.activated.connect(self.search)
-        self.form_mng.cbb_owner.activated.connect(self.search)
-        self.form_mng.cbb_srs.activated.connect(self.search)
-        self.form_mng.cbb_type.activated.connect(self.search)
-        self.form_mng.kw_sig.connect(self.search)
-
-        # -- Results table ----------------------------------------------------
-        # show and order results
-        self.form_mng.btn_show.pressed.connect(partial(self.search, show=True))
-        self.form_mng.cbb_ob.activated.connect(partial(self.search, show=True))
-        self.form_mng.cbb_od.activated.connect(partial(self.search, show=True))
-        # pagination
-        self.form_mng.btn_next.pressed.connect(partial(self.search, show=True, page_change=1))
-        self.form_mng.btn_previous.pressed.connect(partial(self.search, show=True, page_change=-1))
-        # metadata display
-        self.form_mng.results_mng.md_asked.connect(self.send_details_request)
-
-        # -- Quicksearches ----------------------------------------------------
-
-        # select and use
-        self.form_mng.cbb_quicksearch_use.activated.connect(self.set_widget_status)
-
-        # # -- Settings tab - Search --------------------------------------------
-        # button to empty the cache of filepaths #135
-        self.form_mng.btn_cache_trash.pressed.connect(self.form_mng.results_mng.cache_mng.cleaner)
-
-        # -- Settings tab - Application authentication ------------------------
-        # Change user -> see below for authentication form
-        self.form_mng.btn_change_user.pressed.connect(self.authenticator.display_auth_form)
-        # share text window
-        self.form_mng.txt_shares.setOpenLinks(False)
-        self.form_mng.txt_shares.anchorClicked.connect(plg_tools.open_webpage)
-
-        # -- Settings tab - Resources -----------------------------------------
-        # report and log - see #53 and  #139
-        self.form_mng.btn_log_dir.setIcon(ico_log)
-        self.form_mng.btn_log_dir.pressed.connect(
-            partial(plg_tools.open_dir_file, target=plg_logdir)
-        )
-        self.form_mng.btn_report.pressed.connect(
-            partial(
-                plg_tools.open_webpage,
-                link="https://github.com/isogeo/isogeo-plugin-qgis/issues/new?"
-                "assignees=&template=bug_report.md&title={}"
-                " - plugin v{} QGIS {} ({})&labels=bug&milestone=4".format(
-                    self.tr("TITLE ISSUE REPORTED"),
-                    plg_tools.plugin_metadata(base_path=plg_basepath),
-                    Qgis.QGIS_VERSION,
-                    platform.platform(),
-                ),
-            )
-        )
-        # help button
-        help_url = self.settings_mng.config_content.get("help_base_url") + "/qgis/"
-        self.form_mng.btn_help.pressed.connect(partial(plg_tools.open_webpage, link=help_url))
-        # view credits - see: #52
-        self.form_mng.btn_credits.pressed.connect(self.credits_dialog.show)
-
-        # -- Settings tab - layer adding settings ------------------------
-        self.form_mng.btn_open_pgdb_config_dialog.setIcon(ico_pgis)
-        if self.form_mng.results_mng.db_mng.pgis_available:
-            self.form_mng.btn_open_pgdb_config_dialog.pressed.connect(
-                partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "PostgreSQL")
-            )
-        else:
-            self.form_mng.btn_open_pgdb_config_dialog.setEnabled(0)
-            self.form_mng.btn_open_pgdb_config_dialog.setToolTip(
-                self.tr("PostgreSQL databases are not supported by your QGIS installation.")
-            )
-
-        self.form_mng.btn_open_ora_config_dialog.setIcon(ico_ora)
-        if self.form_mng.results_mng.db_mng.ora_available:
-            self.form_mng.btn_open_ora_config_dialog.pressed.connect(
-                partial(self.form_mng.results_mng.db_mng.open_db_config_dialog, "Oracle")
-            )
-        else:
-            self.form_mng.btn_open_ora_config_dialog.setEnabled(0)
-            self.form_mng.btn_open_ora_config_dialog.setToolTip(
-                self.tr("Oracle databases are not supported by your QGIS installation.")
-            )
-
-        """ ------- EXECUTED AFTER PLUGIN IS LAUNCHED --------------------- """
-        self.form_mng.setWindowTitle("Isogeo - {}".format(self.plg_version))
-        # add translator method in others modules
-        plg_tools.tr = self.tr
-        # checks
-        url_to_check = (
-            self.settings_mng.config_content.get("api_base_url")
-            .replace("https://", "")
-            .replace("http://", "")
-        )
-        plg_tools.check_proxy_configuration(url_to_check=url_to_check)  # 22
-        self.form_mng.cbb_chck_kw.setEnabled(plg_tools.test_qgis_style())  # see #137
-
-        self.form_mng.txt_input.setFocus()
-        # connect limitations checker to user informer
-        self.form_mng.results_mng.lim_checker.lim_sig.connect(self.informer.lim_slot)
-        # launch authentication
-        self.user_authentication()
 
 
 # #############################################################################
