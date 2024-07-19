@@ -54,7 +54,7 @@ class SharesParser(QObject):
                 "<p>This plugin is authenticated as " "<a href='{}'>{}</a> and ",
                 context=__class__.__name__,
             ).format(
-                app.get("url", "https://help.isogeo.com/qgis/"),
+                app.get("url", "https://help.isogeo.com/doc-plugin-qgis/"),
                 app.get("name", "Isogeo plugin for QGIS"),
             )
             # shares feeding the application

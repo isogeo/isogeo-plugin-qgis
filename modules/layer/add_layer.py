@@ -18,7 +18,8 @@ from qgis.core import (
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
-    QgsWkbTypes
+    QgsWkbTypes,
+    QgsNetworkAccessManager  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
 )
 
 from qgis.utils import iface
@@ -211,7 +212,11 @@ class LayerAdder:
         data_provider = self.dict_service_types.get(service_type)[0]
         QgsLayer = self.dict_service_types.get(service_type)[1]
         # create the layer
-        layer = QgsLayer(layer_url, layer_title, data_provider)
+        if service_type in ["EFS", "EMS"]:  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
+            QgsNetworkAccessManager.instance().cache().clear()
+            layer = QgsLayer(layer_url, layer_title, data_provider)
+        else:
+            layer = QgsLayer(layer_url, layer_title, data_provider)
         # If the layer is valid, add it to the map canvas and inform the user
         if layer.isValid():
             lyr = QgsProject.instance().addMapLayer(layer)

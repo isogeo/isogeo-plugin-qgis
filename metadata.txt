@@ -11,7 +11,7 @@ name=Isogeo
 qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 description=Isogeo search engine within QGIS
-version=3.5.0
+version=3.6.0-beta
 author=Isogeo
 email=projects+qgis@isogeo.com
 
@@ -30,11 +30,11 @@ changelog=- <strong>3.5.0:</strong> see the <a href="https://github.com/isogeo/i
 tags=REST API,catalog,search,explore,webservices,metadata,open data,INSPIRE
 tags[fr]=catalogue,données,webservices,géoservices,métadonnées,données ouvertes,INSPIRE
 
-homepage=http://help.isogeo.com/qgis/
+homepage=http://help.isogeo.com/doc-plugin-qgis/
 category=Web
 icon=icon.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False

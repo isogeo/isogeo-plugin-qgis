@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<TS version="2.1">
 <context>
     <name>ApiRequester</name>
     <message>
@@ -53,11 +53,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="495"/>
-        <source> on </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../isogeo.py" line="432"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
@@ -68,13 +63,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="829"/>
-        <source>TITLE ISSUE REPORTED</source>
+        <location filename="../isogeo.py" line="495"/>
+        <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../isogeo.py" line="596"/>
         <source>Quicksearches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../isogeo.py" line="829"/>
+        <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -101,13 +101,98 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="296"/>
+        <source>Group theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="395"/>
+        <source>Geographic filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="504"/>
+        <source>Format (source)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="607"/>
         <source>INSPIRE keywords</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="709"/>
+        <source>Contact</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="843"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="945"/>
+        <source>Resource type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1048"/>
+        <source>Metadata owner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1151"/>
+        <source>Coordinate system (source)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1247"/>
+        <source>License</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1373"/>
+        <source>Enter your search terms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1385"/>
+        <source>roads, habitat, cadastral parcel, transport...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1413"/>
+        <source>Launch search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1530"/>
+        <source>Quick searches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1546"/>
+        <source>Quicksearches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1599"/>
+        <source>Display the results list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1602"/>
         <source>Show results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1708"/>
+        <source>Reset all input fields</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1747"/>
+        <source>Save research</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -131,33 +216,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2483"/>
-        <source>Report an issue on the bug tracker</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1747"/>
-        <source>Save research</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1708"/>
-        <source>Reset all input fields</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="395"/>
-        <source>Geographic filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="945"/>
-        <source>Resource type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1599"/>
-        <source>Display the results list</source>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1853"/>
+        <source>Page x on x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -171,143 +231,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2071"/>
-        <source>Search settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2301"/>
-        <source>Geographical operator applied to the filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2215"/>
-        <source>Default search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2585"/>
-        <source>Open online plugin help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2651"/>
-        <source>Open plugin credits</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1853"/>
-        <source>Page x on x</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2004"/>
         <source>Set plugin authentication:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1373"/>
-        <source>Enter your search terms</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1413"/>
-        <source>Launch search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="504"/>
-        <source>Format (source)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="709"/>
-        <source>Contact</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1048"/>
-        <source>Metadata owner</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1151"/>
-        <source>Coordinate system (source)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1247"/>
-        <source>License</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1530"/>
-        <source>Quick searches</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2620"/>
-        <source>Open online help in default browser</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2686"/>
-        <source>Open credits popup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1546"/>
-        <source>Quicksearches</source>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2071"/>
+        <source>Search settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2115"/>
         <source>Edit quicksearch</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2364"/>
-        <source>Paths cache</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2396"/>
-        <source>Empty the paths cached</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2720"/>
-        <source>Layer adding settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2796"/>
-        <source>Oracle databases</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2877"/>
-        <source>Choose to add metadata portal URL to layer properties and specify portal base URL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="296"/>
-        <source>Group theme</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="843"/>
-        <source>Keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2818"/>
-        <source>PostgreSQL databases</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1385"/>
-        <source>roads, habitat, cadastral parcel, transport...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -321,6 +256,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2215"/>
+        <source>Default search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2247"/>
         <source>Save current search as default</source>
         <translation type="unfinished"></translation>
@@ -331,13 +271,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2531"/>
-        <source>LOG</source>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2301"/>
+        <source>Geographical operator applied to the filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2525"/>
-        <source>Open folder of &quot;log_isogeo_plugin.log&quot; file</source>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2364"/>
+        <source>Paths cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2396"/>
+        <source>Empty the paths cached</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -346,8 +291,58 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2483"/>
+        <source>Report an issue on the bug tracker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2525"/>
+        <source>Open folder of &quot;log_isogeo_plugin.log&quot; file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2531"/>
+        <source>LOG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2585"/>
+        <source>Open online plugin help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2620"/>
+        <source>Open online help in default browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2651"/>
+        <source>Open plugin credits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2686"/>
+        <source>Open credits popup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2720"/>
+        <source>Layer adding settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2764"/>
         <source>Configure embed database connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2796"/>
+        <source>Oracle databases</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2818"/>
+        <source>PostgreSQL databases</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -355,14 +350,14 @@
         <source>Configure Isogeo portal metadata URL</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2877"/>
+        <source>Choose to add metadata portal URL to layer properties and specify portal base URL</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>IsogeoPlgTools</name>
-    <message>
-        <location filename="../modules/tools.py" line="447"/>
-        <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="../modules/tools.py" line="359"/>
         <source>Alert</source>
@@ -373,6 +368,11 @@
         <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/tools.py" line="447"/>
+        <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -389,6 +389,11 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../modules/layer/add_layer.py" line="124"/>
+        <source>The table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../modules/layer/add_layer.py" line="136"/>
         <source>is not valid</source>
         <translation type="unfinished"></translation>
@@ -396,11 +401,6 @@ You have a proxy set up on your OS {} but none in QGIS.
     <message>
         <location filename="../modules/layer/add_layer.py" line="139"/>
         <source>Error:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/layer/add_layer.py" line="124"/>
-        <source>The table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -417,13 +417,13 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/limitations_checker.py" line="85"/>
-        <source>Do you want to add the layer to the canvas anyway ?</source>
+        <location filename="../modules/layer/limitations_checker.py" line="81"/>
+        <source>No description provided</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/layer/limitations_checker.py" line="81"/>
-        <source>No description provided</source>
+        <location filename="../modules/layer/limitations_checker.py" line="85"/>
+        <source>Do you want to add the layer to the canvas anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -478,21 +478,6 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="184"/>
-        <source>Quicksearch renamed: from {} to {}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/quick_search.py" line="207"/>
-        <source>Quicksearch removed: {}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/quick_search.py" line="227"/>
-        <source>Default search successfully reset.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../modules/quick_search.py" line="131"/>
         <source>Isogeo - Rename quicksearch</source>
         <translation type="unfinished"></translation>
@@ -507,12 +492,27 @@ You have a proxy set up on your OS {} but none in QGIS.
         <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="184"/>
+        <source>Quicksearch renamed: from {} to {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="207"/>
+        <source>Quicksearch removed: {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/quick_search.py" line="227"/>
+        <source>Default search successfully reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="218"/>
-        <source>Unknown geometry</source>
+        <location filename="../modules/results/display.py" line="169"/>
+        <source>Undefined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -526,6 +526,16 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../modules/results/display.py" line="215"/>
+        <source>Table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/results/display.py" line="218"/>
+        <source>Unknown geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../modules/results/display.py" line="592"/>
         <source>Data file</source>
         <translation type="unfinished"></translation>
@@ -535,19 +545,14 @@ You have a proxy set up on your OS {} but none in QGIS.
         <source>Can&apos;t be added</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../modules/results/display.py" line="169"/>
-        <source>Undefined</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/results/display.py" line="215"/>
-        <source>Table</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>SearchFormManager</name>
+    <message>
+        <location filename="../modules/search_form.py" line="96"/>
+        <source>intersects</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../modules/search_form.py" line="96"/>
         <source>within</source>
@@ -575,7 +580,17 @@ You have a proxy set up on your OS {} but none in QGIS.
     </message>
     <message>
         <location filename="../modules/search_form.py" line="110"/>
+        <source>Data modification date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Data created</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/search_form.py" line="110"/>
+        <source>Data creation date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -585,7 +600,17 @@ You have a proxy set up on your OS {} but none in QGIS.
     </message>
     <message>
         <location filename="../modules/search_form.py" line="110"/>
+        <source>Metadata modification date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/search_form.py" line="110"/>
         <source>Metadata created</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/search_form.py" line="110"/>
+        <source>Metadata creation date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -609,43 +634,13 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="315"/>
-        <source>Quicksearches</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/search_form.py" line="409"/>
-        <source>Display results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/search_form.py" line="96"/>
-        <source>intersects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../modules/search_form.py" line="260"/>
         <source> Map canvas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/search_form.py" line="110"/>
-        <source>Metadata modification date</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/search_form.py" line="110"/>
-        <source>Metadata creation date</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/search_form.py" line="110"/>
-        <source>Data modification date</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/search_form.py" line="110"/>
-        <source>Data creation date</source>
+        <location filename="../modules/search_form.py" line="315"/>
+        <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -656,6 +651,11 @@ You have a proxy set up on your OS {} but none in QGIS.
     <message>
         <location filename="../modules/search_form.py" line="377"/>
         <source>Order direction: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/search_form.py" line="409"/>
+        <source>Display results</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -705,8 +705,18 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../modules/user_inform.py" line="113"/>
+        <source>ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../modules/user_inform.py" line="117"/>
         <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/user_inform.py" line="121"/>
+        <source>The script is looping. Make sure you shared a catalog with the plugin and check your Internet connection. If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -725,18 +735,13 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="113"/>
-        <source>ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
+        <location filename="../modules/user_inform.py" line="139"/>
+        <source>Search request to Isogeo&apos;s API failed : please check that &apos;api_base_url&apos; and &apos;api_auth_url&apos; URLs specified into config.json file are pointing to the same API.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="158"/>
         <source>No share feeds the plugin. If you want to access resources via the plugin, you must share at least one catalog containing at least one metadata with it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/user_inform.py" line="121"/>
-        <source>The script is looping. Make sure you shared a catalog with the plugin and check your Internet connection. If this error keeps happening, please report it in the bug tracker.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -754,11 +759,6 @@ You have a proxy set up on your OS {} but none in QGIS.
         <source>No description provided</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../modules/user_inform.py" line="139"/>
-        <source>Search request to Isogeo&apos;s API failed : please check that &apos;api_base_url&apos; and &apos;api_auth_url&apos; URLs specified into config.json file are pointing to the same API.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dlg_credits</name>
@@ -773,6 +773,11 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../ui/credits/ui_credits.py" line="199"/>
+        <source>&lt;a href=&quot;https://www.isogeo.com&quot; style=&quot;color:#6480A7;text-decoration:none;&quot;&gt;Easy access to geodata!&lt;/a&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../ui/credits/ui_credits.py" line="200"/>
         <source>Sponsors</source>
         <translation type="unfinished"></translation>
@@ -780,11 +785,6 @@ You have a proxy set up on your OS {} but none in QGIS.
     <message>
         <location filename="../ui/credits/ui_credits.py" line="201"/>
         <source>Sources and license</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/credits/ui_credits.py" line="199"/>
-        <source>&lt;a href=&quot;https://www.isogeo.com&quot; style=&quot;color:#6480A7;text-decoration:none;&quot;&gt;Easy access to geodata!&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -814,6 +814,11 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../ui/auth/ui_authentication.py" line="249"/>
+        <source>From a file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../ui/auth/ui_authentication.py" line="250"/>
         <source>Application ID:</source>
         <translation type="unfinished"></translation>
@@ -824,13 +829,8 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="255"/>
-        <source>I&apos;ve got edition rights on app.isogeo.com</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/auth/ui_authentication.py" line="249"/>
-        <source>From a file:</source>
+        <location filename="../ui/auth/ui_authentication.py" line="252"/>
+        <source>API location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -844,8 +844,8 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="252"/>
-        <source>API location:</source>
+        <location filename="../ui/auth/ui_authentication.py" line="255"/>
+        <source>I&apos;ve got edition rights on app.isogeo.com</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -882,6 +882,11 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1899"/>
+        <source>Quality</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1978"/>
         <source>Licenses</source>
         <translation type="unfinished"></translation>
@@ -897,18 +902,13 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1916"/>
-        <source>INSPIRE themes</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1906"/>
+        <source>Owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1913"/>
-        <source>Keywords</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1919"/>
-        <source>Abstract</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1989"/>
+        <source>Metadata owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -917,8 +917,28 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1989"/>
-        <source>Metadata owner</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1909"/>
+        <source>Group Themes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1910"/>
+        <source>Group themes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1913"/>
+        <source>Keywords</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1916"/>
+        <source>INSPIRE themes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1919"/>
+        <source>Abstract</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -957,18 +977,13 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1943"/>
-        <source>Updated every:</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1937"/>
+        <source>Creation date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1987"/>
         <source>Last update:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1937"/>
-        <source>Creation date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -979,6 +994,26 @@ You have a proxy set up on your OS {} but none in QGIS.
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1942"/>
         <source>Validity period end:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1943"/>
+        <source>Updated every:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1945"/>
+        <source>Validity comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1947"/>
+        <source>Collection context</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1949"/>
+        <source>Collection method</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -997,21 +1032,6 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1966"/>
-        <source>Scale:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1964"/>
-        <source>SRS:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1968"/>
-        <source>Resolution:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1958"/>
         <source>Format:</source>
         <translation type="unfinished"></translation>
@@ -1027,78 +1047,28 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1973"/>
-        <source>Bounding box preview</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1964"/>
+        <source>SRS:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1980"/>
-        <source>Limitations</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1966"/>
+        <source>Scale:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1991"/>
-        <source>wg_email</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1993"/>
-        <source>wg_address</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1992"/>
-        <source>wg_phone</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1994"/>
-        <source>wg_pc_city</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1995"/>
-        <source>wg_country</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1982"/>
-        <source>Metadata properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1985"/>
-        <source>Created:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1947"/>
-        <source>Collection context</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1949"/>
-        <source>Collection method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1983"/>
-        <source>Language: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1899"/>
-        <source>Quality</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1990"/>
-        <source>wg_owner</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1968"/>
+        <source>Resolution:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1971"/>
         <source>Geographical context</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1973"/>
+        <source>Bounding box preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1112,23 +1082,53 @@ You have a proxy set up on your OS {} but none in QGIS.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1910"/>
-        <source>Group themes</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1980"/>
+        <source>Limitations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1906"/>
-        <source>Owner</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1982"/>
+        <source>Metadata properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1909"/>
-        <source>Group Themes</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1983"/>
+        <source>Language: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1945"/>
-        <source>Validity comment</source>
+        <location filename="../ui/metadata/ui_md_details.py" line="1985"/>
+        <source>Created:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1990"/>
+        <source>wg_owner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1991"/>
+        <source>wg_email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1992"/>
+        <source>wg_phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1993"/>
+        <source>wg_address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1994"/>
+        <source>wg_pc_city</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/metadata/ui_md_details.py" line="1995"/>
+        <source>wg_country</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

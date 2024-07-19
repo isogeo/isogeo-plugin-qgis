@@ -43,27 +43,27 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="347"/>
+        <location filename="../isogeo.py" line="348"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="320"/>
+        <location filename="../isogeo.py" line="321"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="495"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="431"/>
+        <location filename="../isogeo.py" line="432"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="492"/>
+        <location filename="../isogeo.py" line="493"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
@@ -73,7 +73,7 @@
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="595"/>
+        <location filename="../isogeo.py" line="596"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
@@ -381,32 +381,32 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="116"/>
+        <location filename="../modules/layer/add_layer.py" line="117"/>
         <source>Service layer</source>
         <translation>La couche de service</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="119"/>
+        <location filename="../modules/layer/add_layer.py" line="120"/>
         <source>Data file layer</source>
         <translation>La couche</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="135"/>
+        <location filename="../modules/layer/add_layer.py" line="136"/>
         <source>is not valid</source>
         <translation>n'est pas valide</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="138"/>
+        <location filename="../modules/layer/add_layer.py" line="139"/>
         <source>Error:</source>
         <translation>Erreur :</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="123"/>
+        <location filename="../modules/layer/add_layer.py" line="124"/>
         <source>The table</source>
         <translation>La table</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="141"/>
+        <location filename="../modules/layer/add_layer.py" line="142"/>
         <source>The layer can&apos;t be added</source>
         <translation>La couche ne peut pas être ajoutée</translation>
     </message>

@@ -8,7 +8,7 @@ Equivalent of [plugins for ArcGIS](https://www.isogeo.com/nos-produits/Plugins-W
 
 You can see and vote for [this plugin on the official QGIS extensions website](https://plugins.qgis.org/plugins/isogeo_search_engine/).
 
-[Online documentation is available here](http://help.isogeo.com/qgis/).
+[Online documentation is available here](http://help.isogeo.com/doc-plugin-qgis/).
 
 ## Purpose
 
@@ -56,7 +56,4 @@ In a nutshell:
 
 If you want a more advanced version, check the box allowing experimental extensions in settings.
 
-See the documentation:
-
-* en [français](http://help.isogeo.com/qgis/fr/) ;
-* in [English](http://help.isogeo.com/qgis/en/).
+See the documentation: https://help.isogeo.com/doc-plugin-qgis/.

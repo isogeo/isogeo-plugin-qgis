@@ -11,7 +11,7 @@ assignees: ''
 
 *S'il s'agit d'une demande d'évolution, ne pas tenir compte du modèle et prendre le temps de décrire précisément le comportement attendu ainsi que les besoins que cela couvrirait (cas d'usage...)*
 
-Fichier log : **\\\ JOINDRE LE FICHIER LOG // [Voir ici pour le récupérer](http://help.isogeo.com/qgis/fr/appendices/support.html)**
+Fichier log : **\\\ JOINDRE LE FICHIER LOG // [Voir ici pour le récupérer](https://help.isogeo.com/doc-plugin-qgis/appendices/support/)**
 
 ## Environnement
 

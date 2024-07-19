@@ -88,6 +88,8 @@ class SettingsManager(QSettings):
         self.quicksearches_content = {}
         self.quicksearch_prefix = "isogeo/user/quicksearches/"
 
+        self.afs_connections = {}  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
+
     def get_locale(self):
         """Return 'locale/userLocale' setting value about QGIS language configuration"""
 
@@ -626,6 +628,43 @@ class SettingsManager(QSettings):
         self.update_quicksearches(self.quicksearches_content)
 
         return
+
+    def load_afs_connections(self):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
+
+        qsettings_afs_prefix = "arcgisfeatureserver/items"
+        li_afs_connections = [key.split("/")[-2] for key in self.allKeys() if qsettings_afs_prefix in key and "authcfg" in key and self.get_value(key) != ""]
+        if not len(li_afs_connections):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467#issuecomment-2225498751
+            qsettings_afs_prefix = "ARCGISFEATURESERVER"
+            li_afs_connections = [key.split("/")[-2] for key in self.allKeys() if qsettings_afs_prefix in key and "authcfg" in key and self.get_value(key) != ""]
+        else:
+            pass
+
+        logger.info("'{}' used as prefix to find ArcGISFeatureServer connections related QSettings.".format(qsettings_afs_prefix))
+        self.afs_connections = {}
+        for afs_connection in li_afs_connections:
+            authcfg = [self.get_value(key) for key in self.allKeys() if "{}/{}".format(qsettings_afs_prefix, afs_connection) in key and "authcfg" in key]
+            if qsettings_afs_prefix == "ARCGISFEATURESERVER":
+                url = [self.get_value(key) for key in self.allKeys() if "connections-arcgisfeatureserver/{}/url".format(afs_connection) in key and "url" in key]
+            else:
+                url = [self.get_value(key) for key in self.allKeys() if "{}/{}".format(qsettings_afs_prefix, afs_connection) in key and "url" in key]
+
+            if len(authcfg):
+                authcfg = authcfg[0]
+            else:
+                break
+            if len(url):
+                url = url[0]
+            else:
+                break
+
+            self.afs_connections[afs_connection] = {
+                "authcfg": authcfg,
+                "url": url,
+            }
+        logger.info("{} ArcGISFeatureServer connection(s) loaded : {}".format(len(self.afs_connections), self.afs_connections))
+
+        return
+
 
 # #############################################################################
 # ##### Stand alone program ########
