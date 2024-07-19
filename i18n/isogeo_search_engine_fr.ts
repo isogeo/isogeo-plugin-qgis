@@ -43,27 +43,27 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="347"/>
+        <location filename="../isogeo.py" line="348"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="320"/>
+        <location filename="../isogeo.py" line="321"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Rechercher au sein de  catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="495"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="431"/>
+        <location filename="../isogeo.py" line="432"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="492"/>
+        <location filename="../isogeo.py" line="493"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
@@ -73,7 +73,7 @@
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="595"/>
+        <location filename="../isogeo.py" line="596"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>

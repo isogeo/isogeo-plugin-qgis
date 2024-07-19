@@ -43,32 +43,32 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="347"/>
+        <location filename="../isogeo.py" line="348"/>
         <source>&amp;Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="320"/>
+        <location filename="../isogeo.py" line="321"/>
         <source>Search within Isogeo catalogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="431"/>
+        <location filename="../isogeo.py" line="432"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="492"/>
+        <location filename="../isogeo.py" line="493"/>
         <source> results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="495"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="595"/>
+        <location filename="../isogeo.py" line="596"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
