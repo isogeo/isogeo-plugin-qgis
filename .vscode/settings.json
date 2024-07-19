@@ -1,6 +1,6 @@
 {
-    "editor.rulers": [100],
-    "editor.wordWrapColumn": 100,
+    "editor.rulers": [120],
+    "editor.wordWrapColumn": 120,
     // PyQt Integration
     "pyqt-integration.qtdesigner.path": "C:\\Program Files\\QGIS 3.28.4\\bin\\qgis-ltr-designer.bat",
     "pyqt-integration.pyuic.cmd": "C:\\Program Files\\QGIS 3.28.4\\apps\\Python39\\Scripts\\pyuic5.exe",
