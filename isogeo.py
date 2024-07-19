@@ -24,7 +24,6 @@
 
 # Standard library
 from pathlib import Path
-from time import sleep
 import platform
 
 import logging
@@ -155,14 +154,14 @@ class Isogeo:
         # initialize plugin directory
         self.plugin_dir = Path(__file__).parent
 
-        # requiered `_auth` subfolder
+        # required `_auth` subfolder
         plg_authdir = Path(plg_basepath) / "_auth"
         if not plg_authdir.exists():
             plg_authdir.mkdir()
         else:
             pass
 
-        # requiered `_user` subfolder
+        # required `_user` subfolder
         plg_userdir = Path(plg_basepath) / "_user"
         if not plg_userdir.exists():
             plg_userdir.mkdir()
@@ -662,7 +661,7 @@ class Isogeo:
                 logger.debug("No quicksearch selected.")
 
     def edited_search(self):
-        """On the Qline edited signal, decide weither a search has to be launched."""
+        """On the QLine edited signal, decide wether a search has to be launched."""
 
         current_text = self.form_mng.txt_input.text()
         if current_text == self.old_text:
@@ -705,11 +704,11 @@ class Isogeo:
         self.iface.mainWindow().statusBar().insertPermanentWidget(0, self.bar)
 
     def send_details_request(self, md_id):
-        """Send a request for aditionnal info about one data.
+        """Send a request for additional info about one data.
 
         :param str md_id: UUID of metadata to retrieve
         """
-        logger.debug("Full metatada sheet asked. Building the url.")
+        logger.debug("Full metadata sheet asked. Building the url.")
         self.api_requester.currentUrl = "{}/resources/{}{}".format(
             self.api_requester.api_url_base,
             md_id,
@@ -719,7 +718,7 @@ class Isogeo:
         self.api_requester.send_request("details")
 
     def write_shares_info(self, text: str):
-        """Write informations about the shares in the Settings pannel.
+        """Write informations about the shares in the Settings panel.
         See: #87
 
         :param text str: share informations from Isogeo API
