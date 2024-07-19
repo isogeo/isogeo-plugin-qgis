@@ -1081,27 +1081,20 @@ class GeoServiceManager:
             service_dict["base_url"] = service_url + "/"
 
         # check if a afs_connection exists in QSettings - https://github.com/isogeo/isogeo-plugin-qgis/issues/467
-        logger.debug("*=====* {}".format(settings_mng.afs_connections))
         service_dict["afs_connection"] = False
         for afs_connection in settings_mng.afs_connections:
-            logger.debug("*=====* {}".format(settings_mng.afs_connections.get(afs_connection).get("url")))
-            logger.debug("*=====* {}".format(settings_mng.afs_connections.get(afs_connection).get("authcfg")))
-            logger.debug("*=====* {}".format(settings_mng.afs_connections.get(afs_connection).get("url") in service_url))
-            logger.debug("*=====* {}".format(settings_mng.afs_connections.get(afs_connection).get("url") in service_url and settings_mng.afs_connections.get(afs_connection).get("authcfg")))
             if settings_mng.afs_connections.get(afs_connection).get("url") in service_url and settings_mng.afs_connections.get(afs_connection).get("authcfg"):
                 service_dict["afs_connection"] = afs_connection
                 break
             else:
                 pass
 
-        logger.debug("*=====* {}".format(service_dict["afs_connection"]))
         # build URL of "GetCapabilities" operation
         service_dict["getCap_url"] = service_dict["base_url"] + "?f=json"
 
         # try to send "GetCapabilities" equivalent request
         if service_dict.get("afs_connection"):
             authcfg = settings_mng.afs_connections.get(service_dict.get("afs_connection")).get("authcfg")
-            logger.debug("*=====* {}".format(authcfg))
             try:
                 qnam = QgsNetworkAccessManager.instance()
                 request = QNetworkRequest(QUrl(service_dict["getCap_url"]))
@@ -1124,7 +1117,6 @@ class GeoServiceManager:
         else:
             try:
                 getCap_request = requests.get(service_dict["getCap_url"], verify=False)
-                logger.debug("*=====* {}".format(service_dict["getCap_url"]))
                 getCap_content = getCap_request.json()
                 service_dict["reachable"] = 1
             except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
@@ -1286,7 +1278,6 @@ class GeoServiceManager:
 
         ems_uri = ems_uri.uri()
 
-        logger.debug("*=====* {}".format(ems_dict.get("afs_connection")))
         if ems_dict.get("afs_connection"):
             authcfg = settings_mng.afs_connections.get(ems_dict.get("afs_connection")).get("authcfg")
             ems_uri = "authcfg={} {}".format(authcfg, ems_uri)

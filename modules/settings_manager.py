@@ -640,7 +640,6 @@ class SettingsManager(QSettings):
             pass
 
         logger.info("'{}' used as prefix to find ArcGISFeatureServer connections related QSettings.".format(qsettings_afs_prefix))
-        logger.debug("*=====* {}".format(li_afs_connections))
         self.afs_connections = {}
         for afs_connection in li_afs_connections:
             authcfg = [self.get_value(key) for key in self.allKeys() if "{}/{}".format(qsettings_afs_prefix, afs_connection) in key and "authcfg" in key]
@@ -662,7 +661,7 @@ class SettingsManager(QSettings):
                 "authcfg": authcfg,
                 "url": url,
             }
-        logger.debug("*=====* {}".format(self.afs_connections))
+        logger.info("{} ArcGISFeatureServer connection(s) loaded : {}".format(len(self.afs_connections), self.afs_connections))
 
         return
 

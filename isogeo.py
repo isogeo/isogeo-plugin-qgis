@@ -740,7 +740,7 @@ class Isogeo:
     # This function is launched when the plugin is activated.
     def run(self):
         """Run method that loads and starts the plugin."""
-        logger.debug("*=====* {}".format(self.pluginIsActive))
+        logger.debug("Is the plugin active ? --> {}".format(self.pluginIsActive))
         if not self.pluginIsActive:
             logger.info("Opening (display) the plugin...")
             self.pluginIsActive = True
