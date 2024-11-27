@@ -68,9 +68,9 @@ qgis_minor_version = int(qgis_version.split(".")[1])
 try:
     import requests
 
-    logger.info("Depencencies - Requests version: {}".format(requests.__version__))
+    logger.info("Dependencies - Requests version: {}".format(requests.__version__))
 except ImportError:
-    logger.warning("Depencencies - Requests not available")
+    logger.warning("Dependencies - Requests not available")
 
 # ############################################################################
 # ########## Classes ###############

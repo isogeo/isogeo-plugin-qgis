@@ -291,7 +291,7 @@ class ApiRequester(QObject):
                     logger.debug("Handling reply to a 'details' request")
                     self.details_sig.emit(parsed_content, self.get_tags(parsed_content.get("tags")))
                 else:
-                    logger.debug("Unkown reply type : {}".format(parsed_content))
+                    logger.debug("Unknown reply type : {}".format(parsed_content))
         # no errors detected but empty API's reply content
         else:
             if self.loopCount < 3:
@@ -300,7 +300,7 @@ class ApiRequester(QObject):
             else:
                 logger.error(
                     "Request to the API failed. Empty reply for the third time. "
-                    "Weither no catalog is shared with the plugin, or there is no "
+                    "Either no catalog is shared with the plugin, or there is no "
                     "Internet connection."
                 )
                 self.api_sig.emit("shares_issue")
@@ -398,7 +398,7 @@ class ApiRequester(QObject):
         """This parse the tags contained in API_answer[tags] and class them so
         they are more easy to handle in other function such as update_fields()
 
-        :param dict tags: a dict of tags as thez are return by the API
+        :param dict tags: a dict of tags as they are return by the API
 
         return: a dict containing one dict for each type of tags
 
@@ -472,7 +472,7 @@ class ApiRequester(QObject):
                 # unused[tags.get(tag, tag)] = tag
                 continue
 
-        # override API tags to allow all datasets filter - see #
+        # override API tags to allow all datasets filter - see #210
         if type_dataset > 1:
             md_types[self.tr("Dataset", context=__class__.__name__)] = "type:dataset"
         else:

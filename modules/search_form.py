@@ -296,7 +296,7 @@ class SearchFormManager(IsogeoDockWidget):
         """Called by Isogeo.search_slot method. Clears quick searches comboboxes
         (also the one in settings tab) and fills them from 'items_list' parameter.
 
-        :param list items_list: a list of quick searche's names
+        :param list items_list: a list of quick search's names
         from _user/quicksearches.json file.
         """
         logger.debug("Filling quick searches comboboxes")

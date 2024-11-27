@@ -181,7 +181,7 @@ class IsogeoTranslator(object):
     """
 
     def __init__(self, lang: str = "FR"):
-        """Instanciate IsogeoTranslator depending on required language.
+        """Instantiate IsogeoTranslator depending on required language.
 
         :param str lang: language code to apply. EN or FR.
         """
