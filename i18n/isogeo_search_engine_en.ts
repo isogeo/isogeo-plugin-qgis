@@ -43,48 +43,53 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="348"/>
+        <location filename="../isogeo.py" line="347"/>
         <source>&amp;Isogeo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="321"/>
+        <location filename="../isogeo.py" line="320"/>
         <source>Search within Isogeo catalogs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="495"/>
+        <location filename="../isogeo.py" line="494"/>
         <source> on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="432"/>
+        <location filename="../isogeo.py" line="431"/>
         <source>Last search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="493"/>
+        <location filename="../isogeo.py" line="492"/>
         <source> results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="829"/>
+        <location filename="../isogeo.py" line="828"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="596"/>
+        <location filename="../isogeo.py" line="595"/>
         <source>Quicksearches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="856"/>
+        <location filename="../isogeo.py" line="855"/>
         <source>PostgreSQL databases are not supported by your QGIS installation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="867"/>
+        <location filename="../isogeo.py" line="866"/>
         <source>Oracle databases are not supported by your QGIS installation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../isogeo.py" line="494"/>
+        <source>page </source>
         <translation type="unfinished"></translation>
     </message>
 </context>

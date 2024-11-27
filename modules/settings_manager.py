@@ -94,11 +94,11 @@ class SettingsManager(QSettings):
         """Return 'locale/userLocale' setting value about QGIS language configuration"""
 
         try:
-            locale = str(self.value("locale/userLocale", "fr", type=str))[0:2]
+            locale = str(self.get_value("locale/userLocale", "fr", type=str))
         except TypeError as e:
             logger.error(
                 "Bad type in QSettings: {}. Original error: {}".format(
-                    type(self.value("locale/userLocale")), e
+                    type(self.get_value("locale/userLocale")), e
                 )
             )
             locale = "fr"
@@ -389,6 +389,18 @@ class SettingsManager(QSettings):
 
         return
 
+    def check_quicksearch_json_content(self, json_content):
+        if not isinstance(json_content, dict):
+            return 0
+        elif not all(isinstance(key, str) for key in json_content):
+            return 0
+        elif not all(isinstance(json_content[key], dict) for key in json_content):
+            return 0
+        elif not all(all(isinstance(sub_key, str) for sub_key in json_content[key]) for key in json_content):
+            return 0
+        else:
+            return 1
+
     def get_default_quicksearches_content(self):
 
         default_content = {
@@ -445,18 +457,6 @@ class SettingsManager(QSettings):
         self.quicksearches_content = self.merge_quicksearches(quicksearch_json_content, quicksearch_qsettings_content)
 
         return self.quicksearches_content
-
-    def check_quicksearch_json_content(self, json_content):
-        if not isinstance(json_content, dict):
-            return 0
-        elif not all(isinstance(key, str) for key in json_content):
-            return 0
-        elif not all(isinstance(json_content[key], dict) for key in json_content):
-            return 0
-        elif not all(all(isinstance(sub_key, str) for sub_key in json_content[key]) for key in json_content):
-            return 0
-        else:
-            return 1
 
     def load_quicksearches_from_json(self):
 
@@ -575,7 +575,7 @@ class SettingsManager(QSettings):
         self.dump_json_file(self.quicksearches_json_path, content)
         return
 
-    def write_quicksearch_qsettings(self, name: str, content: dict):
+    def write_quicksearches_qsettings(self, name: str, content: dict):
 
         for quicksearch_param in content:
             quicksearch_param_value = content[quicksearch_param]
@@ -596,7 +596,7 @@ class SettingsManager(QSettings):
         self.remove(self.quicksearch_prefix[:-1])
         for quicksearch_name in content:
             quicksearch = content[quicksearch_name]
-            self.write_quicksearch_qsettings(quicksearch_name, quicksearch)
+            self.write_quicksearches_qsettings(quicksearch_name, quicksearch)
         return
 
     def update_quicksearches(self, content):

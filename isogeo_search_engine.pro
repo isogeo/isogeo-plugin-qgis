@@ -33,4 +33,5 @@ SOURCES = __init__.py \
 TRANSLATIONS = i18n/isogeo_search_engine_fr.ts \
 	i18n/isogeo_search_engine_en.ts \
 	i18n/isogeo_search_engine_es.ts \
+	i18n/isogeo_search_engine_pt_BR.ts \
 

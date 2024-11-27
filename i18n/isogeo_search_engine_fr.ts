@@ -43,49 +43,54 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="348"/>
+        <location filename="../isogeo.py" line="347"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="321"/>
+        <location filename="../isogeo.py" line="320"/>
         <source>Search within Isogeo catalogs</source>
-        <translation>Rechercher au sein de  catalogues Isogeo</translation>
+        <translation>Rechercher au sein de catalogues Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="495"/>
+        <location filename="../isogeo.py" line="494"/>
         <source> on </source>
         <translation> sur </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="432"/>
+        <location filename="../isogeo.py" line="431"/>
         <source>Last search</source>
         <translation>Dernière recherche</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="493"/>
+        <location filename="../isogeo.py" line="492"/>
         <source> results</source>
         <translation> résultats</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="829"/>
+        <location filename="../isogeo.py" line="828"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TITRE DU PROBLEME SIGNALE</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="596"/>
+        <location filename="../isogeo.py" line="595"/>
         <source>Quicksearches</source>
         <translation>Recherches rapides</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="856"/>
+        <location filename="../isogeo.py" line="855"/>
         <source>PostgreSQL databases are not supported by your QGIS installation.</source>
         <translation>Les bases de données PostgreSQL ne sont pas supportées par votre installation de QGIS.</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="867"/>
+        <location filename="../isogeo.py" line="866"/>
         <source>Oracle databases are not supported by your QGIS installation.</source>
         <translation>Les bases de données Oracle ne sont pas supportées par votre installation de QGIS.</translation>
+    </message>
+    <message>
+        <location filename="../isogeo.py" line="494"/>
+        <source>page </source>
+        <translation>page </translation>
     </message>
 </context>
 <context>
@@ -188,12 +193,12 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2585"/>
         <source>Open online plugin help</source>
-        <translation>Ouvrir l'aide en ligne du plugin</translation>
+        <translation>Ouvrir l&apos;aide en ligne du plugin</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2651"/>
         <source>Open plugin credits</source>
-        <translation>Ouvrir les crédits de l'application</translation>
+        <translation>Ouvrir les crédits de l&apos;application</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1853"/>
@@ -203,7 +208,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2004"/>
         <source>Set plugin authentication:</source>
-        <translation>Changer les paramètres d'authentification du plugin :</translation>
+        <translation>Changer les paramètres d&apos;authentification du plugin :</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1373"/>
@@ -248,7 +253,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2620"/>
         <source>Open online help in default browser</source>
-        <translation>Consulter l'aide en ligne dans le navigateur par défaut</translation>
+        <translation>Consulter l&apos;aide en ligne dans le navigateur par défaut</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2686"/>
@@ -288,7 +293,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2877"/>
         <source>Choose to add metadata portal URL to layer properties and specify portal base URL</source>
-        <translation>Choisir d'ajouter ou non l'URL et indiquer la base de l'URL du portail</translation>
+        <translation>Choisir d&apos;ajouter ou non l&apos;URL et indiquer la base de l&apos;URL du portail</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="296"/>
@@ -338,7 +343,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2525"/>
         <source>Open folder of &quot;log_isogeo_plugin.log&quot; file</source>
-        <translation>Ouvrir l'emplacement du fichier &quot;log_isogeo_plugin.log&quot;</translation>
+        <translation>Ouvrir l&apos;emplacement du fichier &quot;log_isogeo_plugin.log&quot;</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2439"/>
@@ -353,7 +358,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2845"/>
         <source>Configure Isogeo portal metadata URL</source>
-        <translation>Configuration de l'URL du portail isogeo</translation>
+        <translation>Configuration de l&apos;URL du portail isogeo</translation>
     </message>
 </context>
 <context>
@@ -361,7 +366,7 @@
     <message>
         <location filename="../modules/tools.py" line="447"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
-        <translation>Le {} style de l'interface n'est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</translation>
+        <translation>Le style {} de l&apos;interface n&apos;est pas compatible avec le sélecteur de mots-clés. Il a été changé. Merci de redémarrer QGIS.</translation>
     </message>
     <message>
         <location filename="../modules/tools.py" line="359"/>
@@ -375,7 +380,7 @@ You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation>Problème de Proxy : 
 Un proxy est configuré dans votre OS {} mais pas dans QGIS.
- Veuillez le configurer dans 'Préférences/Options/Réseau' avant de redémarrer le plugin.</translation>
+ Veuillez le configurer dans &apos;Préférences/Options/Réseau&apos; avant de redémarrer le plugin.</translation>
     </message>
 </context>
 <context>
@@ -393,7 +398,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../modules/layer/add_layer.py" line="136"/>
         <source>is not valid</source>
-        <translation>n'est pas valide</translation>
+        <translation>n&apos;est pas valide</translation>
     </message>
     <message>
         <location filename="../modules/layer/add_layer.py" line="139"/>
@@ -507,7 +512,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../modules/quick_search.py" line="144"/>
         <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
-        <translation>La recherche rapide '{}' existe déjà, voulez-vous l'écraser ?</translation>
+        <translation>La recherche rapide &apos;{}&apos; existe déjà, voulez-vous l&apos;écraser ?</translation>
     </message>
 </context>
 <context>
@@ -666,7 +671,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../modules/api/shares.py" line="53"/>
         <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
-        <translation>&lt;p&gt;Ce plugin est authentifié en tant que &lt;a href='{}'&gt;{}&lt;/a&gt; et </translation>
+        <translation>&lt;p&gt;Ce plugin est authentifié en tant que &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; et </translation>
     </message>
     <message>
         <location filename="../modules/api/shares.py" line="62"/>
@@ -699,47 +704,47 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../modules/user_inform.py" line="79"/>
         <source>The selected credentials file&apos;s format is not valid.</source>
-        <translation>Le format du fichier d'authentification indiqué n'est pas valide.</translation>
+        <translation>Le format du fichier d&apos;authentification indiqué n&apos;est pas valide.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="86"/>
         <source>Authentication file is valid. Asking for authorization to Isogeo&apos;s API.</source>
-        <translation>Le fichier d'authentification est valide. Demande d'autorisation envoyée à l'API.</translation>
+        <translation>Le fichier d&apos;authentification est valide. Demande d&apos;autorisation envoyée à l&apos;API.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="117"/>
         <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
-        <translation>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l'erreur persiste, merci de la signaler dans le bug tracker.</translation>
+        <translation>Erreur de proxy détectée. Vérifiez les configurations de QGIS et de votre ordinateur. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="126"/>
         <source>Request to Isogeo&apos;s API failed : unkown error found. Please, report it in the bug tracker.</source>
-        <translation>La requête à l'API Isogeo a échoué pour une raison inconnue. Merci de le signaler dans le bug tracker.</translation>
+        <translation>La requête à l&apos;API Isogeo a échoué pour une raison inconnue. Merci de le signaler dans le bug tracker.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="130"/>
         <source>API authentication failed : unexpected API&apos;s reply. Please, report it in the bug tracker.</source>
-        <translation>La requête à l'API Isogeo a échoué. Merci de le signaler dans le bug tracker.</translation>
+        <translation>La requête à l&apos;API Isogeo a échoué. Merci de le signaler dans le bug tracker.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="134"/>
         <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
-        <translation>La requête à l'API Isogeo a échoué. Vérifiez votre connexion Internet et votre configuration proxy. Si l'erreur persiste, merci de la signaler dans le bug tracker.</translation>
+        <translation>La requête à l&apos;API Isogeo a échoué. Vérifiez votre connexion Internet et votre configuration proxy. Si l&apos;erreur persiste, merci de la signaler dans le bug tracker.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="113"/>
         <source>ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
-        <translation>Les paramètres d'authentification (Client ID et Client Secret) semblent invalides.</translation>
+        <translation>Les paramètres d&apos;authentification (Client ID et Client Secret) semblent invalides.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="158"/>
         <source>No share feeds the plugin. If you want to access resources via the plugin, you must share at least one catalog containing at least one metadata with it.</source>
-        <translation>Aucun partage n'alimente le plugin. Pour accéder à vos ressources via le plugin, au moins un catalogue contenant au moins une métadonnée doit lui être partagé.</translation>
+        <translation>Aucun partage n&apos;alimente le plugin. Pour accéder à vos ressources via le plugin, au moins un catalogue contenant au moins une métadonnée doit lui être partagé.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="121"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin and check your Internet connection. If this error keeps happening, please report it in the bug tracker.</source>
-        <translation>Le script tourne en rond. Assurez-vous d'avoir partagé au moins un catalogue avec le plugin et vérifiez votre connexion Internet. Si l'erreur persiste, merci de signaler ce problème dans le bug tracker.</translation>
+        <translation>Le script tourne en rond. Assurez-vous d&apos;avoir partagé au moins un catalogue avec le plugin et vérifiez votre connexion Internet. Si l&apos;erreur persiste, merci de signaler ce problème dans le bug tracker.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="175"/>
@@ -759,7 +764,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../modules/user_inform.py" line="139"/>
         <source>Search request to Isogeo&apos;s API failed : please check that &apos;api_base_url&apos; and &apos;api_auth_url&apos; URLs specified into config.json file are pointing to the same API.</source>
-        <translation>La requête à l'API Isogeo a échoué. Veuillez vérifier que les URLs 'api_base_url' et 'api_auth_url' indiqués dans le fichier config.json pointent vers la même version de 'API.</translation>
+        <translation>La requête à l&apos;API Isogeo a échoué. Veuillez vérifier que les URLs &apos;api_base_url&apos; et &apos;api_auth_url&apos; indiqués dans le fichier config.json pointent vers la même version de &apos;API.</translation>
     </message>
 </context>
 <context>
@@ -787,7 +792,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../ui/credits/ui_credits.py" line="199"/>
         <source>&lt;a href=&quot;https://www.isogeo.com&quot; style=&quot;color:#6480A7;text-decoration:none;&quot;&gt;Easy access to geodata!&lt;/a&gt;</source>
-        <translation></translation>
+        <translation>&lt;a href=&quot;https://www.isogeo.com&quot; style=&quot;color:#6480A7;text-decoration:none;&quot;&gt;Faciliter l’accès aux données géographiques !&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../ui/credits/ui_credits.py" line="202"/>
@@ -813,7 +818,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../ui/auth/ui_authentication.py" line="248"/>
         <source>Isogeo authentication settings</source>
-        <translation>Paramètres d'authentification du plugin</translation>
+        <translation>Paramètres d&apos;authentification du plugin</translation>
     </message>
     <message>
         <location filename="../ui/auth/ui_authentication.py" line="250"/>
@@ -828,7 +833,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../ui/auth/ui_authentication.py" line="255"/>
         <source>I&apos;ve got edition rights on app.isogeo.com</source>
-        <translation>J'ai accès aux fonctionnalités d'édition sur app.isogeo.com</translation>
+        <translation>J&apos;ai accès aux fonctionnalités d&apos;édition sur app.isogeo.com</translation>
     </message>
     <message>
         <location filename="../ui/auth/ui_authentication.py" line="249"/>
@@ -838,7 +843,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../ui/auth/ui_authentication.py" line="253"/>
         <source>Pick your credentials file</source>
-        <translation>Importer le fichier d'authentification fourni par Isogeo ou votre administrateur</translation>
+        <translation>Importer le fichier d&apos;authentification fourni par Isogeo ou votre administrateur</translation>
     </message>
     <message>
         <location filename="../ui/auth/ui_authentication.py" line="254"/>
@@ -848,7 +853,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../ui/auth/ui_authentication.py" line="252"/>
         <source>API location:</source>
-        <translation>URL de l'API :</translation>
+        <translation>URL de l&apos;API :</translation>
     </message>
 </context>
 <context>
@@ -1021,7 +1026,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1960"/>
         <source>Features count:</source>
-        <translation>Nombre d'objets :</translation>
+        <translation>Nombre d&apos;objets :</translation>
     </message>
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1962"/>
@@ -1031,7 +1036,7 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1973"/>
         <source>Bounding box preview</source>
-        <translation>Aperçu de l'enveloppe</translation>
+        <translation>Aperçu de l&apos;enveloppe</translation>
     </message>
     <message>
         <location filename="../ui/metadata/ui_md_details.py" line="1980"/>
@@ -1139,17 +1144,17 @@ Un proxy est configuré dans votre OS {} mais pas dans QGIS.
     <message>
         <location filename="../ui/portal/ui_portal_base_url.ui" line="41"/>
         <source>Isogeo - Portal base URL configuration</source>
-        <translation>Isogeo - Configuration de l'ajout de l'URL du portail</translation>
+        <translation>Isogeo - Configuration de l&apos;ajout de l&apos;URL du portail</translation>
     </message>
     <message>
         <location filename="../ui/portal/ui_portal_base_url.ui" line="92"/>
         <source>Specify the portal base URL here:</source>
-        <translation>Indiquer la base de l'URL du portail :</translation>
+        <translation>Indiquer la base de l&apos;URL du portail :</translation>
     </message>
     <message>
         <location filename="../ui/portal/ui_portal_base_url.ui" line="113"/>
         <source>Add portal metadata URL to layer&apos;s properties</source>
-        <translation>Ajouter l'URL de la métadonnée du portail Isogeo aux propriétés des couches ajoutées</translation>
+        <translation>Ajouter l&apos;URL de la métadonnée du portail Isogeo aux propriétés des couches ajoutées</translation>
     </message>
 </context>
 <context>

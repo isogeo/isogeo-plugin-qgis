@@ -492,7 +492,7 @@ class Isogeo:
         self.form_mng.btn_show.setText(str(self.results_count) + self.tr(" results"))
         page_count = str(plg_tools.results_pages_counter(total=self.results_count))
         self.form_mng.lbl_page.setText(
-            "page " + str(self.page_index) + self.tr(" on ") + page_count
+            self.tr("page ") + str(self.page_index) + self.tr(" on ") + page_count
         )
 
         # Clear widgets
