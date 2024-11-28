@@ -238,7 +238,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2004"/>
         <source>Set plugin authentication:</source>
-        <translation>Cambiar la configuración de autenticación del plugin :</translation>
+        <translation>Cambiar la configuración de autenticación del complemento :</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2071"/>
@@ -375,7 +375,7 @@ You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation>Problema con el proxy : 
 Un proxy está configurado en su sistema operativo {} pero no en QGIS.
- Por favor, configúrelo en &apos;Configuración/Opciones/Red&apos; antes de reiniciar el plugin.</translation>
+ Por favor, configúrelo en &apos;Configuración/Opciones/Red&apos; antes de reiniciar el complemento.</translation>
     </message>
     <message>
         <location filename="../modules/tools.py" line="447"/>
@@ -671,7 +671,7 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
     <message>
         <location filename="../modules/api/shares.py" line="53"/>
         <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
-        <translation>&lt;p&gt;Este plugin está autenticado como &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; y </translation>
+        <translation>&lt;p&gt;Este complemento está autenticado como &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; y </translation>
     </message>
     <message>
         <location filename="../modules/api/shares.py" line="62"/>
@@ -724,7 +724,7 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
     <message>
         <location filename="../modules/user_inform.py" line="121"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin and check your Internet connection. If this error keeps happening, please report it in the bug tracker.</source>
-        <translation>El script está en bucle. Asegúrate de haber compartido un catálogo con el plugin y comprueba tu conexión a Internet. Si el error persiste, por favor repórtalo en el rastreador de errores.</translation>
+        <translation>El script está en bucle. Asegúrate de haber compartido un catálogo con el complemento y comprueba tu conexión a Internet. Si el error persiste, por favor repórtalo en el rastreador de errores.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="126"/>
@@ -749,7 +749,7 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
     <message>
         <location filename="../modules/user_inform.py" line="158"/>
         <source>No share feeds the plugin. If you want to access resources via the plugin, you must share at least one catalog containing at least one metadata with it.</source>
-        <translation>No compartir alimenta el plugin. Si desea acceder a los recursos a través del plugin, debe compartir con él al menos un catálogo que contenga al menos un metadato.</translation>
+        <translation>No compartir alimenta el complemento. Si desea acceder a los recursos a través del complemento, debe compartir con él al menos un catálogo que contenga al menos un metadato.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="175"/>
@@ -818,7 +818,7 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
     <message>
         <location filename="../ui/auth/ui_authentication.py" line="248"/>
         <source>Isogeo authentication settings</source>
-        <translation>Configuración de autenticación del plugin</translation>
+        <translation>Configuración de autenticación del complemento</translation>
     </message>
     <message>
         <location filename="../ui/auth/ui_authentication.py" line="249"/>

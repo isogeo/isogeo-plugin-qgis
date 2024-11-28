@@ -238,7 +238,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2004"/>
         <source>Set plugin authentication:</source>
-        <translation>Definir a autenticação do plug-in :</translation>
+        <translation>Definir a autenticação do complemento :</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2071"/>
@@ -313,7 +313,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2585"/>
         <source>Open online plugin help</source>
-        <translation>Abrir a ajuda on-line do plugin</translation>
+        <translation>Abrir a ajuda on-line do complemento</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2620"/>
@@ -323,7 +323,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2651"/>
         <source>Open plugin credits</source>
-        <translation>Abrir créditos do plugin</translation>
+        <translation>Abrir créditos do complemento</translation>
     </message>
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="2686"/>
@@ -375,7 +375,7 @@ You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation>Problema de proxy: 
 Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS.
- Configure-o em &apos;Configurações/Opções/Rede&apos; e reabra o plugin.</translation>
+ Configure-o em &apos;Configurações/Opções/Rede&apos; e reabra o complemento.</translation>
     </message>
     <message>
         <location filename="../modules/tools.py" line="447"/>
@@ -671,7 +671,7 @@ Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS
     <message>
         <location filename="../modules/api/shares.py" line="53"/>
         <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
-        <translation>&lt;p&gt;Este plug-in é autenticado como &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; e </translation>
+        <translation>&lt;p&gt;Este complemento é autenticado como &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; e </translation>
     </message>
     <message>
         <location filename="../modules/api/shares.py" line="62"/>
@@ -724,7 +724,7 @@ Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS
     <message>
         <location filename="../modules/user_inform.py" line="121"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin and check your Internet connection. If this error keeps happening, please report it in the bug tracker.</source>
-        <translation>O script está em loop. Certifique-se de compartilhar um catálogo com o plugin e verifique sua conexão com a Internet. Se esse erro continuar acontecendo, informe-o no rastreador de bugs.</translation>
+        <translation>O script está em loop. Certifique-se de compartilhar um catálogo com o complemento e verifique sua conexão com a Internet. Se esse erro continuar acontecendo, informe-o no rastreador de bugs.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="126"/>
@@ -749,7 +749,7 @@ Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS
     <message>
         <location filename="../modules/user_inform.py" line="158"/>
         <source>No share feeds the plugin. If you want to access resources via the plugin, you must share at least one catalog containing at least one metadata with it.</source>
-        <translation>Nenhum compartilhamento alimenta o plugin. Se quiser acessar recursos por meio do plugin, você deve compartilhar com ele pelo menos um catálogo contendo pelo menos um metadado.</translation>
+        <translation>Nenhum compartilhamento alimenta o complemento. Se quiser acessar recursos por meio do complemento, você deve compartilhar com ele pelo menos um catálogo contendo pelo menos um metadado.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="175"/>
