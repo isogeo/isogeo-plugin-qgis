@@ -42,7 +42,17 @@ class SettingsManager(QSettings):
         self.cache_qsetting_key = "isogeo/user/unreachable_filepath"
 
         self.db_connections_json_path = Path(__file__).parents[1] / "_user" / "db_connections.json"
-        self.db_connections = {}
+        self.db_connections_content = {}
+        self.db_connections_prefix = "isogeo/user/db_connections/"
+        self.db_connections_fields = [
+            "connection_name",
+            "host",
+            "port",
+            "database",
+            "username",
+            "password",
+            "database_alias"
+        ]
 
         self.config_json_path = Path(__file__).parents[1] / "config.json"
         self.config_settings = {
@@ -200,6 +210,8 @@ class SettingsManager(QSettings):
             return 0
         elif not all(isinstance(json_content.get(key), list) for key in li_expected_keys):
             return 0
+        elif not all(all(isinstance(item, dict) for item in json_content.get(key)) for key in li_expected_keys):
+            return 0
         else:
             return 1
 
@@ -211,9 +223,26 @@ class SettingsManager(QSettings):
         }
         return default_content
 
+    def check_db_connection_validity(self, db_connection: dict):
+
+        if not all(field in self.db_connections_fields for field in db_connection):
+            return 0
+        elif not db_connection.get("connection_name", ""):
+            return 0
+        else:
+            pass
+        return 1
+
     def load_db_connections(self):
 
-        logger.debug("Loading database connections from db_connections.json file...")
+        logger.debug("Loading database connections from db_connections.json file and QSettings...")
+        db_connections_json_content = self.load_db_connections_from_json()
+        db_connections_qsettings_content = self.load_db_connections_from_qsettings()
+
+        self.db_connections_content = self.merge_db_connections(db_connections_json_content, db_connections_qsettings_content)
+
+    def load_db_connections_from_json(self):
+
         json_content = self.load_json_file(self.db_connections_json_path)
         if json_content == -1:
             raise Exception("Unable to load {} file content.".format(self.db_connections_json_path))
@@ -225,7 +254,6 @@ class SettingsManager(QSettings):
             )
             logger.warning("Let's create it with the default content.")
             json_content = self.get_default_db_connections_content()
-            self.dump_json_file(self.db_connections_json_path, json_content)
         elif not self.check_db_connections_json_content(json_content):
             logger.warning(
                 "{} json file content is not correctly formatted : {}.".format(
@@ -234,11 +262,89 @@ class SettingsManager(QSettings):
             )
             logger.warning("Let's replace it with the default content.")
             json_content = self.get_default_db_connections_content()
-            self.dump_json_file(self.db_connections_json_path, json_content)
         else:
             pass
 
-        self.db_connections = json_content
+        return json_content
+
+    def load_db_connections_from_qsettings(self):
+
+        qsettings_content = self.get_default_db_connections_content()
+        for dbms in qsettings_content:
+            dbms_db_connections_prefix = self.db_connections_prefix + dbms + "/"
+            qsettings_dbms_db_connections_keys = [
+                key for key in self.allKeys() if key.startswith(dbms_db_connections_prefix)
+            ]
+            if not len(qsettings_dbms_db_connections_keys):
+                continue
+            else:
+                li_connection_names = set(
+                    [
+                        key.replace(dbms_db_connections_prefix, "").split("/")[0]
+                        for key in qsettings_dbms_db_connections_keys
+                    ]
+                )
+                for connection_name in li_connection_names:
+                    connection_dict = {
+                        "connection_name": connection_name
+                    }
+                    for field in self.db_connections_fields:
+                        qsettings_key = "{}/{}/{}".format(
+                            dbms_db_connections_prefix, connection_name, field
+                        )
+                        connection_dict[field] = self.get_value(qsettings_key, "")
+                    qsettings_content[dbms].append(connection_dict)
+
+        return qsettings_content
+
+    def merge_db_connections(self, json_content, qsettings_content):
+
+        db_connections_content = self.get_default_db_connections_content()
+        for dbms in json_content:
+            for db_connection in json_content[dbms]:
+                # Exclude connections with empty connection_name
+                if not self.check_db_connection_validity(db_connection):
+                    continue
+                else:
+                    db_connections_content[dbms].append(db_connection)
+
+        for dbms in qsettings_content:
+            for db_connection in qsettings_content[dbms]:
+                db_connection_already_fetched = any(
+                    db_connection.get("connection_name") == connection.get("connection_name")
+                    for connection in db_connections_content[dbms]
+                )
+                if db_connection_already_fetched or not self.check_db_connection_validity(db_connection):
+                    continue
+                # only retrieving from qsettings db_connections which are not already in json file
+                else:
+                    db_connections_content[dbms].append(db_connection)
+
+        self.update_db_connections_json(db_connections_content)
+        self.update_db_connections_qsettings(db_connections_content)
+
+        return db_connections_content
+
+    def update_db_connections_json(self, content: dict):
+
+        self.dump_json_file(self.db_connections_json_path, content)
+
+        return
+
+    def update_db_connections_qsettings(self, content: dict):
+
+        for dbms in content:
+            for db_connection in content[dbms]:
+                connection_name = db_connection.get("connection_name")
+                for field in self.db_connections_fields:
+                    qsettings_key = "{}{}/{}/{}".format(
+                        self.db_connections_prefix, dbms, connection_name, field
+                    )
+                    self.set_value(
+                        qsettings_key, db_connection.get(field, "")
+                    )
+
+        return
 
     def get_default_config_content(self):
 
@@ -451,10 +557,10 @@ class SettingsManager(QSettings):
     def load_quicksearches(self):
 
         logger.debug("Loading quicksearches from quicksearches.json file and QSettings...")
-        quicksearch_json_content = self.load_quicksearches_from_json()
-        quicksearch_qsettings_content = self.load_quicksearches_from_qsettings()
+        quicksearches_json_content = self.load_quicksearches_from_json()
+        quicksearches_qsettings_content = self.load_quicksearches_from_qsettings()
 
-        self.quicksearches_content = self.merge_quicksearches(quicksearch_json_content, quicksearch_qsettings_content)
+        self.quicksearches_content = self.merge_quicksearches(quicksearches_json_content, quicksearches_qsettings_content)
 
         return self.quicksearches_content
 

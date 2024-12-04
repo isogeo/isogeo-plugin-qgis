@@ -592,8 +592,8 @@ class DataBaseManager:
                 pass
 
         self.settings_mng.load_db_connections()
-        if dbms in self.settings_mng.db_connections:
-            for conn_dict in self.settings_mng.db_connections.get(dbms):
+        if dbms in self.settings_mng.db_connections_content:
+            for conn_dict in self.settings_mng.db_connections_content.get(dbms):
                 connection_name = conn_dict.get("connection_name")
 
                 if all(
