@@ -1,7 +1,7 @@
 {
     "release-note": {
-        "fr": "* Utilisation des connexions ArcGIS Feature Server enregistrées dans QGIS pour l'ajout des couches EFS et EMS.\n* Mise à jour du lien vers l'aide en ligne.\n* Correction d'un bug.",
-        "en": "* Use ArcGISFeatureServer connections to handle EFS and EMS layers.\n* Update link to user documentation.\n* Bug fix."
+        "fr": "* Ajout de la traduction de l'interface en Espagnol et Portugais Brésilien.\n* Synchronisation du contenu du fichier `db_connections.json` avec les paramètres de QGIS.",
+        "en": "* Addition of interface translation in Spanish and Brazilian Portuguese.\n* Synchronizing the contents of the `db_connections.json` file with QGIS settings."
     },
     "compliance":{
         "api": {
