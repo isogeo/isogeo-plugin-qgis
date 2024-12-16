@@ -1,5 +1,9 @@
 Echo "Updating translations"
 call pylupdate5 -noobsolete -verbose isogeo_search_engine.pro
+call qt5-tools lrelease .\i18n\isogeo_search_engine_en.ts
+call qt5-tools lrelease .\i18n\isogeo_search_engine_fr.ts
+call qt5-tools lrelease .\i18n\isogeo_search_engine_es.ts
+call qt5-tools lrelease .\i18n\isogeo_search_engine_pt_BR.ts
 
 Echo "Compilating QT ui to Python classes"
 call pyuic5 -x "ui\isogeo_dockwidget_base.ui" -o "ui\ui_isogeo.py"

@@ -375,7 +375,7 @@ You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation>Problema con el proxy : 
 Un proxy está configurado en su sistema operativo {} pero no en QGIS.
- Por favor, configúrelo en &apos;Configuración/Opciones/Red&apos; antes de reiniciar el complemento.</translation>
+ Por favor, configúrelo en 'Configuración/Opciones/Red' antes de reiniciar el complemento.</translation>
     </message>
     <message>
         <location filename="../modules/tools.py" line="447"/>
@@ -497,7 +497,7 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
     <message>
         <location filename="../modules/quick_search.py" line="144"/>
         <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
-        <translation>La búsqueda rápida &apos;{}&apos; ya existe, ¿desea sobrescribirla?</translation>
+        <translation>La búsqueda rápida '{}' ya existe, ¿desea sobrescribirla?</translation>
     </message>
     <message>
         <location filename="../modules/quick_search.py" line="184"/>
@@ -671,7 +671,7 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
     <message>
         <location filename="../modules/api/shares.py" line="53"/>
         <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
-        <translation>&lt;p&gt;Este complemento está autenticado como &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; y </translation>
+        <translation>&lt;p&gt;Este complemento está autenticado como &lt;a href='{}'&gt;{}&lt;/a&gt; y </translation>
     </message>
     <message>
         <location filename="../modules/api/shares.py" line="62"/>
@@ -744,7 +744,7 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
     <message>
         <location filename="../modules/user_inform.py" line="139"/>
         <source>Search request to Isogeo&apos;s API failed : please check that &apos;api_base_url&apos; and &apos;api_auth_url&apos; URLs specified into config.json file are pointing to the same API.</source>
-        <translation>La solicitud a la API de Isogeo ha fallado: compruebe que las URL &apos;api_base_url&apos; y &apos;api_auth_url&apos; especificadas en el archivo config.json apuntan a la misma API.</translation>
+        <translation>La solicitud a la API de Isogeo ha fallado: compruebe que las URL 'api_base_url' y 'api_auth_url' especificadas en el archivo config.json apuntan a la misma API.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="158"/>

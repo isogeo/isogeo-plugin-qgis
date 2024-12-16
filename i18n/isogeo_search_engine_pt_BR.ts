@@ -375,12 +375,12 @@ You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
         <translation>Problema de proxy: 
 Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS.
- Configure-o em &apos;Configurações/Opções/Rede&apos; e reabra o complemento.</translation>
+ Configure-o em 'Configurações/Opções/Rede' e reabra o complemento.</translation>
     </message>
     <message>
         <location filename="../modules/tools.py" line="447"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
-        <translation>O estilo &apos;{}&apos; QGIS não é compatível com combobox. Foi alterado. Por favor reinicie o QGIS.</translation>
+        <translation>O estilo '{}' QGIS não é compatível com combobox. Foi alterado. Por favor reinicie o QGIS.</translation>
     </message>
 </context>
 <context>
@@ -497,7 +497,7 @@ Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS
     <message>
         <location filename="../modules/quick_search.py" line="144"/>
         <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
-        <translation>A pesquisa rápida &apos;{}&apos; já existe, deseja substituí-la?</translation>
+        <translation>A pesquisa rápida '{}' já existe, deseja substituí-la?</translation>
     </message>
     <message>
         <location filename="../modules/quick_search.py" line="184"/>
@@ -671,7 +671,7 @@ Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS
     <message>
         <location filename="../modules/api/shares.py" line="53"/>
         <source>&lt;p&gt;This plugin is authenticated as &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; and </source>
-        <translation>&lt;p&gt;Este complemento é autenticado como &lt;a href=&apos;{}&apos;&gt;{}&lt;/a&gt; e </translation>
+        <translation>&lt;p&gt;Este complemento é autenticado como &lt;a href='{}'&gt;{}&lt;/a&gt; e </translation>
     </message>
     <message>
         <location filename="../modules/api/shares.py" line="62"/>
@@ -744,7 +744,7 @@ Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS
     <message>
         <location filename="../modules/user_inform.py" line="139"/>
         <source>Search request to Isogeo&apos;s API failed : please check that &apos;api_base_url&apos; and &apos;api_auth_url&apos; URLs specified into config.json file are pointing to the same API.</source>
-        <translation>Falha na solicitação de pesquisa para a API do Isogeo: verifique se os URLs &apos;api_base_url&apos; e &apos;api_auth_url&apos; especificados no arquivo config.json estão apontando para a mesma API.</translation>
+        <translation>Falha na solicitação de pesquisa para a API do Isogeo: verifique se os URLs 'api_base_url' e 'api_auth_url' especificados no arquivo config.json estão apontando para a mesma API.</translation>
     </message>
     <message>
         <location filename="../modules/user_inform.py" line="158"/>
