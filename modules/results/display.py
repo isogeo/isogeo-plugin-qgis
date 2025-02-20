@@ -264,8 +264,7 @@ class ResultsManager(QObject):
                     if (
                         md.path
                         and md.name
-                        and md.path
-                        in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
+                        and md.path in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
                         and "." in md.name
                     ):
                         available_connections = [
@@ -339,6 +338,7 @@ class ResultsManager(QObject):
                                     )
                                     add_options_dict[options_key] = params
                                 else:
+                                    logger.info("{} table ({}) not found in {} PostGIS connection.".format(md.name, md._id, connection.get("connection")))
                                     pass
                         self.db_mng.set_qsettings_connections(
                             "PostgreSQL",

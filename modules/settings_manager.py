@@ -169,7 +169,7 @@ class SettingsManager(QSettings):
 
     def load_cache(self):
 
-        logger.debug("Loading cached file paths from cache.json file and QSettings...")
+        logger.info("Loading cached file paths from cache.json file and QSettings...")
         cached_unreached_paths = []
         if self.cache_qsetting_key in self.allKeys():
             cached_unreached_paths = self.get_value(self.cache_qsetting_key, [], list)
@@ -235,11 +235,19 @@ class SettingsManager(QSettings):
 
     def load_db_connections(self):
 
-        logger.debug("Loading database connections from db_connections.json file and QSettings...")
+        logger.info("Loading database connections from db_connections.json file and QSettings...")
         db_connections_json_content = self.load_db_connections_from_json()
         db_connections_qsettings_content = self.load_db_connections_from_qsettings()
 
         self.db_connections_content = self.merge_db_connections(db_connections_json_content, db_connections_qsettings_content)
+
+        for dbms in self.db_connections_content:
+            db_connection_names = [db_connection.get("connection_name") for db_connection in self.db_connections_content.get(dbms)]
+            logger.info(
+                "{} {} connection(s) retrieved : {}".format(
+                    len(self.db_connections_content.get(dbms)), dbms, ", ".join(db_connection_names)
+                )
+            )
 
     def load_db_connections_from_json(self):
 
@@ -355,7 +363,7 @@ class SettingsManager(QSettings):
 
     def load_config(self):
 
-        logger.debug("Loading config from config.json file and QSettings...")
+        logger.info("Loading config from config.json file and QSettings...")
         config_json_content = self.load_config_from_json()
         config_qsettings_content = self.load_config_from_qsettings()
 
@@ -556,7 +564,7 @@ class SettingsManager(QSettings):
 
     def load_quicksearches(self):
 
-        logger.debug("Loading quicksearches from quicksearches.json file and QSettings...")
+        logger.info("Loading quicksearches from quicksearches.json file and QSettings...")
         quicksearches_json_content = self.load_quicksearches_from_json()
         quicksearches_qsettings_content = self.load_quicksearches_from_qsettings()
 
