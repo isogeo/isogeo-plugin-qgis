@@ -219,7 +219,7 @@ class QuickSearchManager:
         search_name = "_default"
 
         self.settings_mng.save_quicksearch(
-            search_name, self.settings_mng.get_default_quicksearch_content().get(search_name)
+            search_name, self.settings_mng.get_default_quicksearches_content().get(search_name)
         )
 
         # Log and messages
