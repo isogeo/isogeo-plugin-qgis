@@ -8,6 +8,7 @@
 
 [general]
 name=Isogeo
+# supportsQt6=True
 qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 description=Isogeo search engine within QGIS
