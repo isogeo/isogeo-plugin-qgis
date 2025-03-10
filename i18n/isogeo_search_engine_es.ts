@@ -96,269 +96,269 @@
 <context>
     <name>IsogeoDockWidgetBase</name>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="172"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="199"/>
         <source>Search</source>
         <translation>Búsqueda</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="215"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="242"/>
         <source>Advanced search</source>
         <translation>Búsqueda avanzada</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="296"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="323"/>
         <source>Group theme</source>
         <translation>Temas</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="395"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="422"/>
         <source>Geographic filter</source>
         <translation>Filtro geográfico</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="504"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="531"/>
         <source>Format (source)</source>
         <translation>Formato</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="607"/>
-        <source>INSPIRE keywords</source>
-        <translation>Palabras clave INSPIRE</translation>
-    </message>
-    <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="709"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="736"/>
         <source>Contact</source>
         <translation>Contacto</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="843"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="870"/>
         <source>Keyword</source>
         <translation>Palabras clave</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="945"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="972"/>
         <source>Resource type</source>
         <translation>Tipos de recursos</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1048"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1075"/>
         <source>Metadata owner</source>
         <translation>Propietario de recursos</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1151"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1178"/>
         <source>Coordinate system (source)</source>
         <translation>Sistema de coordenadas</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1247"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1274"/>
         <source>License</source>
         <translation>Licencia</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1373"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1400"/>
         <source>Enter your search terms</source>
         <translation>Palabras de búsqueda</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1385"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1412"/>
         <source>roads, habitat, cadastral parcel, transport...</source>
         <translation>carreteras, vivienda, catastro, transporte, ciclismo...</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1413"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1440"/>
         <source>Launch search</source>
         <translation>Iniciar búsqueda</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1530"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1557"/>
         <source>Quick searches</source>
         <translation>Búsqueda rápida</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1546"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1573"/>
         <source>Quicksearches</source>
         <translation>Búsqueda rápida</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1599"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1626"/>
         <source>Display the results list</source>
         <translation>Visualizar la lista de resultados</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1602"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1629"/>
         <source>Show results</source>
         <translation>Ver los resultados</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1708"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1735"/>
         <source>Reset all input fields</source>
         <translation>Reiniciar búsqueda</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1747"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1774"/>
         <source>Save research</source>
         <translation>Guardar búsqueda</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1788"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1815"/>
         <source>Title</source>
         <translation>Título</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1793"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1820"/>
         <source>Modified</source>
         <translation>Modificada</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1798"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1825"/>
         <source>Type</source>
         <translation>Tipo</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1803"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1830"/>
         <source>Add</source>
         <translation>Añadir</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1853"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1880"/>
         <source>Page x on x</source>
         <translation>Página x de x</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1911"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1938"/>
         <source>Settings</source>
         <translation>Parámetros</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="1951"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="1978"/>
         <source>Authentication settings</source>
         <translation>Parámetros de autenticación</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2004"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2031"/>
         <source>Set plugin authentication:</source>
         <translation>Cambiar la configuración de autenticación del complemento :</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2071"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2098"/>
         <source>Search settings</source>
         <translation>Búsqueda</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2115"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2142"/>
         <source>Edit quicksearch</source>
         <translation>Seleccionar una búsqueda rápida</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2154"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2181"/>
         <source>Rename selected quicksearch</source>
         <translation>Renombrar la búsqueda rápida seleccionada</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2187"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2214"/>
         <source>Delete selected quicksearch</source>
         <translation>Borrar la búsqueda rápida seleccionada</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2215"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2242"/>
         <source>Default search</source>
         <translation>Búsqueda por defecto</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2247"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2274"/>
         <source>Save current search as default</source>
         <translation>Guardar la búsqueda actual como búsqueda por defecto</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2273"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2300"/>
         <source>Reset default search</source>
         <translation>Reiniciar búsqueda por defecto</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2301"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2328"/>
         <source>Geographical operator applied to the filter</source>
         <translation>Operador aplicado al filtro geográfico</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2364"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2391"/>
         <source>Paths cache</source>
         <translation>Rutas de archivos en caché</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2396"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2423"/>
         <source>Empty the paths cached</source>
         <translation>Vaciar la caché de rutas de archivos</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2439"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2466"/>
         <source>Advanced resources</source>
         <translation>Recursos avanzados</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2483"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2510"/>
         <source>Report an issue on the bug tracker</source>
         <translation>Informar de un problema con el rastreador de errores</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2525"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2552"/>
         <source>Open folder of &quot;log_isogeo_plugin.log&quot; file</source>
         <translation>Abrir la carpeta del archivo &quot;log_isogeo_plugin.log&quot;</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2531"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2558"/>
         <source>LOG</source>
         <translation>LOG</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2585"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2612"/>
         <source>Open online plugin help</source>
         <translation>Abrir la ayuda online</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2620"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2647"/>
         <source>Open online help in default browser</source>
         <translation>Abrir la ayuda online</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2651"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2678"/>
         <source>Open plugin credits</source>
         <translation>Abrir la ventana de créditos de la aplicación</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2686"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2713"/>
         <source>Open credits popup</source>
         <translation>Abrir la ventana de créditos</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2720"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2747"/>
         <source>Layer adding settings</source>
         <translation>Añadir una capa</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2764"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2791"/>
         <source>Configure embed database connections</source>
         <translation>Configuración de las conexiones a bases de datos</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2796"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2823"/>
         <source>Oracle databases</source>
         <translation>Base de datos Oracle</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2818"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2845"/>
         <source>PostgreSQL databases</source>
         <translation>Base de datos PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2845"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2872"/>
         <source>Configure Isogeo portal metadata URL</source>
         <translation>Configuración de la URL del portal isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/isogeo_dockwidget_base.ui" line="2877"/>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="2904"/>
         <source>Choose to add metadata portal URL to layer properties and specify portal base URL</source>
         <translation>Elija si desea añadir o no la URL e indique la base de la URL del portal</translation>
+    </message>
+    <message>
+        <location filename="../ui/isogeo_dockwidget_base.ui" line="634"/>
+        <source>INSPIRE themes</source>
+        <translation>Temas INSPIRE</translation>
     </message>
 </context>
 <context>
