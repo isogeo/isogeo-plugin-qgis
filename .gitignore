@@ -134,3 +134,4 @@ help/
 .noseids
 
 modules/isogeo_pysdk/samples/*
+pyqt5_to_pyqt6.py
