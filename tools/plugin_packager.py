@@ -27,8 +27,6 @@
 
 # Standard library
 from configparser import ConfigParser
-from os import path
-import json
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile
 
