@@ -92,11 +92,7 @@ class LayerAdder:
         self.dict_service_types = {
             "WFS": ["WFS", QgsVectorLayer, self.geo_srv_mng.build_wfs_url],
             "WMS": ["wms", QgsRasterLayer, self.geo_srv_mng.build_wms_url],
-            "EFS": [
-                "arcgisfeatureserver",
-                QgsVectorLayer,
-                self.geo_srv_mng.build_efs_url,
-            ],
+            "EFS": ["arcgisfeatureserver", QgsVectorLayer, self.geo_srv_mng.build_efs_url],
             "EMS": ["arcgismapserver", QgsRasterLayer, self.geo_srv_mng.build_ems_url],
             "WMTS": ["wms", QgsRasterLayer, self.geo_srv_mng.build_wmts_url],
         }
@@ -722,7 +718,7 @@ class LayerAdder:
         """Add a layer to QGIS map canvas.
 
         Take layer index, search the required information to add it in
-        the temporary dictionnary constructed in the show_results function.
+        the temporary dictionary constructed in the show_results function.
         It then adds it.
         """
         # one of many add-on option
