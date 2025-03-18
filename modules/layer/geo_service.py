@@ -517,31 +517,43 @@ class GeoServiceManager:
                 service_dict["manual"] = 0
                 logger.info("Using owslib.Authentication module with 'verify=false' worked !")
             except Exception as e:
-                logger.error(
-                    "Error raised trying to use owslib.Authentication module : {}".format(e)
+                logger.warning(
+                    "Error raised trying to use owslib.Authentication module: {}".format(e)
                 )
                 try:
                     service_dict = self.parse_ogc_xml(service_type, service_dict)
                     logger.info("parse_ogc_xml method has to be used.")
                     return 1, service_dict
-                except Exception as e:
+                except Exception as e_bis:
                     error_msg = (
                         "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
-                            service_type, url, str(e)
+                            service_type, url, str(e_bis)
                         )
                     )
                     service_dict["reachable"] = 0
                     service_dict["error"] = error_msg
-        except Exception:
+        except Exception as e:
+            logger.debug(str(type(service_connector)))
+            logger.warning(
+                "Error raised trying to use owslib.{} module specifying service version: {}".format(service_connector.__class__, e)
+            )
             try:
                 service = service_connector(url=url)
                 service_dict["reachable"] = 1
-            except Exception as e:
-                error_msg = "{} <i>{}</i> - <b>Connection to service failed</b>: {}".format(
-                    service_type, url, str(e)
+            except Exception as e_bis:
+                logger.warning(
+                    "Error raised trying to use owslib.{} module without specifying service version: {}".format(service_connector.__class__, e_bis)
                 )
-                service_dict["reachable"] = 0
-                service_dict["error"] = error_msg
+                try:
+                    service_dict = self.parse_ogc_xml(service_type, service_dict)
+                    logger.info("parse_ogc_xml method has to be used.")
+                    return 1, service_dict
+                except Exception as e_ter:
+                    error_msg = "{} <i>{}</i> - <b>Connection to service failed</b>: {}".format(
+                        service_type, url, str(e_ter)
+                    )
+                    service_dict["reachable"] = 0
+                    service_dict["error"] = error_msg
 
         # if the service can't be reached, return the error
         if not service_dict.get("reachable"):
