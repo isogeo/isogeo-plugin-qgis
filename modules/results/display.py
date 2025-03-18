@@ -462,7 +462,10 @@ class ResultsManager(QObject):
                         }
                         service_type = service.get("format").upper()
                         if service.get("format") in self.service_ico_dict:
-                            params = [service_type, layer, srv_details]
+                            layer_details = dict(
+                                (k, layer.get(k)) for k in layer if k != "service"
+                            )
+                            params = [service_type, layer_details, srv_details]
                         else:
                             params = [0]
                             logger.debug(
@@ -513,7 +516,10 @@ class ResultsManager(QObject):
                             else:
                                 layer_title = geo_srv_mng.build_layer_title(service_type, layer)
                                 btn_label = "{} : {}".format(service_type, layer_title)
-                                params = [service_type, layer, srv_details]
+                                layer_details = dict(
+                                    (k, layer.get(k)) for k in layer if k not in ["datasets", "noGeoDatasets", "dataset", "noGeoDataset"]
+                                )
+                                params = [service_type, layer_details, srv_details]
                                 basic_md = [
                                     md.title,
                                     md.abstract,
