@@ -141,7 +141,7 @@ class SettingsManager(QSettings):
             return 0
         else:
             try:
-                with open(file_path, "r") as json_file:
+                with open(file_path, "r", encoding="utf-8") as json_file:
                     json_content = json.load(json_file)
                 return json_content
             except Exception as e:
@@ -149,8 +149,8 @@ class SettingsManager(QSettings):
                 return -1
 
     def dump_json_file(self, file_path: Path, content: dict):
-        with open(file_path, "w") as outfile:
-            json.dump(content, outfile, sort_keys=True, indent=4)
+        with open(file_path, "w", encoding="utf-8") as outfile:
+            json.dump(content, outfile, sort_keys=True, indent=4, ensure_ascii=False)
         return
 
     def check_cache_json_content(self, json_content):
