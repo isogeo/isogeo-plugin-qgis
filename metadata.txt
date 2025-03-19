@@ -9,7 +9,7 @@
 [general]
 name=Isogeo
 # supportsQt6=True
-qgisMinimumVersion=3.4
+qgisMinimumVersion=3.16
 qgisMaximumVersion=3.99
 description=Isogeo search engine within QGIS
 version=3.6.2
