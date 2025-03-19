@@ -54,8 +54,14 @@ class IsogeoPlgTools(IsogeoUtils):
 
     def __init__(self):
         """Check and manage authentication credentials."""
-        # instanciate
+        # instantiate
         super(IsogeoPlgTools, self).__init__()
+
+    def shorten_error(self, error: str):
+        shortened_error = str(error)
+        if len(shortened_error) > 1000:
+            shortened_error = shortened_error[:1000] + " ..."
+        return shortened_error
 
     def error_catcher(self, msg, tag, level):
         """Catch QGIS error messages for introspection."""

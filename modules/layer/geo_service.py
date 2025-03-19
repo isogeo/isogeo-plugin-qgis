@@ -55,39 +55,39 @@ try:
     from owslib.util import ServiceException
     import owslib
 
-    logging.info("Depencencies - owslib version: {}".format(owslib.__version__))
+    logging.info("Dependencies - owslib version: {}".format(owslib.__version__))
 except ImportError:
-    logger.warning("Depencencies - owslib is not present")
+    logger.warning("Dependencies - owslib is not present")
 
 try:
     from owslib.wfs import WebFeatureService
 except ImportError as e:
-    logger.warning("Depencencies - owslib WFS issue: {}".format(e))
+    logger.warning("Dependencies - owslib WFS issue: {}".format(e))
 
 try:
     from owslib.util import HTTPError
 
-    logger.info("Depencencies - HTTPError within owslib")
+    logger.info("Dependencies - HTTPError within owslib")
 except ImportError:
     from urllib.error import HTTPError
 
     logger.warning(
-        "Depencencies - HTTPError not within owslib." " Directly imported from urllib.error"
+        "Dependencies - HTTPError not within owslib." " Directly imported from urllib.error"
     )
 
 try:
     from owslib.util import Authentication
 
-    logger.info("Depencencies - Authentication within owslib")
+    logger.info("Dependencies - Authentication within owslib")
 except ImportError:
-    logger.warning("Depencencies - Authentication not within owslib.")
+    logger.warning("Dependencies - Authentication not within owslib.")
 
 try:
     import requests
 
-    logger.info("Depencencies - Requests version: {}".format(requests.__version__))
+    logger.info("Dependencies - Requests version: {}".format(requests.__version__))
 except ImportError:
-    logger.warning("Depencencies - Requests not available")
+    logger.warning("Dependencies - Requests not available")
 
 # ############################################################################
 # ########## Classes ###############
@@ -151,7 +151,7 @@ class GeoServiceManager:
                 srs = "EPSG:4326"
             else:
                 logger.debug(
-                    "Map Canvas SRS not available within service CRS. One of the following ones gonna be choosed : {}".format(
+                    "Map Canvas SRS not available within service CRS. One of the following ones gonna be chosen : {}".format(
                         crs_options
                     )
                 )
@@ -431,7 +431,7 @@ class GeoServiceManager:
 
         else:
             raise Exception(
-                "GetCapabilites request failed using requests: {}:{}".format(
+                "GetCapabilities request failed using requests: {}:{}".format(
                     r.status_code, r.reason
                 )
             )
@@ -441,7 +441,7 @@ class GeoServiceManager:
         return service_dict
 
     def check_ogc_service(self, service_type: str, service_url: str, service_version: str):
-        """Try to acces to the given OGC service URL (using owslib library modules) and
+        """Try to access to the given OGC service URL (using owslib library modules) and
         store various informations into cached_wfs, cached_wms or cached_wmts dict
         depending on service_type.
 
@@ -495,19 +495,19 @@ class GeoServiceManager:
             service_dict["reachable"] = 1
             service_dict["manual"] = 0
         except ServiceException as e:
-            error_msg = "{} <i>{}</i> - <b>Bad operation</b>: {}".format(service_type, url, str(e))
+            error_msg = "{} <i>{}</i> - <b>Bad operation</b>:\n{}".format(service_type, url, plg_tools.shorten_error(e))
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
         except HTTPError as e:
-            error_msg = "{} <i>{}</i> - <b>Service not reached</b>: {}".format(
-                service_type, url, str(e)
+            error_msg = "{} <i>{}</i> - <b>Service not reached</b>:\n{}".format(
+                service_type, url, plg_tools.shorten_error(e)
             )
             service_dict["reachable"] = 0
             service_dict["error"] = error_msg
         except requests.exceptions.SSLError as e:
             logger.error(
-                "SSL Error raised trying to connect to {} service {}: {}".format(
-                    service_type, url, e
+                "SSL Error raised trying to connect to {} service {}:\n{}".format(
+                    service_type, url, plg_tools.shorten_error(e)
                 )
             )
             try:
@@ -518,7 +518,7 @@ class GeoServiceManager:
                 logger.info("Using owslib.Authentication module with 'verify=false' worked !")
             except Exception as e:
                 logger.warning(
-                    "Error raised trying to use owslib.Authentication module: {}".format(e)
+                    "Error raised trying to use owslib.Authentication module:\n{}".format(plg_tools.shorten_error(e))
                 )
                 try:
                     service_dict = self.parse_ogc_xml(service_type, service_dict)
@@ -526,31 +526,30 @@ class GeoServiceManager:
                     return 1, service_dict
                 except Exception as e_bis:
                     error_msg = (
-                        "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>: {}".format(
-                            service_type, url, str(e_bis)
+                        "{} <i>{}</i> - <b>Connection to service failed (SSL Error)</b>:\n{}".format(
+                            service_type, url, plg_tools.shorten_error(e_bis)
                         )
                     )
                     service_dict["reachable"] = 0
                     service_dict["error"] = error_msg
         except Exception as e:
-            logger.debug(str(type(service_connector)))
             logger.warning(
-                "Error raised trying to use owslib.{} module specifying service version: {}".format(service_connector.__class__, e)
+                "Error raised trying to use {} from owslib specifying service version:\n{}".format(service_connector.__name__, plg_tools.shorten_error(e))
             )
             try:
                 service = service_connector(url=url)
                 service_dict["reachable"] = 1
             except Exception as e_bis:
                 logger.warning(
-                    "Error raised trying to use owslib.{} module without specifying service version: {}".format(service_connector.__class__, e_bis)
+                    "Error raised trying to use {} from owslib without specifying service version:\n{}".format(service_connector.__name__, plg_tools.shorten_error(e_bis))
                 )
                 try:
                     service_dict = self.parse_ogc_xml(service_type, service_dict)
                     logger.info("parse_ogc_xml method has to be used.")
                     return 1, service_dict
                 except Exception as e_ter:
-                    error_msg = "{} <i>{}</i> - <b>Connection to service failed</b>: {}".format(
-                        service_type, url, str(e_ter)
+                    error_msg = "{} <i>{}</i> - <b>Connection to service failed</b>:\n{}".format(
+                        service_type, url, plg_tools.shorten_error(e_ter)
                     )
                     service_dict["reachable"] = 0
                     service_dict["error"] = error_msg
@@ -643,7 +642,7 @@ class GeoServiceManager:
                 typename for typename in wfs_dict.get("typenames") if api_layer_name in typename
             ]
             if len(layer_typenames) > 1:
-                warning_msg = "WFS {} - Multiple typenames matched for '{}' layer, the first one will be choosed: {}".format(
+                warning_msg = "WFS {} - Multiple typenames matched for '{}' layer, the first one will be chosen: {}".format(
                     wfs_url_base, api_layer_name, layer_typenames[0]
                 )
                 logger.warning(warning_msg)
@@ -976,7 +975,7 @@ class GeoServiceManager:
                 typename for typename in wmts_dict.get("typenames") if api_layer_id in typename
             ]
             if len(layer_typenames) > 1:
-                warning_msg = "WMTS {} - Multiple typenames matched for '{}' layer, the first one will be choosed: {}".format(
+                warning_msg = "WMTS {} - Multiple typenames matched for '{}' layer, the first one will be chosen: {}".format(
                     wmts_lyr_url, api_layer_id, layer_typenames[0]
                 )
                 logger.warning(warning_msg)
@@ -1064,7 +1063,7 @@ class GeoServiceManager:
         return ("WMTS", layer_title, wmts_url_final)
 
     def check_esri_service(self, service_type: str, service_url: str):
-        """Try to acces to the given ESRI service URL (using request library) and store
+        """Try to access to the given ESRI service URL (using request library) and store
         various informations into cached_efs or cached_ems dict depending on
         service_type.
 
