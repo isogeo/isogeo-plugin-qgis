@@ -1,7 +1,7 @@
 {
     "release-note": {
-        "fr": "* Ajout de la traduction de l'interface en Espagnol et Portugais Brésilien.\n* Synchronisation du contenu du fichier `db_connections.json` avec les paramètres de QGIS.",
-        "en": "* Addition of interface translation in Spanish and Brazilian Portuguese.\n* Synchronizing the contents of the `db_connections.json` file with QGIS settings."
+        "fr": "* Correction du bug d'affichage des services de l'INPN.",
+        "en": "* Fix the INPN services display bug."
     },
     "compliance":{
         "api": {
