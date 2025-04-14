@@ -624,13 +624,20 @@ class GeoServiceManager:
         wfs = wfs_dict.get("WFS")
         api_layer_id = api_layer.get("id")
         api_layer_name = re.sub("\{.*?}", "", api_layer_id)  # clean api_layer_id
-
+        need_rebuild = re.findall("\{https{0,1}:\/\/(.*?)\}", api_layer_id)
+        api_layer_name_rebuild = "{}:{}".format(
+            need_rebuild[0], api_layer_name
+        ) if len(need_rebuild) else None
         # build layer title
         layer_title = self.build_layer_title("WFS", api_layer)
 
         # check layer availability + retrieve its real id for "TYPENAME" URL parameter
         if api_layer_name in wfs_dict.get("typenames"):
             layer_typename = api_layer_name
+        elif api_layer_id in wfs_dict.get("typenames"):
+            layer_typename = api_layer_id
+        elif api_layer_name_rebuild and api_layer_name_rebuild in wfs_dict.get("typenames"):
+            layer_typename = api_layer_name_rebuild
         elif any(api_layer_name in typename.split(":") for typename in wfs_dict.get("typenames")):
             layer_typename = [
                 typename
