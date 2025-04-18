@@ -4,6 +4,7 @@
 # Standard library
 import configparser
 import datetime
+import unicodedata
 import http.client
 import logging
 from os import access, path, R_OK
@@ -57,6 +58,24 @@ class IsogeoPlgTools(IsogeoUtils):
         # instantiate
         super(IsogeoPlgTools, self).__init__()
 
+    def slugify_layer_id(self, layer_id: str, method: int = 1):
+
+        slugified = layer_id
+        if method == 1:
+            slugified = slugified.replace(" - ", "__")
+            slugified = slugified.replace("-", "_")
+            slugified = slugified.replace(" ", "_")
+            slugified = ''.join(
+                [
+                    c for c in unicodedata.normalize('NFD', slugified)
+                    if unicodedata.category(c) != 'Mn'
+                ]
+            )
+            slugified = slugified.upper()
+        else:
+            pass
+        return slugified
+
     def shorten_error(self, error: str):
         shortened_error = str(error)
         if len(shortened_error) > 1000:
@@ -79,7 +98,7 @@ class IsogeoPlgTools(IsogeoUtils):
     def format_widget_title(self, widget, line_width):
         """Format the title to fit the widget width.
 
-        :param object widget: widget which text has to be formated and has a 'setText' method
+        :param object widget: widget which text has to be formatted and has a 'setText' method
         :param int width: width to fit with
         """
         title = widget.text().strip()
