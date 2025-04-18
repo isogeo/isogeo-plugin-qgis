@@ -122,6 +122,42 @@ class GeoServiceManager:
 
         settings_mng.load_afs_connections()
 
+    def find_wfs_layer(self, api_layer_id: str, typenames: list, wfs_url_base: str):
+
+        layer_typename = None
+
+        raw_id = api_layer_id
+        cleaned_id = re.sub("\{.*?}", "", raw_id)
+        slugified_id = plg_tools.slugify_layer_id(raw_id)
+        need_rebuild = re.findall("\{https{0,1}:\/\/(.*?)\}", raw_id)
+        rebuild_id = f"{need_rebuild[0]}:{cleaned_id}" if len(need_rebuild) else None
+        candidates = [raw_id, cleaned_id, slugified_id, rebuild_id] if rebuild_id else [raw_id, cleaned_id, slugified_id]
+
+        if any(string in typenames for string in candidates):
+            potential_typenames = [string for string in candidates if string in typenames]
+            layer_typename = potential_typenames[0]
+        else:
+            for string in candidates:
+                diptych_typenames = [tn for tn in typenames if len(tn.split(":")) == 2]
+
+                li_potential_typenames = [
+                    [tn for tn in typenames if string == tn.upper()],
+                    [tn for tn in diptych_typenames if string == tn.split(":")[1]],
+                    [tn for tn in diptych_typenames if string in tn.split(":")[1]],
+                    [tn for tn in typenames if string in tn]
+                ]
+                for potential_typenames in li_potential_typenames:
+                    if len(potential_typenames):
+                        layer_typename = potential_typenames[0]
+                        if len(potential_typenames) > 1:
+                            logger.warning(
+                                f"WFS {wfs_url_base} - Multiple typenames matched for '{string}' layer, '{layer_typename}' picked."
+                            )
+                        break
+                if layer_typename:
+                    break
+        return layer_typename
+
     def choose_appropriate_srs(self, crs_options: list):
         """Return an appropriate srs depending on QGIS configuration and available
         service layer crs options.
@@ -564,7 +600,7 @@ class GeoServiceManager:
         service_dict[service_type] = service
         service_dict["typenames"] = list(service.contents.keys())
         service_dict["version"] = service_version
-        service_dict["operations"] = [op.name for op in service.operations]
+        service_dict["operations"] = [op.name for op in service.operations if hasattr(op, "name")]
         service_dict["formatOptions"] = [
             f.split(";", 1)[0] for f in service.getOperationByName(main_op_name).formatOptions
         ]
@@ -623,51 +659,16 @@ class GeoServiceManager:
         wfs_url_base = wfs_dict.get("base_url")
         wfs = wfs_dict.get("WFS")
         api_layer_id = api_layer.get("id")
-        api_layer_name = re.sub("\{.*?}", "", api_layer_id)  # clean api_layer_id
-        need_rebuild = re.findall("\{https{0,1}:\/\/(.*?)\}", api_layer_id)
-        api_layer_name_rebuild = "{}:{}".format(
-            need_rebuild[0], api_layer_name
-        ) if len(need_rebuild) else None
-        # build layer title
-        layer_title = self.build_layer_title("WFS", api_layer)
 
-        # check layer availability + retrieve its real id for "TYPENAME" URL parameter
-        if api_layer_name in wfs_dict.get("typenames"):
-            layer_typename = api_layer_name
-        elif api_layer_id in wfs_dict.get("typenames"):
-            layer_typename = api_layer_id
-        elif api_layer_name_rebuild and api_layer_name_rebuild in wfs_dict.get("typenames"):
-            layer_typename = api_layer_name_rebuild
-        elif any(api_layer_name in typename.split(":") for typename in wfs_dict.get("typenames")):
-            layer_typename = [
-                typename
-                for typename in wfs_dict.get("typenames")
-                if api_layer_name in typename.split(":")
-            ][0]
-        elif any(api_layer_name in typename for typename in wfs_dict.get("typenames")):
-            layer_typenames = [
-                typename for typename in wfs_dict.get("typenames") if api_layer_name in typename
-            ]
-            if len(layer_typenames) > 1:
-                warning_msg = "WFS {} - Multiple typenames matched for '{}' layer, the first one will be chosen: {}".format(
-                    wfs_url_base, api_layer_name, layer_typenames[0]
-                )
-                logger.warning(warning_msg)
-            else:
-                pass
-            layer_typename = layer_typenames[0]
-        else:
-            error_msg = "WFS <i>{}</i> - <b>Unable to find '{}' layer</b>, the layer may not be available anymore.".format(
-                wfs_url_base, api_layer_name
-            )
-            return 0, error_msg
-
+        logger.debug("*=====* {}".format(wfs_dict))
         # check if GetFeature and DescribeFeatureType operation are available
         if not hasattr(wfs, "getfeature") and not wfs_dict.get("GetFeature_isAvailable"):
-            return 0, "GetFeature operation not available in: {}".format(wfs_url_getcap)
-        else:
-            logger.info("GetFeature available")
-            pass
+            return 0, f"GetFeature operation not available in: {wfs_url_getcap}"
+        # check if layer can be found
+        layer_typename = self.find_wfs_layer(api_layer_id, wfs_dict.get("typenames"), wfs_url_base)
+        if not layer_typename:
+            return 0, f"WFS <i>{wfs_url_base}</i> - <b>Unable to find '{api_layer_id}' layer</b>, the layer may not be available anymore."
+        layer_title = self.build_layer_title("WFS", api_layer)
 
         # build URL
         li_url_params = [
