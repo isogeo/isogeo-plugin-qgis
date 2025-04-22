@@ -273,24 +273,29 @@ class GeoServiceManager:
 
             if service_type == "WFS":
                 # check if get data operation is available + retrieve formatOptions
-                xml_operationsMetadata = [
-                    child for child in xml_root if "OperationsMetadata" in child.tag
-                ][0]
-                main_op_elem = [
-                    ope for ope in xml_operationsMetadata if main_op_name in ope.get("name")
-                ]
-                if len(main_op_elem) == 1:
-                    service_dict["{}_isAvailable".format(main_op_name)] = 1
-                    main_op_elem = main_op_elem[0]
-                    li_formatOptions = []
-                    for subelem in main_op_elem:
-                        if subelem.tag.endswith("Format"):
-                            li_formatOptions.append(subelem.text)
-                    service_dict["formatOptions"] = li_formatOptions
-                elif len(main_op_elem) == 0:
-                    service_dict["{}_isAvailable".format(main_op_name)] = 0
+                if any("OperationsMetadata" in child.tag for child in xml_root):
+                    xml_operationsMetadata = [child for child in xml_root if "OperationsMetadata" in child.tag][0]
+                    if any(main_op_name in ope.get("name") for ope in xml_operationsMetadata):
+                        service_dict["{}_isAvailable".format(main_op_name)] = 1
+                        main_op_elem = [ope for ope in xml_operationsMetadata if main_op_name in ope.get("name")]
+                        if len(main_op_elem) == 1:
+                            service_dict["formatOptions"] = [
+                                subelem.text for subelem in main_op_elem[0] if subelem.tag.endswith("Format")
+                            ]
+                    else:
+                        service_dict["{}_isAvailable".format(main_op_name)] = 0
+                elif any("Capability" in child.tag for child in xml_root):
+                    xml_Capability = [child for child in xml_root if "Capability" in child.tag][0]
+                    if any("Request" in child.tag for child in xml_Capability):
+                        xml_Request = [child for child in xml_Capability if "Request" in child.tag][0]
+                        if any(main_op_name in child.tag for child in xml_Request):
+                            service_dict["{}_isAvailable".format(main_op_name)] = 1
+                        else:
+                            service_dict["{}_isAvailable".format(main_op_name)] = 0
+                    else:
+                        service_dict["{}_isAvailable".format(main_op_name)] = 0
                 else:
-                    service_dict["{}_isAvailable".format(main_op_name)] = 1
+                    service_dict["{}_isAvailable".format(main_op_name)] = 0
 
                 # retrieving layers typenames and building layers list (crs, typename)
                 xml_featureTypelist = xml_root.find(tag_prefix + "FeatureTypeList")
@@ -307,14 +312,18 @@ class GeoServiceManager:
                         li_typenames.append(featureType_name.text)
 
                     # Default CRS
-                    featureType_srs = featureType.find(tag_prefix + "DefaultSRS")
-                    featureType_crs = featureType.find(tag_prefix + "DefaultCRS")
-                    if featureType_srs is not None:
-                        layer_dict["srs_id"] = featureType_srs.text
-                        layer_dict["EPSG"] = featureType_srs.text.split(":")[-1]
-                    elif featureType_crs is not None:
-                        layer_dict["srs_id"] = featureType_crs.text
-                        layer_dict["EPSG"] = featureType_crs.text.split(":")[-1]
+                    featureType_DefaultSRS = featureType.find(tag_prefix + "DefaultSRS")
+                    featureType_DefaultCRS = featureType.find(tag_prefix + "DefaultCRS")
+                    featureType_SRS = featureType.find(tag_prefix + "SRS")
+                    if featureType_DefaultSRS is not None:
+                        layer_dict["srs_id"] = featureType_DefaultSRS.text
+                        layer_dict["EPSG"] = featureType_DefaultSRS.text.split(":")[-1]
+                    elif featureType_DefaultCRS is not None:
+                        layer_dict["srs_id"] = featureType_DefaultCRS.text
+                        layer_dict["EPSG"] = featureType_DefaultCRS.text.split(":")[-1]
+                    elif featureType_SRS is not None:
+                        layer_dict["srs_id"] = featureType_SRS.text
+                        layer_dict["EPSG"] = featureType_SRS.text.split(":")[-1]
                     else:
                         layer_dict["EPSG"] = ""
 
@@ -690,7 +699,7 @@ class GeoServiceManager:
                     "{}:{}".format(srs.authority, srs.code) for srs in wfs[layer_typename].crsOptions
                 ]
             srs = self.choose_appropriate_srs(crs_options=available_crs_options)
-            srs_code = srs.split(":")[1]
+            srs_code = srs.split(":")[1] if bool(re.fullmatch(r'[+-]?\d+', srs.split(":")[1].strip())) else False
             if wfs_dict.get("manual"):
                 srs_id = wfs_lyr.get("srs_id")
                 li_url_params.append("SRSNAME={}".format(srs))
@@ -701,7 +710,7 @@ class GeoServiceManager:
                 srs_id = False
 
             # trying to set BBOX parameter as current map canvas extent
-            if "EPSG" in srs and srs_id:
+            if "EPSG" in srs and srs_id and srs_code:
                 canvas_rectangle = iface.mapCanvas().extent()
                 canvas_crs = iface.mapCanvas().mapSettings().destinationCrs()
                 destination_crs = QgsCoordinateReferenceSystem(
