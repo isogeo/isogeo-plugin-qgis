@@ -1,7 +1,7 @@
 {
     "release-note": {
-        "fr": "* Correction du bug d'affichage des services de l'INPN.",
-        "en": "* Fix the INPN services display bug."
+        "fr": "* Correction du bug de sélection de la couche WFS affichée.",
+        "en": "* Fixed WFS layer selection bug."
     },
     "compliance":{
         "api": {

@@ -364,12 +364,12 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="359"/>
+        <location filename="../modules/tools.py" line="384"/>
         <source>Alert</source>
         <translation>Alerta</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="359"/>
+        <location filename="../modules/tools.py" line="384"/>
         <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
@@ -378,7 +378,7 @@ Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS
  Configure-o em 'Configurações/Opções/Rede' e reabra o complemento.</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="447"/>
+        <location filename="../modules/tools.py" line="472"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation>O estilo '{}' QGIS não é compatível com combobox. Foi alterado. Por favor reinicie o QGIS.</translation>
     </message>
@@ -386,32 +386,32 @@ Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="117"/>
+        <location filename="../modules/layer/add_layer.py" line="113"/>
         <source>Service layer</source>
         <translation>Camada de serviço</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="120"/>
+        <location filename="../modules/layer/add_layer.py" line="116"/>
         <source>Data file layer</source>
         <translation>Camada de arquivo de dados</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="124"/>
+        <location filename="../modules/layer/add_layer.py" line="120"/>
         <source>The table</source>
         <translation>A tabela</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="136"/>
+        <location filename="../modules/layer/add_layer.py" line="132"/>
         <source>is not valid</source>
         <translation>não é válido</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="139"/>
+        <location filename="../modules/layer/add_layer.py" line="135"/>
         <source>Error:</source>
         <translation>Erro:</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="142"/>
+        <location filename="../modules/layer/add_layer.py" line="138"/>
         <source>The layer can&apos;t be added</source>
         <translation>A camada não pode ser adicionada</translation>
     </message>
@@ -543,12 +543,12 @@ Você tem um proxy configurado no seu sistema operacional {}, mas nenhum no QGIS
         <translation>Geometria desconhecida</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="592"/>
+        <location filename="../modules/results/display.py" line="598"/>
         <source>Data file</source>
         <translation>Arquivo de dados</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="534"/>
+        <location filename="../modules/results/display.py" line="540"/>
         <source>Can&apos;t be added</source>
         <translation>Não é possível adicionar</translation>
     </message>

@@ -668,8 +668,6 @@ class GeoServiceManager:
         wfs_url_base = wfs_dict.get("base_url")
         wfs = wfs_dict.get("WFS")
         api_layer_id = api_layer.get("id")
-
-        logger.debug("*=====* {}".format(wfs_dict))
         # check if GetFeature and DescribeFeatureType operation are available
         if not hasattr(wfs, "getfeature") and not wfs_dict.get("GetFeature_isAvailable"):
             return 0, f"GetFeature operation not available in: {wfs_url_getcap}"
