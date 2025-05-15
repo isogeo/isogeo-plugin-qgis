@@ -508,7 +508,7 @@ class ResultsManager(QObject):
                         "path": md.path,
                         "formatVersion": md.formatVersion,
                     }
-                    if md.format.lower() in self.service_ico_dict:
+                    if md.format and md.format.lower() in self.service_ico_dict:
                         service_type = md.format.upper()
                         for layer in md.layers:
                             if md.format.lower() in ["ems", "efs"] and layer.get("type") == "table":
