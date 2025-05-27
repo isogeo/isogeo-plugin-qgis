@@ -49,7 +49,6 @@ class QuickSearchManager:
             # Getting wath the class need from Isogeo
             self.form_mng = search_form_manager
             self.tr = self.form_mng.tr
-            self.lang = str
 
             # Setting ui elements
             self.dlg_new = QuicksearchNew()
@@ -78,8 +77,6 @@ class QuickSearchManager:
         params["page"] = self.page_index
         # Info for _limit parameter
         params["show"] = True
-        # Info for _lang parameter
-        params["lang"] = self.lang
         # building request url
         params["url"] = self.url_builder(params)
 

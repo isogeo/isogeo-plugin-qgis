@@ -201,7 +201,7 @@ with ZipFile(PLG_FINAL_ZIP_PATH, "w") as release_zip:
     #         "show": True,
     #         "srs": None,
     #         "text": "",
-    #         "url": "https://v1.api.isogeo.com/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0&_lang=fr",
+    #         "url": "https://v1.api.isogeo.com/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0",
     #     }
     # }
 

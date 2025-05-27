@@ -100,7 +100,7 @@ log_form = logging.Formatter(
     "%(asctime)s || %(levelname)s " "|| %(module)s - %(lineno)d ||" " %(funcName)s || %(message)s"
 )
 logfile_path = Path(plg_logdir) / "log_isogeo_plugin.log"
-logfile = RotatingFileHandler(logfile_path, "a", 5000000, 1)
+logfile = RotatingFileHandler(logfile_path, "a", 5000000, 1, encoding="utf-8")
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
 logger.addHandler(logfile)
@@ -171,22 +171,21 @@ class Isogeo:
         self.settings_mng = SettingsManager()
         self.settings_mng.tr = self.tr
         # initialize locale
+        translator = QTranslator()
         locale = self.settings_mng.get_locale()
-
-        i18n_file_path = self.plugin_dir / "i18n" / "isogeo_search_engine_{}.qm".format(locale)
-        logger.info("Language applied: {}".format(locale))
-
-        if i18n_file_path.exists():
-            translator = QTranslator()
-            translator.load(str(i18n_file_path))
-            QCoreApplication.installTranslator(translator)
+        self.lang = locale[:2]
+        i18n_folder_path = self.plugin_dir / "i18n"
+        if (i18n_folder_path / f"isogeo_search_engine_{locale}.qm").exists():
+            i18n_file_suffix = locale
+        elif (i18n_folder_path / f"isogeo_search_engine_{self.lang}.qm").exists():
+            i18n_file_suffix = self.lang
         else:
-            pass
-
-        if locale != "fr":
-            self.lang = "en"
-        else:
-            self.lang = locale
+            logger.warning(f"No translation file found for '{locale}' locale value, 'en' will be used.")
+            i18n_file_suffix = "en"
+        i18n_file_path = i18n_folder_path / f"isogeo_search_engine_{i18n_file_suffix}.qm"
+        translator.load(str(i18n_file_path))
+        QCoreApplication.installTranslator(translator)
+        logger.info("Language applied to front: {}".format(i18n_file_suffix))
 
         # Declare instance attributes
         self.actions = []
@@ -218,8 +217,6 @@ class Isogeo:
 
         self.form_mng = SearchFormManager(trad=self.tr, settings_manager=self.settings_mng)
         self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
-        self.form_mng.qs_mng.lang = self.lang
-        # self.form_mng.qs_mng.api_base_url_setter(self.settings_mng.config_content.get("api_base_url"))
 
         # connecting
         self.api_requester.api_sig.connect(self.token_slot)
@@ -618,7 +615,7 @@ class Isogeo:
                 if currentCrs == search_params.get("epsg"):
                     canvas = iface.mapCanvas()
                     e = search_params.get("extent")
-                    rect = QgsRectangle(e[0], e[1], e[2], e[3])
+                    rect = QgsRectangle(float(e[0]), float(e[1]), float(e[2]), float(e[3]))
                     canvas.setExtent(rect)
                     canvas.refresh()
                 else:
@@ -634,7 +631,7 @@ class Isogeo:
                     if originCrs.isValid():
                         qgs_prj.setCrs(originCrs)
                         e = search_params.get("extent")
-                        rect = QgsRectangle(e[0], e[1], e[2], e[3])
+                        rect = QgsRectangle(float(e[0]), float(e[1]), float(e[2]), float(e[3]))
                         canvas.setExtent(rect)
                         canvas.refresh()
                         qgs_prj.setCrs(
@@ -644,7 +641,7 @@ class Isogeo:
                         logger.warning("No valid CRS could be build, neither from '{}' nor from '{}'".format(str(search_params.get("epsg")), "EPSG:" + str(search_params.get("epsg"))))
                         pass
             # load request
-            self.api_requester.currentUrl = search_params.get("url")
+            self.api_requester.currentUrl = search_params.get("url") + f"&_lang={self.lang}"
             self.api_requester.send_request()
         else:
             if self.savedSearch == "first":
@@ -654,7 +651,7 @@ class Isogeo:
                 search_params = saved_searches.get("_default")
                 self.old_text = search_params.get("text")
 
-                self.api_requester.currentUrl = search_params.get("url")
+                self.api_requester.currentUrl = search_params.get("url") + f"&_lang={self.lang}"
                 self.api_requester.send_request()
 
             else:
@@ -709,11 +706,19 @@ class Isogeo:
         :param str md_id: UUID of metadata to retrieve
         """
         logger.debug("Full metadata sheet asked. Building the url.")
-        self.api_requester.currentUrl = "{}/resources/{}{}".format(
-            self.api_requester.api_url_base,
-            md_id,
-            "?_include=conditions,contacts,coordinate-system,events,"
-            "feature-attributes,limitations,keywords,specifications",
+        li_include = [
+            "conditions",
+            "contacts",
+            "coordinate-system",
+            "events",
+            "feature-attributes",
+            "limitations",
+            "keywords",
+            "specifications"
+        ]
+        include_value = ",".join(li_include)
+        self.api_requester.currentUrl = "{}/resources/{}?_include={}&_lang={}".format(
+            self.api_requester.api_url_base, md_id, include_value, self.lang
         )
         self.api_requester.send_request("details")
 
@@ -751,8 +756,6 @@ class Isogeo:
                 # Create the dockwidget (after translation) and keep reference
                 self.form_mng = SearchFormManager(trad=self.tr, settings_manager=self.settings_mng)
                 self.form_mng.qs_mng.url_builder = self.api_requester.build_request_url
-                self.form_mng.qs_mng.lang = self.lang
-                # self.form_mng.qs_mng.api_base_url_setter(self.settings_mng.config_content.get("api_base_url"))
 
                 logger.debug("Plugin load time: {}".format(plugin_times.get(plg_reg_name, "NR")))
             else:

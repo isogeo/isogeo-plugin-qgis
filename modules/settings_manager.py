@@ -5,6 +5,7 @@
 import os
 import logging
 import json
+import re
 from pathlib import Path
 
 # PyQGIS
@@ -97,6 +98,7 @@ class SettingsManager(QSettings):
         self.quicksearches_json_path = Path(__file__).parents[1] / "_user" / "quicksearches.json"
         self.quicksearches_content = {}
         self.quicksearch_prefix = "isogeo/user/quicksearches/"
+        self.lang_url_param_regex = r"&_lang=[a-z]{2}"
 
         self.afs_connections = {}  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
 
@@ -537,7 +539,6 @@ class SettingsManager(QSettings):
                     "owners": " - ",
                     "srs": " - "
                 },
-                "lang": "fr",
                 "licenses": None,
                 "ob": "relevance",
                 "od": "desc",
@@ -547,7 +548,7 @@ class SettingsManager(QSettings):
                 "show": True,
                 "srs": None,
                 "text": "",
-                "url": "{}/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0&_lang=fr".format(
+                "url": "{}/resources/search?q=type:dataset&ob=relevance&od=desc&_include=serviceLayers,layers,limitations&_limit=10&_offset=0".format(
                     self.api_base_url
                 ),
             }
@@ -557,8 +558,10 @@ class SettingsManager(QSettings):
     def clean_quicksearch_url(self, url):
 
         search_parameters = url.split("/resources/search?")[1]
-        base_search_url = self.api_base_url + "/resources/search?"
-        new_url = base_search_url + search_parameters
+        search_parameters = re.sub(
+            self.lang_url_param_regex, "", search_parameters
+        )
+        new_url = self.api_base_url + "/resources/search?" + search_parameters
 
         return new_url
 
@@ -668,7 +671,7 @@ class SettingsManager(QSettings):
 
         for quicksearch_name in quicksearches_content:
             quicksearch_url = quicksearches_content.get(quicksearch_name).get("url")
-            if self.api_base_url not in quicksearch_url:
+            if self.api_base_url not in quicksearch_url or re.search(self.lang_url_param_regex, quicksearch_url):
                 cleaned_url = self.clean_quicksearch_url(quicksearch_url)
                 quicksearches_content[quicksearch_name]["url"] = cleaned_url
                 logger.warning(
@@ -676,8 +679,8 @@ class SettingsManager(QSettings):
                         quicksearch_name, quicksearch_url, cleaned_url
                     )
                 )
-            else:
-                pass
+            if "lang" in quicksearches_content.get(quicksearch_name):
+                del quicksearches_content[quicksearch_name]["lang"]
 
         self.update_quicksearches_json(quicksearches_content)
         self.update_quicksearches_qsettings(quicksearches_content)
