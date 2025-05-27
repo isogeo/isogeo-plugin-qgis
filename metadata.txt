@@ -12,7 +12,7 @@ name=Isogeo
 qgisMinimumVersion=3.16
 qgisMaximumVersion=3.99
 description=Isogeo search engine within QGIS
-version=3.6.4
+version=3.6.5-beta
 author=Isogeo
 email=projects+qgis@isogeo.com
 
