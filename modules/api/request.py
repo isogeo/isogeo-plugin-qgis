@@ -91,7 +91,7 @@ class ApiRequester(QObject):
 
         :rtype: QNetworkRequest
         """
-        # creating headers (same steps wathever request_type value)
+        # creating headers (same steps whatever request_type value)
         header_value = QByteArray()
         header_name = QByteArray()
         header_name.append("Authorization")
@@ -115,7 +115,7 @@ class ApiRequester(QObject):
             elif request_type == "search" or request_type == "details":
                 url = QUrl(self.currentUrl)
             else:
-                logger.debug("Unkown request type asked : {}".format(request_type))
+                logger.debug("Unknown request type asked : {}".format(request_type))
                 raise ValueError
             # filling request header with token
             header_value.append(self.token)
@@ -155,10 +155,10 @@ class ApiRequester(QObject):
         return
 
     def handle_reply(self, reply: QNetworkReply):
-        """Slot to QNetworkAccesManager.finished signal who handles the API's response
+        """Slot to QNetworkAccessManager.finished signal who handles the API's response
         to any type of request: 'token', 'search', 'shares' or 'details'.
 
-        The request's type is identicated from the url of the request from which the
+        The request's type is identified from the url of the request from which the
         answer comes. Depending on the reply's content validity and the request's type,
         an appropriated signal is emitted with different data's value.
 
@@ -171,7 +171,7 @@ class ApiRequester(QObject):
 
             - UserInformer.request_slot: it displays to user the appropriated message
             when a problem with the API response is detected (when other than "ok" str
-            is emitted) depending on the origin ofthe problem.
+            is emitted) depending on the origin of the problem.
 
         - search_sig is emitted when the API response to a search request is handled.
         Isogeo.search_slot() is connected to this signal
@@ -310,22 +310,22 @@ class ApiRequester(QObject):
 
     def ssl_error_catcher(self, ssl_errors: QSslError):
         """Slot connected to QNetworkReply.sslErrors signal to log potential errors due
-        to SSL certificate issues occuring when the plugin is interacting with the API
+        to SSL certificate issues occurring when the plugin is interacting with the API
 
         :param QSslError:
         """
         if isinstance(ssl_errors, list):
             for error in ssl_errors:
-                logger.info("SSL error catched : '{}'".format(error.errorString()))
+                logger.info("SSL error caught : '{}'".format(error.errorString()))
         else:
-            logger.info("SSL error catched : '{}'".format(ssl_errors.errorString()))
+            logger.info("SSL error caught : '{}'".format(ssl_errors.errorString()))
         return
 
     def build_request_url(self, params: dict):
         """Builds the request url according to the user selection. These URLs
         are used by create_request.
 
-        :param dict params: a dictionnary provided by Isogeo().get_params
+        :param dict params: a dictionary provided by Isogeo().get_params
         method
 
         :returns: the URL to send to the Isogeo's API for a search request.
@@ -366,7 +366,7 @@ class ApiRequester(QObject):
         # License
         if params.get("licenses") is not None:
             filters += params.get("licenses") + " "
-        # Formating the filters
+        # Formatting the filters
         if filters != "":
             filters = "q=" + filters[:-1]
         # Geographical filter
