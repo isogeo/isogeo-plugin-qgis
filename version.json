@@ -1,7 +1,7 @@
 {
     "release-note": {
-        "fr": "* Correction du bug de sélection de la couche WFS affichée.",
-        "en": "* Fixed WFS layer selection bug."
+        "fr": "* Intégration du multilinguisme du titre et du résumé des fiches de métadonnées.",
+        "en": "* Metadata sheet multilingual titles and abstracts handling."
     },
     "compliance":{
         "api": {

@@ -43,52 +43,52 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="347"/>
+        <location filename="../isogeo.py" line="344"/>
         <source>&amp;Isogeo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="320"/>
+        <location filename="../isogeo.py" line="317"/>
         <source>Search within Isogeo catalogs</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="491"/>
         <source> on </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="431"/>
+        <location filename="../isogeo.py" line="428"/>
         <source>Last search</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="492"/>
+        <location filename="../isogeo.py" line="489"/>
         <source> results</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="828"/>
+        <location filename="../isogeo.py" line="831"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="595"/>
+        <location filename="../isogeo.py" line="592"/>
         <source>Quicksearches</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="855"/>
+        <location filename="../isogeo.py" line="858"/>
         <source>PostgreSQL databases are not supported by your QGIS installation.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="866"/>
+        <location filename="../isogeo.py" line="869"/>
         <source>Oracle databases are not supported by your QGIS installation.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="491"/>
         <source>page </source>
         <translation></translation>
     </message>
@@ -478,37 +478,37 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>QuickSearchManager</name>
     <message>
-        <location filename="../modules/quick_search.py" line="117"/>
+        <location filename="../modules/quick_search.py" line="114"/>
         <source>{} successfully saved: {}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="184"/>
+        <location filename="../modules/quick_search.py" line="181"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="207"/>
+        <location filename="../modules/quick_search.py" line="204"/>
         <source>Quicksearch removed: {}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="227"/>
+        <location filename="../modules/quick_search.py" line="224"/>
         <source>Default search successfully reset.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="131"/>
+        <location filename="../modules/quick_search.py" line="128"/>
         <source>Isogeo - Rename quicksearch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="135"/>
+        <location filename="../modules/quick_search.py" line="132"/>
         <source>Isogeo - New quicksearch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="144"/>
+        <location filename="../modules/quick_search.py" line="141"/>
         <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
         <translation></translation>
     </message>

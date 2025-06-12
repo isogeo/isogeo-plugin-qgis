@@ -43,52 +43,52 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="347"/>
+        <location filename="../isogeo.py" line="344"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="320"/>
+        <location filename="../isogeo.py" line="317"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Buscar en los catálogos Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="431"/>
+        <location filename="../isogeo.py" line="428"/>
         <source>Last search</source>
         <translation>Última búsqueda</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="492"/>
+        <location filename="../isogeo.py" line="489"/>
         <source> results</source>
         <translation> resultados</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="491"/>
         <source> on </source>
         <translation> de </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="595"/>
+        <location filename="../isogeo.py" line="592"/>
         <source>Quicksearches</source>
         <translation>Búsqueda rápida</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="828"/>
+        <location filename="../isogeo.py" line="831"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TÍTULO DEL PROBLEMA NOTIFICADO</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="855"/>
+        <location filename="../isogeo.py" line="858"/>
         <source>PostgreSQL databases are not supported by your QGIS installation.</source>
         <translation>Las bases de datos PostgreSQL no son compatibles con su instalación de QGIS.</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="866"/>
+        <location filename="../isogeo.py" line="869"/>
         <source>Oracle databases are not supported by your QGIS installation.</source>
         <translation>Las bases de datos Oracle no son compatibles con su instalación de QGIS.</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="494"/>
+        <location filename="../isogeo.py" line="491"/>
         <source>page </source>
         <translation>página </translation>
     </message>
@@ -480,37 +480,37 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>QuickSearchManager</name>
     <message>
-        <location filename="../modules/quick_search.py" line="117"/>
+        <location filename="../modules/quick_search.py" line="114"/>
         <source>{} successfully saved: {}</source>
         <translation>{} guardado correctamente: {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="131"/>
+        <location filename="../modules/quick_search.py" line="128"/>
         <source>Isogeo - Rename quicksearch</source>
         <translation>Isogeo - Renombrar una búsqueda rápida</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="135"/>
+        <location filename="../modules/quick_search.py" line="132"/>
         <source>Isogeo - New quicksearch</source>
         <translation>Isogeo - Nueva búsqueda rápida</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="144"/>
+        <location filename="../modules/quick_search.py" line="141"/>
         <source>Quicksearch &apos;{}&apos; already exists, do you want to overwrite it?</source>
         <translation>La búsqueda rápida '{}' ya existe, ¿desea sobrescribirla?</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="184"/>
+        <location filename="../modules/quick_search.py" line="181"/>
         <source>Quicksearch renamed: from {} to {}</source>
         <translation>Búsqueda rápida renombrada: de {} a {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="207"/>
+        <location filename="../modules/quick_search.py" line="204"/>
         <source>Quicksearch removed: {}</source>
         <translation>Búsqueda rápida eliminada: {}</translation>
     </message>
     <message>
-        <location filename="../modules/quick_search.py" line="227"/>
+        <location filename="../modules/quick_search.py" line="224"/>
         <source>Default search successfully reset.</source>
         <translation>Búsqueda por defecto restablecida correctamente.</translation>
     </message>
