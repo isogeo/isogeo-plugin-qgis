@@ -124,8 +124,8 @@ class MetadataDisplayer:
 
         self.complete_md.val_owner.setText(md.get("_creator").get("contact").get("name", "NR"))
         # Keywords
-        kwords = tags.get("keywords", {"none": "NR"})
-        self.complete_md.val_keywords.setText(" ; ".join(kwords.keys()))
+        keywords = tags.get("keywords", {"none": "NR"})
+        self.complete_md.val_keywords.setText(" ; ".join(keywords.keys()))
         # Group themes
         themes = tags.get("groupTheme", {"none": "NR"})
         self.complete_md.val_group_themes.setText(" ; ".join(themes.keys()))
@@ -151,7 +151,7 @@ class MetadataDisplayer:
             menu_list = self.complete_md.li_menu
             item = menu_list.item(1)
             item.setHidden(0)
-            # fillfull
+            # fulfill
             tbl_attr = self.complete_md.tbl_attributes
             fields = md.get("feature-attributes", dict())
             tbl_attr.setRowCount(len(fields))
@@ -195,14 +195,14 @@ class MetadataDisplayer:
         contacts_pt_cct = []
         contacts_other_cct = []
 
-        for ctact in sorted(contacts, key=lambda i: i.get("contact").get("name")):
-            item = ctact.get("contact")
+        for contact in sorted(contacts, key=lambda i: i.get("contact").get("name")):
+            item = contact.get("contact")
             if item.get("organization", "NR") == "NR":
                 ctct_label = "{}</b>".format(item.get("name", "NR"))
             else:
                 ctct_label = "{}</b> ({})".format(item.get("name", "NR"), item.get("organization"))
 
-            if ctact.get("role", "NR") == "pointOfContact":
+            if contact.get("role", "NR") == "pointOfContact":
                 content = (
                     "<b>{0}<br><a href='mailto:{1}' target='_top'>{1}</a><br>{2}"
                     "<br>{3} {4}<br>{5} {6}<br>{6}<br>{7}".format(
@@ -222,7 +222,7 @@ class MetadataDisplayer:
                 content = (
                     "<b>{0} - {1}<br><a href='mailto:{2}' target='_blank'>{2}"
                     "</a><br>{3}<br>{4} {5}<br>{6} {7}<br>{8}".format(
-                        isogeo_tr.tr("roles", ctact.get("role")),
+                        isogeo_tr.tr("roles", contact.get("role")),
                         ctct_label,
                         item.get("email", "NR"),
                         item.get("phone", ""),
@@ -347,12 +347,12 @@ class MetadataDisplayer:
             li_lyr = [md_lyr, background_lyr]
             # add layers
             qgs_prj.addMapLayers(li_lyr, 0)
-            map_canvas_layer_list = [
-                qgs_prj.mapLayer(md_lyr.id()),
-                qgs_prj.mapLayer(background_lyr.id()),
-            ]
             self.envelope_lyr_id = md_lyr.id()
             self.background_lyr_id = background_lyr.id()
+            map_canvas_layer_list = [
+                qgs_prj.mapLayer(self.envelope_lyr_id),
+                qgs_prj.mapLayer(self.background_lyr_id),
+            ]
 
             self.complete_md.wid_bbox.setLayers(map_canvas_layer_list)
             self.complete_md.wid_bbox.setExtent(md_lyr.extent())
@@ -532,6 +532,7 @@ class MetadataDisplayer:
         symbols = md_lyr.renderer().symbols(QgsRenderContext())
         symbol = symbols[0]
         symbol.setColor(QColor.fromRgb(255, 20, 147))
+        # symbol.setColor(QColor.fromRgb(242, 152, 0))  # Isogeo Orange
         symbol.setOpacity(0.25)
 
         # add the feature to the layer
