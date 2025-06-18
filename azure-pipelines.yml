@@ -84,7 +84,7 @@ stages:
 
 - stage: integration
   pool:
-    vmImage: "windows-2019"
+    vmImage: "windows-2022"
   dependsOn : variables
   condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
   variables:
