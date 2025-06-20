@@ -47,7 +47,7 @@ except ImportError:
     from qgis.core import QGis as Qgis
 
 # Initialize Qt resources from file resources.py
-from .resources_rc import *
+from .resources_rc import *  # noqa: F401, F403
 
 # UI classes
 from .ui.credits.dlg_credits import IsogeoCredits

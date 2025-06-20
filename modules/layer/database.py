@@ -80,9 +80,7 @@ except Exception as e:
     ora_available = 0
     ora_error = e
 
-connection_parameters_names = ["host", "port", "dbname", "user", "password"]
-
-# QDialog close button icones
+# QDialog close button icons
 btnBox_ico_dict = {
     0: QIcon(":/plugins/Isogeo/resources/save.svg"),
     1: QIcon(":/images/themes/default/mActionRemove.svg"),
@@ -285,14 +283,14 @@ class DataBaseManager:
 
         # Finally, check if the configuration file section content fit expectations
         service_params_name = list(service_params.keys())
-        expected_params_name = ["host", "port", "dbname", "user", "password"]
+        expected_params = ["host", "port", "dbname", "user", "password"]
         li_missing_params = [
             param_name
-            for param_name in expected_params_name
+            for param_name in expected_params
             if param_name not in service_params_name
         ]
         li_empty_params = [
-            param_name for param_name in expected_params_name if service_params[param_name] == ""
+            param_name for param_name in expected_params if service_params[param_name] == ""
         ]
         if len(li_missing_params):
             error_msg = "Parameters missing into '{}' connection service : {}".format(
@@ -339,7 +337,15 @@ class DataBaseManager:
             "password": password,
             "connection": connection_name,
         }
-        return 1, connection_dict
+        mandatory_parameters = ["database", "host", "port", "username", "password"]
+        missing_params_values = [param for param in mandatory_parameters if not connection_dict.get(param, False)]
+        if len(missing_params_values):
+            logger.warning(
+                f"'{connection_name}' {dbms} connection has some missing parameters: {', '.join(missing_params_values)}"
+            )
+            return 0, connection_dict
+        else:
+            return 1, connection_dict
 
     def check_connection_params_type(
         self,
@@ -444,7 +450,7 @@ class DataBaseManager:
                 c = PostGisDBConnector(uri)
         except Exception as e:
             logger.warning(
-                "Faile to establish connection to {} PostGIS database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
+                "Failed to establish connection to {} PostGIS database using those informations : service:{}, host:{}, port:{}, username:{}, password:{}".format(
                     database, service, host, port, username, password
                 )
             )
@@ -556,7 +562,7 @@ class DataBaseManager:
                     else:
                         logger.warning(connection_dict[1])
                         continue
-                # For "traditionnaly" registered connections
+                # For "traditionally" registered connections
                 elif password_saved == "true" and user_saved == "true":
                     connection_dict = self.qsettings_content_parser(
                         dbms=dbms, connection_name=connection_name
@@ -564,7 +570,7 @@ class DataBaseManager:
                     if connection_dict[0]:
                         connection_dict = connection_dict[1]
                     else:
-                        logger.warning(connection_dict[1])
+                        continue
                 else:
                     continue
 
@@ -789,7 +795,7 @@ class DataBaseManager:
         if btn_role == 0:
             row_count = self.tbl.rowCount()
             li_connection_name = []
-            # Retrieve the option selected in each combobxes
+            # Retrieve the option selected in each comboboxes
             for i in range(0, row_count):
                 cbbox = self.tbl.cellWidget(i, 1)
                 current_userData = cbbox.itemData(cbbox.currentIndex())
