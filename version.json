@@ -1,7 +1,7 @@
 {
     "release-note": {
-        "fr": "* Intégration du multilinguisme du titre et du résumé des fiches de métadonnées.",
-        "en": "* Metadata sheet multilingual titles and abstracts handling."
+        "fr": "* Correctif mineur.",
+        "en": "* Minor Fix."
     },
     "compliance":{
         "api": {

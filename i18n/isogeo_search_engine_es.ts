@@ -20,22 +20,22 @@
 <context>
     <name>DataBaseManager</name>
     <message>
-        <location filename="../modules/layer/database.py" line="696"/>
+        <location filename="../modules/layer/database.py" line="702"/>
         <source>Database</source>
         <translation>Base de datos</translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="700"/>
+        <location filename="../modules/layer/database.py" line="706"/>
         <source>Connection</source>
         <translation>Conexión</translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="766"/>
+        <location filename="../modules/layer/database.py" line="772"/>
         <source> - Configuration of database connections</source>
         <translation> - Configuración de las conexiones a bases de datos</translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="770"/>
+        <location filename="../modules/layer/database.py" line="776"/>
         <source>Choose the embed connection to be used to access to each {} database</source>
         <translation>Elija la conexión que se utilizará para acceder a cada base de datos {}</translation>
     </message>
