@@ -491,7 +491,6 @@ class ApiRequester(QObject):
             "owners": owners,
             "srs": srs,
             "datatype": md_types,
-            # "unused": unused
         }
 
         # method ending

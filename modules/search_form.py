@@ -414,7 +414,7 @@ class SearchFormManager(IsogeoDockWidget):
     def switch_widgets_on_and_off(self, mode=1):
         """Disable all the UI widgets when a request is being sent.
 
-        Deactivate the widgets while a funcion is running so the user doesn't
+        Deactivate the widgets while a function is running so the user doesn't
         clic everywhere ending up in multiple requests being sent at the same
         time, making the plugin crash.
 

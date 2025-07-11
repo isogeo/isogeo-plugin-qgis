@@ -213,7 +213,7 @@ class MetadataDisplayer:
                         item.get("addressLine2", ""),
                         item.get("zipCode", ""),
                         item.get("city", ""),
-                        item.get("country", ""),
+                        item.get("countryCode", ""),
                     )
                 )
                 contacts_pt_cct.append(content)
@@ -436,7 +436,7 @@ class MetadataDisplayer:
             ),
             self.complete_md.val_owner_address: (
                 "{}<br>{}".format(wg_contact.get("addressLine1", ""), wg_contact.get("addressLine2", "")),
-                "<i>{}</i>".format(self.tr("unknown owner adress", context=__class__.__name__))
+                "<i>{}</i>".format(self.tr("unknown owner address", context=__class__.__name__))
             ),
             self.complete_md.val_owner_city: (
                 "{} - {}".format(wg_contact.get("city", ""), wg_contact.get("zipCode", "")),

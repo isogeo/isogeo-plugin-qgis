@@ -66,11 +66,11 @@ li_formats_rastr = (
 # Qt icons
 # see https://github.com/qgis/QGIS/blob/master/images/images.qrc
 pix_point = QPixmap(":/images/themes/default/mIconPointLayer.svg")
-pix_polyg = QPixmap(":/images/themes/default/mIconPolygonLayer.svg")
+pix_polygon = QPixmap(":/images/themes/default/mIconPolygonLayer.svg")
 pix_line = QPixmap(":/images/themes/default/mIconLineLayer.svg")
-pix_rastr = QPixmap(":/images/themes/default/mIconRaster.svg")
+pix_raster = QPixmap(":/images/themes/default/mIconRaster.svg")
 pix_multi = QPixmap(":/plugins/Isogeo/resources/multi.svg").scaledToWidth(20)
-pix_nogeo = QPixmap(":/plugins/Isogeo/resources/none.svg").scaledToWidth(20)
+pix_no_geo = QPixmap(":/plugins/Isogeo/resources/none.svg").scaledToWidth(20)
 pix_serv = QPixmap(":/plugins/Isogeo/resources/results/cloud.svg").scaledToWidth(20)
 pix_table = QPixmap(":/images/themes/default/mIconTableLayer.svg").scaledToWidth(15)
 ico_efs = QIcon(":/images/themes/default/mIconAfs.svg")
@@ -111,7 +111,7 @@ class ResultsManager(QObject):
 
         self.pix_geom_dict = {
             point_list: {"tooltip": "Point", "pix": pix_point},
-            polygon_list: {"tooltip": "Polygon", "pix": pix_polyg},
+            polygon_list: {"tooltip": "Polygon", "pix": pix_polygon},
             line_list: {"tooltip": "Line", "pix": pix_line},
             multi_list: {"tooltip": "MultiPolygon", "pix": pix_multi},
         }
@@ -144,7 +144,7 @@ class ResultsManager(QObject):
         hheader = tbl_result.horizontalHeader()
         # make the entire width of the table is occupied
         hheader.setSectionResizeMode(1)
-        # make date and icone columns width adapted to their content
+        # make date and icon columns width adapted to their content
         # so title and adding columns occupy the rest of the available width
         hheader.setSectionResizeMode(1, 3)
         hheader.setSectionResizeMode(2, 3)
@@ -205,7 +205,7 @@ class ResultsManager(QObject):
                     )
             else:
                 if "rasterDataset" in md.type:
-                    lbl_geom.setPixmap(pix_rastr)
+                    lbl_geom.setPixmap(pix_raster)
                     lbl_geom.setToolTip(self.tr("Raster", context=__class__.__name__))
                 elif "service" in md.type:
                     lbl_geom.setPixmap(pix_serv)
@@ -214,7 +214,7 @@ class ResultsManager(QObject):
                     lbl_geom.setPixmap(pix_table)
                     lbl_geom.setToolTip(self.tr("Table", context=__class__.__name__))
                 else:
-                    lbl_geom.setPixmap(pix_nogeo)
+                    lbl_geom.setPixmap(pix_no_geo)
                     lbl_geom.setToolTip(self.tr("Unknown geometry", context=__class__.__name__))
             lbl_geom.setAlignment(Qt.AlignCenter)
             tbl_result.setCellWidget(count, 2, lbl_geom)
@@ -256,8 +256,6 @@ class ResultsManager(QObject):
                             portal_md_url,
                         ]
                         add_options_dict[self.tr("Data file", context=__class__.__name__)] = params
-                    else:
-                        pass
                 # If the data is a postGIS table and the connection has
                 # been saved in QGIS.
                 elif md.format == "postgis" and self.db_mng.pgis_available:
@@ -489,7 +487,7 @@ class ResultsManager(QObject):
                             add_options_dict[dict_key] = params
                         else:
                             logger.warning(
-                                "Faile to build service URL for {} layer '{}' (of metadata {}): {}".format(
+                                "Failed to build service URL for {} layer '{}' (of metadata {}): {}".format(
                                     service.get("format").upper(),
                                     layer.get("id"),
                                     md._id,
@@ -565,7 +563,7 @@ class ResultsManager(QObject):
                     # Data file
                     elif option_type.startswith(self.tr("Data file", context=__class__.__name__)):
                         icon = ico_file
-                    # Unkown option
+                    # Unknown option
                     else:
                         logger.debug(
                             "Undefined add option type : {}/{} --> {}".format(
@@ -597,7 +595,7 @@ class ResultsManager(QObject):
                         # Data file
                         elif option.startswith(self.tr("Data file", context=__class__.__name__)):
                             icon = ico_file
-                        # Unkown option
+                        # Unknown option
                         else:
                             logger.debug(
                                 "Undefined add option type : {}/{} --> {}".format(

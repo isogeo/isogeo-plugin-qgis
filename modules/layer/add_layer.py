@@ -198,7 +198,7 @@ class LayerAdder:
         layer_title: str,
         service_type: str,
     ):
-        """Add a geo service layer from its URL. Usefull for WMS multi-layer
+        """Add a geo service layer from its URL. Useful for WMS multi-layer
 
         :param str layer_url: the url of the geo service layer
         :param str layer_title: the title to give to the added layer
