@@ -52,8 +52,8 @@ multi_list = ("Geometry", "GeometryCollection")
 known_geom_list = polygon_list + point_list + line_list + multi_list
 
 # Isogeo formats
-li_formats_vect = ("shp", "dxf", "dgn", "filegdb", "tab")
-li_formats_rastr = (
+li_formats_vector = ("shp", "dxf", "dgn", "filegdb", "tab")
+li_formats_raster = (
     "esriasciigrid",
     "geotiff",
     "intergraphgdb",
@@ -127,8 +127,12 @@ class ResultsManager(QObject):
             "wmts": ico_wmts,
         }
 
-    def show_results(self, api_results):
-        """Display the results in a table."""
+    def show_results(self, results: list):
+        """Display the results in a table.
+
+        :param list results: a list containing the content of the 'results' key
+        of API's reply to a search request
+        """
 
         logger.info("Results manager called. Displaying the results")
         try:
@@ -138,7 +142,7 @@ class ResultsManager(QObject):
 
         tbl_result = self.tbl_result
 
-        tbl_result.setRowCount(len(api_results.get("results")))
+        tbl_result.setRowCount(len(results))
 
         # dimensions (see https://github.com/isogeo/isogeo-plugin-qgis/issues/276)
         hheader = tbl_result.horizontalHeader()
@@ -155,7 +159,7 @@ class ResultsManager(QObject):
         # abstract, geometry type, and a button that allow to add the data
         # to the canvas.
         count = 0
-        for i in api_results.get("results"):
+        for i in results:
             md = Metadata.clean_attributes(i)
             # get metadata's keywords from tags, they will be displayed in QGIS
             # 'layer properties' if the layer is added to the canvas
@@ -227,28 +231,13 @@ class ResultsManager(QObject):
 
             # Files and tables direct access
             if md.format:
-                # If the data is a vector and the path is available, store
+                # If the data is a vector or a raster and the path is available, store
                 # useful information in the dict
-                if md.format in li_formats_vect and md.path:
+                if md.format in li_formats_vector + li_formats_raster and md.path:
                     add_path = self._filepath_builder(md.path)
                     if add_path:
                         params = [
-                            "vector",
-                            add_path,
-                            md.title,
-                            md.abstract,
-                            md.keywords,
-                            portal_md_url,
-                        ]
-                        add_options_dict[self.tr("Data file", context=__class__.__name__)] = params
-                    else:
-                        pass
-                # Same if the data is a raster
-                elif md.format in li_formats_rastr and md.path:
-                    add_path = self._filepath_builder(md.path)
-                    if add_path:
-                        params = [
-                            "raster",
+                            "vector" if md.format in li_formats_vector else "raster",
                             add_path,
                             md.title,
                             md.abstract,

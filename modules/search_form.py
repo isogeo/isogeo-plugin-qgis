@@ -380,15 +380,15 @@ class SearchFormManager(IsogeoDockWidget):
 
         return
 
-    def fill_tbl_result(self, content: dict, page_index: int, results_count: int):
+    def fill_tbl_result(self, results: list, page_index: int, results_count: int):
         """Called by Isogeo.search_slot method. It sets some widgets' statuts
         in order to display results.
 
         :param int page_index: results table's page index.
         :param int results_count: number of metadata to be displayed in the
         table.
-        :param dict content: a dict containing the parsed content of API's reply
-        to a search request
+        :param list results: a list containing the content of the 'results' key
+        of API's reply to a search request
         """
         nb_page = plg_tools.results_pages_counter(total=results_count)
         if nb_page == 1:
@@ -408,7 +408,7 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_od.setEnabled(True)
         self.btn_show.setToolTip(self.tr("Display results", context=__class__.__name__))
 
-        self.results_mng.show_results(api_results=content)
+        self.results_mng.show_results(results)
         self.qs_mng.write_params("_current", search_kind="Current")
 
     def switch_widgets_on_and_off(self, mode=1):

@@ -567,7 +567,7 @@ class Isogeo:
         # Showing result : if button 'show result', 'next page' or 'previous page' pressed
         if self.showResult is True:
             self.form_mng.fill_tbl_result(
-                content=result,
+                results=result.get("results"),
                 page_index=self.page_index,
                 results_count=self.results_count,
             )
