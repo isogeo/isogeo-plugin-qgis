@@ -170,7 +170,8 @@ stages:
 - stage : upload_to_blob
   pool:
     vmImage: "ubuntu-latest"
-  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+  # condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isQA, true), eq(variables.isDebug, true)))
+  condition: and(succeeded(), or(eq(variables.isProd, true), eq(variables.isDebug, true)))
   dependsOn :
     - integration
     - variables
