@@ -5,7 +5,7 @@
         begin                : 2019-07-08
         git sha              : $Format:%H$
         copyright            : (C) 2019 by Isogeo, Simon Sampere
-        email                : projects+qgis@isogeo.com
+        email                : contact@isogeo.com
  ***************************************************************************/
 /***************************************************************************
 

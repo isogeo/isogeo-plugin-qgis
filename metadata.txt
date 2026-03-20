@@ -12,9 +12,9 @@ name=Isogeo
 qgisMinimumVersion=3.16
 qgisMaximumVersion=3.41
 description=Isogeo search engine within QGIS
-version=3.7.1
+version=3.7.1-beta
 author=Isogeo
-email=projects+qgis@isogeo.com
+email=support@isogeo.fr
 
 about=Ce plugin facilite l'accès aux données géographiques. Il s'agit d'un moteur de recherche de métadonnées géographiques reposant sur l'API d'<a href="https://www.isogeo.com/">Isogeo</a>.
 
