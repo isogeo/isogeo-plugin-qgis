@@ -7,10 +7,6 @@ pip
 setuptools<80
 wheel
 
-# Project requirements
-# -----------------------
-isogeo-pysdk>=3.3,<3.4
-
 # Dev requirements
 # -----------------------
 black

@@ -4,12 +4,15 @@
 # Standard library
 import configparser
 import datetime
+import json
 import unicodedata
 import http.client
 import logging
+from configparser import ConfigParser
 from os import access, path, R_OK
 import subprocess
 from sys import platform as opersys
+from urllib.parse import urlparse
 from urllib.request import getproxies
 import webbrowser
 
@@ -19,9 +22,6 @@ from qgis.utils import iface
 # PyQT
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtWidgets import QMessageBox
-
-# 3rd party
-from .isogeo_pysdk import IsogeoUtils
 
 # Plugin modules
 from .settings_manager import SettingsManager
@@ -46,17 +46,106 @@ msgBar = iface.messageBar()
 # ##################################
 
 
-class IsogeoPlgTools(IsogeoUtils):
-    """Inheritance from Isogeo Python SDK utils class. It adds some
-    specific tools for QGIS plugin."""
+class IsogeoPlgTools:
+    """Utility tools for the Isogeo QGIS plugin."""
 
     tr = object
     last_error = list
 
     def __init__(self):
-        """Check and manage authentication credentials."""
-        # instantiate
-        super(IsogeoPlgTools, self).__init__()
+        pass
+
+    def get_url_base_from_url_token(
+        self, url_api_token: str = "https://id.api.isogeo.com/oauth/token"
+    ):
+        """Returns the Isogeo API root URL from the token URL.
+
+        :param url_api_token str: url to Isogeo API ID token generator
+        :rtype: str
+        """
+        in_parsed = urlparse(url_api_token)
+        if "qa" in url_api_token:
+            api_url_base = in_parsed._replace(path="", netloc=in_parsed.netloc.replace("id.", ""))
+        else:
+            api_url_base = in_parsed._replace(
+                path="", netloc=in_parsed.netloc.replace("id.", "v1.")
+            )
+        return api_url_base.geturl()
+
+    def credentials_loader(self, in_credentials: str = "client_secrets.json") -> dict:
+        """Loads API credentials from a file, JSON or INI.
+
+        :param str in_credentials: path to the credentials file. By default,
+          look for a client_secrets.json file.
+        """
+        accepted_extensions = (".ini", ".json")
+        # checks
+        if not path.isfile(in_credentials):
+            raise IOError("Credentials file doesn't exist: {}".format(in_credentials))
+        else:
+            in_credentials = path.normpath(in_credentials)
+        if path.splitext(in_credentials)[1] not in accepted_extensions:
+            raise ValueError(
+                "Extension of credentials file must be one of {}".format(accepted_extensions)
+            )
+        else:
+            kind = path.splitext(in_credentials)[1]
+        # load, check and set
+        if kind == ".json":
+            with open(in_credentials, "r") as f:
+                in_auth = json.loads(f.read())
+            # check structure
+            heads = ("installed", "web")
+            if not set(in_auth).intersection(set(heads)):
+                raise ValueError(
+                    "Input JSON structure is not as expected."
+                    " First key must be one of: {}".format(heads)
+                )
+            # set
+            if "web" in in_auth:
+                auth_settings = in_auth.get("web")
+                out_auth = {
+                    "auth_mode": "group",
+                    "client_id": auth_settings.get("client_id"),
+                    "client_secret": auth_settings.get("client_secret"),
+                    "scopes": auth_settings.get("scopes", ["resources:read"]),
+                    "uri_auth": auth_settings.get("auth_uri"),
+                    "uri_token": auth_settings.get("token_uri"),
+                    "uri_base": self.get_url_base_from_url_token(auth_settings.get("token_uri")),
+                    "uri_redirect": None,
+                }
+            else:
+                auth_settings = in_auth.get("installed")
+                out_auth = {
+                    "auth_mode": "user",
+                    "client_id": auth_settings.get("client_id"),
+                    "client_secret": auth_settings.get("client_secret"),
+                    "scopes": auth_settings.get("scopes", ["resources:read"]),
+                    "uri_auth": auth_settings.get("auth_uri"),
+                    "uri_token": auth_settings.get("token_uri"),
+                    "uri_base": self.get_url_base_from_url_token(auth_settings.get("token_uri")),
+                    "uri_redirect": auth_settings.get("redirect_uris", None),
+                }
+        else:
+            ini_parser = ConfigParser()
+            ini_parser.read(in_credentials)
+            if "auth" in ini_parser._sections:
+                auth_settings = ini_parser["auth"]
+            else:
+                raise ValueError(
+                    "Input INI structure is not as expected."
+                    " Section of credentials must be named: auth"
+                )
+            out_auth = {
+                "auth_mode": auth_settings.get("CLIENT_TYPE"),
+                "client_id": auth_settings.get("CLIENT_ID"),
+                "client_secret": auth_settings.get("CLIENT_SECRET"),
+                "uri_auth": auth_settings.get("URI_AUTH"),
+                "uri_token": auth_settings.get("URI_TOKEN"),
+                "uri_base": self.get_url_base_from_url_token(auth_settings.get("URI_TOKEN")),
+                "uri_redirect": auth_settings.get("URI_REDIRECT"),
+            }
+        return out_auth
 
     def slugify_layer_id(self, layer_id: str, method: int = 1):
 

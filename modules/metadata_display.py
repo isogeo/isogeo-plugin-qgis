@@ -24,14 +24,135 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QLabel
 
-# 3rd party
-from .isogeo_pysdk import IsogeoTranslator
-
 # Plugin modules
 from .tools import IsogeoPlgTools
 
 # UI classes
 from ..ui.metadata.dlg_md_details import IsogeoMdDetails
+
+# ############################################################################
+# ########## Translations ##########
+# ##################################
+
+_TRANSLATIONS = {
+    "fr": {
+        "restrictions": {
+            "none": " ",
+            "copyright": "Copyright",
+            "patent": "Brevet",
+            "patentPending": "Brevet en attente",
+            "trademark": "Marque déposée",
+            "license": "Licence",
+            "intellectualPropertyRights": "Droits de propriété intellectuelle",
+            "restricted": "Limité",
+            "other": "Autre",
+        },
+        "limitations": {
+            "legal": "Légale",
+            "security": "Sécurité",
+        },
+        "conditions": {
+            "noLicense": "Pas de licence associée",
+        },
+        "roles": {
+            "author": "Auteur",
+            "pointOfContact": "Point de contact",
+            "custodian": "Administrateur",
+            "distributor": "Distributeur",
+            "originator": "Créateur",
+            "owner": "Propriétaire",
+            "principalInvestigator": "Analyste principal",
+            "processor": "Responsable du traitement",
+            "publisher": "Éditeur (publication)",
+            "resourceProvider": "Fournisseur",
+            "user": "Utilisateur",
+        },
+        "frequencyTypes": {
+            "frequencyUpdateHelp": "Tous les ",
+            "years": "an(s)",
+            "months": "mois",
+            "weeks": "semaine(s)",
+            "days": "jour(s)",
+            "hours": "heure(s)",
+            "minutes": "minute(s)",
+            "seconds": "seconde(s)",
+        },
+        "frequencyShortTypes": {
+            "Y": "an(s)",
+            "M": "mois",
+            "W": "semaine(s)",
+            "D": "jour(s)",
+            "H": "heure(s)",
+            "m": "minute(s)",
+            "S": "seconde(s)",
+        },
+        "quality": {
+            "isConform": "Conforme",
+            "isNotConform": "Non conforme",
+        },
+    },
+    "en": {
+        "restrictions": {
+            "none": " ",
+            "copyright": "Copyright",
+            "patent": "Patent",
+            "patentPending": "Patent pending",
+            "trademark": "Trademark",
+            "license": "License",
+            "intellectualPropertyRights": "Intellectual property rights",
+            "restricted": "Restricted",
+            "other": "Other",
+        },
+        "limitations": {
+            "legal": "Legal",
+            "security": "Security",
+        },
+        "conditions": {
+            "noLicense": "No attached license",
+        },
+        "roles": {
+            "author": "Author",
+            "pointOfContact": "Point of contact",
+            "custodian": "Custodian",
+            "distributor": "Distributor",
+            "originator": "Originator",
+            "owner": "Owner",
+            "principalInvestigator": "Principal investigator",
+            "processor": "Processor",
+            "publisher": "Publisher",
+            "resourceProvider": "Resource provider",
+            "user": "User",
+        },
+        "frequencyTypes": {
+            "frequencyUpdateHelp": "Every ",
+            "years": "year(s)",
+            "months": "month(s)",
+            "weeks": "week(s)",
+            "days": "day(s)",
+            "hours": "hour(s)",
+            "minutes": "minute(s)",
+            "seconds": "second(s)",
+        },
+        "frequencyShortTypes": {
+            "Y": "year(s)",
+            "M": "month(s)",
+            "W": "week(s)",
+            "D": "day(s)",
+            "H": "hour(s)",
+            "m": "minute(s)",
+            "S": "second(s)",
+        },
+        "quality": {
+            "isConform": "Conformant",
+            "isNotConform": "Not conformant",
+        },
+    },
+}
+
+
+def _tr(locale, subdomain, key):
+    return _TRANSLATIONS.get(locale, _TRANSLATIONS["en"]).get(subdomain, {}).get(key, key)
+
 
 # ############################################################################
 # ########## Globals ###############
@@ -93,7 +214,6 @@ class MetadataDisplayer:
         """
         logger.info("Displaying the whole metadata sheet.")
         locale = self.settings_mng.get_locale()
-        isogeo_tr = IsogeoTranslator(locale)
 
         # clean map canvas
         vec_lyr = [i.id() for i in self.complete_md.wid_bbox.layers() if i.type() == 0]
@@ -135,12 +255,12 @@ class MetadataDisplayer:
         if tags.get("compliance"):
             self.complete_md.ico_inspire_conformity.setEnabled(1)
             self.complete_md.ico_inspire_conformity.setToolTip(
-                isogeo_tr.tr("quality", "isConform") + " INSPIRE"
+                _tr(locale, "quality", "isConform") + " INSPIRE"
             )
         else:
             self.complete_md.ico_inspire_conformity.setDisabled(1)
             self.complete_md.ico_inspire_conformity.setToolTip(
-                isogeo_tr.tr("quality", "isNotConform") + " INSPIRE"
+                _tr(locale, "quality", "isNotConform") + " INSPIRE"
             )
         # Abstract
         self.complete_md.val_abstract.setText(md.get("abstract", "NR"))
@@ -222,7 +342,7 @@ class MetadataDisplayer:
                 content = (
                     "<b>{0} - {1}<br><a href='mailto:{2}' target='_blank'>{2}"
                     "</a><br>{3}<br>{4} {5}<br>{6} {7}<br>{8}".format(
-                        isogeo_tr.tr("roles", contact.get("role")),
+                        _tr(locale, "roles", contact.get("role")),
                         ctct_label,
                         item.get("email", "NR"),
                         item.get("phone", ""),
@@ -247,9 +367,9 @@ class MetadataDisplayer:
         if md.get("updateFrequency", None):
             freq = md.get("updateFrequency")
             frequency_info = "{}{} {}".format(
-                isogeo_tr.tr("frequencyTypes", "frequencyUpdateHelp"),
+                _tr(locale, "frequencyTypes", "frequencyUpdateHelp"),
                 "".join(i for i in freq if i.isdigit()),
-                isogeo_tr.tr("frequencyShortTypes", freq[-1]),
+                _tr(locale, "frequencyShortTypes", freq[-1]),
             )
             self.complete_md.val_frequency.setText(frequency_info)
         else:
@@ -305,9 +425,9 @@ class MetadataDisplayer:
         for s_in in specs_in:
             # translate specification conformity
             if s_in.get("conformant"):
-                s_conformity = isogeo_tr.tr("quality", "isConform")
+                s_conformity = _tr(locale, "quality", "isConform")
             else:
-                s_conformity = isogeo_tr.tr("quality", "isNotConform")
+                s_conformity = _tr(locale, "quality", "isNotConform")
             # make data human readable
             if s_in.get("specification").get("published"):
                 s_date = datetime.strptime(
@@ -380,7 +500,7 @@ class MetadataDisplayer:
                 )
             else:
                 cgu_text = "<b>{0}</b><br>{1}".format(
-                    isogeo_tr.tr("conditions", "noLicense"), c_in.get("description", "")
+                    _tr(locale, "conditions", "noLicense"), c_in.get("description", "")
                 )
 
             # store into the final list
@@ -394,12 +514,12 @@ class MetadataDisplayer:
         lims_out = []
         for l_in in lims_in:
             lim_text = "<b>{0}</b><br>{1}".format(
-                isogeo_tr.tr("limitations", l_in.get("type")),
+                _tr(locale, "limitations", l_in.get("type")),
                 l_in.get("description", ""),
             )
             # legal type
             if l_in.get("type") == "legal":
-                lim_text += "<br>" + isogeo_tr.tr("restrictions", l_in.get("restriction"))
+                lim_text += "<br>" + _tr(locale, "restrictions", l_in.get("restriction"))
             else:
                 pass
             # INSPIRE precision

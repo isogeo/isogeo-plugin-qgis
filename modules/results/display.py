@@ -19,9 +19,6 @@ from ..layer.limitations_checker import LimitationsChecker
 from ..layer.geo_service import GeoServiceManager
 from ..layer.database import DataBaseManager
 
-# isogeo-pysdk
-from ..isogeo_pysdk import Metadata
-
 # ############################################################################
 # ########## Globals ###############
 # ##################################
@@ -159,14 +156,13 @@ class ResultsManager(QObject):
         # abstract, geometry type, and a button that allow to add the data
         # to the canvas.
         count = 0
-        for i in results:
-            md = Metadata.clean_attributes(i)
+        for md in results:
             # get metadata's keywords from tags, they will be displayed in QGIS
             # 'layer properties' if the layer is added to the canvas
-            md.keywords = [md.tags.get(kw) for kw in md.tags if kw.startswith("keyword:isogeo")]
+            md["keywords"] = [md.get("tags", {}).get(kw) for kw in md.get("tags", {}) if kw.startswith("keyword:isogeo")]
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
-            title = md.title_or_name()
+            title = md.get("title") or md.get("name")
             if title:
                 btn_md_title = QPushButton(title)
             else:
@@ -174,26 +170,26 @@ class ResultsManager(QObject):
                 btn_md_title.setStyleSheet("font: italic")
 
             # Connecting the button to the full metadata popup
-            btn_md_title.pressed.connect(partial(self.md_asked.emit, md._id))
+            btn_md_title.pressed.connect(partial(self.md_asked.emit, md.get("_id")))
 
             # Insert it in column 1
             tbl_result.setCellWidget(count, 0, btn_md_title)
 
             # COLUMN 2 - Data last update
             lbl_date = QLabel(tbl_result)
-            lbl_date.setText(plg_tools.handle_date(md._modified))
+            lbl_date.setText(plg_tools.handle_date(md.get("_modified")))
             lbl_date.setMargin(5)
             lbl_date.setAlignment(Qt.AlignCenter)
             tbl_result.setCellWidget(count, 1, lbl_date)
 
             # COLUMN 3 - Geometry type
             lbl_geom = QLabel(tbl_result)
-            if md.geometry:
-                if md.geometry == "TIN":
+            if md.get("geometry"):
+                if md.get("geometry") == "TIN":
                     tbl_result.setItem(count, 2, QTableWidgetItem("TIN"))
-                elif md.geometry in known_geom_list:
+                elif md.get("geometry") in known_geom_list:
                     for geom_type in self.pix_geom_dict:
-                        if md.geometry in geom_type:
+                        if md.get("geometry") in geom_type:
                             geom_item = self.pix_geom_dict.get(geom_type)
                             lbl_geom.setPixmap(geom_item.get("pix"))
                             lbl_geom.setToolTip(
@@ -208,13 +204,13 @@ class ResultsManager(QObject):
                         QTableWidgetItem("?"),
                     )
             else:
-                if "rasterDataset" in md.type:
+                if "rasterDataset" in md.get("type", ""):
                     lbl_geom.setPixmap(pix_raster)
                     lbl_geom.setToolTip(self.tr("Raster", context=__class__.__name__))
-                elif "service" in md.type:
+                elif "service" in md.get("type", ""):
                     lbl_geom.setPixmap(pix_serv)
                     lbl_geom.setToolTip(self.tr("Service", context=__class__.__name__))
-                elif "noGeoDataset" in md.type:
+                elif "noGeoDataset" in md.get("type", ""):
                     lbl_geom.setPixmap(pix_table)
                     lbl_geom.setToolTip(self.tr("Table", context=__class__.__name__))
                 else:
@@ -227,32 +223,32 @@ class ResultsManager(QObject):
             add_options_dict = {}
 
             # Build metadata portal URL if the setting is checked in "Settings" tab
-            portal_md_url = self.build_md_portal_url(md._id)
+            portal_md_url = self.build_md_portal_url(md.get("_id"))
 
             # Files and tables direct access
-            if md.format:
+            if md.get("format"):
                 # If the data is a vector or a raster and the path is available, store
                 # useful information in the dict
-                if md.format in li_formats_vector + li_formats_raster and md.path:
-                    add_path = self._filepath_builder(md.path)
+                if md.get("format") in li_formats_vector + li_formats_raster and md.get("path"):
+                    add_path = self._filepath_builder(md.get("path"))
                     if add_path:
                         params = [
-                            "vector" if md.format in li_formats_vector else "raster",
+                            "vector" if md.get("format") in li_formats_vector else "raster",
                             add_path,
-                            md.title,
-                            md.abstract,
-                            md.keywords,
+                            md.get("title"),
+                            md.get("abstract"),
+                            md.get("keywords", []),
                             portal_md_url,
                         ]
                         add_options_dict[self.tr("Data file", context=__class__.__name__)] = params
                 # If the data is a postGIS table and the connection has
                 # been saved in QGIS.
-                elif md.format == "postgis" and self.db_mng.pgis_available:
+                elif md.get("format") == "postgis" and self.db_mng.pgis_available:
                     if (
-                        md.path
-                        and md.name
-                        and md.path in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
-                        and "." in md.name
+                        md.get("path")
+                        and md.get("name")
+                        and md.get("path") in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
+                        and "." in md.get("name", "")
                     ):
                         available_connections = [
                             pg_conn
@@ -260,8 +256,8 @@ class ResultsManager(QObject):
                                 "connections"
                             )
                             if (
-                                md.path == pg_conn.get("database")
-                                or md.path == pg_conn.get("database_alias")
+                                md.get("path") == pg_conn.get("database")
+                                or md.get("path") == pg_conn.get("database_alias")
                             )
                             and pg_conn.get("prefered")
                         ]
@@ -271,8 +267,8 @@ class ResultsManager(QObject):
                                 for pg_conn in self.db_mng.dbms_specifics_infos.get(
                                     "PostgreSQL"
                                 ).get("connections")
-                                if md.path == pg_conn.get("database")
-                                or md.path == pg_conn.get("database_alias")
+                                if md.get("path") == pg_conn.get("database")
+                                or md.get("path") == pg_conn.get("database_alias")
                             ]
                         else:
                             pass
@@ -303,20 +299,20 @@ class ResultsManager(QObject):
                             if tables_infos == 0:
                                 pass
                             else:
-                                schema = md.name.split(".")[0]
-                                table = md.name.split(".")[1]
+                                schema = md.get("name").split(".")[0]
+                                table = md.get("name").split(".")[1]
                                 if any(
                                     infos[2] == schema and infos[1] == table
                                     for infos in tables_infos
                                 ):
                                     params = {
-                                        "base_name": md.path,
+                                        "base_name": md.get("path"),
                                         "schema": schema,
                                         "table": table,
                                         "connection": connection,
-                                        "abstract": md.abstract,
-                                        "title": md.title,
-                                        "keywords": md.keywords,
+                                        "abstract": md.get("abstract"),
+                                        "title": md.get("title"),
+                                        "keywords": md.get("keywords", []),
                                         "md_portal_url": portal_md_url,
                                         "dbms": "PostgreSQL",
                                     }
@@ -325,7 +321,7 @@ class ResultsManager(QObject):
                                     )
                                     add_options_dict[options_key] = params
                                 else:
-                                    logger.info("{} table ({}) not found in {} PostGIS connection.".format(md.name, md._id, connection.get("connection")))
+                                    logger.info("{} table ({}) not found in {} PostGIS connection.".format(md.get("name"), md.get("_id"), connection.get("connection")))
                                     pass
                         self.db_mng.set_qsettings_connections(
                             "PostgreSQL",
@@ -339,15 +335,15 @@ class ResultsManager(QObject):
 
                 # If the data is a Oracle table and the connection has
                 # been saved in QGIS.
-                elif md.format == "oracle" and self.db_mng.ora_available:
+                elif md.get("format") == "oracle" and self.db_mng.ora_available:
                     if (
-                        md.path
-                        and md.name
+                        md.get("path")
+                        and md.get("name")
                         and any(
-                            md.path in self.db_mng.dbms_specifics_infos.get("Oracle").get(key)
+                            md.get("path") in self.db_mng.dbms_specifics_infos.get("Oracle").get(key)
                             for key in ["db_names", "db_aliases"]
                         )
-                        and "." in md.name
+                        and "." in md.get("name")
                     ):
                         available_connections = [
                             ora_conn
@@ -355,8 +351,8 @@ class ResultsManager(QObject):
                                 "connections"
                             )
                             if (
-                                md.path == ora_conn.get("database")
-                                or md.path == ora_conn.get("database_alias")
+                                md.get("path") == ora_conn.get("database")
+                                or md.get("path") == ora_conn.get("database_alias")
                             )
                             and ora_conn.get("prefered")
                         ]
@@ -366,8 +362,8 @@ class ResultsManager(QObject):
                                 for ora_conn in self.db_mng.dbms_specifics_infos.get("Oracle").get(
                                     "connections"
                                 )
-                                if md.path == ora_conn.get("database")
-                                or md.path == ora_conn.get("database_alias")
+                                if md.get("path") == ora_conn.get("database")
+                                or md.get("path") == ora_conn.get("database_alias")
                             ]
                         else:
                             pass
@@ -399,20 +395,20 @@ class ResultsManager(QObject):
                             if tables_infos == 0:
                                 pass
                             else:
-                                schema = md.name.split(".")[0]
-                                table = md.name.split(".")[1]
+                                schema = md.get("name").split(".")[0]
+                                table = md.get("name").split(".")[1]
                                 if any(
                                     infos[0] == schema and infos[1] == table
                                     for infos in tables_infos
                                 ):
                                     params = {
-                                        "base_name": md.path,
+                                        "base_name": md.get("path"),
                                         "schema": schema,
                                         "table": table,
                                         "connection": connection,
-                                        "abstract": md.abstract,
-                                        "title": md.title,
-                                        "keywords": md.keywords,
+                                        "abstract": md.get("abstract"),
+                                        "title": md.get("title"),
+                                        "keywords": md.get("keywords", []),
                                         "md_portal_url": portal_md_url,
                                         "dbms": "Oracle",
                                     }
@@ -430,17 +426,17 @@ class ResultsManager(QObject):
                     else:
                         pass
 
-                elif md.format.lower() in self.service_ico_dict:
+                elif md.get("format", "").lower() in self.service_ico_dict:
                     pass
                 else:
                     logger.debug(
                         "Metadata {} has a format ({}) but it's not handled hear or path is"
-                        " missing".format(md._id, md.format)
+                        " missing".format(md.get("_id"), md.get("format"))
                     )
                     pass
             # Associated service layers
-            if md.type == "vectorDataset" or md.type == "rasterDataset" or md.type == "noGeoDataset":
-                for layer in md.serviceLayers:
+            if md.get("type") == "vectorDataset" or md.get("type") == "rasterDataset" or md.get("type") == "noGeoDataset":
+                for layer in md.get("serviceLayers", []):
                     service = layer.get("service")
                     if service is not None and service.get("format") and not (service.get("format") in ["ems", "efs"] and layer.get("type") == "table"):
                         srv_details = {
@@ -457,16 +453,16 @@ class ResultsManager(QObject):
                             params = [0]
                             logger.debug(
                                 "Unexpected service format detected for '{}' metadata : {}".format(
-                                    md._id, service
+                                    md.get("_id"), service
                                 )
                             )
                             continue
 
                         if params[0] != 0:
                             basic_md = [
-                                md.title,
-                                md.abstract,
-                                md.keywords,
+                                md.get("title"),
+                                md.get("abstract"),
+                                md.get("keywords", []),
                                 portal_md_url,
                             ]
                             params.append(basic_md)
@@ -479,7 +475,7 @@ class ResultsManager(QObject):
                                 "Failed to build service URL for {} layer '{}' (of metadata {}): {}".format(
                                     service.get("format").upper(),
                                     layer.get("id"),
-                                    md._id,
+                                    md.get("_id"),
                                     params[1],
                                 )
                             )
@@ -489,16 +485,16 @@ class ResultsManager(QObject):
 
             # New association mode. For services metadata sheet, the layers
             # are stored in the purposely named include: "layers".
-            elif md.type == "service":
-                if md.layers is not None:
+            elif md.get("type") == "service":
+                if md.get("layers") is not None:
                     srv_details = {
-                        "path": md.path,
-                        "formatVersion": md.formatVersion,
+                        "path": md.get("path"),
+                        "formatVersion": md.get("formatVersion"),
                     }
-                    if md.format and md.format.lower() in self.service_ico_dict:
-                        service_type = md.format.upper()
-                        for layer in md.layers:
-                            if md.format.lower() in ["ems", "efs"] and layer.get("type") == "table":
+                    if md.get("format") and md.get("format", "").lower() in self.service_ico_dict:
+                        service_type = md.get("format").upper()
+                        for layer in md.get("layers", []):
+                            if md.get("format", "").lower() in ["ems", "efs"] and layer.get("type") == "table":
                                 continue
                             else:
                                 layer_title = geo_srv_mng.build_layer_title(service_type, layer)
@@ -508,9 +504,9 @@ class ResultsManager(QObject):
                                 )
                                 params = [service_type, layer_details, srv_details]
                                 basic_md = [
-                                    md.title,
-                                    md.abstract,
-                                    md.keywords,
+                                    md.get("title"),
+                                    md.get("abstract"),
+                                    md.get("keywords", []),
                                     portal_md_url,
                                 ]
                                 params.append(basic_md)
@@ -533,7 +529,7 @@ class ResultsManager(QObject):
             else:
                 data_info = {"limitations": None, "layer": None}
                 # retrieves data limitations
-                data_info["limitations"] = md.limitations
+                data_info["limitations"] = md.get("limitations", [])
 
                 # If there is only one way for the data to be added, insert a button.
                 if len(add_options_dict) == 1:

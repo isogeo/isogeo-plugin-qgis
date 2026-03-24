@@ -183,8 +183,8 @@ class UserInformer:
             )
             for lim in lim_sig:
                 msg += "<br>- "
-                if lim.description != "":
-                    msg += lim.description
+                if lim.get("description", "") != "":
+                    msg += lim.get("description")
                 else:
                     msg += "<i>"
                     msg += self.tr("No description provided")
