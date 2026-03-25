@@ -47,8 +47,8 @@ ico_ob_dupda = QIcon(":/plugins/Isogeo/resources/results/sort-datamodified.svg")
 ico_none = QIcon(":/plugins/Isogeo/resources/none.svg")
 ico_line = QIcon(":/images/themes/default/mIconLineLayer.svg")
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
-ico_poin = QIcon(":/images/themes/default/mIconPointLayer.svg")
-ico_poly = QIcon(":/images/themes/default/mIconPolygonLayer.svg")
+ico_point = QIcon(":/images/themes/default/mIconPointLayer.svg")
+ico_polygon = QIcon(":/images/themes/default/mIconPolygonLayer.svg")
 
 # ############################################################################
 # ########## Classes ###############
@@ -182,7 +182,7 @@ class SearchFormManager(IsogeoDockWidget):
         cbb_chck_kw_width = self.cbb_chck_kw.width() - 10
         cbb_chck_kw_fm = self.cbb_chck_kw.fontMetrics()
 
-        # Only for no results searches, when comboboxe is filled from params and not tags
+        # Only for no results searches, when combobox is filled from params and not tags
         # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
         if not len(tags_keywords) and len(selected_keywords) and len(selected_keywords_labels):
             for i in range(len(selected_keywords)):
@@ -204,7 +204,7 @@ class SearchFormManager(IsogeoDockWidget):
         # For all other searches
         else:
             row_i = 0  # row index
-            for tag_label, tag_code in sorted(tags_keywords.items(), key=lambda item: item[1]):
+            for tag_label, tag_code in tags_keywords.items():
                 item = QStandardItem()
                 # format combobox item label fit the widget width
                 tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
@@ -262,11 +262,11 @@ class SearchFormManager(IsogeoDockWidget):
         for layer in layers:
             if layer.type() == 0 and layer.name() != "Metadata envelope":
                 if layer.geometryType() == 2:
-                    self.cbb_geofilter.addItem(ico_poly, layer.name())
+                    self.cbb_geofilter.addItem(ico_polygon, layer.name())
                 elif layer.geometryType() == 1:
                     self.cbb_geofilter.addItem(ico_line, layer.name())
                 elif layer.geometryType() == 0:
-                    self.cbb_geofilter.addItem(ico_poin, layer.name())
+                    self.cbb_geofilter.addItem(ico_point, layer.name())
         # Format combobox items text to fit with widget width
         for cbb in self.cbbs_search_advanced:
             cbb_width = cbb.width() - 20
@@ -334,7 +334,7 @@ class SearchFormManager(IsogeoDockWidget):
             field_name = self.match_widget_field.get(cbb)
             dest_index = cbb.findData(params.get(field_name))
             # For no result searches, we need to create items from paramas before setting index
-            # because there is no tags so comboboxes are empty 
+            # because there is no tags so comboboxes are empty
             # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
             if dest_index == -1 and params.get("labels", False):
                 item_text = params.get("labels").get(field_name)
