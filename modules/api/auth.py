@@ -50,18 +50,18 @@ class Authenticator(QObject):
     auth_sig = pyqtSignal(str)
     ask_shares = pyqtSignal()
 
-    # ui reference - authentication form
-    ui_auth_form = IsogeoAuthentication()
-    # display messages to the user
-    msgbar = QgsMessageBar(ui_auth_form)
-    ui_auth_form.msgbar_vlayout.addWidget(msgbar)
-
-    # plugin credentials storage parameters
-    credentials_location = {"QSettings": 0, "oAuth2_file": 0}
-
     def __init__(self, settings_manager: object = None):
         # inheritance
         super().__init__()
+
+        # ui reference - authentication form
+        self.ui_auth_form = IsogeoAuthentication()
+        # display messages to the user
+        self.msgbar = QgsMessageBar(self.ui_auth_form)
+        self.ui_auth_form.msgbar_vlayout.addWidget(self.msgbar)
+
+        # plugin credentials storage parameters
+        self.credentials_location = {"QSettings": 0, "oAuth2_file": 0}
 
         self.settings_mng = settings_manager
 

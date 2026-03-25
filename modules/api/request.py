@@ -135,6 +135,13 @@ class ApiRequester(QObject):
             - 'shares'
         """
         logger.info("-------------- Sending a '{}' request --------------".format(request_type))
+        # disconnect previous reply before replacing it
+        if isinstance(self.request, QNetworkReply):
+            try:
+                self.request.sslErrors.disconnect()
+                self.request.finished.disconnect()
+            except RuntimeError:
+                pass  # Qt object already destroyed, that's fine
         # creating the QNetworkRequest appropriate to the request_type
         request = self.create_request(request_type)
         # post request for 'token' request

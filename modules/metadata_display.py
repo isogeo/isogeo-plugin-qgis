@@ -274,6 +274,7 @@ class MetadataDisplayer:
             # fulfill
             tbl_attr = self.complete_md.tbl_attributes
             fields = md.get("feature-attributes", dict())
+            tbl_attr.setUpdatesEnabled(False)
             tbl_attr.setRowCount(len(fields))
             idx = 0
             for i in fields:
@@ -292,6 +293,7 @@ class MetadataDisplayer:
                 tbl_attr.setItem(idx, 2, QTableWidgetItem(i.get("dataType", "")))
                 tbl_attr.setItem(idx, 3, QTableWidgetItem(i.get("description", "")))
                 idx += 1
+            tbl_attr.setUpdatesEnabled(True)
 
             # adapt size
             tbl_attr.horizontalHeader().setStretchLastSection(True)
@@ -302,6 +304,10 @@ class MetadataDisplayer:
             for i in range(idx):
                 tbl_attr.cellWidget(i, 1).setMaximumWidth(alias_column_width)
 
+            try:
+                tbl_attr.horizontalHeader().sectionResized.disconnect()
+            except TypeError:
+                pass
             tbl_attr.horizontalHeader().sectionResized.connect(self.resize_alias_labels)
 
         else:
@@ -385,6 +391,7 @@ class MetadataDisplayer:
         # last modifications
         events = [ev for ev in md.get("events", []) if ev.get("kind") == "update"]
         tbl_events = self.complete_md.tbl_events
+        tbl_events.setUpdatesEnabled(False)
         tbl_events.clearContents()
         tbl_events.setRowCount(len(events))
         idx = 0
@@ -394,6 +401,7 @@ class MetadataDisplayer:
             )
             tbl_events.setItem(idx, 1, QTableWidgetItem(event.get("description", "")))
             idx += 1
+        tbl_events.setUpdatesEnabled(True)
 
         # adapt size
         tbl_events.horizontalHeader().setStretchLastSection(True)

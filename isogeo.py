@@ -552,7 +552,7 @@ class Isogeo:
             )
 
         # tweaking
-        plg_tools._ui_tweaker(ui_widgets=self.form_mng.tab_search.findChildren(QComboBox))
+        plg_tools._ui_tweaker(ui_widgets=self.form_mng.cbbs_to_tweak)
 
         # Formatting show result button according to the number of results
         if self.results_count == 0:

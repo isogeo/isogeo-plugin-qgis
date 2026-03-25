@@ -155,11 +155,18 @@ class ResultsManager(QObject):
         # Looping inside the table lines. For each of them, showing the title,
         # abstract, geometry type, and a button that allow to add the data
         # to the canvas.
+        # Read portal URL settings once for the whole loop
+        _add_portal_url = int(self.settings_mng.get_value("isogeo/settings/add_metadata_url_portal", 0))
+        _portal_base_url = self.settings_mng.get_value("isogeo/settings/portal_base_url", "")
+        _portal_prefix = (_portal_base_url + "/") if _add_portal_url and _portal_base_url else ""
+
+        tbl_result.setUpdatesEnabled(False)
         count = 0
         for md in results:
             # get metadata's keywords from tags, they will be displayed in QGIS
             # 'layer properties' if the layer is added to the canvas
-            md["keywords"] = [md.get("tags", {}).get(kw) for kw in md.get("tags", {}) if kw.startswith("keyword:isogeo")]
+            tags = md.get("tags", {})
+            md["keywords"] = [tags.get(kw) for kw in tags if kw.startswith("keyword:isogeo")]
             # COLUMN 1 - Title and abstract
             # Displaying the metadata title inside a button
             title = md.get("title") or md.get("name")
@@ -223,7 +230,7 @@ class ResultsManager(QObject):
             add_options_dict = {}
 
             # Build metadata portal URL if the setting is checked in "Settings" tab
-            portal_md_url = self.build_md_portal_url(md.get("_id"))
+            portal_md_url = _portal_prefix + md.get("_id") if _portal_prefix else ""
 
             # Files and tables direct access
             if md.get("format"):
@@ -634,6 +641,7 @@ class ResultsManager(QObject):
                         pass
             else:
                 pass
+        tbl_result.setUpdatesEnabled(True)
         hheader.sectionResized.connect(partial(self.section_resized_slot))  # https://github.com/isogeo/isogeo-plugin-qgis/issues/438
         # method ending
         return None
@@ -676,21 +684,6 @@ class ResultsManager(QObject):
         else:
             logger.debug("Path has been ignored because it's cached.")
             return False
-
-    def build_md_portal_url(self, metadata_id: str):
-        """Build the URL of the metadata into Isogeo Portal (see https://github.com/isogeo/isogeo-plugin-qgis/issues/312)
-
-        :param str metadata_id: id of the metadata
-        """
-        add_portal_md_url = int(self.settings_mng.get_value("isogeo/settings/add_metadata_url_portal", 0))
-        portal_base_url = self.settings_mng.get_value("isogeo/settings/portal_base_url", "")
-
-        if add_portal_md_url and portal_base_url != "":
-            portal_md_url = portal_base_url + "/" + metadata_id
-        else:
-            portal_md_url = ""
-
-        return portal_md_url
 
 
 # #############################################################################
