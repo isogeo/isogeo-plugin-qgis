@@ -583,8 +583,8 @@ class Isogeo:
         self.hardReset = False
         self.showResult = False
 
-    def set_widget_status(self):
-        """Set a few variable and send the request to Isogeo API."""
+    def apply_quicksearch(self):
+        """Load and apply a saved quicksearch: restore geo context if any, then send the search request."""
         selected_search = self.form_mng.cbb_quicksearch_use.currentText()
         logger.debug("Quicksearch selected: {}".format(selected_search))
         # load quicksearches
@@ -603,9 +603,15 @@ class Isogeo:
                 self.savedSearch = "_default"
                 search_params = saved_searches.get("_default")
             else:
-                logger.error(
+                logger.warning(
                     "Selected search ({}) and '_default' do not exist.".format(selected_search)
                 )
+                msgBar.pushMessage(
+                    "Isogeo",
+                    self.tr("Selected quicksearch could not be loaded."),
+                    duration=5,
+                )
+                self.form_mng.switch_widgets_on_and_off(1)
                 return
 
             # Check projection settings in loaded search params
@@ -641,6 +647,7 @@ class Isogeo:
                         logger.warning("No valid CRS could be build, neither from '{}' nor from '{}'".format(str(search_params.get("epsg")), "EPSG:" + str(search_params.get("epsg"))))
                         pass
             # load request
+            self.page_index = 1
             self.api_requester.currentUrl = search_params.get("url") + f"&_lang={self.lang}"
             self.api_requester.send_request()
         else:
@@ -733,7 +740,7 @@ class Isogeo:
             self.authenticator.ui_auth_form.btn_ok_cancel.buttons()[0].setEnabled(True)
             self.form_mng.txt_shares.setText(text)
             if self.savedSearch == "first":
-                self.set_widget_status()
+                self.apply_quicksearch()
             else:
                 pass
         else:
@@ -809,7 +816,7 @@ class Isogeo:
             # -- Quicksearches ----------------------------------------------------
 
             # select and use
-            self.form_mng.cbb_quicksearch_use.activated.connect(self.set_widget_status)
+            self.form_mng.cbb_quicksearch_use.activated.connect(self.apply_quicksearch)
 
             # # -- Settings tab - Search --------------------------------------------
             # button to empty the cache of filepaths #135
@@ -886,6 +893,8 @@ class Isogeo:
             self.form_mng.txt_input.setFocus()
             # connect limitations checker to user informer
             self.form_mng.results_mng.lim_checker.lim_sig.connect(self.informer.lim_slot)
+            # Reset page index for fresh session (survives plugin close/reopen)
+            self.page_index = 1
             # launch authentication
             self.user_authentication()
         else:
