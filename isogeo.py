@@ -241,6 +241,7 @@ class Isogeo:
 
         self.old_text = ""
         self.page_index = 1
+        self._filters_changed = True
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message, context="Isogeo"):
@@ -342,10 +343,10 @@ class Isogeo:
         """Remove the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginWebMenu(self.tr("&Isogeo"), action)
-            try:
-                self.iface.mainWindow().statusBar().removeWidget(self.bar)
-            except Exception:
-                pass
+            # try:
+            #     self.iface.mainWindow().statusBar().removeWidget(self.bar)
+            # except Exception:
+            #     pass
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
         del self.toolbar
@@ -407,7 +408,7 @@ class Isogeo:
         self.api_requester.send_request(request_type="shares")
 
     # --- SEARCH --------------------------------------------------------------
-    def search(self, show: bool = False, page_change: int = 0):
+    def search(self, show: bool = False, page_change: int = 0, filters_changed: bool = True):
         """Slot connected to signals emitted by 'advances search', 'order' or
         'keywords' comboboxes, also by 'show results', 'next page' or 'previous
         page' buttons when a user interacts with one of them. It retrieves the
@@ -420,6 +421,7 @@ class Isogeo:
         'next page' button was pressed, 0 otherwise
         """
         logger.debug("Search function called. Building the url that is to be sent to the API")
+        self._filters_changed = filters_changed
         # Disabling all user inputs during the search function is running
         self.form_mng.switch_widgets_on_and_off(0)
 
@@ -439,7 +441,7 @@ class Isogeo:
         # Info for _limit parameter
         if show is True:
             # Adding the loading bar
-            self.add_loading_bar()
+            # self.add_loading_bar()
             self.showResult = True
             params["show"] = True
         else:
@@ -481,6 +483,8 @@ class Isogeo:
             tag="Isogeo",
             level=0,
         )
+        # Determine if filter comboboxes need repopulation
+        _repopulate = self._filters_changed
         # Save entered text and filters in search form
         params = self.form_mng.save_params()
 
@@ -504,13 +508,16 @@ class Isogeo:
             logger.debug("Not default search nor reset.")
             self.old_text = self.form_mng.txt_input.text()  # only if not first search to avoid when current widgets status is not relevant
 
-        # Filling Advanced search comboboxes from tags
-        self.form_mng.pop_as_cbbs(tags)
-        # Filling quick searches comboboxes from json file (also the one in settings tab)
-        self.form_mng.pop_qs_cbbs(self.form_mng.qs_mng.get_quicksearches_names())
-        # Sorting Advanced search comboboxes
-        for cbb in self.cbbs_search_advanced:
-            cbb.model().sort(0)
+        # Filling Advanced search comboboxes from tags (skipped on page/order/show navigation)
+        if not _repopulate:
+            logger.debug("Skipping filter repopulation (filters unchanged)")
+        if _repopulate:
+            self.form_mng.pop_as_cbbs(tags)
+            # Filling quick searches comboboxes from json file (also the one in settings tab)
+            self.form_mng.pop_qs_cbbs(self.form_mng.qs_mng.get_quicksearches_names())
+            # Sorting Advanced search comboboxes
+            for cbb in self.cbbs_search_advanced:
+                cbb.model().sort(0)
 
         # Putting comboboxes' selected index to the appropriate location
         # and updating keywords checkable combobox
@@ -518,7 +525,7 @@ class Isogeo:
             # In case of a hard reset, we don't have to worry about comboboxes' selected index
             logger.debug("Reset search")
             self.form_mng.update_cbb_keywords(tags_keywords=tags.get("keywords"))
-        else:
+        elif _repopulate:
             logger.debug("Classical search or quicksearch (no reset search)")
             if self.savedSearch == "":
                 # Putting all the comboboxes selected index to their previous location.
@@ -551,8 +558,9 @@ class Isogeo:
                 selected_keywords_labels=selected_keywords_labels  # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
             )
 
-        # tweaking
-        plg_tools._ui_tweaker(ui_widgets=self.form_mng.cbbs_to_tweak)
+        # tweaking (skipped on page/order/show navigation)
+        if _repopulate:
+            plg_tools._ui_tweaker(ui_widgets=self.form_mng.cbbs_to_tweak)
 
         # Formatting show result button according to the number of results
         if self.results_count == 0:
@@ -571,7 +579,7 @@ class Isogeo:
                 page_index=self.page_index,
                 results_count=self.results_count,
             )
-            iface.mainWindow().statusBar().removeWidget(self.bar)
+            # iface.mainWindow().statusBar().removeWidget(self.bar)
             self.store = True
         else:
             pass
@@ -648,6 +656,7 @@ class Isogeo:
                         pass
             # load request
             self.page_index = 1
+            self._filters_changed = True
             self.api_requester.currentUrl = search_params.get("url") + f"&_lang={self.lang}"
             self.api_requester.send_request()
         else:
@@ -658,6 +667,7 @@ class Isogeo:
                 search_params = saved_searches.get("_default")
                 self.old_text = search_params.get("text")
 
+                self._filters_changed = True
                 self.api_requester.currentUrl = search_params.get("url") + f"&_lang={self.lang}"
                 self.api_requester.send_request()
 
@@ -700,12 +710,12 @@ class Isogeo:
         self.search()
 
     # -- UTILS ----------------------------------------------------------------
-    def add_loading_bar(self):
-        """Display a progress bar."""
-        self.bar = QProgressBar()
-        self.bar.setRange(0, 0)
-        self.bar.setFixedWidth(120)
-        self.iface.mainWindow().statusBar().insertPermanentWidget(0, self.bar)
+    # def add_loading_bar(self):
+    #     """Display a progress bar."""
+    #     self.bar = QProgressBar()
+    #     self.bar.setRange(0, 0)
+    #     self.bar.setFixedWidth(120)
+    #     self.iface.mainWindow().statusBar().insertPermanentWidget(0, self.bar)
 
     def send_details_request(self, md_id):
         """Send a request for additional info about one data.
@@ -804,12 +814,12 @@ class Isogeo:
 
             # -- Results table ----------------------------------------------------
             # show and order results
-            self.form_mng.btn_show.pressed.connect(partial(self.search, show=True))
-            self.form_mng.cbb_ob.activated.connect(partial(self.search, show=True))
-            self.form_mng.cbb_od.activated.connect(partial(self.search, show=True))
+            self.form_mng.btn_show.pressed.connect(partial(self.search, show=True, filters_changed=False))
+            self.form_mng.cbb_ob.activated.connect(partial(self.search, show=True, filters_changed=False))
+            self.form_mng.cbb_od.activated.connect(partial(self.search, show=True, filters_changed=False))
             # pagination
-            self.form_mng.btn_next.pressed.connect(partial(self.search, show=True, page_change=1))
-            self.form_mng.btn_previous.pressed.connect(partial(self.search, show=True, page_change=-1))
+            self.form_mng.btn_next.pressed.connect(partial(self.search, show=True, page_change=1, filters_changed=False))
+            self.form_mng.btn_previous.pressed.connect(partial(self.search, show=True, page_change=-1, filters_changed=False))
             # metadata display
             self.form_mng.results_mng.md_asked.connect(self.send_details_request)
 
