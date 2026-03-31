@@ -8,7 +8,9 @@ import logging
 # ########## Globals ###############
 # ##################################
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from .. import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 srv_types = ["WMS", "WFS", "EFS", "EMS", "WMTS"]
 file_types = ["vector", "raster"]

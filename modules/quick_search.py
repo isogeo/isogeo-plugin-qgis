@@ -21,7 +21,9 @@ from ..ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
 # ########## Globals ###############
 # ##################################
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from . import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 msgBar = iface.messageBar()
 

@@ -33,7 +33,9 @@ from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
 
 qgis_version = int("".join(Qgis.QGIS_VERSION.split(".")[:2]))
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from .. import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 # DBMS dependencies
 dbms_specifics_resources = {}

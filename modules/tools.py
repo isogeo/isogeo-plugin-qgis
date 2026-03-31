@@ -37,8 +37,10 @@ else:
 # ########## Globals ###############
 # ##################################
 
+from . import PLG_LOGGER_NAME
+
 settings_mng = SettingsManager()
-logger = logging.getLogger("IsogeoQgisPlugin")
+logger = logging.getLogger(PLG_LOGGER_NAME)
 msgBar = iface.messageBar()
 
 # ############################################################################
@@ -298,7 +300,7 @@ class IsogeoPlgTools:
     def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
         """Plugin metadata.txt parser.
 
-        :param path base_path: directory path whete the metadata txt is stored
+        :param path base_path: directory path where the metadata txt is stored
         :param str section: section of values. Until nom, there is only "general".
         :param str value: value to get from the file. Available values:
 

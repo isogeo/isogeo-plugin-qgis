@@ -18,7 +18,9 @@ from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply, QSslError
 # ########## Globals ###############
 # ##################################
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from .. import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 # ############################################################################
 # ########## Classes ###############

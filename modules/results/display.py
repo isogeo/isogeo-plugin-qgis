@@ -26,7 +26,9 @@ from ..layer.database import DataBaseManager
 plg_tools = IsogeoPlgTools()
 geo_srv_mng = GeoServiceManager()
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from .. import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 # Isogeo geometry types
 polygon_list = (

@@ -18,7 +18,9 @@ from .settings_manager import SettingsManager
 # ########## Globals ###############
 # ##################################
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from . import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 settings_mng = SettingsManager()
 
 

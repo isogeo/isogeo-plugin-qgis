@@ -33,7 +33,7 @@ from functools import partial
 # PyQT
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator
 
-from qgis.PyQt.QtWidgets import QAction, QComboBox, QDesktopWidget, QProgressBar
+from qgis.PyQt.QtWidgets import QAction, QComboBox, QDesktopWidget
 from qgis.PyQt.QtGui import QIcon
 
 # PyQGIS
@@ -93,7 +93,7 @@ elif "beta" in plg_tools.plugin_metadata(base_path=plg_basepath) or "dev" in plg
 else:
     log_level = logging.INFO
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+logger = logging.getLogger("IsogeoQgisPlugin.{}".format(plg_reg_name))
 
 logger.setLevel(log_level)
 log_form = logging.Formatter(
@@ -103,7 +103,9 @@ logfile_path = Path(plg_logdir) / "log_isogeo_plugin.log"
 logfile = RotatingFileHandler(logfile_path, "a", 5000000, 1, encoding="utf-8")
 logfile.setLevel(log_level)
 logfile.setFormatter(log_form)
-logger.addHandler(logfile)
+# Guard against duplicate handlers on plugin reload
+if not any(isinstance(h, RotatingFileHandler) for h in logger.handlers):
+    logger.addHandler(logfile)
 
 # icons
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
@@ -334,19 +336,16 @@ class Isogeo:
         # Commented next statement since it causes QGIS crashe when closing the docked window:
         self.form_mng = None
         self.pluginIsActive = False
-        # stop log file stream
-        logging.shutdown()
-
-        del self
+        # close log file handler (will be re-opened in run())
+        for h in logger.handlers[:]:
+            if isinstance(h, RotatingFileHandler):
+                h.close()
+                logger.removeHandler(h)
 
     def unload(self):
         """Remove the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginWebMenu(self.tr("&Isogeo"), action)
-            # try:
-            #     self.iface.mainWindow().statusBar().removeWidget(self.bar)
-            # except Exception:
-            #     pass
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
         del self.toolbar
@@ -710,12 +709,6 @@ class Isogeo:
         self.search()
 
     # -- UTILS ----------------------------------------------------------------
-    # def add_loading_bar(self):
-    #     """Display a progress bar."""
-    #     self.bar = QProgressBar()
-    #     self.bar.setRange(0, 0)
-    #     self.bar.setFixedWidth(120)
-    #     self.iface.mainWindow().statusBar().insertPermanentWidget(0, self.bar)
 
     def send_details_request(self, md_id):
         """Send a request for additional info about one data.
@@ -766,6 +759,12 @@ class Isogeo:
         if not self.pluginIsActive:
             logger.info("Opening (display) the plugin...")
             self.pluginIsActive = True
+            # re-open log file handler if it was closed by onClosePlugin()
+            if not any(isinstance(h, RotatingFileHandler) for h in logger.handlers):
+                new_logfile = RotatingFileHandler(logfile_path, "a", 5000000, 1, encoding="utf-8")
+                new_logfile.setLevel(log_level)
+                new_logfile.setFormatter(log_form)
+                logger.addHandler(new_logfile)
             # dockwidget may not exist if:
             #    first run of plugin
             #    removed on close (see self.onClosePlugin method)

@@ -31,8 +31,10 @@ from ..settings_manager import SettingsManager
 # ########## Globals ###############
 # ##################################
 
+from .. import PLG_LOGGER_NAME
+
 settings_mng = SettingsManager()
-logger = logging.getLogger("IsogeoQgisPlugin")
+logger = logging.getLogger(PLG_LOGGER_NAME)
 plg_tools = IsogeoPlgTools()
 
 qgis_wms_formats = (
