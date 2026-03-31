@@ -82,6 +82,13 @@ class SearchFormManager(IsogeoDockWidget):
         for cbb in self.findChildren(QComboBox):
             cbb.installEventFilter(self)
 
+        # static stylesheets — applied once, never change at runtime
+        for cbb in self.grp_filters.findChildren(QComboBox):
+            cbb.setStyleSheet("combobox-popup: 0; font-size: 12px")
+        for cbb in [self.cbb_ob, self.cbb_od]:
+            cbb.setStyleSheet("QComboBox {combobox-popup: 0; color: transparent; font-size: 12px} QListView {color: black; icon-size: 20px} QToolTip {color: black}")
+            cbb.view().setSpacing(2)
+
         # match between widgets and metadata fields
         self.match_widget_field = {
             self.cbb_type: "datatype",
@@ -418,6 +425,8 @@ class SearchFormManager(IsogeoDockWidget):
         :param list results: a list containing the content of the 'results' key
         of API's reply to a search request
         """
+        self.tbl_result.setEnabled(True)
+        self.lbl_page.setEnabled(True)
         nb_page = plg_tools.results_pages_counter(total=results_count)
         if nb_page == 1:
             self.btn_next.setEnabled(False)
@@ -434,10 +443,26 @@ class SearchFormManager(IsogeoDockWidget):
 
         self.cbb_ob.setEnabled(True)
         self.cbb_od.setEnabled(True)
-        self.btn_show.setToolTip(self.tr("Display results", context=__class__.__name__))
 
         self.results_mng.show_results(results)
-        self.qs_mng.write_params("_current", search_kind="Current")
+
+    def disable_results_widgets(self):
+        """Disable pagination, order, and results table when auto-show is off."""
+        self.btn_next.setEnabled(False)
+        self.btn_previous.setEnabled(False)
+        self.cbb_ob.setEnabled(False)
+        self.cbb_od.setEnabled(False)
+        self.tbl_result.setEnabled(False)
+        self.lbl_page.setEnabled(False)
+
+    def enable_results_widgets(self):
+        """Enable pagination, order, and results table when auto-show is on."""
+        self.btn_next.setEnabled(True)
+        self.btn_previous.setEnabled(True)
+        self.cbb_ob.setEnabled(True)
+        self.cbb_od.setEnabled(True)
+        self.tbl_result.setEnabled(True)
+        self.lbl_page.setEnabled(True)
 
     def switch_widgets_on_and_off(self, mode=1):
         """Disable all the UI widgets when a request is being sent.
@@ -463,14 +488,6 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_geo_op.clear()
         for key in self.dict_operation.keys():
             self.cbb_geo_op.addItem(key, self.dict_operation.get(key))
-        # Advanced search cbb
-        for cbb in self.cbbs_search_advanced:
-            cbb.setStyleSheet("combobox-popup: 0; font-size: 12px")
-        # Order by and direction cbb
-        for cbb in self.cbbs_order:
-            cbb.setStyleSheet("QComboBox {combobox-popup: 0; color: transparent; font-size: 12px} QListView {color: black; icon-size: 20px} QToolTip {color: black}")
-            # cbb.setStyleSheet("QComboBox {combobox-popup: 0; color: transparent; font-size: 12px} QListView {color: black; icon-size: 20px; selection-background-color: lightgray; selection-color: black} QToolTip {color: black}")
-            cbb.view().setSpacing(2)
 
     def reinit_widgets(self):
         """Called by Isogeo.reinitialize_search method to clear search widgets."""

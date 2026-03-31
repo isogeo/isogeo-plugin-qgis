@@ -78,7 +78,7 @@ class QuickSearchManager:
         self.page_index = 1
         params["page"] = self.page_index
         # Info for _limit parameter
-        params["show"] = True
+        params["show"] = self.form_mng.chk_auto_show.isChecked()
         # building request url
         params["url"] = self.url_builder(params)
 
