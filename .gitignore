@@ -135,3 +135,5 @@ help/
 
 modules/isogeo_pysdk/samples/*
 pyqt5_to_pyqt6.py
+/tools/.pyqgis-doc-cache
+/tools/compatibility_report.md
