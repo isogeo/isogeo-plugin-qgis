@@ -91,7 +91,6 @@ class QuickSearchManager:
     def write_params(self, search_name: str = "_default", search_kind: str = "Default"):
         """Write a new element in the json file when a search is saved."""
 
-        # If the name already exists, ask for a new one. ================ TO DO
         if search_kind == "Last":
             if search_name == "Last search" and "Dernière recherche" in self.get_quicksearches_names():
                 self.settings_mng.remove_quicksearch("Dernière recherche")

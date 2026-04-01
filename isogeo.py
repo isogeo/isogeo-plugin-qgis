@@ -222,8 +222,6 @@ class Isogeo:
         self.savedSearch = ""
         self.hardReset = False
         self.showResult = False
-        self.store = False
-
         self.old_text = ""
         self.page_index = 1
         self.results_count = 0
@@ -319,6 +317,8 @@ class Isogeo:
 
         # remove this statement if dockwidget is to remain for reuse if plugin is reopened
         # Commented next statement since it causes QGIS crashe when closing the docked window:
+        if "_current" in self.form_mng.qs_mng.settings_mng.quicksearches_content:
+            self.form_mng.qs_mng.write_params(self.tr("Last search"), "Last")
         self.form_mng = None
         self.pluginIsActive = False
         # close log file handler (will be re-opened in run())
@@ -452,11 +452,10 @@ class Isogeo:
         self.form_mng.tbl_result.setRowCount(0)
         self.form_mng.switch_widgets_on_and_off(0)
 
-        if self.store is True:
+        if self._repopulate and "_current" in self.form_mng.qs_mng.settings_mng.quicksearches_content:
             name = self.tr("Last search")
             self.form_mng.qs_mng.write_params(name, "Last")
             self.form_mng.pop_qs_cbbs(items_list=self.form_mng.qs_mng.get_quicksearches_names())
-            self.store = False
 
         self.api_requester.currentUrl = new_url
         self.api_requester.send_request()
@@ -524,10 +523,17 @@ class Isogeo:
                 # Putting all the comboboxes selected index according to params found in the json file
                 logger.debug("Quicksearch case: {}".format(self.savedSearch))
                 # Opening the json to get quick search's params
-                params = self.form_mng.qs_mng.get_quicksearches().get(self.savedSearch)
-                quicksearch = self.savedSearch
-                self.savedSearch = ""
-                selected_keywords = [v for k, v in params.items() if k.startswith("keyword")]
+                qs_params = self.form_mng.qs_mng.get_quicksearches().get(self.savedSearch)
+                if qs_params is None:
+                    logger.warning("Quicksearch '{}' not found, falling back to current params.".format(self.savedSearch))
+                    self.savedSearch = ""
+                    selected_keywords = params.get("keys")
+                    quicksearch = ""
+                else:
+                    params = qs_params
+                    quicksearch = self.savedSearch
+                    self.savedSearch = ""
+                    selected_keywords = [v for k, v in params.items() if k.startswith("keyword")]
 
             if params.get("labels", {}).get("keys", False):
                 selected_keywords_labels = params.get("labels").get("keys")  # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
@@ -560,7 +566,6 @@ class Isogeo:
                 page_index=self.page_index,
                 results_count=self.results_count,
             )
-            self.store = True
         if self._repopulate:
             self.form_mng.qs_mng.write_params("_current", search_kind="Current")
 

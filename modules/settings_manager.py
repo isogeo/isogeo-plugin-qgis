@@ -282,10 +282,11 @@ class SettingsManager(QSettings):
     def load_db_connections_from_qsettings(self):
 
         qsettings_content = self.get_default_db_connections_content()
+        all_keys = self.allKeys()
         for dbms in qsettings_content:
             dbms_db_connections_prefix = self.db_connections_prefix + dbms + "/"
             qsettings_dbms_db_connections_keys = [
-                key for key in self.allKeys() if key.startswith(dbms_db_connections_prefix)
+                key for key in all_keys if key.startswith(dbms_db_connections_prefix)
             ]
             if not len(qsettings_dbms_db_connections_keys):
                 continue
@@ -718,54 +719,44 @@ class SettingsManager(QSettings):
             self.write_quicksearches_qsettings(quicksearch_name, quicksearch)
         return
 
-    def update_quicksearches(self, content):
-
-        self.update_quicksearches_json(content)
-        self.update_quicksearches_qsettings(content)
-        self.quicksearches_content = content
-
-        return
+    def _remove_quicksearch_qsettings(self, name: str):
+        self.remove("{}{}".format(self.quicksearch_prefix, name))
 
     def save_quicksearch(self, name: str, content: dict):
-
         self.quicksearches_content[name] = content
-        self.update_quicksearches(self.quicksearches_content)
-
-        return
+        self.update_quicksearches_json(self.quicksearches_content)
+        self.write_quicksearches_qsettings(name, content)
 
     def rename_quicksearch(self, old_name: str, new_name: str):
-
-        self.quicksearches_content[new_name] = self.quicksearches_content[old_name]
-        self.quicksearches_content.pop(old_name)
-        self.update_quicksearches(self.quicksearches_content)
-
-        return
+        self.quicksearches_content[new_name] = self.quicksearches_content.pop(old_name)
+        self.update_quicksearches_json(self.quicksearches_content)
+        self._remove_quicksearch_qsettings(old_name)
+        self.write_quicksearches_qsettings(new_name, self.quicksearches_content[new_name])
 
     def remove_quicksearch(self, name: str):
-
         self.quicksearches_content.pop(name)
-        self.update_quicksearches(self.quicksearches_content)
-
-        return
+        self.update_quicksearches_json(self.quicksearches_content)
+        self._remove_quicksearch_qsettings(name)
 
     def load_afs_connections(self):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467
 
+        all_keys = self.allKeys()
         qsettings_afs_prefix = "arcgisfeatureserver/items"
-        li_afs_connections = [key.split("/")[-2] for key in self.allKeys() if qsettings_afs_prefix in key and "authcfg" in key and self.get_value(key) != ""]
+        li_afs_connections = [key.split("/")[-2] for key in all_keys if qsettings_afs_prefix in key and "authcfg" in key and self.get_value(key) != ""]
         if not len(li_afs_connections):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/467#issuecomment-2225498751
             qsettings_afs_prefix = "ARCGISFEATURESERVER"
-            li_afs_connections = [key.split("/")[-2] for key in self.allKeys() if qsettings_afs_prefix in key and "authcfg" in key and self.get_value(key) != ""]
+            li_afs_connections = [key.split("/")[-2] for key in all_keys if qsettings_afs_prefix in key and "authcfg" in key and self.get_value(key) != ""]
         else:
             pass
 
         logger.info("'{}' used as prefix to find ArcGISFeatureServer connections related QSettings.".format(qsettings_afs_prefix))
         self.afs_connections = {}
         for afs_connection in li_afs_connections:
-            authcfg = [self.get_value(key) for key in self.allKeys() if "{}/{}".format(qsettings_afs_prefix, afs_connection) in key and "authcfg" in key]
+            authcfg = [self.get_value(key) for key in all_keys if "{}/{}".format(qsettings_afs_prefix, afs_connection) in key and "authcfg" in key]
             if qsettings_afs_prefix == "ARCGISFEATURESERVER":
-                url = [self.get_value(key) for key in self.allKeys() if "connections-arcgisfeatureserver/{}/url".format(afs_connection) in key and "url" in key]
+                url = [self.get_value(key) for key in all_keys if "connections-arcgisfeatureserver/{}/url".format(afs_connection) in key and "url" in key]
             else:
-                url = [self.get_value(key) for key in self.allKeys() if "{}/{}".format(qsettings_afs_prefix, afs_connection) in key and "url" in key]
+                url = [self.get_value(key) for key in all_keys if "{}/{}".format(qsettings_afs_prefix, afs_connection) in key and "url" in key]
 
             if len(authcfg):
                 authcfg = authcfg[0]

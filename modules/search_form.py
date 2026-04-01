@@ -562,8 +562,6 @@ class SearchFormManager(IsogeoDockWidget):
             params["coord"] = self.get_coords(params.get("geofilter"))
         else:
             pass
-        # saving params in QSettings
-        self.settings_mng.set_value("isogeo/settings/georelation", params.get("operation"))
         return params
 
     def get_coords(self, filter: str):
