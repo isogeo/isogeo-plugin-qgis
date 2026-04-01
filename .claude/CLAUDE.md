@@ -35,6 +35,13 @@ python tools\plugin_packager.py
 
 **Après compilation des .ui** : supprimer la ligne `import resources_rc` en fin des fichiers .py générés.
 
+## Qualité du code
+
+Après chaque série de modifications de code (Edit ou Write) :
+
+1. Invoquer systématiquement le skill `/simplify` sur les fichiers modifiés.
+2. Vérifier qu'aucune régression fonctionnelle n'a été introduite : pour chaque changement effectué, analyser l'équivalence comportementale avec le code original (même logique, mêmes cas limites couverts, mêmes effets de bord conservés).
+
 ## Règles strictes
 
 - **NE JAMAIS modifier les fichiers Python générés** dans `ui/` (ils sont écrasés par `pyuic5` au build). Modifier les `.ui` à la place.
