@@ -537,9 +537,9 @@ class SearchFormManager(IsogeoDockWidget):
         # Getting the text in the search line
         params["text"] = self.txt_input.text()
 
-        params["operation"] = self.cbb_geo_op.itemData(self.cbb_geo_op.currentIndex())
-        params["ob"] = self.cbb_ob.itemData(self.cbb_ob.currentIndex())
-        params["od"] = self.cbb_od.itemData(self.cbb_od.currentIndex())
+        params["operation"] = self.cbb_geo_op.itemData(self.cbb_geo_op.currentIndex()) or "intersects"
+        params["ob"] = self.cbb_ob.itemData(self.cbb_ob.currentIndex()) or "relevance"
+        params["od"] = self.cbb_od.itemData(self.cbb_od.currentIndex()) or "desc"
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
