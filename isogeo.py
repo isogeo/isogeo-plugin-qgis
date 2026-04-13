@@ -39,7 +39,7 @@ from qgis.PyQt.QtGui import QIcon
 
 # PyQGIS
 from qgis.utils import iface, plugin_times
-from qgis.core import QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle, QgsProject
+from qgis.core import Qgis, QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle, QgsProject
 
 
 try:
@@ -474,7 +474,7 @@ class Isogeo:
         QgsMessageLog.logMessage(
             message="Query sent & received: {}".format(result.get("query")),
             tag="Isogeo",
-            level=0,
+            level=Qgis.MessageLevel.Info,
         )
         # Save entered text and filters in search form
         params = self.form_mng.save_params()
@@ -813,7 +813,7 @@ class Isogeo:
 
         # show the dockwidget
         # TODO: fix to allow choice of dock location
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.form_mng)
+        self.iface.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.form_mng)
         self.form_mng.show()
 
         # Fixing a qgis.core bug that shows a warning banner "connexion time

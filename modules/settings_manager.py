@@ -239,7 +239,7 @@ class SettingsManager(QSettings):
 
     def load_db_connections(self):
 
-        logger.info("Loading database connections from db_connections.json file and QSettings...")
+        logger.info("Loading Isogeo plugin database connections from db_connections.json file and QSettings...")
         db_connections_json_content = self.load_db_connections_from_json()
         db_connections_qsettings_content = self.load_db_connections_from_qsettings()
 

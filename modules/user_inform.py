@@ -9,6 +9,7 @@ import logging
 from qgis.PyQt.QtCore import QCoreApplication, QTranslator
 
 # PyQGIS
+from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
 # submodule
@@ -51,7 +52,7 @@ class UserInformer:
         else:
             raise TypeError
 
-    def display(self, message: str, duration: int = 6, level: int = 1):
+    def display(self, message: str, duration: int = 6, level=Qgis.MessageLevel.Warning):
         """A simple relay in charge of displaying messages to the user in the message
         bar given has an instanciation attribute.
 
@@ -75,21 +76,21 @@ class UserInformer:
             "path": [
                 self.tr("The specified file does not exist."),
                 5,
-                1,
+                Qgis.MessageLevel.Warning,
             ],
             "file": [
                 self.tr(
                     "The selected credentials file's format is not valid.",
                 ),
                 5,
-                1,
+                Qgis.MessageLevel.Warning,
             ],
             "ok": [
                 self.tr(
                     "Authentication file is valid. Asking for authorization to Isogeo's" " API.",
                 ),
                 5,
-                0,
+                Qgis.MessageLevel.Info,
             ],
         }
         if auth_sig in list(msg_dict.keys()):
@@ -191,7 +192,7 @@ class UserInformer:
                     msg += "<i>"
                     msg += self.tr("No description provided")
                     msg += "</i>"
-            self.display(message=msg, duration=14, level=0)
+            self.display(message=msg, duration=14, level=Qgis.MessageLevel.Info)
         else:
             raise TypeError
 

@@ -7,6 +7,7 @@ from datetime import datetime
 
 # PyQGIS
 from qgis.core import (
+    Qgis,
     QgsProject,
     QgsMessageLog,
     QgsVectorLayer,
@@ -22,7 +23,7 @@ from qgis.core import (
 # PyQT
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QLabel
+from qgis.PyQt.QtWidgets import QHeaderView, QTableWidgetItem, QLabel
 
 # Plugin modules
 from .tools import IsogeoPlgTools
@@ -191,7 +192,7 @@ class MetadataDisplayer:
 
         self.complete_md.closingPlugin.connect(self.complete_md_closed)
 
-        self.complete_md.wid_bbox.setCanvasColor(Qt.white)
+        self.complete_md.wid_bbox.setCanvasColor(Qt.GlobalColor.white)
         self.complete_md.wid_bbox.enableAntiAliasing(True)
 
         self.tr = object
@@ -199,15 +200,13 @@ class MetadataDisplayer:
     def complete_md_closed(self):
 
         # for https://github.com/isogeo/isogeo-plugin-qgis/issues/461
-        layers = QgsProject.instance().mapLayers().values()
-        if any(layer.id() == self.background_lyr_id for layer in layers):
+        # Snapshot the layer ids to avoid iterating a live view that may contain
+        # already-deleted C++ objects after removeMapLayer() is called.
+        layer_ids = set(QgsProject.instance().mapLayers().keys())
+        if self.background_lyr_id in layer_ids:
             QgsProject.instance().removeMapLayer(self.background_lyr_id)
-        else:
-            pass
-        if any(layer.id() == self.envelope_lyr_id for layer in layers):
+        if self.envelope_lyr_id in layer_ids:
             QgsProject.instance().removeMapLayer(self.envelope_lyr_id)
-        else:
-            pass
 
     def show_complete_md(self, md: dict, tags: dict):
         """Open the pop up window that shows the metadata sheet details.
@@ -233,7 +232,7 @@ class MetadataDisplayer:
         elif md.get("name"):
             self.complete_md.lbl_title.setText("<strong>{}</strong>".format(md.get("name")))
         else:
-            self.complete_md.lbl_title.setTextFormat(Qt.TextFormat(1))
+            self.complete_md.lbl_title.setTextFormat(Qt.TextFormat.RichText)
             self.complete_md.lbl_title.setText(
                 "<strong><i>{}</i></strong>".format(
                     self.tr("Undefined", context=__class__.__name__)
@@ -299,7 +298,7 @@ class MetadataDisplayer:
 
             # adapt size
             tbl_attr.horizontalHeader().setStretchLastSection(True)
-            tbl_attr.verticalHeader().setSectionResizeMode(3)
+            tbl_attr.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
 
             # adapt alias column labels width to column width
             alias_column_width = tbl_attr.horizontalHeader().sectionSize(1)
@@ -407,7 +406,7 @@ class MetadataDisplayer:
 
         # adapt size
         tbl_events.horizontalHeader().setStretchLastSection(True)
-        tbl_events.verticalHeader().setSectionResizeMode(3)
+        tbl_events.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
 
         # -- TECHNICAL -------------------------------------------------------
         # SRS
@@ -615,13 +614,13 @@ class MetadataDisplayer:
             QgsMessageLog.logMessage(
                 message="Detailed metadata displayed: {}".format(self.complete_md.lbl_title.text()),
                 tag="Isogeo",
-                level=0,
+                level=Qgis.MessageLevel.Info,
             )
         except UnicodeEncodeError:
             QgsMessageLog.logMessage(
                 message="Detailed metadata displayed: {}".format(self.complete_md.lbl_title.text()),
                 tag="Isogeo",
-                level=0,
+                level=Qgis.MessageLevel.Info,
             )
 
     def envelope2layer(self, envelope):

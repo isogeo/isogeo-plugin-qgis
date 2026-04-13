@@ -20,7 +20,7 @@ import webbrowser
 from qgis.utils import iface
 
 # PyQT
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import Qt, QUrl
 from qgis.PyQt.QtWidgets import QMessageBox
 
 # Plugin modules
@@ -173,8 +173,10 @@ class IsogeoPlgTools:
             shortened_error = shortened_error[:1000] + " ..."
         return shortened_error
 
-    def error_catcher(self, msg, tag, level):
-        """Catch QGIS error messages for introspection."""
+    def error_catcher(self, msg, tag, level, *args):
+        """Catch QGIS log messages for introspection.
+        *args absorbs the extra 'format' parameter emitted by messageReceivedWithFormat in QGIS 4.
+        """
         if tag == "WMS" and level != 0:
             self.last_error = ["wms", msg]
         elif tag == "WFS" and level != 0:
@@ -198,18 +200,18 @@ class IsogeoPlgTools:
         final_text = ""
         words = title.split(" ")
         if len(words) == 1:
-            word_width = fm.size(1, title).width()
+            word_width = fm.size(0, title).width()
             if word_width > line_width:
-                final_text = fm.elidedText(title, 1, line_width)
+                final_text = fm.elidedText(title, Qt.TextElideMode.ElideRight, line_width)
             else:
                 final_text = title
         else:
             for word in words:
-                current_width = fm.size(1, final_text + " " + word).width()
+                current_width = fm.size(0, final_text + " " + word).width()
                 if current_width > line_width:
-                    word_width = fm.size(1, word).width()
+                    word_width = fm.size(0, word).width()
                     if word_width > line_width:
-                        final_text += " \n" + fm.elidedText(word, 1, line_width)
+                        final_text += " \n" + fm.elidedText(word, Qt.TextElideMode.ElideRight, line_width)
                     else:
                         final_text += " \n" + word
                 else:

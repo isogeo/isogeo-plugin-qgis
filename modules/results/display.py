@@ -9,7 +9,7 @@ from pathlib import Path
 # PyQT
 from qgis.PyQt.QtCore import QObject, pyqtSignal, Qt
 from qgis.PyQt.QtGui import QIcon, QPixmap
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QPushButton, QLabel
+from qgis.PyQt.QtWidgets import QHeaderView, QTableWidgetItem, QComboBox, QPushButton, QLabel
 
 # Plugin modules
 from .cache import CacheManager
@@ -146,11 +146,11 @@ class ResultsManager(QObject):
         # dimensions (see https://github.com/isogeo/isogeo-plugin-qgis/issues/276)
         hheader = tbl_result.horizontalHeader()
         # make the entire width of the table is occupied
-        hheader.setSectionResizeMode(1)
+        hheader.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         # make date and icon columns width adapted to their content
         # so title and adding columns occupy the rest of the available width
-        hheader.setSectionResizeMode(1, 3)
-        hheader.setSectionResizeMode(2, 3)
+        hheader.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        hheader.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
 
         vheader = tbl_result.verticalHeader()
 
@@ -188,7 +188,7 @@ class ResultsManager(QObject):
             lbl_date = QLabel(tbl_result)
             lbl_date.setText(plg_tools.handle_date(md.get("_modified")))
             lbl_date.setMargin(5)
-            lbl_date.setAlignment(Qt.AlignCenter)
+            lbl_date.setAlignment(Qt.AlignmentFlag.AlignCenter)
             tbl_result.setCellWidget(count, 1, lbl_date)
 
             # COLUMN 3 - Geometry type
@@ -225,7 +225,7 @@ class ResultsManager(QObject):
                 else:
                     lbl_geom.setPixmap(pix_no_geo)
                     lbl_geom.setToolTip(self.tr("Unknown geometry", context=__class__.__name__))
-            lbl_geom.setAlignment(Qt.AlignCenter)
+            lbl_geom.setAlignment(Qt.AlignmentFlag.AlignCenter)
             tbl_result.setCellWidget(count, 2, lbl_geom)
 
             # COLUMN 4 - Add options
@@ -614,10 +614,10 @@ class ResultsManager(QObject):
 
         # dimensions bis (see https://github.com/isogeo/isogeo-plugin-qgis/issues/276)
         # last column take the width of his content
-        hheader.setSectionResizeMode(3, 3)
+        hheader.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
         # the height of the row adapts to the content without falling below 30px
         vheader.setMinimumSectionSize(30)
-        vheader.setSectionResizeMode(3)
+        vheader.setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         # adapt title column button width content to column width
         title_column_width = hheader.sectionSize(0)
         scrollBar_width = tbl_result.verticalScrollBar().sizeHint().width()
@@ -635,10 +635,10 @@ class ResultsManager(QObject):
 
                 for i in range(combo.count()):
                     item_label = combo.itemText(i)
-                    item_label_width = combo_fm.size(1, item_label).width()
+                    item_label_width = combo_fm.size(0, item_label).width()
                     if item_label_width > combo_width:
-                        combo.setItemText(i, combo_fm.elidedText(item_label, 1, combo_width))
-                        combo.setItemData(i, item_label, Qt.ToolTipRole)
+                        combo.setItemText(i, combo_fm.elidedText(item_label, Qt.TextElideMode.ElideRight, combo_width))
+                        combo.setItemData(i, item_label, Qt.ItemDataRole.ToolTipRole)
                     else:
                         pass
             else:

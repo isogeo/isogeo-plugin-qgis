@@ -161,7 +161,7 @@ class SearchFormManager(IsogeoDockWidget):
         ]
 
     def eventFilter(self, obj, event):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/455
-        if event.type() == QEvent.Wheel:
+        if event.type() == QEvent.Type.Wheel:
             return True
         else:
             return False
@@ -205,16 +205,16 @@ class SearchFormManager(IsogeoDockWidget):
                 tag_code = selected_keywords[i]
                 item = QStandardItem()
                 # format combobox item label fit the widget width
-                tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
+                tag_label_width = cbb_chck_kw_fm.size(0,tag_label).width()
                 if tag_label_width > cbb_chck_kw_width:
-                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, 1, cbb_chck_kw_width))
+                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, Qt.TextElideMode.ElideRight,cbb_chck_kw_width))
                     item.setToolTip(tag_code)
                 else:
                     item.setText(tag_label)
 
-                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                item.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
                 item.setData(tag_code, 32)
-                item.setData(Qt.Checked, Qt.CheckStateRole)
+                item.setData(Qt.CheckState.Checked, Qt.ItemDataRole.CheckStateRole)
                 model.insertRow(0, item)
         # For all other searches
         else:
@@ -222,20 +222,20 @@ class SearchFormManager(IsogeoDockWidget):
             for tag_label, tag_code in tags_keywords.items():
                 item = QStandardItem()
                 # format combobox item label fit the widget width
-                tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
+                tag_label_width = cbb_chck_kw_fm.size(0,tag_label).width()
                 if tag_label_width > cbb_chck_kw_width:
-                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, 1, cbb_chck_kw_width))
+                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, Qt.TextElideMode.ElideRight,cbb_chck_kw_width))
                     item.setToolTip(tag_label)
                 else:
                     item.setText(tag_label)
 
-                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                item.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
                 item.setData(tag_code, 32)
                 if len(selected_keywords) == 0 or tag_code not in selected_keywords:
-                    item.setData(Qt.Unchecked, Qt.CheckStateRole)
+                    item.setData(Qt.CheckState.Unchecked, Qt.ItemDataRole.CheckStateRole)
                     model.setItem(row_i, 0, item)
                 elif tag_code in selected_keywords:
-                    item.setData(Qt.Checked, Qt.CheckStateRole)
+                    item.setData(Qt.CheckState.Checked, Qt.ItemDataRole.CheckStateRole)
                     model.insertRow(0, item)
                 else:
                     pass
@@ -296,10 +296,10 @@ class SearchFormManager(IsogeoDockWidget):
 
             for i in range(cbb.count()):
                 item_label = cbb.itemText(i)
-                item_label_width = cbb_fm.size(1, item_label).width()
+                item_label_width = cbb_fm.size(0,item_label).width()
                 if item_label_width > cbb_width:
-                    cbb.setItemText(i, cbb_fm.elidedText(item_label, 1, cbb_width))
-                    cbb.setItemData(i, item_label, Qt.ToolTipRole)
+                    cbb.setItemText(i, cbb_fm.elidedText(item_label, Qt.TextElideMode.ElideRight, cbb_width))
+                    cbb.setItemData(i, item_label, Qt.ItemDataRole.ToolTipRole)
                 else:
                     pass
         self.grp_filters.setUpdatesEnabled(True)
@@ -310,7 +310,7 @@ class SearchFormManager(IsogeoDockWidget):
             for tup in self.cbbs_order[cbb]:
                 cbb.addItem(tup[1], tup[0], tup[2])
                 if len(tup) == 4:
-                    cbb.setItemData(cbb.count() - 1, tup[3], Qt.ToolTipRole)
+                    cbb.setItemData(cbb.count() - 1, tup[3], Qt.ItemDataRole.ToolTipRole)
                 else:
                     pass
             cbb.blockSignals(False)
@@ -545,7 +545,7 @@ class SearchFormManager(IsogeoDockWidget):
         key_params = []
         labels_key_params = []
         for txt in self.cbb_chck_kw.checkedItems():
-            item_index = self.cbb_chck_kw.findText(txt, Qt.MatchFixedString)
+            item_index = self.cbb_chck_kw.findText(txt, Qt.MatchFlag.MatchFixedString)
             key_params.append(self.cbb_chck_kw.itemData(item_index, 32))
             labels_key_params.append(txt)
         params["keys"] = key_params
