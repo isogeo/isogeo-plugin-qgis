@@ -91,6 +91,16 @@ ENV/
 .ropeproject
 
 
+# Generated UI Python files (not used at runtime — wrappers use uic.loadUiType())
+ui/ui_isogeo.py
+ui/auth/ui_authentication.py
+ui/credits/ui_credits.py
+ui/db_connections/ui_db_connections.py
+ui/metadata/ui_md_details.py
+ui/portal/ui_portal_base_url.py
+ui/quicksearch/ui_quicksearch_new.py
+ui/quicksearch/ui_quicksearch_rename.py
+
 ### CUSTOM
 # dev V2
 sauv_*

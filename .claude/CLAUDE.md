@@ -16,24 +16,16 @@ qt5-tools lrelease .\i18n\isogeo_search_engine_en.ts
 qt5-tools lrelease .\i18n\isogeo_search_engine_es.ts
 qt5-tools lrelease .\i18n\isogeo_search_engine_pt_BR.ts
 
-# 3. Compiler les fichiers .ui → .py
-pyuic5 -x "ui\isogeo_dockwidget_base.ui" -o "ui\ui_isogeo.py"
-pyuic5 -x "ui\auth\ui_authentication.ui" -o "ui\auth\ui_authentication.py"
-pyuic5 -x "ui\credits\ui_credits.ui" -o "ui\credits\ui_credits.py"
-pyuic5 -x "ui\db_connections\ui_db_connections.ui" -o "ui\db_connections\ui_db_connections.py"
-pyuic5 -x "ui\metadata\ui_md_details.ui" -o "ui\metadata\ui_md_details.py"
-pyuic5 -x "ui\quicksearch\ui_quicksearch_rename.ui" -o "ui\quicksearch\ui_quicksearch_rename.py"
-pyuic5 -x "ui\quicksearch\ui_quicksearch_new.ui" -o "ui\quicksearch\ui_quicksearch_new.py"
-pyuic5 -x "ui\portal\ui_portal_base_url.ui" -o "ui\portal\ui_portal_base_url.py"
-
-# 4. Compiler les ressources Qt (icônes, images)
+# 3. Compiler les ressources Qt (icônes, images)
 pyrcc5 resources.qrc -o resources_rc.py
 
-# 5. Packager le plugin en .zip
+# 4. Packager le plugin en .zip
 python tools\plugin_packager.py
 ```
 
-**Après compilation des .ui** : supprimer la ligne `import resources_rc` en fin des fichiers .py générés.
+**Après `pyrcc5`** : changer la ligne 9 de `resources_rc.py` :
+`from PyQt5 import QtCore` → `from qgis.PyQt import QtCore`
+(nécessaire pour la compatibilité QGIS 4 / PyQt6).
 
 ## Qualité du code
 
@@ -44,9 +36,8 @@ Après chaque série de modifications de code (Edit ou Write) :
 
 ## Règles strictes
 
-- **NE JAMAIS modifier les fichiers Python générés** dans `ui/` (ils sont écrasés par `pyuic5` au build). Modifier les `.ui` à la place.
 - **NE JAMAIS lire le répertoire `_auth/`** : il contient des secrets OAuth sensibles.
-- **NE JAMAIS modifier `resources_rc.py`** : fichier généré par `pyrcc5`.
+- **NE JAMAIS modifier `resources_rc.py`**, sauf la ligne 9 (`from qgis.PyQt import QtCore`) qui doit être réappliquée après chaque `pyrcc5`.
 
 ## Formatage et linting
 
@@ -115,7 +106,7 @@ Les widgets suivent un préfixe indiquant leur classe Qt :
 
 ## Contexte du projet
 
-- **QGIS** : 3.16 à 3.44.99 (toutes en PyQt5)
+- **QGIS** : 3.16+ (PyQt5) et 4.x (PyQt6) — compatibilité duale
 - **Python** : 3.9 (build CI), compatible 3.7+
 - **Environnement de test** : QGIS 3.44.8
 - **CI/CD** : Azure Pipelines (`azure-pipelines.yml`)
