@@ -85,8 +85,8 @@ class LimitationsChecker(QObject):
                         )
                         + "</b>"
                     )
-                    popup.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-                    popup.setDefaultButton(QMessageBox.No)
+                    popup.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                    popup.setDefaultButton(QMessageBox.StandardButton.No)
                     popup.finished.connect(partial(self.finished_slot, data_info.get("layer")))
                     popup.exec()
                     return
@@ -104,7 +104,7 @@ class LimitationsChecker(QObject):
                 return
 
     def finished_slot(self, layer_info, i):
-        if i == QMessageBox.Yes:
+        if i == QMessageBox.StandardButton.Yes:
             self.layer_adder.adding(layer_info=layer_info)
             return
         else:
