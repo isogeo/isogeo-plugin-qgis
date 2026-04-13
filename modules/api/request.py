@@ -8,7 +8,7 @@ from urllib.parse import urlencode
 from functools import partial
 
 # PyQGIS
-from qgis.core import QgsNetworkAccessManager, QgsMessageLog
+from qgis.core import Qgis, QgsNetworkAccessManager, QgsMessageLog
 
 # PyQT
 from qgis.PyQt.QtCore import QByteArray, QUrl, pyqtSignal, QObject
@@ -96,11 +96,11 @@ class ApiRequester(QObject):
         # creating headers (same steps whatever request_type value)
         header_value = QByteArray()
         header_name = QByteArray()
-        header_name.append("Authorization")
+        header_name.append(b"Authorization")
         # for token request
         if request_type == "token":
             # filling request header with credentials
-            header_value.append("Basic ")
+            header_value.append(b"Basic ")
             header_value.append(
                 base64.b64encode("{}:{}".format(self.app_id, self.app_secret).encode())
             )
@@ -108,8 +108,8 @@ class ApiRequester(QObject):
             request = QNetworkRequest(QUrl(self.api_url_token))
             # creating and setting the 'Content-type header'
             ct_header_value = QByteArray()
-            ct_header_value.append("application/json")
-            request.setHeader(request.ContentTypeHeader, ct_header_value)
+            ct_header_value.append(b"application/json")
+            request.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, ct_header_value)
         # for other request_type, setting appropriate url
         else:
             if request_type == "shares":
@@ -120,7 +120,7 @@ class ApiRequester(QObject):
                 logger.debug("Unknown request type asked : {}".format(request_type))
                 raise ValueError
             # filling request header with token
-            header_value.append(self.token)
+            header_value.append(self.token.encode() if isinstance(self.token, str) else self.token)
             request = QNetworkRequest(url)
         # creating QNetworkRequest from appropriate url
         request.setRawHeader(header_name, header_value)
@@ -149,7 +149,7 @@ class ApiRequester(QObject):
         # post request for 'token' request
         if request_type == "token":
             data = QByteArray()
-            data.append(urlencode({"grant_type": "client_credentials"}))
+            data.append(urlencode({"grant_type": "client_credentials"}).encode())
             self.request = self.qnam.post(request, data)
         # get request for other
         else:
@@ -200,8 +200,8 @@ class ApiRequester(QObject):
         bytarray = reply.readAll()
         content = bytarray.data().decode("utf8")
 
-        httpStatus = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
-        httpStatusMessage = reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
+        httpStatus = reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute)
+        httpStatusMessage = reply.attribute(QNetworkRequest.Attribute.HttpReasonPhraseAttribute)
 
         logger.info("API answer from {}".format(url))
         logger.info("Status code: {} - Response message: {}".format(httpStatus, httpStatusMessage))
@@ -219,7 +219,7 @@ class ApiRequester(QObject):
                 except Exception as e:
                     logger.error("API's response content issue : {}".format(e))
         # error detected
-        if err != QNetworkReply.NoError:
+        if err != QNetworkReply.NetworkError.NoError:
             logger.info("Error detected : {} - {}".format(err, err_txt))
             # request aborted
             if err == 5:
@@ -263,7 +263,7 @@ class ApiRequester(QObject):
                     logger.debug("Authentication succeeded, access token retrieved.")
 
                     QgsMessageLog.logMessage(
-                        message="Authentication succeeded", tag="Isogeo", level=0
+                        message="Authentication succeeded", tag="Isogeo", level=Qgis.MessageLevel.Info
                     )
 
                     # storing token
