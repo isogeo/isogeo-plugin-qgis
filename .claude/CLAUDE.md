@@ -106,7 +106,7 @@ Les widgets suivent un préfixe indiquant leur classe Qt :
 
 ## Contexte du projet
 
-- **QGIS** : 3.16+ (PyQt5) et 4.x (PyQt6) — compatibilité duale
+- **QGIS** : 3.16+ (PyQt5) et 4.x (PyQt6) — compatibilité duale. Ne pas supposer les mappings de versions Qt/QGIS — vérifier dans le code existant ou la documentation avant de planifier.
 - **Python** : 3.9 (build CI), compatible 3.7+
 - **Environnement de test** : QGIS 3.44.8
 - **CI/CD** : Azure Pipelines (`azure-pipelines.yml`)
