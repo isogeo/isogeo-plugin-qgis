@@ -213,7 +213,7 @@ class SearchFormManager(IsogeoDockWidget):
                     item.setText(tag_label)
 
                 item.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
-                item.setData(tag_code, 32)
+                item.setData(tag_code, Qt.ItemDataRole.UserRole)
                 item.setData(Qt.CheckState.Checked, Qt.ItemDataRole.CheckStateRole)
                 model.insertRow(0, item)
         # For all other searches
@@ -230,7 +230,7 @@ class SearchFormManager(IsogeoDockWidget):
                     item.setText(tag_label)
 
                 item.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
-                item.setData(tag_code, 32)
+                item.setData(tag_code, Qt.ItemDataRole.UserRole)
                 if len(selected_keywords) == 0 or tag_code not in selected_keywords:
                     item.setData(Qt.CheckState.Unchecked, Qt.ItemDataRole.CheckStateRole)
                     model.setItem(row_i, 0, item)
@@ -546,7 +546,7 @@ class SearchFormManager(IsogeoDockWidget):
         labels_key_params = []
         for txt in self.cbb_chck_kw.checkedItems():
             item_index = self.cbb_chck_kw.findText(txt, Qt.MatchFlag.MatchFixedString)
-            key_params.append(self.cbb_chck_kw.itemData(item_index, 32))
+            key_params.append(self.cbb_chck_kw.itemData(item_index, Qt.ItemDataRole.UserRole))
             labels_key_params.append(txt)
         params["keys"] = key_params
         params["labels"]["keys"] = labels_key_params
