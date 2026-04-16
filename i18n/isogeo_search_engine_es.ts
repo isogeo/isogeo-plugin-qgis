@@ -479,7 +479,7 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
     <message>
         <location filename="../modules/metadata_display.py" line="567"/>
         <source>unknown owner address</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirección del propietario no especificada</translation>
     </message>
 </context>
 <context>

@@ -477,7 +477,7 @@ You have a proxy set up on your OS {} but none in QGIS.
     <message>
         <location filename="../modules/metadata_display.py" line="567"/>
         <source>unknown owner address</source>
-        <translation type="unfinished"></translation>
+        <translation>Owner address not specified</translation>
     </message>
 </context>
 <context>
