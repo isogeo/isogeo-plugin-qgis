@@ -148,6 +148,118 @@ _TRANSLATIONS = {
             "isNotConform": "Not conformant",
         },
     },
+    "es": {
+        "restrictions": {
+            "none": " ",
+            "copyright": "Copyright",
+            "patent": "Patente",
+            "patentPending": "Patente pendiente",
+            "trademark": "Marca registrada",
+            "license": "Licencia",
+            "intellectualPropertyRights": "Derechos de propiedad intelectual",
+            "restricted": "Restringido",
+            "other": "Otro",
+        },
+        "limitations": {
+            "legal": "Legal",
+            "security": "Seguridad",
+        },
+        "conditions": {
+            "noLicense": "Sin licencia asociada",
+        },
+        "roles": {
+            "author": "Autor",
+            "pointOfContact": "Punto de contacto",
+            "custodian": "Administrador",
+            "distributor": "Distribuidor",
+            "originator": "Creador",
+            "owner": "Propietario",
+            "principalInvestigator": "Investigador principal",
+            "processor": "Responsable del procesamiento",
+            "publisher": "Editor (publicación)",
+            "resourceProvider": "Proveedor",
+            "user": "Usuario",
+        },
+        "frequencyTypes": {
+            "frequencyUpdateHelp": "Cada ",
+            "years": "año(s)",
+            "months": "mes(es)",
+            "weeks": "semana(s)",
+            "days": "día(s)",
+            "hours": "hora(s)",
+            "minutes": "minuto(s)",
+            "seconds": "segundo(s)",
+        },
+        "frequencyShortTypes": {
+            "Y": "año(s)",
+            "M": "mes(es)",
+            "W": "semana(s)",
+            "D": "día(s)",
+            "H": "hora(s)",
+            "m": "minuto(s)",
+            "S": "segundo(s)",
+        },
+        "quality": {
+            "isConform": "Conforme",
+            "isNotConform": "No conforme",
+        },
+    },
+    "pt_BR": {
+        "restrictions": {
+            "none": " ",
+            "copyright": "Copyright",
+            "patent": "Patente",
+            "patentPending": "Patente pendente",
+            "trademark": "Marca registrada",
+            "license": "Licença",
+            "intellectualPropertyRights": "Direitos de propriedade intelectual",
+            "restricted": "Restrito",
+            "other": "Outro",
+        },
+        "limitations": {
+            "legal": "Legal",
+            "security": "Segurança",
+        },
+        "conditions": {
+            "noLicense": "Sem licença associada",
+        },
+        "roles": {
+            "author": "Autor",
+            "pointOfContact": "Ponto de contato",
+            "custodian": "Administrador",
+            "distributor": "Distribuidor",
+            "originator": "Criador",
+            "owner": "Proprietário",
+            "principalInvestigator": "Investigador principal",
+            "processor": "Responsável pelo processamento",
+            "publisher": "Editor (publicação)",
+            "resourceProvider": "Fornecedor",
+            "user": "Usuário",
+        },
+        "frequencyTypes": {
+            "frequencyUpdateHelp": "A cada ",
+            "years": "ano(s)",
+            "months": "mês(es)",
+            "weeks": "semana(s)",
+            "days": "dia(s)",
+            "hours": "hora(s)",
+            "minutes": "minuto(s)",
+            "seconds": "segundo(s)",
+        },
+        "frequencyShortTypes": {
+            "Y": "ano(s)",
+            "M": "mês(es)",
+            "W": "semana(s)",
+            "D": "dia(s)",
+            "H": "hora(s)",
+            "m": "minuto(s)",
+            "S": "segundo(s)",
+        },
+        "quality": {
+            "isConform": "Conforme",
+            "isNotConform": "Não conforme",
+        },
+    },
 }
 
 
@@ -276,25 +388,27 @@ class MetadataDisplayer:
             tbl_attr = self.complete_md.tbl_attributes
             fields = md.get("feature-attributes", dict())
             tbl_attr.setUpdatesEnabled(False)
-            tbl_attr.setRowCount(len(fields))
-            idx = 0
-            for i in fields:
-                alias_text = i.get("alias", "")
-                if i.get("comment", "") != "" and alias_text == "":
-                    alias_text += "<i>{}</i>".format(i.get("comment", ""))
-                elif i.get("comment", "") != "":
-                    alias_text += "<br><i>{}</i>".format(i.get("comment", ""))
-                else:
-                    pass
-                alias_label = QLabel(alias_text)
-                alias_label.setWordWrap(True)
+            try:
+                tbl_attr.setRowCount(len(fields))
+                idx = 0
+                for i in fields:
+                    alias_text = i.get("alias", "")
+                    if i.get("comment", "") != "" and alias_text == "":
+                        alias_text += "<i>{}</i>".format(i.get("comment", ""))
+                    elif i.get("comment", "") != "":
+                        alias_text += "<br><i>{}</i>".format(i.get("comment", ""))
+                    else:
+                        pass
+                    alias_label = QLabel(alias_text)
+                    alias_label.setWordWrap(True)
 
-                tbl_attr.setItem(idx, 0, QTableWidgetItem(i.get("name", "")))
-                tbl_attr.setCellWidget(idx, 1, alias_label)
-                tbl_attr.setItem(idx, 2, QTableWidgetItem(i.get("dataType", "")))
-                tbl_attr.setItem(idx, 3, QTableWidgetItem(i.get("description", "")))
-                idx += 1
-            tbl_attr.setUpdatesEnabled(True)
+                    tbl_attr.setItem(idx, 0, QTableWidgetItem(i.get("name", "")))
+                    tbl_attr.setCellWidget(idx, 1, alias_label)
+                    tbl_attr.setItem(idx, 2, QTableWidgetItem(i.get("dataType", "")))
+                    tbl_attr.setItem(idx, 3, QTableWidgetItem(i.get("description", "")))
+                    idx += 1
+            finally:
+                tbl_attr.setUpdatesEnabled(True)
 
             # adapt size
             tbl_attr.horizontalHeader().setStretchLastSection(True)
@@ -393,16 +507,18 @@ class MetadataDisplayer:
         events = [ev for ev in md.get("events", []) if ev.get("kind") == "update"]
         tbl_events = self.complete_md.tbl_events
         tbl_events.setUpdatesEnabled(False)
-        tbl_events.clearContents()
-        tbl_events.setRowCount(len(events))
-        idx = 0
-        for event in events:
-            tbl_events.setItem(
-                idx, 0, QTableWidgetItem(plg_tools.handle_date(event.get("date", "NR")))
-            )
-            tbl_events.setItem(idx, 1, QTableWidgetItem(event.get("description", "")))
-            idx += 1
-        tbl_events.setUpdatesEnabled(True)
+        try:
+            tbl_events.clearContents()
+            tbl_events.setRowCount(len(events))
+            idx = 0
+            for event in events:
+                tbl_events.setItem(
+                    idx, 0, QTableWidgetItem(plg_tools.handle_date(event.get("date", "NR")))
+                )
+                tbl_events.setItem(idx, 1, QTableWidgetItem(event.get("description", "")))
+                idx += 1
+        finally:
+            tbl_events.setUpdatesEnabled(True)
 
         # adapt size
         tbl_events.horizontalHeader().setStretchLastSection(True)
