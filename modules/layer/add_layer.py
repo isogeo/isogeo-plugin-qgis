@@ -740,12 +740,11 @@ class LayerAdder:
         self.md_sync.tr = self.tr
 
         logger.info("Adding a layer from those parameters :")
+        _SENSITIVE_KEYS = {"connection", "password", "username", "passwd", "pwd"}
         if isinstance(layer_info, dict):
             for key in layer_info:
-                if key != "connection":
+                if key not in _SENSITIVE_KEYS:
                     logger.info("> {} : {}".format(key, layer_info.get(key)))
-                else:
-                    pass
         else:
             logger.info("> {}".format(layer_info))
 

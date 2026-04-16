@@ -27,7 +27,7 @@ class MetadataSynchronizer:
         """Class constructor."""
 
     def basic_sync(self, layer, info):
-        logger.debug("Filling {} layer's propertie".format(layer.name()))
+        logger.debug("Filling {} layer's properties".format(layer.name()))
         # If the data is a PostGIS table
         if isinstance(info, dict):
             self.filling_field(

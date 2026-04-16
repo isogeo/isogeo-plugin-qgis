@@ -207,7 +207,7 @@ class SearchFormManager(IsogeoDockWidget):
                 # format combobox item label fit the widget width
                 tag_label_width = cbb_chck_kw_fm.size(0,tag_label).width()
                 if tag_label_width > cbb_chck_kw_width:
-                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, Qt.TextElideMode.ElideRight,cbb_chck_kw_width))
+                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, Qt.TextElideMode.ElideRight, cbb_chck_kw_width))
                     item.setToolTip(tag_code)
                 else:
                     item.setText(tag_label)
@@ -224,7 +224,7 @@ class SearchFormManager(IsogeoDockWidget):
                 # format combobox item label fit the widget width
                 tag_label_width = cbb_chck_kw_fm.size(0,tag_label).width()
                 if tag_label_width > cbb_chck_kw_width:
-                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, Qt.TextElideMode.ElideRight,cbb_chck_kw_width))
+                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, Qt.TextElideMode.ElideRight, cbb_chck_kw_width))
                     item.setToolTip(tag_label)
                 else:
                     item.setText(tag_label)
