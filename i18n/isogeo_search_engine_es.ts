@@ -90,12 +90,12 @@
     <message>
         <location filename="../isogeo.py" line="623"/>
         <source>Selected quicksearch could not be loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>La búsqueda rápida seleccionada no pudo cargarse.</translation>
     </message>
     <message>
         <location filename="../isogeo.py" line="506"/>
         <source>Show {} result(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar {} resultado(s)</translation>
     </message>
 </context>
 <context>
@@ -363,7 +363,7 @@
     <message>
         <location filename="../ui/isogeo_dockwidget_base.ui" line="1629"/>
         <source>Show result(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar resultado(s)</translation>
     </message>
 </context>
 <context>
