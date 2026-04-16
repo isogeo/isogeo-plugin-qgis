@@ -63,7 +63,9 @@ try:
     from qgis.PyQt.QtSql import QSqlField as _QSqlField
 
     if not hasattr(_QSqlField, "type"):
-        # Qt6: QSqlField.type() was removed; add compatibility shim for QGIS db_manager Oracle connector
+        # Qt6: QSqlField.type() was removed; add compatibility shim for QGIS db_manager Oracle connector.
+        # NOTE: This patch applies to ALL QSqlField instances in the QGIS process (including other plugins).
+        # The global scope is intentional: it covers the db_manager Oracle connector used by QGIS itself.
         _QSqlField.type = lambda self: self.metaType().id()
 except ImportError:
     pass

@@ -414,7 +414,8 @@ class Isogeo:
 
         :param _dummy: unused, absorbs the index emitted by QComboBox.activated(int)
         :param int page_change: -1 if 'previous page' button was pressed, 1 if
-        'next page' button was pressed, 0 otherwise
+        'next page' button was pressed, 0 otherwise. Also called with 0 when
+        the auto-show checkbox state changes.
         :param bool repopulate: True to repopulate filter comboboxes from API
         response tags, False for pagination/order/checkbox changes
         """

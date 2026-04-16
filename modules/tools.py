@@ -104,30 +104,18 @@ class IsogeoPlgTools:
                     " First key must be one of: {}".format(heads)
                 )
             # set
-            if "web" in in_auth:
-                auth_settings = in_auth.get("web")
-                out_auth = {
-                    "auth_mode": "group",
-                    "client_id": auth_settings.get("client_id"),
-                    "client_secret": auth_settings.get("client_secret"),
-                    "scopes": auth_settings.get("scopes", ["resources:read"]),
-                    "uri_auth": auth_settings.get("auth_uri"),
-                    "uri_token": auth_settings.get("token_uri"),
-                    "uri_base": self.get_url_base_from_url_token(auth_settings.get("token_uri")),
-                    "uri_redirect": None,
-                }
-            else:
-                auth_settings = in_auth.get("installed")
-                out_auth = {
-                    "auth_mode": "user",
-                    "client_id": auth_settings.get("client_id"),
-                    "client_secret": auth_settings.get("client_secret"),
-                    "scopes": auth_settings.get("scopes", ["resources:read"]),
-                    "uri_auth": auth_settings.get("auth_uri"),
-                    "uri_token": auth_settings.get("token_uri"),
-                    "uri_base": self.get_url_base_from_url_token(auth_settings.get("token_uri")),
-                    "uri_redirect": auth_settings.get("redirect_uris", None),
-                }
+            is_web = "web" in in_auth
+            auth_settings = in_auth.get("web" if is_web else "installed")
+            out_auth = {
+                "auth_mode": "group" if is_web else "user",
+                "client_id": auth_settings.get("client_id"),
+                "client_secret": auth_settings.get("client_secret"),
+                "scopes": auth_settings.get("scopes", ["resources:read"]),
+                "uri_auth": auth_settings.get("auth_uri"),
+                "uri_token": auth_settings.get("token_uri"),
+                "uri_base": self.get_url_base_from_url_token(auth_settings.get("token_uri")),
+                "uri_redirect": None if is_web else auth_settings.get("redirect_uris", None),
+            }
         else:
             ini_parser = ConfigParser()
             ini_parser.read(in_credentials)
