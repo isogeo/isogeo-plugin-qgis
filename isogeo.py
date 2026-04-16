@@ -41,12 +41,6 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.utils import iface, plugin_times
 from qgis.core import Qgis, QgsCoordinateReferenceSystem, QgsMessageLog, QgsRectangle, QgsProject
 
-
-try:
-    from qgis.core import Qgis
-except ImportError:
-    from qgis.core import QGis as Qgis
-
 # Initialize Qt resources from file resources.py
 from .resources_rc import *  # noqa: F401, F403
 

@@ -40,29 +40,27 @@ class ApiRequester(QObject):
     search_sig = pyqtSignal(dict, dict)
     details_sig = pyqtSignal(dict, dict)
     shares_sig = pyqtSignal(list)
-    error_sig = pyqtSignal(str)
-
     def __init__(self):
         # inheritance
         super().__init__()
 
-        self.tr = object
+        self.tr = None
         # API client parameters :
         # creds
-        self.app_id = str
-        self.app_secret = str
+        self.app_id = ""
+        self.app_secret = ""
         # URL
-        self.api_url_base = str
-        self.api_url_token = str
+        self.api_url_base = ""
+        self.api_url_token = ""
 
         # Requesting operation attributes
         # manage requesting
         self.loopCount = 0
         # make request
         self.qnam = QgsNetworkAccessManager.instance()
-        self.token = str
-        self.currentUrl = str
-        self.request = object
+        self.token = ""
+        self.currentUrl = ""
+        self.request = None
 
     def setup_api_params(self, dict_params: dict):
         """Store API parameters of the application (URLs and credentials) in class

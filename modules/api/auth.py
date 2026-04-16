@@ -99,8 +99,8 @@ class Authenticator(QObject):
         self.cred_filepath = self.auth_folder / "client_secrets.json"
 
         # inform user
-        self.informer = object
-        self.first_auth = bool
+        self.informer = None
+        self.first_auth = False
 
     # MANAGER --------------------------------------------------------------------------------------
     def manage_api_initialization(self):
