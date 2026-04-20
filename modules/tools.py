@@ -17,6 +17,7 @@ from urllib.request import getproxies
 import webbrowser
 
 # PyQGIS
+from qgis.core import Qgis
 from qgis.utils import iface
 
 # PyQT
@@ -165,16 +166,14 @@ class IsogeoPlgTools:
         """Catch QGIS log messages for introspection.
         *args absorbs the extra 'format' parameter emitted by messageReceivedWithFormat in QGIS 4.
         """
-        if tag == "WMS" and level != 0:
+        if tag == "WMS" and level != Qgis.MessageLevel.Info:
             self.last_error = ["wms", msg]
-        elif tag == "WFS" and level != 0:
+        elif tag == "WFS" and level != Qgis.MessageLevel.Info:
             self.last_error = ["wfs", msg]
-        elif tag == "PostGIS" and level != 0:
+        elif tag == "PostGIS" and level != Qgis.MessageLevel.Info:
             self.last_error = ["postgis", msg]
-        elif tag == "Oracle" and level != 0:
+        elif tag == "Oracle" and level != Qgis.MessageLevel.Info:
             self.last_error = ["oracle", msg]
-        else:
-            pass
 
     def format_widget_title(self, widget, line_width):
         """Format the title to fit the widget width.

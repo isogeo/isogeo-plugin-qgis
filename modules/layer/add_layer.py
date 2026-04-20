@@ -61,6 +61,7 @@ matching_wkb_SDO_GTYPE = {
 li_wkb_multiGeom_ok = [[1, 4], [2, 5], [3, 6]]
 
 qgis_full_version_int = Qgis.QGIS_VERSION_INT // 100
+_QGIS_WKBTYPE_ENUM_MIN = 330  # QGIS 3.30+ uses Qgis.WkbType enum
 
 # ############################################################################
 # ##### Conditional imports ########
@@ -376,7 +377,7 @@ class LayerAdder:
 
             li_layers_to_add = []
             if table[2] is None:  # in case of DTNG
-                if qgis_full_version_int >= 330:
+                if qgis_full_version_int >= _QGIS_WKBTYPE_ENUM_MIN:
                     uri.setWkbType(Qgis.WkbType(100))
                 else:
                     uri.setWkbType(100)
@@ -433,14 +434,14 @@ class LayerAdder:
                 # Building the layer
                 li_geomType_layers = []
                 if len(li_geomTypes) == 0:
-                    if qgis_full_version_int >= 330:
+                    if qgis_full_version_int >= _QGIS_WKBTYPE_ENUM_MIN:
                         uri.setWkbType(Qgis.WkbType(100))
                     else:
                         uri.setWkbType(100)
                     layer = QgsVectorLayer(uri.uri(), table[1], "postgres")
                     li_geomType_layers.append(layer)
                 elif not is_multi_geom:
-                    if qgis_full_version_int >= 330:
+                    if qgis_full_version_int >= _QGIS_WKBTYPE_ENUM_MIN:
                         uri.setWkbType(Qgis.WkbType(li_geomTypes[0]))
                     else:
                         uri.setWkbType(li_geomTypes[0])
@@ -449,7 +450,7 @@ class LayerAdder:
                 else:
                     li_geomTypes.sort(reverse=True)
                     for geomType in li_geomTypes:
-                        if qgis_full_version_int >= 330:
+                        if qgis_full_version_int >= _QGIS_WKBTYPE_ENUM_MIN:
                             uri.setWkbType(Qgis.WkbType(geomType))
                         else:
                             uri.setWkbType(geomType)
@@ -473,7 +474,7 @@ class LayerAdder:
                             uri = db_connection.get("uri")
                             uri.setDataSource(table[0], table[1], table[2])
                             uri.setKeyColumn(field)
-                            if qgis_full_version_int >= 330:
+                            if qgis_full_version_int >= _QGIS_WKBTYPE_ENUM_MIN:
                                 uri.setWkbType(Qgis.WkbType(geomType_layer.dataProvider().wkbType()))
                             else:
                                 uri.setWkbType(geomType_layer.dataProvider().wkbType())
@@ -560,7 +561,7 @@ class LayerAdder:
 
         li_layers_to_add = []
         if table[2] is None:  # in case of DTNG
-            if qgis_full_version_int >= 330:
+            if qgis_full_version_int >= _QGIS_WKBTYPE_ENUM_MIN:
                 uri.setWkbType(Qgis.WkbType(100))
             else:
                 uri.setWkbType(100)
@@ -618,14 +619,14 @@ class LayerAdder:
             # Building the layer
             li_geomType_layers = []
             if len(li_geomTypes) == 0:
-                if qgis_full_version_int >= 330:
+                if qgis_full_version_int >= _QGIS_WKBTYPE_ENUM_MIN:
                     uri.setWkbType(Qgis.WkbType(100))
                 else:
                     uri.setWkbType(100)
                 layer = QgsVectorLayer(uri.uri(), table[1], "oracle")
                 li_geomType_layers.append(layer)
             elif not is_multi_geom:
-                if qgis_full_version_int >= 330:
+                if qgis_full_version_int >= _QGIS_WKBTYPE_ENUM_MIN:
                     uri.setWkbType(Qgis.WkbType(li_geomTypes[0]))
                 else:
                     uri.setWkbType(li_geomTypes[0])
@@ -634,7 +635,7 @@ class LayerAdder:
             else:
                 li_geomTypes.sort(reverse=True)
                 for geomType in li_geomTypes:
-                    if qgis_full_version_int >= 330:
+                    if qgis_full_version_int >= _QGIS_WKBTYPE_ENUM_MIN:
                         uri.setWkbType(Qgis.WkbType(geomType))
                     else:
                         uri.setWkbType(geomType)
@@ -658,7 +659,7 @@ class LayerAdder:
                         uri = db_connection.get("uri")
                         uri.setDataSource(table[0], table[1], table[2])
                         uri.setKeyColumn(field)
-                        if qgis_full_version_int >= 330:
+                        if qgis_full_version_int >= _QGIS_WKBTYPE_ENUM_MIN:
                             uri.setWkbType(Qgis.WkbType(geomType_layer.dataProvider().wkbType()))
                         else:
                             uri.setWkbType(geomType_layer.dataProvider().wkbType())
