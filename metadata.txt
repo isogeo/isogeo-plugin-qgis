@@ -15,7 +15,7 @@ version=4.0.0
 author=Isogeo
 email=support@isogeo.fr
 
-about=Ce plugin facilite l'accès aux données géographiques. Il s'agit d'un moteur de recherche de métadonnées géographiques reposant sur l'API d'<a href="https://www.isogeo.com/">Isogeo</a>.
+about=This plugin facilitates access to geographic data. It is a geographic metadata search engine based on the <a href="https://www.isogeo.com/">Isogeo</a> API.
 
 tracker=https://github.com/isogeo/isogeo-plugin-qgis/issues
 repository=https://github.com/isogeo/isogeo-plugin-qgis
@@ -33,3 +33,5 @@ tags[fr]=catalogue,données,webservices,géoservices,métadonnées,données ouve
 homepage=https://help.isogeo.com/doc-plugin-qgis/
 category=Web
 icon=icon.png
+
+experimental=True

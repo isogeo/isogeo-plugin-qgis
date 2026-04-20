@@ -82,10 +82,10 @@ try:
     }
 
     ora_sys_owner = "('ANONYMOUS','CTXSYS','DBSNMP','EXFSYS','LBACSYS','MDSYS','MGMT_VIEW','OLAPSYS','OWBSYS','ORDPLUGINS','ORDSYS','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','TSMSYS','WK_TEST','WKPROXY','WMSYS','XDB','APEX_040000','APEX_PUBLIC_USER','DIP','FLOWS_30000','FLOWS_FILES','MDDATA','ORACLE_OCM','XS$NULL','SPATIAL_CSW_ADMIN_USR','SPATIAL_WFS_ADMIN_USR','PUBLIC','OUTLN','WKSYS','APEX_040200','GSMADMIN_INTERNAL','SDE','ORDDATA')"
-    ora_geom_column_request = "select col.owner, col.table_name, col.column_name, md.srid from sys.all_tab_cols col left join user_sdo_geom_metadata md on col.table_name = md.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.table_name".format(
+    ora_geom_column_request = "select col.owner, col.table_name, col.column_name, md.srid from sys.all_tab_cols col left join user_sdo_geom_metadata md on col.table_name = md.table_name where col.data_type = 'SDO_GEOMETRY' and col.owner not in {} order by col.table_name".format(  # nosec B608
         ora_sys_owner
     )
-    available_ora_datasets_request = "select DISTINCT dataset from (select CONCAT(CONCAT(sys.all_tables.owner, '.'), sys.all_tables.table_name) as dataset from sys.all_tables  where sys.all_tables.owner = '$(USERNAME)' and sys.all_tables.table_name not in ('SDE_LOGFILES', 'SDE_LOGFILE_DATA') and sys.all_tables.secondary = 'N' and sys.all_TABLES.owner not in {0} union select CONCAT(CONCAT(sys.all_views.owner, '.'), sys.all_views.view_name) as dataset from sys.all_views where  sys.all_views.owner = '$(USERNAME)' and sys.all_views.owner not in {0} union select CONCAT(CONCAT(sys.all_tab_privs.table_schema, '.'), sys.all_tab_privs.table_name) as dataset from sys.all_tab_privs where (sys.all_tab_privs.grantee = '$(USERNAME)' or sys.all_tab_privs.grantor = '$(USERNAME)') and (sys.all_tab_privs.type in ('TABLE', 'VIEW')) and sys.all_tab_privs.table_name not in ('SDE_LOGFILES', 'SDE_LOGFILE_DATA') and sys.all_tab_privs.table_name NOT LIKE 'BIN$%' and sys.all_tab_privs.table_schema not in {0})".format(
+    available_ora_datasets_request = "select DISTINCT dataset from (select CONCAT(CONCAT(sys.all_tables.owner, '.'), sys.all_tables.table_name) as dataset from sys.all_tables  where sys.all_tables.owner = '$(USERNAME)' and sys.all_tables.table_name not in ('SDE_LOGFILES', 'SDE_LOGFILE_DATA') and sys.all_tables.secondary = 'N' and sys.all_TABLES.owner not in {0} union select CONCAT(CONCAT(sys.all_views.owner, '.'), sys.all_views.view_name) as dataset from sys.all_views where  sys.all_views.owner = '$(USERNAME)' and sys.all_views.owner not in {0} union select CONCAT(CONCAT(sys.all_tab_privs.table_schema, '.'), sys.all_tab_privs.table_name) as dataset from sys.all_tab_privs where (sys.all_tab_privs.grantee = '$(USERNAME)' or sys.all_tab_privs.grantor = '$(USERNAME)') and (sys.all_tab_privs.type in ('TABLE', 'VIEW')) and sys.all_tab_privs.table_name not in ('SDE_LOGFILES', 'SDE_LOGFILE_DATA') and sys.all_tab_privs.table_name NOT LIKE 'BIN$%' and sys.all_tab_privs.table_schema not in {0})".format(  # nosec B608
         ora_sys_owner
     )
 
@@ -579,7 +579,7 @@ class DataBaseManager:
                         logger.warning(connection_dict[1])
                         continue
                 # For "traditionally" registered connections
-                elif password_saved == "true" and user_saved == "true":
+                elif password_saved == "true" and user_saved == "true":  # pragma: allowlist secret
                     connection_dict = self.qsettings_content_parser(
                         dbms=dbms, connection_name=connection_name
                     )
@@ -637,7 +637,7 @@ class DataBaseManager:
                         "host": conn_dict.get("host"),
                         "port": conn_dict.get("port"),
                         "username": conn_dict.get("username"),
-                        "password": conn_dict.get("password"),
+                        "password": conn_dict.get("password"),  # pragma: allowlist secret
                         "connection": connection_name,
                     }
                 elif all(

@@ -50,7 +50,7 @@ class LimitationsChecker(QObject):
                     # for this directive, no need to informe the user
                     if (
                         lim.get("restriction") == "other"
-                        and directive.get("_id", "") == "6756c1875d06446982ed941555102c72"
+                        and directive.get("_id", "") == "6756c1875d06446982ed941555102c72"  # pragma: allowlist secret
                     ):
                         pass
                     # for other legal limitations, need to informe the user

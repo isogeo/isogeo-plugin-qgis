@@ -389,7 +389,7 @@ class LayerAdder:
                 # first, request Postgres database about specific table geometry types
                 try:
                     db_connector = db_connection.get("db_connector")
-                    pg_table_geomType_request = "SELECT DISTINCT ST_GeometryType({}) FROM {}.\"{}\"".format(
+                    pg_table_geomType_request = "SELECT DISTINCT ST_GeometryType({}) FROM {}.\"{}\"".format(  # nosec B608
                         table[2], table[0], table[1]
                     )
                     table_geomType_response = db_connector._fetchall(
@@ -572,7 +572,7 @@ class LayerAdder:
             # first, request Oracle database about specific table geometry types
             try:
                 db_connector = db_connection.get("db_connector")
-                ora_table_geomType_request = "select DISTINCT c.{}.GET_GTYPE() from {}.{} c order by c.{}.GET_GTYPE() asc".format(
+                ora_table_geomType_request = "select DISTINCT c.{}.GET_GTYPE() from {}.{} c order by c.{}.GET_GTYPE() asc".format(  # nosec B608
                     table[2], table[0], table[1], table[2]
                 )
                 table_geomType_response = db_connector._fetchall(

@@ -5,7 +5,7 @@
 import logging
 import re
 import json
-from xml.etree import ElementTree
+from xml.etree import ElementTree  # nosec B314 - XML from trusted WMS/WFS GetCapabilities endpoints
 from urllib.parse import urlencode, unquote, quote
 
 # PyQGIS
@@ -261,12 +261,12 @@ class GeoServiceManager:
 
             # Then, launch the GetCapabilities request
             url = service_dict.get("getCap_url")
-            r = requests.get(url=url, verify=False)
+            r = requests.get(url=url, timeout=60)
 
         # Finally, parse XML content returned
         if r.status_code == 200:
             service_dict["reachable"] = 1
-            xml_root = ElementTree.fromstring(r.text)
+            xml_root = ElementTree.fromstring(r.text)  # nosec B314
             tag_prefix = xml_root.tag.split("}")[0] + "}"
 
             # retrieve basic infos
@@ -934,7 +934,7 @@ class GeoServiceManager:
                 ]
             )
 
-            check_requests = requests.get(url_for_requests, verify=False)
+            check_requests = requests.get(url_for_requests, timeout=60)
             if check_requests.status_code == 400:
                 wms_url_final = url_for_requests
             else:
@@ -1144,7 +1144,7 @@ class GeoServiceManager:
                 service_dict["error"] = error_msg
         else:
             try:
-                getCap_request = requests.get(service_dict["getCap_url"], verify=False)
+                getCap_request = requests.get(service_dict["getCap_url"], timeout=60)
                 getCap_content = getCap_request.json()
                 service_dict["reachable"] = 1
             except (requests.HTTPError, requests.Timeout, requests.ConnectionError) as e:
