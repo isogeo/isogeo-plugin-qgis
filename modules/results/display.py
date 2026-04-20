@@ -9,7 +9,7 @@ from pathlib import Path
 # PyQT
 from qgis.PyQt.QtCore import QObject, pyqtSignal, Qt
 from qgis.PyQt.QtGui import QIcon, QPixmap
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QPushButton, QLabel
+from qgis.PyQt.QtWidgets import QHeaderView, QTableWidgetItem, QComboBox, QPushButton, QLabel
 
 # Plugin modules
 from .cache import CacheManager
@@ -19,9 +19,6 @@ from ..layer.limitations_checker import LimitationsChecker
 from ..layer.geo_service import GeoServiceManager
 from ..layer.database import DataBaseManager
 
-# isogeo-pysdk
-from ..isogeo_pysdk import Metadata
-
 # ############################################################################
 # ########## Globals ###############
 # ##################################
@@ -29,7 +26,9 @@ from ..isogeo_pysdk import Metadata
 plg_tools = IsogeoPlgTools()
 geo_srv_mng = GeoServiceManager()
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from .. import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 # Isogeo geometry types
 polygon_list = (
@@ -147,472 +146,481 @@ class ResultsManager(QObject):
         # dimensions (see https://github.com/isogeo/isogeo-plugin-qgis/issues/276)
         hheader = tbl_result.horizontalHeader()
         # make the entire width of the table is occupied
-        hheader.setSectionResizeMode(1)
+        hheader.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         # make date and icon columns width adapted to their content
         # so title and adding columns occupy the rest of the available width
-        hheader.setSectionResizeMode(1, 3)
-        hheader.setSectionResizeMode(2, 3)
+        hheader.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        hheader.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
 
         vheader = tbl_result.verticalHeader()
 
         # Looping inside the table lines. For each of them, showing the title,
         # abstract, geometry type, and a button that allow to add the data
         # to the canvas.
-        count = 0
-        for i in results:
-            md = Metadata.clean_attributes(i)
-            # get metadata's keywords from tags, they will be displayed in QGIS
-            # 'layer properties' if the layer is added to the canvas
-            md.keywords = [md.tags.get(kw) for kw in md.tags if kw.startswith("keyword:isogeo")]
-            # COLUMN 1 - Title and abstract
-            # Displaying the metadata title inside a button
-            title = md.title_or_name()
-            if title:
-                btn_md_title = QPushButton(title)
-            else:
-                btn_md_title = QPushButton(self.tr("Undefined", context=__class__.__name__))
-                btn_md_title.setStyleSheet("font: italic")
+        # Read portal URL settings once for the whole loop
+        _add_portal_url = int(self.settings_mng.get_value("isogeo/settings/add_metadata_url_portal", 0))
+        _portal_base_url = self.settings_mng.get_value("isogeo/settings/portal_base_url", "")
+        _portal_prefix = (_portal_base_url + "/") if _add_portal_url and _portal_base_url else ""
 
-            # Connecting the button to the full metadata popup
-            btn_md_title.pressed.connect(partial(self.md_asked.emit, md._id))
-
-            # Insert it in column 1
-            tbl_result.setCellWidget(count, 0, btn_md_title)
-
-            # COLUMN 2 - Data last update
-            lbl_date = QLabel(tbl_result)
-            lbl_date.setText(plg_tools.handle_date(md._modified))
-            lbl_date.setMargin(5)
-            lbl_date.setAlignment(Qt.AlignCenter)
-            tbl_result.setCellWidget(count, 1, lbl_date)
-
-            # COLUMN 3 - Geometry type
-            lbl_geom = QLabel(tbl_result)
-            if md.geometry:
-                if md.geometry == "TIN":
-                    tbl_result.setItem(count, 2, QTableWidgetItem("TIN"))
-                elif md.geometry in known_geom_list:
-                    for geom_type in self.pix_geom_dict:
-                        if md.geometry in geom_type:
-                            geom_item = self.pix_geom_dict.get(geom_type)
-                            lbl_geom.setPixmap(geom_item.get("pix"))
-                            lbl_geom.setToolTip(
-                                self.tr(geom_item.get("tooltip"), context=__class__.__name__)
-                            )
-                        else:
-                            continue
+        tbl_result.setUpdatesEnabled(False)
+        try:
+            count = 0
+            for md in results:
+                # get metadata's keywords from tags, they will be displayed in QGIS
+                # 'layer properties' if the layer is added to the canvas
+                tags = md.get("tags", {})
+                md["keywords"] = [tags.get(kw) for kw in tags if kw.startswith("keyword:isogeo")]
+                # COLUMN 1 - Title and abstract
+                # Displaying the metadata title inside a button
+                title = md.get("title") or md.get("name")
+                if title:
+                    btn_md_title = QPushButton(title)
                 else:
-                    tbl_result.setItem(
-                        count,
-                        2,
-                        QTableWidgetItem("?"),
-                    )
-            else:
-                if "rasterDataset" in md.type:
-                    lbl_geom.setPixmap(pix_raster)
-                    lbl_geom.setToolTip(self.tr("Raster", context=__class__.__name__))
-                elif "service" in md.type:
-                    lbl_geom.setPixmap(pix_serv)
-                    lbl_geom.setToolTip(self.tr("Service", context=__class__.__name__))
-                elif "noGeoDataset" in md.type:
-                    lbl_geom.setPixmap(pix_table)
-                    lbl_geom.setToolTip(self.tr("Table", context=__class__.__name__))
+                    btn_md_title = QPushButton(self.tr("Undefined", context=__class__.__name__))
+                    btn_md_title.setStyleSheet("font: italic")
+
+                # Connecting the button to the full metadata popup
+                btn_md_title.pressed.connect(partial(self.md_asked.emit, md.get("_id")))
+
+                # Insert it in column 1
+                tbl_result.setCellWidget(count, 0, btn_md_title)
+
+                # COLUMN 2 - Data last update
+                lbl_date = QLabel(tbl_result)
+                lbl_date.setText(plg_tools.handle_date(md.get("_modified")))
+                lbl_date.setMargin(5)
+                lbl_date.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                tbl_result.setCellWidget(count, 1, lbl_date)
+
+                # COLUMN 3 - Geometry type
+                lbl_geom = QLabel(tbl_result)
+                if md.get("geometry"):
+                    if md.get("geometry") == "TIN":
+                        tbl_result.setItem(count, 2, QTableWidgetItem("TIN"))
+                    elif md.get("geometry") in known_geom_list:
+                        for geom_type in self.pix_geom_dict:
+                            if md.get("geometry") in geom_type:
+                                geom_item = self.pix_geom_dict.get(geom_type)
+                                lbl_geom.setPixmap(geom_item.get("pix"))
+                                lbl_geom.setToolTip(
+                                    self.tr(geom_item.get("tooltip"), context=__class__.__name__)
+                                )
+                            else:
+                                continue
+                    else:
+                        tbl_result.setItem(
+                            count,
+                            2,
+                            QTableWidgetItem("?"),
+                        )
                 else:
-                    lbl_geom.setPixmap(pix_no_geo)
-                    lbl_geom.setToolTip(self.tr("Unknown geometry", context=__class__.__name__))
-            lbl_geom.setAlignment(Qt.AlignCenter)
-            tbl_result.setCellWidget(count, 2, lbl_geom)
+                    if "rasterDataset" in md.get("type", ""):
+                        lbl_geom.setPixmap(pix_raster)
+                        lbl_geom.setToolTip(self.tr("Raster", context=__class__.__name__))
+                    elif "service" in md.get("type", ""):
+                        lbl_geom.setPixmap(pix_serv)
+                        lbl_geom.setToolTip(self.tr("Service", context=__class__.__name__))
+                    elif "noGeoDataset" in md.get("type", ""):
+                        lbl_geom.setPixmap(pix_table)
+                        lbl_geom.setToolTip(self.tr("Table", context=__class__.__name__))
+                    else:
+                        lbl_geom.setPixmap(pix_no_geo)
+                        lbl_geom.setToolTip(self.tr("Unknown geometry", context=__class__.__name__))
+                lbl_geom.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                tbl_result.setCellWidget(count, 2, lbl_geom)
 
-            # COLUMN 4 - Add options
-            add_options_dict = {}
+                # COLUMN 4 - Add options
+                add_options_dict = {}
 
-            # Build metadata portal URL if the setting is checked in "Settings" tab
-            portal_md_url = self.build_md_portal_url(md._id)
+                # Build metadata portal URL if the setting is checked in "Settings" tab
+                portal_md_url = _portal_prefix + md.get("_id", "") if _portal_prefix and md.get("_id") else ""
 
-            # Files and tables direct access
-            if md.format:
-                # If the data is a vector or a raster and the path is available, store
-                # useful information in the dict
-                if md.format in li_formats_vector + li_formats_raster and md.path:
-                    add_path = self._filepath_builder(md.path)
-                    if add_path:
-                        params = [
-                            "vector" if md.format in li_formats_vector else "raster",
-                            add_path,
-                            md.title,
-                            md.abstract,
-                            md.keywords,
-                            portal_md_url,
-                        ]
-                        add_options_dict[self.tr("Data file", context=__class__.__name__)] = params
-                # If the data is a postGIS table and the connection has
-                # been saved in QGIS.
-                elif md.format == "postgis" and self.db_mng.pgis_available:
-                    if (
-                        md.path
-                        and md.name
-                        and md.path in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
-                        and "." in md.name
-                    ):
-                        available_connections = [
-                            pg_conn
-                            for pg_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
-                                "connections"
-                            )
-                            if (
-                                md.path == pg_conn.get("database")
-                                or md.path == pg_conn.get("database_alias")
-                            )
-                            and pg_conn.get("prefered")
-                        ]
-                        if not len(available_connections):
+                # Files and tables direct access
+                if md.get("format"):
+                    # If the data is a vector or a raster and the path is available, store
+                    # useful information in the dict
+                    if md.get("format") in li_formats_vector + li_formats_raster and md.get("path"):
+                        add_path = self._filepath_builder(md.get("path"))
+                        if add_path:
+                            params = [
+                                "vector" if md.get("format") in li_formats_vector else "raster",
+                                add_path,
+                                md.get("title"),
+                                md.get("abstract"),
+                                md.get("keywords", []),
+                                portal_md_url,
+                            ]
+                            add_options_dict[self.tr("Data file", context=__class__.__name__)] = params
+                    # If the data is a postGIS table and the connection has
+                    # been saved in QGIS.
+                    elif md.get("format") == "postgis" and self.db_mng.pgis_available:
+                        if (
+                            md.get("path")
+                            and md.get("name")
+                            and md.get("path") in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get("db_names")
+                            and "." in md.get("name", "")
+                        ):
                             available_connections = [
                                 pg_conn
-                                for pg_conn in self.db_mng.dbms_specifics_infos.get(
-                                    "PostgreSQL"
-                                ).get("connections")
-                                if md.path == pg_conn.get("database")
-                                or md.path == pg_conn.get("database_alias")
+                                for pg_conn in self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
+                                    "connections"
+                                )
+                                if (
+                                    md.get("path") == pg_conn.get("database")
+                                    or md.get("path") == pg_conn.get("database_alias")
+                                )
+                                and pg_conn.get("prefered")
                             ]
+                            if not len(available_connections):
+                                available_connections = [
+                                    pg_conn
+                                    for pg_conn in self.db_mng.dbms_specifics_infos.get(
+                                        "PostgreSQL"
+                                    ).get("connections")
+                                    if md.get("path") == pg_conn.get("database")
+                                    or md.get("path") == pg_conn.get("database_alias")
+                                ]
+                            else:
+                                pass
+
+                            for connection in available_connections:
+                                if "tables" in connection:
+                                    pass
+                                else:
+                                    conn = self.db_mng.establish_postgis_connection(**connection)
+                                    if not conn:
+                                        connection["uri"] = 0
+                                        connection["tables"] = 0
+                                        self.db_mng.dbms_specifics_infos["PostgreSQL"][
+                                            "invalid_connections"
+                                        ].append(connection.get("connection"))
+                                        logger.info(
+                                            "'{}' connection saved as invalid".format(
+                                                connection.get("connection")
+                                            )
+                                        )
+                                        continue
+                                    else:
+                                        connection["uri"] = conn[0]
+                                        connection["tables"] = conn[1]
+                                        connection["db_connector"] = conn[2]
+
+                                tables_infos = connection.get("tables")
+                                if tables_infos == 0:
+                                    pass
+                                else:
+                                    schema = md.get("name").split(".")[0]
+                                    table = md.get("name").split(".")[1]
+                                    if any(
+                                        infos[2] == schema and infos[1] == table
+                                        for infos in tables_infos
+                                    ):
+                                        params = {
+                                            "base_name": md.get("path"),
+                                            "schema": schema,
+                                            "table": table,
+                                            "connection": connection,
+                                            "abstract": md.get("abstract"),
+                                            "title": md.get("title"),
+                                            "keywords": md.get("keywords", []),
+                                            "md_portal_url": portal_md_url,
+                                            "dbms": "PostgreSQL",
+                                        }
+                                        options_key = "PostgreSQL - {}".format(
+                                            connection.get("connection")
+                                        )
+                                        add_options_dict[options_key] = params
+                                    else:
+                                        logger.info("{} table ({}) not found in {} PostGIS connection.".format(md.get("name"), md.get("_id"), connection.get("connection")))
+                                        pass
+                            self.db_mng.set_qsettings_connections(
+                                "PostgreSQL",
+                                "invalid",
+                                self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
+                                    "invalid_connections"
+                                ),
+                            )
                         else:
                             pass
 
-                        for connection in available_connections:
-                            if "tables" in connection:
-                                pass
-                            else:
-                                conn = self.db_mng.establish_postgis_connection(**connection)
-                                if not conn:
-                                    connection["uri"] = 0
-                                    connection["tables"] = 0
-                                    self.db_mng.dbms_specifics_infos["PostgreSQL"][
-                                        "invalid_connections"
-                                    ].append(connection.get("connection"))
-                                    logger.info(
-                                        "'{}' connection saved as invalid".format(
-                                            connection.get("connection")
-                                        )
-                                    )
-                                    continue
-                                else:
-                                    connection["uri"] = conn[0]
-                                    connection["tables"] = conn[1]
-                                    connection["db_connector"] = conn[2]
-
-                            tables_infos = connection.get("tables")
-                            if tables_infos == 0:
-                                pass
-                            else:
-                                schema = md.name.split(".")[0]
-                                table = md.name.split(".")[1]
-                                if any(
-                                    infos[2] == schema and infos[1] == table
-                                    for infos in tables_infos
-                                ):
-                                    params = {
-                                        "base_name": md.path,
-                                        "schema": schema,
-                                        "table": table,
-                                        "connection": connection,
-                                        "abstract": md.abstract,
-                                        "title": md.title,
-                                        "keywords": md.keywords,
-                                        "md_portal_url": portal_md_url,
-                                        "dbms": "PostgreSQL",
-                                    }
-                                    options_key = "PostgreSQL - {}".format(
-                                        connection.get("connection")
-                                    )
-                                    add_options_dict[options_key] = params
-                                else:
-                                    logger.info("{} table ({}) not found in {} PostGIS connection.".format(md.name, md._id, connection.get("connection")))
-                                    pass
-                        self.db_mng.set_qsettings_connections(
-                            "PostgreSQL",
-                            "invalid",
-                            self.db_mng.dbms_specifics_infos.get("PostgreSQL").get(
-                                "invalid_connections"
-                            ),
-                        )
-                    else:
-                        pass
-
-                # If the data is a Oracle table and the connection has
-                # been saved in QGIS.
-                elif md.format == "oracle" and self.db_mng.ora_available:
-                    if (
-                        md.path
-                        and md.name
-                        and any(
-                            md.path in self.db_mng.dbms_specifics_infos.get("Oracle").get(key)
-                            for key in ["db_names", "db_aliases"]
-                        )
-                        and "." in md.name
-                    ):
-                        available_connections = [
-                            ora_conn
-                            for ora_conn in self.db_mng.dbms_specifics_infos.get("Oracle").get(
-                                "connections"
+                    # If the data is a Oracle table and the connection has
+                    # been saved in QGIS.
+                    elif md.get("format") == "oracle" and self.db_mng.ora_available:
+                        if (
+                            md.get("path")
+                            and md.get("name")
+                            and any(
+                                md.get("path") in self.db_mng.dbms_specifics_infos.get("Oracle").get(key)
+                                for key in ["db_names", "db_aliases"]
                             )
-                            if (
-                                md.path == ora_conn.get("database")
-                                or md.path == ora_conn.get("database_alias")
-                            )
-                            and ora_conn.get("prefered")
-                        ]
-                        if not len(available_connections):
+                            and "." in md.get("name")
+                        ):
                             available_connections = [
                                 ora_conn
                                 for ora_conn in self.db_mng.dbms_specifics_infos.get("Oracle").get(
                                     "connections"
                                 )
-                                if md.path == ora_conn.get("database")
-                                or md.path == ora_conn.get("database_alias")
+                                if (
+                                    md.get("path") == ora_conn.get("database")
+                                    or md.get("path") == ora_conn.get("database_alias")
+                                )
+                                and ora_conn.get("prefered")
                             ]
-                        else:
-                            pass
-
-                        for connection in available_connections:
-                            if "tables" in connection:
-                                pass
-                            else:
-                                conn = self.db_mng.establish_oracle_connection(**connection)
-                                if not conn:
-                                    connection["uri"] = 0
-                                    connection["tables"] = 0
-                                    connection["db_connector"] = 0
-                                    self.db_mng.dbms_specifics_infos["Oracle"][
-                                        "invalid_connections"
-                                    ].append(connection.get("connection"))
-                                    logger.info(
-                                        "'{}' connection saved as invalid".format(
-                                            connection.get("connection")
-                                        )
+                            if not len(available_connections):
+                                available_connections = [
+                                    ora_conn
+                                    for ora_conn in self.db_mng.dbms_specifics_infos.get("Oracle").get(
+                                        "connections"
                                     )
-                                    continue
-                                else:
-                                    connection["uri"] = conn[0]
-                                    connection["tables"] = conn[1]
-                                    connection["db_connector"] = conn[2]
-
-                            tables_infos = connection.get("tables")
-                            if tables_infos == 0:
+                                    if md.get("path") == ora_conn.get("database")
+                                    or md.get("path") == ora_conn.get("database_alias")
+                                ]
+                            else:
                                 pass
-                            else:
-                                schema = md.name.split(".")[0]
-                                table = md.name.split(".")[1]
-                                if any(
-                                    infos[0] == schema and infos[1] == table
-                                    for infos in tables_infos
-                                ):
-                                    params = {
-                                        "base_name": md.path,
-                                        "schema": schema,
-                                        "table": table,
-                                        "connection": connection,
-                                        "abstract": md.abstract,
-                                        "title": md.title,
-                                        "keywords": md.keywords,
-                                        "md_portal_url": portal_md_url,
-                                        "dbms": "Oracle",
-                                    }
-                                    options_key = "Oracle - {}".format(connection.get("connection"))
-                                    add_options_dict[options_key] = params
-                                else:
+
+                            for connection in available_connections:
+                                if "tables" in connection:
                                     pass
-                        self.db_mng.set_qsettings_connections(
-                            "Oracle",
-                            "invalid",
-                            self.db_mng.dbms_specifics_infos.get("Oracle").get(
-                                "invalid_connections"
-                            ),
-                        )
-                    else:
-                        pass
+                                else:
+                                    conn = self.db_mng.establish_oracle_connection(**connection)
+                                    if not conn:
+                                        connection["uri"] = 0
+                                        connection["tables"] = 0
+                                        connection["db_connector"] = 0
+                                        self.db_mng.dbms_specifics_infos["Oracle"][
+                                            "invalid_connections"
+                                        ].append(connection.get("connection"))
+                                        logger.info(
+                                            "'{}' connection saved as invalid".format(
+                                                connection.get("connection")
+                                            )
+                                        )
+                                        continue
+                                    else:
+                                        connection["uri"] = conn[0]
+                                        connection["tables"] = conn[1]
+                                        connection["db_connector"] = conn[2]
 
-                elif md.format.lower() in self.service_ico_dict:
-                    pass
-                else:
-                    logger.debug(
-                        "Metadata {} has a format ({}) but it's not handled hear or path is"
-                        " missing".format(md._id, md.format)
-                    )
-                    pass
-            # Associated service layers
-            if md.type == "vectorDataset" or md.type == "rasterDataset" or md.type == "noGeoDataset":
-                for layer in md.serviceLayers:
-                    service = layer.get("service")
-                    if service is not None and service.get("format") and not (service.get("format") in ["ems", "efs"] and layer.get("type") == "table"):
-                        srv_details = {
-                            "path": service.get("path", "NR"),
-                            "formatVersion": service.get("formatVersion"),
-                        }
-                        service_type = service.get("format").upper()
-                        if service.get("format") in self.service_ico_dict:
-                            layer_details = dict(
-                                (k, layer.get(k)) for k in layer if k != "service"
+                                tables_infos = connection.get("tables")
+                                if tables_infos == 0:
+                                    pass
+                                else:
+                                    schema = md.get("name").split(".")[0]
+                                    table = md.get("name").split(".")[1]
+                                    if any(
+                                        infos[0] == schema and infos[1] == table
+                                        for infos in tables_infos
+                                    ):
+                                        params = {
+                                            "base_name": md.get("path"),
+                                            "schema": schema,
+                                            "table": table,
+                                            "connection": connection,
+                                            "abstract": md.get("abstract"),
+                                            "title": md.get("title"),
+                                            "keywords": md.get("keywords", []),
+                                            "md_portal_url": portal_md_url,
+                                            "dbms": "Oracle",
+                                        }
+                                        options_key = "Oracle - {}".format(connection.get("connection"))
+                                        add_options_dict[options_key] = params
+                                    else:
+                                        pass
+                            self.db_mng.set_qsettings_connections(
+                                "Oracle",
+                                "invalid",
+                                self.db_mng.dbms_specifics_infos.get("Oracle").get(
+                                    "invalid_connections"
+                                ),
                             )
-                            params = [service_type, layer_details, srv_details]
                         else:
-                            params = [0]
-                            logger.debug(
-                                "Unexpected service format detected for '{}' metadata : {}".format(
-                                    md._id, service
-                                )
-                            )
-                            continue
-
-                        if params[0] != 0:
-                            basic_md = [
-                                md.title,
-                                md.abstract,
-                                md.keywords,
-                                portal_md_url,
-                            ]
-                            params.append(basic_md)
-                            layer_title = geo_srv_mng.build_layer_title(service_type, layer)
-                            btn_label = "{} : {}".format(service_type, layer_title)
-                            dict_key = "{}-*-{}".format(btn_label, service.get("_id"))  # for #408
-                            add_options_dict[dict_key] = params
-                        else:
-                            logger.warning(
-                                "Failed to build service URL for {} layer '{}' (of metadata {}): {}".format(
-                                    service.get("format").upper(),
-                                    layer.get("id"),
-                                    md._id,
-                                    params[1],
-                                )
-                            )
                             pass
-                    else:
-                        pass
 
-            # New association mode. For services metadata sheet, the layers
-            # are stored in the purposely named include: "layers".
-            elif md.type == "service":
-                if md.layers is not None:
-                    srv_details = {
-                        "path": md.path,
-                        "formatVersion": md.formatVersion,
-                    }
-                    if md.format and md.format.lower() in self.service_ico_dict:
-                        service_type = md.format.upper()
-                        for layer in md.layers:
-                            if md.format.lower() in ["ems", "efs"] and layer.get("type") == "table":
-                                continue
-                            else:
-                                layer_title = geo_srv_mng.build_layer_title(service_type, layer)
-                                btn_label = "{} : {}".format(service_type, layer_title)
+                    elif md.get("format", "").lower() in self.service_ico_dict:
+                        pass
+                    else:
+                        logger.debug(
+                            "Metadata {} has a format ({}) but it's not handled hear or path is"
+                            " missing".format(md.get("_id"), md.get("format"))
+                        )
+                        pass
+                # Associated service layers
+                if md.get("type") == "vectorDataset" or md.get("type") == "rasterDataset" or md.get("type") == "noGeoDataset":
+                    for layer in md.get("serviceLayers", []):
+                        service = layer.get("service")
+                        if service is not None and service.get("format") and not (service.get("format") in ["ems", "efs"] and layer.get("type") == "table"):
+                            srv_details = {
+                                "path": service.get("path", "NR"),
+                                "formatVersion": service.get("formatVersion"),
+                            }
+                            service_type = service.get("format").upper()
+                            if service.get("format") in self.service_ico_dict:
                                 layer_details = dict(
-                                    (k, layer.get(k)) for k in layer if k not in ["datasets", "noGeoDatasets", "dataset", "noGeoDataset"]
+                                    (k, layer.get(k)) for k in layer if k != "service"
                                 )
                                 params = [service_type, layer_details, srv_details]
+                            else:
+                                params = [0]
+                                logger.debug(
+                                    "Unexpected service format detected for '{}' metadata : {}".format(
+                                        md.get("_id"), service
+                                    )
+                                )
+                                continue
+
+                            if params[0] != 0:
                                 basic_md = [
-                                    md.title,
-                                    md.abstract,
-                                    md.keywords,
+                                    md.get("title"),
+                                    md.get("abstract"),
+                                    md.get("keywords", []),
                                     portal_md_url,
                                 ]
                                 params.append(basic_md)
-                                add_options_dict[btn_label] = params
-                    else:
-                        pass
-            else:
-                pass
-            # Now the plugin has tested every possibility for the layer to be
-            # added. The "Add" column has to be filled accordingly.
+                                layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                                btn_label = "{} : {}".format(service_type, layer_title)
+                                dict_key = "{}-*-{}".format(btn_label, service.get("_id"))  # for #408
+                                add_options_dict[dict_key] = params
+                            else:
+                                logger.warning(
+                                    "Failed to build service URL for {} layer '{}' (of metadata {}): {}".format(
+                                        service.get("format").upper(),
+                                        layer.get("id"),
+                                        md.get("_id"),
+                                        params[1],
+                                    )
+                                )
+                                pass
+                        else:
+                            pass
 
-            # If the data can't be added, just insert "can't" text.
-            if add_options_dict == {}:
-                text = self.tr("Can't be added", context=__class__.__name__)
-                fake_button = QPushButton(text)
-                fake_button.setStyleSheet("text-align: left")
-                fake_button.setEnabled(False)
-                tbl_result.setCellWidget(count, 3, fake_button)
-            # If the data can be added
-            else:
-                data_info = {"limitations": None, "layer": None}
-                # retrieves data limitations
-                data_info["limitations"] = md.limitations
-
-                # If there is only one way for the data to be added, insert a button.
-                if len(add_options_dict) == 1:
-                    text = list(add_options_dict.keys())[0]
-                    params = add_options_dict.get(text)
-                    option_type = text.split(" : ")[0]
-                    # services
-                    if option_type.lower() in self.service_ico_dict:
-                        icon = self.service_ico_dict.get(option_type.lower())
-                    # Postgre table
-                    elif option_type.startswith("Postgre"):
-                        icon = ico_pgis
-                    # Oracle table
-                    elif option_type.startswith("Oracle"):
-                        icon = ico_ora
-                    # Data file
-                    elif option_type.startswith(self.tr("Data file", context=__class__.__name__)):
-                        icon = ico_file
-                    # Unknown option
-                    else:
-                        logger.debug(
-                            "Undefined add option type : {}/{} --> {}".format(
-                                option_type, text, params
-                            )
-                        )
-                    # create the add button with the icon corresponding to the add option
-                    add_button = QPushButton(icon, option_type)
-                    add_button.setStyleSheet("text-align: left")
-                    # connect the widget to the adding method from LayerAdder class
-                    data_info["layer"] = ("info", params, count)
-                    add_button.pressed.connect(partial(self.lim_checker.check, data_info))
-                    tbl_result.setCellWidget(count, 3, add_button)
-                # Else, add a combobox, storing all possibilities.
+                # New association mode. For services metadata sheet, the layers
+                # are stored in the purposely named include: "layers".
+                elif md.get("type") == "service":
+                    if md.get("layers") is not None:
+                        srv_details = {
+                            "path": md.get("path"),
+                            "formatVersion": md.get("formatVersion"),
+                        }
+                        if md.get("format") and md.get("format", "").lower() in self.service_ico_dict:
+                            service_type = md.get("format").upper()
+                            for layer in md.get("layers", []):
+                                if md.get("format", "").lower() in ["ems", "efs"] and layer.get("type") == "table":
+                                    continue
+                                else:
+                                    layer_title = geo_srv_mng.build_layer_title(service_type, layer)
+                                    btn_label = "{} : {}".format(service_type, layer_title)
+                                    layer_details = dict(
+                                        (k, layer.get(k)) for k in layer if k not in ["datasets", "noGeoDatasets", "dataset", "noGeoDataset"]
+                                    )
+                                    params = [service_type, layer_details, srv_details]
+                                    basic_md = [
+                                        md.get("title"),
+                                        md.get("abstract"),
+                                        md.get("keywords", []),
+                                        portal_md_url,
+                                    ]
+                                    params.append(basic_md)
+                                    add_options_dict[btn_label] = params
+                        else:
+                            pass
                 else:
-                    combo = QComboBox()
-                    combo.installEventFilter(self.form_mng)
-                    for option in add_options_dict:
-                        option_type = option.split(" : ")[0]
+                    pass
+                # Now the plugin has tested every possibility for the layer to be
+                # added. The "Add" column has to be filled accordingly.
+
+                # If the data can't be added, just insert "can't" text.
+                if add_options_dict == {}:
+                    text = self.tr("Can't be added", context=__class__.__name__)
+                    fake_button = QPushButton(text)
+                    fake_button.setStyleSheet("text-align: left")
+                    fake_button.setEnabled(False)
+                    tbl_result.setCellWidget(count, 3, fake_button)
+                # If the data can be added
+                else:
+                    data_info = {"limitations": None, "layer": None}
+                    # retrieves data limitations
+                    data_info["limitations"] = md.get("limitations", [])
+
+                    # If there is only one way for the data to be added, insert a button.
+                    if len(add_options_dict) == 1:
+                        text = list(add_options_dict.keys())[0]
+                        params = add_options_dict.get(text)
+                        option_type = text.split(" : ")[0]
                         # services
                         if option_type.lower() in self.service_ico_dict:
                             icon = self.service_ico_dict.get(option_type.lower())
                         # Postgre table
-                        elif option.startswith("Postgre"):
+                        elif option_type.startswith("Postgre"):
                             icon = ico_pgis
                         # Oracle table
-                        elif option.startswith("Oracle"):
+                        elif option_type.startswith("Oracle"):
                             icon = ico_ora
                         # Data file
-                        elif option.startswith(self.tr("Data file", context=__class__.__name__)):
+                        elif option_type.startswith(self.tr("Data file", context=__class__.__name__)):
                             icon = ico_file
                         # Unknown option
                         else:
                             logger.debug(
                                 "Undefined add option type : {}/{} --> {}".format(
-                                    option_type, option, params
+                                    option_type, text, params
                                 )
                             )
-                        # add a combobox item with the icon corresponding to the add option
-                        if "-*-" in option:
-                            option_label = "".join(option.split("-*-")[:-1])  # for #408
-                        else:
-                            option_label = option
-                        combo.addItem(icon, option_label, add_options_dict.get(option))
-                    # connect the widget to the adding method from LayerAdder class
-                    data_info["layer"] = ("index", count)
-                    combo.activated.connect(partial(self.lim_checker.check, data_info))
-                    combo.model().sort(0)  # sort alphabetically on option prefix. see: #113
-                    tbl_result.setCellWidget(count, 3, combo)
+                        # create the add button with the icon corresponding to the add option
+                        add_button = QPushButton(icon, option_type)
+                        add_button.setStyleSheet("text-align: left")
+                        # connect the widget to the adding method from LayerAdder class
+                        data_info["layer"] = ("info", params, count)
+                        add_button.pressed.connect(partial(self.lim_checker.check, data_info))
+                        tbl_result.setCellWidget(count, 3, add_button)
+                    # Else, add a combobox, storing all possibilities.
+                    else:
+                        combo = QComboBox()
+                        combo.installEventFilter(self.form_mng)
+                        for option in add_options_dict:
+                            option_type = option.split(" : ")[0]
+                            # services
+                            if option_type.lower() in self.service_ico_dict:
+                                icon = self.service_ico_dict.get(option_type.lower())
+                            # Postgre table
+                            elif option.startswith("Postgre"):
+                                icon = ico_pgis
+                            # Oracle table
+                            elif option.startswith("Oracle"):
+                                icon = ico_ora
+                            # Data file
+                            elif option.startswith(self.tr("Data file", context=__class__.__name__)):
+                                icon = ico_file
+                            # Unknown option
+                            else:
+                                logger.debug(
+                                    "Undefined add option type : {}/{} --> {}".format(
+                                        option_type, option, params
+                                    )
+                                )
+                            # add a combobox item with the icon corresponding to the add option
+                            if "-*-" in option:
+                                option_label = "".join(option.split("-*-")[:-1])  # for #408
+                            else:
+                                option_label = option
+                            combo.addItem(icon, option_label, add_options_dict.get(option))
+                        # connect the widget to the adding method from LayerAdder class
+                        data_info["layer"] = ("index", count)
+                        combo.activated.connect(partial(self.lim_checker.check, data_info))
+                        combo.model().sort(0)  # sort alphabetically on option prefix. see: #113
+                        tbl_result.setCellWidget(count, 3, combo)
 
-            # make the widget (button or combobox) width the same as the column width
-            tbl_result.cellWidget(count, 3).setFixedWidth(hheader.sectionSize(3))
-            count += 1
+                # make the widget (button or combobox) width the same as the column width
+                tbl_result.cellWidget(count, 3).setFixedWidth(hheader.sectionSize(3))
+                count += 1
+        finally:
+            tbl_result.setUpdatesEnabled(True)
 
         # dimensions bis (see https://github.com/isogeo/isogeo-plugin-qgis/issues/276)
         # last column take the width of his content
-        hheader.setSectionResizeMode(3, 3)
+        hheader.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
         # the height of the row adapts to the content without falling below 30px
         vheader.setMinimumSectionSize(30)
-        vheader.setSectionResizeMode(3)
+        vheader.setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         # adapt title column button width content to column width
         title_column_width = hheader.sectionSize(0)
         scrollBar_width = tbl_result.verticalScrollBar().sizeHint().width()
@@ -630,10 +638,10 @@ class ResultsManager(QObject):
 
                 for i in range(combo.count()):
                     item_label = combo.itemText(i)
-                    item_label_width = combo_fm.size(1, item_label).width()
+                    item_label_width = combo_fm.size(0, item_label).width()
                     if item_label_width > combo_width:
-                        combo.setItemText(i, combo_fm.elidedText(item_label, 1, combo_width))
-                        combo.setItemData(i, item_label, Qt.ToolTipRole)
+                        combo.setItemText(i, combo_fm.elidedText(item_label, Qt.TextElideMode.ElideRight, combo_width))
+                        combo.setItemData(i, item_label, Qt.ItemDataRole.ToolTipRole)
                     else:
                         pass
             else:
@@ -680,21 +688,6 @@ class ResultsManager(QObject):
         else:
             logger.debug("Path has been ignored because it's cached.")
             return False
-
-    def build_md_portal_url(self, metadata_id: str):
-        """Build the URL of the metadata into Isogeo Portal (see https://github.com/isogeo/isogeo-plugin-qgis/issues/312)
-
-        :param str metadata_id: id of the metadata
-        """
-        add_portal_md_url = int(self.settings_mng.get_value("isogeo/settings/add_metadata_url_portal", 0))
-        portal_base_url = self.settings_mng.get_value("isogeo/settings/portal_base_url", "")
-
-        if add_portal_md_url and portal_base_url != "":
-            portal_md_url = portal_base_url + "/" + metadata_id
-        else:
-            portal_md_url = ""
-
-        return portal_md_url
 
 
 # #############################################################################

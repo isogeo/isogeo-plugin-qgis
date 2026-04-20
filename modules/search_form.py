@@ -30,7 +30,9 @@ from .results import ResultsManager
 # ########## Globals ###############
 # ##################################
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from . import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 msgBar = iface.messageBar()
 
 plg_tools = IsogeoPlgTools()
@@ -47,8 +49,8 @@ ico_ob_dupda = QIcon(":/plugins/Isogeo/resources/results/sort-datamodified.svg")
 ico_none = QIcon(":/plugins/Isogeo/resources/none.svg")
 ico_line = QIcon(":/images/themes/default/mIconLineLayer.svg")
 ico_log = QIcon(":/images/themes/default/mActionFolder.svg")
-ico_poin = QIcon(":/images/themes/default/mIconPointLayer.svg")
-ico_poly = QIcon(":/images/themes/default/mIconPolygonLayer.svg")
+ico_point = QIcon(":/images/themes/default/mIconPointLayer.svg")
+ico_polygon = QIcon(":/images/themes/default/mIconPolygonLayer.svg")
 
 # ############################################################################
 # ########## Classes ###############
@@ -79,6 +81,13 @@ class SearchFormManager(IsogeoDockWidget):
         # disable wheel event on combobox
         for cbb in self.findChildren(QComboBox):
             cbb.installEventFilter(self)
+
+        # static stylesheets — applied once, never change at runtime
+        for cbb in self.grp_filters.findChildren(QComboBox):
+            cbb.setStyleSheet("combobox-popup: 0; font-size: 12px")
+        for cbb in [self.cbb_ob, self.cbb_od]:
+            cbb.setStyleSheet("QComboBox {combobox-popup: 0; color: transparent; font-size: 12px} QListView {color: black; icon-size: 20px} QToolTip {color: black}")
+            cbb.view().setSpacing(2)
 
         # match between widgets and metadata fields
         self.match_widget_field = {
@@ -145,8 +154,14 @@ class SearchFormManager(IsogeoDockWidget):
             settings_manager=self.settings_mng
         )
 
+        # Comboboxes to tweak — computed once, excludes keywords checkable combobox (too many items)
+        self.cbbs_to_tweak = [
+            cbb for cbb in self.tab_search.findChildren(QComboBox)
+            if cbb is not self.cbb_chck_kw
+        ]
+
     def eventFilter(self, obj, event):  # https://github.com/isogeo/isogeo-plugin-qgis/issues/455
-        if event.type() == QEvent.Wheel:
+        if event.type() == QEvent.Type.Wheel:
             return True
         else:
             return False
@@ -182,7 +197,7 @@ class SearchFormManager(IsogeoDockWidget):
         cbb_chck_kw_width = self.cbb_chck_kw.width() - 10
         cbb_chck_kw_fm = self.cbb_chck_kw.fontMetrics()
 
-        # Only for no results searches, when comboboxe is filled from params and not tags
+        # Only for no results searches, when combobox is filled from params and not tags
         # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
         if not len(tags_keywords) and len(selected_keywords) and len(selected_keywords_labels):
             for i in range(len(selected_keywords)):
@@ -190,37 +205,37 @@ class SearchFormManager(IsogeoDockWidget):
                 tag_code = selected_keywords[i]
                 item = QStandardItem()
                 # format combobox item label fit the widget width
-                tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
+                tag_label_width = cbb_chck_kw_fm.size(0,tag_label).width()
                 if tag_label_width > cbb_chck_kw_width:
-                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, 1, cbb_chck_kw_width))
+                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, Qt.TextElideMode.ElideRight, cbb_chck_kw_width))
                     item.setToolTip(tag_code)
                 else:
                     item.setText(tag_label)
 
-                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                item.setData(tag_code, 32)
-                item.setData(Qt.Checked, Qt.CheckStateRole)
+                item.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
+                item.setData(tag_code, Qt.ItemDataRole.UserRole)
+                item.setData(Qt.CheckState.Checked, Qt.ItemDataRole.CheckStateRole)
                 model.insertRow(0, item)
         # For all other searches
         else:
             row_i = 0  # row index
-            for tag_label, tag_code in sorted(tags_keywords.items(), key=lambda item: item[1]):
+            for tag_label, tag_code in tags_keywords.items():
                 item = QStandardItem()
                 # format combobox item label fit the widget width
-                tag_label_width = cbb_chck_kw_fm.size(1, tag_label).width()
+                tag_label_width = cbb_chck_kw_fm.size(0,tag_label).width()
                 if tag_label_width > cbb_chck_kw_width:
-                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, 1, cbb_chck_kw_width))
+                    item.setText(cbb_chck_kw_fm.elidedText(tag_label, Qt.TextElideMode.ElideRight, cbb_chck_kw_width))
                     item.setToolTip(tag_label)
                 else:
                     item.setText(tag_label)
 
-                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-                item.setData(tag_code, 32)
+                item.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
+                item.setData(tag_code, Qt.ItemDataRole.UserRole)
                 if len(selected_keywords) == 0 or tag_code not in selected_keywords:
-                    item.setData(Qt.Unchecked, Qt.CheckStateRole)
+                    item.setData(Qt.CheckState.Unchecked, Qt.ItemDataRole.CheckStateRole)
                     model.setItem(row_i, 0, item)
                 elif tag_code in selected_keywords:
-                    item.setData(Qt.Checked, Qt.CheckStateRole)
+                    item.setData(Qt.CheckState.Checked, Qt.ItemDataRole.CheckStateRole)
                     model.insertRow(0, item)
                 else:
                     pass
@@ -247,26 +262,33 @@ class SearchFormManager(IsogeoDockWidget):
         """
         logger.debug("Filling Advanced search comboboxes from tags")
 
+        self.grp_filters.setUpdatesEnabled(False)
         # Clear widgets then add the "nothing selected" option
         for cbb in self.cbbs_search_advanced:
+            cbb.blockSignals(True)
             cbb.clear()
             cbb.addItem(" - ")
+            cbb.blockSignals(False)
         # Filling advanced search comboboxes (except geo filter)
         for cbb in self.match_widget_field.keys():
             field_tags = tags.get(self.match_widget_field.get(cbb))
+            cbb.blockSignals(True)
             for tag in field_tags:
                 cbb.addItem(tag, field_tags.get(tag))
+            cbb.blockSignals(False)
         # Filling geo filter combobox
+        self.cbb_geofilter.blockSignals(True)
         self.cbb_geofilter.addItem(self.tr(" Map canvas", context=__class__.__name__), "mapcanvas")
         layers = QgsProject.instance().mapLayers().values()
         for layer in layers:
             if layer.type() == 0 and layer.name() != "Metadata envelope":
                 if layer.geometryType() == 2:
-                    self.cbb_geofilter.addItem(ico_poly, layer.name())
+                    self.cbb_geofilter.addItem(ico_polygon, layer.name())
                 elif layer.geometryType() == 1:
                     self.cbb_geofilter.addItem(ico_line, layer.name())
                 elif layer.geometryType() == 0:
-                    self.cbb_geofilter.addItem(ico_poin, layer.name())
+                    self.cbb_geofilter.addItem(ico_point, layer.name())
+        self.cbb_geofilter.blockSignals(False)
         # Format combobox items text to fit with widget width
         for cbb in self.cbbs_search_advanced:
             cbb_width = cbb.width() - 20
@@ -274,21 +296,24 @@ class SearchFormManager(IsogeoDockWidget):
 
             for i in range(cbb.count()):
                 item_label = cbb.itemText(i)
-                item_label_width = cbb_fm.size(1, item_label).width()
+                item_label_width = cbb_fm.size(0,item_label).width()
                 if item_label_width > cbb_width:
-                    cbb.setItemText(i, cbb_fm.elidedText(item_label, 1, cbb_width))
-                    cbb.setItemData(i, item_label, Qt.ToolTipRole)
+                    cbb.setItemText(i, cbb_fm.elidedText(item_label, Qt.TextElideMode.ElideRight, cbb_width))
+                    cbb.setItemData(i, item_label, Qt.ItemDataRole.ToolTipRole)
                 else:
                     pass
+        self.grp_filters.setUpdatesEnabled(True)
         # Filling order by and direction cbb
         for cbb in self.cbbs_order:
+            cbb.blockSignals(True)
             cbb.clear()
             for tup in self.cbbs_order[cbb]:
                 cbb.addItem(tup[1], tup[0], tup[2])
                 if len(tup) == 4:
-                    cbb.setItemData(cbb.count() - 1, tup[3], Qt.ToolTipRole)
+                    cbb.setItemData(cbb.count() - 1, tup[3], Qt.ItemDataRole.ToolTipRole)
                 else:
                     pass
+            cbb.blockSignals(False)
 
         return
 
@@ -309,6 +334,8 @@ class SearchFormManager(IsogeoDockWidget):
         if "_current" in qs_list:
             qs_list.pop(qs_list.index("_current"))
         # clear widgets
+        self.cbb_quicksearch_use.blockSignals(True)
+        self.cbb_quicksearch_edit.blockSignals(True)
         self.cbb_quicksearch_use.clear()
         self.cbb_quicksearch_edit.clear()
         # filling widgets from the saved searches list built above
@@ -316,6 +343,8 @@ class SearchFormManager(IsogeoDockWidget):
         for qs in qs_list:
             self.cbb_quicksearch_use.addItem(qs, qs)
             self.cbb_quicksearch_edit.addItem(qs, qs)
+        self.cbb_quicksearch_use.blockSignals(False)
+        self.cbb_quicksearch_edit.blockSignals(False)
         return
 
     def set_ccb_index(self, params: dict, quicksearch: str = ""):
@@ -329,12 +358,16 @@ class SearchFormManager(IsogeoDockWidget):
         Otherwise:the name of the quicksearch performed.
         """
         logger.debug("Settings widgets statut according to these parameters : \n{}".format(params))
+
+        for cbb in self.cbbs_to_tweak:
+            cbb.blockSignals(True)
+
         # for Advanced search Combobox except geo_filter
         for cbb in self.match_widget_field.keys():
             field_name = self.match_widget_field.get(cbb)
             dest_index = cbb.findData(params.get(field_name))
             # For no result searches, we need to create items from paramas before setting index
-            # because there is no tags so comboboxes are empty 
+            # because there is no tags so comboboxes are empty
             # https://github.com/isogeo/isogeo-plugin-qgis/issues/436
             if dest_index == -1 and params.get("labels", False):
                 item_text = params.get("labels").get(field_name)
@@ -364,16 +397,18 @@ class SearchFormManager(IsogeoDockWidget):
         self.txt_input.setText(params.get("text"))
 
         # for geo_op
-        geoop_index = self.cbb_geo_op.findData(params.get("operation"))
-        self.cbb_geo_op.setCurrentIndex(geoop_index)
+        self.cbb_geo_op.setCurrentIndex(self.cbb_geo_op.findData(params.get("operation")))
 
         # for sorting order and direction
         self.cbb_ob.setCurrentIndex(self.cbb_ob.findData(params.get("ob")))
+        self.cbb_od.setCurrentIndex(self.cbb_od.findData(params.get("od")))
+
+        for cbb in self.cbbs_to_tweak:
+            cbb.blockSignals(False)
+
         self.cbb_ob.setToolTip(
             self.tr("Order by: ", context=__class__.__name__) + self.cbb_ob.currentText()
         )
-        # self.cbb_ob.setStyleSheet(r"QToolTip {color: black}")
-        self.cbb_od.setCurrentIndex(self.cbb_od.findData(params.get("od")))
         self.cbb_od.setToolTip(
             self.tr("Order direction: ", context=__class__.__name__) + self.cbb_od.currentText()
         )
@@ -390,6 +425,8 @@ class SearchFormManager(IsogeoDockWidget):
         :param list results: a list containing the content of the 'results' key
         of API's reply to a search request
         """
+        self.tbl_result.setEnabled(True)
+        self.lbl_page.setEnabled(True)
         nb_page = plg_tools.results_pages_counter(total=results_count)
         if nb_page == 1:
             self.btn_next.setEnabled(False)
@@ -406,10 +443,26 @@ class SearchFormManager(IsogeoDockWidget):
 
         self.cbb_ob.setEnabled(True)
         self.cbb_od.setEnabled(True)
-        self.btn_show.setToolTip(self.tr("Display results", context=__class__.__name__))
 
         self.results_mng.show_results(results)
-        self.qs_mng.write_params("_current", search_kind="Current")
+
+    def disable_results_widgets(self):
+        """Disable pagination, order, and results table when auto-show is off."""
+        self.btn_next.setEnabled(False)
+        self.btn_previous.setEnabled(False)
+        self.cbb_ob.setEnabled(False)
+        self.cbb_od.setEnabled(False)
+        self.tbl_result.setEnabled(False)
+        self.lbl_page.setEnabled(False)
+
+    def enable_results_widgets(self):
+        """Enable pagination, order, and results table when auto-show is on."""
+        self.btn_next.setEnabled(True)
+        self.btn_previous.setEnabled(True)
+        self.cbb_ob.setEnabled(True)
+        self.cbb_od.setEnabled(True)
+        self.tbl_result.setEnabled(True)
+        self.lbl_page.setEnabled(True)
 
     def switch_widgets_on_and_off(self, mode=1):
         """Disable all the UI widgets when a request is being sent.
@@ -435,14 +488,6 @@ class SearchFormManager(IsogeoDockWidget):
         self.cbb_geo_op.clear()
         for key in self.dict_operation.keys():
             self.cbb_geo_op.addItem(key, self.dict_operation.get(key))
-        # Advanced search cbb
-        for cbb in self.cbbs_search_advanced:
-            cbb.setStyleSheet("combobox-popup: 0; font-size: 12px")
-        # Order by and direction cbb
-        for cbb in self.cbbs_order:
-            cbb.setStyleSheet("QComboBox {combobox-popup: 0; color: transparent; font-size: 12px} QListView {color: black; icon-size: 20px} QToolTip {color: black}")
-            # cbb.setStyleSheet("QComboBox {combobox-popup: 0; color: transparent; font-size: 12px} QListView {color: black; icon-size: 20px; selection-background-color: lightgray; selection-color: black} QToolTip {color: black}")
-            cbb.view().setSpacing(2)
 
     def reinit_widgets(self):
         """Called by Isogeo.reinitialize_search method to clear search widgets."""
@@ -492,16 +537,16 @@ class SearchFormManager(IsogeoDockWidget):
         # Getting the text in the search line
         params["text"] = self.txt_input.text()
 
-        params["operation"] = self.cbb_geo_op.itemData(self.cbb_geo_op.currentIndex())
-        params["ob"] = self.cbb_ob.itemData(self.cbb_ob.currentIndex())
-        params["od"] = self.cbb_od.itemData(self.cbb_od.currentIndex())
+        params["operation"] = self.cbb_geo_op.itemData(self.cbb_geo_op.currentIndex()) or "intersects"
+        params["ob"] = self.cbb_ob.itemData(self.cbb_ob.currentIndex()) or "relevance"
+        params["od"] = self.cbb_od.itemData(self.cbb_od.currentIndex()) or "desc"
         # Saving the keywords that are selected : if a keyword state is
         # selected, he is added to the list
         key_params = []
         labels_key_params = []
         for txt in self.cbb_chck_kw.checkedItems():
-            item_index = self.cbb_chck_kw.findText(txt, Qt.MatchFixedString)
-            key_params.append(self.cbb_chck_kw.itemData(item_index, 32))
+            item_index = self.cbb_chck_kw.findText(txt, Qt.MatchFlag.MatchFixedString)
+            key_params.append(self.cbb_chck_kw.itemData(item_index, Qt.ItemDataRole.UserRole))
             labels_key_params.append(txt)
         params["keys"] = key_params
         params["labels"]["keys"] = labels_key_params
@@ -517,8 +562,6 @@ class SearchFormManager(IsogeoDockWidget):
             params["coord"] = self.get_coords(params.get("geofilter"))
         else:
             pass
-        # saving params in QSettings
-        self.settings_mng.set_value("isogeo/settings/georelation", params.get("operation"))
         return params
 
     def get_coords(self, filter: str):

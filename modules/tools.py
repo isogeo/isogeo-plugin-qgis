@@ -4,24 +4,25 @@
 # Standard library
 import configparser
 import datetime
+import json
 import unicodedata
 import http.client
 import logging
+from configparser import ConfigParser
 from os import access, path, R_OK
 import subprocess
 from sys import platform as opersys
+from urllib.parse import urlparse
 from urllib.request import getproxies
 import webbrowser
 
 # PyQGIS
+from qgis.core import Qgis
 from qgis.utils import iface
 
 # PyQT
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import Qt, QUrl
 from qgis.PyQt.QtWidgets import QMessageBox
-
-# 3rd party
-from .isogeo_pysdk import IsogeoUtils
 
 # Plugin modules
 from .settings_manager import SettingsManager
@@ -37,8 +38,10 @@ else:
 # ########## Globals ###############
 # ##################################
 
+from . import PLG_LOGGER_NAME
+
 settings_mng = SettingsManager()
-logger = logging.getLogger("IsogeoQgisPlugin")
+logger = logging.getLogger(PLG_LOGGER_NAME)
 msgBar = iface.messageBar()
 
 # ############################################################################
@@ -46,17 +49,94 @@ msgBar = iface.messageBar()
 # ##################################
 
 
-class IsogeoPlgTools(IsogeoUtils):
-    """Inheritance from Isogeo Python SDK utils class. It adds some
-    specific tools for QGIS plugin."""
+class IsogeoPlgTools:
+    """Utility tools for the Isogeo QGIS plugin."""
 
     tr = object
     last_error = list
 
     def __init__(self):
-        """Check and manage authentication credentials."""
-        # instantiate
-        super(IsogeoPlgTools, self).__init__()
+        pass
+
+    def get_url_base_from_url_token(
+        self, url_api_token: str = "https://id.api.isogeo.com/oauth/token"
+    ):
+        """Returns the Isogeo API root URL from the token URL.
+
+        :param url_api_token str: url to Isogeo API ID token generator
+        :rtype: str
+        """
+        in_parsed = urlparse(url_api_token)
+        if "qa" in url_api_token:
+            api_url_base = in_parsed._replace(path="", netloc=in_parsed.netloc.replace("id.", ""))
+        else:
+            api_url_base = in_parsed._replace(
+                path="", netloc=in_parsed.netloc.replace("id.", "v1.")
+            )
+        return api_url_base.geturl()
+
+    def credentials_loader(self, in_credentials: str = "client_secrets.json") -> dict:
+        """Loads API credentials from a file, JSON or INI.
+
+        :param str in_credentials: path to the credentials file. By default,
+          look for a client_secrets.json file.
+        """
+        accepted_extensions = (".ini", ".json")
+        # checks
+        if not path.isfile(in_credentials):
+            raise IOError("Credentials file doesn't exist: {}".format(in_credentials))
+        else:
+            in_credentials = path.normpath(in_credentials)
+        if path.splitext(in_credentials)[1] not in accepted_extensions:
+            raise ValueError(
+                "Extension of credentials file must be one of {}".format(accepted_extensions)
+            )
+        else:
+            kind = path.splitext(in_credentials)[1]
+        # load, check and set
+        if kind == ".json":
+            with open(in_credentials, "r") as f:
+                in_auth = json.loads(f.read())
+            # check structure
+            heads = ("installed", "web")
+            if not set(in_auth).intersection(set(heads)):
+                raise ValueError(
+                    "Input JSON structure is not as expected."
+                    " First key must be one of: {}".format(heads)
+                )
+            # set
+            is_web = "web" in in_auth
+            auth_settings = in_auth.get("web" if is_web else "installed")
+            out_auth = {
+                "auth_mode": "group" if is_web else "user",
+                "client_id": auth_settings.get("client_id"),
+                "client_secret": auth_settings.get("client_secret"),
+                "scopes": auth_settings.get("scopes", ["resources:read"]),
+                "uri_auth": auth_settings.get("auth_uri"),
+                "uri_token": auth_settings.get("token_uri"),
+                "uri_base": self.get_url_base_from_url_token(auth_settings.get("token_uri")),
+                "uri_redirect": None if is_web else auth_settings.get("redirect_uris", None),
+            }
+        else:
+            ini_parser = ConfigParser()
+            ini_parser.read(in_credentials)
+            if "auth" in ini_parser._sections:
+                auth_settings = ini_parser["auth"]
+            else:
+                raise ValueError(
+                    "Input INI structure is not as expected."
+                    " Section of credentials must be named: auth"
+                )
+            out_auth = {
+                "auth_mode": auth_settings.get("CLIENT_TYPE"),
+                "client_id": auth_settings.get("CLIENT_ID"),
+                "client_secret": auth_settings.get("CLIENT_SECRET"),
+                "uri_auth": auth_settings.get("URI_AUTH"),
+                "uri_token": auth_settings.get("URI_TOKEN"),
+                "uri_base": self.get_url_base_from_url_token(auth_settings.get("URI_TOKEN")),
+                "uri_redirect": auth_settings.get("URI_REDIRECT"),
+            }
+        return out_auth
 
     def slugify_layer_id(self, layer_id: str, method: int = 1):
 
@@ -82,18 +162,18 @@ class IsogeoPlgTools(IsogeoUtils):
             shortened_error = shortened_error[:1000] + " ..."
         return shortened_error
 
-    def error_catcher(self, msg, tag, level):
-        """Catch QGIS error messages for introspection."""
-        if tag == "WMS" and level != 0:
+    def error_catcher(self, msg, tag, level, *args):
+        """Catch QGIS log messages for introspection.
+        *args absorbs the extra 'format' parameter emitted by messageReceivedWithFormat in QGIS 4.
+        """
+        if tag == "WMS" and level != Qgis.MessageLevel.Info:
             self.last_error = ["wms", msg]
-        elif tag == "WFS" and level != 0:
+        elif tag == "WFS" and level != Qgis.MessageLevel.Info:
             self.last_error = ["wfs", msg]
-        elif tag == "PostGIS" and level != 0:
+        elif tag == "PostGIS" and level != Qgis.MessageLevel.Info:
             self.last_error = ["postgis", msg]
-        elif tag == "Oracle" and level != 0:
+        elif tag == "Oracle" and level != Qgis.MessageLevel.Info:
             self.last_error = ["oracle", msg]
-        else:
-            pass
 
     def format_widget_title(self, widget, line_width):
         """Format the title to fit the widget width.
@@ -107,18 +187,18 @@ class IsogeoPlgTools(IsogeoUtils):
         final_text = ""
         words = title.split(" ")
         if len(words) == 1:
-            word_width = fm.size(1, title).width()
+            word_width = fm.size(0, title).width()
             if word_width > line_width:
-                final_text = fm.elidedText(title, 1, line_width)
+                final_text = fm.elidedText(title, Qt.TextElideMode.ElideRight, line_width)
             else:
                 final_text = title
         else:
             for word in words:
-                current_width = fm.size(1, final_text + " " + word).width()
+                current_width = fm.size(0, final_text + " " + word).width()
                 if current_width > line_width:
-                    word_width = fm.size(1, word).width()
+                    word_width = fm.size(0, word).width()
                     if word_width > line_width:
-                        final_text += " \n" + fm.elidedText(word, 1, line_width)
+                        final_text += " \n" + fm.elidedText(word, Qt.TextElideMode.ElideRight, line_width)
                     else:
                         final_text += " \n" + word
                 else:
@@ -209,7 +289,7 @@ class IsogeoPlgTools(IsogeoUtils):
     def plugin_metadata(self, base_path=path.dirname(__file__), section="general", value="version"):
         """Plugin metadata.txt parser.
 
-        :param path base_path: directory path whete the metadata txt is stored
+        :param path base_path: directory path where the metadata txt is stored
         :param str section: section of values. Until nom, there is only "general".
         :param str value: value to get from the file. Available values:
 

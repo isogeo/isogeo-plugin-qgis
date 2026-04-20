@@ -9,14 +9,13 @@ from functools import partial
 from qgis.PyQt.QtCore import QObject, pyqtSignal
 from qgis.PyQt.QtWidgets import QMessageBox
 
-# isogeo_pysdk
-from ..isogeo_pysdk.models import Limitation, Directive
-
 # ############################################################################
 # ########## Globals ###############
 # ##################################
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from .. import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 # ############################################################################
 # ########## Classes ###############
@@ -45,24 +44,20 @@ class LimitationsChecker(QObject):
         else:
             li_lim = []
             for lim in limitations:
-                lim = Limitation(**lim)
-                if lim.directive:
-                    directive = Directive(**lim.directive)
-                else:
-                    directive = Directive()
+                directive = lim.get("directive") or {}
                 # for 'legal' limitations, fill the list
-                if lim.type == "legal":
+                if lim.get("type") == "legal":
                     # for this directive, no need to informe the user
                     if (
-                        lim.restriction == "other"
-                        and directive._id == "6756c1875d06446982ed941555102c72"
+                        lim.get("restriction") == "other"
+                        and directive.get("_id", "") == "6756c1875d06446982ed941555102c72"
                     ):
                         pass
                     # for other legal limitations, need to informe the user
                     else:
                         li_lim.append(lim)
                 # for any 'security' limitation, let's show the blocking popup and end the method
-                elif lim.type == "security":
+                elif lim.get("type") == "security":
                     popup = QMessageBox()
                     popup.setWindowTitle("Limitations")
 
@@ -74,8 +69,8 @@ class LimitationsChecker(QObject):
                         )
                         + "</b>"
                     )
-                    if lim.description != "":
-                        popup_txt += "<br>{}".format(lim.description)
+                    if lim.get("description", "") != "":
+                        popup_txt += "<br>{}".format(lim.get("description"))
                     else:
                         popup_txt += "<br><i>"
                         popup_txt += self.tr("No description provided", context=__class__.__name__)
@@ -90,13 +85,13 @@ class LimitationsChecker(QObject):
                         )
                         + "</b>"
                     )
-                    popup.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-                    popup.setDefaultButton(QMessageBox.No)
+                    popup.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                    popup.setDefaultButton(QMessageBox.StandardButton.No)
                     popup.finished.connect(partial(self.finished_slot, data_info.get("layer")))
                     popup.exec()
                     return
                 else:
-                    logger.info("Unexpected data limitation type : {}".format(lim.to_str()))
+                    logger.info("Unexpected data limitation type : {}".format(str(lim)))
                     pass
             # if all limitations are 'legal' type and 'No limit' INSPIRE directive, let's add the layer
             if len(li_lim) == 0:
@@ -109,7 +104,7 @@ class LimitationsChecker(QObject):
                 return
 
     def finished_slot(self, layer_info, i):
-        if i == QMessageBox.Yes:
+        if i == QMessageBox.StandardButton.Yes:
             self.layer_adder.adding(layer_info=layer_info)
             return
         else:

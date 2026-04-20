@@ -12,6 +12,8 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import (
     QComboBox,
+    QDialogButtonBox,
+    QHeaderView,
     QLabel,
     QAbstractButton,
 )
@@ -31,9 +33,11 @@ from ...ui.db_connections.dlg_db_connections import Isogeodb_connections
 # ########## Globals ###############
 # ##################################
 
-qgis_version = int("".join(Qgis.QGIS_VERSION.split(".")[:2]))
+from .. import PLG_LOGGER_NAME
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+qgis_full_version_int = Qgis.QGIS_VERSION_INT // 100
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 # DBMS dependencies
 dbms_specifics_resources = {}
@@ -54,6 +58,17 @@ try:
 except Exception as e:
     pgis_available = 0
     pgis_error = e
+
+try:
+    from qgis.PyQt.QtSql import QSqlField as _QSqlField
+
+    if not hasattr(_QSqlField, "type"):
+        # Qt6: QSqlField.type() was removed; add compatibility shim for QGIS db_manager Oracle connector.
+        # NOTE: This patch applies to ALL QSqlField instances in the QGIS process (including other plugins).
+        # The global scope is intentional: it covers the db_manager Oracle connector used by QGIS itself.
+        _QSqlField.type = lambda self: self.metaType().id()
+except ImportError:
+    pass
 
 try:
     from db_manager.db_plugins.oracle.connector import OracleDBConnector
@@ -82,9 +97,9 @@ except Exception as e:
 
 # QDialog close button icons
 btnBox_ico_dict = {
-    0: QIcon(":/plugins/Isogeo/resources/save.svg"),
-    1: QIcon(":/images/themes/default/mActionRemove.svg"),
-    7: QIcon(":/plugins/Isogeo/resources/undo.svg"),
+    QDialogButtonBox.ButtonRole.AcceptRole: QIcon(":/plugins/Isogeo/resources/save.svg"),
+    QDialogButtonBox.ButtonRole.RejectRole: QIcon(":/images/themes/default/mActionRemove.svg"),
+    QDialogButtonBox.ButtonRole.ResetRole: QIcon(":/plugins/Isogeo/resources/undo.svg"),
 }
 
 # https://dataedo.com/kb/query/oracle/find-all-spatial-columns
@@ -176,7 +191,8 @@ class DataBaseManager:
         for btn in self.db_config_dialog.btnbox.buttons():
             btn_role = self.db_config_dialog.btnbox.buttonRole(btn)
             icon = btnBox_ico_dict.get(btn_role)
-            btn.setIcon(icon)
+            if icon is not None:
+                btn.setIcon(icon)
 
         self.db_config_dialog.btn_reload_conn.clicked.connect(self.db_conn_reload_slot)
 
@@ -443,7 +459,7 @@ class DataBaseManager:
         uri = self.build_connection_uri(service, host, port, username, password, database)
 
         try:
-            if qgis_version > 310:
+            if qgis_full_version_int > 310:
                 pgis_db_plg = PostGisDBPlugin(connection)
                 c = PostGisDBConnector(uri, pgis_db_plg)
             else:
@@ -597,6 +613,7 @@ class DataBaseManager:
             else:
                 pass
 
+        # Loading connections saved into Isogeo Plugin Settings
         self.settings_mng.load_db_connections()
         if dbms in self.settings_mng.db_connections_content:
             for conn_dict in self.settings_mng.db_connections_content.get(dbms):
@@ -751,7 +768,7 @@ class DataBaseManager:
 
         hheader = self.tbl.horizontalHeader()
         vheader = self.tbl.verticalHeader()
-        hheader.setSectionResizeMode(1)
+        hheader.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         vheader.setMinimumSectionSize(10)
 
     def open_db_config_dialog(self, dbms: str):
@@ -792,7 +809,7 @@ class DataBaseManager:
         btn_role = self.db_config_dialog.btnbox.buttonRole(btn)
 
         # If "Save" button was clicked
-        if btn_role == 0:
+        if btn_role == QDialogButtonBox.ButtonRole.AcceptRole:
             row_count = self.tbl.rowCount()
             li_connection_name = []
             # Retrieve the option selected in each comboboxes
@@ -808,10 +825,10 @@ class DataBaseManager:
             self.build_connection_dict(dbms=dbms)
             self.set_qsettings_connections(dbms, "prefered", li_connection_name)
         # If "Cancel" button was clicked
-        elif btn_role == 1:
+        elif btn_role == QDialogButtonBox.ButtonRole.RejectRole:
             pass
         # If "Reset" button was clicked
-        elif btn_role == 7:
+        elif btn_role == QDialogButtonBox.ButtonRole.ResetRole:
             self.fill_db_config_tbl(dbms)
         else:
             logger.warning(

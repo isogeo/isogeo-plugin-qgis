@@ -7,6 +7,7 @@ from pathlib import Path
 from functools import partial
 
 # PyQGIS
+from qgis.core import Qgis
 from qgis.utils import iface
 
 # PyQT
@@ -21,7 +22,9 @@ from ..ui.quicksearch.dlg_quicksearch_rename import QuicksearchRename
 # ########## Globals ###############
 # ##################################
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from . import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 msgBar = iface.messageBar()
 
@@ -76,7 +79,7 @@ class QuickSearchManager:
         self.page_index = 1
         params["page"] = self.page_index
         # Info for _limit parameter
-        params["show"] = True
+        params["show"] = self.form_mng.chk_auto_show.isChecked()
         # building request url
         params["url"] = self.url_builder(params)
 
@@ -89,7 +92,6 @@ class QuickSearchManager:
     def write_params(self, search_name: str = "_default", search_kind: str = "Default"):
         """Write a new element in the json file when a search is saved."""
 
-        # If the name already exists, ask for a new one. ================ TO DO
         if search_kind == "Last":
             if search_name == "Last search" and "Dernière recherche" in self.get_quicksearches_names():
                 self.settings_mng.remove_quicksearch("Dernière recherche")
@@ -136,8 +138,8 @@ class QuickSearchManager:
             popup = QMessageBox()
             popup.setWindowIcon(ico_bolt)
             popup.setWindowTitle(popup_title)
-            popup.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            popup.setDefaultButton(QMessageBox.No)
+            popup.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            popup.setDefaultButton(QMessageBox.StandardButton.No)
             popup_txt = (
                 "<b>{}</b>".format(
                     self.tr("Quicksearch '{}' already exists, do you want to overwrite it?", __class__.__name__,).format(search_name)
@@ -147,14 +149,14 @@ class QuickSearchManager:
             popup.finished.connect(slot_func)
             popup.exec()
         else:
-            slot_func(QMessageBox.Yes)
+            slot_func(QMessageBox.StandardButton.Yes)
 
         return
 
     def save(self, i):
         """Call the write_params() function and refresh the combobox."""
         # retrieve quicksearch given name and store it
-        if i == QMessageBox.Yes:
+        if i == QMessageBox.StandardButton.Yes:
             search_name = self.dlg_new.txt_quicksearch_name.text()
             self.dlg_new.txt_quicksearch_name.setText("")
             self.write_params(search_name, search_kind="Quicksearch")
@@ -167,7 +169,7 @@ class QuickSearchManager:
 
     def rename(self, i):
         """Modify the json file in order to rename a search."""
-        if i == QMessageBox.Yes:
+        if i == QMessageBox.StandardButton.Yes:
 
             old_name = self.form_mng.cbb_quicksearch_edit.currentText()
             new_name = self.dlg_rename.txt_quicksearch_rename.text()
@@ -183,7 +185,7 @@ class QuickSearchManager:
                 self.tr("Quicksearch renamed: from {} to {}", context=__class__.__name__).format(
                     old_name, new_name
                 ),
-                level=0,
+                level=Qgis.MessageLevel.Info,
                 duration=3,
             )
             # method ending
@@ -204,7 +206,7 @@ class QuickSearchManager:
         msgBar.pushMessage(
             "Isogeo",
             self.tr("Quicksearch removed: {}", context=__class__.__name__).format(to_remove),
-            level=0,
+            level=Qgis.MessageLevel.Info,
             duration=3,
         )
         # method ending

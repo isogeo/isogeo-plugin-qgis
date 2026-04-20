@@ -8,7 +8,9 @@ import logging
 # ########## Globals ###############
 # ##################################
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from .. import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 srv_types = ["WMS", "WFS", "EFS", "EMS", "WMTS"]
 file_types = ["vector", "raster"]
@@ -25,7 +27,7 @@ class MetadataSynchronizer:
         """Class constructor."""
 
     def basic_sync(self, layer, info):
-        logger.debug("Filling {} layer's propertie".format(layer.name()))
+        logger.debug("Filling {} layer's properties".format(layer.name()))
         # If the data is a PostGIS table
         if isinstance(info, dict):
             self.filling_field(

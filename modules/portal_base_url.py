@@ -17,7 +17,9 @@ from ..ui.portal.dlg_portal_base_url import IsogeoPortalBaseUrl
 # ########## Globals ###############
 # ##################################
 
-logger = logging.getLogger("IsogeoQgisPlugin")
+from . import PLG_LOGGER_NAME
+
+logger = logging.getLogger(PLG_LOGGER_NAME)
 
 msgBar = iface.messageBar()
 
