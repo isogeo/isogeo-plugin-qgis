@@ -4,7 +4,7 @@
 <context>
     <name>ApiRequester</name>
     <message>
-        <location filename="../modules/api/request.py" line="486"/>
+        <location filename="../modules/api/request.py" line="484"/>
         <source>Dataset</source>
         <translation>Datos (vector, raster y tabulare no geografico)</translation>
     </message>
@@ -20,22 +20,22 @@
 <context>
     <name>DataBaseManager</name>
     <message>
-        <location filename="../modules/layer/database.py" line="704"/>
+        <location filename="../modules/layer/database.py" line="719"/>
         <source>Database</source>
         <translation>Base de datos</translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="708"/>
+        <location filename="../modules/layer/database.py" line="723"/>
         <source>Connection</source>
         <translation>Conexión</translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="774"/>
+        <location filename="../modules/layer/database.py" line="789"/>
         <source> - Configuration of database connections</source>
         <translation> - Configuración de las conexiones a bases de datos</translation>
     </message>
     <message>
-        <location filename="../modules/layer/database.py" line="778"/>
+        <location filename="../modules/layer/database.py" line="793"/>
         <source>Choose the embed connection to be used to access to each {} database</source>
         <translation>Elija la conexión que se utilizará para acceder a cada base de datos {}</translation>
     </message>
@@ -43,57 +43,57 @@
 <context>
     <name>Isogeo</name>
     <message>
-        <location filename="../isogeo.py" line="365"/>
+        <location filename="../isogeo.py" line="343"/>
         <source>&amp;Isogeo</source>
         <translation>&amp;Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="321"/>
+        <location filename="../isogeo.py" line="297"/>
         <source>Search within Isogeo catalogs</source>
         <translation>Buscar en los catálogos Isogeo</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="475"/>
+        <location filename="../isogeo.py" line="451"/>
         <source>Last search</source>
         <translation>Última búsqueda</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="508"/>
+        <location filename="../isogeo.py" line="481"/>
         <source> on </source>
         <translation> de </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="606"/>
+        <location filename="../isogeo.py" line="582"/>
         <source>Quicksearches</source>
         <translation>Búsqueda rápida</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="901"/>
+        <location filename="../isogeo.py" line="877"/>
         <source>TITLE ISSUE REPORTED</source>
         <translation>TÍTULO DEL PROBLEMA NOTIFICADO</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="928"/>
+        <location filename="../isogeo.py" line="904"/>
         <source>PostgreSQL databases are not supported by your QGIS installation.</source>
         <translation>Las bases de datos PostgreSQL no son compatibles con su instalación de QGIS.</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="939"/>
+        <location filename="../isogeo.py" line="915"/>
         <source>Oracle databases are not supported by your QGIS installation.</source>
         <translation>Las bases de datos Oracle no son compatibles con su instalación de QGIS.</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="508"/>
+        <location filename="../isogeo.py" line="481"/>
         <source>page </source>
         <translation>página </translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="623"/>
+        <location filename="../isogeo.py" line="599"/>
         <source>Selected quicksearch could not be loaded.</source>
         <translation>La búsqueda rápida seleccionada no pudo cargarse.</translation>
     </message>
     <message>
-        <location filename="../isogeo.py" line="506"/>
+        <location filename="../isogeo.py" line="479"/>
         <source>Show {} result(s)</source>
         <translation>Mostrar {} resultado(s)</translation>
     </message>
@@ -369,12 +369,12 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="475"/>
+        <location filename="../modules/tools.py" line="465"/>
         <source>Alert</source>
         <translation>Alerta</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="475"/>
+        <location filename="../modules/tools.py" line="465"/>
         <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
@@ -383,7 +383,7 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
  Por favor, configúrelo en 'Configuración/Opciones/Red' antes de reiniciar el complemento.</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="563"/>
+        <location filename="../modules/tools.py" line="553"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation>El estilo {} de la interfaz no es compatible con el selector de palabras clave. Se ha cambiado. Por favor, reinicie QGIS.</translation>
     </message>
@@ -391,32 +391,32 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="115"/>
+        <location filename="../modules/layer/add_layer.py" line="118"/>
         <source>Service layer</source>
         <translation>La capa de servicio</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="118"/>
+        <location filename="../modules/layer/add_layer.py" line="121"/>
         <source>Data file layer</source>
         <translation>La capa</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="122"/>
+        <location filename="../modules/layer/add_layer.py" line="125"/>
         <source>The table</source>
         <translation>La tabla</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="134"/>
+        <location filename="../modules/layer/add_layer.py" line="137"/>
         <source>is not valid</source>
         <translation>no es válida</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="137"/>
+        <location filename="../modules/layer/add_layer.py" line="140"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="140"/>
+        <location filename="../modules/layer/add_layer.py" line="143"/>
         <source>The layer can&apos;t be added</source>
         <translation>No se puede añadir la capa</translation>
     </message>
@@ -442,42 +442,42 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>MetadataDisplayer</name>
     <message>
-        <location filename="../modules/metadata_display.py" line="237"/>
+        <location filename="../modules/metadata_display.py" line="348"/>
         <source>Undefined</source>
         <translation>Indefinido</translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="555"/>
+        <location filename="../modules/metadata_display.py" line="670"/>
         <source>unknown owner name</source>
         <translation>Nombre del propietario no facilitado</translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="559"/>
+        <location filename="../modules/metadata_display.py" line="674"/>
         <source>unknown owner email</source>
         <translation>Dirección de correo electrónico no facilitada</translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="563"/>
+        <location filename="../modules/metadata_display.py" line="678"/>
         <source>unknown owner phone number</source>
         <translation>Número de teléfono no facilitado</translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="571"/>
+        <location filename="../modules/metadata_display.py" line="686"/>
         <source>unknown owner city</source>
         <translation>Ciudad no facilitada</translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="575"/>
+        <location filename="../modules/metadata_display.py" line="690"/>
         <source>unknown owner country</source>
         <translation>País no facilitado</translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="595"/>
+        <location filename="../modules/metadata_display.py" line="710"/>
         <source>unknown</source>
         <translation>Indefinido</translation>
     </message>
     <message>
-        <location filename="../modules/metadata_display.py" line="567"/>
+        <location filename="../modules/metadata_display.py" line="682"/>
         <source>unknown owner address</source>
         <translation>Dirección del propietario no especificada</translation>
     </message>
@@ -523,37 +523,37 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>ResultsManager</name>
     <message>
-        <location filename="../modules/results/display.py" line="178"/>
+        <location filename="../modules/results/display.py" line="179"/>
         <source>Undefined</source>
         <translation>Indefinido</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="218"/>
+        <location filename="../modules/results/display.py" line="219"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="221"/>
+        <location filename="../modules/results/display.py" line="222"/>
         <source>Service</source>
         <translation>Servicio</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="224"/>
+        <location filename="../modules/results/display.py" line="225"/>
         <source>Table</source>
         <translation>Tabla</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="227"/>
+        <location filename="../modules/results/display.py" line="228"/>
         <source>Unknown geometry</source>
         <translation>Geometría desconocida</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="590"/>
+        <location filename="../modules/results/display.py" line="591"/>
         <source>Data file</source>
         <translation>Datos del archivo</translation>
     </message>
     <message>
-        <location filename="../modules/results/display.py" line="532"/>
+        <location filename="../modules/results/display.py" line="533"/>
         <source>Can&apos;t be added</source>
         <translation>No se puede añadir</translation>
     </message>
@@ -697,72 +697,72 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>UserInformer</name>
     <message>
-        <location filename="../modules/user_inform.py" line="76"/>
+        <location filename="../modules/user_inform.py" line="77"/>
         <source>The specified file does not exist.</source>
         <translation>El archivo especificado no existe.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="81"/>
+        <location filename="../modules/user_inform.py" line="82"/>
         <source>The selected credentials file&apos;s format is not valid.</source>
         <translation>El formato del archivo de credenciales seleccionado no es válido.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="88"/>
+        <location filename="../modules/user_inform.py" line="89"/>
         <source>Authentication file is valid. Asking for authorization to Isogeo&apos;s API.</source>
         <translation>El archivo de autenticación es válido. Solicitando autorización a la API de Isogeo.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="115"/>
+        <location filename="../modules/user_inform.py" line="116"/>
         <source>ID and SECRET could be invalid. Provide them again. If this error keeps happening, please report it in the bug tracker.</source>
         <translation>Los parámetros de autenticación (ID de cliente y Secreto de cliente) parecen no ser válidos.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="119"/>
+        <location filename="../modules/user_inform.py" line="120"/>
         <source>Proxy error found. Check your OS and QGIS proxy configuration.If this error keeps happening, please report it in the bug tracker.</source>
         <translation>Se ha detectado un error de proxy. Compruebe la configuración de QGIS y de su ordenador. Si el error persiste, por favor repórtelo en el rastreador de errores.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="123"/>
+        <location filename="../modules/user_inform.py" line="124"/>
         <source>The script is looping. Make sure you shared a catalog with the plugin and check your Internet connection. If this error keeps happening, please report it in the bug tracker.</source>
         <translation>El script está en bucle. Asegúrate de haber compartido un catálogo con el complemento y comprueba tu conexión a Internet. Si el error persiste, por favor repórtalo en el rastreador de errores.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="128"/>
+        <location filename="../modules/user_inform.py" line="129"/>
         <source>Request to Isogeo&apos;s API failed : unkown error found. Please, report it in the bug tracker.</source>
         <translation>La solicitud a la API de Isogeo ha fallado: se ha encontrado un error desconocido. Por favor, informe de ello en el rastreador de errores.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="132"/>
+        <location filename="../modules/user_inform.py" line="133"/>
         <source>API authentication failed : unexpected API&apos;s reply. Please, report it in the bug tracker.</source>
         <translation>La solicitud a la API de Isogeo ha fallado. Por favor, informe de ello en el bug tracker.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="136"/>
+        <location filename="../modules/user_inform.py" line="137"/>
         <source>Request to Isogeo&apos;s API failed : please check your Internet connection and your proxy configuration. If this error keeps happening, please report it in the bug tracker.</source>
         <translation>Error en la solicitud a la API de Isogeo: compruebe su conexión a Internet y la configuración de su proxy. Si el error persiste, por favor repórtelo en el rastreador de errores.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="141"/>
+        <location filename="../modules/user_inform.py" line="142"/>
         <source>Search request to Isogeo&apos;s API failed : please check that &apos;api_base_url&apos; and &apos;api_auth_url&apos; URLs specified into config.json file are pointing to the same API.</source>
         <translation>La solicitud a la API de Isogeo ha fallado: compruebe que las URL 'api_base_url' y 'api_auth_url' especificadas en el archivo config.json apuntan a la misma API.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="160"/>
+        <location filename="../modules/user_inform.py" line="161"/>
         <source>No share feeds the plugin. If you want to access resources via the plugin, you must share at least one catalog containing at least one metadata with it.</source>
         <translation>No compartir alimenta el complemento. Si desea acceder a los recursos a través del complemento, debe compartir con él al menos un catálogo que contenga al menos un metadato.</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="177"/>
+        <location filename="../modules/user_inform.py" line="178"/>
         <source>This data is subject to </source>
         <translation>Estos datos están sujetos a </translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="177"/>
+        <location filename="../modules/user_inform.py" line="178"/>
         <source> legal limitation(s) :</source>
         <translation> limitación(es) de tipo «legal» :</translation>
     </message>
     <message>
-        <location filename="../modules/user_inform.py" line="192"/>
+        <location filename="../modules/user_inform.py" line="193"/>
         <source>No description provided</source>
         <translation>Sin descripción</translation>
     </message>
@@ -770,32 +770,32 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>dlg_credits</name>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="197"/>
+        <location filename="../ui/credits/ui_credits.ui" line="26"/>
         <source>Credits</source>
         <translation>Créditos</translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="198"/>
+        <location filename="../ui/credits/ui_credits.ui" line="67"/>
         <source>Realization</source>
         <translation>Desarrollo</translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="199"/>
+        <location filename="../ui/credits/ui_credits.ui" line="117"/>
         <source>&lt;a href=&quot;https://www.isogeo.com&quot; style=&quot;color:#6480A7;text-decoration:none;&quot;&gt;Easy access to geodata!&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;https://www.isogeo.com&quot; style=&quot;color:#6480A7;text-decoration:none;&quot;&gt;Facilitar el acceso a los datos geográficos !&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="200"/>
+        <location filename="../ui/credits/ui_credits.ui" line="148"/>
         <source>Sponsors</source>
         <translation>Patrocinadores</translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="201"/>
+        <location filename="../ui/credits/ui_credits.ui" line="291"/>
         <source>Sources and license</source>
         <translation>Fuentes y licencia</translation>
     </message>
     <message>
-        <location filename="../ui/credits/ui_credits.py" line="202"/>
+        <location filename="../ui/credits/ui_credits.ui" line="365"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Code hosted on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/isogeo/isogeo-plugin-qgis&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Código alojado en Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -816,42 +816,42 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>dlg_form_auth_prompt</name>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="248"/>
+        <location filename="../ui/auth/ui_authentication.ui" line="35"/>
         <source>Isogeo authentication settings</source>
         <translation>Configuración de autenticación del complemento</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="249"/>
+        <location filename="../ui/auth/ui_authentication.ui" line="156"/>
         <source>From a file:</source>
         <translation>Importar desde un archivo :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="250"/>
+        <location filename="../ui/auth/ui_authentication.ui" line="217"/>
         <source>Application ID:</source>
         <translation>ID :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="251"/>
+        <location filename="../ui/auth/ui_authentication.ui" line="259"/>
         <source>Application SECRET:</source>
         <translation>Secret :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="252"/>
+        <location filename="../ui/auth/ui_authentication.ui" line="301"/>
         <source>API location:</source>
         <translation>URL de la API :</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="253"/>
+        <location filename="../ui/auth/ui_authentication.ui" line="371"/>
         <source>Pick your credentials file</source>
         <translation>Importe el archivo de autenticación suministrado por Isogeo o su administrador</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="254"/>
+        <location filename="../ui/auth/ui_authentication.ui" line="380"/>
         <source>Locate the Isogeo API credentials file</source>
         <translation>Busque el archivo &quot;client_secrets.json&quot;</translation>
     </message>
     <message>
-        <location filename="../ui/auth/ui_authentication.py" line="255"/>
+        <location filename="../ui/auth/ui_authentication.ui" line="577"/>
         <source>I&apos;ve got edition rights on app.isogeo.com</source>
         <translation>Tengo acceso a las funciones de edición en app.isogeo.com</translation>
     </message>
@@ -859,282 +859,282 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>dlg_metadata_details</name>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1884"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="35"/>
         <source>Isogeo Metadata</source>
         <translation>Ficha de metadatos Isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1889"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="168"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1891"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="186"/>
         <source>Feature attributes</source>
         <translation>Atributos</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1893"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="207"/>
         <source>Contacts</source>
         <translation>Contactos</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1895"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="216"/>
         <source>History</source>
         <translation>Historia</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1897"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="225"/>
         <source>Geography</source>
         <translation>Geografía</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1899"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="234"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1978"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="3908"/>
         <source>Licenses</source>
         <translation>Licencias</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1903"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="252"/>
         <source>Advanced</source>
         <translation>Miscelánea</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1905"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="279"/>
         <source>Edit it on Isogeo</source>
         <translation>Editar en Isogeo</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1906"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="436"/>
         <source>Owner</source>
         <translation>Propietario</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1989"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4675"/>
         <source>Metadata owner</source>
         <translation>Propietario de los metadatos</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1988"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4626"/>
         <source>TextLabel</source>
         <translation>Indefinido</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1909"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="525"/>
         <source>Group Themes</source>
         <translation>Temas</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1910"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="564"/>
         <source>Group themes</source>
         <translation>Temas</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1913"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="647"/>
         <source>Keywords</source>
         <translation>Palabras clave</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1916"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="733"/>
         <source>INSPIRE themes</source>
         <translation>Temas INSPIRE</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1919"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="928"/>
         <source>Abstract</source>
         <translation>Resumen</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1923"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1045"/>
         <source>Name</source>
         <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1925"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1050"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1927"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1055"/>
         <source>Type</source>
         <translation>Tipo</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1956"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="2464"/>
         <source>Description</source>
         <translation>Descripción</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1930"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1125"/>
         <source>Point of contact</source>
         <translation>Punto de contacto</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1932"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1272"/>
         <source>Others contacts</source>
         <translation>Otro(s) contacto(s)</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1934"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1436"/>
         <source>Data history</source>
         <translation>Historial de datos</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1937"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1590"/>
         <source>Creation date:</source>
         <translation>Fecha de creación :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1987"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4583"/>
         <source>Last update:</source>
         <translation>Última actualización :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1940"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1731"/>
         <source>Validity period start:</source>
         <translation>Válido desde :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1942"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1761"/>
         <source>Validity period end:</source>
         <translation>Fecha de caducidad :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1943"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1802"/>
         <source>Updated every:</source>
         <translation>Actualizado cada :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1945"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="1902"/>
         <source>Validity comment</source>
         <translation>Validez</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1947"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="2044"/>
         <source>Collection context</source>
         <translation>Contexto de la recogida</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1949"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="2225"/>
         <source>Collection method</source>
         <translation>Método de recogidae</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1951"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="2376"/>
         <source>Last modifications</source>
         <translation>Últimos cambios en los datos</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1954"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="2452"/>
         <source>Date</source>
         <translation>Fetcha</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1957"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="2546"/>
         <source>Technical informations</source>
         <translation>Informaciones técnicas</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1958"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="2630"/>
         <source>Format:</source>
         <translation>Formato :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1960"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="2753"/>
         <source>Features count:</source>
         <translation>Número de entidades :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1962"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="2876"/>
         <source>Geometry type:</source>
         <translation>Tipo de geometría:</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1964"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="2999"/>
         <source>SRS:</source>
         <translation>SRC:</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1966"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="3125"/>
         <source>Scale:</source>
         <translation>Escala :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1968"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="3251"/>
         <source>Resolution:</source>
         <translation>Resolución:</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1971"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="3415"/>
         <source>Geographical context</source>
         <translation>Contexto geográfico</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1973"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="3497"/>
         <source>Bounding box preview</source>
         <translation>Visión general de la envolvente</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1974"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="3614"/>
         <source>Specifications</source>
         <translation>Especificaciones</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1976"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="3750"/>
         <source>Topological consistency</source>
         <translation>Coherencia topológica</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1980"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4050"/>
         <source>Limitations</source>
         <translation>Limitaciones</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1982"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4208"/>
         <source>Metadata properties</source>
         <translation>Propiedades de los metadatos</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1983"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4309"/>
         <source>Language: </source>
         <translation>Idioma : </translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1985"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4446"/>
         <source>Created:</source>
         <translation>Creado el :</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1990"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4719"/>
         <source>wg_owner</source>
         <translation>Organización</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1991"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4759"/>
         <source>wg_email</source>
         <translation>Correo electrónico</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1992"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4792"/>
         <source>wg_phone</source>
         <translation>Teléfono</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1993"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4822"/>
         <source>wg_address</source>
         <translation>Dirección</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1994"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4852"/>
         <source>wg_pc_city</source>
         <translation>Código postal y ciudad</translation>
     </message>
     <message>
-        <location filename="../ui/metadata/ui_md_details.py" line="1995"/>
+        <location filename="../ui/metadata/ui_md_details.ui" line="4885"/>
         <source>wg_country</source>
         <translation>País</translation>
     </message>
@@ -1160,12 +1160,12 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>dlg_quicksearch_new</name>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_new.py" line="68"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_new.ui" line="41"/>
         <source>Isogeo - New quicksearch</source>
         <translation>Isogeo - Nueva búsqueda rápida</translation>
     </message>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_new.py" line="69"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_new.ui" line="88"/>
         <source>Quicksearch name:</source>
         <translation>Nombre de la búsqueda rápida :</translation>
     </message>
@@ -1173,12 +1173,12 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>dlg_quicksearch_rename</name>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="59"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_rename.ui" line="29"/>
         <source>Isogeo - Rename quicksearch</source>
         <translation>Isogeo - Renombrar una búsqueda rápida</translation>
     </message>
     <message>
-        <location filename="../ui/quicksearch/ui_quicksearch_rename.py" line="60"/>
+        <location filename="../ui/quicksearch/ui_quicksearch_rename.ui" line="67"/>
         <source>Quicksearch new name:</source>
         <translation>Nuevo nombre :</translation>
     </message>
