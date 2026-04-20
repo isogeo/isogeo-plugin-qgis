@@ -1,7 +1,7 @@
 {
     "release-note": {
-        "fr": "* Correctif mineur.",
-        "en": "* Minor Fix."
+        "fr": "* Première version compatible avec QGIS 4 et Qt6.\n* Refonte graphique de l'affichage des résultats de recherche.\n* Améliorations mineures.",
+        "en": "* First version compatible with QGIS 4 and Qt6.\n* Visual redesign of search results display.\n* Minor improvements."
     },
     "compliance":{
         "api": {

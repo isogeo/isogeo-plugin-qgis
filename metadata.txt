@@ -11,7 +11,7 @@ name=Isogeo
 qgisMinimumVersion=3.16
 qgisMaximumVersion=4.99
 description=Isogeo search engine within QGIS
-version=3.7.1-beta
+version=4.0.0
 author=Isogeo
 email=support@isogeo.fr
 
@@ -24,7 +24,7 @@ repository=https://github.com/isogeo/isogeo-plugin-qgis
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-changelog=<strong>Latest versions</strong>:<br>- <strong>3.7.1:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.7.1">dedicated GitHub release</a><br>- <strong>3.7.0:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.7.0">dedicated GitHub release</a><br>- <strong>3.6.4:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.6.4">dedicated GitHub release</a><br>- <strong>3.6.3:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.6.3">dedicated GitHub release</a><br>- <strong>3.6.2:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.6.2">dedicated GitHub release</a><br>- <strong>3.6.1:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.6.1">dedicated GitHub release</a><br>- <strong>3.6.0:</strong> see the <a href="https://github.com/isogeo/isogeo-plugin-qgis/releases/tag/3.6.0">dedicated GitHub release</a><br><i><a href="https://help.isogeo.com/doc-plugin-qgis/en/appendices/versions/">Full versions list</a></i>
+changelog=<strong>Latest versions</strong>:<br>- <a href="https://help.isogeo.com/doc-plugin-qgis/en/appendices/versions/#latest"><strong>4.0.0</strong></a><br>- <a href="https://help.isogeo.com/doc-plugin-qgis/en/appendices/versions/#371-july-1-2025"><strong>3.7.1</strong></a><br>- <a href="https://help.isogeo.com/doc-plugin-qgis/en/appendices/versions/#370-june-13-2025"><strong>3.7.0</strong></a><br>- <a href="https://help.isogeo.com/doc-plugin-qgis/en/appendices/versions/#364-april-22-2025"><strong>3.6.4</strong></a><br>- <a href="https://help.isogeo.com/doc-plugin-qgis/en/appendices/versions/#363-march-24-2025"><strong>3.6.3</strong></a><br>- <a href="https://help.isogeo.com/doc-plugin-qgis/en/appendices/versions/#362-march-11-2025"><strong>3.6.2</strong></a><br>- <a href="https://help.isogeo.com/doc-plugin-qgis/en/appendices/versions/#361-december-17-2024"><strong>3.6.1</strong></a>
 
 # Tags are comma separated with spaces allowed
 tags=REST API,catalog,search,explore,webservices,metadata,open data,INSPIRE
@@ -33,9 +33,3 @@ tags[fr]=catalogue,données,webservices,géoservices,métadonnées,données ouve
 homepage=https://help.isogeo.com/doc-plugin-qgis/
 category=Web
 icon=icon.png
-# experimental flag
-# experimental=False
-
-# deprecated flag (applies to the whole plugin, not just a single version)
-deprecated=False
-
