@@ -133,7 +133,7 @@ stages:
 
     - script: |
         pyrcc5 resources.qrc -o resources_rc.py
-        python -c "f='resources_rc.py'; open(f,'w').write(open(f).read().replace('from PyQt5 import QtCore','from qgis.PyQt import QtCore'))"
+        python -c "f='resources_rc.py'; content=open(f).read(); open(f,'w').write(content.replace('from PyQt5 import QtCore','from qgis.PyQt import QtCore'))"
       displayName: "Build - Qt resources compilation"
 
     - script: python ./tools/plugin_packager.py

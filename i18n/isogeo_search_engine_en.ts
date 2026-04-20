@@ -369,17 +369,17 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="553"/>
+        <location filename="../modules/tools.py" line="552"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="465"/>
+        <location filename="../modules/tools.py" line="464"/>
         <source>Alert</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="465"/>
+        <location filename="../modules/tools.py" line="464"/>
         <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
@@ -389,32 +389,32 @@ You have a proxy set up on your OS {} but none in QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="118"/>
+        <location filename="../modules/layer/add_layer.py" line="119"/>
         <source>Service layer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="121"/>
+        <location filename="../modules/layer/add_layer.py" line="122"/>
         <source>Data file layer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="137"/>
+        <location filename="../modules/layer/add_layer.py" line="138"/>
         <source>is not valid</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="140"/>
+        <location filename="../modules/layer/add_layer.py" line="141"/>
         <source>Error:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="125"/>
+        <location filename="../modules/layer/add_layer.py" line="126"/>
         <source>The table</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="143"/>
+        <location filename="../modules/layer/add_layer.py" line="144"/>
         <source>The layer can&apos;t be added</source>
         <translation></translation>
     </message>

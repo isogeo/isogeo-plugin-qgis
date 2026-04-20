@@ -369,12 +369,12 @@
 <context>
     <name>IsogeoPlgTools</name>
     <message>
-        <location filename="../modules/tools.py" line="465"/>
+        <location filename="../modules/tools.py" line="464"/>
         <source>Alert</source>
         <translation>Alerta</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="465"/>
+        <location filename="../modules/tools.py" line="464"/>
         <source>Proxy issue: 
 You have a proxy set up on your OS {} but none in QGIS.
  Please set it up in &apos;Preferences/Options/Network&apos; then close/reopen the plugin.</source>
@@ -383,7 +383,7 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
  Por favor, configúrelo en 'Configuración/Opciones/Red' antes de reiniciar el complemento.</translation>
     </message>
     <message>
-        <location filename="../modules/tools.py" line="553"/>
+        <location filename="../modules/tools.py" line="552"/>
         <source>The &apos;{}&apos; QGIS style is not compatible with combobox. It has been changed. Please restart QGIS.</source>
         <translation>El estilo {} de la interfaz no es compatible con el selector de palabras clave. Se ha cambiado. Por favor, reinicie QGIS.</translation>
     </message>
@@ -391,32 +391,32 @@ Un proxy está configurado en su sistema operativo {} pero no en QGIS.
 <context>
     <name>LayerAdder</name>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="118"/>
+        <location filename="../modules/layer/add_layer.py" line="119"/>
         <source>Service layer</source>
         <translation>La capa de servicio</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="121"/>
+        <location filename="../modules/layer/add_layer.py" line="122"/>
         <source>Data file layer</source>
         <translation>La capa</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="125"/>
+        <location filename="../modules/layer/add_layer.py" line="126"/>
         <source>The table</source>
         <translation>La tabla</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="137"/>
+        <location filename="../modules/layer/add_layer.py" line="138"/>
         <source>is not valid</source>
         <translation>no es válida</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="140"/>
+        <location filename="../modules/layer/add_layer.py" line="141"/>
         <source>Error:</source>
         <translation>Error:</translation>
     </message>
     <message>
-        <location filename="../modules/layer/add_layer.py" line="143"/>
+        <location filename="../modules/layer/add_layer.py" line="144"/>
         <source>The layer can&apos;t be added</source>
         <translation>No se puede añadir la capa</translation>
     </message>
